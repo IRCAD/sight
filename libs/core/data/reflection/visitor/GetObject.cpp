@@ -224,7 +224,7 @@ void GetObject::visit(const camp::ArrayProperty& property)
         SIGHT_DEBUG("Ok ArrayProperty name =" << name);
         std::string key = this->getNextPropertyName();
 
-        size_t index = boost::lexical_cast<size_t>(key);
+        std::size_t index = boost::lexical_cast<std::size_t>(key);
 
         m_pathVisitor->addObject(key);
 
@@ -275,7 +275,7 @@ void GetObject::visit(const camp::Function&)
 std::string GetObject::getNextPropertyName()
 {
     SIGHT_FATAL_IF("Path is empty.", m_newSubObjPath.empty());
-    size_t dotPos = m_newSubObjPath.find(".");
+    std::size_t dotPos = m_newSubObjPath.find(".");
     std::string nextItem;
     if(dotPos != std::string::npos)
     {

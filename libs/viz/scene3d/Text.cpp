@@ -72,7 +72,7 @@ Text* Text::New(
     Ogre::SceneManager* _sm,
     Ogre::OverlayContainer* _parent,
     const std::string& _fontSource,
-    size_t _fontSize,
+    std::size_t _fontSize,
     float _fontResolution,
     Ogre::Camera* _cam
 )
@@ -210,7 +210,7 @@ void Text::setDotsPerInch(float _dpi)
     {
         auto newFont = helper::Font::getFont(
             m_font->getSource(),
-            static_cast<size_t>(std::round(fontSize)),
+            static_cast<std::size_t>(std::round(fontSize)),
             fontRes
         );
         this->setFont(newFont);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -413,7 +413,7 @@ service::IService::Config Config::parseService(
         {
             auto keyCfgs = cfg.second.equal_range("key");
 
-            size_t count = 0;
+            std::size_t count = 0;
             for(auto groupCfg = keyCfgs.first ; groupCfg != keyCfgs.second ; ++groupCfg)
             {
                 service::IService::ObjectServiceConfig grouObjConfig = objConfig;
@@ -422,8 +422,8 @@ service::IService::Config Config::parseService(
                 grouObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
                 SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
 
-                const std::string key = group.value();
-                const size_t index    = count++;
+                const std::string key   = group.value();
+                const std::size_t index = count++;
                 grouObjConfig.m_key = KEY_GROUP_NAME(key, index);
 
                 // AutoConnect

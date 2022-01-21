@@ -184,7 +184,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
     closestDistance = -1.0f;
     Ogre::Vector3 closestResult;
     Ogre::RaySceneQueryResult& queryResult = mRaySceneQuery->getLastResults();
-    for(size_t qrIdx = 0 ; qrIdx < queryResult.size() ; qrIdx++)
+    for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() ; qrIdx++)
     {
         // Stop checking if we have found a raycast hit that is closer
         // than all remaining entities.
@@ -249,7 +249,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
                     float* pReal;
 
-                    for(size_t j = 0 ; j < vertexData->vertexCount ; ++j, vertex += vbuf->getVertexSize())
+                    for(std::size_t j = 0 ; j < vertexData->vertexCount ; ++j, vertex += vbuf->getVertexSize())
                     {
                         posElem->baseVertexPointerToElement(vertex, &pReal);
                         Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
@@ -279,14 +279,14 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         // Iterate over index buffer.
                         if(use32bitindexes)
                         {
-                            for(size_t k = 0 ; k < indexData->indexCount ; ++k)
+                            for(std::size_t k = 0 ; k < indexData->indexCount ; ++k)
                             {
                                 indices[k] = pLong[k];
                             }
                         }
                         else
                         {
-                            for(size_t k = 0 ; k < indexData->indexCount ; ++k)
+                            for(std::size_t k = 0 ; k < indexData->indexCount ; ++k)
                             {
                                 indices[k] = static_cast<Ogre::uint32>(pShort[k]);
                             }
@@ -362,7 +362,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 
                         if(indices.size() > 0)
                         {
-                            for(size_t i = 0 ; i < indices.size() ; ++i)
+                            for(std::size_t i = 0 ; i < indices.size() ; ++i)
                             {
                                 const Ogre::Vector3 pointWVP = viewProjMatrix * vertices[indices[i]];
                                 const Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
@@ -377,7 +377,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         }
                         else
                         {
-                            for(size_t i = 0 ; i < vertices.size() ; ++i)
+                            for(std::size_t i = 0 ; i < vertices.size() ; ++i)
                             {
                                 const Ogre::Vector3 pointWVP = viewProjMatrix * vertices[i];
                                 const Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
@@ -398,7 +398,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     case Ogre::RenderOperation::OT_LINE_LIST:
                         if(indices.size() > 0)
                         {
-                            for(size_t i = 0 ; i < indices.size() ; i += 4)
+                            for(std::size_t i = 0 ; i < indices.size() ; i += 4)
                             {
                                 const auto firstHit = intersect(
                                     _ray,
@@ -433,7 +433,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         }
                         else
                         {
-                            for(size_t i = 0 ; i < vertices.size() ; i += 4)
+                            for(std::size_t i = 0 ; i < vertices.size() ; i += 4)
                             {
                                 const auto firstHit = intersect(
                                     _ray,
@@ -473,7 +473,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     case Ogre::RenderOperation::OT_TRIANGLE_LIST:
                         if(indices.size() > 0)
                         {
-                            for(size_t i = 0 ; i < indices.size() ; i += 3)
+                            for(std::size_t i = 0 ; i < indices.size() ; i += 3)
                             {
                                 const auto firstHit = intersect(
                                     _ray,
@@ -493,7 +493,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         }
                         else
                         {
-                            for(size_t i = 0 ; i < vertices.size() ; i += 3)
+                            for(std::size_t i = 0 ; i < vertices.size() ; i += 3)
                             {
                                 const auto firstHit = intersect(
                                     _ray,

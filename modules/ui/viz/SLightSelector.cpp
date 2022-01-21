@@ -157,7 +157,7 @@ void SLightSelector::stopping()
 
 void SLightSelector::onSelectedLayerItem(int _index)
 {
-    m_currentLayer  = m_layers[static_cast<size_t>(_index)];
+    m_currentLayer  = m_layers[static_cast<std::size_t>(_index)];
     m_lightAdaptors = m_currentLayer.lock()->getLightAdaptors();
 
     this->updateLightsList();

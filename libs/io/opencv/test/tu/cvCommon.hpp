@@ -60,9 +60,9 @@ declareCvFormat(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
 template<typename T>
 cv::Mat genCvImage(
     const std::vector<T>& _imageBuffer,
-    size_t _w,
-    size_t _h,
-    size_t _d,
+    std::size_t _w,
+    std::size_t _h,
+    std::size_t _d,
     std::uint8_t _numChannels
 )
 {
@@ -94,9 +94,9 @@ cv::Mat genCvImage(
 //------------------------------------------------------------------------------
 
 template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
+static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
-    const size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
+    const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
     buffer.resize(imageSize);
 
@@ -105,7 +105,7 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
 
     std::uniform_int_distribution<> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
-    for(size_t i = 0 ; i < imageSize ; ++i)
+    for(std::size_t i = 0 ; i < imageSize ; ++i)
     {
         auto value   = dist(engine);
         T boundValue = static_cast<T>(value);
@@ -118,9 +118,9 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
 //------------------------------------------------------------------------------
 
 template<typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
-static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
+static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
-    const size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
+    const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
     buffer.resize(imageSize);
 
@@ -129,7 +129,7 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
 
     std::uniform_real_distribution<> dist(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 
-    for(size_t i = 0 ; i < imageSize ; ++i)
+    for(std::size_t i = 0 ; i < imageSize ; ++i)
     {
         auto value   = dist(engine);
         T boundValue = static_cast<T>(value);

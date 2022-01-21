@@ -321,8 +321,8 @@ void DicomDir::retrieveDicomSeries(
 
     for(auto entry : dicomSeriesMap)
     {
-        auto series       = entry.second;
-        const size_t size = series->getDicomContainer().size();
+        auto series            = entry.second;
+        const std::size_t size = series->getDicomContainer().size();
         if(size)
         {
             series->setNumberOfInstances(size);

@@ -116,7 +116,7 @@ void AppConfigTest::addConfigTest()
     CPPUNIT_ASSERT_EQUAL(false, allCconfigs.empty());
 
     std::vector<std::string> configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), configs.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), configs.size());
     CPPUNIT_ASSERT_EQUAL(configId, configs.front());
 
     auto module = currentAppConfig->getModule(configId);
@@ -1195,11 +1195,11 @@ void AppConfigTest::keyGroupTest()
             ).lock() == data3
         );
 
-        CPPUNIT_ASSERT_EQUAL(size_t(1), srv2->m_input1.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), srv2->m_input1.size());
         CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup0", 0).lock() == data1);
         CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup0", 1).expired());
 
-        CPPUNIT_ASSERT_EQUAL(size_t(3), srv2->m_input2.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), srv2->m_input2.size());
         CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup1", 0).lock() == data3);
         CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup1", 1).lock() == data4);
         CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup1", 2).lock() == data5);
@@ -1322,7 +1322,7 @@ void AppConfigTest::parameterReplaceTest()
 
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
     const std::vector<ConfigType> paramsCfg = adaptedConfig->find("parameter");
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), paramsCfg.size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), paramsCfg.size());
 
     std::string replaceBy;
 
@@ -1397,7 +1397,7 @@ void AppConfigTest::objectConfigTest()
 
     auto compo1 = std::dynamic_pointer_cast<data::Composite>(core::tools::fwID::getObject("compo1Id"));
     CPPUNIT_ASSERT(compo1 != nullptr);
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), compo1->count("dataInComposite"));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), compo1->count("dataInComposite"));
     auto data2 = compo1->at<data::String>("dataInComposite");
     CPPUNIT_ASSERT(data2);
     CPPUNIT_ASSERT_EQUAL(std::string("data2Id"), data2->getID());

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
     {
         QDropEvent* dropEvent = static_cast<QDropEvent*>(_event);
 
-        size_t index                    = static_cast<size_t>(this->currentIndex());
+        std::size_t index               = static_cast<std::size_t>(this->currentIndex());
         ActivityRequirement requirement = m_activityInfo.requirements[index];
         QPointer<QTreeWidget> tree      = m_treeWidgets[index];
 
@@ -374,7 +374,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
 
     this->fillInformation(info);
 
-    for(size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
@@ -428,7 +428,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr DataView::checkData(size_t _index, std::string& _errorMsg)
+data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMsg)
 {
     data::Object::sptr object;
 
@@ -583,7 +583,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
     errorMsg += "The required data are not correct:";
 
     // Check if all required data are present
-    for(size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
         std::string msg;
@@ -622,7 +622,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
 
 void DataView::removeSelectedObjects()
 {
-    size_t tabIndex               = static_cast<size_t>(this->currentIndex());
+    std::size_t tabIndex          = static_cast<std::size_t>(this->currentIndex());
     QPointer<QTreeWidget> tree    = m_treeWidgets[tabIndex];
     QList<QTreeWidgetItem*> items = tree->selectedItems();
     for(QTreeWidgetItem* item : items)
@@ -644,7 +644,7 @@ void DataView::removeSelectedObjects()
 
 void DataView::clearTree()
 {
-    size_t tabIndex            = static_cast<size_t>(this->currentIndex());
+    std::size_t tabIndex       = static_cast<std::size_t>(this->currentIndex());
     QPointer<QTreeWidget> tree = m_treeWidgets[tabIndex];
     tree->clear();
 }
@@ -653,7 +653,7 @@ void DataView::clearTree()
 
 void DataView::createNewObject()
 {
-    size_t index = static_cast<size_t>(this->currentIndex());
+    std::size_t index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -681,7 +681,7 @@ void DataView::createNewObject()
 
 void DataView::importObject()
 {
-    const size_t index = static_cast<size_t>(this->currentIndex());
+    const std::size_t index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -712,7 +712,7 @@ void DataView::importObject()
 
 void DataView::importObjectFromSDB()
 {
-    const size_t index = static_cast<size_t>(this->currentIndex());
+    const std::size_t index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -817,7 +817,7 @@ data::Object::sptr DataView::readObject(
 
 //-----------------------------------------------------------------------------
 
-void DataView::addObjectItem(size_t _index, const data::Object::csptr& _obj)
+void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj)
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
@@ -1153,7 +1153,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         bool conversionOK = false;
                         for(int i = 0 ; i < 16 ; ++i)
                         {
-                            coeffs[size_t(i)] = coeffList[i].toDouble(&conversionOK);
+                            coeffs[std::size_t(i)] = coeffList[i].toDouble(&conversionOK);
                             if(!conversionOK)
                             {
                                 QMessageBox::warning(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,9 +69,9 @@ CompositeConverter::~CompositeConverter()
             trackElement->SetType(::igtl::TrackingDataElement::TYPE_TRACKER);
 
             ::igtl::Matrix4x4 matrix;
-            for(size_t i = 0 ; i < 4 ; ++i)
+            for(std::size_t i = 0 ; i < 4 ; ++i)
             {
-                for(size_t j = 0 ; j < 4 ; ++j)
+                for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
                     matrix[i][j] = transfoMatrix->getCoefficient(i, j);
                 }

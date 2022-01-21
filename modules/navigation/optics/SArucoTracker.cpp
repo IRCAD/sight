@@ -247,7 +247,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
             }
         }
 
-        size_t tagTLIndex = 0;
+        std::size_t tagTLIndex = 0;
         for(const auto& markersID : m_markers)
         {
             unsigned int markerPosition = 0;
@@ -265,7 +265,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 
                         data::MarkerMap::MarkerType marker;
                         marker.resize(4);
-                        for(size_t j = 0 ; j < 4 ; ++j)
+                        for(std::size_t j = 0 ; j < 4 ; ++j)
                         {
                             marker[j][0] = detectedMarkers[i][j].x;
                             marker[j][1] = detectedMarkers[i][j].y;

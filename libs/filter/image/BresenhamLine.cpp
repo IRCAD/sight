@@ -35,7 +35,7 @@ BresenhamLine::PathType BresenhamLine::draw(
     const CoordinatesType& endCoord
 )
 {
-    size_t dim0 = 0, dim1 = 1;
+    std::size_t dim0 = 0, dim1 = 1;
 
     switch(orientation)
     {

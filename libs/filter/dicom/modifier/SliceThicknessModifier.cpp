@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -123,7 +123,7 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
     DcmFileFormat fileFormat;
     DcmDataset* dataset;
 
-    const size_t buffSize = bufferObj->getSize();
+    const std::size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast<char*>(lock.getBuffer());
 
@@ -179,7 +179,7 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
     OFCondition status;
     DcmDataset* dataset;
 
-    const size_t buffSize = bufferObj->getSize();
+    const std::size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast<char*>(lock.getBuffer());
 

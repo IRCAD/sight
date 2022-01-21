@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -218,7 +218,7 @@ void Landmarks::addPoint(const std::string& name, const Landmarks::PointType& po
 
 //------------------------------------------------------------------------------
 
-void Landmarks::insertPoint(const std::string& name, const size_t index, const Landmarks::PointType& point)
+void Landmarks::insertPoint(const std::string& name, const std::size_t index, const Landmarks::PointType& point)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
     auto iter                        = group.m_points.begin() + static_cast<PointContainer::difference_type>(index);
@@ -227,7 +227,7 @@ void Landmarks::insertPoint(const std::string& name, const size_t index, const L
 
 //------------------------------------------------------------------------------
 
-const Landmarks::PointType& Landmarks::getPoint(const std::string& name, size_t index) const
+const Landmarks::PointType& Landmarks::getPoint(const std::string& name, std::size_t index) const
 {
     const Landmarks::LandmarksGroup& group = this->getGroup(name);
     return group.m_points.at(index);
@@ -235,7 +235,7 @@ const Landmarks::PointType& Landmarks::getPoint(const std::string& name, size_t 
 
 //------------------------------------------------------------------------------
 
-Landmarks::PointType& Landmarks::getPoint(const std::string& name, size_t index)
+Landmarks::PointType& Landmarks::getPoint(const std::string& name, std::size_t index)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
     return group.m_points.at(index);
@@ -251,7 +251,7 @@ const Landmarks::PointContainer& Landmarks::getPoints(const std::string& name) c
 
 //------------------------------------------------------------------------------
 
-void Landmarks::removePoint(const std::string& name, size_t index)
+void Landmarks::removePoint(const std::string& name, std::size_t index)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
 
@@ -274,9 +274,9 @@ void Landmarks::clearPoints(const std::string& name)
 
 //------------------------------------------------------------------------------
 
-size_t Landmarks::numPoints() const
+std::size_t Landmarks::numPoints() const
 {
-    size_t nb = 0;
+    std::size_t nb = 0;
     for(const auto& elt : m_landmarks)
     {
         const LandmarksGroup group = elt.second;
@@ -288,7 +288,7 @@ size_t Landmarks::numPoints() const
 
 //------------------------------------------------------------------------------
 
-size_t Landmarks::numPoints(const std::string& name) const
+std::size_t Landmarks::numPoints(const std::string& name) const
 {
     const LandmarksGroup& group = this->getGroup(name);
     return group.m_points.size();

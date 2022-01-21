@@ -246,7 +246,7 @@ struct TestIHasServices : public service::IHasServices
             this->unregisterServices("sight::service::ut::STest1Inout");
             this->unregisterServices("sight::service::ut::STestNoData");
 
-            CPPUNIT_ASSERT_EQUAL(size_t(0), this->getRegisteredServices().size());
+            CPPUNIT_ASSERT_EQUAL(std::size_t(0), this->getRegisteredServices().size());
         }
     }
 

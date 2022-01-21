@@ -186,7 +186,7 @@ void SGrabberProxy::startCamera()
 
             data::Camera::SourceType sourceType = data::Camera::UNKNOWN;
 
-            size_t numCamerasInSeries = 1;
+            std::size_t numCamerasInSeries = 1;
 
             {
                 auto cameraInput = m_camera.lock();
@@ -210,7 +210,7 @@ void SGrabberProxy::startCamera()
             }
 
             std::vector<std::string> availableExtensionsSelector;
-            std::map<std::string, size_t> implToNumTL;
+            std::map<std::string, std::size_t> implToNumTL;
 
             for(const auto& srvImpl : grabbersImpl)
             {
@@ -232,8 +232,8 @@ void SGrabberProxy::startCamera()
                         objectsType.end()
                     );
 
-                    size_t numTL   = 0;
-                    auto inoutsCfg = config.equal_range("inout");
+                    std::size_t numTL = 0;
+                    auto inoutsCfg    = config.equal_range("inout");
                     for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                     {
                         service::IService::ConfigType parameterCfg;
@@ -412,7 +412,7 @@ void SGrabberProxy::startCamera()
 
             m_services.resize(implToNumTL[m_grabberImpl]);
 
-            size_t srvCount = 0;
+            std::size_t srvCount = 0;
             for(auto& srv : m_services)
             {
                 srv = this->registerService<IGrabber>(m_grabberImpl);
@@ -429,7 +429,7 @@ void SGrabberProxy::startCamera()
                     if(cameraSeries)
                     {
                         #ifdef DEBUG
-                        const size_t numCameras = cameraSeries->numCameras();
+                        const std::size_t numCameras = cameraSeries->numCameras();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
                             srvCount < numCameras
@@ -440,9 +440,9 @@ void SGrabberProxy::startCamera()
                     }
                 }
 
-                size_t inputTLCount    = 0;
-                const auto proxyConfig = this->getConfigTree();
-                auto inoutsCfg         = proxyConfig.equal_range("inout");
+                std::size_t inputTLCount = 0;
+                const auto proxyConfig   = this->getConfigTree();
+                auto inoutsCfg           = proxyConfig.equal_range("inout");
                 for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");

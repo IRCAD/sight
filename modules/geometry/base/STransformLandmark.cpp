@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@ service::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() co
 
 // -----------------------------------------------------------------------------
 
-void STransformLandmark::updateSelectedPoint(std::string name, size_t index)
+void STransformLandmark::updateSelectedPoint(std::string name, std::size_t index)
 {
     m_landmarkSelected = true;
     m_index            = index;
@@ -137,8 +137,8 @@ void STransformLandmark::updateSelectedPoint(std::string name, size_t index)
 void STransformLandmark::updatePoint(std::string name)
 {
     m_landmarkSelected = true;
-    const auto landmark = m_landmarks.lock();
-    const size_t size   = landmark->getGroup(name).m_points.size();
+    const auto landmark    = m_landmarks.lock();
+    const std::size_t size = landmark->getGroup(name).m_points.size();
     m_index = size - 1;
     this->update();
 }

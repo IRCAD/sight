@@ -45,9 +45,9 @@ typename itk::Image<std::uint8_t, DIM>::Pointer threshold(
 template<typename IMAGE_TYPE, unsigned int DIM>
 typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
-    size_t _x,
-    size_t _y,
-    size_t _z
+    std::size_t _x,
+    std::size_t _y,
+    std::size_t _z
 );
 
 /// Labeling filter
@@ -70,9 +70,9 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fillHole2D(
 template<typename IMAGE_TYPE, unsigned int DIM>
 typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
-    size_t _x,
-    size_t _y,
-    size_t _z
+    std::size_t _x,
+    std::size_t _y,
+    std::size_t _z
 );
 
 } //namespace sight::filter::image.

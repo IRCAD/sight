@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,7 +108,7 @@ const
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
-        const size_t buffSize                            = bufferObj->getSize();
+        const std::size_t buffSize                       = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast<char*>(lock.getBuffer());
 
@@ -147,7 +147,7 @@ const
 
     // Update series
     series->clearDicomContainer();
-    size_t index = 0;
+    std::size_t index = 0;
     for(const auto& buffer : instances)
     {
         series->addBinary(index++, buffer);

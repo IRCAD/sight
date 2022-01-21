@@ -36,7 +36,7 @@ namespace po = boost::program_options;
 
 int main(int argc, char** argv)
 {
-    size_t squareX, squareY;
+    std::size_t squareX, squareY;
     int markerBits;
     int pX, pY;
     float squareLength, markerLength;
@@ -49,12 +49,12 @@ int main(int argc, char** argv)
             ("help,h", "produce help message")
         (
             "squareX,x",
-            po::value<size_t>(&squareX)->required()->default_value(7),
+            po::value<std::size_t>(&squareX)->required()->default_value(7),
             "set the number of square on the board's width"
         )
         (
             "squareY,y",
-            po::value<size_t>(&squareY)->required()->default_value(5),
+            po::value<std::size_t>(&squareY)->required()->default_value(5),
             "set the number of square on the board's height"
         )
             ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image witdh (in pixel)")

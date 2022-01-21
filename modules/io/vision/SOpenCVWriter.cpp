@@ -133,7 +133,7 @@ void SOpenCVWriter::updating()
 
     SIGHT_ASSERT("CameraSeries is null", camSeries);
 
-    size_t numberOfCameras = camSeries->numCameras();
+    std::size_t numberOfCameras = camSeries->numCameras();
 
     std::vector<data::Camera::sptr> cameras;
     std::vector<cv::Mat> cameraMatrices;
@@ -143,7 +143,7 @@ void SOpenCVWriter::updating()
     data::Matrix4::sptr extrinsicMatrix;
     cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
-    for(size_t i = 0 ; i < numberOfCameras ; ++i)
+    for(std::size_t i = 0 ; i < numberOfCameras ; ++i)
     {
         cameras.push_back(camSeries->getCamera(i));
         cameraMatrices.push_back(cv::Mat::eye(3, 3, CV_64F));
@@ -164,7 +164,7 @@ void SOpenCVWriter::updating()
 
     fs << "nbCameras" << static_cast<int>(numberOfCameras);
 
-    for(size_t c = 0 ; c < numberOfCameras ; ++c)
+    for(std::size_t c = 0 ; c < numberOfCameras ; ++c)
     {
         std::stringstream camNum;
         camNum << "camera_" << c;

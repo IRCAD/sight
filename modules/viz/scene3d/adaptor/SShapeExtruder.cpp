@@ -697,12 +697,12 @@ void SShapeExtruder::triangulatePoints() const
     // Create triangles that links the two points lists.
     if(m_extrude)
     {
-        const size_t size = m_lassoNearPositions.size();
-        for(size_t index = 0 ; index < size ; ++index)
+        const std::size_t size = m_lassoNearPositions.size();
+        for(std::size_t index = 0 ; index < size ; ++index)
         {
-            const bool isLast = index == size - 1;
-            const size_t i0   = index;
-            const size_t i1   = isLast ? 0 : index + 1;
+            const bool isLast    = index == size - 1;
+            const std::size_t i0 = index;
+            const std::size_t i1 = isLast ? 0 : index + 1;
 
             const Triangle3D triA(m_lassoNearPositions[i0], m_lassoFarPositions[i0], m_lassoFarPositions[i1]);
             const Triangle3D triB(m_lassoNearPositions[i0], m_lassoFarPositions[i1], m_lassoNearPositions[i1]);
@@ -859,8 +859,9 @@ void SShapeExtruder::generateDelaunayTriangulation(
         newPoints.clear();
         for(std::int64_t index = 0 ; index < static_cast<std::int64_t>(oldPoints.size()) ; ++index)
         {
-            const size_t previousIndex = index - 1 < 0 ? oldPoints.size() - 1 : static_cast<size_t>(index - 1);
-            const Edge edge(oldPoints[previousIndex], oldPoints[static_cast<size_t>(index)]);
+            const std::size_t previousIndex = index - 1
+                                              < 0 ? oldPoints.size() - 1 : static_cast<std::size_t>(index - 1);
+            const Edge edge(oldPoints[previousIndex], oldPoints[static_cast<std::size_t>(index)]);
             std::list<Ogre::Vector2> constraintes = this->addConstraints(triangulation, edge);
 
             newPoints.push_back(oldPoints[previousIndex]);
@@ -896,8 +897,8 @@ void SShapeExtruder::generateDelaunayTriangulation(
         bool inside = false;
         for(std::int64_t i = 0 ; i < static_cast<std::int64_t>(points.size()) ; ++i)
         {
-            const size_t previousI = i - 1 < 0 ? points.size() - 1 : static_cast<size_t>(i - 1);
-            const Edge edge(points[previousI], points[static_cast<size_t>(i)]);
+            const std::size_t previousI = i - 1 < 0 ? points.size() - 1 : static_cast<std::size_t>(i - 1);
+            const Edge edge(points[previousI], points[static_cast<std::size_t>(i)]);
 
             if(ray.intersect(edge))
             {

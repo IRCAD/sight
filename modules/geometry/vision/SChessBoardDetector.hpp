@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ private:
     void updateChessboardSize();
 
     /// Runs the detection for the given input index.
-    void doDetection(size_t _imageIndex);
+    void doDetection(std::size_t _imageIndex);
 
     /// Signal emitted after detection.
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
@@ -137,10 +137,10 @@ private:
     std::string m_scaleKey;
 
     /// Width of the chessboard we're looking for.
-    size_t m_width {11};
+    std::size_t m_width {11};
 
     /// Height of the chessboard we're looking for.
-    size_t m_height {8};
+    std::size_t m_height {8};
 
     float m_scale {1.f};
 

@@ -42,7 +42,7 @@ std::tuple<cv::Mat, cv::Size, cv::Mat> Camera::copyToCv(const data::Camera::cspt
 
     cv::Mat distortionCoeffs = cv::Mat::zeros(5, 1, CV_64F);
 
-    for(size_t i = 0 ; i < 5 ; ++i)
+    for(std::size_t i = 0 ; i < 5 ; ++i)
     {
         distortionCoeffs.at<double>(static_cast<int>(i)) = _src->getDistortionCoefficient()[i];
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,7 +118,7 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getModality(), modality.toStdString());
     CPPUNIT_ASSERT_EQUAL(
         dicomSeries->numInstances(),
-        static_cast<size_t>(numberOfSeriesRelatedInstances.toULong())
+        static_cast<std::size_t>(numberOfSeriesRelatedInstances.toULong())
     );
 
     data::Patient::sptr patient = series->getPatient();

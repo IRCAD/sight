@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,7 +180,7 @@ void GenericTLTest::pushPopTest()
         CPPUNIT_ASSERT_EQUAL(obj, timeline->getClosestBuffer(time1 + 1.5));
 
         CPPUNIT_ASSERT_EQUAL(3u, obj->getPresentElementNum());
-        CPPUNIT_ASSERT_EQUAL(size_t(16), obj->getElementSize());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(16), obj->getElementSize());
         CPPUNIT_ASSERT_EQUAL(3u, obj->getMaxElementNum());
         CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(0));
         CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(1));
@@ -220,7 +220,7 @@ void GenericTLTest::pushPopTest()
         CPPUNIT_ASSERT(obj);
 
         CPPUNIT_ASSERT_EQUAL(2u, obj->getPresentElementNum());
-        CPPUNIT_ASSERT_EQUAL(size_t(16), obj->getElementSize());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(16), obj->getElementSize());
         CPPUNIT_ASSERT_EQUAL(3u, obj->getMaxElementNum());
         CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(0));
         CPPUNIT_ASSERT_EQUAL(false, obj->isPresent(1));
@@ -353,7 +353,7 @@ void GenericTLTest::pushClassTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData1.m_floats[0], testData.m_floats[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData1.m_floats[1], testData.m_floats[1], 0.00001);
         CPPUNIT_ASSERT_EQUAL(testData1.m_vector.size(), testData.m_vector.size());
-        for(size_t i = 0 ; i < testData1.m_vector.size() ; ++i)
+        for(std::size_t i = 0 ; i < testData1.m_vector.size() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(testData1.m_vector[i], testData.m_vector[i]);
         }
@@ -364,7 +364,7 @@ void GenericTLTest::pushClassTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData2.m_floats[0], testData.m_floats[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData2.m_floats[1], testData.m_floats[1], 0.00001);
         CPPUNIT_ASSERT_EQUAL(testData2.m_vector.size(), testData.m_vector.size());
-        for(size_t i = 0 ; i < testData2.m_vector.size() ; ++i)
+        for(std::size_t i = 0 ; i < testData2.m_vector.size() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(testData2.m_vector[i], testData.m_vector[i]);
         }
@@ -390,7 +390,7 @@ void GenericTLTest::pushClassTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData3.m_floats[0], testData.m_floats[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData3.m_floats[1], testData.m_floats[1], 0.00001);
         CPPUNIT_ASSERT_EQUAL(testData3.m_vector.size(), testData.m_vector.size());
-        for(size_t i = 0 ; i < testData3.m_vector.size() ; ++i)
+        for(std::size_t i = 0 ; i < testData3.m_vector.size() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(testData3.m_vector[i], testData.m_vector[i]);
         }
@@ -472,7 +472,7 @@ void GenericTLTest::copyTest()
 
     /// First element
     CPPUNIT_ASSERT_EQUAL(1u, obj1->getPresentElementNum());
-    CPPUNIT_ASSERT_EQUAL(size_t(12), obj1->getElementSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(12), obj1->getElementSize());
     CPPUNIT_ASSERT_EQUAL(3u, obj1->getMaxElementNum());
     CPPUNIT_ASSERT_EQUAL(true, obj1->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(false, obj1->isPresent(1));
@@ -499,7 +499,7 @@ void GenericTLTest::copyTest()
     CSPTR(data::Float3TL::BufferType) obj2 = deepTimeline->getBuffer(time2);
 
     CPPUNIT_ASSERT_EQUAL(3u, obj2->getPresentElementNum());
-    CPPUNIT_ASSERT_EQUAL(size_t(12), obj2->getElementSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(12), obj2->getElementSize());
     CPPUNIT_ASSERT_EQUAL(3u, obj2->getMaxElementNum());
     CPPUNIT_ASSERT_EQUAL(true, obj2->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(true, obj2->isPresent(1));
@@ -526,7 +526,7 @@ void GenericTLTest::copyTest()
     CSPTR(data::Float3TL::BufferType) obj3 = deepTimeline->getBuffer(time3);
 
     CPPUNIT_ASSERT_EQUAL(2u, obj3->getPresentElementNum());
-    CPPUNIT_ASSERT_EQUAL(size_t(12), obj3->getElementSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(12), obj3->getElementSize());
     CPPUNIT_ASSERT_EQUAL(3u, obj3->getMaxElementNum());
     CPPUNIT_ASSERT_EQUAL(false, obj3->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(true, obj3->isPresent(1));
@@ -553,7 +553,7 @@ void GenericTLTest::copyTest()
     CSPTR(data::Float3TL::BufferType) obj4 = deepTimeline->getBuffer(time4);
 
     CPPUNIT_ASSERT_EQUAL(0u, obj4->getPresentElementNum());
-    CPPUNIT_ASSERT_EQUAL(size_t(12), obj4->getElementSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(12), obj4->getElementSize());
     CPPUNIT_ASSERT_EQUAL(3u, obj4->getMaxElementNum());
     CPPUNIT_ASSERT_EQUAL(false, obj4->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(false, obj4->isPresent(1));

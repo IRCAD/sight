@@ -243,7 +243,7 @@ private:
     std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};

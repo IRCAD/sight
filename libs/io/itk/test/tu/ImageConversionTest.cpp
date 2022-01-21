@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,7 +114,8 @@ void ImageConversionTest::testConversion2D()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    data::Image::Size size  = {static_cast<size_t>(safeRand() % 100 + 2), static_cast<size_t>(safeRand() % 100 + 2), 0
+    data::Image::Size size  =
+    {static_cast<std::size_t>(safeRand() % 100 + 2), static_cast<std::size_t>(safeRand() % 100 + 2), 0
     };
     data::Image::Spacing spacing = {(safeRand() % 200 + 1) / 100., (safeRand() % 200 + 1) / 100., 0.};
     data::Image::Origin origin   = {(safeRand() % 200 - 100) / 3., (safeRand() % 200 - 100) / 3., 0.};

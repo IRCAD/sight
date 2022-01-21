@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ void DicomSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesWriter::getFilename(const size_t& instanceIndex)
+std::string DicomSeriesWriter::getFilename(const std::size_t& instanceIndex)
 {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(7);
@@ -182,8 +182,8 @@ void DicomSeriesWriter::processWriteArchive()
 
     data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
-    const size_t nbInstances = dicomSeries->numInstances();
-    unsigned int count       = 0;
+    const std::size_t nbInstances = dicomSeries->numInstances();
+    unsigned int count            = 0;
 
     m_job->setTotalWorkUnits(nbInstances);
 

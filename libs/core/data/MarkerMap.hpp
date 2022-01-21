@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "data/config.hpp"
+
 #include <data/Object.hpp>
 
 #include <array>
@@ -70,13 +71,13 @@ public:
     DATA_API MarkerType* getMarker(const KeyType& _id);
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API const MarkerType& getMarker(size_t index) const;
+    DATA_API const MarkerType& getMarker(std::size_t index) const;
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API MarkerType& getMarker(size_t index);
+    DATA_API MarkerType& getMarker(std::size_t index);
 
     /// Returns the number of markers in the container
-    DATA_API size_t count() const;
+    DATA_API std::size_t count() const;
 
     /// Adds a new marker in the container
     DATA_API void setMarker(const KeyType& _id, const MarkerType& _marker);

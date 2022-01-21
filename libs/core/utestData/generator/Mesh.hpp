@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,15 +95,15 @@ private:
      *
      * @param[out]  mesh data::Mesh Mesh structure to fill with quad cells.
      * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
-     * @param[in]   nbPointsByEdge size_t Number of points by edge.
+     * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
 
     static void addQuadMesh(
         const data::Mesh::sptr& mesh,
         PointsMapType& points,
-        size_t nbPointsByEdge = 10,
-        float edgeDim         = 100.f
+        std::size_t nbPointsByEdge = 10,
+        float edgeDim              = 100.f
     );
 
     /**
@@ -111,14 +111,14 @@ private:
      *
      * @param[out]  mesh data::Mesh Mesh structure to fill with triangle cells.
      * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
-     * @param[in]   nbPointsByEdge size_t Number of points by edge.
+     * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
     static void addTriangleMesh(
         const data::Mesh::sptr& mesh,
         PointsMapType& points,
-        size_t nbPointsByEdge = 10,
-        float edgeDim         = 100.f
+        std::size_t nbPointsByEdge = 10,
+        float edgeDim              = 100.f
     );
 
     static data::Mesh::point_t addPoint(

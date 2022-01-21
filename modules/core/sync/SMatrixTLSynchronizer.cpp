@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ void SMatrixTLSynchronizer::synchronize()
     {
         std::stringstream matrixPrint;
 
-        for(size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
+        for(std::size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
         {
             const unsigned int index = static_cast<unsigned int>(matrixIndex);
 

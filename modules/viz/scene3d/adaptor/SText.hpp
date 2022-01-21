@@ -128,7 +128,7 @@ private:
     Ogre::ColourValue m_textColor;
 
     /// Defines the font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines the position of the text.
     Ogre::Vector2 m_position {0.f, 0.f};

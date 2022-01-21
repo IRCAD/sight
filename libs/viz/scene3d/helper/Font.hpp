@@ -52,7 +52,7 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::FontPtr getFont(
         const std::string& _trueTypeFileName,
-        const size_t _size,
+        const std::size_t _size,
         const std::uint32_t _trueTypeResolution = 220
     );
 

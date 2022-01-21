@@ -101,10 +101,10 @@ bool checkImageValidity(const data::Image& _image)
 
     if(dataImageIsAllocated)
     {
-        size_t nbDim = _image.numDimensions();
+        std::size_t nbDim = _image.numDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
-        for(size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)
+        for(std::size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)
         {
             dataImageIsAllocated = dataImageIsAllocated && (_image.getSize()[k] >= 1);
         }
@@ -128,19 +128,19 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
     auto sagittalIdx = getSliceIndex(*_pImg, orientation_t::SAGITTAL);
 
     // Check if values are out of bounds
-    if(axialIdx < 0 || imageSize[2] < static_cast<size_t>(axialIdx))
+    if(axialIdx < 0 || imageSize[2] < static_cast<std::size_t>(axialIdx))
     {
         axialIdx        = static_cast<std::int64_t>(imageSize[2] / 2);
         fieldIsModified = true;
     }
 
-    if(frontalIdx < 0 || imageSize[1] < static_cast<size_t>(frontalIdx))
+    if(frontalIdx < 0 || imageSize[1] < static_cast<std::size_t>(frontalIdx))
     {
         frontalIdx      = static_cast<std::int64_t>(imageSize[1] / 2);
         fieldIsModified = true;
     }
 
-    if(sagittalIdx < 0 || imageSize[0] < static_cast<size_t>(sagittalIdx))
+    if(sagittalIdx < 0 || imageSize[0] < static_cast<std::size_t>(sagittalIdx))
     {
         sagittalIdx     = static_cast<std::int64_t>(imageSize[0] / 2);
         fieldIsModified = true;

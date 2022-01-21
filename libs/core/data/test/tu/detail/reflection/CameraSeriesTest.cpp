@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,9 +63,9 @@ void CameraSeriesTest::propertiesTest()
     data::CameraSeries::sptr series = data::CameraSeries::New();
 
     data::Matrix4::sptr mat = data::Matrix4::New();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             mat->setCoefficient(i, j, static_cast<double>(2 * i + j));
         }

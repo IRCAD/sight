@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ private:
     void runLock();
 
     // write multiple time the four chars, lock the object to write and wait for 10 ms after each char insertion.
-    void runMultipleLock(size_t nb, const char value[4]);
+    void runMultipleLock(std::size_t nb, const char value[4]);
 
     data::String::sptr m_string;
 };

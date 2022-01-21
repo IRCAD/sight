@@ -69,7 +69,7 @@ viz::scene3d::R2VBRenderable::R2VBRenderable(const Ogre::String& _name) :
 //-----------------------------------------------------------------------------
 
 void viz::scene3d::R2VBRenderable::setOutputSettings(
-    size_t _vertexCount,
+    std::size_t _vertexCount,
     bool _hasColor,
     bool _hasTexCoord,
     bool _hasNormals
@@ -83,11 +83,11 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
         m_r2vbBuffer->setOperationType(Ogre::RenderOperation::OT_TRIANGLE_LIST);
         m_r2vbBuffer->setResetsEveryUpdate(true);
 
-        const size_t numVertices = m_inputPrimitiveType == data::Mesh::CellType::QUAD ? _vertexCount * 2
-                                                                                      : m_inputPrimitiveType
-                                   == data::Mesh::CellType::TETRA ? _vertexCount * 4
-                                                                  :
-                                   _vertexCount;
+        const std::size_t numVertices = m_inputPrimitiveType == data::Mesh::CellType::QUAD ? _vertexCount * 2
+                                                                                           : m_inputPrimitiveType
+                                        == data::Mesh::CellType::TETRA ? _vertexCount * 4
+                                                                       :
+                                        _vertexCount;
         m_r2vbBuffer->setMaxVertexCount(static_cast<unsigned int>(numVertices));
         m_r2vbBuffer->setSourceRenderable(m_srcObject);
         if(!r2vbMaterial.empty())
@@ -102,7 +102,7 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
     Ogre::VertexDeclaration* vtxDecl = m_r2vbBuffer->getVertexDeclaration();
     vtxDecl->removeAllElements();
 
-    size_t ofst = 0;
+    std::size_t ofst = 0;
     ofst += vtxDecl->addElement(0, ofst, Ogre::VET_FLOAT3, Ogre::VES_POSITION).getSize();
     if(_hasNormals)
     {

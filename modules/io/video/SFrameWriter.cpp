@@ -178,7 +178,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 
             cv::Mat image(cv::Size(width, height), m_imageType, (void*) imageBuffer, cv::Mat::AUTO_STEP);
 
-            const size_t time = static_cast<size_t>(timestamp);
+            const std::size_t time = static_cast<std::size_t>(timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
             const std::filesystem::path path = this->getFolder() / filename;
 

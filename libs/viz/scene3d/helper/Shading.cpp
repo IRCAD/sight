@@ -291,7 +291,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
             bool found = false;
             if(cstDef.second.isDouble())
             {
-                for(size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
+                for(std::size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
                 {
                     constantValue.d[i] = _params->getDoubleConstantList()[cstDef.second.physicalIndex + i];
                 }
@@ -300,7 +300,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
             }
             else if(cstDef.second.isFloat())
             {
-                for(size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
+                for(std::size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
                 {
                     constantValue.f[i] = _params->getFloatConstantList()[cstDef.second.physicalIndex + i];
                 }
@@ -309,7 +309,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
             }
             else if(cstDef.second.isInt())
             {
-                for(size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
+                for(std::size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
                 {
                     constantValue.i[i] = _params->getIntConstantList()[cstDef.second.physicalIndex + i];
                 }

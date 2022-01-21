@@ -134,7 +134,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -149,13 +149,13 @@ void ImagePositionPatientSorterTest::simpleApplication()
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_NO_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 
     double oldPosition = -1.0;
 
     const data::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
-    for(size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->numInstances() ; ++index)
+    for(std::size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->numInstances() ; ++index)
     {
         const double position = getInstanceZPosition(dicomContainer.at(index));
 
@@ -184,7 +184,7 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);

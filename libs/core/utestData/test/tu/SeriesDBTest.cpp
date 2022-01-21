@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ void SeriesDBTest::generationTest()
     seriesDB = utestData::generator::SeriesDB::createSeriesDB(nbImgSeries, nbModelSeries, nbActivitySeries);
 
     data::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();
-    CPPUNIT_ASSERT_EQUAL((size_t) (nbImgSeries + nbModelSeries + nbActivitySeries), seriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) (nbImgSeries + nbModelSeries + nbActivitySeries), seriesContainer.size());
 
     CPPUNIT_ASSERT(data::ImageSeries::dynamicCast(seriesContainer[0]));
 

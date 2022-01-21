@@ -141,16 +141,16 @@ private:
     std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
-    size_t m_width;
+    std::size_t m_width;
 
     /// Height of the chessboard used for calibration
-    size_t m_height;
+    std::size_t m_height;
 
     /// Size of the chessboard's square used for calibration
     float m_squareSize;
 
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
-    size_t m_camIndex;
+    std::size_t m_camIndex;
 
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, "calibrationInfo1"};
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, "calibrationInfo2"};

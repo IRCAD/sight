@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ void SModelSeriesList::onOrganSelected(int index)
 
         const auto& recs = modelSeries->getReconstructionDB();
 
-        const auto& selectedRec = recs.at(static_cast<size_t>(index));
+        const auto& selectedRec = recs.at(static_cast<std::size_t>(index));
         m_sigReconstructionSelected->asyncEmit(selectedRec);
     }
     else
@@ -122,7 +122,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
         SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
 
         const auto& recs        = modelSeries->getReconstructionDB();
-        const auto& selectedRec = recs.at(static_cast<size_t>(index));
+        const auto& selectedRec = recs.at(static_cast<std::size_t>(index));
 
         if(selectedRec->getIsVisible() != visible)
         {

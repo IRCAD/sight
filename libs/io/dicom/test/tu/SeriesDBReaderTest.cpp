@@ -81,10 +81,10 @@ std::string getValue(
         value = node.get<std::string>(name);
 
         // Remove leading and trailing spaces
-        size_t first = value.find_first_not_of(" ");
+        std::size_t first = value.find_first_not_of(" ");
         if(first != std::string::npos)
         {
-            size_t last = value.find_last_not_of(" ");
+            std::size_t last = value.find_last_not_of(" ");
             value = value.substr(first, last - first + 1);
         }
     }
@@ -211,7 +211,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
 
         // Number of components
         const std::string photometricInterpretation = getValue(root, "PhotometricInterpretation", mf);
-        size_t nbComponents                         = 0;
+        std::size_t nbComponents                    = 0;
         if(photometricInterpretation == "MONOCHROME2")
         {
             nbComponents = 1;
@@ -453,7 +453,7 @@ void SeriesDBReaderTest::readJMSSeries()
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
 
     // Check trimmed values
@@ -488,7 +488,7 @@ void SeriesDBReaderTest::readCTSeries()
     const double delta = 0.00001;
 
     // Check number of series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
@@ -496,13 +496,13 @@ void SeriesDBReaderTest::readCTSeries()
     const auto dumpLock            = image->lock();
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
 
     // Check size
     const data::Image::Size size = image->getSize();
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[0]);
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[1]);
-    CPPUNIT_ASSERT_EQUAL(size_t(129), size[2]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(129), size[2]);
 
     // Check spacing
     const data::Image::Spacing spacing = image->getSpacing();
@@ -554,7 +554,7 @@ void SeriesDBReaderTest::readMRSeries()
     const double delta = 0.01;
 
     // Check number of series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
@@ -563,13 +563,13 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
 
     // Check size
     const data::Image::Size size = image->getSize();
-    CPPUNIT_ASSERT_EQUAL(size_t(1), size[0]);
-    CPPUNIT_ASSERT_EQUAL(size_t(1024), size[1]);
-    CPPUNIT_ASSERT_EQUAL(size_t(1024), size[2]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[2]);
 
     // Check spacing
     const data::Image::Spacing spacing = image->getSpacing();
@@ -622,7 +622,7 @@ void SeriesDBReaderTest::readOTSeries()
     const double delta = 0.01;
 
     // Check number of series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
@@ -631,13 +631,13 @@ void SeriesDBReaderTest::readOTSeries()
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->numDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
 
     // Check size
     data::Image::Size size = image->getSize();
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[0]);
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[1]);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), size[2]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
     // Check spacing
     data::Image::Spacing spacing = image->getSpacing();
@@ -688,14 +688,14 @@ void SeriesDBReaderTest::readSEGSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
 
     //Retrieve ImageSeries
     data::ModelSeries::sptr series = data::ModelSeries::dynamicCast((*seriesDB)[1]);
     CPPUNIT_ASSERT(series);
 
     data::ModelSeries::ReconstructionVectorType reconstructionDB = series->getReconstructionDB();
-    CPPUNIT_ASSERT_EQUAL(size_t(1), reconstructionDB.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), reconstructionDB.size());
 
     // Check reconstruction
     data::Reconstruction::sptr reconstruction = reconstructionDB[0];
@@ -739,7 +739,7 @@ void SeriesDBReaderTest::readSFSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
@@ -790,7 +790,7 @@ void SeriesDBReaderTest::readSRSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
@@ -856,7 +856,7 @@ void SeriesDBReaderTest::read3DSRSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
@@ -923,8 +923,8 @@ void SeriesDBReaderTest::readDisabledSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(0), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -951,8 +951,8 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDir()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has succeed
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -978,7 +978,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Retrieve ImageSeries
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
     const auto dumpLock            = image->lock();
@@ -1026,8 +1026,8 @@ void SeriesDBReaderTest::readCTWithSurviewSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(3), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1053,8 +1053,8 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(4), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1080,8 +1080,8 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 } // namespace ut

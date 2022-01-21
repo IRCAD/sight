@@ -130,16 +130,16 @@ void ValveDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::Co
 
 //------------------------------------------------------------------------------
 
-bool ValveDump::needDump(size_t supplement) const
+bool ValveDump::needDump(std::size_t supplement) const
 {
     return core::memory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() <= (m_minFreeMem + supplement);
 }
 
 //------------------------------------------------------------------------------
 
-size_t ValveDump::dump(size_t nbOfBytes)
+std::size_t ValveDump::dump(std::size_t nbOfBytes)
 {
-    size_t dumped = 0;
+    std::size_t dumped = 0;
 
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     if(manager)
@@ -184,7 +184,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
 
 //------------------------------------------------------------------------------
 
-void ValveDump::apply(size_t supplement)
+void ValveDump::apply(std::size_t supplement)
 {
     if(this->needDump(supplement))
     {

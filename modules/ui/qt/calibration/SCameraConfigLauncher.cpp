@@ -132,7 +132,7 @@ void SCameraConfigLauncher::starting()
 
     qtContainer->setLayout(layout);
 
-    size_t nbCam;
+    std::size_t nbCam;
     {
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT("Missing cameraSeries.", cameraSeries);
@@ -147,7 +147,7 @@ void SCameraConfigLauncher::starting()
     }
     else
     {
-        for(size_t i = 0 ; i < nbCam ; ++i)
+        for(std::size_t i = 0 ; i < nbCam ; ++i)
         {
             m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
         }
@@ -191,7 +191,7 @@ void SCameraConfigLauncher::onCameraChanged(int index)
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT(
             "Bad index: " << index,
-            index >= 0 && static_cast<size_t>(index) < cameraSeries->numCameras()
+            index >= 0 && static_cast<std::size_t>(index) < cameraSeries->numCameras()
         );
     }
 
@@ -207,11 +207,11 @@ void SCameraConfigLauncher::onCameraChanged(int index)
 
     if(m_extrinsicButton->isChecked())
     {
-        this->startExtrinsicConfig(static_cast<size_t>(index));
+        this->startExtrinsicConfig(static_cast<std::size_t>(index));
     }
     else
     {
-        this->startIntrinsicConfig(static_cast<size_t>(index));
+        this->startIntrinsicConfig(static_cast<std::size_t>(index));
     }
 }
 
@@ -337,7 +337,7 @@ void SCameraConfigLauncher::onImportClicked()
 
 void SCameraConfigLauncher::onRemoveClicked()
 {
-    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
+    const std::size_t index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
     if(index > 0)
     {
         m_cameraComboBox->blockSignals(true);
@@ -358,7 +358,7 @@ void SCameraConfigLauncher::onRemoveClicked()
             const auto activitySeries      = m_activitySeries.lock();
             activitySeries->getData()->getContainer().erase(calibrationInfoKey);
 
-            const size_t nbCam = cameraSeries->numCameras();
+            const std::size_t nbCam = cameraSeries->numCameras();
             if(nbCam == 1)
             {
                 m_extrinsicButton->setEnabled(false);
@@ -367,7 +367,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 
             // Renamed all items from 1 to nbCam
             m_cameraComboBox->clear();
-            for(size_t i = 0 ; i < nbCam ; ++i)
+            for(std::size_t i = 0 ; i < nbCam ; ++i)
             {
                 m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
             }
@@ -388,10 +388,10 @@ void SCameraConfigLauncher::onRemoveClicked()
 
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
-    size_t index;
+    std::size_t index;
     {
         const auto cameraSeries = m_cameraSeries.lock();
-        index = static_cast<size_t>(m_cameraComboBox->currentIndex());
+        index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
         SIGHT_ASSERT("Bad index: " << index, index < cameraSeries->numCameras());
     }
     if(checked)
@@ -406,7 +406,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
+void SCameraConfigLauncher::startIntrinsicConfig(std::size_t index)
 {
     service::FieldAdaptorType replaceMap;
     {
@@ -431,11 +431,11 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
+void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
 {
     service::FieldAdaptorType replaceMap;
     {
-        const size_t cameraIdx = std::max(index, size_t(1));
+        const std::size_t cameraIdx = std::max(index, std::size_t(1));
 
         const auto cameraSeries = m_cameraSeries.lock();
 
@@ -489,7 +489,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 
 void SCameraConfigLauncher::addCamera()
 {
-    size_t nbCam;
+    std::size_t nbCam;
     {
         const auto cameraSeries = m_cameraSeries.lock();
         nbCam = cameraSeries->numCameras();

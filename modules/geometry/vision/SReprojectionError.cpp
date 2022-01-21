@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -212,7 +212,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                         std::vector<cv::Point2f> reprojectedP = errP.second;
 
-                        for(size_t i = 0 ; i < reprojectedP.size() ; ++i)
+                        for(std::size_t i = 0 ; i < reprojectedP.size() ; ++i)
                         {
                             cv::circle(cvImage, reprojectedP[i], 7, m_cvColor, 1, cv::LINE_8);
                         }

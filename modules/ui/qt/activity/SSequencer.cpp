@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -190,7 +190,7 @@ void SSequencer::starting()
     QStringList activitiesName;
 
     auto activityReg = sight::activity::extension::Activity::getDefault();
-    for(size_t i = 0 ; i < m_activityIds.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_activityIds.size() ; ++i)
     {
         std::string name = m_activityNames[i];
         if(name.empty())
@@ -300,7 +300,7 @@ void SSequencer::goTo(int index)
         }
 
         // Disable all next activities (including current)
-        for(size_t i = index + 1 ; i < seriesDB->size() ; ++i)
+        for(std::size_t i = index + 1 ; i < seriesDB->size() ; ++i)
         {
             this->disableActivity(i);
         }
@@ -314,7 +314,7 @@ void SSequencer::goTo(int index)
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const size_t newIdx = static_cast<size_t>(index);
+    const std::size_t newIdx = static_cast<std::size_t>(index);
 
     data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
 
@@ -352,7 +352,7 @@ void SSequencer::checkNext()
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const size_t nextIdx = static_cast<size_t>(m_currentActivity + 1);
+    const std::size_t nextIdx = static_cast<std::size_t>(m_currentActivity + 1);
     if(nextIdx < m_activityIds.size())
     {
         data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);

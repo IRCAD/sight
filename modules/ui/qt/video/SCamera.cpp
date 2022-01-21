@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,7 +96,7 @@ void SCamera::configuring()
 
     m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
     m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);
-    m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
+    m_numCreateCameras = config.get<std::size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
     m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
 
     this->initialize();
@@ -140,15 +140,15 @@ void SCamera::starting()
     auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const size_t numCameras = cameraSeries->numCameras();
+        const std::size_t numCameras = cameraSeries->numCameras();
         if(numCameras == 0)
         {
             SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
 
-            for(size_t i = 0 ; i < m_numCreateCameras ; ++i)
+            for(std::size_t i = 0 ; i < m_numCreateCameras ; ++i)
             {
                 data::Camera::sptr camera = data::Camera::New();
-                const size_t index        = cameraSeries->numCameras();
+                const std::size_t index   = cameraSeries->numCameras();
                 cameraSeries->addCamera(camera);
                 cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
                 const auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
@@ -226,7 +226,7 @@ void SCamera::onChooseFile()
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(auto& camera : cameras)
     {
         std::filesystem::path videoPath;
@@ -358,7 +358,7 @@ void SCamera::onChooseStream()
 {
     std::vector<data::Camera::sptr> cameras = this->getCameras();
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(auto& camera : cameras)
     {
         sight::ui::base::dialog::InputDialog inputDialog;
@@ -389,7 +389,7 @@ void SCamera::onChooseDevice()
 {
     std::vector<data::Camera::sptr> cameras = this->getCameras();
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(auto& camera : cameras)
     {
         module::ui::qt::video::CameraDeviceDlg camDialog;
@@ -428,8 +428,8 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
     const auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const size_t numCameras = cameraSeries->numCameras();
-        for(size_t i = 0 ; i < numCameras ; ++i)
+        const std::size_t numCameras = cameraSeries->numCameras();
+        for(std::size_t i = 0 ; i < numCameras ; ++i)
         {
             cameras.push_back(cameraSeries->getCamera(i));
         }

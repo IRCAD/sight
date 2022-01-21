@@ -85,11 +85,11 @@ void ResamplerTest::identityTest()
     const auto inDumpLock  = imageIn->lock();
     const auto outDumpLock = imageOut->lock();
 
-    for(size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
-        for(size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
         {
-            for(size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
             {
                 const std::int16_t valueIn  = imageIn->at<std::int16_t>(i, j, k);
                 const std::int16_t valueOut = imageOut->at<std::int16_t>(i, j, k);
@@ -146,11 +146,11 @@ void ResamplerTest::translateTest()
 
     const auto dumpLock = imageOut->lock();
 
-    for(size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
-        for(size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
         {
-            for(size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
             {
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, k);
 
@@ -190,9 +190,9 @@ void ResamplerTest::rotateTest()
     const auto dumpLock = imageIn->lock();
 
     // draw the back Z face.
-    for(size_t i = 0 ; i < 64 ; ++i)
+    for(std::size_t i = 0 ; i < 64 ; ++i)
     {
-        for(size_t j = 0 ; j < 64 ; ++j)
+        for(std::size_t j = 0 ; j < 64 ; ++j)
         {
             imageIn->at<float>(i, j, 0) = value;
         }
@@ -218,11 +218,11 @@ void ResamplerTest::rotateTest()
 
     const auto outDumpLock = imageOut->lock();
 
-    for(size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
-        for(size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
         {
-            for(size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
             {
                 const float valueOut = imageOut->at<float>(i, j, k);
 

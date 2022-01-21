@@ -89,11 +89,11 @@ void DicomDirTest::readDicomDir()
 
     // Read DICOMDIR file
     io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesDB, logger);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB.size());
     CPPUNIT_ASSERT(logger->empty());
 
     auto series = *seriesDB.begin();
-    CPPUNIT_ASSERT_EQUAL(size_t(84), series->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(84), series->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

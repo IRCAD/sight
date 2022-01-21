@@ -327,7 +327,7 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 void SNegato2D::updateShaderSliceIndexParameter()
 {
     this->getRenderService()->makeCurrent();
-    m_plane->changeSlice(m_currentSliceIndex[static_cast<size_t>(m_plane->getOrientationMode())]);
+    m_plane->changeSlice(m_currentSliceIndex[static_cast<std::size_t>(m_plane->getOrientationMode())]);
 
     this->requestRender();
 }

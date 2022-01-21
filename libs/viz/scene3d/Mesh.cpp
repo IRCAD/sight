@@ -167,8 +167,8 @@ void Mesh::bindLayer(
     // Get requested buffer size and previous buffer size.
     Ogre::HardwareVertexBufferSharedPtr cbuf;
 
-    const size_t uiNumVertices = _mesh->numPoints();
-    size_t uiPrevNumVertices   = 0;
+    const std::size_t uiNumVertices = _mesh->numPoints();
+    std::size_t uiPrevNumVertices   = 0;
     if(bind->isBufferBound(m_binding[_binding]))
     {
         cbuf              = bind->getBuffer(m_binding[_binding]);
@@ -185,7 +185,7 @@ void Mesh::bindLayer(
                                             ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
                                             : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
-        const size_t offset = Ogre::VertexElement::getTypeSize(_type);
+        const std::size_t offset = Ogre::VertexElement::getTypeSize(_type);
 
         Ogre::HardwareBufferManager& mgr = Ogre::HardwareBufferManager::getSingleton();
         cbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
@@ -215,7 +215,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     const auto dumpLock = _mesh->lock();
 
     /// The values in this table refer to vertices in the above table
-    const size_t numVertices = _mesh->numPoints();
+    const std::size_t numVertices = _mesh->numPoints();
     SIGHT_DEBUG("Vertices #" << numVertices);
 
     // Check if the mesh has normals - we assume we should have as many normals as points
@@ -233,7 +233,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     }
 
     Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t prevNumVertices          = 0;
+    std::size_t prevNumVertices     = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
         prevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
@@ -270,7 +270,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                                             ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
                                             : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
-        size_t offset = 0;
+        std::size_t offset = 0;
 
         // Create declaration (memory format) of vertex data based on data::Mesh
         Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
@@ -441,7 +441,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
     auto points = _pointList->getPoints();
 
     /// The values in this table refer to vertices in the above table
-    size_t uiNumVertices = points.size();
+    std::size_t uiNumVertices = points.size();
     SIGHT_DEBUG("Vertices #" << uiNumVertices);
 
     // Check if mesh attributes
@@ -458,7 +458,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
     }
 
     Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t uiPrevNumVertices        = 0;
+    std::size_t uiPrevNumVertices   = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
         uiPrevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
@@ -478,7 +478,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
                                             ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
                                             : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
-        size_t offset = 0;
+        std::size_t offset = 0;
 
         // Create declaration (memory format) of vertex data based on data::Mesh
         Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
@@ -503,7 +503,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
     if(m_subMesh == nullptr)
     {
-        const size_t pointType = static_cast<size_t>(data::Mesh::CellType::POINT);
+        const std::size_t pointType = static_cast<std::size_t>(data::Mesh::CellType::POINT);
         m_cellType               = data::Mesh::CellType::POINT;
         m_subMesh                = m_ogreMesh->createSubMesh(std::to_string(pointType));
         m_subMesh->operationType = Ogre::RenderOperation::OT_POINT_LIST;
@@ -553,8 +553,8 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
             _sceneMgr.getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
-        const size_t numSubEntities = m_r2vbEntity->getNumSubEntities();
-        for(size_t i = 0 ; i < numSubEntities ; ++i)
+        const std::size_t numSubEntities = m_r2vbEntity->getNumSubEntities();
+        for(std::size_t i = 0 ; i < numSubEntities ; ++i)
         {
             const auto subEntity = m_r2vbEntity->getSubEntity(i);
             const auto subMesh   = subEntity->getSubMesh();
@@ -625,7 +625,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     // Update Ogre Mesh with data::Mesh
     const auto dumpLock = _mesh->lock();
 
-    size_t uiStrideFloat = 3;
+    std::size_t uiStrideFloat = 3;
     if(m_hasNormal)
     {
         uiStrideFloat += 3;
@@ -741,7 +741,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
     void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with data::Mesh
-    const size_t uiStrideFloat = 3;
+    const std::size_t uiStrideFloat = 3;
 
     typedef data::Point::PointCoordType PointType;
 
@@ -754,12 +754,12 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
     PointType yMax = std::numeric_limits<PointType>::lowest();
     PointType zMax = std::numeric_limits<PointType>::lowest();
 
-    const auto& points     = _pointList->getPoints();
-    const size_t numPoints = points.size();
+    const auto& points          = _pointList->getPoints();
+    const std::size_t numPoints = points.size();
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for(size_t i = 0 ; i < numPoints ; ++i)
+        for(std::size_t i = 0 ; i < numPoints ; ++i)
         {
             const auto point = points[i]->getCoord();
             const auto& pt0  = point[0];
@@ -778,7 +778,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
     {
         float* __restrict pPos = static_cast<float*>(pVertex);
         FW_PROFILE_AVG("UPDATE POS", 5);
-        for(size_t i = 0 ; i < numPoints ; ++i)
+        for(std::size_t i = 0 ; i < numPoints ; ++i)
         {
             const auto point = points[i]->getCoord();
             pPos[0] = static_cast<float>(point[0]);
@@ -897,8 +897,8 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
             );
         }
 
-        const size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
-        const size_t height = static_cast<size_t>(std::floor(numIndicesTotal / s_maxTextureSize) + 1);
+        const std::size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
+        const std::size_t height = static_cast<std::size_t>(std::floor(numIndicesTotal / s_maxTextureSize) + 1);
 
         if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height)
         {
@@ -941,7 +941,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::point::rgba>())->r;
 
         // Copy points
-        const size_t nbComponents = 4;
+        const std::size_t nbComponents = 4;
         viz::scene3d::helper::Mesh::copyColors(pColor, colors, _mesh->numPoints(), nbComponents);
 
         cbuf->unlock();
@@ -959,7 +959,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::cell::rgba>())->r;
 
         // Copy cells
-        const size_t nbComponents = 4;
+        const std::size_t nbComponents = 4;
         viz::scene3d::helper::Mesh::copyColors(pColorDest, colors, _mesh->numCells(), nbComponents);
 
         pixelBuffer->unlock();

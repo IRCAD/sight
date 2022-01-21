@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -178,7 +178,7 @@ void ReadCsvTest::test_invalidCsv()
     io::base::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
 
     CPPUNIT_ASSERT(std::filesystem::exists(m_invalidCsvDirectoryPath));
-    const size_t size = tagVec.size();
+    const std::size_t size = tagVec.size();
     CPPUNIT_ASSERT(size == 0);
 }
 

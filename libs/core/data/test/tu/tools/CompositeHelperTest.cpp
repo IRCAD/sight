@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,21 +141,21 @@ void CompositeHelperTest::testHelper()
         data::helper::Composite compositeHelper(obj);
         compositeHelper.add(COMPOSITE_ID1, compositeObj1);
         compositeHelper.add(COMPOSITE_ID2, compositeObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getContainer().size());
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID1] == compositeObj1);
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID2] == compositeObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->count(COMPOSITE_ID3));
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->count(COMPOSITE_ID3));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getContainer().size());
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), addedComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), removedComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), newComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), oldComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), newComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), oldComposites.size());
         CPPUNIT_ASSERT(addedComposites[COMPOSITE_ID1] == compositeObj1);
         CPPUNIT_ASSERT(addedComposites[COMPOSITE_ID2] == compositeObj2);
         clearArrays();
@@ -165,10 +165,10 @@ void CompositeHelperTest::testHelper()
         // Test replacement with swap()
         data::helper::Composite compositeHelper(obj);
         compositeHelper.swap(COMPOSITE_ID1, compositeObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getContainer().size());
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID1] == compositeObj3);
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID2] == compositeObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->count(COMPOSITE_ID3));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->count(COMPOSITE_ID3));
 
         // Notify explicitly, this should change nothing since the destructor skip it in this case
         compositeHelper.notify();
@@ -178,10 +178,10 @@ void CompositeHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numChangedNotif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(0), addedComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), removedComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), newComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), oldComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), addedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldComposites.size());
         CPPUNIT_ASSERT(oldComposites[COMPOSITE_ID1] == compositeObj1);
         CPPUNIT_ASSERT(newComposites[COMPOSITE_ID1] == compositeObj3);
         clearArrays();
@@ -192,25 +192,25 @@ void CompositeHelperTest::testHelper()
         data::helper::Composite compositeHelper(obj);
 
         compositeHelper.swap(COMPOSITE_ID2, compositeObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getContainer().size());
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID1] == compositeObj3);
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID2] == compositeObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->count(COMPOSITE_ID3));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->count(COMPOSITE_ID3));
 
         compositeHelper.remove(COMPOSITE_ID1);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getContainer().size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->count(COMPOSITE_ID1));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->count(COMPOSITE_ID1));
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID2] == compositeObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->count(COMPOSITE_ID3));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->count(COMPOSITE_ID3));
 
         compositeHelper.add(COMPOSITE_ID3, compositeObj1);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->count(COMPOSITE_ID1));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->count(COMPOSITE_ID1));
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID2] == compositeObj3);
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID3] == compositeObj1);
 
         compositeHelper.add(COMPOSITE_ID1, compositeObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(3), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), obj->getContainer().size());
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID1] == compositeObj3);
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID2] == compositeObj3);
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID3] == compositeObj1);
@@ -220,10 +220,10 @@ void CompositeHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 2 && numRemovedNotif == 1 && numChangedNotif == 2;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), addedComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), removedComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), newComposites.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), oldComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldComposites.size());
         CPPUNIT_ASSERT(addedComposites[COMPOSITE_ID1] == compositeObj3);
         CPPUNIT_ASSERT(addedComposites[COMPOSITE_ID3] == compositeObj1);
         CPPUNIT_ASSERT(oldComposites[COMPOSITE_ID2] == compositeObj2);
@@ -236,14 +236,14 @@ void CompositeHelperTest::testHelper()
         // Test clear()
         data::helper::Composite compositeHelper(obj);
         compositeHelper.clear();
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->getContainer().size());
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numRemovedNotif == 2;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(3), removedComposites.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), removedComposites.size());
         CPPUNIT_ASSERT(removedComposites[COMPOSITE_ID1] == compositeObj3);
         CPPUNIT_ASSERT(removedComposites[COMPOSITE_ID2] == compositeObj3);
         CPPUNIT_ASSERT(removedComposites[COMPOSITE_ID3] == compositeObj1);

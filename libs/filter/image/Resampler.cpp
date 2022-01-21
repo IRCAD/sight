@@ -215,7 +215,7 @@ data::Image::sptr Resampler::resample(
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         outputOrigin[i] = outputBB->GetMinimum()[i];
-        outputSize[i]   = size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
+        outputSize[i]   = std::size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
     }
 
     output->setSpacing(_outputSpacing);

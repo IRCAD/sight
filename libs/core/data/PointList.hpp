@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ public:
      * @brief: Deletes a point at the specified index
      * @param[in] _index Index of point to delete
      **/
-    void remove(size_t _index);
+    void remove(std::size_t _index);
     /**
      * @brief Clears the list
      */
@@ -154,7 +154,7 @@ inline void PointList::pushBack(const data::Point::sptr& _p)
 
 //-----------------------------------------------------------------------------
 
-inline void PointList::remove(size_t _index)
+inline void PointList::remove(std::size_t _index)
 {
     const auto it = m_vPoints.begin() + static_cast<ptrdiff_t>(_index);
     this->m_vPoints.erase(it);

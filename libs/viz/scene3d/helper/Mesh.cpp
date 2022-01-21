@@ -34,7 +34,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-void Mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, size_t _numPoints, size_t _numComponents)
+void Mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, std::size_t _numPoints, std::size_t _numComponents)
 {
     if(_numComponents == 3)
     {

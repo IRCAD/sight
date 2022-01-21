@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,13 +23,14 @@
 #pragma once
 
 #include "data/config.hpp"
-#include <data/Image.hpp>
-#include <data/Object.hpp>
-#include <data/PointList.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
+
+#include <data/Image.hpp>
+#include <data/Object.hpp>
+#include <data/PointList.hpp>
 
 #include <list>
 
@@ -69,7 +70,7 @@ public:
     typedef core::com::Signal<void ()> ResetRecordSignalType;
 
     DATA_API static const core::com::Signals::SignalKeyType s_GET_RECORD_SIG;
-    typedef core::com::Signal<void (size_t)> GetRecordSignalType;
+    typedef core::com::Signal<void (std::size_t)> GetRecordSignalType;
 
     /**
      * @}
@@ -97,7 +98,7 @@ public:
      * @brief remove the desired record (both image and pointList)
      * @param[in] idx index of the record to be removed
      */
-    DATA_API void removeRecord(size_t idx);
+    DATA_API void removeRecord(std::size_t idx);
 
     /// Reset all records
     DATA_API void resetRecords();
@@ -130,7 +131,7 @@ public:
      * @param[in] idx index of image
      * @return image corresponding to the index
      */
-    DATA_API data::Image::sptr getImage(size_t idx) const;
+    DATA_API data::Image::sptr getImage(std::size_t idx) const;
 
 protected:
 

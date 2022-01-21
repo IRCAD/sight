@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -297,7 +297,7 @@ private:
     TrackingMode m_trackingMode {TrackingMode::MONO};
 
     /// Target width when downsampling is required.
-    size_t m_downSampleWidth {0};
+    std::size_t m_downSampleWidth {0};
 
     /// Mutex to lock m_slamSystem.
     std::mutex m_slamLock;

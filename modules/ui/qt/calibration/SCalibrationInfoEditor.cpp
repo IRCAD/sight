@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,15 +68,15 @@ void SCalibrationInfoEditor::updating()
     {
         data::CalibrationInfo::PointListContainerType plList2 = calInfo2->getPointListContainer();
 
-        size_t captureIdx = 0;
+        std::size_t captureIdx = 0;
 
         data::CalibrationInfo::PointListContainerType::const_iterator it1, it2;
 
         for(it1 = plList1.begin(), it2 = plList2.begin() ; it1 != plList1.end() && it2 != plList2.end() ; ++it1, ++it2)
         {
             QString countString;
-            size_t count1 = (*it1)->getPoints().size();
-            size_t count2 = (*it2)->getPoints().size();
+            std::size_t count1 = (*it1)->getPoints().size();
+            std::size_t count2 = (*it2)->getPoints().size();
 
             countString = QString("%1. %2 and %3 elements").arg(captureIdx).arg(count1).arg(count2);
 
@@ -100,12 +100,12 @@ void SCalibrationInfoEditor::updating()
     }
     else
     {
-        size_t captureIdx = 0;
+        std::size_t captureIdx = 0;
         data::CalibrationInfo::PointListContainerType::const_iterator it1;
         for(it1 = plList1.begin() ; it1 != plList1.end() ; ++it1)
         {
             QString countString;
-            size_t count = (*it1)->getPoints().size();
+            std::size_t count = (*it1)->getPoints().size();
             countString = QString("%1. %2 element%3").arg(captureIdx).arg(count).arg(count > 1 ? "s" : "");
 
             m_capturesListWidget->addItem(countString);
@@ -179,7 +179,7 @@ void SCalibrationInfoEditor::remove()
 
     if(row >= 0)
     {
-        const size_t idx = static_cast<size_t>(row);
+        const std::size_t idx = static_cast<std::size_t>(row);
 
         {
             const auto calInfo1 = m_calibrationInfo1.lock();
@@ -262,7 +262,7 @@ void SCalibrationInfoEditor::getSelection()
 
     if(row >= 0)
     {
-        const size_t idx = static_cast<size_t>(row);
+        const std::size_t idx = static_cast<std::size_t>(row);
 
         const auto calInfo1 = m_calibrationInfo1.lock();
         SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);

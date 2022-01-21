@@ -111,10 +111,10 @@ struct LogProducerThread
 
     //------------------------------------------------------------------------------
 
-    void run(LogContainerType& logs, size_t nbLogs, size_t offset)
+    void run(LogContainerType& logs, std::size_t nbLogs, std::size_t offset)
     {
         core::log::SpyLogger& log = core::log::SpyLogger::get();
-        for(size_t i = offset ; i < nbLogs + offset ; ++i)
+        for(std::size_t i = offset ; i < nbLogs + offset ; ++i)
         {
             std::stringstream ss;
             ss << "msg n ";
@@ -154,14 +154,14 @@ struct RegexLogCompare
 
 void SpyLogTest::threadSafetyTest()
 {
-    const size_t NB_THREAD(20);
-    const size_t NB_LOG(20);
+    const std::size_t NB_THREAD(20);
+    const std::size_t NB_LOG(20);
     LogProducerThread::LogContainerType logs(NB_THREAD * NB_LOG, "test");
     std::vector<std::thread> tg;
-    for(size_t i = 0 ; i < NB_THREAD ; ++i)
+    for(std::size_t i = 0 ; i < NB_THREAD ; ++i)
     {
         LogProducerThread::sptr ct = std::make_shared<LogProducerThread>();
-        size_t offset              = i * NB_LOG;
+        std::size_t offset         = i * NB_LOG;
         tg.push_back(std::thread(std::bind(&LogProducerThread::run, ct, std::ref(logs), NB_LOG, offset)));
     }
 
@@ -215,7 +215,7 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
 
     std::smatch match;
     std::string regexMessage;
-    size_t i = 0;
+    std::size_t i = 0;
 
     for(const std::string& log : logMessages)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -645,7 +645,7 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     this->buildLayer();
 
     // Updates the TF with the new point position.
-    size_t pointIndex = pointIt - m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
     const auto tf = m_tf.lock();
@@ -747,7 +747,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair<Point2DType,
         auto pointIt =
             std::find(m_TFPoints.begin(), m_TFPoints.end(), _TFPoint);
         SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
-        size_t pointIndex = pointIt - m_TFPoints.begin();
+        std::size_t pointIndex = pointIt - m_TFPoints.begin();
 
         const auto tf = m_tf.lock();
         SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
@@ -810,7 +810,7 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair<Point2DType, QGra
     auto pointIt =
         std::find(m_TFPoints.begin(), m_TFPoints.end(), _TFPoint);
     SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
-    size_t pointIndex = pointIt - m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
     const auto tf = m_tf.lock();

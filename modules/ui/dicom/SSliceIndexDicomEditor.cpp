@@ -236,8 +236,8 @@ void SSliceIndexDicomEditor::triggerNewSlice()
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value())
-                                + dicomSeries->getFirstInstanceNumber();
+    std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value())
+                                     + dicomSeries->getFirstInstanceNumber();
 
     SIGHT_ERROR_IF(
         "There is no instance available for selected slice index.",
@@ -287,8 +287,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
-    const char* buffer = static_cast<char*>(lockerDest.getBuffer());
-    const size_t size  = bufferObj->getSize();
+    const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
+    const std::size_t size = bufferObj->getSize();
 
     const std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);

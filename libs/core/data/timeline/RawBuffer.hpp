@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ public:
     DATA_API RawBuffer(
         core::HiResClock::HiResClockType timestamp = 0,
         BufferDataType buffer                      = 0,
-        size_t size                                = 0,
+        std::size_t size                           = 0,
         DeleterType d                              = 0
     );
 

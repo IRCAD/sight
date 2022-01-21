@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,8 @@ public:
  */
     template<class T>
     static void projectPixel(
-        size_t px,
-        size_t py,
+        std::size_t px,
+        std::size_t py,
         T depth,
         T cx,
         T cy,
@@ -91,10 +91,10 @@ public:
         T cy,
         T fx,
         T fy,
-        size_t width,
-        size_t height,
-        size_t& px,
-        size_t& py
+        std::size_t width,
+        std::size_t height,
+        std::size_t& px,
+        std::size_t& py
     );
 };
 
@@ -102,8 +102,8 @@ public:
 
 template<class T>
 void Projection::projectPixel(
-    size_t px,
-    size_t py,
+    std::size_t px,
+    std::size_t py,
     T depth,
     T cx,
     T cy,
@@ -131,10 +131,10 @@ bool Projection::projectPoint(
     T cy,
     T fx,
     T fy,
-    size_t width,
-    size_t height,
-    size_t& px,
-    size_t& py
+    std::size_t width,
+    std::size_t height,
+    std::size_t& px,
+    std::size_t& py
 )
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
@@ -148,8 +148,8 @@ bool Projection::projectPoint(
         return false;
     }
 
-    px = static_cast<size_t>(std::lround(u));
-    py = static_cast<size_t>(std::lround(v));
+    px = static_cast<std::size_t>(std::lround(u));
+    py = static_cast<std::size_t>(std::lround(v));
 
     return true;
 }

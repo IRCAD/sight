@@ -185,7 +185,7 @@ void Server::stop()
 
 //------------------------------------------------------------------------------
 
-size_t Server::numClients() const
+std::size_t Server::numClients() const
 {
     if(this->isStarted())
     {
@@ -293,7 +293,7 @@ std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>&
 {
     std::vector<data::Object::sptr> objVect;
     std::vector< ::igtl::MessageHeader::Pointer> headerMsgVect = this->receiveHeaders();
-    size_t client                                              = 0;
+    std::size_t client                                         = 0;
     for(const auto& headerMsg : headerMsgVect)
     {
         if(headerMsg.IsNotNull())

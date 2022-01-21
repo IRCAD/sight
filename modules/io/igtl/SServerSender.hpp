@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const data::Object::csptr& obj, const size_t index) override;
+    void sendObject(const data::Object::csptr& obj, const std::size_t index) override;
 
     /// Server instance
     sight::io::igtl::Server::sptr m_server;

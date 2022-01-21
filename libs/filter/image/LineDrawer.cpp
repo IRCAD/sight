@@ -50,8 +50,8 @@ bool LineDrawer::drawEllipse(
     const LineDrawer::CoordinatesType& c,
     data::Image::BufferType* value,
     const double radius,
-    const size_t firstDim,
-    const size_t secondDim,
+    const std::size_t firstDim,
+    const std::size_t secondDim,
     const bool overwrite,
     ImageDiff& diff
 )
@@ -147,7 +147,7 @@ ImageDiff LineDrawer::draw(
 {
     ImageDiff diff(m_imageTypeSize, 128);
 
-    size_t dim0, dim1;
+    std::size_t dim0, dim1;
 
     switch(orientation)
     {

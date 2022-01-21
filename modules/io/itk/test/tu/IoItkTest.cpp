@@ -303,7 +303,7 @@ void IoItkTest::SeriesDBInrTest()
     const data::Image::Spacing spacing = {0.781, 0.781, 1.6};
     const data::Image::Size size       = {512, 512, 134};
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), sdb->getContainer().size());
     data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[0]);
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());

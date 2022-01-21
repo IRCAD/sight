@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include "core/memory/BufferManager.hpp"
 #include "core/memory/IPolicy.hpp"
 #include "core/memory/policy/factory/new.hpp"
+
 #include <core/base.hpp>
 
 namespace sight::core::memory
@@ -101,14 +102,14 @@ public:
 
 protected:
 
-    CORE_API bool needDump(size_t supplement) const;
+    CORE_API bool needDump(std::size_t supplement) const;
 
-    CORE_API size_t dump(size_t nbOfBytes);
+    CORE_API std::size_t dump(std::size_t nbOfBytes);
 
-    CORE_API void apply(size_t supplement = 0);
+    CORE_API void apply(std::size_t supplement = 0);
 
-    size_t m_minFreeMem;
-    size_t m_hysteresisOffset;
+    std::size_t m_minFreeMem;
+    std::size_t m_hysteresisOffset;
 };
 
 } // namespace policy

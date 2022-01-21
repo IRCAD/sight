@@ -388,8 +388,8 @@ double AutomaticRegistration::computeVolume(const data::Image::csptr& _img)
 
     SIGHT_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
 
-    const double voxelVolume = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<double>());
-    const size_t nbVoxels    = std::accumulate(size.begin(), size.end(), 1, std::multiplies<size_t>());
+    const double voxelVolume   = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<double>());
+    const std::size_t nbVoxels = std::accumulate(size.begin(), size.end(), 1, std::multiplies<std::size_t>());
 
     return voxelVolume * static_cast<double>(nbVoxels);
 }

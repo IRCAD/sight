@@ -157,7 +157,7 @@ void SOpenCVIntrinsic::updating()
         {
             poseCamera->getContainer().clear();
 
-            for(size_t index = 0 ; index < rvecs.size() ; ++index)
+            for(std::size_t index = 0 ; index < rvecs.size() ; ++index)
             {
                 data::Matrix4::sptr mat3D = data::Matrix4::New();
 

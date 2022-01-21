@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,8 @@ namespace sight::module::geometry::base
  * - \b landmarkUpdated(string): Emitted when the landmark is modified
  *
  * @section Slots Slots
- * - \b updateSelectedPoint(std::string , size_t ): update the point on which we apply the transform when we select an
+ * - \b updateSelectedPoint(std::string , std::size_t ): update the point on which we apply the transform when we select
+ * an
  * other landmark
  * - \b updatePoint(std::string ): update the point on which we apply the transform when a point is added
  * - \b removePoint( ): update the point on which we apply the transform when a point is removed
@@ -101,7 +102,7 @@ private:
     typedef core::com::Signal<void (std::string)> LandmarkUpdatedSignalType;
 
     /// SLOT: updates selected point.
-    void updateSelectedPoint(std::string name, size_t index);
+    void updateSelectedPoint(std::string name, std::size_t index);
 
     /// SLOT: updates added point.
     void updatePoint(std::string name);
@@ -113,7 +114,7 @@ private:
     std::string m_label {""};
 
     /// Index of the point to modify in the landmark group.
-    size_t m_index {0};
+    std::size_t m_index {0};
 
     /// Bool showing if a landmark is selected.
     bool m_landmarkSelected {false};

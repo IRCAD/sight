@@ -84,7 +84,7 @@ void SImageReader::openLocationDialog()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(size_t i = 1 ; i < ext.size() ; i++)
+        for(std::size_t i = 1 ; i < ext.size() ; i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }
@@ -238,7 +238,7 @@ bool SImageReader::loadImage(
         sight::io::vtk::BitmapImageReader::getAvailableExtensions(availableExtensions);
 
         /* If we find the current extensions in the available readers, we use it */
-        size_t i = 0;
+        std::size_t i = 0;
         for( ; i < availableExtensions.size() ; i++)
         {
             if(availableExtensions.at(i) == ext)

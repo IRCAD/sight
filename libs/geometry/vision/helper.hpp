@@ -130,8 +130,8 @@ GEOMETRY_VISION_API void calibratePointingTool(
  * @throw std::invalid_argument if _markerSizeInBits != [4, 5, 6, 7]
  */
 GEOMETRY_VISION_API cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
-    const size_t _width,
-    const size_t _height,
+    const std::size_t _width,
+    const std::size_t _height,
     const int _markerSizeInBits
 );
 
@@ -149,8 +149,8 @@ GEOMETRY_VISION_API cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
  */
 GEOMETRY_VISION_API sight::data::PointList::sptr detectChessboard(
     const cv::Mat& _img,
-    size_t _xDim,
-    size_t _yDim,
+    std::size_t _xDim,
+    std::size_t _yDim,
     float _scale
 );
 

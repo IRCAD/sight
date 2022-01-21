@@ -100,7 +100,7 @@ struct LabelImageFilter
     {
         data::Image::sptr i_image;
         std::vector<data::PointList::sptr> i_lPointListCentroids;
-        std::vector<std::vector<size_t> > i_lPointListLabels;
+        std::vector<std::vector<std::size_t> > i_lPointListLabels;
     };
     //------------------------------------------------------------------------------
 
@@ -135,13 +135,13 @@ struct LabelImageFilter
 
             for(unsigned int n = 1 ; n <= labelMap->GetNumberOfLabelObjects() ; ++n)
             {
-                std::vector<size_t> findPlanes;
-                size_t plane;
+                std::vector<std::size_t> findPlanes;
+                std::size_t plane;
                 for(plane = 0 ; plane < params.i_lPointListLabels.size() ; ++plane)
                 {
-                    std::vector<size_t> currentPlane = params.i_lPointListLabels.at(plane);
+                    std::vector<std::size_t> currentPlane = params.i_lPointListLabels.at(plane);
 
-                    for(size_t labelInPlane = 0 ; labelInPlane < currentPlane.size() ; ++labelInPlane)
+                    for(std::size_t labelInPlane = 0 ; labelInPlane < currentPlane.size() ; ++labelInPlane)
                     {
                         if(currentPlane.at(labelInPlane) == n)
                         {
@@ -161,7 +161,7 @@ struct LabelImageFilter
 
                     newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
 
-                    for(size_t idFindPlanes = 0 ; idFindPlanes < findPlanes.size() ; ++idFindPlanes)
+                    for(std::size_t idFindPlanes = 0 ; idFindPlanes < findPlanes.size() ; ++idFindPlanes)
                     {
                         data::PointList::sptr planePointList =
                             params.i_lPointListCentroids.at(findPlanes.at(idFindPlanes));
@@ -214,7 +214,7 @@ struct LabelImageFilter
 void computeCentroids(
     data::Image::sptr image,
     std::vector<data::PointList::sptr> pointListCentroids,
-    std::vector<std::vector<size_t> > pointListLabels
+    std::vector<std::vector<std::size_t> > pointListLabels
 )
 {
     // Preparing the parameters for ITK

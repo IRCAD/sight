@@ -1701,7 +1701,7 @@ inline void _compare<data::Histogram>(const data::Histogram::csptr& actual, cons
     const auto& actualValues   = actual->getValues();
     CPPUNIT_ASSERT_EQUAL(expectedValues.size(), actualValues.size());
 
-    for(size_t i = 0, end = expectedValues.size() ; i < end ; ++i)
+    for(std::size_t i = 0, end = expectedValues.size() ; i < end ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(expectedValues.at(i), actualValues.at(i));
     }
@@ -1773,7 +1773,7 @@ inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, cons
         const auto& actualGroup = actual->getGroup(name);
 
         // Test color
-        for(size_t i = 0, end = expectedGroup.m_color.size() ; i < end ; ++i)
+        for(std::size_t i = 0, end = expectedGroup.m_color.size() ; i < end ; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedGroup.m_color[i], actualGroup.m_color[i], FLOAT_EPSILON);
         }

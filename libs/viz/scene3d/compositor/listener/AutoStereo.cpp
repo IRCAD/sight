@@ -113,9 +113,9 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
         if(Ogre::StringUtil::startsWith(_schemeName, "VolumeEntries"))
         {
             // Volume entries technique names follow this pattern : VolumeEntries<AutoStereo>_<technique><viewport>
-            const size_t techNamePos   = _schemeName.find("_") + 1;
-            const size_t techNameSize  = _schemeName.size() - 1 - techNamePos;
-            const std::string techName = _schemeName.substr(techNamePos, techNameSize);
+            const std::size_t techNamePos  = _schemeName.find("_") + 1;
+            const std::size_t techNameSize = _schemeName.size() - 1 - techNamePos;
+            const std::string techName     = _schemeName.substr(techNamePos, techNameSize);
 
             auto entryPointsMtl = Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
 

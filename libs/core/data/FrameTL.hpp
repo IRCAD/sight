@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,10 @@
 #include "data/GenericTL.hxx"
 #include "data/timeline/GenericObject.hpp"
 #include "data/timeline/GenericObject.hxx"
-#include <data/factory/new.hpp>
 
 #include <core/tools/Type.hpp>
+
+#include <data/factory/new.hpp>
 
 SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (FrameTL));
 
@@ -70,42 +71,43 @@ public:
 
     /**
      * @brief Initializes the size of the pool buffer.
-     * @deprecated Use initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat
+     * @deprecated Use initPoolSize(std::size_t width, std::size_t height, const core::tools::Type& type, const
+     * PixelFormat
      * format,
      * unsigned int maxElementNum = 1) instead, it will be removed in sight 22.0
      */
     [[deprecated("Initialize FrameTL with pixel format instead, it will be removed in sight 22.0")]]
     DATA_API void initPoolSize(
-        size_t width,
-        size_t height,
+        std::size_t width,
+        std::size_t height,
         const core::tools::Type& type,
-        size_t numberOfComponents  = 1,
-        unsigned int maxElementNum = 1
+        std::size_t numberOfComponents = 1,
+        unsigned int maxElementNum     = 1
     );
 
     /// Initializes the size of the pool buffer.
     DATA_API void initPoolSize(
-        size_t width,
-        size_t height,
+        std::size_t width,
+        std::size_t height,
         const core::tools::Type& type,
         const PixelFormat format,
         unsigned int maxElementNum = 1
     );
 
     /// Returns the width of an image in the timeline
-    size_t getWidth() const
+    std::size_t getWidth() const
     {
         return m_width;
     }
 
     /// Returns the height of an image in the timeline
-    size_t getHeight() const
+    std::size_t getHeight() const
     {
         return m_height;
     }
 
     /// Returns the number of components of an image in the timeline
-    size_t numComponents() const
+    std::size_t numComponents() const
     {
         return m_numberOfComponents;
     }
@@ -128,13 +130,13 @@ private:
     DATA_API void initPoolSize(unsigned int maxElementNum) override;
 
     /// frame width
-    size_t m_width;
+    std::size_t m_width;
 
     /// frame height
-    size_t m_height;
+    std::size_t m_height;
 
     /// number of components
-    size_t m_numberOfComponents;
+    std::size_t m_numberOfComponents;
 
     /// type of frame pixel
     core::tools::Type m_type;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,12 @@
 #include "data/Exception.hpp"
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
-#include <data/iterator.hpp>
 
 #include <core/memory/BufferObject.hpp>
 #include <core/memory/IBuffered.hpp>
 #include <core/tools/Type.hpp>
+
+#include <data/iterator.hpp>
 
 SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Array));
 
@@ -63,7 +64,8 @@ namespace sight::data
  *
  * @section Access Buffer access
  *
- * You can access buffer values using at<type>(const size_t& offset) or at<type>({x, y, z}) methods. These methods are
+ * You can access buffer values using at<type>(const std::size_t& offset) or at<type>({x, y, z}) methods. These methods
+ * are
  * slow and should not be used to parse the entire buffer (see iterators).
  *
  * @warning The array must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
@@ -83,7 +85,7 @@ namespace sight::data
 
     // or you can compute the index like
     const auto size = array->getSize();
-    const size_t index = x + y*size[0];
+    const std::size_t index = x + y*size[0];
     value = array->at<std::int16_t>(index);
    @endcode
  *
@@ -131,9 +133,9 @@ namespace sight::data
     auto iter = array->begin<std::int16_t>();
 
     const auto size = array->getSize();
-    for (size_t y=0 ; y<size[1] ; ++y)
+    for (std::size_t y=0 ; y<size[1] ; ++y)
     {
-        for (size_t x=0 ; x<size[0] ; ++x)
+        for (std::size_t x=0 ; x<size[0] ; ++x)
         {
             // do something with x and y ....
 
@@ -159,11 +161,11 @@ public:
     /**
      * @brief Array size type
      */
-    typedef std::vector<size_t> SizeType;
+    typedef std::vector<std::size_t> SizeType;
     /**
      * @brief Offset type
      */
-    typedef std::vector<size_t> OffsetType;
+    typedef std::vector<std::size_t> OffsetType;
     /**
      * @brief Index type
      */
@@ -199,7 +201,7 @@ public:
      *
      * @throw data::Exception
      */
-    DATA_API size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
+    DATA_API std::size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -221,7 +223,7 @@ public:
      *
      * @throw data::Exception
      */
-    DATA_API size_t resize(const SizeType& size, bool reallocate = true);
+    DATA_API std::size_t resize(const SizeType& size, bool reallocate = true);
 
     /**
      * @brief Clear this array.
@@ -243,21 +245,21 @@ public:
      *
      * @return One array elemet size in bytes.
      */
-    DATA_API size_t getElementSizeInBytes() const;
+    DATA_API std::size_t getElementSizeInBytes() const;
 
     /**
      * @brief Get the number of elements of type <getType()> in the array
      *
      * @return number of array elements
      */
-    DATA_API size_t numElements() const;
+    DATA_API std::size_t numElements() const;
 
     /**
      * @brief Getter for the array view size
      *
      * @return  Array view size in bytes.
      */
-    DATA_API size_t getSizeInBytes() const;
+    DATA_API std::size_t getSizeInBytes() const;
 
     /**
      * @brief Getter for the array size
@@ -278,7 +280,7 @@ public:
      *
      * @return Array's number of dimensions
      */
-    DATA_API size_t numDimensions() const;
+    DATA_API std::size_t numDimensions() const;
 
     /**
      * @brief Set array's buffer ownership
@@ -307,7 +309,7 @@ public:
      * @param size Array size
      * @param sizeOfType size of a component
      */
-    DATA_API static OffsetType computeStrides(SizeType size, size_t sizeOfType);
+    DATA_API static OffsetType computeStrides(SizeType size, std::size_t sizeOfType);
 
     /// Return buffer object
     core::memory::BufferObject::sptr getBufferObject() const;
@@ -374,7 +376,7 @@ public:
      * @throw data::Exception Index out of bounds
      */
     template<typename T>
-    T& at(const size_t& offset);
+    T& at(const std::size_t& offset);
 
     /**
      * @brief Get the value of an element
@@ -388,7 +390,7 @@ public:
      * @throw data::Exception Index out of bounds
      */
     template<typename T>
-    const T& at(const size_t& offset) const;
+    const T& at(const std::size_t& offset) const;
 
     /**
      * @brief Getter for the array buffer
@@ -540,7 +542,7 @@ protected:
      * @param id Item array index
      * @return buffer offset
      */
-    DATA_API size_t getBufferOffset(const data::Array::IndexType& id) const;
+    DATA_API std::size_t getBufferOffset(const data::Array::IndexType& id) const;
 
     /// Not implemented
     Array(const Array&);
@@ -602,7 +604,7 @@ inline const T& Array::at(const data::Array::IndexType& id) const
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T& Array::at(const size_t& offset)
+inline T& Array::at(const std::size_t& offset)
 {
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
@@ -617,7 +619,7 @@ inline T& Array::at(const size_t& offset)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline const T& Array::at(const size_t& offset) const
+inline const T& Array::at(const std::size_t& offset) const
 {
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(

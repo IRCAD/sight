@@ -46,7 +46,7 @@ std::string getEnv(const std::string& name, bool* ok)
 {
 #ifdef WIN32
     std::string value;
-    size_t requiredSize = 0;
+    std::size_t requiredSize = 0;
     // verify if env var exists and retrieves value size
     getenv_s(&requiredSize, nullptr, 0, name.c_str());
     const bool envVarExists = (requiredSize > 0);
@@ -169,7 +169,7 @@ struct FindModuleFunctor
 {
     //------------------------------------------------------------------------------
 
-    static int callback(struct dl_phdr_info* info, size_t, void*)
+    static int callback(struct dl_phdr_info* info, std::size_t, void*)
     {
         const std::string libName(info->dlpi_name);
         const std::regex matchModule(s_libName);

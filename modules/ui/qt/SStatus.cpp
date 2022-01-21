@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,7 +95,7 @@ void SStatus::starting()
         layout = new QVBoxLayout();
     }
 
-    for(size_t i = 0 ; i < m_count ; ++i)
+    for(std::size_t i = 0 ; i < m_count ; ++i)
     {
         QPointer<QLabel> indicator = new QLabel();
         indicator->setFixedWidth(static_cast<int>(m_width));
@@ -139,10 +139,10 @@ void SStatus::configuring()
     SIGHT_ASSERT("Value for element 'form' should be 'circle' or 'square'.", form == "circle" || form == "square");
     m_isCircular = (form == "circle");
 
-    m_width  = config.get<size_t>("size.width", 20);
-    m_height = config.get<size_t>("size.height", 20);
+    m_width  = config.get<std::size_t>("size.width", 20);
+    m_height = config.get<std::size_t>("size.height", 20);
 
-    m_count = config.get<size_t>("count", 1);
+    m_count = config.get<std::size_t>("count", 1);
 
     if(m_count == 1)
     {
@@ -157,7 +157,7 @@ void SStatus::configuring()
         // Check if the labels tag exists
         if(configLabels.is_initialized())
         {
-            const size_t countLabelStatus = configLabels.get().count("labelStatus");
+            const std::size_t countLabelStatus = configLabels.get().count("labelStatus");
 
             SIGHT_WARN_IF(
                 "Number of 'labelStatus' (" << countLabelStatus << ") is different from needed status (" << m_count << ").",
@@ -183,7 +183,7 @@ void SStatus::configuring()
             if(countLabelStatus < m_count)
             {
                 SIGHT_WARN("'labelStatus' from " << countLabelStatus + 1 << " to " << m_count << " will be empty.");
-                for(size_t i = countLabelStatus ; i < m_count ; ++i)
+                for(std::size_t i = countLabelStatus ; i < m_count ; ++i)
                 {
                     QPointer<QLabel> qLab = new QLabel();
                     qLab->setText("");
@@ -193,7 +193,7 @@ void SStatus::configuring()
         }
         else
         {
-            for(size_t i = 0 ; i < m_count ; ++i)
+            for(std::size_t i = 0 ; i < m_count ; ++i)
             {
                 QPointer<QLabel> qLab = new QLabel();
                 qLab->setText("");

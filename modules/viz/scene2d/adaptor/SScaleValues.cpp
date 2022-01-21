@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -261,8 +261,8 @@ void SScaleValues::rescaleValues()
     bool suggestResampling = false; /* scale value items resampling is suggested because of
                                        a lack of sufficient width to display all of them */
 
-    const size_t valuesSize = m_values.size();
-    float val               = getStartVal();
+    const std::size_t valuesSize = m_values.size();
+    float val                    = getStartVal();
 
     if(m_align == "left" || m_align == "right")
     {
@@ -282,7 +282,7 @@ void SScaleValues::rescaleValues()
             textPosX = viewportX + viewportWidth;
         }
 
-        for(size_t i = 0 ; i < valuesSize ; ++i, val += m_interval)
+        for(std::size_t i = 0 ; i < valuesSize ; ++i, val += m_interval)
         {
             valueSize = m_values[i]->boundingRect().height();
 
@@ -333,7 +333,7 @@ void SScaleValues::rescaleValues()
                                 ? viewport->getY()
                                 : viewportHeight * 0.9;
 
-        for(size_t i = 0 ; i < valuesSize ; ++i, val += m_interval)
+        for(std::size_t i = 0 ; i < valuesSize ; ++i, val += m_interval)
         {
             valueSize = m_values[i]->boundingRect().width();
 

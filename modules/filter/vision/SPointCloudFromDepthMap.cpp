@@ -100,10 +100,10 @@ void SPointCloudFromDepthMap::updating()
     // Initialize mesh points memory one time in order to increase performances
     if(pointCloud->numPoints() == 0)
     {
-        const auto size       = depthMap->getSize();
-        const size_t width    = size[0];
-        const size_t height   = size[1];
-        const size_t nbPoints = width * height;
+        const auto size            = depthMap->getSize();
+        const std::size_t width    = size[0];
+        const std::size_t height   = size[1];
+        const std::size_t nbPoints = width * height;
 
         // allocate mesh
         data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
@@ -119,7 +119,7 @@ void SPointCloudFromDepthMap::updating()
         auto itr = pointCloud->begin<data::iterator::cell::point>();
 
         // to display the mesh, we need to create cells with one point.
-        for(size_t i = 0 ; i < nbPoints ; ++i, ++itr)
+        for(std::size_t i = 0 ; i < nbPoints ; ++i, ++itr)
         {
             itr->pt = i;
         }
@@ -206,9 +206,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
         return;
     }
 
-    const auto size     = depthMap->getSize();
-    const size_t width  = size[0];
-    const size_t height = size[1];
+    const auto size          = depthMap->getSize();
+    const std::size_t width  = size[0];
+    const std::size_t height = size[1];
 
     const auto depthDumpLock = depthMap->lock();
 
@@ -223,10 +223,10 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     auto pointsItr = pointCloud->begin<data::iterator::point::xyz>();
 
-    size_t nbRealPoints = 0;
-    for(size_t y = 0 ; y != height ; ++y)
+    std::size_t nbRealPoints = 0;
+    for(std::size_t y = 0 ; y != height ; ++y)
     {
-        for(size_t x = 0 ; x != width ; ++x)
+        for(std::size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
@@ -266,9 +266,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     }
 
     // Make sure RGB and depth maps are the same size
-    const auto size     = depthMap->getSize();
-    const size_t width  = size[0];
-    const size_t height = size[1];
+    const auto size          = depthMap->getSize();
+    const std::size_t width  = size[0];
+    const std::size_t height = size[1];
 
     const auto rgbType = colorMap->getType();
     if(rgbType != core::tools::Type::s_UINT8)
@@ -283,9 +283,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    const auto rgbSize     = colorMap->getSize();
-    const size_t rgbWidth  = rgbSize[0];
-    const size_t rgbHeight = rgbSize[1];
+    const auto rgbSize          = colorMap->getSize();
+    const std::size_t rgbWidth  = rgbSize[0];
+    const std::size_t rgbHeight = rgbSize[1];
 
     if(rgbWidth != width || rgbHeight != height)
     {
@@ -319,9 +319,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     auto glmExtrinsicMatrix   = geometry::data::getMatrixFromTF3D(*extrinsic);
 
     const auto imageSize = height * width;
-    for(size_t y = 0 ; y != height ; ++y)
+    for(std::size_t y = 0 ; y != height ; ++y)
     {
-        for(size_t x = 0 ; x != width ; ++x)
+        for(std::size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
@@ -340,7 +340,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                 const glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
 
                 // project point to the rgb image
-                size_t rgbPx, rgbPy;
+                std::size_t rgbPx, rgbPy;
                 const bool isProjected = sight::filter::vision::Projection::projectPoint(
                     rgbPoint.x,
                     rgbPoint.y,
@@ -357,7 +357,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
                 if(isProjected)
                 {
-                    const size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
+                    const std::size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
                     if(rgbIdx < imageSize)
                     {
                         const auto color = rgbBegin + rgbIdx;

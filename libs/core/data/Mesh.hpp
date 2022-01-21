@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,21 +74,21 @@ namespace sight::data
     mesh->resize(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
     const auto lock = mesh->lock(); // prevents the buffers from being dumped on the disk
 
-    for (size_t i = 0; i < NB_POINTS; ++i)
+    for (std::size_t i = 0; i < NB_POINTS; ++i)
     {
         const std::uint8_t val                               = static_cast<uint8_t>(i);
         const data::Mesh::color_t color[4]        = {val, val, val, val};
         const float floatVal                                 = static_cast<float>(i);
         const data::Mesh::normal_t normal[3]      = {floatVal, floatVal, floatVal};
         const data::Mesh::texcoord_t texCoords[2] = {floatVal, floatVal};
-        const size_t value                                   = 3*i;
+        const std::size_t value                                   = 3*i;
         mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
         mesh->setPointColor(i, color);
         mesh->setPointNormal(i, normal);
         mesh->setPointTexCoord(i, texCoords);
     }
 
-    for (size_t i = 0; i < NB_CELLS; ++i)
+    for (std::size_t i = 0; i < NB_CELLS; ++i)
     {
         mesh->setCell(i, i, i+1, i+2);
 
@@ -110,14 +110,14 @@ namespace sight::data
     mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
     const auto lock = mesh->lock();
 
-    for (size_t i = 0; i < NB_POINTS; ++i)
+    for (std::size_t i = 0; i < NB_POINTS; ++i)
     {
         const std::uint8_t val                               = static_cast<uint8_t>(i);
         const data::Mesh::color_t color[4]        = {val, val, val, val};
         const float floatVal                                 = static_cast<float>(i);
         const data::Mesh::normal_t normal[3]      = {floatVal, floatVal, floatVal};
         const data::Mesh::texcoord_t texCoords[2] = {floatVal, floatVal};
-        const size_t value                                   = 3*i;
+        const std::size_t value                                   = 3*i;
         const auto id =
             mesh->pushPoint(static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
         mesh->setPointColor(id, color);
@@ -125,7 +125,7 @@ namespace sight::data
         mesh->setPointTexCoord(id, texCoords);
     }
 
-    for (size_t i = 0; i < NB_CELLS; ++i)
+    for (std::size_t i = 0; i < NB_CELLS; ++i)
     {
         const auto id = mesh->pushCell(i, i+1, i+2);
 
@@ -171,7 +171,7 @@ namespace sight::data
 
     for(const auto& cell : mesh->range<data::iterator::cell::triangle>())
     {
-        for(size_t i = 0 ; i < 3 ; ++i)
+        for(std::size_t i = 0 ; i < 3 ; ++i)
         {
             const auto pIdx = cell.pt[i];
 
@@ -191,13 +191,13 @@ namespace sight::data
     data::Mesh::sptr mesh = data::Mesh::New();
     mesh->resize(25, 33, data::Mesh::CellType::QUAD);
     const auto cellType = data::Mesh::CellType::QUAD;
-    const size_t nbPointPerCell = 4;
+    const std::size_t nbPointPerCell = 4;
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(const auto& cell : mesh->range<data::iterator::cell::quad>())
     {
         // define the point indices
-        for (size_t i = 0; i < 4; ++i)
+        for (std::size_t i = 0; i < 4; ++i)
         {
             cell.pt[i] = count++;
         }
@@ -329,7 +329,7 @@ public:
      * @param nbCells number of cells to allocate
      * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
      *        mix different types of cells in the same mesh, you should use
-     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
+     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
@@ -353,7 +353,7 @@ public:
      * @param nbCells number of cells to allocate
      * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
      *        use different types of cells in the same mesh, use
-     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
+     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
@@ -405,10 +405,10 @@ public:
     bool has() const;
 
     /// Get number of points.
-    size_t numPoints() const;
+    Mesh::size_t numPoints() const;
 
     /// Get number of cells.
-    size_t numCells() const;
+    Mesh::size_t numCells() const;
 
     /// Get the cell type of this mesh.
     CellType getCellType() const;
@@ -462,7 +462,7 @@ public:
     DATA_API cell_t pushCell(point_t idP1, point_t idP2, point_t idP3);
     DATA_API cell_t pushCell(point_t idP1, point_t idP2, point_t idP3, point_t idP4);
     DATA_API cell_t pushCell(const std::vector<point_t> pointIds);
-    DATA_API cell_t pushCell(const point_t* pointIds, size_t nbPoints);
+    DATA_API cell_t pushCell(const point_t* pointIds, std::size_t nbPoints);
     /// @}
 
     /**
@@ -500,7 +500,7 @@ public:
     DATA_API void setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3);
     DATA_API void setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3, point_t idP4);
     DATA_API void setCell(cell_t id, const std::vector<point_t>& pointIds);
-    DATA_API void setCell(cell_t id, const point_t* pointIds, size_t nbPoints);
+    DATA_API void setCell(cell_t id, const point_t* pointIds, std::size_t nbPoints);
     /// @}
 
     /**
@@ -662,10 +662,10 @@ private:
     };
 
     /// Number of points defined for the mesh
-    size_t m_numPoints {0};
+    Mesh::size_t m_numPoints {0};
 
     /// Number of cells defined for the mesh
-    size_t m_numCells {0};
+    Mesh::size_t m_numCells {0};
 
     /// Type of primitive
     CellType m_cellType {CellType::_SIZE};
@@ -685,7 +685,7 @@ private:
      * Mesh texCoord array : 2-components 1-dimension float array, size = m_numPoints.
      * Contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
-    std::array<data::Array::sptr, static_cast<size_t>(PointAttribute::_SIZE)> m_points;
+    std::array<data::Array::sptr, static_cast<std::size_t>(PointAttribute::_SIZE)> m_points;
 
     /**
      * @brief Cell data arrays
@@ -704,7 +704,7 @@ private:
      * Cell texCoord array : 2-components 1-dimension float array, size = m_numCells.
      * Contains cell texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
-    std::array<data::Array::sptr, static_cast<size_t>(CellAttribute::_SIZE)> m_cells;
+    std::array<data::Array::sptr, static_cast<std::size_t>(CellAttribute::_SIZE)> m_cells;
 
     /// Stores current attributes.
     Attributes m_attributes {Attributes::NONE};
@@ -780,7 +780,7 @@ template<Mesh::Attributes A>
 void Mesh::clear()
 {
     m_attributes = m_attributes & ~A;
-    m_points[static_cast<size_t>(A)]->clear();
+    m_points[static_cast<std::size_t>(A)]->clear();
 }
 
 //------------------------------------------------------------------------------

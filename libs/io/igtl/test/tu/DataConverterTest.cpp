@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -225,9 +225,9 @@ void DataConverterTest::matrixConverterTest()
     ::igtl::Matrix4x4 igtlMatrix;
 
     matrix = data::Matrix4::New();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             matrix->setCoefficient(i, j, static_cast<double>(i + j));
         }
@@ -293,7 +293,7 @@ void DataConverterTest::pointListConverterTest()
 
     data::Object::sptr destObj       = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
     data::PointList::sptr pointList2 = data::PointList::dynamicCast(destObj);
-    for(size_t i = 0 ; i < 2 ; ++i)
+    for(std::size_t i = 0 ; i < 2 ; ++i)
     {
         CPPUNIT_ASSERT(
             std::equal(
@@ -431,9 +431,9 @@ void DataConverterTest::compositeConverterTest()
     data::Composite::sptr composite = data::Composite::New();
     (*composite)["H_marker1_2_polaris"] = matrix;
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             matrix->setCoefficient(i, j, static_cast<double>(i + j));
         }
@@ -458,7 +458,7 @@ void DataConverterTest::compositeConverterTest()
 
     ::igtl::Matrix4x4 igtlMatrix;
     trackElement->GetMatrix(igtlMatrix);
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
     }
@@ -472,7 +472,7 @@ void DataConverterTest::compositeConverterTest()
 
     data::Matrix4::sptr destMmatrix = data::Matrix4::New();
     destMmatrix = data::Matrix4::dynamicCast(iter->second);
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMmatrix->getCoefficients().begin() + i * 4));
     }

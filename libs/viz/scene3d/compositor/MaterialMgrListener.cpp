@@ -364,7 +364,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
             auto numTexUnit = pass->getNumTextureUnitStates();
 
             // Modify texture input according to the requested pass
-            for(size_t i = 0 ; i < 4 ; ++i)
+            for(std::size_t i = 0 ; i < 4 ; ++i)
             {
                 Ogre::TextureUnitState* texState = pass->createTextureUnitState();
                 texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);

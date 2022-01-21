@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,7 +124,7 @@ private:
     float m_squareSize;
 
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
-    size_t m_camIndex;
+    std::size_t m_camIndex;
 
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, "calibrationInfo1"};
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, "calibrationInfo2"};

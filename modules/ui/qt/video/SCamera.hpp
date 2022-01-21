@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ private:
     bool m_bVideoSupport {false};
 
     /// Number of cameras to create when using a camera series as input.
-    size_t m_numCreateCameras {0};
+    std::size_t m_numCreateCameras {0};
 
     // Sets the file path as absolute ones
     bool m_useAbsolutePath {false};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "SStereoSelector.hpp"
 
-#include <viz/scene3d/SRender.hpp>
-
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
@@ -32,6 +30,8 @@
 #include <service/registry/ObjectService.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -115,7 +115,7 @@ void SStereoSelector::updating()
 void SStereoSelector::onSelectedLayerItem(int index)
 {
     // Update the current layer
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
+    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
 }
 
 //------------------------------------------------------------------------------

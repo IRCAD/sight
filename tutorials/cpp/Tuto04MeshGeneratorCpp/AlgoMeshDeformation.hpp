@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,9 +78,9 @@ private:
 
     int m_direction {1};
 
-    size_t m_nbPoints {0};
+    std::size_t m_nbPoints {0};
 
-    size_t m_nbCells {0};
+    std::size_t m_nbCells {0};
 
     float m_yCenter {0};
 

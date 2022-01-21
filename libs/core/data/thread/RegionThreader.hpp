@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,8 @@ public:
     {
     }
 
-    RegionThreader(size_t nbThread, bool capped = true) :
-        m_nbThread(std::min(capped ? std::thread::hardware_concurrency() : std::numeric_limits<size_t>::max(),
+    RegionThreader(std::size_t nbThread, bool capped = true) :
+        m_nbThread(std::min(capped ? std::thread::hardware_concurrency() : std::numeric_limits<std::size_t>::max(),
                             (nbThread > 1) ? nbThread : 1))
     {
     }
@@ -52,13 +52,13 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    void operator()(T func, const size_t dataSize)
+    void operator()(T func, const std::size_t dataSize)
     {
         std::vector<std::thread*> threads;
 
-        const size_t step  = (dataSize / m_nbThread) + 1;
-        size_t regionBegin = 0;
-        size_t threadId    = 0;
+        const std::size_t step  = (dataSize / m_nbThread) + 1;
+        std::size_t regionBegin = 0;
+        std::size_t threadId    = 0;
 
         if(m_nbThread > 1)
         {
@@ -90,14 +90,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    size_t numberOfThread()
+    std::size_t numberOfThread()
     {
         return m_nbThread;
     }
 
 protected:
 
-    const size_t m_nbThread;
+    const std::size_t m_nbThread;
 };
 
 } // namespace thread

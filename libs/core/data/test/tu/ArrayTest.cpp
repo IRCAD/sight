@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT(array->empty());
     CPPUNIT_ASSERT(array->getBuffer() == nullptr);
     CPPUNIT_ASSERT(array->getSize().empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), array->getSizeInBytes());
 
     data::Array::SizeType size = {10, 100};
 
@@ -78,7 +78,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), array->getType().sizeOf());
 
     array->clear();
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), array->getSizeInBytes());
     CPPUNIT_ASSERT(array->empty());
     CPPUNIT_ASSERT(array->getBuffer() == nullptr);
     CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UNSPECIFIED_TYPE, array->getType());
@@ -92,8 +92,8 @@ void ArrayTest::allocation()
 
     array->setBuffer(buffer, false, size, core::tools::Type::s_UINT16, core::memory::BufferNewPolicy::New());
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 10 * 100), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {2, 20};
         CPPUNIT_ASSERT(array->getStrides() == stride);
@@ -133,8 +133,8 @@ void ArrayTest::resize()
         *iter = count++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 10 * 100), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
@@ -150,8 +150,8 @@ void ArrayTest::resize()
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 10 * 100), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {4, 400};
         CPPUNIT_ASSERT(array->getStrides() == stride);
@@ -168,7 +168,7 @@ void ArrayTest::resize()
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), array->getElementSizeInBytes());
     {
         data::Array::OffsetType stride = {4, 100};
         CPPUNIT_ASSERT(array->getStrides() == stride);
@@ -186,8 +186,8 @@ void ArrayTest::resize()
 
     array->resize(newSize, core::tools::Type::s_UINT16, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 100 * 10 * 2), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 100 * 10 * 2), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {2, 4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
@@ -219,7 +219,7 @@ void ArrayTest::reallocate()
         *iter = count++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 10 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
@@ -231,7 +231,7 @@ void ArrayTest::reallocate()
 
     array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 100 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 100 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({10, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({99, 9}));
@@ -250,7 +250,7 @@ void ArrayTest::reallocate()
     newSize = {2, 100, 100};
     array->resize(newSize, core::tools::Type::s_UINT32, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 2 * 100 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 2 * 100 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 5, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({1, 99, 4}));
@@ -276,8 +276,8 @@ void ArrayTest::reallocate()
 
     array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 10 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
@@ -287,8 +287,8 @@ void ArrayTest::reallocate()
 
     newSize = {2, 10, 100};
     array->resize(newSize, core::tools::Type::s_UINT16, true);
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 10 * 100 * 2), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 10 * 100 * 2), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 0, 1}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({0, 9, 99}));
@@ -299,15 +299,15 @@ void ArrayTest::reallocate()
     newSize = {10, 100};
     array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 10 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 2}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({2, 65}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({6, 47}));
 
     array->clear();
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), array->getSizeInBytes());
 }
 
 //-----------------------------------------------------------------------------
@@ -522,7 +522,7 @@ void ArrayTest::constArrayTest()
     data::Array::csptr array2 = data::Object::copy(array);
     const auto lock2          = array2->lock();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 10 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>(0));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));

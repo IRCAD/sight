@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ void ObjectTest::fieldTest()
     CPPUNIT_ASSERT(obj->getFields().empty());
 
     obj->setField(FIELD_ID1, fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(1));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
@@ -71,7 +71,7 @@ void ObjectTest::fieldTest()
     data::Object::FieldMapType localFieldsBackup = obj->getFields();
 
     obj->setField(FIELD_ID2, fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(2));
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(2));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), fieldObj2);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
@@ -85,7 +85,7 @@ void ObjectTest::fieldTest()
     CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
     obj->setFields(localFieldsBackup);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(1));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
@@ -96,7 +96,7 @@ void ObjectTest::fieldTest()
     CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
     obj->setField(FIELD_ID1, fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(1));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj2);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);

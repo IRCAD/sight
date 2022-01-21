@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ inline static void serialize(
     Series::serialize(archive, tree, cameraSeries, children, password);
 
     // Serialize the children camera
-    for(size_t index = 0, end = cameraSeries->numCameras() ; index < end ; ++index)
+    for(std::size_t index = 0, end = cameraSeries->numCameras() ; index < end ; ++index)
     {
         children[data::Camera::classname() + std::to_string(index)] = cameraSeries->getCamera(index);
     }
@@ -82,7 +82,7 @@ inline static data::CameraSeries::sptr deserialize(
     // Clearing is required in case the object is reused
     cameraSeries->clearCameras();
 
-    for(size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
     {
         const auto& cameraIt = children.find(data::Camera::classname() + std::to_string(index));
 

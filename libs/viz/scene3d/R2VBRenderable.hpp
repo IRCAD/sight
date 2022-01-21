@@ -63,7 +63,7 @@ public:
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
     VIZ_SCENE3D_API void setOutputSettings(
-        size_t _vertexCount,
+        std::size_t _vertexCount,
         bool _hasColor,
         bool _hasTexCoord,
         bool _hasNormals = true
@@ -116,7 +116,7 @@ protected:
     data::Mesh::CellType m_inputPrimitiveType;
 
     /// Maximum number of vertices in output buffer
-    size_t m_maxOutputVertexCount;
+    std::size_t m_maxOutputVertexCount;
 };
 
 //-----------------------------------------------------------------------------

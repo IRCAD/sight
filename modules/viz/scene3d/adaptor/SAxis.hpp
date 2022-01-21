@@ -153,7 +153,7 @@ private:
     sight::viz::scene3d::Text* m_axisNameTxt {nullptr};
 
     /// Defines labels font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};

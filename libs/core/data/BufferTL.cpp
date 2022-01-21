@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 namespace sight::data
 {
 
-const size_t BufferTL::s_DEFAULT_TIMELINE_MAX_SIZE = 1000;
+const std::size_t BufferTL::s_DEFAULT_TIMELINE_MAX_SIZE = 1000;
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,8 +72,8 @@ void SCommandHistory::configuring()
 {
     service::IService::ConfigType config = this->getConfigTree();
 
-    auto maxCommands = config.get_optional<size_t>("maxCommands");
-    auto maxMemory   = config.get_optional<size_t>("maxMemory");
+    auto maxCommands = config.get_optional<std::size_t>("maxCommands");
+    auto maxMemory   = config.get_optional<std::size_t>("maxMemory");
 
     if(maxCommands.is_initialized())
     {

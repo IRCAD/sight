@@ -132,7 +132,7 @@ struct PropertyVisitor : public camp::ValueVisitor<PropType>
                         char* buffer               = static_cast<char*>(lock.getBuffer());
                         std::size_t seed           = 0;
                         const std::size_t buffsize = bo->getSize();
-                        for(size_t i = 0 ; i < buffsize ; ++i)
+                        for(std::size_t i = 0 ; i < buffsize ; ++i)
                         {
                             boost::hash_combine(seed, buffer[i]);
                         }

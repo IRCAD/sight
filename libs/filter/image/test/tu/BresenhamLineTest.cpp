@@ -59,10 +59,10 @@ void BresenhamLineTest::straightLineTest()
             filter::image::BresenhamLine::draw(BresenhamLine::Orientation::X_AXIS, START_POINT, END_POINT);
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(size_t(END_POINT[2] - START_POINT[2] + 1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(END_POINT[2] - START_POINT[2] + 1), result.size());
 
         auto iter = result.begin();
-        for(size_t i = START_POINT[2] ; i <= END_POINT[2] ; ++i)
+        for(std::size_t i = START_POINT[2] ; i <= END_POINT[2] ; ++i)
         {
             const auto& pathElt = *iter;
 
@@ -85,10 +85,10 @@ void BresenhamLineTest::straightLineTest()
             );
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(size_t(START_POINT[1] - END_POINT[1] + 1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(START_POINT[1] - END_POINT[1] + 1), result.size());
 
         auto iter = result.begin();
-        for(size_t i = START_POINT[1] ; i >= END_POINT[1] ; --i)
+        for(std::size_t i = START_POINT[1] ; i >= END_POINT[1] ; --i)
         {
             const auto& pathElt = *iter;
 
@@ -111,10 +111,10 @@ void BresenhamLineTest::straightLineTest()
             );
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(size_t(START_POINT[2] - END_POINT[2] + 1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(START_POINT[2] - END_POINT[2] + 1), result.size());
 
         auto iter = result.begin();
-        for(size_t i = START_POINT[2] ; i >= END_POINT[2] ; --i)
+        for(std::size_t i = START_POINT[2] ; i >= END_POINT[2] ; --i)
         {
             const auto& pathElt = *iter;
 
@@ -135,7 +135,7 @@ void BresenhamLineTest::straightLineTest()
             );
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), result.size());
 
         CPPUNIT_ASSERT(START_POINT == result[0]);
     }

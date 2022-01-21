@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,7 +137,7 @@ private:
     unsigned int m_fps;
 
     /// counter used by the image reader
-    size_t m_imageCount;
+    std::size_t m_imageCount;
 
     core::thread::Timer::sptr m_timer;
 

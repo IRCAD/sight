@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace ExTimeLine
 struct MsgData
 {
     /// Defines the maximum size of a message.
-    static const size_t MAX_MSG_SIZE = 255;
+    static const std::size_t MAX_MSG_SIZE = 255;
 
     /// Defines the identifier of the sender.
     unsigned int uidSender;

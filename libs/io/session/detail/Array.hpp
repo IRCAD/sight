@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -99,11 +99,11 @@ inline static data::Array::sptr deserialize(
     array->setIsBufferOwner(tree.get<bool>(s_IsBufferOwner, false));
 
     // Sizes
-    std::vector<size_t> sizes;
+    std::vector<std::size_t> sizes;
 
     for(const auto& sizeTree : tree.get_child(s_Sizes))
     {
-        const auto& size = sizeTree.second.get_value<size_t>();
+        const auto& size = sizeTree.second.get_value<std::size_t>();
         sizes.push_back(size);
     }
 

@@ -357,8 +357,8 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
 
     sight::filter::image::MinMaxPropagation::SeedsType seeds;
 
-    const size_t nbElts = m_diff.numElements();
-    for(size_t i = 0 ; i < nbElts ; ++i)
+    const std::size_t nbElts = m_diff.numElements();
+    for(std::size_t i = 0 ; i < nbElts ; ++i)
     {
         data::Image::IndexType index = m_diff.getElementDiffIndex(i);
         sight::filter::image::MinMaxPropagation::CoordinatesType coords;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void DicomSeriesWriterTest::setUp()
     reader->setObject(srcSeriesDB);
     reader->setFolder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), srcSeriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), srcSeriesDB->size());
 
     m_srcDicomSeries =
         data::DicomSeries::dynamicCast(srcSeriesDB->getContainer().front());
@@ -105,7 +105,7 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
     reader->setObject(destSeriesDB);
     reader->setFolder(p);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), destSeriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), destSeriesDB->size());
     data::DicomSeries::sptr destDicomSeries =
         data::DicomSeries::dynamicCast(destSeriesDB->getContainer().front());
 

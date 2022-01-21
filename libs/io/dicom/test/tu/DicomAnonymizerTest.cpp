@@ -115,7 +115,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Check series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), sdb->getContainer().size());
 
     data::ImageSeries::sptr anonymizedSeries =
         data::ImageSeries::dynamicCast(sdb->getContainer().front());
@@ -126,7 +126,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string("Description"), anonymizedSeries->getDescription()); // action code K
-    CPPUNIT_ASSERT_EQUAL(size_t(0), anonymizedSeries->getPerformingPhysiciansName().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), anonymizedSeries->getPerformingPhysiciansName().size());
     CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getEquipment()->getInstitutionName());
     CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED"), anonymizedSeries->getPatient()->getName());
     CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED"), anonymizedSeries->getPatient()->getPatientId());
@@ -270,7 +270,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     reader->setObject(seriesDB);
     reader->setFolder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Write DicomSeries
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";

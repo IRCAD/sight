@@ -79,8 +79,8 @@ void CameraTest::propertiesTest()
     const std::string DESC    = "My camera";
     const std::string CAM_ID  = "CAM_461384568";
     const float MAX_FRAMERATE = 42.5f;
-    const size_t WIDTH        = 1920;
-    const size_t HEIGHT       = 1080;
+    const std::size_t WIDTH   = 1920;
+    const std::size_t HEIGHT  = 1080;
     const double SCALE        = 1.5;
 
     data::Camera::sptr camera = data::Camera::New();

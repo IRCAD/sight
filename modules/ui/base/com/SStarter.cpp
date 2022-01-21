@@ -91,7 +91,7 @@ void SStarter::info(std::ostream& _sstream)
 
 void SStarter::updating()
 {
-    for(size_t i = 0 ; i < m_uuidServices.size() ; i++)
+    for(std::size_t i = 0 ; i < m_uuidServices.size() ; i++)
     {
         ActionType action = m_uuidServices.at(i).second;
         IDSrvType uid     = m_uuidServices.at(i).first;

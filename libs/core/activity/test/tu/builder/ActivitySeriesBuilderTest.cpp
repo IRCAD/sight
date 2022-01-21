@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ void ActivitySeriesBuilderTest::buildDataTest()
 
     activity::extension::Activity::ActivitiesType activities;
     activities = m_activity->getInfos(selection);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), activities.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
 
     activity::extension::ActivityInfo activityInfo = activities[0];
     data::ActivitySeries::sptr actSeries;
@@ -92,7 +92,7 @@ void ActivitySeriesBuilderTest::buildDataTest()
     CPPUNIT_ASSERT_EQUAL(activityInfo.id, actSeries->getActivityConfigId());
 
     data::Composite::sptr dataActivity = actSeries->getData();
-    CPPUNIT_ASSERT_EQUAL(size_t(2), dataActivity->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dataActivity->size());
 
     const std::string imageKey = "imageSeries";
     const std::string modelKey = "modelSeries";
@@ -107,7 +107,7 @@ void ActivitySeriesBuilderTest::buildDataTest()
     obj = (*dataActivity)[modelKey];
     data::Composite::sptr composite = data::Composite::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to data::Composite failed", composite);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), composite->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), composite->size());
     CPPUNIT_ASSERT(modelSeriesSelected == (*composite)["key1"]);
 }
 

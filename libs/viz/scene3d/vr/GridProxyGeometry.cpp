@@ -136,7 +136,7 @@ void GridProxyGeometry::updateGridSize()
     }
     };
 
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         m_gridSize[i] =
             static_cast<int>(imageSize[i]) / m_brickSize[i]
@@ -171,7 +171,7 @@ void GridProxyGeometry::initializeR2VBSource()
 
     subMesh->vertexData              = new Ogre::VertexData();
     subMesh->vertexData->vertexStart = 0;
-    subMesh->vertexData->vertexCount = static_cast<size_t>(nbVtx);
+    subMesh->vertexData->vertexCount = static_cast<std::size_t>(nbVtx);
 
     Ogre::VertexDeclaration* decl = subMesh->vertexData->vertexDeclaration;
 
@@ -259,7 +259,7 @@ void GridProxyGeometry::setupGrid()
 
         Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
 
-        meshVtxData->vertexCount = static_cast<size_t>(m_gridSize[0] * m_gridSize[1] * m_gridSize[2]);
+        meshVtxData->vertexCount = static_cast<std::size_t>(m_gridSize[0] * m_gridSize[1] * m_gridSize[2]);
 
         Ogre::HardwareVertexBufferSharedPtr vtxBuffer =
             Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
@@ -268,7 +268,7 @@ void GridProxyGeometry::setupGrid()
                 Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY
             );
 
-        for(size_t i = 0 ; i < meshVtxData->vertexCount ; ++i)
+        for(std::size_t i = 0 ; i < meshVtxData->vertexCount ; ++i)
         {
             vtxBuffer->writeData(
                 i * Ogre::VertexElement::getTypeSize(Ogre::VET_INT1),
@@ -289,7 +289,8 @@ void GridProxyGeometry::setupGrid()
         // This means half the bricks are full.
         // The transform feedback outputs triangles (not strips) meaning that
         // one brick then generates 36 vertices (6 per cube face).
-        const size_t maximumVertexCount = 1 + (meshVtxData->vertexCount * 36 - 1) / 2; // = (vC * 36)/2 + (vC * 36)%2
+        const std::size_t maximumVertexCount = 1 + (meshVtxData->vertexCount * 36 - 1) / 2; // = (vC * 36)/2 + (vC *
+                                                                                            // 36)%2
 
         this->setOutputSettings(maximumVertexCount, false, false, false);
         this->setRenderToBufferMaterial(this->getName() + "_VolumeBricks");
@@ -330,7 +331,7 @@ void GridProxyGeometry::setupGrid()
 
 void GridProxyGeometry::computeGrid()
 {
-    size_t count = m_gridRenderOp.vertexData->vertexCount;
+    std::size_t count = m_gridRenderOp.vertexData->vertexCount;
     m_gridRenderOp.vertexData->vertexCount = 4;
     m_gridRenderOp.operationType           = Ogre::RenderOperation::OT_TRIANGLE_STRIP;
 

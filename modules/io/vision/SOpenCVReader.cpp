@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -135,11 +135,11 @@ void SOpenCVReader::updating()
     }
 
     // Remove all CameraSeries
-    const auto data      = m_data.lock();
-    const auto camSeries = std::dynamic_pointer_cast<data::CameraSeries>(data.get_shared());
-    const size_t cams    = camSeries->numCameras();
+    const auto data        = m_data.lock();
+    const auto camSeries   = std::dynamic_pointer_cast<data::CameraSeries>(data.get_shared());
+    const std::size_t cams = camSeries->numCameras();
 
-    for(size_t c = 0 ; c < cams ; ++c)
+    for(std::size_t c = 0 ; c < cams ; ++c)
     {
         data::Camera::sptr cam = camSeries->getCamera(0);
         camSeries->removeCamera(cam);
@@ -187,8 +187,8 @@ void SOpenCVReader::updating()
 
         cam->setCameraID(id);
         cam->setDescription(desc);
-        cam->setWidth(static_cast<size_t>(width));
-        cam->setHeight(static_cast<size_t>(height));
+        cam->setWidth(static_cast<std::size_t>(width));
+        cam->setHeight(static_cast<std::size_t>(height));
 
         cam->setDistortionCoefficient(
             dist.at<double>(0),
@@ -213,9 +213,9 @@ void SOpenCVReader::updating()
         {
             data::Matrix4::sptr extMat = data::Matrix4::New();
 
-            for(size_t i = 0 ; i < 4 ; ++i)
+            for(std::size_t i = 0 ; i < 4 ; ++i)
             {
-                for(size_t j = 0 ; j < 4 ; ++j)
+                for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
                     extMat->setCoefficient(
                         i,
@@ -228,7 +228,7 @@ void SOpenCVReader::updating()
                 }
             }
 
-            camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
+            camSeries->setExtrinsicMatrix(static_cast<std::size_t>(c), extMat);
             auto sigExtrinsic = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>
                                     (data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
             sigExtrinsic->asyncEmit();

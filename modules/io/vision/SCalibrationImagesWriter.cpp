@@ -117,7 +117,7 @@ void SCalibrationImagesWriter::updating()
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
-        size_t count(0);
+        std::size_t count(0);
         for(const auto& calibImg : calibInfo->getImageContainer())
         {
             std::ostringstream imageNumber;

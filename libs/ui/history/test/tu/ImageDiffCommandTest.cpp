@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ void ImageDiffCommandTest::undoredoTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(size_t i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
@@ -92,7 +92,7 @@ void ImageDiffCommandTest::undoredoTest()
     // Revert diff. Ensure that the image is the same as before (all values equal to zero).
     CPPUNIT_ASSERT(imageDiffCommand.undo());
 
-    for(size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
+    for(std::size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
     {
         CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixel(it)));
     }
@@ -100,7 +100,7 @@ void ImageDiffCommandTest::undoredoTest()
     // Apply diff. Ensure all values are zero except the ones at the selected indices.
     CPPUNIT_ASSERT(imageDiffCommand.redo());
 
-    for(size_t i = 0 ; i < image->getSizeInBytes() ; ++i)
+    for(std::size_t i = 0 ; i < image->getSizeInBytes() ; ++i)
     {
         // Check if 'i' is an index
         auto indexIt = std::find(indices.begin(), indices.end(), i);
@@ -141,7 +141,7 @@ void ImageDiffCommandTest::getSizeTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(size_t i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
@@ -151,7 +151,7 @@ void ImageDiffCommandTest::getSizeTest()
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.numElements());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 

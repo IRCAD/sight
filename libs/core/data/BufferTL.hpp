@@ -97,13 +97,13 @@ public:
     DATA_API core::HiResClock::HiResClockType getNewerTimestamp() const;
 
     /// Change the maximum size of the timeline
-    void setMaximumSize(size_t maximumSize)
+    void setMaximumSize(std::size_t maximumSize)
     {
         m_maximumSize = maximumSize;
     }
 
     /// Default Timeline Size
-    DATA_API static const size_t s_DEFAULT_TIMELINE_MAX_SIZE;
+    DATA_API static const std::size_t s_DEFAULT_TIMELINE_MAX_SIZE;
 
     /// Return true if the pool is allocated
     bool isAllocated() const
@@ -126,7 +126,7 @@ protected:
     SPTR(PoolType) m_pool;
 
     /// maximum size
-    size_t m_maximumSize;
+    std::size_t m_maximumSize;
 }; // class BufferTL
 
 } // namespace sight::data

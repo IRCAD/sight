@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -111,7 +111,7 @@ public:
 protected:
 
     /// Compute DICOM filename according to anonymizer or return default filename.
-    std::string getFilename(const size_t& instanceIndex);
+    std::string getFilename(const std::size_t& instanceIndex);
 
     /// Process inputStream to outputStream with anonymization management.
     void processStream(std::istream& inputStream, std::ostream& outputStream);

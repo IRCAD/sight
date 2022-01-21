@@ -357,8 +357,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -372,8 +372,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -388,8 +388,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -405,8 +405,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT32, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -420,8 +420,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT32, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -436,8 +436,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT32, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -453,8 +453,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_FLOAT, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
@@ -468,8 +468,8 @@ void ShadingTest::createObjectFromShaderParameter()
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), size[0]);
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_FLOAT, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();

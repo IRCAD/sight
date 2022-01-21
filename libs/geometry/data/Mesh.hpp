@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ public:
 
     typedef std::map<Point, sight::data::Mesh::point_t> PointsMapType;
     typedef std::array<double, 3> PositionType;
-    typedef std::array<size_t, 3> OrganizationType;
+    typedef std::array<std::size_t, 3> OrganizationType;
 
     /**
      * @brief Generate cell normals for the mesh.
@@ -136,7 +136,7 @@ public:
      */
     GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& _mesh,
-        const std::vector<size_t>& _vectorNumTriangle,
+        const std::vector<std::size_t>& _vectorNumTriangle,
         const std::uint8_t _colorR,
         const std::uint8_t colorG,
         const std::uint8_t colorB,
@@ -162,7 +162,7 @@ public:
      */
     GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
-        const std::vector<size_t>& triangleIndexVector,
+        const std::vector<std::size_t>& triangleIndexVector,
         const std::uint8_t colorR,
         const std::uint8_t colorG,
         const std::uint8_t colorB,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,7 +137,7 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    MODULE_UI_QT_API data::Object::sptr checkData(size_t _index, std::string& _errorMsg);
+    MODULE_UI_QT_API data::Object::sptr checkData(std::size_t _index, std::string& _errorMsg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
@@ -215,7 +215,7 @@ private:
      * @param index index used to find the associated tree widget.
      * @param _obj object to add in the tree.
      */
-    void addObjectItem(size_t index, const data::Object::csptr& _obj);
+    void addObjectItem(std::size_t index, const data::Object::csptr& _obj);
 
     /// Sets the activity information
     sight::activity::extension::ActivityInfo m_activityInfo;

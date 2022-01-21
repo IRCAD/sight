@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,10 +98,10 @@ private:
     std::string m_scaleKey;
 
     /// Width of the chessboard we're looking for.
-    size_t m_width {11};
+    std::size_t m_width {11};
 
     /// Height of the chessboard we're looking for.
-    size_t m_height {8};
+    std::size_t m_height {8};
 
     /// Scale applied to the images before running the detection algorithm.
     float m_scale {1.f};

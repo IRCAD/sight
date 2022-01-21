@@ -39,7 +39,7 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-static size_t computeOffset(const size_t x, const size_t y, const size_t z, data::Image::sptr image)
+static std::size_t computeOffset(const std::size_t x, const std::size_t y, const std::size_t z, data::Image::sptr image)
 {
     const data::Image::Size size = image->getSize();
     return z * size[0] * size[1] + y * size[0] + x;
@@ -54,11 +54,11 @@ static void drawCube(data::Image::sptr image, const std::uint8_t value)
     SPTR(data::Image::BufferType) bufferValue =
         data::helper::MedicalImage::getPixelInImageSpace(image, value);
 
-    for(size_t x = 10 ; x < 20 ; ++x)
+    for(std::size_t x = 10 ; x < 20 ; ++x)
     {
-        for(size_t y = 10 ; y < 20 ; ++y)
+        for(std::size_t y = 10 ; y < 20 ; ++y)
         {
-            for(size_t z = 10 ; z < 20 ; ++z)
+            for(std::size_t z = 10 ; z < 20 ; ++z)
             {
                 image->setPixel(computeOffset(x, y, z, image), bufferValue.get());
             }
@@ -113,7 +113,7 @@ void MinMaxPropagationTest::minPropagTest()
     const auto dumpLockOut = imageOut->lock();
 
     // Check that the image is not changed because the propagated value is the same
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
@@ -131,7 +131,7 @@ void MinMaxPropagationTest::minPropagTest()
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
@@ -156,7 +156,7 @@ void MinMaxPropagationTest::minPropagTest()
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
 
@@ -199,7 +199,7 @@ void MinMaxPropagationTest::maxPropagTest()
     const auto dumpLockOut = imageOut->lock();
 
     // Check that the entire image is completely filled with propagated value
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(3), valueOut);
@@ -214,7 +214,7 @@ void MinMaxPropagationTest::maxPropagTest()
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
     // Check that the entire image is completely filled with propagated value
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);

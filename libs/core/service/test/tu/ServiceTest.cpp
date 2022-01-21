@@ -221,7 +221,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string myUUID2 = "myUUID2";
     const std::string myUUID3 = "myUUID3";
     const std::string dataKey = "data1";
-    size_t nbServices         = 0;
+    std::size_t nbServices    = 0;
 
     data::Integer::sptr obj = data::Integer::New();
     service::IService::sptr service;
@@ -595,9 +595,9 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
     service->setInput(obj[0], service::ut::TestServiceWithData::s_INPUT);
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
-    service->setInOut(obj[0], service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
+    service->setInOut(obj[0], service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(0));
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
-    service->setInOut(obj[1], service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+    service->setInOut(obj[1], service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(1));
     CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
 
     service->start().wait();
@@ -618,7 +618,7 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(obj[0]->value(), outInteger2->value());
 
     // Test index access
-    CPPUNIT_ASSERT_EQUAL(size_t(2), service->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), service->m_inoutGroup.size());
     CPPUNIT_ASSERT_EQUAL(obj[0]->value(), service->m_inoutGroup[0].lock()->value());
     CPPUNIT_ASSERT_EQUAL(obj[1]->value(), service->m_inoutGroup[1].lock()->value());
 

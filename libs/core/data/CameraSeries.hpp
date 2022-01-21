@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,14 @@
 
 #include "data/Camera.hpp"
 #include "data/config.hpp"
-#include <data/Matrix4.hpp>
-#include <data/Object.hpp>
-#include <data/Series.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
+
+#include <data/Matrix4.hpp>
+#include <data/Object.hpp>
+#include <data/Series.hpp>
 
 #include <map>
 #include <vector>
@@ -100,7 +101,7 @@ public:
      * @brief Returns the camera at the index.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API data::Camera::sptr getCamera(size_t index) const;
+    DATA_API data::Camera::sptr getCamera(std::size_t index) const;
 
     /**
      * @brief Remove the given camera from the series
@@ -109,7 +110,7 @@ public:
     DATA_API void removeCamera(const data::Camera::sptr& camera);
 
     /// Returns the number of cameras
-    inline size_t numCameras() const
+    inline std::size_t numCameras() const
     {
         return m_cameras.size();
     }
@@ -128,7 +129,7 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API void setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix);
+    DATA_API void setExtrinsicMatrix(std::size_t index, data::Matrix4::sptr matrix);
 
     /**
      * @brief Gets the extrinsic matrix.
@@ -138,7 +139,7 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API data::Matrix4::sptr getExtrinsicMatrix(size_t index) const;
+    DATA_API data::Matrix4::sptr getExtrinsicMatrix(std::size_t index) const;
 
     /**
      * @brief Gets the extrinsic matrix corresponding to the transformation from camera[0] to camera[1].

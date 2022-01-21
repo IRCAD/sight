@@ -427,7 +427,7 @@ void SWizard::onBuildActivity()
 
     std::string errorMsg;
     // Check current data
-    if(m_DataView->checkData(size_t(index), errorMsg))
+    if(m_DataView->checkData(std::size_t(index), errorMsg))
     {
         if(index != lastTab)
         {

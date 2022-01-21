@@ -63,7 +63,7 @@ public:
         Ogre::SceneManager* _sm,
         Ogre::OverlayContainer* _parent,
         const std::string& _fontSource,
-        size_t _fontSize,
+        std::size_t _fontSize,
         float _fontResolution,
         Ogre::Camera* _cam
     );

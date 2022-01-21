@@ -82,7 +82,7 @@ void MIPMatchingRegistrationTest::identityTest()
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
 
-    for(size_t i = 0 ; i != 3 ; ++i)
+    for(std::size_t i = 0 ; i != 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Translation value is not equal to '0' ",
@@ -113,7 +113,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Actual transform does not match expected results",
@@ -180,7 +180,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Actual transform does not match expected results",

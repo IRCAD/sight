@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,19 +77,19 @@ public:
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    DATA_API TM3DType getCoefficient(size_t l, size_t c) const;
-    DATA_API void setCoefficient(size_t l, size_t c, TM3DType val);
+    DATA_API TM3DType getCoefficient(std::size_t l, std::size_t c) const;
+    DATA_API void setCoefficient(std::size_t l, std::size_t c, TM3DType val);
     /// @}
 
     /// maximum size of the matrix (MATRIX_SIZE x MATRIX_SIZE)
-    static const size_t MATRIX_SIZE = 4;
+    static const std::size_t MATRIX_SIZE = 4;
 
     /// Print the coefficients of the matrix
     friend std::ostream& operator<<(std::ostream& s, const Matrix4& mat)
     {
-        for(size_t l = 0 ; l < MATRIX_SIZE ; l++)
+        for(std::size_t l = 0 ; l < MATRIX_SIZE ; l++)
         {
-            for(size_t c = 0 ; c < MATRIX_SIZE ; c++)
+            for(std::size_t c = 0 ; c < MATRIX_SIZE ; c++)
             {
                 s << mat.getCoefficient(l, c) << "\t";
             }
@@ -146,17 +146,17 @@ inline void Matrix4::setCoefficients(const Matrix4::TMCoefArray& _vCoefficients)
 
 //------------------------------------------------------------------------------
 
-inline Matrix4::TM3DType Matrix4::getCoefficient(size_t l, size_t c) const
+inline Matrix4::TM3DType Matrix4::getCoefficient(std::size_t l, std::size_t c) const
 {
-    size_t pos = l * MATRIX_SIZE + c;
+    std::size_t pos = l * MATRIX_SIZE + c;
     return m_vCoefficients.at(pos);
 }
 
 //------------------------------------------------------------------------------
 
-inline void Matrix4::setCoefficient(size_t l, size_t c, Matrix4::TM3DType val)
+inline void Matrix4::setCoefficient(std::size_t l, std::size_t c, Matrix4::TM3DType val)
 {
-    size_t pos = l * MATRIX_SIZE + c;
+    std::size_t pos = l * MATRIX_SIZE + c;
     m_vCoefficients.at(pos) = val;
 }
 

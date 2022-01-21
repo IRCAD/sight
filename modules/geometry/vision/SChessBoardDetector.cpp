@@ -89,7 +89,7 @@ void SChessBoardDetector::starting()
 {
     this->updateChessboardSize();
 
-    const size_t imageGroupSize = m_image.size();
+    const std::size_t imageGroupSize = m_image.size();
 
     m_images.resize(imageGroupSize);
     m_pointLists.resize(imageGroupSize);
@@ -99,11 +99,11 @@ void SChessBoardDetector::starting()
 
 void SChessBoardDetector::updating()
 {
-    const size_t imageGroupSize = m_image.size();
+    const std::size_t imageGroupSize = m_image.size();
 
     // Run parallel detections in separate threads.
     std::vector<std::thread> detectionJobs;
-    for(size_t i = 1 ; i < imageGroupSize ; ++i)
+    for(std::size_t i = 1 ; i < imageGroupSize ; ++i)
     {
         detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
     }
@@ -149,13 +149,13 @@ service::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() c
 
 void SChessBoardDetector::recordPoints()
 {
-    const size_t calibGroupSize = m_calInfo.size();
+    const std::size_t calibGroupSize = m_calInfo.size();
 
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
     if(allDetected)
     {
-        for(size_t i = 0 ; i < calibGroupSize ; ++i)
+        for(std::size_t i = 0 ; i < calibGroupSize ; ++i)
         {
             auto calInfo = m_calInfo[i].lock();
             SIGHT_ASSERT("Missing 'calibInfo' in-out.", calInfo);
@@ -204,7 +204,7 @@ void SChessBoardDetector::updateChessboardSize()
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::doDetection(size_t _imageIndex)
+void SChessBoardDetector::doDetection(std::size_t _imageIndex)
 {
     const auto img = m_image[_imageIndex].lock();
     SIGHT_ASSERT("Missing 'image' input.", img);

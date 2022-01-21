@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
+
 #include <core/macros.hpp>
 
 #include <functional>
@@ -44,15 +45,15 @@ public:
     typedef SPTR(void) LockType;
     typedef std::function<LockType()> CounterFactoryType;
 
-    Buffer(void* buf, size_t size);
-    Buffer(void* buf, size_t size, CounterFactoryType counterFactory);
+    Buffer(void* buf, std::size_t size);
+    Buffer(void* buf, std::size_t size, CounterFactoryType counterFactory);
 
 protected:
 
     CORE_API SPTR(std::istream) get();
 
     void* m_buf;
-    size_t m_size;
+    std::size_t m_size;
     CounterFactoryType m_counterFactory;
 };
 

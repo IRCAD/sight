@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,14 +21,6 @@
  ***********************************************************************/
 
 #include "SOpenvslam.hpp"
-
-#include <openvslam/camera/perspective.h>
-#include <openvslam/config.h>
-#include <openvslam/data/landmark.h>
-#include <openvslam/feature/orb_params.h>
-#include <openvslam/publish/frame_publisher.h>
-#include <openvslam/publish/map_publisher.h>
-#include <openvslam/system.h>
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -51,6 +43,14 @@
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include <openvslam/camera/perspective.h>
+#include <openvslam/config.h>
+#include <openvslam/data/landmark.h>
+#include <openvslam/feature/orb_params.h>
+#include <openvslam/publish/frame_publisher.h>
+#include <openvslam/publish/map_publisher.h>
+#include <openvslam/system.h>
 
 namespace sight::module::navigation::openvslam
 {
@@ -144,7 +144,7 @@ void SOpenvslam::configuring()
     this->service::ITracker::configuring();
     const ConfigType cfg = this->getConfigTree();
 
-    m_downSampleWidth = cfg.get<size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
+    m_downSampleWidth = cfg.get<std::size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
     const std::string mode = cfg.get<std::string>(s_MODE_CONFIG, "MONO");
 
     // if mode is not set: assuming MONO

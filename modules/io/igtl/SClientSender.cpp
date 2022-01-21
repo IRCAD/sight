@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,7 +129,7 @@ void SClientSender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::sendObject(const data::Object::csptr& obj, const size_t index)
+void SClientSender::sendObject(const data::Object::csptr& obj, const std::size_t index)
 {
     SIGHT_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
 

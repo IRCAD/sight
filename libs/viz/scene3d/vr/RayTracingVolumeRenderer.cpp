@@ -553,7 +553,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(
 void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sourceFile)
 {
     std::string vpPPDefines, fpPPDefines;
-    size_t hash;
+    std::size_t hash;
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
     const Ogre::String matName("RTV_Mat_" + m_parentId);
@@ -827,7 +827,7 @@ void RayTracingVolumeRenderer::updateVolIllumMat()
 
 //-----------------------------------------------------------------------------
 
-std::tuple<std::string, std::string, size_t> RayTracingVolumeRenderer::computeRayTracingDefines() const
+std::tuple<std::string, std::string, std::size_t> RayTracingVolumeRenderer::computeRayTracingDefines() const
 {
     std::ostringstream vpPPDefs, fpPPDefs;
 

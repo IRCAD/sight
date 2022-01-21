@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
     DATA_API Buffer(
         core::HiResClock::HiResClockType timestamp = 0,
         BufferDataType buffer                      = 0,
-        size_t size                                = 0,
+        std::size_t size                           = 0,
         DeleterType d                              = 0
     );
 
@@ -56,7 +56,7 @@ public:
     DATA_API virtual void deepCopy(const data::timeline::Object& other);
 
     /// Returns size
-    size_t getSize() const
+    std::size_t getSize() const
     {
         return m_size;
     }
@@ -64,7 +64,7 @@ public:
 protected:
 
     ///Buffer size
-    size_t m_size;
+    std::size_t m_size;
 
     ///Buffer
     BufferDataType m_buffer;

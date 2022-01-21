@@ -122,8 +122,8 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
         core::HiResClock::HiResClockType lastTimestamp;
         lastTimestamp = std::numeric_limits<core::HiResClock::HiResClockType>::max();
 
-        const size_t numTimeline  = m_timeline.size();
-        const size_t numDetection = m_detection.size();
+        const std::size_t numTimeline  = m_timeline.size();
+        const std::size_t numDetection = m_detection.size();
 
         SIGHT_ERROR_IF(
             "Different number of input timelines and detected point lists.",
@@ -133,7 +133,7 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
         const bool detection = (numDetection > 0) && (numTimeline == numDetection);
 
         // Grab timeline objects
-        for(size_t i = 0 ; i < numTimeline ; ++i)
+        for(std::size_t i = 0 ; i < numTimeline ; ++i)
         {
             auto frameTL = m_timeline[i].lock();
             lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
@@ -141,7 +141,7 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
 
         m_isDetected = true;
 
-        for(size_t i = 0 ; i < numTimeline ; ++i)
+        for(std::size_t i = 0 ; i < numTimeline ; ++i)
         {
             auto tl = m_timeline[i].lock();
 
@@ -189,8 +189,8 @@ void SCharucoBoardDetector::detectPoints()
 {
     if(m_isDetected)
     {
-        const size_t numInfo = m_calInfo.size();
-        for(size_t i = 0 ; i < numInfo ; ++i)
+        const std::size_t numInfo = m_calInfo.size();
+        for(std::size_t i = 0 ; i < numInfo ; ++i)
         {
             auto calInfo                  = m_calInfo[i].lock();
             const auto frameTL            = m_timeline[i].lock();
@@ -364,7 +364,7 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
 
             pointlist = data::PointList::New();
             data::PointList::PointListContainer& points = pointlist->getPoints();
-            points.reserve(static_cast<size_t>(chessBoardCorners.size[0]));
+            points.reserve(static_cast<std::size_t>(chessBoardCorners.size[0]));
 
             for(int i = 0 ; i < chessBoardCorners.size[0] ; ++i)
             {

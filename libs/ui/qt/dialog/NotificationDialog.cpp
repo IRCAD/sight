@@ -59,7 +59,7 @@ bool checkSizeOfMessage(const QString& _message, const QFontMetrics& _fm, const 
 //------------------------------------------------------------------------------
 
 // Find where to trunc a message, to fit _acceptable_size. Calls checkSizeOfMessage.
-size_t truncMessageToFit(const std::string& _message, const QFontMetrics& _fm, const QSize _acceptable_size)
+std::size_t truncMessageToFit(const std::string& _message, const QFontMetrics& _fm, const QSize _acceptable_size)
 {
     // if size is > 100, start trunc at 100 to be faster.
     const auto initial_size = _message.size() < 100 ? _message.size() : 100;
@@ -67,7 +67,7 @@ size_t truncMessageToFit(const std::string& _message, const QFontMetrics& _fm, c
     bool fit = false;
 
     // initialize trunc_size to initial_size + 1
-    size_t trunc_size = initial_size + 1;
+    std::size_t trunc_size = initial_size + 1;
     do
     {
         // first time == initial_size

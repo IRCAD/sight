@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -148,7 +148,7 @@ private:
     unsigned int m_seriesIndex;
 
     /// Total number of instances that must be downloaded
-    size_t m_instanceCount;
+    std::size_t m_instanceCount;
 
     /// Map of Dicom series being pulled
     DicomSeriesMapType m_pullingDicomSeriesMap;

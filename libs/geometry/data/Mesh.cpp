@@ -135,7 +135,7 @@ void generateRegionCellNormals(
                     Vector<float> n;
                     auto&& [cell, normal] = it;
 
-                    for(size_t i = 0 ; i < 4 ; ++i)
+                    for(std::size_t i = 0 ; i < 4 ; ++i)
                     {
                         Vector<float> v;
                         auto pItr = pointBegin + cell.pt[i];
@@ -163,7 +163,7 @@ void generateRegionCellNormals(
 //------------------------------------------------------------------------------
 
 template<typename T>
-void vectorSum(std::vector<std::vector<T> >& vectors, size_t regionMin, size_t regionMax)
+void vectorSum(std::vector<std::vector<T> >& vectors, std::size_t regionMin, std::size_t regionMax)
 {
     if(vectors.empty())
     {
@@ -176,7 +176,7 @@ void vectorSum(std::vector<std::vector<T> >& vectors, size_t regionMin, size_t r
 
     for(++vIter ; vIter != vectors.end() ; ++vIter)
     {
-        for(size_t i = regionMin ; i < regionMax ; ++i)
+        for(std::size_t i = regionMin ; i < regionMax ; ++i)
         {
             res[i] += (*vIter)[i];
         }
@@ -218,7 +218,7 @@ typedef std::vector<std::vector<float> > FloatVectors;
 
 void generateRegionCellNormalsByPoints(
     FloatVectors& normalsData,
-    size_t dataId,
+    std::size_t dataId,
     const sight::data::Mesh::sptr& mesh,
     const sight::data::Mesh::cell_t regionMin,
     const sight::data::Mesh::cell_t regionMax
@@ -551,7 +551,7 @@ void Mesh::transform(
 
     const glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
 
-    [[maybe_unused]] const size_t numPts = inMesh->numPoints();
+    [[maybe_unused]] const std::size_t numPts = inMesh->numPoints();
     SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->numPoints());
 
     SIGHT_ASSERT(
@@ -637,7 +637,7 @@ void Mesh::colorizeMeshPoints(
 
 void Mesh::colorizeMeshPoints(
     const sight::data::Mesh::sptr& _mesh,
-    const std::vector<size_t>& _vectorNumTriangle,
+    const std::vector<std::size_t>& _vectorNumTriangle,
     const std::uint8_t _colorR,
     const std::uint8_t _colorG,
     const std::uint8_t _colorB,
@@ -650,7 +650,7 @@ void Mesh::colorizeMeshPoints(
 
     auto itrPoint = _mesh->begin<point::rgba>();
 
-    for(size_t index : _vectorNumTriangle)
+    for(std::size_t index : _vectorNumTriangle)
     {
         auto cell                        = itrCell + static_cast<std::ptrdiff_t>(index);
         const std::ptrdiff_t indexPoint0 = static_cast<std::ptrdiff_t>(cell->pt[0]);
@@ -711,7 +711,7 @@ void Mesh::colorizeMeshCells(
 
 void Mesh::colorizeMeshCells(
     const sight::data::Mesh::sptr& mesh,
-    const std::vector<size_t>& triangleIndexVector,
+    const std::vector<std::size_t>& triangleIndexVector,
     const std::uint8_t colorR,
     const std::uint8_t colorG,
     const std::uint8_t colorB,
@@ -722,7 +722,7 @@ void Mesh::colorizeMeshCells(
 
     auto itrCell = mesh->begin<cell::rgba>();
 
-    for(size_t index : triangleIndexVector)
+    for(std::size_t index : triangleIndexVector)
     {
         auto cell = itrCell + static_cast<std::ptrdiff_t>(index);
 

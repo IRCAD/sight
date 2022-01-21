@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "SFrameGrabber.hpp"
 
-#include <pcl/common/transforms.h>
-#include <pcl/io/pcd_io.h>
-
 #include <core/com/Signal.hxx>
 
 #include <data/Camera.hpp>
@@ -34,6 +31,9 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/preferences.hpp>
+
+#include <pcl/common/transforms.h>
+#include <pcl/io/pcd_io.h>
 
 #include <cstdint>
 #include <filesystem>
@@ -217,8 +217,8 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             SIGHT_ERROR("Couldn't read input pointcloud file " + m_imageToRead.front().string());
         }
 
-        const size_t width  = inputCloud.width;
-        const size_t height = inputCloud.height;
+        const std::size_t width  = inputCloud.width;
+        const std::size_t height = inputCloud.height;
 
         if(width != 0 && height != 0)
         {
@@ -282,8 +282,8 @@ void SFrameGrabber::grabImage()
 
         const core::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
 
-        const size_t width  = static_cast<size_t>(inputCloud.width);
-        const size_t height = static_cast<size_t>(inputCloud.height);
+        const std::size_t width  = static_cast<std::size_t>(inputCloud.width);
+        const std::size_t height = static_cast<std::size_t>(inputCloud.height);
 
         const auto frameTL = m_frame.lock();
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
@@ -336,7 +336,7 @@ void SFrameGrabber::setPosition(int64_t position)
 
     if(!m_imageToRead.empty())
     {
-        const size_t newPos = static_cast<size_t>(position / 30);
+        const std::size_t newPos = static_cast<std::size_t>(position / 30);
         if(newPos < m_imageToRead.size())
         {
             m_imageCount = newPos;

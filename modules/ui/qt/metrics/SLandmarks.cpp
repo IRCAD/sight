@@ -383,7 +383,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
             {
                 const std::string& groupName = previousParent->text(0).toStdString();
 
-                const size_t index = static_cast<size_t>(previousParent->indexOfChild(_previous));
+                const std::size_t index = static_cast<std::size_t>(previousParent->indexOfChild(_previous));
 
                 SIGHT_ASSERT(
                     "index must be inferior to the number of points in '" + groupName + "'.",
@@ -425,7 +425,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
                 {
                     groupName = currentParent->text(0).toStdString();
 
-                    const size_t index = static_cast<size_t>(currentParent->indexOfChild(_current));
+                    const std::size_t index = static_cast<std::size_t>(currentParent->indexOfChild(_current));
 
                     SIGHT_ASSERT(
                         "index must be inferior to the number of points in '" + groupName + "'.",
@@ -618,7 +618,7 @@ void SLandmarks::onRemoveSelection()
         {
             QTreeWidgetItem* const itemParent = item->parent();
 
-            const size_t index           = static_cast<size_t>(itemParent->indexOfChild(item));
+            const std::size_t index      = static_cast<std::size_t>(itemParent->indexOfChild(item));
             const std::string& groupName = itemParent->text(0).toStdString();
 
             landmarks->removePoint(groupName, index);
@@ -756,12 +756,12 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
 
             // Find closest landmarks.
             double closest             = std::numeric_limits<double>::max();
-            size_t foundIndex          = 0;
+            std::size_t foundIndex     = 0;
             std::string foundGroupname = "";
 
             for(const std::string& groupName : landmarks->getGroupNames())
             {
-                for(size_t index = 0 ; index < landmarks->numPoints(groupName) ; ++index)
+                for(std::size_t index = 0 ; index < landmarks->numPoints(groupName) ; ++index)
                 {
                     const data::Landmarks::PointType landmark = landmarks->getPoint(groupName, index);
 
@@ -831,16 +831,16 @@ void SLandmarks::addPoint(std::string _groupName)
 
         QTreeWidgetItem* const item = getGroupItem(_groupName);
 
-        const size_t nbChilds = static_cast<size_t>(item->childCount());
-        const size_t nbPoints = landmarks->numPoints(_groupName);
-        for(size_t idx = nbChilds ; idx < nbPoints ; ++idx)
+        const std::size_t nbChilds = static_cast<std::size_t>(item->childCount());
+        const std::size_t nbPoints = landmarks->numPoints(_groupName);
+        for(std::size_t idx = nbChilds ; idx < nbPoints ; ++idx)
         {
             const data::Landmarks::PointType& newPoint = landmarks->getPoint(_groupName, idx);
 
             QTreeWidgetItem* const pt = new QTreeWidgetItem();
             for(int i = 0 ; i < 3 ; ++i)
             {
-                pt->setText(i, QString::fromStdString(std::to_string(newPoint[static_cast<size_t>(i)])));
+                pt->setText(i, QString::fromStdString(std::to_string(newPoint[static_cast<std::size_t>(i)])));
             }
 
             item->addChild(pt);
@@ -908,7 +908,7 @@ void SLandmarks::removeGroup(std::string _name)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removePoint(std::string _groupName, size_t _index)
+void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
 {
     m_treeWidget->blockSignals(true);
 
@@ -982,7 +982,7 @@ void SLandmarks::modifyGroup(std::string _name)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
+void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
 {
     if(m_advancedMode)
     {
@@ -1004,7 +1004,7 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
         m_treeWidget->blockSignals(true);
         for(int i = 0 ; i < 3 ; ++i)
         {
-            pointItem->setText(i, QString("%1").arg(point[static_cast<size_t>(i)]));
+            pointItem->setText(i, QString("%1").arg(point[static_cast<std::size_t>(i)]));
         }
 
         m_treeWidget->blockSignals(false);
@@ -1013,7 +1013,7 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::selectPoint(std::string _groupName, size_t _index)
+void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 {
     m_treeWidget->blockSignals(true);
 
@@ -1059,7 +1059,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::deselectPoint(std::string, size_t)
+void SLandmarks::deselectPoint(std::string, std::size_t)
 {
     m_treeWidget->blockSignals(true);
     m_treeWidget->setCurrentItem(nullptr);
@@ -1071,7 +1071,7 @@ void SLandmarks::deselectPoint(std::string, size_t)
 
 std::string SLandmarks::generateNewGroupName() const
 {
-    static size_t groupCount = 0;
+    static std::size_t groupCount = 0;
 
     const auto landmarks = m_landmarks.lock();
     SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);

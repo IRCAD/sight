@@ -156,7 +156,7 @@ void SImageMultiDistances::configuring()
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
     m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize             = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize             = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_distanceSphereRadius = config.get<float>(s_RADIUS_CONFIG, m_distanceSphereRadius);
     m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority             = config.get<int>(s_PRIORITY_CONFIG, m_priority);
@@ -479,7 +479,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _
             const Ogre::Real scale = 1.15f;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
-            for(size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+            for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
             {
                 const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
                 if(object->isVisible())

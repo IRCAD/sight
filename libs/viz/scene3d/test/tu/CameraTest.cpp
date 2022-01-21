@@ -87,14 +87,14 @@ void comparePoint(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
 void CameraTest::computeProjectionMatrix()
 {
     // Sorry for this incomprehensible test but this is better than 16 loops
-    const double cx     = 988.898;
-    const double cy     = 553.769;
-    const double fx     = 1590.59;
-    const double fy     = 1628.71;
-    const size_t width  = 1920;
-    const size_t height = 1080;
-    const float n       = 0.1f;
-    const float f       = 100;
+    const double cx          = 988.898;
+    const double cy          = 553.769;
+    const double fx          = 1590.59;
+    const double fy          = 1628.71;
+    const std::size_t width  = 1920;
+    const std::size_t height = 1080;
+    const float n            = 0.1f;
+    const float f            = 100;
 
     // Original matrix
     Ogre::Matrix4 expected(1.6568645238876f, 0.f, -0.0295966863632202f, 0.f,
@@ -174,7 +174,7 @@ void CameraTest::computeProjectionMatrix()
 
     {
         // Function of the camera to set, followed by the new value in the expected matrix
-        typedef std::tuple<std::function<void (const data::Camera::sptr, size_t)>, size_t, unsigned int,
+        typedef std::tuple<std::function<void (const data::Camera::sptr, std::size_t)>, std::size_t, unsigned int,
                            unsigned int, float> tupleType;
         const std::vector<tupleType> permutation {
             tupleType(&sight::data::Camera::setWidth, width, 0, 2, -3.5464549820937e+35f),
@@ -185,14 +185,14 @@ void CameraTest::computeProjectionMatrix()
 
             tupleType(
                 &sight::data::Camera::setWidth,
-                std::numeric_limits<size_t>::max(),
+                std::numeric_limits<std::size_t>::max(),
                 0,
                 2,
                 -3.68934859483958e+19f
             ),
             tupleType(
                 &sight::data::Camera::setHeight,
-                std::numeric_limits<size_t>::max(),
+                std::numeric_limits<std::size_t>::max(),
                 1,
                 2,
                 3.68934859483958e+19f

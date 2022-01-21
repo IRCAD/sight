@@ -152,7 +152,7 @@ cv::Matx44f cameraPoseStereo(
     ::ceres::Problem problem;
 
     //Cost function for image 1
-    for(size_t i = 0 ; i < _imgPoints1.size() ; ++i)
+    for(std::size_t i = 0 ; i < _imgPoints1.size() ; ++i)
     {
         ::ceres::CostFunction* cost_function = ReprojectionError::Create(
             _cameraMatrix1,
@@ -169,7 +169,7 @@ cv::Matx44f cameraPoseStereo(
     }
 
     //image 2
-    for(size_t i = 0 ; i < _imgPoints2.size() ; ++i)
+    for(std::size_t i = 0 ; i < _imgPoints2.size() ; ++i)
     {
         ::ceres::CostFunction* cost_function = ReprojectionError::Create(
             _cameraMatrix2,
@@ -222,7 +222,7 @@ void calibratePointingTool(
 )
 {
     const data::Vector::ContainerType matrices = _matricesVector->getContainer();
-    const size_t nbrMatrices                   = matrices.size();
+    const std::size_t nbrMatrices              = matrices.size();
 
     if(nbrMatrices < 4)
     {
@@ -235,7 +235,7 @@ void calibratePointingTool(
     Eigen::Vector4d vectorSum;
     vectorSum.fill(0);
 
-    for(size_t i = 0 ; i < nbrMatrices ; ++i)
+    for(std::size_t i = 0 ; i < nbrMatrices ; ++i)
     {
         data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
@@ -264,7 +264,7 @@ void calibratePointingTool(
 
     Eigen::Vector3d translation;
     translation.fill(0);
-    for(size_t i = 0 ; i < nbrMatrices ; ++i)
+    for(std::size_t i = 0 ; i < nbrMatrices ; ++i)
     {
         data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
@@ -297,14 +297,14 @@ void calibratePointingTool(
 //-----------------------------------------------------------------------------
 
 cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
-    const size_t _width,
-    const size_t _height,
+    const std::size_t _width,
+    const std::size_t _height,
     const int _markerSizeInBits
 )
 {
     //Determine which dictionary to use
     // nb of markers (< 50,< 100 < 250, < 1000)
-    const size_t nbMarkers                           = (_width * _height) / 2;
+    const std::size_t nbMarkers                      = (_width * _height) / 2;
     cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary = cv::aruco::DICT_6X6_100;
     if(_markerSizeInBits == 4)
     {
@@ -401,8 +401,8 @@ cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
 
 data::PointList::sptr detectChessboard(
     const cv::Mat& _img,
-    size_t _xDim,
-    size_t _yDim,
+    std::size_t _xDim,
+    std::size_t _yDim,
     float _scale
 )
 {

@@ -363,7 +363,7 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
 
         pixelBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY);
         const Ogre::PixelBox& pixelBox           = pixelBuffer->getCurrentLock();
-        const size_t pitch                       = pixelBox.rowPitch * _imageFw->numComponents();
+        const std::size_t pitch                  = pixelBox.rowPitch * _imageFw->numComponents();
         const std::uint8_t* __restrict srcBuffer =
             reinterpret_cast<const std::uint8_t*>(pixelBox.data) + (flip ? pixelBox.getConsecutiveSize() : 0);
 
@@ -371,7 +371,7 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
         const auto numRows = pixelBox.getConsecutiveSize() / pitch;
         if(flip)
         {
-            for(size_t i = 0 ; i < numRows ; ++i)
+            for(std::size_t i = 0 ; i < numRows ; ++i)
             {
                 srcBuffer -= pitch;
                 std::memcpy(dstBuffer, srcBuffer, pitch);
@@ -380,7 +380,7 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
         }
         else
         {
-            for(size_t i = 0 ; i < numRows ; ++i)
+            for(std::size_t i = 0 ; i < numRows ; ++i)
             {
                 std::memcpy(dstBuffer, srcBuffer, pitch);
                 dstBuffer += pitch;
@@ -397,8 +397,8 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
 
 Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
 {
-    const core::tools::Type pixelType = imageFw->getType();
-    const size_t numberOfComponent    = imageFw->numComponents();
+    const core::tools::Type pixelType   = imageFw->getType();
+    const std::size_t numberOfComponent = imageFw->numComponents();
 
     if(numberOfComponent == 1)
     {
@@ -636,7 +636,7 @@ void Utils::loadOgreTexture(
         {
             const auto& size = _image->getSize();
             SIGHT_ASSERT("Only handle 2D and 3D textures", _image->numDimensions() >= 2);
-            const size_t depth = _image->numDimensions() == 2 ? 1 : size[2];
+            const std::size_t depth = _image->numDimensions() == 2 ? 1 : size[2];
 
             viz::scene3d::Utils::allocateTexture(
                 _texture.get(),
@@ -742,9 +742,9 @@ void Utils::convertImageForNegato(Ogre::Texture* _texture, const data::Image::sp
 
 void Utils::allocateTexture(
     Ogre::Texture* _texture,
-    size_t _width,
-    size_t _height,
-    size_t _depth,
+    std::size_t _width,
+    std::size_t _height,
+    std::size_t _depth,
     Ogre::PixelFormat _format,
     Ogre::TextureType _texType,
     bool _dynamic
@@ -829,7 +829,7 @@ bool Utils::makePathsAbsolute(
 {
     bool keyFound = false;
 
-    const size_t keySize = key.size();
+    const std::size_t keySize = key.size();
 
     for(std::string line ; std::getline(input, line) ; )
     {

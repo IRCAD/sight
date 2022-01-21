@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,7 +126,7 @@ void SExtractDeviceInfo::updating()
     SIGHT_DEBUG("Device: " + device);
 
     ConfigurationType config = m_devicesConfig[device];
-    size_t width, height;
+    std::size_t width, height;
     double fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
     if(config)
     {

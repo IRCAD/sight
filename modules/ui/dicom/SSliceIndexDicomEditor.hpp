@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,8 +77,8 @@ namespace sight::module::ui::dicom
  * @brief   This editor service is used to select a slice index and read the corresponding image on the local computer.
  * *
  * @section Slots Slots
- * - \b readImage(size_t) : Read the given slice.
- * - \b displayErrorMessage(size_t) : display an error message.
+ * - \b readImage(std::size_t) : Read the given slice.
+ * - \b displayErrorMessage(std::size_t) : display an error message.
 
  * @section XML XML Configuration
  *

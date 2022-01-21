@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include "core/memory/BufferInfo.hpp"
 #include "core/memory/IPolicy.hpp"
 #include "core/memory/policy/factory/new.hpp"
+
 #include <core/base.hpp>
 
 namespace sight::core::memory
@@ -110,7 +111,7 @@ public:
 
 protected:
 
-    CORE_API size_t dump();
+    CORE_API std::size_t dump();
     CORE_API void apply();
 };
 

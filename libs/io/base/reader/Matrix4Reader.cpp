@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ void Matrix4Reader::read()
     while(!inFile.eof() && readValue < 16)
     {
         inFile >> value;
-        this->getConcreteObject()->getCoefficients()[static_cast<size_t>(readValue)] = value;
+        this->getConcreteObject()->getCoefficients()[static_cast<std::size_t>(readValue)] = value;
         readValue++;
     }
 

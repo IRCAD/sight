@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -845,12 +845,12 @@ void JobTest::LogTest()
         jobs2->wait();
 
         auto nbLogs = 18;
-        CPPUNIT_ASSERT_EQUAL(size_t(nbLogs), job1->getLogs().size());
-        CPPUNIT_ASSERT_EQUAL(size_t(nbLogs), job2->getLogs().size());
-        CPPUNIT_ASSERT_EQUAL(size_t(nbLogs), job3->getLogs().size());
-        CPPUNIT_ASSERT_EQUAL(size_t(nbLogs), job4->getLogs().size());
-        CPPUNIT_ASSERT_EQUAL(size_t(3 * nbLogs + 1), jobs1->getLogs().size());
-        CPPUNIT_ASSERT_EQUAL(size_t((3 * nbLogs + 1) + nbLogs + 1), jobs2->getLogs().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(nbLogs), job1->getLogs().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(nbLogs), job2->getLogs().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(nbLogs), job3->getLogs().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(nbLogs), job4->getLogs().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3 * nbLogs + 1), jobs1->getLogs().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t((3 * nbLogs + 1) + nbLogs + 1), jobs2->getLogs().size());
     }
 }
 

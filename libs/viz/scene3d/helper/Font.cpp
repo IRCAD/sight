@@ -43,12 +43,12 @@ namespace helper
 
 Ogre::FontPtr Font::getFont(
     const std::string& _trueTypeFileName,
-    const size_t _size,
+    const std::size_t _size,
     const std::uint32_t _trueTypeResolution
 )
 {
     // Search for ttf extension in the file name.
-    const size_t extPos = _trueTypeFileName.rfind(".ttf");
+    const std::size_t extPos = _trueTypeFileName.rfind(".ttf");
 
     SIGHT_ASSERT(
         _trueTypeFileName + "doesn't seem to be a truetype font (*.ttf) file.",

@@ -131,7 +131,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
     std::filesystem::remove_all(PATH);
 
     // check series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), sdb->getContainer().size());
 
     data::Series::sptr series         = sdb->getContainer().front();
     data::ImageSeries::sptr imgseries = data::ImageSeries::dynamicCast(series);

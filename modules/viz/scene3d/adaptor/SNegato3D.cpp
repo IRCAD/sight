@@ -648,7 +648,11 @@ void SNegato3D::pickIntensity(int _x, int _y)
             data::Image::Size pickedVoxel;
             for(std::uint8_t i = 0 ; i < pickedVoxel.size() ; ++i)
             {
-                pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t {0}, imgSize[i] - 1);
+                pickedVoxel[i] = std::clamp(
+                    static_cast<std::size_t>(pickedPosImageSpace[i]),
+                    std::size_t {0},
+                    imgSize[i] - 1
+                );
             }
 
             const auto intensity   = image->getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);

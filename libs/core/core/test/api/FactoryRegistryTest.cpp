@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -355,7 +355,7 @@ void FactoryRegistryTest::threadSafetyTest()
     std::vector<std::thread> tg;
 
     UseFactoryThreadVector objects;
-    for(size_t i = 0 ; i < NB_THREAD ; i++)
+    for(std::size_t i = 0 ; i < NB_THREAD ; i++)
     {
         UseFactoryThread::sptr uft;
 
@@ -368,7 +368,7 @@ void FactoryRegistryTest::threadSafetyTest()
         objects.push_back(uft);
     }
 
-    for(size_t i = 0 ; i < NB_THREAD ; i++)
+    for(std::size_t i = 0 ; i < NB_THREAD ; i++)
     {
         PopulateRegistryThread::sptr pft;
 
@@ -383,12 +383,12 @@ void FactoryRegistryTest::threadSafetyTest()
 
     for(const UseFactoryThreadVector::value_type& uft : objects)
     {
-        CPPUNIT_ASSERT_EQUAL(size_t(UseFactoryThread::s_NBOBJECTS), uft->m_objects.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(UseFactoryThread::s_NBOBJECTS), uft->m_objects.size());
     }
 
     CPPUNIT_ASSERT_EQUAL(NB_THREAD * UseFactoryThread::s_NBOBJECTS* 2, ObjectTest::s_counter);
     CPPUNIT_ASSERT_EQUAL(
-        size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
+        std::size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
         objectTestFactory.getFactoryKeys().size()
     );
     ObjectTest::s_counter = 0;

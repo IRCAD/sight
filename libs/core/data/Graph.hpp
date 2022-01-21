@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -217,12 +217,12 @@ public:
     /**
      * @return Number of nodes
      */
-    DATA_API size_t getNbNodes() const;
+    DATA_API std::size_t getNbNodes() const;
 
     /**
      * @return Number of edges
      */
-    DATA_API size_t getNbEdges() const;
+    DATA_API std::size_t getNbEdges() const;
 
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 

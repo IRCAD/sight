@@ -161,9 +161,9 @@ void ServiceConfigTest::getAllConfigsTest()
     }
 
     const std::vector<std::string> test0 = currentServiceConfig->getAllConfigForService(serviceName0);
-    CPPUNIT_ASSERT_EQUAL(size_t(9), test0.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(9), test0.size());
 
-    for(size_t i = 0 ; i < test0.size() ; ++i)
+    for(std::size_t i = 0 ; i < test0.size() ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(
             true,
@@ -176,9 +176,9 @@ void ServiceConfigTest::getAllConfigsTest()
     }
 
     const std::vector<std::string> test1 = currentServiceConfig->getAllConfigForService(serviceName1);
-    CPPUNIT_ASSERT_EQUAL(size_t(7), test1.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(7), test1.size());
 
-    for(size_t i = 0 ; i < test1.size() ; ++i)
+    for(std::size_t i = 0 ; i < test1.size() ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(
             true,
@@ -191,36 +191,36 @@ void ServiceConfigTest::getAllConfigsTest()
     }
 
     const std::vector<std::string> test2 = currentServiceConfig->getAllConfigForService("");
-    CPPUNIT_ASSERT_EQUAL(size_t(3), test2.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), test2.size());
 
-    for(size_t i = 0 ; i < test2.size() ; ++i)
+    for(std::size_t i = 0 ; i < test2.size() ; ++i)
     {
         const std::string expected = configIdPrefix2 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test2[i]);
     }
 
     const std::vector<std::string> test3 = currentServiceConfig->getAllConfigForService(serviceName0, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(6), test3.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(6), test3.size());
 
-    for(size_t i = 0 ; i < test3.size() ; ++i)
+    for(std::size_t i = 0 ; i < test3.size() ; ++i)
     {
         const std::string expected = configIdPrefix0 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test3[i]);
     }
 
     const std::vector<std::string> test4 = currentServiceConfig->getAllConfigForService(serviceName1, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(4), test4.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4), test4.size());
 
-    for(size_t i = 0 ; i < test4.size() ; ++i)
+    for(std::size_t i = 0 ; i < test4.size() ; ++i)
     {
         const std::string expected = configIdPrefix1 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test4[i]);
     }
 
     const std::vector<std::string> test5 = currentServiceConfig->getAllConfigForService("", true);
-    CPPUNIT_ASSERT_EQUAL(size_t(3), test5.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), test5.size());
 
-    for(size_t i = 0 ; i < test5.size() ; ++i)
+    for(std::size_t i = 0 ; i < test5.size() ; ++i)
     {
         const std::string expected = configIdPrefix2 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test5[i]);

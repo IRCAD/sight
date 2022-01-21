@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "SExtractMeshByType.hpp"
 
-#include <data/Reconstruction.hpp>
-
 #include <core/runtime/ConfigurationElement.hpp>
+
+#include <data/Reconstruction.hpp>
 
 #include <service/registry/ObjectService.hpp>
 
@@ -102,7 +102,7 @@ void SExtractMeshByType::updating()
     auto modelSeries = m_source.lock();
     SIGHT_ASSERT("ModelSeries not found", modelSeries);
 
-    size_t index = 0;
+    std::size_t index = 0;
     for(const auto& elt : m_extract)
     {
         const std::string type  = elt.first;
@@ -143,7 +143,7 @@ void SExtractMeshByType::updating()
 void SExtractMeshByType::stopping()
 {
     // Unregister outputs
-    for(size_t i = 0 ; i < m_target.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_target.size() ; ++i)
     {
         m_target[i] = nullptr;
     }

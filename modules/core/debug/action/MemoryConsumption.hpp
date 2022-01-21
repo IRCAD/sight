@@ -76,13 +76,13 @@ protected:
 private:
 
     /// Intern method to create a new array
-    void pushNewArray(size_t memorySizeInBytes);
+    void pushNewArray(std::size_t memorySizeInBytes);
 
     /// To manage allocation or free memory ( data are saved in a static member )
     bool m_isIncreaseMode;
 
     /// Memory allocated in "increase" mode
-    size_t m_memorySizeInBytes;
+    std::size_t m_memorySizeInBytes;
 };
 
 } // namespace action

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -157,8 +157,8 @@ void MeshConverter::copyAttributesFromFwMesh(
 {
     const auto dumpLock = meshSrc->lock();
 
-    const size_t numberOfPoints = meshSrc->numPoints();
-    const size_t numberOfCells  = meshSrc->numCells();
+    const std::size_t numberOfPoints = meshSrc->numPoints();
+    const std::size_t numberOfCells  = meshSrc->numCells();
 
     dest->ClearAttributes();
 
@@ -167,7 +167,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     {
         igtlFloat32* igtlDataPointColor = new igtlFloat32[4 * numberOfPoints];
 
-        size_t i = 0;
+        std::size_t i = 0;
         for(const auto& color : meshSrc->crange<data::iterator::point::rgba>())
         {
             igtlDataPointColor[4 * i]     = static_cast<float>(color.r) / 255.f;
@@ -190,7 +190,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     {
         igtlFloat32* igtlDataPointNormal = new igtlFloat32[3 * numberOfPoints];
 
-        size_t i = 0;
+        std::size_t i = 0;
         for(const auto& normal : meshSrc->crange<data::iterator::point::nxyz>())
         {
             igtlDataPointNormal[3 * i]     = normal.nx;
@@ -212,7 +212,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     {
         igtlFloat32* igtlDataPointTex = new igtlFloat32[2 * numberOfPoints];
 
-        size_t i = 0;
+        std::size_t i = 0;
         for(const auto& tex : meshSrc->crange<data::iterator::point::uv>())
         {
             igtlDataPointTex[2 * i]     = tex.u;
@@ -234,7 +234,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     {
         igtlFloat32* igtlDataCellColor = new igtlFloat32[4 * numberOfCells];
 
-        size_t i = 0;
+        std::size_t i = 0;
         for(const auto& color : meshSrc->crange<data::iterator::cell::rgba>())
         {
             igtlDataCellColor[4 * i]     = static_cast<float>(color.r) / 255.f;
@@ -257,7 +257,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     {
         igtlFloat32* igtlDataCellNormal = new igtlFloat32[3 * numberOfCells];
 
-        size_t i = 0;
+        std::size_t i = 0;
         for(const auto& normal : meshSrc->crange<data::iterator::cell::nxyz>())
         {
             igtlDataCellNormal[3 * i]     = normal.nx;
@@ -279,7 +279,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     {
         igtlFloat32* igtlDataCellTex = new igtlFloat32[2 * numberOfCells];
 
-        size_t i = 0;
+        std::size_t i = 0;
         for(const auto& tex : meshSrc->crange<data::iterator::cell::uv>())
         {
             igtlDataCellTex[2 * i]     = tex.u;
@@ -424,7 +424,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
 
-                size_t k = 0;
+                std::size_t k = 0;
                 for(unsigned int j = 0 ; j < attr->GetSize() ; ++j)
                 {
                     dest->setPointColor(
@@ -447,7 +447,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
 
-                size_t k = 0;
+                std::size_t k = 0;
                 for(unsigned int j = 0 ; j < attr->GetSize() ; ++j)
                 {
                     dest->setCellColor(

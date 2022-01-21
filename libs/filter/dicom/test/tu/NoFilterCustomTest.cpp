@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ void NoFilterCustomTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeriesA = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -91,11 +91,11 @@ void NoFilterCustomTest::simpleApplication()
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New("sight::filter::dicom::custom::NoFilter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerA, filter, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainerA.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainerA.size());
     dicomSeriesA = dicomSeriesContainerA[0];
 
     // Check Number of SOP Class UID
-    CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesA->getSOPClassUIDs().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesA->getSOPClassUIDs().size());
 
     // Compare the two series
     CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA.size(), dicomSeriesContainerB.size());

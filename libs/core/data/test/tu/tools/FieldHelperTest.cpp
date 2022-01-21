@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ void FieldHelperTest::testHelper()
         data::helper::Field fieldHelper(obj);
         fieldHelper.setField(FIELD_ID1, fieldObj1);
         fieldHelper.setField(FIELD_ID2, fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj1);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj2);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
@@ -146,10 +146,10 @@ void FieldHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), oldFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), newFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), oldFields.size());
         CPPUNIT_ASSERT(addedFields[FIELD_ID1] == fieldObj1);
         CPPUNIT_ASSERT(addedFields[FIELD_ID2] == fieldObj2);
         clearArrays();
@@ -160,7 +160,7 @@ void FieldHelperTest::testHelper()
         data::Object::FieldMapType fieldsWithObj1 = {{FIELD_ID1, fieldObj3}};
         data::helper::Field fieldHelper(obj);
         fieldHelper.setFields(fieldsWithObj1);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj3);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == nullobj);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
@@ -170,10 +170,10 @@ void FieldHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numRemovedNotif == 1 && numChangedNotif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(0), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), oldFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), addedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldFields.size());
         CPPUNIT_ASSERT(removedFields[FIELD_ID2] == fieldObj2);
         CPPUNIT_ASSERT(oldFields[FIELD_ID1] == fieldObj1);
         CPPUNIT_ASSERT(newFields[FIELD_ID1] == fieldObj3);
@@ -184,7 +184,7 @@ void FieldHelperTest::testHelper()
         // Test replacement with setField()
         data::helper::Field fieldHelper(obj);
         fieldHelper.setField(FIELD_ID1, fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == nullobj);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
@@ -197,10 +197,10 @@ void FieldHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numChangedNotif == 2;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(0), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), oldFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), addedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldFields.size());
         CPPUNIT_ASSERT(oldFields[FIELD_ID1] == fieldObj3);
         CPPUNIT_ASSERT(newFields[FIELD_ID1] == fieldObj2);
         clearArrays();
@@ -210,25 +210,25 @@ void FieldHelperTest::testHelper()
         // Test add(), addOrSwap() and remove()
         data::helper::Field fieldHelper(obj);
         fieldHelper.add(FIELD_ID2, fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj1);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
 
         fieldHelper.addOrSwap(FIELD_ID2, fieldObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj3);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
 
         fieldHelper.remove(FIELD_ID1);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj3);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
 
         fieldHelper.add(FIELD_ID3, fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj3);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == fieldObj1);
@@ -238,10 +238,10 @@ void FieldHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 2 && numRemovedNotif == 2 && numChangedNotif == 3;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), oldFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldFields.size());
         CPPUNIT_ASSERT(addedFields[FIELD_ID2] == fieldObj1);
         CPPUNIT_ASSERT(addedFields[FIELD_ID3] == fieldObj1);
         CPPUNIT_ASSERT(oldFields[FIELD_ID2] == fieldObj1);
@@ -254,7 +254,7 @@ void FieldHelperTest::testHelper()
         // Test clear()
         data::helper::Field fieldHelper(obj);
         fieldHelper.clear();
-        CPPUNIT_ASSERT_EQUAL(size_t(0), obj->getFields().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == nullobj);
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
@@ -264,7 +264,7 @@ void FieldHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numRemovedNotif == 3;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), removedFields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), removedFields.size());
         CPPUNIT_ASSERT(removedFields[FIELD_ID2] == fieldObj3);
         CPPUNIT_ASSERT(removedFields[FIELD_ID3] == fieldObj1);
         clearArrays();

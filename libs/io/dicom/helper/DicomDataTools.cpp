@@ -73,7 +73,7 @@ const gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& ty
 const gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 {
     gdcm::PhotometricInterpretation pi;
-    const size_t components = image->numComponents();
+    const std::size_t components = image->numComponents();
 
     // Attempt a guess (VTK do the same choice)
     switch(components)

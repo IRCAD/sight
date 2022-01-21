@@ -113,8 +113,8 @@ inline static data::Camera::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Camera>(tree, 0, 1);
 
-    camera->setWidth(tree.get<size_t>(s_Width));
-    camera->setHeight(tree.get<size_t>(s_Height));
+    camera->setWidth(tree.get<std::size_t>(s_Width));
+    camera->setHeight(tree.get<std::size_t>(s_Height));
 
     camera->setFx(tree.get<double>(s_Fx));
     camera->setFy(tree.get<double>(s_Fy));

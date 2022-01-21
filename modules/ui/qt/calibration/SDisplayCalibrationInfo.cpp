@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,7 @@ void SDisplayCalibrationInfo::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::displayImage(size_t idx)
+void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 {
     if(!m_configMgr)
     {

@@ -178,7 +178,7 @@ void SAutomaticRegistration::updating()
                                   (data::Matrix4::s_MODIFIED_SIG);
 
     std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
-    size_t i = 0;
+    std::size_t i = 0;
 
     AutomaticRegistration::IterationCallbackType iterationCallback =
         [&]()

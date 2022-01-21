@@ -320,9 +320,9 @@ std::string ByteSize::getSizeAsString(UnitType unit)
 
 std::string ByteSize::getHumanReadableSize(StandardType standard)
 {
-    static UnitType si[]           = {Bytes, KB, MB, GB, TB, PB};
-    static UnitType iec[]          = {Bytes, KiB, MiB, GiB, TiB, PiB};
-    const size_t sizeOfStandardSet = 5;
+    static UnitType si[]                = {Bytes, KB, MB, GB, TB, PB};
+    static UnitType iec[]               = {Bytes, KiB, MiB, GiB, TiB, PiB};
+    const std::size_t sizeOfStandardSet = 5;
 
     UnitType* unitSet = iec;
     if(standard == SI)
@@ -330,7 +330,7 @@ std::string ByteSize::getHumanReadableSize(StandardType standard)
         unitSet = si;
     }
 
-    size_t i;
+    std::size_t i;
     for(i = 1 ; i < sizeOfStandardSet ; ++i)
     {
         if(m_size < unitSet[i])

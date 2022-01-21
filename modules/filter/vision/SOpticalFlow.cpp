@@ -177,7 +177,7 @@ void SOpticalFlow::updating()
             // Check if flow for feature 'index' has been found.
             // Opencv doc for 'status' vector: Each element of the vector is set to 1 if
             // the flow for the corresponding features has been found, otherwise, it is set to 0.
-            if(status[static_cast<size_t>(index)])
+            if(status[static_cast<std::size_t>(index)])
             {
                 cornersDiff = m_lastCorners.at<cv::Vec2f>(index) - currentCorners.at<cv::Vec2f>(index);
                 RMS        +=

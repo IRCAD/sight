@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ class IO_OPENCV_CLASS_API Type
 public:
 
     /// Returns an OpenCV format given a Sight pixel type and a number of components
-    IO_OPENCV_API static std::int32_t toCv(const core::tools::Type _type, const size_t _numComponents);
+    IO_OPENCV_API static std::int32_t toCv(const core::tools::Type _type, const std::size_t _numComponents);
 
     /// Returns a Sight pixel type and a number of components given an OpenCV format
     IO_OPENCV_API static std::pair<core::tools::Type, std::uint8_t> fromCv(std::int32_t _cvType);

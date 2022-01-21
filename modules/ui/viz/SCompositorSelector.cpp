@@ -118,7 +118,7 @@ void SCompositorSelector::updating()
 
 void SCompositorSelector::onSelectedLayerItem(int index)
 {
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
+    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
     Layer::sptr layer = m_currentLayer.lock();
 
     if(layer)

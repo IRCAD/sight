@@ -113,7 +113,7 @@ void Window::initialize()
      */
 #if defined(Q_OS_WIN)
     {
-        const size_t winId = static_cast<size_t>(this->winId());
+        const std::size_t winId = static_cast<std::size_t>(this->winId());
         parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
         parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(winId);
     }

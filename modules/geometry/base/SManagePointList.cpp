@@ -64,7 +64,7 @@ void SManagePointList::configuring()
 
     if(config)
     {
-        m_max       = config->get<size_t>(s_MAX_CONFIG, m_max);
+        m_max       = config->get<std::size_t>(s_MAX_CONFIG, m_max);
         m_removable = config->get<bool>(s_REMOVABLE_CONFIG, m_removable);
         m_label     = config->get<bool>(s_LABEL_CONFIG, m_label);
         m_tolerance = config->get<float>(s_TOLERANCE_CONFIG, m_tolerance);

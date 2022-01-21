@@ -293,7 +293,7 @@ struct MinMaxPropagator
         {
             const typename ImageType::IndexType currentIndex = iter.GetIndex();
 
-            const size_t bufferIndex = static_cast<size_t>(itkImage->ComputeOffset(currentIndex));
+            const std::size_t bufferIndex = static_cast<std::size_t>(itkImage->ComputeOffset(currentIndex));
 
             const data::Image::BufferType* pixBuf =
                 reinterpret_cast<data::Image::BufferType*>(params.outputImage->getPixel(bufferIndex));
@@ -330,8 +330,8 @@ ImageDiff MinMaxPropagation::propagate(
     const Mode mode
 )
 {
-    const core::tools::Type type   = m_inImage->getType();
-    const size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->numComponents();
+    const core::tools::Type type        = m_inImage->getType();
+    const std::size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->numComponents();
 
     MinMaxPropagator::Parameters params;
     params.inputImage  = m_inImage;

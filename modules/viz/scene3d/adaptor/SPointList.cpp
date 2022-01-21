@@ -151,7 +151,7 @@ void SPointList::configuring()
     }
 
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
     m_radius       = config.get(s_RADIUS_CONFIG, m_radius);
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
@@ -279,7 +279,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
 
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
-    size_t i                = 0;
+    std::size_t i           = 0;
     std::string labelNumber = std::to_string(i);
     for(auto& point : _pointList->getPoints())
     {
@@ -350,7 +350,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 
     detachAndDestroyEntity();
 
-    const size_t uiNumVertices = _pointList->getPoints().size();
+    const std::size_t uiNumVertices = _pointList->getPoints().size();
     if(uiNumVertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
@@ -409,7 +409,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
     detachAndDestroyEntity();
 
-    const size_t uiNumVertices = _mesh->numPoints();
+    const std::size_t uiNumVertices = _mesh->numPoints();
     if(uiNumVertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");

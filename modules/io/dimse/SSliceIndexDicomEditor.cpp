@@ -161,8 +161,8 @@ service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections(
 void SSliceIndexDicomEditor::updating()
 {
     // Retrieve the DICOM series and its informations.
-    const auto dicomSeries   = m_series.lock();
-    const size_t sliceNumber = dicomSeries->numInstances();
+    const auto dicomSeries        = m_series.lock();
+    const std::size_t sliceNumber = dicomSeries->numInstances();
 
     if(sliceNumber > 0)
     {
@@ -221,9 +221,9 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
-    const auto dicomSeries          = m_series.lock();
-    const size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
-    const bool isInstanceAvailable  = dicomSeries->isInstanceAvailable(selectedSliceIndex);
+    const auto dicomSeries               = m_series.lock();
+    const std::size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
+    const bool isInstanceAvailable       = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
     // If the slice is not pulled, pull it.
     if(!isInstanceAvailable)
@@ -349,8 +349,8 @@ void SSliceIndexDicomEditor::readSlice(
     SIGHT_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
-    const char* buffer      = static_cast<char*>(lockerDest.getBuffer());
-    const size_t bufferSize = bufferObj->getSize();
+    const char* buffer           = static_cast<char*>(lockerDest.getBuffer());
+    const std::size_t bufferSize = bufferObj->getSize();
 
     // Creates unique temporary folder to save the DICOM instance.
     std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("dicom");

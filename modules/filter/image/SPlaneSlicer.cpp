@@ -171,13 +171,13 @@ void SPlaneSlicer::setReslicerExtent()
     const auto& origin  = extentImg->getOrigin();
     const auto& spacing = extentImg->getSpacing();
 
-    // cast size_t to int.
+    // cast std::size_t to int.
     std::vector<int> intSize(size.size());
     std::transform(
         size.begin(),
         size.end(),
         intSize.begin(),
-        [](size_t s) -> int
+        [](std::size_t s) -> int
         {
             return std::max(static_cast<int>(s) - 1, 0);
         });

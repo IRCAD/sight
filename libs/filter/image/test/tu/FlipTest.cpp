@@ -58,11 +58,11 @@ void FlipTest::flipAlongXAxisTest()
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
     const auto outDumpLock = imageOut->lock();
 
-    for(size_t i = 0 ; i < size[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(size_t j = 0 ; j < size[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(size_t k = 0 ; k < size[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
                 const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0] - i - 1, j, k);
@@ -95,11 +95,11 @@ void FlipTest::flipAlongYAxisTest()
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
     const auto outDumpLock = imageOut->lock();
 
-    for(size_t i = 0 ; i < size[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(size_t j = 0 ; j < size[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(size_t k = 0 ; k < size[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
                 const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(i, size[1] - j - 1, k);
@@ -132,11 +132,11 @@ void FlipTest::flipAlongZAxisTest()
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
     const auto outDumpLock = imageOut->lock();
 
-    for(size_t i = 0 ; i < size[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(size_t j = 0 ; j < size[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(size_t k = 0 ; k < size[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
                 const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, size[2] - k - 1);
@@ -170,11 +170,11 @@ void FlipTest::flipAlongMultipleAxesTest()
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
         const auto outDumpLock = imageOut->lock();
 
-        for(size_t i = 0 ; i < size[0] ; ++i)
+        for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
-            for(size_t j = 0 ; j < size[1] ; ++j)
+            for(std::size_t j = 0 ; j < size[1] ; ++j)
             {
-                for(size_t k = 0 ; k < size[2] ; ++k)
+                for(std::size_t k = 0 ; k < size[2] ; ++k)
                 {
                     const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                     const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0] - i - 1, size[1] - j - 1, k);
@@ -204,11 +204,11 @@ void FlipTest::flipAlongMultipleAxesTest()
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
         const auto outDumpLock = imageOut->lock();
 
-        for(size_t i = 0 ; i < size[0] ; ++i)
+        for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
-            for(size_t j = 0 ; j < size[1] ; ++j)
+            for(std::size_t j = 0 ; j < size[1] ; ++j)
             {
-                for(size_t k = 0 ; k < size[2] ; ++k)
+                for(std::size_t k = 0 ; k < size[2] ; ++k)
                 {
                     const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                     const uint8_t valueOut = imageOut->at<std::uint8_t>(

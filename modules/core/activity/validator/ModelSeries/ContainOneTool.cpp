@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
 
     if(modelSeries)
     {
-        size_t skinCount = 0;
+        std::size_t skinCount = 0;
         for(auto rec : modelSeries->getReconstructionDB())
         {
             if(rec->getStructureType() == "Tool")
@@ -95,7 +95,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
             }
             else
             {
-                size_t skinCount = 0;
+                std::size_t skinCount = 0;
                 for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Tool")
@@ -130,7 +130,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
             }
             else
             {
-                size_t skinCount = 0;
+                std::size_t skinCount = 0;
                 for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Tool")

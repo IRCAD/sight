@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -203,7 +203,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         );
 
         const data::SeriesDB::ContainerType& series = seriesDB->getContainer();
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesDB Size", (size_t) 1, series.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesDB Size", (std::size_t) 1, series.size());
 
         data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series[0]);
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
@@ -268,7 +268,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
                     const auto& [tri1, n1, c1] = ref;
                     const auto& [tri2, n2, c2] = read;
 
-                    for(size_t i = 0 ; i < 3 ; ++i)
+                    for(std::size_t i = 0 ; i < 3 ; ++i)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell point index", tri1.pt[i], tri2.pt[i]);
                     }

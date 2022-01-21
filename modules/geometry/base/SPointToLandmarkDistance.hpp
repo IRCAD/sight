@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace sight::module::geometry::base
  *  is modified
  *
  * @section Slots Slots
- * - \b updateSelectedPoint(std::string , size_t ): update the transformation matrix of the point
+ * - \b updateSelectedPoint(std::string , std::size_t ): update the transformation matrix of the point
  * to the landmark when a landmark is selected
  * - \b updatePoint(std::string ): update the transformation matrix of the point
  * to the landmark when a landmark is added
@@ -107,7 +107,7 @@ private:
     typedef core::com::Signal<void (float)> DistanceChangedSignalType;
 
     /// SLOT: updates selected point.
-    void updateSelectedPoint(std::string name, size_t index);
+    void updateSelectedPoint(std::string name, std::size_t index);
 
     /// SLOT: updates added point.
     void updatePoint(std::string name);

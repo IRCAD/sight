@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #define __FWCOM_SIGNAL_HPP__
 
 #include "core/com/SignalBase.hpp"
+
 #include <core/com/SlotConnection.hpp>
 #include <core/mt/types.hpp>
 
@@ -106,7 +107,7 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
     void asyncEmit(A ... a) const;
 
     /// Returns number of connected slots.
-    size_t numConnections() const
+    std::size_t numConnections() const
     {
         core::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();

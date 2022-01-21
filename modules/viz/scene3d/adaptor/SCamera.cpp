@@ -132,9 +132,9 @@ void SCamera::updating()
         const auto transform = m_transform.lock();
 
         // Received input line and column data from Sight transformation matrix
-        for(size_t lt = 0 ; lt < 4 ; lt++)
+        for(std::size_t lt = 0 ; lt < 4 ; lt++)
         {
-            for(size_t ct = 0 ; ct < 4 ; ct++)
+            for(std::size_t ct = 0 ; ct < 4 ; ct++)
             {
                 ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
             }
@@ -203,16 +203,16 @@ void SCamera::updateTF3D()
 
     Ogre::Matrix4 newTransMat;
 
-    for(size_t i = 0 ; i < 3 ; i++)
+    for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        for(size_t j = 0 ; j < 3 ; j++)
+        for(std::size_t j = 0 ; j < 3 ; j++)
         {
             // Set the 3x3 matrix representing the rotation
             newTransMat[i][j] = mat33[i][j];
         }
     }
 
-    for(size_t i = 0 ; i < 3 ; i++)
+    for(std::size_t i = 0 ; i < 3 ; i++)
     {
         // Last column represents translation
         newTransMat[i][3] = position[i];
@@ -236,9 +236,9 @@ void SCamera::updateTF3D()
     const auto transform = m_transform.lock();
 
     // Received input line and column data from Sight transformation matrix
-    for(size_t lt = 0 ; lt < 4 ; lt++)
+    for(std::size_t lt = 0 ; lt < 4 ; lt++)
     {
-        for(size_t ct = 0 ; ct < 4 ; ct++)
+        for(std::size_t ct = 0 ; ct < 4 ; ct++)
         {
             transform->setCoefficient(ct, lt, static_cast<double>(newTransMat[ct][lt]));
         }
@@ -339,11 +339,11 @@ void SCamera::calibrateMonoCamera(const data::Camera& _cam)
 
 void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
 {
-    const float width    = static_cast<float>(m_camera->getViewport()->getActualWidth());
-    const float height   = static_cast<float>(m_camera->getViewport()->getActualHeight());
-    const float nearClip = static_cast<float>(m_camera->getNearClipDistance());
-    const float farClip  = static_cast<float>(m_camera->getFarClipDistance());
-    const size_t nbCams  = _cs.numCameras();
+    const float width        = static_cast<float>(m_camera->getViewport()->getActualWidth());
+    const float height       = static_cast<float>(m_camera->getViewport()->getActualHeight());
+    const float nearClip     = static_cast<float>(m_camera->getNearClipDistance());
+    const float farClip      = static_cast<float>(m_camera->getFarClipDistance());
+    const std::size_t nbCams = _cs.numCameras();
 
     SIGHT_WARN_IF(
         "There are no cameras in the '" << s_CAMERA_SERIES_INPUT << "', the default projection transform"
@@ -363,7 +363,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
         sight::viz::scene3d::Layer::CameraCalibrationsType calibrations;
         Ogre::Matrix4 extrinsicMx(Ogre::Matrix4::IDENTITY);
 
-        for(size_t i = 0 ; i < nbCams ; ++i)
+        for(std::size_t i = 0 ; i < nbCams ; ++i)
         {
             const data::Camera::csptr camera = _cs.getCamera(i);
 

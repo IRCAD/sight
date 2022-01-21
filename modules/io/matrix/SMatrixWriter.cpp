@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -166,7 +166,7 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
             if(buffer)
             {
                 timestamp = object->getTimestamp();
-                const size_t time = static_cast<size_t>(timestamp);
+                const std::size_t time = static_cast<std::size_t>(timestamp);
                 m_filestream << time << ";";
                 for(unsigned int i = 0 ; i < numberOfMat ; ++i)
                 {

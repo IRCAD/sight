@@ -320,7 +320,7 @@ void Factory::printInfoMap(const SrvRegContainer& src) const
         SIGHT_DEBUG("  - type   = " << srvReg.second.serviceType);
 
 #if SIGHT_DEBUG_ENABLED
-        size_t objNum = 0;
+        std::size_t objNum = 0;
         for(const auto& objImpl : srvReg.second.objectImpl)
         {
             SIGHT_DEBUG("  - object " << objNum++ << " = " << objImpl)

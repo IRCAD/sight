@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,7 +107,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
-        const size_t buffSize                            = bufferObj->getSize();
+        const std::size_t buffSize                       = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast<char*>(lock.getBuffer());
 
@@ -145,7 +145,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         dicomSeries->shallowCopy(series);
         dicomSeries->clearDicomContainer();
 
-        size_t index = 0;
+        std::size_t index = 0;
         // Add the paths to the series
         for(const core::memory::BufferObject::sptr& buffer : group.second)
         {

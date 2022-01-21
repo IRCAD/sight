@@ -147,7 +147,7 @@ void SeriesEnquirerTest::pushSeries()
 
     std::vector<std::filesystem::path> filenames;
     io::dicom::helper::DicomSearch::searchRecursively(path, filenames, false);
-    CPPUNIT_ASSERT_EQUAL(size_t(129), filenames.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(129), filenames.size());
 
     std::vector<std::filesystem::path> paths;
     for(const auto& file : filenames)

@@ -160,7 +160,7 @@ void installSIGSEVBacktrace()
     sigaction(SIGUSR1, &sa, nullptr);
 }
 #else // if  win32
-const size_t nbChar = 100;
+const std::size_t nbChar = 100;
 #if _MSC_VER > 1499 // Visual C++ 2008 only
 //------------------------------------------------------------------------------
 

@@ -114,7 +114,7 @@ void SelectorModel::clear()
 data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
 {
     data::Image::Spacing roundSpacing;
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         data::Image::Spacing::value_type roundVal = boost::math::round(_spacing[i] * 100.) / 100.;
         roundSpacing[i] = roundVal;

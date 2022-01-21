@@ -84,8 +84,8 @@ private:
         const LineDrawer::CoordinatesType& c,
         data::Image::BufferType* value,
         const double radius,
-        const size_t firstDim,
-        const size_t secondDim,
+        const std::size_t firstDim,
+        const std::size_t secondDim,
         const bool overwrite,
         ImageDiff& diff
     );

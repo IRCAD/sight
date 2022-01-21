@@ -104,7 +104,7 @@ void SRenderStats::configuring()
     m_textColor = Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
 
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //------------------------------------------------------------------------------

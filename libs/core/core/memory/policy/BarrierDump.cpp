@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -147,10 +147,10 @@ void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-size_t BarrierDump::getTotalAlive() const
+std::size_t BarrierDump::getTotalAlive() const
 {
     SIGHT_ASSERT("More dumped data than allocated data.", m_totalAllocated >= m_totalDumped);
-    size_t totalAlive = m_totalAllocated - m_totalDumped;
+    std::size_t totalAlive = m_totalAllocated - m_totalDumped;
     return totalAlive;
 }
 
@@ -163,9 +163,9 @@ bool BarrierDump::isBarrierCrossed() const
 
 //------------------------------------------------------------------------------
 
-size_t BarrierDump::dump(size_t nbOfBytes)
+std::size_t BarrierDump::dump(std::size_t nbOfBytes)
 {
-    size_t dumped = 0;
+    std::size_t dumped = 0;
 
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     if(manager)

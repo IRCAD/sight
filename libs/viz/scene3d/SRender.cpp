@@ -109,7 +109,7 @@ void SRender::configuring()
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
     const ConfigType sceneCfg = config.get_child("scene");
 
-    const size_t nbInouts = config.count("inout");
+    const std::size_t nbInouts = config.count("inout");
     SIGHT_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
 
     if(nbInouts == 1)

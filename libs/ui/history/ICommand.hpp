@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     /**
      * @brief Retrieves the memory footprint of the command.
      */
-    UI_HISTORY_API virtual size_t getSize() const = 0;
+    UI_HISTORY_API virtual std::size_t getSize() const = 0;
 
     /**
      * @brief Used to implement the redo operation.

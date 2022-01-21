@@ -91,7 +91,7 @@ void PreIntegrationTable::imageUpdate(
 
         const auto dumpLock = _img->lock();
 
-        const size_t nbPixels = _img->numElements();
+        const std::size_t nbPixels = _img->numElements();
 
         switch(pixelFormat)
         {

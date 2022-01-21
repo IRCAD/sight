@@ -95,7 +95,7 @@ public:
      * @tparam ELEMENT Element of the tag.
      */
     template<typename T, std::uint16_t GROUP, std::uint16_t ELEMENT>
-    static void setTagValues(const T* array, const size_t size, gdcm::DataSet& dataset)
+    static void setTagValues(const T* array, const std::size_t size, gdcm::DataSet& dataset)
     {
         gdcm::Attribute<GROUP, ELEMENT> attribute;
         if(array)

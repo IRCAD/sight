@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ void CompareObjectsTest::compareImageTest()
     visitor.compare(img, imgComp);
 
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL(size_t(2), props->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), props->size());
 
     CPPUNIT_ASSERT(props->find("spacing.0") != props->end());
     CPPUNIT_ASSERT_EQUAL(std::string("42"), (*props)["spacing.0"]);
@@ -114,7 +114,7 @@ void CompareObjectsTest::compareReconstructionTest()
     visitor.compare(rec, recComp);
 
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL((size_t) 2, props->size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 2, props->size());
 
     CPPUNIT_ASSERT(props->find("organ_name") != props->end());
     CPPUNIT_ASSERT_EQUAL(std::string("Unknown organ name"), (*props)["organ_name"]);
@@ -151,7 +151,7 @@ void CompareObjectsTest::compareBufferTest()
         visitor.compare(imgRef, imgComp);
 
         SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t) 0);
+        CPPUNIT_ASSERT_EQUAL(props->size(), (std::size_t) 0);
     }
 }
 
@@ -169,7 +169,7 @@ void CompareObjectsTest::compareEmpty()
     visitor.compare(compComp, compRef);
 
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) diffs = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL(diffs->size(), (size_t) 2);
+    CPPUNIT_ASSERT_EQUAL(diffs->size(), (std::size_t) 2);
     CPPUNIT_ASSERT(diffs->find("values.float.value") != diffs->end());
     CPPUNIT_ASSERT(diffs->find("values.int.value") != diffs->end());
     CPPUNIT_ASSERT_EQUAL((*diffs)["values.float.value"], data::reflection::visitor::CompareObjects::s_MISSING_PROPERTY);
@@ -186,9 +186,9 @@ void CompareObjectsTest::exceptionTest()
     data::reflection::visitor::CompareObjects visitor;
     CPPUNIT_ASSERT_THROW(visitor.compare(img, comp), core::Exception);
 
-    CPPUNIT_ASSERT_EQUAL(visitor.getReferenceProps().size(), (size_t) 0);
-    CPPUNIT_ASSERT_EQUAL(visitor.getComparedProps().size(), (size_t) 0);
-    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (size_t) 0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getReferenceProps().size(), (std::size_t) 0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getComparedProps().size(), (std::size_t) 0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (std::size_t) 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,11 +203,11 @@ void CompareObjectsTest::compareSeriesDBTest()
         visitor.compare(seriesDBRef, seriesDBComp);
 
         SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-        CPPUNIT_ASSERT_EQUAL(size_t(0), props->size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), props->size());
     }
 
     {
-        CPPUNIT_ASSERT_EQUAL(size_t(3), seriesDBComp->getContainer().size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), seriesDBComp->getContainer().size());
         data::Series::sptr series = seriesDBComp->getContainer()[0];
         CPPUNIT_ASSERT(series);
 
@@ -222,7 +222,7 @@ void CompareObjectsTest::compareSeriesDBTest()
         visitor.compare(seriesDBRef, seriesDBComp);
 
         SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t) 3);
+        CPPUNIT_ASSERT_EQUAL(props->size(), (std::size_t) 3);
 
         CPPUNIT_ASSERT(props->find("values.0.patient.name") != props->end());
         CPPUNIT_ASSERT_EQUAL(name, (*props)["values.0.patient.name"]);

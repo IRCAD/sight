@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,9 +56,9 @@ void GzArrayReader::read()
 
     assert(file.empty() == false);
 
-    data::Array::sptr array = this->getConcreteObject();
-    size_t arraySizeInBytes = array->resize(array->getSize());
-    const auto dumpLock     = array->lock();
+    data::Array::sptr array      = this->getConcreteObject();
+    std::size_t arraySizeInBytes = array->resize(array->getSize());
+    const auto dumpLock          = array->lock();
 
     void* buff = array->getBuffer();
 

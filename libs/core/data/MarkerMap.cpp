@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ MarkerMap::MarkerType* MarkerMap::getMarker(const KeyType& _id)
 
 //------------------------------------------------------------------------------
 
-const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
+const MarkerMap::MarkerType& MarkerMap::getMarker(std::size_t index) const
 {
     SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
     SIGHT_ASSERT("Index is bigger than map's size", index < m_markers.size());
@@ -116,7 +116,7 @@ const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
 
 //------------------------------------------------------------------------------
 
-MarkerMap::MarkerType& MarkerMap::getMarker(size_t index)
+MarkerMap::MarkerType& MarkerMap::getMarker(std::size_t index)
 {
     SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
     SIGHT_ASSERT("Index is bigger than map's size", index < m_markers.size());
@@ -128,7 +128,7 @@ MarkerMap::MarkerType& MarkerMap::getMarker(size_t index)
 
 //------------------------------------------------------------------------------
 
-size_t MarkerMap::count() const
+std::size_t MarkerMap::count() const
 {
     return m_markers.size();
 }

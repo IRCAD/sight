@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -133,7 +133,7 @@ void SPointToLandmarkDistance::updating()
 }
 
 // -----------------------------------------------------------------------------
-void SPointToLandmarkDistance::updateSelectedPoint(std::string name, size_t index)
+void SPointToLandmarkDistance::updateSelectedPoint(std::string name, std::size_t index)
 {
     m_landmarkSelected = true;
 
@@ -154,7 +154,7 @@ void SPointToLandmarkDistance::updatePoint(std::string name)
     m_landmarkSelected = true;
 
     const auto landmark                     = m_landmark.lock();
-    size_t size                             = landmark->getGroup(name).m_points.size();
+    std::size_t size                        = landmark->getGroup(name).m_points.size();
     const data::Landmarks::PointType& point = landmark->getPoint(name, size - 1);
     for(int i = 0 ; i < 3 ; ++i)
     {

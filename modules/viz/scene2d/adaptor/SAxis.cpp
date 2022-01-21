@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -183,7 +183,7 @@ void SAxis::updating()
     scaleX = scaleX * ratio.first;
     scaleY = scaleY * ratio.second;
 
-    const size_t nbValues = m_ticks.size();
+    const std::size_t nbValues = m_ticks.size();
 
     const double min = this->getStartVal();
     const double max = this->getEndVal();
@@ -198,7 +198,7 @@ void SAxis::updating()
 
         const double tickPosY = viewport->getY();
 
-        for(size_t i = 0 ; i < nbValues ; ++i)
+        for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
@@ -218,7 +218,7 @@ void SAxis::updating()
 
         const double tickPosY = viewport->getHeight() * 0.9;
 
-        for(size_t i = 0 ; i < nbValues ; ++i)
+        for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
@@ -239,7 +239,7 @@ void SAxis::updating()
 
         const double tickPosX = viewport->getX();
 
-        for(size_t i = 0 ; i < nbValues ; ++i)
+        for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
@@ -259,7 +259,7 @@ void SAxis::updating()
 
         const double tickPosX = viewport->getX() + viewport->getWidth();
 
-        for(size_t i = 0 ; i < nbValues ; ++i)
+        for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
             pos = min + i * m_interval;
 

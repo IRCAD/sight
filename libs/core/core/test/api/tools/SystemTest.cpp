@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ void SystemTest::genTempFilenameTest()
 {
     {
         const std::string filename = core::tools::System::genTempFileName();
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(64), filename.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(64), filename.size());
 
         for(auto c : filename)
         {
@@ -63,7 +63,7 @@ void SystemTest::genTempFilenameTest()
         }
     }
 
-    const std::vector<size_t> size = {234, 0, 1, 36, 98, 2034};
+    const std::vector<std::size_t> size = {234, 0, 1, 36, 98, 2034};
 
     for(auto s : size)
     {

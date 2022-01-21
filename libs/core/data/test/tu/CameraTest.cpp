@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,8 +69,8 @@ data::Camera::sptr initCamera()
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
-    const size_t WIDTH                          = 800;
-    const size_t HEIGHT                         = 800;
+    const std::size_t WIDTH                     = 800;
+    const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
     const float MAXIMUMFRAMERATE                = 30.f;
@@ -118,8 +118,8 @@ void CameraTest::paramTest()
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
-    const size_t WIDTH                          = 800;
-    const size_t HEIGHT                         = 800;
+    const std::size_t WIDTH                     = 800;
+    const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
     const float MAXIMUMFRAMERATE                = 30.f;

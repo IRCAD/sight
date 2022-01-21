@@ -60,10 +60,10 @@ void ProcessingTest::tearDown()
 void ProcessingTest::histogramTest()
 {
     typedef signed short ImageType;
-    const size_t sizeX     = 50;
-    const size_t sizeY     = 50;
-    const size_t sizeZ     = 50;
-    const size_t imageSize = sizeX * sizeY * sizeZ;
+    const std::size_t sizeX     = 50;
+    const std::size_t sizeY     = 50;
+    const std::size_t sizeZ     = 50;
+    const std::size_t imageSize = sizeX * sizeY * sizeZ;
 
     std::string implementation = "sight::module::viz::scene2d::processing::SComputeHistogram";
 
@@ -118,7 +118,7 @@ void ProcessingTest::histogramTest()
     service::remove(srv);
 
     data::Histogram::fwHistogramValues values = histogram->getValues();
-    CPPUNIT_ASSERT_EQUAL((size_t) 40 - 10 + 1, values.size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 40 - 10 + 1, values.size());
 
     CPPUNIT_ASSERT_EQUAL((float) 10, histogram->getMinValue());
 

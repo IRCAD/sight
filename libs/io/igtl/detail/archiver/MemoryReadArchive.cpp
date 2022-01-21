@@ -72,7 +72,7 @@ public:
 private:
 
     /// read index for position in content buffer
-    size_t m_readIndex;
+    std::size_t m_readIndex;
 
     /// content data
     BufferCSPtr m_content;
@@ -82,8 +82,8 @@ private:
 
 std::streamsize MemoryArchiveSource::read(char* s, std::streamsize n)
 {
-    size_t oldReadIndex;
-    size_t endIndex;
+    std::size_t oldReadIndex;
+    std::size_t endIndex;
 
     endIndex = m_readIndex + n;
     if(endIndex > m_content->size())

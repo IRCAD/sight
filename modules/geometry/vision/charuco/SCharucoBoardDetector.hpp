@@ -198,10 +198,10 @@ private:
     std::string m_markerSizeInBitsKey;
 
     /// Width of the charucoBoard used for calibration
-    size_t m_width;
+    std::size_t m_width;
 
     /// Height of the charucoBoard used for calibration
-    size_t m_height;
+    std::size_t m_height;
 
     /// Used to know if we detected the charucoBoard the last time we check
     bool m_isDetected;

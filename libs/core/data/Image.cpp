@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::data
 
 auto pixelFormatToNumComponents = [](Image::PixelFormat format)
                                   {
-                                      static const std::array<size_t,
+                                      static const std::array<std::size_t,
                                                               Image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
                                       {
                                           ~0ul,
@@ -135,14 +135,14 @@ void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
+std::size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
 {
     return this->_resize(size, type, format, true);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc)
+std::size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc)
 {
     m_size          = size;
     m_type          = type;
@@ -152,10 +152,10 @@ size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelForm
     SIGHT_ASSERT("Number of components must be > 0", m_numComponents > 0);
     SIGHT_ASSERT("Number of components must be <= 4", m_numComponents <= 4);
 
-    const size_t imageDims = this->numDimensions();
+    const std::size_t imageDims = this->numDimensions();
     data::Array::SizeType arraySize(imageDims);
 
-    size_t count = 0;
+    std::size_t count = 0;
     if(m_numComponents > 1)
     {
         arraySize.resize(imageDims + 1);
@@ -163,7 +163,7 @@ size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelForm
         count        = 1;
     }
 
-    for(size_t i = 0 ; i < imageDims ; ++i)
+    for(std::size_t i = 0 ; i < imageDims ; ++i)
     {
         arraySize[count] = m_size[i];
         ++count;
@@ -195,9 +195,9 @@ void Image::copyInformation(Image::csptr _source)
 
 //------------------------------------------------------------------------------
 
-size_t Image::numDimensions() const
+std::size_t Image::numDimensions() const
 {
-    size_t dims = 0;
+    std::size_t dims = 0;
 
     for(const auto& val : m_size)
     {
@@ -216,17 +216,17 @@ size_t Image::numDimensions() const
 
 //------------------------------------------------------------------------------
 
-size_t Image::getSizeInBytes() const
+std::size_t Image::getSizeInBytes() const
 {
-    size_t size       = 0;
-    const size_t dims = this->numDimensions();
+    std::size_t size       = 0;
+    const std::size_t dims = this->numDimensions();
     if(dims > 0)
     {
         size = std::accumulate(
             m_size.begin(),
             m_size.begin() + dims,
-            static_cast<size_t>(m_type.sizeOf()) * m_numComponents,
-            std::multiplies<size_t>()
+            static_cast<std::size_t>(m_type.sizeOf()) * m_numComponents,
+            std::multiplies<std::size_t>()
         );
     }
 
@@ -235,9 +235,9 @@ size_t Image::getSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-size_t Image::getAllocatedSizeInBytes() const
+std::size_t Image::getAllocatedSizeInBytes() const
 {
-    size_t size = 0;
+    std::size_t size = 0;
     if(m_dataArray)
     {
         size = m_dataArray->getSizeInBytes();
@@ -278,9 +278,9 @@ void* Image::getBuffer() const
 
 void* Image::getPixel(IndexType index)
 {
-    const size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
-    const IndexType bufIndex    = index * imagePixelSize;
+    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
+    BufferType* buf                  = static_cast<BufferType*>(this->getBuffer());
+    const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }
 
@@ -288,9 +288,9 @@ void* Image::getPixel(IndexType index)
 
 void* Image::getPixel(IndexType index) const
 {
-    const size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
-    const IndexType bufIndex    = index * imagePixelSize;
+    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
+    BufferType* buf                  = static_cast<BufferType*>(this->getBuffer());
+    const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }
 
@@ -298,8 +298,8 @@ void* Image::getPixel(IndexType index) const
 
 void Image::setPixel(IndexType index, Image::BufferType* pixBuf)
 {
-    const size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    BufferType* buf             = static_cast<BufferType*>(this->getPixel(index));
+    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
+    BufferType* buf                  = static_cast<BufferType*>(this->getPixel(index));
 
     std::copy(pixBuf, pixBuf + imagePixelSize, buf);
 }
@@ -350,9 +350,9 @@ Image::const_iterator<char> Image::end() const
 
 //------------------------------------------------------------------------------
 
-size_t Image::numElements() const
+std::size_t Image::numElements() const
 {
-    size_t nbElts = 0;
+    std::size_t nbElts = 0;
     if(m_size[0] > 0)
     {
         nbElts = m_numComponents;

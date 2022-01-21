@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ void SSignalGate::starting()
                 core::com::HasSignals::sptr signalsHolder = std::dynamic_pointer_cast<core::com::HasSignals>(obj);
                 SIGHT_ASSERT("Object with id " << uid << " is not a HasSlots", signalsHolder);
 
-                const size_t index = m_flags.size();
+                const std::size_t index = m_flags.size();
                 m_flags.push_back(false);
 
                 // Create a slot to our callback with a bound index to identify it
@@ -121,7 +121,7 @@ void SSignalGate::updating()
 
 //------------------------------------------------------------------------------
 
-void SSignalGate::received(size_t _index)
+void SSignalGate::received(std::size_t _index)
 {
     SIGHT_DEBUG("'" << this->getID() << "' received a signal at position : " << _index);
     SIGHT_ASSERT("Could not find a signal at index " << _index, _index < m_flags.size());

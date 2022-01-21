@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 {
     ::igtl::CapabilityMessage::Pointer msg = ::igtl::CapabilityMessage::New();
     msg->SetNumberOfTypes(static_cast<int>(m_converters.size()));
-    for(size_t i = 0 ; i < m_converters.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_converters.size() ; ++i)
     {
         msg->SetType(static_cast<int>(i), m_converters[i]->getIgtlType().c_str());
     }

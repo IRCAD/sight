@@ -106,7 +106,7 @@ void SLandmarks::configuring()
     );
 
     m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize     = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_enableLabels = config.get<bool>(s_LABEL_CONFIG, m_enableLabels);
     m_interactive  = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority     = config.get<int>(s_PRIORITY_CONFIG, m_priority);
@@ -233,7 +233,7 @@ void SLandmarks::updating()
     for(const std::string& groupName : landmarks->getGroupNames())
     {
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
-        for(size_t index = 0 ; index < group.m_points.size() ; ++index)
+        for(std::size_t index = 0 ; index < group.m_points.size() ; ++index)
         {
             this->insertMyPoint(groupName, index, landmarks.get_shared());
         }
@@ -318,7 +318,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
     this->getRenderService()->makeCurrent();
 
     // Get all selected point.
-    std::vector<size_t> indexes;
+    std::vector<std::size_t> indexes;
     for(const std::shared_ptr<SelectedLandmark>& landmark : m_selectedLandmarks)
     {
         indexes.push_back(landmark->m_landmark->m_index);
@@ -333,16 +333,16 @@ void SLandmarks::modifyGroup(std::string _groupName)
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
-    size_t groupSize = group.m_points.size();
+    std::size_t groupSize = group.m_points.size();
 
     // Re-create the group.
-    for(size_t index = 0 ; index < groupSize ; ++index)
+    for(std::size_t index = 0 ; index < groupSize ; ++index)
     {
         this->insertMyPoint(_groupName, index, landmarks.get_shared());
     }
 
     // Re-run selected landmark threads
-    for(size_t index : indexes)
+    for(std::size_t index : indexes)
     {
         this->selectPoint(_groupName, index);
     }
@@ -350,7 +350,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
+void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -390,7 +390,7 @@ void SLandmarks::addPoint(std::string _groupName)
     );
 
     // Get the last index.
-    size_t index = group.m_points.size() - 1;
+    std::size_t index = group.m_points.size() - 1;
 
     // Add the new point.
     this->insertMyPoint(_groupName, index, landmarks.get_shared());
@@ -398,7 +398,7 @@ void SLandmarks::addPoint(std::string _groupName)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removePoint(std::string _groupName, size_t _index)
+void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -446,7 +446,7 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertPoint(std::string _groupName, size_t _index)
+void SLandmarks::insertPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current
     this->getRenderService()->makeCurrent();
@@ -457,7 +457,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks)
+void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks)
 {
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
@@ -536,7 +536,7 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::selectPoint(std::string _groupName, size_t _index)
+void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -556,7 +556,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
             if(it == m_selectedLandmarks.end())
             {
-                // This method must be synchronized with deselectPoint(std::string, size_t).
+                // This method must be synchronized with deselectPoint(std::string, std::size_t).
                 std::lock_guard<std::mutex> guard(m_selectedMutex);
 
                 // Create thread data.
@@ -578,12 +578,12 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::deselectPoint(std::string _groupName, size_t _index)
+void SLandmarks::deselectPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    // This method must be synchronized with selectPoint(std::string, size_t).
+    // This method must be synchronized with selectPoint(std::string, std::size_t).
     std::lock_guard<std::mutex> guard(m_selectedMutex);
 
     // Find the thread and stop it.
@@ -846,7 +846,7 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
             const Ogre::Real scale = 1.15f;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
-            for(size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+            for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
             {
                 const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
                 for(std::shared_ptr<Landmark>& landmark : m_manualObjects)

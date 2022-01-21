@@ -166,7 +166,7 @@ void toVTKImage(data::Image::csptr data, vtkImageData* dst)
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void* newBuffer(size_t size)
+void* newBuffer(std::size_t size)
 {
     IMAGETYPE* destBuffer;
     try
@@ -189,7 +189,7 @@ void* newBuffer(size_t size)
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void fromRGBBuffer(void* input, size_t size, void*& destBuffer)
+void fromRGBBuffer(void* input, std::size_t size, void*& destBuffer)
 {
     if(destBuffer == NULL)
     {
@@ -213,7 +213,7 @@ void fromRGBBuffer(void* input, size_t size, void*& destBuffer)
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void fromRGBBufferColor(void* input, size_t size, void*& destBuffer)
+void fromRGBBufferColor(void* input, std::size_t size, void*& destBuffer)
 {
     if(destBuffer == NULL)
     {
@@ -245,8 +245,8 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 
     if(dim == 2)
     {
-        imageSize = {static_cast<size_t>(source->GetDimensions()[0]),
-                     static_cast<size_t>(source->GetDimensions()[1]), 0
+        imageSize = {static_cast<std::size_t>(source->GetDimensions()[0]),
+                     static_cast<std::size_t>(source->GetDimensions()[1]), 0
         };
 
         const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.
@@ -259,9 +259,9 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
     }
     else
     {
-        imageSize = {static_cast<size_t>(source->GetDimensions()[0]),
-                     static_cast<size_t>(source->GetDimensions()[1]),
-                     static_cast<size_t>(source->GetDimensions()[2])
+        imageSize = {static_cast<std::size_t>(source->GetDimensions()[0]),
+                     static_cast<std::size_t>(source->GetDimensions()[1]),
+                     static_cast<std::size_t>(source->GetDimensions()[2])
         };
 
         const data::Image::Spacing spacing =
@@ -275,12 +275,12 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
     }
 
     const int nbComponents = source->GetNumberOfScalarComponents();
-    const size_t size      = static_cast<size_t>(
+    const std::size_t size = static_cast<std::size_t>(
         std::accumulate(
             source->GetDimensions(),
-            source->GetDimensions() + static_cast<size_t>(dim),
-            std::max(static_cast<size_t>(3), static_cast<size_t>(nbComponents)),
-            std::multiplies<size_t>()
+            source->GetDimensions() + static_cast<std::size_t>(dim),
+            std::max(static_cast<std::size_t>(3), static_cast<std::size_t>(nbComponents)),
+            std::multiplies<std::size_t>()
         )
     );
     const void* input = source->GetScalarPointer();
@@ -316,7 +316,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
         const auto dumpLock = destination->lock();
 
         destBuffer = destination->getBuffer();
-        const size_t sizeInBytes = destination->getSizeInBytes();
+        const std::size_t sizeInBytes = destination->getSizeInBytes();
         std::memcpy(destBuffer, input, sizeInBytes);
     }
 }

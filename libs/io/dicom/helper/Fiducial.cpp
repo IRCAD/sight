@@ -110,9 +110,9 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
                         {
                             const data::Point::csptr point1 = *pointList->getPoints().begin();
                             const data::Point::csptr point2 = *(++pointList->getPoints().begin());
-                            const size_t frameNumber1       =
+                            const std::size_t frameNumber1  =
                                 io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
-                            const size_t frameNumber2 =
+                            const std::size_t frameNumber2 =
                                 io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image, point2);
                             if(frameNumber1 != frameNumber2)
                             {

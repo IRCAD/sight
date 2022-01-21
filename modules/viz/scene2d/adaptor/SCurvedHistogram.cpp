@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,11 +122,11 @@ SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const data::Histogra
 
     Point p;
     Points controlPoints;
-    const size_t nbValues = histogramValues.size();
+    const std::size_t nbValues = histogramValues.size();
 
     // WARNING: we shouldn't add all the points of the histogram into the vector of controlPoints
     // (testing...)
-    for(size_t i = 0 ; i < nbValues ; ++i)
+    for(std::size_t i = 0 ; i < nbValues ; ++i)
     {
         p.first  = static_cast<double>(histogramMin + i * binsWidth);
         p.second = histogramValues[i];

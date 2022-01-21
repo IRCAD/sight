@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ namespace util
  *
  * The same, through a SlotBase :
  *
- *     core::com::Slot< size_t (std::string) > slotLen = core::com::Slot< size_t (std::string) >::New( &len );
+ *     core::com::Slot< std::size_t (std::string) > slotLen = core::com::Slot< std::size_t (std::string) >::New( &len );
  *     core::com::SlotBase::sptr slotBaseLen = slotLen;
  *     core::com::SlotBase::sptr slotBaseSum = slotSum;
  *     slotBaseSum->run(40,2);
@@ -105,7 +105,7 @@ namespace util
  *     slotBaseLen->run<std::string>("R2D2"); // This one needs the explicit argument type
  *     result = slotBaseSum->call<int>(40,2);
  *     result = slotBaseSum->call<int, int, int>(40,2);
- *     result = slotBaseLen->call<size_t, std::string>("R2D2");
+ *     result = slotBaseLen->call<std::size_t, std::string>("R2D2");
  *
  * @subsection SlotAsyncCalls Asynchronous calls
  *

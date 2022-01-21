@@ -145,7 +145,7 @@ private:
     );
 
     static QRgb getQImageVal(
-        const size_t index,
+        const std::size_t index,
         const short* buffer,
         double wlMin,
         double tfWin,

@@ -45,10 +45,10 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b removeGroup(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
  * - \b addPoint(std::string): adds the last point of a landmarks group.
- * - \b removePoint(std::string, size_t): removes a point.
- * - \b insertPoint(std::string, size_t): inserts a point.
- * - \b selectPoint(std::string, size_t) hightlights the selected landmark.
- * - \b deselectPoint(std::string, size_t): resets the hightlighting of the selected landmark.
+ * - \b removePoint(std::string, std::size_t): removes a point.
+ * - \b insertPoint(std::string, std::size_t): inserts a point.
+ * - \b selectPoint(std::string, std::size_t) hightlights the selected landmark.
+ * - \b deselectPoint(std::string, std::size_t): resets the hightlighting of the selected landmark.
  * - \b initializeImage(): initializes image slices index if there is one.
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
@@ -186,7 +186,7 @@ private:
             Ogre::SceneNode* _node,
             Ogre::ManualObject* _object,
             std::string _groupName,
-            size_t _index,
+            std::size_t _index,
             sight::viz::scene3d::Text* _label
         ) :
             m_node(_node),
@@ -200,7 +200,7 @@ private:
         Ogre::SceneNode* m_node {nullptr};            /*!< Contains the node of the landmark */
         Ogre::ManualObject* m_object {nullptr};       /*!< Contains the manual object that represent the landmark */
         std::string m_groupName {""};                 /*!< Defines the group name of the landmark */
-        size_t m_index {0};                           /*!< Defines the index of the landmark */
+        std::size_t m_index {0};                      /*!< Defines the index of the landmark */
         sight::viz::scene3d::Text* m_label {nullptr}; /*!< Defines the text label of the landmark (can be nullptr) */
     };
 
@@ -244,7 +244,7 @@ private:
      * @param _groupName name of the group to update.
      * @param _index index of the point relative to the group.
      */
-    void modifyPoint(std::string _groupName, size_t _index);
+    void modifyPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: adds the last point of a landmarks group.
@@ -257,14 +257,14 @@ private:
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void removePoint(std::string _groupName, size_t _index);
+    void removePoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: inserts a point.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void insertPoint(std::string _groupName, size_t _index);
+    void insertPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief inserts a point.
@@ -272,21 +272,21 @@ private:
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertMyPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks);
+    void insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks);
 
     /**
      * @brief SLOT: hightlights the selected landmark.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void selectPoint(std::string _groupName, size_t _index);
+    void selectPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: resets the hightlights the selected landmark.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void deselectPoint(std::string _groupName, size_t _index);
+    void deselectPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
@@ -360,7 +360,7 @@ private:
     bool m_enableLabels {true};
 
     /// Defines the label font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};

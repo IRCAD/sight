@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,7 +126,7 @@ protected:
     QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
 
     /// Index of the camera in cameraSeries used to display extrinsic matrix.
-    size_t m_camIndex;
+    std::size_t m_camIndex;
 
     static constexpr std::string_view s_CAMERASERIES = "cameraSeries";
     data::ptr<data::CameraSeries, data::Access::in> m_cameraSeries {this, s_CAMERASERIES, true};

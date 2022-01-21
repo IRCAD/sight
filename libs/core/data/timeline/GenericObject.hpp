@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
     DATA_API unsigned int getMaxElementNum() const;
 
     /// Return the size of element in the buffer
-    DATA_API size_t getElementSize() const;
+    DATA_API std::size_t getElementSize() const;
 
     /// Make a copy of this buffer
     DATA_API virtual void deepCopy(const data::timeline::Object& other);
@@ -70,7 +70,7 @@ protected:
         unsigned int maxElementNum,
         core::HiResClock::HiResClockType timestamp = 0,
         BufferDataType buffer                      = 0,
-        size_t size                                = 0,
+        std::size_t size                           = 0,
         DeleterType d                              = 0
     );
 
@@ -135,7 +135,7 @@ public:
         unsigned int m_maxElementNum,
         core::HiResClock::HiResClockType timestamp = 0,
         BufferDataType buffer                      = 0,
-        size_t size                                = 0,
+        std::size_t size                           = 0,
         DeleterType d                              = 0
     );
 

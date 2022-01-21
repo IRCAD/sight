@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ public:
         data::Object::sptr object,
         std::string_view objKey,
         service::IService::sptr service,
-        size_t index = 0
+        std::size_t index = 0
     );
     //@}
 
@@ -135,7 +135,7 @@ public:
     SERVICE_API void unregisterServiceOutput(
         std::string_view objKey,
         service::IService::sptr service,
-        size_t index = 0
+        std::size_t index = 0
     );
     //@}
 
@@ -226,7 +226,7 @@ SERVICE_API void registerServiceOutput(
     data::Object::sptr obj,
     std::string_view objKey,
     service::IService::sptr service,
-    size_t index = 0
+    std::size_t index = 0
 );
 
 /**
@@ -245,7 +245,7 @@ SERVICE_API void unregisterService(service::IService::sptr service);
 SERVICE_API void unregisterServiceOutput(
     std::string_view objKey,
     service::IService::sptr service,
-    size_t index = 0
+    std::size_t index = 0
 );
 
 SERVICE_API SPTR(service::registry::ObjectService::RegisterSignalType) getRegisterSignal();

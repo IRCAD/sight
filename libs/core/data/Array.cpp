@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,12 +37,12 @@ SIGHT_REGISTER_DATA(sight::data::Array);
 
 //------------------------------------------------------------------------------
 
-inline size_t computeSize(
-    size_t elementSize,
+inline std::size_t computeSize(
+    std::size_t elementSize,
     const data::Array::SizeType& size
 )
 {
-    size_t total = 0;
+    std::size_t total = 0;
     if(!size.empty())
     {
         total  = elementSize;
@@ -50,7 +50,7 @@ inline size_t computeSize(
             std::accumulate(
                 size.begin(),
                 size.end(),
-                static_cast<size_t>(1),
+                static_cast<std::size_t>(1),
                 std::multiplies<data::Array::SizeType::value_type>()
             );
     }
@@ -60,12 +60,12 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-data::Array::OffsetType Array::computeStrides(SizeType size, size_t sizeOfType)
+data::Array::OffsetType Array::computeStrides(SizeType size, std::size_t sizeOfType)
 {
     data::Array::OffsetType strides;
     strides.reserve(size.size());
 
-    size_t currentStride = sizeOfType;
+    std::size_t currentStride = sizeOfType;
     for(const SizeType::value_type& s : size)
     {
         strides.push_back(currentStride);
@@ -137,13 +137,13 @@ void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(
+std::size_t Array::resize(
     const SizeType& size,
     const core::tools::Type& type,
     bool reallocate
 )
 {
-    const size_t bufSize = computeSize(type.sizeOf(), size);
+    const std::size_t bufSize = computeSize(type.sizeOf(), size);
 
     if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
     {
@@ -175,7 +175,7 @@ size_t Array::resize(
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType& size, bool reallocate)
+std::size_t Array::resize(const SizeType& size, bool reallocate)
 {
     SIGHT_ASSERT("Type should have been set by a previous resize() call", !m_type.isOfType<void>());
 
@@ -208,21 +208,21 @@ bool Array::empty() const
 
 //------------------------------------------------------------------------------
 
-size_t Array::getElementSizeInBytes() const
+std::size_t Array::getElementSizeInBytes() const
 {
     return m_type.sizeOf();
 }
 
 //------------------------------------------------------------------------------
 
-size_t Array::numElements() const
+std::size_t Array::numElements() const
 {
     return computeSize(1, m_size);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Array::getSizeInBytes() const
+std::size_t Array::getSizeInBytes() const
 {
     return computeSize(m_type.sizeOf(), m_size);
 }
@@ -243,7 +243,7 @@ const data::Array::OffsetType& Array::getStrides() const
 
 //------------------------------------------------------------------------------
 
-size_t Array::numDimensions() const
+std::size_t Array::numDimensions() const
 {
     return m_size.size();
 }
@@ -271,7 +271,7 @@ core::tools::Type Array::getType() const
 
 //------------------------------------------------------------------------------
 
-size_t Array::getBufferOffset(const data::Array::IndexType& id) const
+std::size_t Array::getBufferOffset(const data::Array::IndexType& id) const
 {
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
@@ -291,7 +291,7 @@ size_t Array::getBufferOffset(const data::Array::IndexType& id) const
         std::multiplies<OffsetType::value_type>()
     );
 
-    const size_t offset = std::accumulate(offsets.begin(), offsets.end(), static_cast<size_t>(0));
+    const std::size_t offset = std::accumulate(offsets.begin(), offsets.end(), static_cast<std::size_t>(0));
 
     return offset;
 }
@@ -360,8 +360,8 @@ void Array::setBuffer(
 
 char* Array::getBufferPtr(const data::Array::IndexType& id)
 {
-    const size_t offset = this->getBufferOffset(id);
-    char* item          = static_cast<char*>(this->getBuffer()) + offset;
+    const std::size_t offset = this->getBufferOffset(id);
+    char* item               = static_cast<char*>(this->getBuffer()) + offset;
     return item;
 }
 
@@ -369,8 +369,8 @@ char* Array::getBufferPtr(const data::Array::IndexType& id)
 
 const char* Array::getBufferPtr(const data::Array::IndexType& id) const
 {
-    const size_t offset = this->getBufferOffset(id);
-    const char* item    = static_cast<const char*>(this->getBuffer()) + offset;
+    const std::size_t offset = this->getBufferOffset(id);
+    const char* item         = static_cast<const char*>(this->getBuffer()) + offset;
     return item;
 }
 

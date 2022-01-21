@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,7 +95,7 @@ void Histogram::addPixel(float _pixel)
 {
     if(this->isInRange(_pixel))
     {
-        size_t index = static_cast<size_t>((_pixel - m_minValue) / m_binsWidth);
+        std::size_t index = static_cast<std::size_t>((_pixel - m_minValue) / m_binsWidth);
         m_values[index]++;
     }
 }
@@ -114,7 +114,7 @@ void Histogram::initialize(float _min, float _max, float _binsWidth)
 
     if(m_binsWidth != 0)
     {
-        size_t newSize = static_cast<size_t>((m_maxValue - m_minValue) / m_binsWidth);
+        std::size_t newSize = static_cast<std::size_t>((m_maxValue - m_minValue) / m_binsWidth);
         m_values.resize(newSize + 1, 0);
     }
 }
@@ -125,16 +125,16 @@ long Histogram::getNbPixels(float _min, float _max)
 {
     SIGHT_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
 
-    size_t indexMin = 0;
+    std::size_t indexMin = 0;
     if(_min >= m_minValue)
     {
-        indexMin = static_cast<size_t>((_min - m_minValue) / m_binsWidth);
+        indexMin = static_cast<std::size_t>((_min - m_minValue) / m_binsWidth);
     }
 
-    size_t indexMax = m_values.size();
+    std::size_t indexMax = m_values.size();
     if(_max <= m_maxValue)
     {
-        indexMax = static_cast<size_t>((_max - m_minValue) / m_binsWidth);
+        indexMax = static_cast<std::size_t>((_max - m_minValue) / m_binsWidth);
     }
 
     long nbPixels = 0;

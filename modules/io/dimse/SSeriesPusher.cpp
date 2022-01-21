@@ -273,7 +273,7 @@ void SSeriesPusher::pushSeries()
             {
                 DcmFileFormat fileFormat;
                 core::memory::BufferObject::sptr bufferObj = item.second;
-                const size_t buffSize                      = bufferObj->getSize();
+                const std::size_t buffSize                 = bufferObj->getSize();
                 core::memory::BufferObject::Lock lock(bufferObj);
                 char* buffer = static_cast<char*>(lock.getBuffer());
 

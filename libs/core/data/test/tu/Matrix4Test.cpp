@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,9 +60,9 @@ void Matrix4Test::getterSetterByCoef()
     data::Matrix4::sptr mat = data::Matrix4::New();
 
     // Check default initialization
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), identity[i * 4 + j]);
         }
@@ -75,17 +75,17 @@ void Matrix4Test::getterSetterByCoef()
                       .3, 1.21, -3.1, 1.2
     };
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             mat->setCoefficient(i, j, coefs[i * 4 + j]);
         }
     }
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), coefs[i * 4 + j]);
         }
@@ -105,9 +105,9 @@ void Matrix4Test::getterSetterByArray()
     data::Matrix4::sptr mat = data::Matrix4::New();
 
     // Check default initialization
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), identity[i * 4 + j]);
         }
@@ -122,16 +122,16 @@ void Matrix4Test::getterSetterByArray()
 
     mat->setCoefficients(coefs);
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), coefs[i * 4 + j]);
         }
     }
 
     const data::Matrix4::TMCoefArray& coefs2 = mat->getCoefficients();
-    for(size_t i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(coefs2[i], coefs[i]);
     }
@@ -155,9 +155,9 @@ void Matrix4Test::getterSetterByMatrix()
 
     const auto mat2 = mat->getMatrix4x4();
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(matrix4x4[i][j], mat2[i][j], 10e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(matrix4x4[i][j], mat->getCoefficient(i, j), 10e-8);
@@ -174,9 +174,9 @@ void Matrix4Test::getterSetterByMatrix()
 
     const auto matFromCoefs = mat->getMatrix4x4();
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(coefs[i * 4 + j], matFromCoefs[i][j], 10e-8);
         }

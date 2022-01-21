@@ -57,7 +57,7 @@ MemoryArchiveSink::~MemoryArchiveSink()
 
 void MemoryArchiveSink::archive()
 {
-    size_t size;
+    std::size_t size;
     boost::posix_time::ptime now = boost::date_time::not_a_date_time;
 
     struct archive_entry* entry = archive_entry_new();
@@ -110,7 +110,7 @@ int MemoryWriteArchive::open(struct archive* archive, void* client_data)
 
 //-----------------------------------------------------------------------------
 
-ssize_t MemoryWriteArchive::write(struct archive* a, void* client_data, const void* buff, size_t size)
+ssize_t MemoryWriteArchive::write(struct archive* a, void* client_data, const void* buff, std::size_t size)
 {
     std::vector<char>* bytes = reinterpret_cast<std::vector<char>*>(client_data);
     const char* bytesToWrite = reinterpret_cast<const char*>(buff);

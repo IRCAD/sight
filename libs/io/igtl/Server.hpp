@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,7 +107,7 @@ public:
     /**
      * @brief method to have the current number of clients
      */
-    IO_IGTL_API size_t numClients() const;
+    IO_IGTL_API std::size_t numClients() const;
 
     /**
      * @brief method to receive all headers of all connected clients

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,14 +176,14 @@ void MeshTest::insertion()
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
         const auto lock = mesh->lock();
 
-        for(size_t i = 0 ; i < NB_POINTS ; ++i)
+        for(std::size_t i = 0 ; i < NB_POINTS ; ++i)
         {
             const std::uint8_t val                                = static_cast<uint8_t>(i);
             const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
             const float floatVal                                  = static_cast<float>(i);
             const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
             const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-            const size_t value                                    = 3 * i;
+            const std::size_t value                               = 3 * i;
             const auto id                                         = mesh->pushPoint(
                 static_cast<float>(value),
                 static_cast<float>(value + 1),
@@ -227,30 +227,31 @@ void MeshTest::insertion()
         data::Mesh::sptr mesh = data::Mesh::New();
 
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
-        const auto lock                          = mesh->lock();
-        const size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
-        const size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
-        const size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
-        const size_t pointPositionAllocatedSize  = NB_POINTS * 3 * sizeof(data::Mesh::position_t);
+        const auto lock                               = mesh->lock();
+        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
+        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
+        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
+        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3 * sizeof(data::Mesh::position_t);
 
         // data::Mesh::CellType::POINT;
-        const size_t cellDataAllocatedSize = NB_CELLS * 1 * sizeof(data::Mesh::cell_t);
+        const std::size_t cellDataAllocatedSize = NB_CELLS * 1 * sizeof(data::Mesh::cell_t);
 
-        const size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
-                                 + pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize;
+        const std::size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
+                                      + pointNormalsAllocatedSize + pointColorsAllocatedSize
+                                      + pointTexCoordsAllocatedSize;
 
         CPPUNIT_ASSERT_EQUAL(
             pointSize,
             mesh->getAllocatedSizeInBytes()
         );
-        for(size_t i = 0 ; i < 1001 ; ++i)
+        for(std::size_t i = 0 ; i < 1001 ; ++i)
         {
             const std::uint8_t val                                = static_cast<uint8_t>(i);
             const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
             const float floatVal                                  = static_cast<float>(i);
             const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
             const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-            const size_t value                                    = 3 * i;
+            const std::size_t value                               = 3 * i;
             const auto id                                         = mesh->pushPoint(
                 static_cast<float>(value),
                 static_cast<float>(value + 1),
@@ -317,17 +318,18 @@ void MeshTest::insertion()
             | data::Mesh::Attributes::CELL_TEX_COORDS;
         data::Mesh::sptr mesh = data::Mesh::New();
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE1, ATTRIBUTES_ARRAY);
-        const auto lock                          = mesh->lock();
-        const size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
-        const size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
-        const size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
-        const size_t pointPositionAllocatedSize  = NB_POINTS * 3 * sizeof(data::Mesh::position_t);
+        const auto lock                               = mesh->lock();
+        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
+        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
+        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
+        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3 * sizeof(data::Mesh::position_t);
 
         // data::Mesh::CellType::TRIANGLE;
-        const size_t cellDataAllocatedSize = NB_CELLS * 3 * sizeof(data::Mesh::cell_t);
+        const std::size_t cellDataAllocatedSize = NB_CELLS * 3 * sizeof(data::Mesh::cell_t);
 
-        const size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
-                                 + pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize;
+        const std::size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
+                                      + pointNormalsAllocatedSize + pointColorsAllocatedSize
+                                      + pointTexCoordsAllocatedSize;
 
         CPPUNIT_ASSERT_EQUAL(
             pointSize,
@@ -464,7 +466,7 @@ void MeshTest::copy()
 
         for( ; cellItr != cellEnd ; ++cellItr, ++cellItrCopyMesh)
         {
-            for(size_t i = 0 ; i < 4 ; ++i)
+            for(std::size_t i = 0 ; i < 4 ; ++i)
             {
                 CPPUNIT_ASSERT_EQUAL(cellItr->pt[i], cellItrCopyMesh->pt[i]);
             }
@@ -520,7 +522,7 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(1), mesh->numCells());
 
     CPPUNIT_ASSERT_EQUAL(
-        size_t(3 * 3 * sizeof(data::Mesh::position_t) + 3 * sizeof(data::Mesh::cell_t)),
+        std::size_t(3 * 3 * sizeof(data::Mesh::position_t) + 3 * sizeof(data::Mesh::cell_t)),
         mesh->getDataSizeInBytes()
     );
 
@@ -528,8 +530,8 @@ void MeshTest::allocationTest()
     data::Mesh::size_t cellSize  = 2000;
     mesh->reserve(pointSize, cellSize, data::Mesh::CellType::TRIANGLE);
 
-    const size_t pointPositionAllocatedSize = pointSize * 3 * sizeof(data::Mesh::position_t);
-    const size_t cellDataAllocatedSize      = cellSize * 3 * sizeof(data::Mesh::cell_t);
+    const std::size_t pointPositionAllocatedSize = pointSize * 3 * sizeof(data::Mesh::position_t);
+    const std::size_t cellDataAllocatedSize      = cellSize * 3 * sizeof(data::Mesh::cell_t);
 
     CPPUNIT_ASSERT_EQUAL(
         pointPositionAllocatedSize + cellDataAllocatedSize,
@@ -555,9 +557,9 @@ void MeshTest::allocationTest()
         | data::Mesh::Attributes::POINT_COLORS | data::Mesh::Attributes::POINT_TEX_COORDS
     );
 
-    const size_t pointNormalsAllocatedSize   = pointSize * 3 * sizeof(data::Mesh::normal_t);
-    const size_t pointColorsAllocatedSize    = pointSize * 4 * sizeof(data::Mesh::color_t);
-    const size_t pointTexCoordsAllocatedSize = pointSize * 2 * sizeof(data::Mesh::texcoord_t);
+    const std::size_t pointNormalsAllocatedSize   = pointSize * 3 * sizeof(data::Mesh::normal_t);
+    const std::size_t pointColorsAllocatedSize    = pointSize * 4 * sizeof(data::Mesh::color_t);
+    const std::size_t pointTexCoordsAllocatedSize = pointSize * 2 * sizeof(data::Mesh::texcoord_t);
     CPPUNIT_ASSERT_EQUAL(
         pointPositionAllocatedSize + cellDataAllocatedSize
         + pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize,
@@ -588,9 +590,9 @@ void MeshTest::allocationTest()
         | data::Mesh::Attributes::CELL_TEX_COORDS
     );
 
-    size_t oldsize = mesh->getAllocatedSizeInBytes();
-    bool adjusted  = mesh->shrinkToFit();
-    size_t newSize = mesh->getAllocatedSizeInBytes();
+    std::size_t oldsize = mesh->getAllocatedSizeInBytes();
+    bool adjusted       = mesh->shrinkToFit();
+    std::size_t newSize = mesh->getAllocatedSizeInBytes();
 
     CPPUNIT_ASSERT_EQUAL(true, adjusted);
     CPPUNIT_ASSERT(oldsize > newSize);
@@ -614,7 +616,7 @@ void MeshTest::allocationTest()
     mesh->clear();
     CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh->numPoints());
     CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh->numCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), mesh->getDataSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), mesh->getDataSizeInBytes());
 
     CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::Mesh::Attributes::POINT_COLORS>());
     CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::Mesh::Attributes::CELL_COLORS>());
@@ -653,7 +655,7 @@ void MeshTest::iteratorTest()
         const float floatVal                                  = static_cast<float>(i);
         const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
         const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-        const size_t value                                    = 3 * i;
+        const std::size_t value                               = 3 * i;
         mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value + 1), static_cast<float>(value + 2));
         mesh->setPointColor(i, color);
         mesh->setPointNormal(i, normal);
@@ -712,7 +714,7 @@ void MeshTest::iteratorTest()
         auto begin                           = std::make_reverse_iterator(range.end());
         auto end                             = std::make_reverse_iterator(range.begin());
 
-        size_t count = NB_POINTS;
+        std::size_t count = NB_POINTS;
         std::for_each(
             begin,
             end,
@@ -740,7 +742,7 @@ void MeshTest::iteratorTest()
                     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
                 });
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), count);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), count);
     }
 
     {
@@ -844,7 +846,11 @@ void MeshTest::iteratorTest()
         for( ; it != end ; ++it)
         {
             const auto& [p, n, c, uv] = *it;
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count), p.pt[0]);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                msg(count),
+                static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count),
+                p.pt[0]
+            );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 msg(count),
                 static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count + 1),
@@ -1292,7 +1298,7 @@ void MeshTest::benchmarkIterator()
     data::Mesh::sptr mesh = data::Mesh::New();
     const auto lock       = mesh->lock();
 
-    static const size_t N = 1;
+    static const std::size_t N = 1;
 
     mesh->resize(
         655360,
@@ -1334,7 +1340,7 @@ void MeshTest::benchmarkIterator()
 
     {
         FW_PROFILE("std::for_each - array_iterator (nouveau en MR)");
-        for(size_t i = 0 ; i < N ; ++i)
+        for(std::size_t i = 0 ; i < N ; ++i)
         {
             std::for_each(pos, pos2, fn3);
             std::for_each(norm, norm2, fn4);
@@ -1344,7 +1350,7 @@ void MeshTest::benchmarkIterator()
     auto range = mesh->zip_range<iterator::point::xyz, iterator::point::nxyz>();
     {
         FW_PROFILE("std::for_each - zip array_iterator");
-        for(size_t i = 0 ; i < N ; ++i)
+        for(std::size_t i = 0 ; i < N ; ++i)
         {
             std::for_each(range.begin(), range.end(), fn2);
         }
@@ -1356,7 +1362,7 @@ void MeshTest::benchmarkIterator()
         auto z = boost::combine(posV, normV);
         {
             FW_PROFILE("std::for - std boost combine");
-            for(size_t i = 0 ; i < N ; ++i)
+            for(std::size_t i = 0 ; i < N ; ++i)
             {
                 for(auto&& [p, n] : z)
                 {

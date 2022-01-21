@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,20 +52,20 @@ void ProjectionTest::tearDown()
 void ProjectionTest::projectionTest()
 {
     {
-        const size_t pX    = 42;
-        const size_t pY    = 53;
-        const size_t depth = 155;
+        const std::size_t pX    = 42;
+        const std::size_t pY    = 53;
+        const std::size_t depth = 155;
 
-        const size_t width  = 640;
-        const size_t height = 480;
-        const double cx     = 321.3;
-        const double cy     = 239.3;
-        const double fx     = 565.53;
-        const double fy     = 563.25;
+        const std::size_t width  = 640;
+        const std::size_t height = 480;
+        const double cx          = 321.3;
+        const double cy          = 239.3;
+        const double fx          = 565.53;
+        const double fy          = 563.25;
 
         double x, y, z;
         filter::vision::Projection::projectPixel(pX, pY, static_cast<double>(depth), cx, cy, fx, fy, x, y, z);
-        size_t pX2, pY2;
+        std::size_t pX2, pY2;
         bool success = filter::vision::Projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX2, pY2);
 
         CPPUNIT_ASSERT(success);
@@ -82,14 +82,14 @@ void ProjectionTest::projectionTest()
         const double y = 25.4;
         const double z = 156;
 
-        const size_t width  = 640;
-        const size_t height = 480;
-        const double cx     = 321.3;
-        const double cy     = 239.3;
-        const double fx     = 565.53;
-        const double fy     = 563.25;
+        const std::size_t width  = 640;
+        const std::size_t height = 480;
+        const double cx          = 321.3;
+        const double cy          = 239.3;
+        const double fx          = 565.53;
+        const double fy          = 563.25;
 
-        size_t pX, pY;
+        std::size_t pX, pY;
         bool success = filter::vision::Projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX, pY);
         CPPUNIT_ASSERT(success);
         double x2, y2, z2;

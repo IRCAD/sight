@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void SExtractObj::updating()
 {
     auto sourceObject = m_source.lock();
 
-    size_t index = 0;
+    std::size_t index = 0;
     for(auto path : m_sourcePaths)
     {
         const std::string from = path;
@@ -115,7 +115,7 @@ void SExtractObj::updating()
 void SExtractObj::stopping()
 {
     // Unregister outputs
-    for(size_t i = 0 ; i < m_target.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_target.size() ; ++i)
     {
         m_target[i] = nullptr;
     }

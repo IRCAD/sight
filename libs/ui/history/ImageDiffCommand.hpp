@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ public:
     UI_HISTORY_API ImageDiffCommand(const data::Image::sptr& img, filter::image::ImageDiff diff);
 
     /// The diff size.
-    UI_HISTORY_API virtual size_t getSize() const;
+    UI_HISTORY_API virtual std::size_t getSize() const;
 
     /// Apply diff.
     UI_HISTORY_API virtual bool redo();

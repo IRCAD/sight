@@ -244,7 +244,7 @@ private:
     std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     static constexpr std::string_view s_POINTLIST_INPUT = "pointList";
     static constexpr std::string_view s_MESH_INPUT      = "mesh";

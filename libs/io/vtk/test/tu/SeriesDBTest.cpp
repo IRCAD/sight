@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ void SeriesDBTest::testImportSeriesDB()
     reader->setFiles(paths);
     reader->read();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->getContainer().size());
 
     data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(seriesDB->at(0));
     CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
@@ -93,7 +93,7 @@ void SeriesDBTest::testImportSeriesDB()
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     data::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
-    CPPUNIT_ASSERT_EQUAL(size_t(2), recVect.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), recVect.size());
 
     data::Reconstruction::sptr rec1 = recVect.at(0);
     data::Reconstruction::sptr rec2 = recVect.at(1);

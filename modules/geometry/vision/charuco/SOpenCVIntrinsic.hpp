@@ -114,10 +114,10 @@ private:
     std::string m_markerSizeInBitsKey;
 
     /// Width of the chessboard used for calibration
-    size_t m_width;
+    std::size_t m_width;
 
     /// Height of the chessboard used for calibration
-    size_t m_height;
+    std::size_t m_height;
 
     /// Size of the chessboard'square used for calibration
     float m_squareSize;

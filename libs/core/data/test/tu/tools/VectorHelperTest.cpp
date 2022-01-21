@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,7 +114,7 @@ void VectorHelperTest::testHelper()
         data::helper::Vector vectorHelper(vector);
         vectorHelper.add(vectorObj1);
         vectorHelper.add(vectorObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), vector->size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), vector->size());
         CPPUNIT_ASSERT((*vector)[0] == vectorObj1);
         CPPUNIT_ASSERT((*vector)[1] == vectorObj2);
     }
@@ -123,8 +123,8 @@ void VectorHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), addedVectors.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), removedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedVectors.size());
         CPPUNIT_ASSERT(addedVectors[0] == vectorObj1);
         CPPUNIT_ASSERT(addedVectors[1] == vectorObj2);
         clearArrays();
@@ -134,7 +134,7 @@ void VectorHelperTest::testHelper()
         // Test add()
         data::helper::Vector vectorHelper(vector);
         vectorHelper.add(vectorObj3);
-        CPPUNIT_ASSERT_EQUAL(size_t(3), vector->size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), vector->size());
         CPPUNIT_ASSERT((*vector)[0] == vectorObj1);
         CPPUNIT_ASSERT((*vector)[1] == vectorObj2);
         CPPUNIT_ASSERT((*vector)[2] == vectorObj3);
@@ -147,8 +147,8 @@ void VectorHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 2;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(1), addedVectors.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(0), removedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), addedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedVectors.size());
         CPPUNIT_ASSERT(addedVectors[0] == vectorObj3);
         clearArrays();
     }
@@ -158,7 +158,7 @@ void VectorHelperTest::testHelper()
         data::helper::Vector vectorHelper(vector);
         vectorHelper.remove(vectorObj1);
         vectorHelper.remove(vectorObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), vector->size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), vector->size());
         CPPUNIT_ASSERT((*vector)[0] == vectorObj3);
 
         // Notify explicitly, this should change nothing since the destructor skip it in this case
@@ -169,8 +169,8 @@ void VectorHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numRemovedNotif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(0), addedVectors.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(2), removedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), addedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), removedVectors.size());
         CPPUNIT_ASSERT(removedVectors[0] == vectorObj1);
         CPPUNIT_ASSERT(removedVectors[1] == vectorObj2);
         clearArrays();
@@ -180,12 +180,12 @@ void VectorHelperTest::testHelper()
         // Test add(), and clear()
         data::helper::Vector vectorHelper(vector);
         vectorHelper.add(vectorObj2);
-        CPPUNIT_ASSERT_EQUAL(size_t(2), vector->size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), vector->size());
         CPPUNIT_ASSERT((*vector)[0] == vectorObj3);
         CPPUNIT_ASSERT((*vector)[1] == vectorObj2);
 
         vectorHelper.clear();
-        CPPUNIT_ASSERT_EQUAL(size_t(0), vector->size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), vector->size());
         CPPUNIT_ASSERT_EQUAL(true, vector->empty());
     }
     {
@@ -193,8 +193,8 @@ void VectorHelperTest::testHelper()
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]{return numAddedNotif == 3 && numRemovedNotif == 2;});
 
-        CPPUNIT_ASSERT_EQUAL(size_t(1), addedVectors.size());
-        CPPUNIT_ASSERT_EQUAL(size_t(2), removedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), addedVectors.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), removedVectors.size());
         CPPUNIT_ASSERT(addedVectors[0] == vectorObj2);
         CPPUNIT_ASSERT(removedVectors[0] == vectorObj3);
         CPPUNIT_ASSERT(removedVectors[1] == vectorObj2);

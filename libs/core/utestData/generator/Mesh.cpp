@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ void Mesh::generateQuadMesh(
 
 //------------------------------------------------------------------------------
 
-void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
+void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, std::size_t nbPointsByEdge, float edgeDim)
 {
     const auto dumpLock = mesh->lock();
     data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
@@ -127,9 +127,9 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Y = edgeDim
-    for(size_t x = 0 ; x < nbPointsByEdge ; x++)
+    for(std::size_t x = 0 ; x < nbPointsByEdge ; x++)
     {
-        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
+        for(std::size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = static_cast<float>(x) * step;
             pt1[1] = edgeDim;
@@ -175,9 +175,9 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
     }
 
     //Face X = edgeDim
-    for(size_t y = 0 ; y < nbPointsByEdge ; y++)
+    for(std::size_t y = 0 ; y < nbPointsByEdge ; y++)
     {
-        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
+        for(std::size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = edgeDim;
             pt1[1] = static_cast<float>(y) * step;
@@ -227,7 +227,7 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
 void Mesh::addTriangleMesh(
     const data::Mesh::sptr& mesh,
     PointsMapType& points,
-    size_t nbPointsByEdge,
+    std::size_t nbPointsByEdge,
     float edgeDim
 )
 {
@@ -238,9 +238,9 @@ void Mesh::addTriangleMesh(
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Z = 0
-    for(size_t x = 0 ; x < nbPointsByEdge ; x++)
+    for(std::size_t x = 0 ; x < nbPointsByEdge ; x++)
     {
-        for(size_t y = 0 ; y < nbPointsByEdge ; y++)
+        for(std::size_t y = 0 ; y < nbPointsByEdge ; y++)
         {
             pt1[0] = static_cast<float>(x) * step;
             pt1[1] = static_cast<float>(y) * step;
@@ -289,9 +289,9 @@ void Mesh::addTriangleMesh(
     }
 
     //Face X = 0
-    for(size_t y = 0 ; y < nbPointsByEdge ; y++)
+    for(std::size_t y = 0 ; y < nbPointsByEdge ; y++)
     {
-        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
+        for(std::size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = 0;
             pt1[1] = static_cast<float>(y) * step;

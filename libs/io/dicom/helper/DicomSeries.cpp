@@ -348,7 +348,7 @@ void DicomSeries::fillSeries(
     for(const data::DicomSeries::sptr& series : seriesDB)
     {
         // Compute number of instances
-        const size_t size = series->getDicomContainer().size();
+        const std::size_t size = series->getDicomContainer().size();
         series->setNumberOfInstances(size);
 
         if(!size)

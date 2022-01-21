@@ -112,7 +112,7 @@ private:
     int m_passOrientation;
 
     /// The index of the slice to which we currently render.
-    size_t m_sliceIndex;
+    std::size_t m_sliceIndex;
 
     /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset =
     /// r^i.

@@ -38,7 +38,7 @@ cv::Mat rotMat(const double, const double, const double);
 cv::Mat generateIntrinsicCalibration(const cv::Size&);
 std::vector<cv::Mat> generateExtrinsicCalibration();
 std::vector<cv::Mat> generatePositionAndOrientationOfChessboard(
-    const size_t,
+    const std::size_t,
     const cv::Mat&,
     const cv::Mat&,
     const cv::Mat&
@@ -51,14 +51,14 @@ void generatePhoto(
     const double,
     const std::string&,
     const fs::path&,
-    const size_t nCam
+    const std::size_t nCam
 );
 
 //------------------------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
-    size_t nImg;
+    std::size_t nImg;
     int pX, pY;
     std::string file, outFolder;
     double sizeImgInmm;
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
             ("help,h", "produce help message")
             ("pixelX,x", po::value<int>(&pX)->required()->default_value(1920), "set image width (in pixel)")
             ("pixelY,y", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
-            ("nImg,n", po::value<size_t>(&nImg)->required()->default_value(20), "set number of image to produce")
+            ("nImg,n", po::value<std::size_t>(&nImg)->required()->default_value(20), "set number of image to produce")
         (
             "sizeInmm,s",
             po::value<double>(&sizeImgInmm)->required()->default_value(320),
@@ -267,7 +267,7 @@ std::vector<cv::Mat> generateExtrinsicCalibration()
 //------------------------------------------------------------------------------
 
 std::vector<cv::Mat> generatePositionAndOrientationOfChessboard(
-    const size_t nImg,
+    const std::size_t nImg,
     const cv::Mat& c1,
     const cv::Mat& c2,
     const cv::Mat& centerOfRotation
@@ -297,7 +297,7 @@ std::vector<cv::Mat> generatePositionAndOrientationOfChessboard(
     R0.at<double>(1, 2) = directionVector.at<double>(1, 0);
     R0.at<double>(2, 2) = directionVector.at<double>(2, 0);
 
-    for(size_t k = 0 ; k < nImg ; k++)
+    for(std::size_t k = 0 ; k < nImg ; k++)
     {
         cv::Mat T              = cv::Mat::zeros(4, 4, CV_64F);
         const double angles[3] = {normDistribution(generator) * CV_PI / 10,
@@ -340,7 +340,7 @@ void generatePhoto(
     const double sizeImgInmm,
     const std::string& boardFile,
     const fs::path& outFolder,
-    const size_t nCam
+    const std::size_t nCam
 )
 {
     const cv::Mat inImgt = cv::imread(boardFile);
@@ -354,7 +354,7 @@ void generatePhoto(
     cv::Mat x0((T0.row(0).colRange(0, 3)).t()),
     y0((T0.row(1).colRange(0, 3)).t()),
     z0((T0.row(2).colRange(0, 3)).t());
-    for(size_t k = 0 ; k < T1.size() ; k++)
+    for(std::size_t k = 0 ; k < T1.size() ; k++)
     {
         cv::Mat photo = cv::Mat::ones(imgSize.height, imgSize.width, CV_8U) * 170;
         cv::Mat pl    = cv::Mat::zeros(4, 1, CV_64F);

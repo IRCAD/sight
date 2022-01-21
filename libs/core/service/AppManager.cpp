@@ -34,7 +34,7 @@ namespace sight::service
 static const core::com::Slots::SlotKeyType s_ADD_OBJECT_SLOT    = "addObject";
 static const core::com::Slots::SlotKeyType s_REMOVE_OBJECT_SLOT = "removeObject";
 
-size_t AppManager::s_counter = 0;
+std::size_t AppManager::s_counter = 0;
 
 //------------------------------------------------------------------------------
 
@@ -340,8 +340,8 @@ void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 {
     std::unique_lock<std::mutex> lock(m_serviceMutex);
 
-    static size_t count = 0;
-    std::string channel = proxy.m_channel;
+    static std::size_t count = 0;
+    std::string channel      = proxy.m_channel;
     if(channel == "undefined")
     {
         channel = "AppManager_channel_" + std::to_string(count++);

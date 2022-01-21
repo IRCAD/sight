@@ -79,8 +79,8 @@ void SUltrasoundMesh::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_resolutionX = config.get<size_t>(s_RESOLUTION_X_CONFIG, m_resolutionX);
-    m_resolutionY = config.get<size_t>(s_RESOLUTION_Y_CONFIG, m_resolutionY);
+    m_resolutionX = config.get<std::size_t>(s_RESOLUTION_X_CONFIG, m_resolutionX);
+    m_resolutionY = config.get<std::size_t>(s_RESOLUTION_Y_CONFIG, m_resolutionY);
     m_depth       = config.get<int>(s_DEPTH_CONFIG, m_depth);
     m_width       = config.get<int>(s_WIDTH_CONFIG, m_width);
     m_angle       = config.get<int>(s_ANGLE_CONFIG, m_angle);
@@ -172,11 +172,11 @@ void SUltrasoundMesh::updateMeshPosition()
 
 void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
 {
-    const size_t width  = m_meshPositionArray.shape()[0];
-    const size_t height = m_meshPositionArray.shape()[1];
+    const std::size_t width  = m_meshPositionArray.shape()[0];
+    const std::size_t height = m_meshPositionArray.shape()[1];
 
-    const size_t numPointsTotal = width * height;
-    const size_t numQuads       = (width - 1) * (height - 1);
+    const std::size_t numPointsTotal = width * height;
+    const std::size_t numQuads       = (width - 1) * (height - 1);
 
     _mesh->resize(
         numPointsTotal,
@@ -195,9 +195,9 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     // cells index (4 in a row)
     auto cellsItr = _mesh->begin<data::iterator::cell::quad>();
 
-    for(size_t i = 0 ; i < width ; ++i)
+    for(std::size_t i = 0 ; i < width ; ++i)
     {
-        for(size_t j = 0 ; j < height ; ++j)
+        for(std::size_t j = 0 ; j < height ; ++j)
         {
             auto&& [p, tex] = *pointsItr;
             p.x             = *pointsIn++;
@@ -211,9 +211,9 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     }
 
     // index for each cell
-    for(size_t i = 0 ; i < width - 1 ; ++i)
+    for(std::size_t i = 0 ; i < width - 1 ; ++i)
     {
-        for(size_t j = 0 ; j < height - 1 ; ++j)
+        for(std::size_t j = 0 ; j < height - 1 ; ++j)
         {
             const data::Mesh::cell_t idx1 = j + i * height;
             const data::Mesh::cell_t idx2 = idx1 + 1;

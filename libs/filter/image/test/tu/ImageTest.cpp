@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,10 +86,10 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
     // fill roi with random values
     utestData::generator::Image::randomizeImage(roi);
 
-    const auto dumpLock = roi->lock();
-    auto begin          = roi->begin();
-    const auto end      = roi->end();
-    const size_t part   = (end - begin) / 3;
+    const auto dumpLock    = roi->lock();
+    auto begin             = roi->begin();
+    const auto end         = roi->end();
+    const std::size_t part = (end - begin) / 3;
 
     // keep random values in 1/3 of the image (else fill with 0)
     std::fill(begin, begin + part, 0);

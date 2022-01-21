@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ protected:
      */
     ACTIVITY_API data::ActivitySeries::sptr getActivity(
         data::SeriesDB& seriesDB,
-        size_t index,
+        std::size_t index,
         const core::com::SlotBase::sptr& slot   = nullptr,
         const data::Composite::csptr& overrides = nullptr
     );
@@ -93,7 +93,7 @@ protected:
      * @param seriesDB Series DB containing all the activities
      * @param index the activity in index and all the following will be removed
      */
-    ACTIVITY_API void removeLastActivities(data::SeriesDB& seriesDB, size_t index);
+    ACTIVITY_API void removeLastActivities(data::SeriesDB& seriesDB, std::size_t index);
 
     /// List of the activity to create.
     ActivitesType m_activityIds;

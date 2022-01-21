@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -154,13 +154,13 @@ void RecursiveLock::visit(const camp::EnumProperty&)
 void RecursiveLock::visit(const camp::MapProperty& property)
 {
     const std::string name(property.name());
-    const size_t size = property.getSize(m_campObj);
+    const std::size_t size = property.getSize(m_campObj);
 
     std::pair< ::camp::Value, ::camp::Value> value;
     ::camp::Value first;
     ::camp::Value second;
 
-    for(size_t var = 0 ; var < size ; ++var)
+    for(std::size_t var = 0 ; var < size ; ++var)
     {
         value = property.getElement(m_campObj, var);
 
@@ -187,11 +187,11 @@ void RecursiveLock::visit(const camp::MapProperty& property)
 void RecursiveLock::visit(const camp::ArrayProperty& property)
 {
     const std::string name(property.name());
-    const size_t size = property.size(m_campObj);
+    const std::size_t size = property.size(m_campObj);
 
     ::camp::Value value;
 
-    for(size_t var = 0 ; var < size ; ++var)
+    for(std::size_t var = 0 ; var < size ; ++var)
     {
         value = property.get(m_campObj, var);
 

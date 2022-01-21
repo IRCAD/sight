@@ -320,7 +320,7 @@ cv::Mat Masker::makeTrainingSamples(const cv::Mat& t, const cv::Mat& mask, const
 
 //------------------------------------------------------------------------------
 
-cv::Mat Masker::removeMaskHoles(const cv::Mat& m, size_t n, cv::InputArray insideMask)
+cv::Mat Masker::removeMaskHoles(const cv::Mat& m, std::size_t n, cv::InputArray insideMask)
 {
     cv::Mat mask;
     m.copyTo(mask);
@@ -329,12 +329,12 @@ cv::Mat Masker::removeMaskHoles(const cv::Mat& m, size_t n, cv::InputArray insid
     k.setTo(1);
 
     // Perform some erosion/dilatation to remove small areas
-    for(size_t i = 0 ; i < n ; i++)
+    for(std::size_t i = 0 ; i < n ; i++)
     {
         cv::erode(mask, mask, k);
     }
 
-    for(size_t i = 0 ; i < n ; i++)
+    for(std::size_t i = 0 ; i < n ; i++)
     {
         cv::dilate(mask, mask, k);
     }

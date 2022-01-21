@@ -114,7 +114,7 @@ void LabelingTest::computeCentroids()
         }
     }
 
-    std::vector<std::vector<size_t> > pointListLabels;
+    std::vector<std::vector<std::size_t> > pointListLabels;
     std::vector<data::PointList::sptr> pointListCentroids;
 
     // Call the ITK operator

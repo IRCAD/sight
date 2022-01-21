@@ -137,7 +137,7 @@ private:
     boost::circular_buffer<Ogre::Camera*> m_frustumList {};
 
     /// Uses to generate unique ID for each Ogre::Camera.
-    size_t m_currentCamIndex {0};
+    std::size_t m_currentCamIndex {0};
 
     /// Contains the Ogre material adaptor.
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};

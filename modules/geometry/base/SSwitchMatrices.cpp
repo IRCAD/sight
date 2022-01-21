@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ void SSwitchMatrices::switchMatrix()
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::switchToMatrix(size_t index)
+void SSwitchMatrices::switchToMatrix(std::size_t index)
 {
     if(index < m_matrix.size())
     {

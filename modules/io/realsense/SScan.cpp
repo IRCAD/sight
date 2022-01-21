@@ -208,8 +208,8 @@ std::string SScan::selectDevice()
         const std::string selected = dial.show();
 
         // Get the index of selected camera.
-        const size_t dot = selected.find(".");
-        const auto index = std::atoi(selected.substr(0, dot).c_str()) - 1;
+        const std::size_t dot = selected.find(".");
+        const auto index      = std::atoi(selected.substr(0, dot).c_str()) - 1;
 
         // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
@@ -356,11 +356,11 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
                 );
                 colorCamera->setIsCalibrated(true);
 
-                size_t index = 0;
-                for(size_t i = 0 ; i < 3 ; ++i)
+                std::size_t index = 0;
+                for(std::size_t i = 0 ; i < 3 ; ++i)
                 {
                     matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
-                    for(size_t j = 0 ; j < 3 ; ++j)
+                    for(std::size_t j = 0 ; j < 3 ; ++j)
                     {
                         matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
                         ++index;
@@ -1250,7 +1250,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
         const auto sizeBuffer      = width * height;
 
         // Re-map depth frame in mm.
-        for(size_t i = 0 ; i < sizeBuffer ; ++i)
+        for(std::size_t i = 0 ; i < sizeBuffer ; ++i)
         {
             *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *m_depthScale);
         }
@@ -1284,7 +1284,7 @@ void SScan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _textur
         const auto vertices     = _pc.get_vertices();
         const auto textureCoord = _pc.get_texture_coordinates();
 
-        const size_t pcSize = _pc.size();
+        const std::size_t pcSize = _pc.size();
 
         // Parallelization of the loop is possible since each element is independent.
 

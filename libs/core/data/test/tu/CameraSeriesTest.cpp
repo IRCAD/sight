@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,9 +82,9 @@ data::CameraSeries::sptr initCameraSeries()
 
     // --------------- Extrinsic matrix ----------------------
     data::Matrix4::sptr mat = data::Matrix4::New();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const auto value = static_cast<data::Matrix4::TM3DType>(2 * i + j);
             mat->setCoefficient(i, j, value);
@@ -105,9 +105,9 @@ void CameraSeriesTest::cameraTest()
 
     data::Matrix4::sptr identity = data::Matrix4::New();
     data::Matrix4::sptr mat      = data::Matrix4::New();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const auto value = static_cast<data::Matrix4::TM3DType>(2 * i + j);
             mat->setCoefficient(i, j, value);
@@ -130,7 +130,7 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT_THROW(series->getExtrinsicMatrix(2), core::Exception);
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(1) == mat);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), series->numCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series->numCameras());
 
     CPPUNIT_ASSERT(series->getCamera(0) == camera1);
     CPPUNIT_ASSERT(series->getCamera(1) == camera2);
@@ -140,16 +140,16 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT(series->getCamera(2) == camera3);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera1));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), series->numCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series->numCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera2);
     CPPUNIT_ASSERT_THROW(series->removeCamera(camera1), core::Exception);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera2));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), series->numCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series->numCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera3);
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera3));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(0), series->numCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), series->numCameras());
 }
 
 //------------------------------------------------------------------------------

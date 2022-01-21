@@ -277,7 +277,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 template<class P>
 data::Image::sptr createImageFromPixelBuffer()
 {
-    constexpr size_t IMG_DIMENSIONS = 100;
+    constexpr std::size_t IMG_DIMENSIONS = 100;
     using SubPixel = typename P::value_type;
 
     // Create a new image
@@ -300,13 +300,13 @@ template<class P>
 void getPixelTestHelper(const P& pixelValue)
 {
     using SubPixel = typename P::value_type;
-    constexpr size_t N_COMPONENTS = std::tuple_size<P>::value;
-    data::Image::sptr image       = createImageFromPixelBuffer<P>();
-    const auto size               = image->getSize();
+    constexpr std::size_t N_COMPONENTS = std::tuple_size<P>::value;
+    data::Image::sptr image            = createImageFromPixelBuffer<P>();
+    const auto size                    = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
-    size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<size_t>(safeRand()) % size[0];});
+    std::size_t coords[3];
+    std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
     const auto dumpLock = image->lock();
     auto imageBufferPtr = image->getBuffer();
     SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr)
@@ -376,10 +376,10 @@ void setPixelTestHelper(P& pixelValue)
     const auto size = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
-    size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<size_t>(safeRand()) % size[0];});
-    const size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
-    const auto dumpLock     = image->lock();
+    std::size_t coords[3];
+    std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
+    const std::size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
+    const auto dumpLock          = image->lock();
     image->setPixel(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
@@ -505,11 +505,11 @@ void MedicalImageHelpersTest::testLandmarks()
 
     const auto points = landmarks->getPoints();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), points.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), points.size());
 
     const auto point = points[0];
 
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(p->getCoord()[i], point->getCoord()[i], std::numeric_limits<double>::epsilon());
     }

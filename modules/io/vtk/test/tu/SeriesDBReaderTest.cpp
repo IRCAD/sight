@@ -127,7 +127,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     const data::Image::Origin originExpected   = {34.64, 86.6, 56};
     const data::Image::Size sizeExpected       = {230, 170, 58};
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
 
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(seriesDB->getContainer()[0]);
     data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(seriesDB->getContainer()[1]);
@@ -156,7 +156,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), modelSeries->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), modelSeries->getReconstructionDB().size());
 
     data::Reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
     data::Reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
@@ -201,7 +201,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     srv->stop().wait();
     service::remove(srv);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 }
 
 //------------------------------------------------------------------------------

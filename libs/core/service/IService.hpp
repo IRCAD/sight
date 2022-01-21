@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,9 +116,9 @@ public:
 
     using IdType        = std::string;
     using KeyType       = std::string;
-    using InputMapType  = std::map<std::pair<std::string, size_t>, data::mt::weak_ptr<const data::Object> >;
-    using InOutMapType  = std::map<std::pair<std::string, size_t>, data::mt::weak_ptr<data::Object> >;
-    using OutputMapType = std::map<std::pair<std::string, size_t>, data::mt::shared_ptr<data::Object> >;
+    using InputMapType  = std::map<std::pair<std::string, std::size_t>, data::mt::weak_ptr<const data::Object> >;
+    using InOutMapType  = std::map<std::pair<std::string, std::size_t>, data::mt::weak_ptr<data::Object> >;
+    using OutputMapType = std::map<std::pair<std::string, std::size_t>, data::mt::shared_ptr<data::Object> >;
 
     /// Used to store object configuration in a service.
     struct ObjectServiceConfig
@@ -155,7 +155,7 @@ public:
         std::string m_worker;
 
         /// list of required objects information (inputs, inouts and outputs), indexed by key name and index
-        std::map<std::pair<std::string, size_t>, ObjectServiceConfig> m_objects;
+        std::map<std::pair<std::string, std::size_t>, ObjectServiceConfig> m_objects;
 
         /// Service configuration (only used with XML config)
         CSPTR(core::runtime::ConfigurationElement) m_config;
@@ -422,7 +422,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::weak_ptr<CONST_DATATYPE> getInput(std::string_view key, size_t index = 0) const;
+    inline data::mt::weak_ptr<CONST_DATATYPE> getInput(std::string_view key, std::size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
@@ -431,7 +431,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getInOut(std::string_view key, size_t index = 0) const;
+    inline data::mt::weak_ptr<DATATYPE> getInOut(std::string_view key, std::size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
@@ -440,7 +440,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getOutput(std::string_view key, size_t index = 0) const;
+    inline data::mt::weak_ptr<DATATYPE> getOutput(std::string_view key, std::size_t index = 0) const;
     //@}
 
     /**
@@ -494,7 +494,7 @@ public:
 
         //------------------------------------------------------------------------------
 
-        size_t size() const
+        std::size_t size() const
         {
             return m_keyConnectionsMap.size();
         }
@@ -524,17 +524,17 @@ public:
      * @param _key object key
      * @param[in] _index index of the data in the group
      */
-    SERVICE_API bool hasObjectId(std::string_view _key, const size_t _index = 0) const;
+    SERVICE_API bool hasObjectId(std::string_view _key, const std::size_t _index = 0) const;
 
     /**
      * @brief Return the id of the object, throw if it is not found
      */
-    SERVICE_API IdType getObjectId(std::string_view _key, const size_t _index = 0) const;
+    SERVICE_API IdType getObjectId(std::string_view _key, const std::size_t _index = 0) const;
 
     /**
      * @brief Set the id of an object key from a group
      */
-    SERVICE_API void setObjectId(std::string_view _key, const IService::IdType& _id, const size_t _index = 0);
+    SERVICE_API void setObjectId(std::string_view _key, const IService::IdType& _id, const std::size_t _index = 0);
 
     //@}
 
@@ -548,7 +548,7 @@ public:
     SERVICE_API void setInput(
         data::Object::csptr obj,
         std::string_view key,
-        size_t index = 0
+        std::size_t index = 0
     );
 
     /**
@@ -566,7 +566,7 @@ public:
         std::string_view key,
         const bool autoConnect,
         const bool optional = false,
-        size_t index        = 0
+        std::size_t index   = 0
     );
 
     /**
@@ -579,7 +579,7 @@ public:
     SERVICE_API void setInOut(
         data::Object::sptr obj,
         std::string_view key,
-        size_t index = 0
+        std::size_t index = 0
     );
 
     /**
@@ -597,7 +597,7 @@ public:
         std::string_view key,
         const bool autoConnect,
         const bool optional = false,
-        size_t index        = 0
+        std::size_t index   = 0
     );
 
     /**
@@ -613,7 +613,7 @@ public:
     SERVICE_API void setOutput(
         std::string_view key,
         data::Object::sptr object,
-        size_t index = 0
+        std::size_t index = 0
     );
 
     /**
@@ -629,7 +629,7 @@ public:
     SERVICE_API void setObject(
         data::Object::sptr obj,
         std::string_view key,
-        size_t index,
+        std::size_t index,
         data::Access access,
         const bool autoConnect,
         const bool optional
@@ -641,7 +641,7 @@ public:
      * @param[in] key key of the object
      * @param[in] access access to the object (in/inout/out)
      */
-    SERVICE_API void resetObject(std::string_view key, size_t index, data::Access access);
+    SERVICE_API void resetObject(std::string_view key, std::size_t index, data::Access access);
 
     /**
      * @brief Return the input, inout or output object at the given key.
@@ -650,7 +650,11 @@ public:
      * @param _index optional index of the data to retrieve.
      * @return data object, nullptr if not found.
      */
-    SERVICE_API data::Object::csptr getObject(std::string_view _key, data::Access _access, size_t _index = 0) const;
+    SERVICE_API data::Object::csptr getObject(
+        std::string_view _key,
+        data::Access _access,
+        std::size_t _index = 0
+    ) const;
 
     /**
      * @brief Define an object required by this service.
@@ -671,7 +675,7 @@ public:
         data::Access access,
         const bool autoConnect = false,
         const bool optional    = false,
-        size_t index           = 0
+        std::size_t index      = 0
     );
 
     /// Return true if all the non-optional object required by the service are present
@@ -831,7 +835,7 @@ private:
     void _setInput(
         data::Object::csptr obj,
         std::string_view key,
-        size_t index = 0
+        std::size_t index = 0
     );
 
     /**
@@ -842,7 +846,7 @@ private:
     void _setInOut(
         data::Object::sptr obj,
         std::string_view key,
-        size_t index = 0
+        std::size_t index = 0
     );
 
     /**
@@ -854,14 +858,14 @@ private:
     SERVICE_API void _setOutput(
         std::string_view key,
         data::Object::sptr object,
-        size_t index = 0
+        std::size_t index = 0
     ) override;
 
     /// @copydoc sight::data::IHasData::_registerObject
     SERVICE_API void _registerObject(
         std::string_view key,
         const data::Access access,
-        size_t index,
+        std::size_t index,
         const bool autoConnect,
         const bool optional = false
     ) override;
@@ -907,7 +911,7 @@ private:
     void _addProxyConnection(const helper::ProxyConnections& info);
 
     /// Return the information about the required object
-    std::optional<std::tuple<const std::string&, size_t,
+    std::optional<std::tuple<const std::string&, std::size_t,
                              const service::IService::ObjectServiceConfig&> > _getObjInfoFromId(
         const std::string& objId
     ) const;

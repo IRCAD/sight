@@ -92,7 +92,7 @@ void SPoseFrom2d::starting()
     auto pl = m_pointList.lock();
     if(pl)
     {
-        for(size_t i = 0 ; i < m_3dModel.size() ; ++i)
+        for(std::size_t i = 0 ; i < m_3dModel.size() ; ++i)
         {
             const cv::Point3f cvPoint     = m_3dModel.at(i);
             const data::Point::sptr point = data::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
@@ -152,7 +152,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
         for(auto markerKey : m_matricesTag)
         {
             std::vector<Marker> markers;
-            size_t indexTL = 0;
+            std::size_t indexTL = 0;
 
             // For each camera timeline
             for(const auto& markerMap : m_markerMap)
@@ -163,7 +163,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                 if(marker)
                 {
                     Marker currentMarker;
-                    for(size_t i = 0 ; i < 4 ; ++i)
+                    for(std::size_t i = 0 ; i < 4 ; ++i)
                     {
                         currentMarker.corners2D.push_back(cv::Point2f((*marker)[i][0], (*marker)[i][1]));
                     }
@@ -224,7 +224,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
 
 void SPoseFrom2d::initialize()
 {
-    for(size_t idx = 0 ; idx < m_camera.size() ; ++idx)
+    for(std::size_t idx = 0 ; idx < m_camera.size() ; ++idx)
     {
         auto camera = m_camera[idx].lock();
         SIGHT_FATAL_IF("Camera[" << idx << "] not found", !camera);

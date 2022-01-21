@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace sight::ui::history
 
 //-----------------------------------------------------------------------------
 
-UndoRedoManager::UndoRedoManager(size_t maxMemory, size_t maxCommands) :
+UndoRedoManager::UndoRedoManager(std::size_t maxMemory, std::size_t maxCommands) :
     m_maxMemory(maxMemory),
     m_maxCommands(maxCommands == 0 ? 1 : maxCommands),
     m_usedMemory(0),
@@ -138,14 +138,14 @@ void UndoRedoManager::clear()
 
 //-----------------------------------------------------------------------------
 
-size_t UndoRedoManager::getCommandCount() const
+std::size_t UndoRedoManager::getCommandCount() const
 {
     return m_commandQueue.size();
 }
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::setCommandCount(size_t cmdCount)
+void UndoRedoManager::setCommandCount(std::size_t cmdCount)
 {
     this->clear();
     m_maxCommands = cmdCount;
@@ -153,14 +153,14 @@ void UndoRedoManager::setCommandCount(size_t cmdCount)
 
 //-----------------------------------------------------------------------------
 
-size_t UndoRedoManager::getHistorySize() const
+std::size_t UndoRedoManager::getHistorySize() const
 {
     return m_usedMemory;
 }
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::setHistorySize(size_t histSize)
+void UndoRedoManager::setHistorySize(std::size_t histSize)
 {
     this->clear();
     m_maxMemory = histSize;

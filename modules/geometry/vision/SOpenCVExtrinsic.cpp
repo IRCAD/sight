@@ -80,7 +80,7 @@ void SOpenCVExtrinsic::configuring()
     {
         std::string idxStr = cfgIdx->getValue();
         SIGHT_ASSERT("'camIndex' is empty.", !idxStr.empty());
-        m_camIndex = boost::lexical_cast<size_t>(idxStr);
+        m_camIndex = boost::lexical_cast<std::size_t>(idxStr);
     }
 
     core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
@@ -228,7 +228,7 @@ void SOpenCVExtrinsic::updating()
             cameraMatrix2.at<double>(1, 1) = cam2->getFy();
             cameraMatrix2.at<double>(0, 2) = cam2->getCx();
             cameraMatrix2.at<double>(1, 2) = cam2->getCy();
-            for(size_t i = 0 ; i < 5 ; ++i)
+            for(std::size_t i = 0 ; i < 5 ; ++i)
             {
                 distortionCoefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
                 distortionCoefficients2[i] = static_cast<float>(cam2->getDistortionCoefficient()[i]);

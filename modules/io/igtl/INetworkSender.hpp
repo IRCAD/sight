@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ protected:
      * @brief Sends the obj at the specified index.
      * @pre the configuration group must exists.
      */
-    MODULE_IO_IGTL_API virtual void sendObject(const data::Object::csptr& obj, const size_t index) = 0;
+    MODULE_IO_IGTL_API virtual void sendObject(const data::Object::csptr& obj, const std::size_t index) = 0;
 
     /// Defines the signal emitted when service is connected.
     typedef core::com::Signal<void ()> ConnectedSignalType;

@@ -341,7 +341,7 @@ void SNegato2DCamera::resetCamera()
             camera->setOrthoWindowWidth(w + w * 0.1f);
         }
 
-        const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
+        const std::size_t orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
         Ogre::Vector3 camPos(
             static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
             static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
@@ -394,7 +394,7 @@ void SNegato2DCamera::moveBack()
 
     if(worldBoundingBox.isFinite())
     {
-        const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
+        const std::size_t orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
 
         auto camPos = camNode->getPosition();
 

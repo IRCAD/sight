@@ -168,10 +168,10 @@ private:
     bool m_isTextureInit {false};
 
     /// Defines the previous image size.
-    size_t m_previousWidth {0};
+    std::size_t m_previousWidth {0};
 
     /// Defines the previous image spacing.
-    size_t m_previousHeight {0};
+    std::size_t m_previousHeight {0};
 
     /// Defines the previous viewport width.
     int m_previousViewportWidth {0};

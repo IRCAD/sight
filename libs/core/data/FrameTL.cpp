@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "data/FrameTL.hpp"
 
+#include <core/base.hpp>
+
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
-
-#include <core/base.hpp>
 
 #include <boost/pool/pool.hpp>
 
@@ -93,10 +93,10 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 //------------------------------------------------------------------------------
 
 void FrameTL::initPoolSize(
-    size_t width,
-    size_t height,
+    std::size_t width,
+    std::size_t height,
     const core::tools::Type& type,
-    size_t numberOfComponents,
+    std::size_t numberOfComponents,
     unsigned int maxElementNum
 )
 {
@@ -135,8 +135,8 @@ void FrameTL::initPoolSize(
 //------------------------------------------------------------------------------
 
 void FrameTL::initPoolSize(
-    size_t width,
-    size_t height,
+    std::size_t width,
+    std::size_t height,
     const core::tools::Type& type,
     const PixelFormat format,
     unsigned int maxElementNum

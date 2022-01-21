@@ -44,11 +44,11 @@ bool invert(
     const glm::dmat4x4 matInverse = glm::inverse(mat);
 
     auto& coefs = _output.getCoefficients();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const size_t rowDst        = i * 4;
+        const std::size_t rowDst   = i * 4;
         const glm::length_t rowSrc = static_cast<glm::length_t>(i);
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const glm::length_t colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = matInverse[rowSrc][colSrc];
@@ -75,11 +75,11 @@ void multiply(
     const glm::dmat4x4 matC = matB * matA;
 
     auto& coefs = _output.getCoefficients();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const size_t rowDst        = i * 4;
+        const std::size_t rowDst   = i * 4;
         const glm::length_t rowSrc = static_cast<glm::length_t>(i);
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const glm::length_t colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = matC[rowSrc][colSrc];
@@ -91,9 +91,9 @@ void multiply(
 
 void identity(sight::data::Matrix4& _trf)
 {
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             _trf.setCoefficient(i, j, i == j ? 1 : 0);
         }
@@ -134,7 +134,7 @@ bool isIdentity(const sight::data::Matrix4& _trf, const double _epsilon)
     const sight::data::Matrix4::TMCoefArray& arrayID  = s_IDENTITY.getCoefficients();
     const sight::data::Matrix4::TMCoefArray& arrayTrf = _trf.getCoefficients();
 
-    for(size_t i = 0 ; i < arrayID.size() ; ++i)
+    for(std::size_t i = 0 ; i < arrayID.size() ; ++i)
     {
         if(std::abs(arrayID[i] - arrayTrf[i]) > _epsilon)
         {

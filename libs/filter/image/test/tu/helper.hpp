@@ -31,7 +31,7 @@
 #include <itkImage.h>
 #include <itkSpatialObjectToImageFilter.h>
 
-template<class P, size_t N>
+template<class P, std::size_t N>
 /**
  * @brief Create a binary test image of 100x100x100 size containing an ellipsoid in the center.
  *

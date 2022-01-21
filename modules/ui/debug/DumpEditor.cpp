@@ -179,7 +179,7 @@ PolicyTableModel::PolicyTableModel(QObject* parent) :
 int PolicyTableModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    size_t nbParam = 0;
+    std::size_t nbParam = 0;
     if(m_buffManager)
     {
         core::mt::ReadLock lock(m_buffManager->getMutex());
@@ -575,7 +575,7 @@ public:
 
 protected:
 
-    size_t m_size;
+    std::size_t m_size;
 };
 
 //------------------------------------------------------------------------------

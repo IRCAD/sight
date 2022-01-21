@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ void SMeshList::starting()
     const auto imageInput     = m_texture.lock();
 
     // initialise N meshes adaptor
-    for(size_t i = 0 ; i < m_capacity ; ++i)
+    for(std::size_t i = 0 ; i < m_capacity ; ++i)
     {
         // Matrix and Image are copied because the input ones will change. Mesh is not copied because we want to use
         // the same mesh of all the adaptors

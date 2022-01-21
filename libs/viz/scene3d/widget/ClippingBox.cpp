@@ -368,7 +368,7 @@ void ClippingBox::widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX,
 
         // Check for overlap.
         const float eps = 0.001f;
-        for(size_t i = 0 ; i < 3 ; ++i)
+        for(std::size_t i = 0 ; i < 3 ; ++i)
         {
             if(tmpClippingCube[0][i] > m_clippingCube[1][i])
             {

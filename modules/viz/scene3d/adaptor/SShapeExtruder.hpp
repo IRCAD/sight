@@ -140,12 +140,12 @@ private:
         Ogre::Vector2 barycentre;
 
         /// Defines the unique ID of the triangle.
-        size_t id;
+        std::size_t id;
 
     private:
 
         /// Defines the next ID to used for triangles.
-        inline static size_t s_id = 0;
+        inline static std::size_t s_id = 0;
     };
 
     /// Represents a 3D triangle by three points.

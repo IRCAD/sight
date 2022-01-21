@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-std::int32_t Type::toCv(const core::tools::Type _type, const size_t _numComponents)
+std::int32_t Type::toCv(const core::tools::Type _type, const std::size_t _numComponents)
 {
     SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _numComponents > 0 && _numComponents <= 4);
 
@@ -55,7 +55,7 @@ std::int32_t Type::toCv(const core::tools::Type _type, const size_t _numComponen
 
 std::pair<core::tools::Type, uint8_t> Type::fromCv(int32_t _cvType)
 {
-    static const std::map<std::int32_t, std::pair<core::tools::Type, size_t> > s_IMAGE_FORMAT_FROM_CV =
+    static const std::map<std::int32_t, std::pair<core::tools::Type, std::size_t> > s_IMAGE_FORMAT_FROM_CV =
     {{
         {CV_8UC1, {core::tools::Type::s_UINT8, 1}},
         {CV_8UC2, {core::tools::Type::s_UINT8, 2}},

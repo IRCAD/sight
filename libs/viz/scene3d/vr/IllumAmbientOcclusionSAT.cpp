@@ -187,7 +187,7 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
     for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
     {
         Ogre::RenderTarget* rt =
-            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(m_currentSliceIndex));
+            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<std::size_t>(m_currentSliceIndex));
         Ogre::Viewport* vp = rt->getViewport(0);
 
         // Add compositor.
@@ -251,7 +251,7 @@ void IllumAmbientOcclusionSAT::updateTexture()
     {
         // Init source buffer
         Ogre::RenderTarget* renderTarget =
-            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(sliceIndex));
+            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<std::size_t>(sliceIndex));
         Ogre::Viewport* vp = renderTarget->addViewport(m_dummyCamera);
 
         vp->setOverlaysEnabled(false);

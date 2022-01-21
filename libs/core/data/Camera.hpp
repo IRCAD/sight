@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,12 @@
 #pragma once
 
 #include "data/config.hpp"
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
+
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 #include <array>
 #include <filesystem>
@@ -184,25 +185,25 @@ public:
     }
 
     /// @return camera resolution in pixels
-    size_t getWidth() const
+    std::size_t getWidth() const
     {
         return m_width;
     }
 
     /// Sets camera resolution in pixels
-    void setWidth(size_t w)
+    void setWidth(std::size_t w)
     {
         m_width = w;
     }
 
     /// @return camera resolution in pixels
-    size_t getHeight() const
+    std::size_t getHeight() const
     {
         return m_height;
     }
 
     /// Sets camera resolution in pixels
-    void setHeight(size_t h)
+    void setHeight(std::size_t h)
     {
         m_height = h;
     }
@@ -370,10 +371,10 @@ public:
 protected:
 
     //! Width video resolution
-    size_t m_width;
+    std::size_t m_width;
 
     //! Height video resolution
-    size_t m_height;
+    std::size_t m_height;
 
     /// Intrinsic parameters [fx, fy, cx, cy]
     IntrinsecType m_intrinsic;

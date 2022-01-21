@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace timeline
 Buffer::Buffer(
     core::HiResClock::HiResClockType timestamp,
     BufferDataType buffer,
-    size_t size,
+    std::size_t size,
     DeleterType d
 ) :
     Object(timestamp),

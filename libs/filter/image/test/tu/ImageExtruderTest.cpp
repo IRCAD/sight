@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,12 +103,12 @@ void ImageExtruderTest::extrudeTriangleMesh()
     }
 
     {
-        std::array<size_t, 36> indexes {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 1, 5, 4, 1, 4, 0,
-                                        2, 3, 6, 3, 6, 7, 1, 2, 6, 1, 6, 5, 0, 3, 7, 0, 7, 4
+        std::array<std::size_t, 36> indexes {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 1, 5, 4, 1, 4, 0,
+                                             2, 3, 6, 3, 6, 7, 1, 2, 6, 1, 6, 5, 0, 3, 7, 0, 7, 4
         };
-        auto it   = mesh->begin<data::iterator::cell::triangle>();
-        size_t pt = 0;
-        for(size_t index = 0 ; index < 36 ; index += 3)
+        auto it        = mesh->begin<data::iterator::cell::triangle>();
+        std::size_t pt = 0;
+        for(std::size_t index = 0 ; index < 36 ; index += 3)
         {
             it->pt[0] = indexes[pt++];
             it->pt[1] = indexes[pt++];
@@ -125,11 +125,11 @@ void ImageExtruderTest::extrudeTriangleMesh()
 
     const auto dumpLock       = image->lock();
     const auto dumpOriginLock = m_image->lock();
-    for(size_t z = 0 ; z < m_size[2] ; ++z)
+    for(std::size_t z = 0 ; z < m_size[2] ; ++z)
     {
-        for(size_t y = 0 ; y < m_size[1] ; ++y)
+        for(std::size_t y = 0 ; y < m_size[1] ; ++y)
         {
-            for(size_t x = 0 ; x < m_size[0] ; ++x)
+            for(std::size_t x = 0 ; x < m_size[0] ; ++x)
             {
                 if(x >= static_cast<float>(m_origin[0] + 1) && x < static_cast<float>(m_size[0] - 1)
                    && y >= static_cast<float>(m_origin[1] + 1) && y < static_cast<float>(m_size[1] - 1)
@@ -197,10 +197,10 @@ void ImageExtruderTest::extrudeQuadMesh()
     }
 
     {
-        std::array<size_t, 36> indexes {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 5, 4, 2, 3, 7, 6, 1, 2, 6, 5, 0, 3, 7, 4};
-        auto it   = mesh->begin<data::iterator::cell::quad>();
-        size_t pt = 0;
-        for(size_t index = 0 ; index < 24 ; index += 4)
+        std::array<std::size_t, 36> indexes {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 5, 4, 2, 3, 7, 6, 1, 2, 6, 5, 0, 3, 7, 4};
+        auto it        = mesh->begin<data::iterator::cell::quad>();
+        std::size_t pt = 0;
+        for(std::size_t index = 0 ; index < 24 ; index += 4)
         {
             it->pt[0] = indexes[pt++];
             it->pt[1] = indexes[pt++];
@@ -218,11 +218,11 @@ void ImageExtruderTest::extrudeQuadMesh()
 
     const auto dumpLock       = image->lock();
     const auto dumpOriginLock = m_image->lock();
-    for(size_t z = 0 ; z < m_size[2] ; ++z)
+    for(std::size_t z = 0 ; z < m_size[2] ; ++z)
     {
-        for(size_t y = 0 ; y < m_size[1] ; ++y)
+        for(std::size_t y = 0 ; y < m_size[1] ; ++y)
         {
-            for(size_t x = 0 ; x < m_size[0] ; ++x)
+            for(std::size_t x = 0 ; x < m_size[0] ; ++x)
             {
                 if(x >= static_cast<float>(m_origin[0] + 1) && x < static_cast<float>(m_size[0] - 1)
                    && y >= static_cast<float>(m_origin[1] + 1) && y < static_cast<float>(m_size[1] - 1)

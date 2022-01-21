@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,12 +142,12 @@ void SClientListener::runClient()
                 if(iter != m_deviceNames.end())
                 {
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    const auto obj                = m_objects[static_cast<size_t>(indexReceiveObject)].lock();
+                    const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
 
                     const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
                     if(isATimeline)
                     {
-                        this->manageTimeline(receiveObject, static_cast<size_t>(indexReceiveObject));
+                        this->manageTimeline(receiveObject, static_cast<std::size_t>(indexReceiveObject));
                     }
                     else
                     {
@@ -210,7 +210,7 @@ void SClientListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
+void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 

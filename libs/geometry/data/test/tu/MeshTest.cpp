@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,13 +27,13 @@
 #include <geometry/data/Matrix4.hpp>
 #include <geometry/data/Mesh.hpp>
 
+#include <utestData/generator/Mesh.hpp>
+
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-
-#include <utestData/generator/Mesh.hpp>
 
 #include <sstream>
 
@@ -86,7 +86,7 @@ void MeshTest::colorizePointsTest()
 
         const auto dumpLock = mesh->lock();
 
-        size_t count = 0;
+        std::size_t count = 0;
         for(const auto& color : mesh->crange<point::rgba>())
         {
             ++count;
@@ -114,7 +114,7 @@ void MeshTest::colorizePointsTest()
             sight::data::Mesh::Attributes::POINT_COLORS
         );
 
-        std::vector<size_t> vectorNumTriangle = {{0, 12, 1, 3, 21}};
+        std::vector<std::size_t> vectorNumTriangle = {{0, 12, 1, 3, 21}};
 
         // fill color with 0
         geometry::data::Mesh::colorizeMeshPoints(mesh, 0, 0, 0, 0);
@@ -126,8 +126,8 @@ void MeshTest::colorizePointsTest()
         const auto cellIterBegin = mesh->cbegin<cell::triangle>();
 
         // get the 3 points of each triangles
-        std::set<size_t> vertexIndices;
-        for(size_t i = 0 ; i < vectorNumTriangle.size() ; ++i)
+        std::set<std::size_t> vertexIndices;
+        for(std::size_t i = 0 ; i < vectorNumTriangle.size() ; ++i)
         {
             auto cell = cellIterBegin + vectorNumTriangle[i];
             vertexIndices.insert(cell->pt[0]);
@@ -135,7 +135,7 @@ void MeshTest::colorizePointsTest()
             vertexIndices.insert(cell->pt[2]);
         }
 
-        size_t count = 0;
+        std::size_t count = 0;
         for(const auto& color : mesh->range<point::rgba>())
         {
             auto iter = std::find(vertexIndices.begin(), vertexIndices.end(), count);
@@ -183,7 +183,7 @@ void MeshTest::colorizeCellsTest()
 
         const auto dumpLock = mesh->lock();
 
-        size_t count = 0;
+        std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
         {
             ++count;
@@ -215,7 +215,7 @@ void MeshTest::colorizeCellsTest()
 
         const auto dumpLock = mesh->lock();
 
-        size_t count = 0;
+        std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
         {
             ++count;
@@ -242,7 +242,7 @@ void MeshTest::colorizeCellsTest()
             sight::data::Mesh::Attributes::CELL_COLORS
         );
 
-        std::vector<size_t> vectorNumTriangle = {{2, 3, 18, 23, 6}};
+        std::vector<std::size_t> vectorNumTriangle = {{2, 3, 18, 23, 6}};
 
         // fill color with 0
         geometry::data::Mesh::colorizeMeshCells(mesh, 0, 0, 0, 0);
@@ -251,7 +251,7 @@ void MeshTest::colorizeCellsTest()
 
         const auto dumpLock = mesh->lock();
 
-        size_t count = 0;
+        std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
         {
             auto iter = std::find(vectorNumTriangle.begin(), vectorNumTriangle.end(), count);
@@ -291,7 +291,7 @@ void MeshTest::colorizeCellsTest()
             sight::data::Mesh::Attributes::CELL_COLORS
         );
 
-        std::vector<size_t> vectorNumTriangle = {{2, 3, 18, 23, 6, 5}};
+        std::vector<std::size_t> vectorNumTriangle = {{2, 3, 18, 23, 6, 5}};
 
         // fill color with 0
         geometry::data::Mesh::colorizeMeshCells(mesh, 0, 0, 0, 0);
@@ -300,7 +300,7 @@ void MeshTest::colorizeCellsTest()
 
         const auto dumpLock = mesh->lock();
 
-        size_t count = 0;
+        std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
         {
             auto iter = std::find(vectorNumTriangle.begin(), vectorNumTriangle.end(), count);

@@ -77,7 +77,7 @@ SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept
 void SOpenCVExtrinsic::configuring()
 {
     const auto configTree = this->getConfigTree();
-    m_camIndex = configTree.get<size_t>("camIndex", m_camIndex);
+    m_camIndex = configTree.get<std::size_t>("camIndex", m_camIndex);
 
     const auto cfgBoard = configTree.get_child("board.<xmlattr>");
 
@@ -127,9 +127,9 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector<cv::Point3f> > objectPoints;
 
         std::vector<cv::Point3f> points;
-        for(size_t y = 0 ; y < m_height - 1 ; ++y)
+        for(std::size_t y = 0 ; y < m_height - 1 ; ++y)
         {
-            for(size_t x = 0 ; x < m_width - 1 ; ++x)
+            for(std::size_t x = 0 ; x < m_width - 1 ; ++x)
             {
                 points.push_back(
                     cv::Point3f(
@@ -146,7 +146,7 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector<int> > ids1;
         std::vector<std::vector<int> > ids2;
 
-        std::vector<size_t> degeneratedImagesCam1, degeneratedImagesCam2;
+        std::vector<std::size_t> degeneratedImagesCam1, degeneratedImagesCam2;
 
         {
             data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
@@ -239,7 +239,7 @@ void SOpenCVExtrinsic::updating()
             cameraMatrix2.at<double>(1, 1) = cam2->getFy();
             cameraMatrix2.at<double>(0, 2) = cam2->getCx();
             cameraMatrix2.at<double>(1, 2) = cam2->getCy();
-            for(size_t i = 0 ; i < 5 ; ++i)
+            for(std::size_t i = 0 ; i < 5 ; ++i)
             {
                 distortionCoefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
                 distortionCoefficients2[i] = static_cast<float>(cam2->getDistortionCoefficient()[i]);
@@ -250,7 +250,7 @@ void SOpenCVExtrinsic::updating()
 
         cv::Mat allBoardCoord = cv::Mat::ones(3, (boardSize.width - 1) * (boardSize.height - 1), CV_64F);
         std::vector<int> allIds;
-        allIds.reserve(static_cast<size_t>((boardSize.width - 1) * (boardSize.height - 1)));
+        allIds.reserve(static_cast<std::size_t>((boardSize.width - 1) * (boardSize.height - 1)));
 
         // We create a list of the charuco board's points coordinates.
         for(int i = 0 ; i < (boardSize.width - 1) * (boardSize.height - 1) ; i++)
@@ -268,7 +268,7 @@ void SOpenCVExtrinsic::updating()
         allPoints1.reserve(imagePoints1.size());
         allPoints2.reserve(imagePoints1.size());
 
-        for(size_t i = 0 ; i < imagePoints1.size() ; i++)
+        for(std::size_t i = 0 ; i < imagePoints1.size() ; i++)
         {
             std::vector<cv::Point2f> tempBoardCoords1;
             std::vector<cv::Point2f> boardCoords1;
@@ -278,7 +278,7 @@ void SOpenCVExtrinsic::updating()
             imagePointsUndistored1.reserve(ids1[i].size());
 
             // Create the list of points present in the image with theirs corresponding coordinates in the board.
-            for(size_t j = 0 ; j < ids1[i].size() ; j++)
+            for(std::size_t j = 0 ; j < ids1[i].size() ; j++)
             {
                 const float x = static_cast<float>(ids1[i][j] % (boardSize.width - 1) + 1) * m_squareSize;
                 const float y = static_cast<float>((ids1[i][j] / (boardSize.width - 1)) + 1) * m_squareSize;
@@ -304,7 +304,7 @@ void SOpenCVExtrinsic::updating()
             boardCoords2.reserve(ids2[i].size());
             imagePointsUndistored2.reserve(ids2[i].size());
 
-            for(size_t j = 0 ; j < ids2[i].size() ; j++)
+            for(std::size_t j = 0 ; j < ids2[i].size() ; j++)
             {
                 const cv::Point2f temp(static_cast<float>(ids2[i][j] % (boardSize.width - 1) + 1) * m_squareSize,
                                        static_cast<float>((ids2[i][j] / (boardSize.width - 1)) + 1) * m_squareSize);
@@ -329,7 +329,7 @@ void SOpenCVExtrinsic::updating()
             const cv::Mat H1             = cv::findHomography(boardCoords1, imagePointsUndistored1);
             const cv::Mat allBoardCoord1 = H1 * allBoardCoord;
 
-            tempBoardCoords1.reserve(static_cast<size_t>((boardSize.width - 1) * (boardSize.height - 1)));
+            tempBoardCoords1.reserve(static_cast<std::size_t>((boardSize.width - 1) * (boardSize.height - 1)));
 
             // Homogenize the new coordinates.
             for(int j = 0 ; j < (boardSize.width - 1) * (boardSize.height - 1) ; j++)
@@ -351,7 +351,7 @@ void SOpenCVExtrinsic::updating()
             const cv::Mat H2             = cv::findHomography(boardCoords2, imagePointsUndistored2);
             const cv::Mat allBoardCoord2 = H2 * allBoardCoord;
 
-            tempBoardCoords2.reserve(static_cast<size_t>((boardSize.width - 1) * (boardSize.height - 1)));
+            tempBoardCoords2.reserve(static_cast<std::size_t>((boardSize.width - 1) * (boardSize.height - 1)));
 
             for(int j = 0 ; j < (boardSize.width - 1) * (boardSize.height - 1) ; j++)
             {
@@ -376,7 +376,7 @@ void SOpenCVExtrinsic::updating()
         if(!degeneratedImagesCam1.empty())
         {
             messageIm1 << "Please check image(s): " + std::to_string(degeneratedImagesCam1[0]);
-            for(size_t i = 1 ; i < degeneratedImagesCam1.size() ; ++i)
+            for(std::size_t i = 1 ; i < degeneratedImagesCam1.size() ; ++i)
             {
                 messageIm1 << ", " << std::to_string(degeneratedImagesCam1[i]);
             }
@@ -396,7 +396,7 @@ void SOpenCVExtrinsic::updating()
             }
 
             messageIm2 << "check image(s): " + std::to_string(degeneratedImagesCam2[0]);
-            for(size_t i = 1 ; i < degeneratedImagesCam2.size() ; ++i)
+            for(std::size_t i = 1 ; i < degeneratedImagesCam2.size() ; ++i)
             {
                 messageIm2 << ", " << std::to_string(degeneratedImagesCam2[i]);
             }
@@ -497,12 +497,12 @@ bool SOpenCVExtrinsic::checkDegeneratedConfiguration(
 
     //Verify that this is not a degenerate configuration
     if(_undistortedPoints.size()
-       < std::max(static_cast<size_t>(_boardSize.width), static_cast<size_t>(_boardSize.height)) + 2)
+       < std::max(static_cast<std::size_t>(_boardSize.width), static_cast<std::size_t>(_boardSize.height)) + 2)
     {
         for(int i = 0 ; i < static_cast<int>(_undistortedPoints.size()) ; i++)
         {
-            //avoid conversion warning between opencv (int) and std::vector (size_t)
-            const size_t index = static_cast<size_t>(i);
+            //avoid conversion warning between opencv (int) and std::vector (std::size_t)
+            const std::size_t index = static_cast<std::size_t>(i);
 
             M.at<float>(i * 2, 3) = -_boardCoords[index].x;
             M.at<float>(i * 2, 4) = -_boardCoords[index].y;

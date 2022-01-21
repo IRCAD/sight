@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "data/CalibrationInfo.hpp"
 
-#include <data/registry/macros.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+
+#include <data/registry/macros.hpp>
 
 #include <algorithm>
 #include <iterator>
@@ -120,7 +120,7 @@ void CalibrationInfo::addRecord(const data::Image::sptr& img, const data::PointL
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::removeRecord(size_t idx)
+void CalibrationInfo::removeRecord(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_pointListContainer.size());
 
@@ -163,7 +163,7 @@ data::PointList::sptr CalibrationInfo::getPointList(const data::Image::sptr& img
     data::PointList::sptr pl;
 
     SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size());
-    size_t dist = 0;
+    std::size_t dist = 0;
     ImageContainerType::const_iterator it;
     for(it = m_imageContainer.begin() ; it != m_imageContainer.end() && *(it) != img ; ++it, ++dist)
     {
@@ -188,7 +188,7 @@ data::Image::sptr CalibrationInfo::getImage(const data::PointList::sptr& pl) con
 
     SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size());
 
-    size_t dist = 0;
+    std::size_t dist = 0;
     PointListContainerType::const_iterator it;
     for(it = m_pointListContainer.begin() ; it != m_pointListContainer.end() && *(it) != pl ; ++it, ++dist)
     {
@@ -207,7 +207,7 @@ data::Image::sptr CalibrationInfo::getImage(const data::PointList::sptr& pl) con
 
 //------------------------------------------------------------------------------
 
-data::Image::sptr CalibrationInfo::getImage(size_t idx) const
+data::Image::sptr CalibrationInfo::getImage(std::size_t idx) const
 {
     SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
 

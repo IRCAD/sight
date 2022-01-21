@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,8 @@ namespace sight::module::ui::qt::calibration
  * - \b calInfo2 [sight::data::CalibrationInfo] (optionnal): calibration information for optionnal second camera.
  *
  * @section Slots Slots
- * - \b displayImage(size_t index) : Launchs the configuration to display the calibration image at the given index on
+ * - \b displayImage(std::size_t index) : Launchs the configuration to display the calibration image at the given index
+ * on
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
@@ -103,7 +104,7 @@ private:
     void stopConfig();
 
     /// Slot: Launch an appConfig to display an image on an external window.
-    void displayImage(size_t idx);
+    void displayImage(std::size_t idx);
     /**
      * @}
      */

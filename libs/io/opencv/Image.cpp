@@ -44,7 +44,7 @@ static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     const auto imageSize = _image->getSize();
     std::vector<int> cvSize;
-    for(size_t i = 0 ; i < _image->numDimensions() ; ++i)
+    for(std::size_t i = 0 ; i < _image->numDimensions() ; ++i)
     {
         cvSize.push_back(static_cast<int>(imageSize[i]));
     }

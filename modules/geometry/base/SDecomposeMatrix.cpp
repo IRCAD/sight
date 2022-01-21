@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,7 +102,7 @@ void SDecomposeMatrix::updating()
         if(translation)
         {
             sight::geometry::data::identity(*translation);
-            for(size_t i = 0 ; i < 3 ; ++i)
+            for(std::size_t i = 0 ; i < 3 ; ++i)
             {
                 translation->setCoefficient(i, 3, glmTranslation[i]);
             }
@@ -118,9 +118,9 @@ void SDecomposeMatrix::updating()
     {
         {
             sight::geometry::data::identity(*scale);
-            for(size_t i = 0 ; i < 3 ; ++i)
+            for(std::size_t i = 0 ; i < 3 ; ++i)
             {
-                for(size_t j = 0 ; j < 3 ; j++)
+                for(std::size_t j = 0 ; j < 3 ; j++)
                 {
                     if(i == j)
                     {

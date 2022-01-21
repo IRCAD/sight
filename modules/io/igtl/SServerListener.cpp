@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -133,7 +133,7 @@ void SServerListener::receiveObject()
             std::vector<std::string> deviceNamesReceive;
             std::vector<data::Object::sptr> receiveObjects = m_server->receiveObjects(deviceNamesReceive);
 
-            size_t client = 0;
+            std::size_t client = 0;
             for(const auto& receiveObject : receiveObjects)
             {
                 if(receiveObject)
@@ -144,7 +144,7 @@ void SServerListener::receiveObject()
                     if(iter != m_deviceNames.end())
                     {
                         const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                        const auto obj                = m_objects[static_cast<size_t>(indexReceiveObject)].lock();
+                        const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
 
                         obj->shallowCopy(receiveObject);
 

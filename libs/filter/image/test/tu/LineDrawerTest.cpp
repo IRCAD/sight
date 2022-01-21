@@ -94,7 +94,7 @@ void LineDrawerTest::circleTest()
         const std::int16_t resValue = image->at<std::int16_t>(POINT[0], POINT[1], POINT[2]);
 
         CPPUNIT_ASSERT_EQUAL(VALUE, resValue);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), diff.numElements());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), diff.numElements());
         data::Image::IndexType index = (POINT[0] + POINT[1] * SIZE[0] + POINT[2] * SIZE[0] * SIZE[1]);
         CPPUNIT_ASSERT_EQUAL(index, diff.getElement(0).m_index);
         CPPUNIT_ASSERT_EQUAL(std::int16_t(0), *reinterpret_cast<std::int16_t*>(diff.getElement(0).m_oldValue));
@@ -290,11 +290,11 @@ void LineDrawerTest::ellipseTest()
                                          static_cast<double>(POINT[2])
             };
 
-            size_t diffIndex = 0;
+            std::size_t diffIndex = 0;
 
-            for(size_t j = 0 ; j < SIZE[1] ; ++j)
+            for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
             {
-                for(size_t i = 0 ; i < SIZE[0] ; ++i)
+                for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
                 {
                     const std::int16_t resValue = image->at<std::int16_t>(i, j, POINT[2]);
 
@@ -391,9 +391,9 @@ void LineDrawerTest::borderTest()
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
-            for(size_t i = 0 ; i < SIZE[0] ; ++i)
+            for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
             {
-                for(size_t j = 0 ; j < SIZE[1] ; ++j)
+                for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
                 {
                     const std::int16_t resValue = image->at<std::int16_t>(i, j, POINT[2]);
 
@@ -470,11 +470,11 @@ void LineDrawerTest::roiTest()
         SPTR(data::Image::BufferType) roiVal =
             data::helper::MedicalImage::getPixelInImageSpace(roiImage, ROI_VALUE);
 
-        for(size_t i = ROI_BEGIN[0] ; i < ROI_END[0] ; ++i)
+        for(std::size_t i = ROI_BEGIN[0] ; i < ROI_END[0] ; ++i)
         {
-            for(size_t j = ROI_BEGIN[1] ; j < ROI_END[1] ; ++j)
+            for(std::size_t j = ROI_BEGIN[1] ; j < ROI_END[1] ; ++j)
             {
-                for(size_t k = ROI_BEGIN[2] ; k < ROI_END[2] ; ++k)
+                for(std::size_t k = ROI_BEGIN[2] ; k < ROI_END[2] ; ++k)
                 {
                     data::Image::IndexType index = i + j * SIZE[0] + k * SIZE[0] * SIZE[1];
                     roiImage->setPixel(index, roiVal.get());
@@ -501,9 +501,9 @@ void LineDrawerTest::roiTest()
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
-            for(size_t i = 0 ; i < SIZE[0] ; ++i)
+            for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
             {
-                for(size_t j = 0 ; j < SIZE[1] ; ++j)
+                for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
                 {
                     const std::int16_t resValue = image->at<std::int16_t>(i, j, POINT[2]);
 

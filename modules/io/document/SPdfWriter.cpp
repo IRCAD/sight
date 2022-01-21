@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -165,8 +165,8 @@ void SPdfWriter::updating()
 
         // Scales images to fit the A4 format
         std::vector<std::shared_future<void> > futures;
-        const size_t sizeImagesToScale = imagesToScale.size();
-        for(size_t idx = 0 ; idx < sizeImagesToScale ; ++idx)
+        const std::size_t sizeImagesToScale = imagesToScale.size();
+        for(std::size_t idx = 0 ; idx < sizeImagesToScale ; ++idx)
         {
             std::shared_future<void> future;
             future = pool.post(&SPdfWriter::scaleQImage, std::ref(imagesToScale[idx]), scale);

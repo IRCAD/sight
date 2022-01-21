@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ namespace sight::module::filter::image
  *
  * @subsection Configuration Configuration
  * - \b clusters: Must contains a group a clusters.
- * - \b cluster: Contains a list of size_t labels value.
+ * - \b cluster: Contains a list of std::size_t labels value.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public service::IFilter
 {
@@ -103,7 +103,7 @@ private:
      */
     void updateSelectedPointList(std::string value, std::string key);
 
-    std::vector<std::vector<size_t> > m_lPointListLabels;
+    std::vector<std::vector<std::size_t> > m_lPointListLabels;
     std::vector<data::PointList::sptr> m_lPointListCentroids;
 
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, "image"};

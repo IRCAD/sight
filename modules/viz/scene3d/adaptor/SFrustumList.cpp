@@ -187,9 +187,9 @@ void SFrustumList::addFrustum()
     {
         const auto transform = m_transform.lock();
 
-        for(size_t lt = 0 ; lt < 4 ; lt++)
+        for(std::size_t lt = 0 ; lt < 4 ; lt++)
         {
-            for(size_t ct = 0 ; ct < 4 ; ct++)
+            for(std::size_t ct = 0 ; ct < 4 ; ct++)
             {
                 ogreMat[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
             }

@@ -160,9 +160,9 @@ public:
      */
     VIZ_SCENE3D_API static void allocateTexture(
         Ogre::Texture* _texture,
-        size_t _width,
-        size_t _height,
-        size_t _depth,
+        std::size_t _width,
+        std::size_t _height,
+        std::size_t _depth,
         Ogre::PixelFormat _format,
         Ogre::TextureType _texType,
         bool _dynamic

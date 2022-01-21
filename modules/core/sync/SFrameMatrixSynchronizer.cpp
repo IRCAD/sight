@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,16 +100,16 @@ void SFrameMatrixSynchronizer::starting()
 {
     SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", m_frameTLs.size() == m_images.size());
 
-    const size_t numMatrixTLs = m_matrixTLs.size();
+    const std::size_t numMatrixTLs = m_matrixTLs.size();
     SIGHT_ASSERT(
         "Maximum number of matrix timelines is exceeded: " << numMatrixTLs << ">= " << s_MAX_MATRICES_TL,
         numMatrixTLs < s_MAX_MATRICES_TL
     );
 
     m_totalOutputMatrices = 0;
-    for(size_t i = 0 ; i < numMatrixTLs ; ++i)
+    for(std::size_t i = 0 ; i < numMatrixTLs ; ++i)
     {
-        const size_t numMatrices = m_matrices[i].size();
+        const std::size_t numMatrices = m_matrices[i].size();
         m_totalOutputMatrices += numMatrices;
     }
 
@@ -181,13 +181,13 @@ void SFrameMatrixSynchronizer::synchronize()
     core::HiResClock::HiResClockType frameTimestamp = 0;
 
     // Get timestamp for synchronization
-    std::vector<size_t> availableFramesTL;
+    std::vector<std::size_t> availableFramesTL;
 
     // If multiple TLs are set, we want to synchronize their frames together.
     // If TLs are updated, we get the one with the oldest timestamp to synchronize them.
     // In particular case, we could have only one TL updated, we still need to get frames from it.
     // Then we get the one with the newest timestamp and the other ones are not considered.
-    for(size_t i = 0 ; i != m_frameTLs.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
         core::HiResClock::HiResClockType tlTimestamp;
         {
@@ -217,7 +217,7 @@ void SFrameMatrixSynchronizer::synchronize()
                     std::remove_if(
                         availableFramesTL.begin(),
                         availableFramesTL.end(),
-                        [ = ](size_t const& idx)
+                        [ = ](std::size_t const& idx)
                     {
                         const auto frametl = m_frameTLs[idx].lock();
                         SIGHT_ASSERT("Frame TL does not exist", frametl);
@@ -237,9 +237,9 @@ void SFrameMatrixSynchronizer::synchronize()
     // Now we compute the time stamp available in the matrix timelines starting from the frame timestamp
     core::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
 
-    std::vector<size_t> availableMatricesTL;
+    std::vector<std::size_t> availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
-    for(size_t i = 0 ; i != m_matrixTLs.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_matrixTLs.size() ; ++i)
     {
         const auto tl = m_matrixTLs[i].lock();
         SIGHT_ASSERT("Matrix TL does not exist", tl);
@@ -275,7 +275,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
     m_lastTimestamp = matrixTimestamp;
 
-    for(size_t i = 0 ; i != m_frameTLs.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
         const auto image = m_images[i].lock();
         CSPTR(data::FrameTL::BufferType) buffer;
@@ -374,8 +374,8 @@ void SFrameMatrixSynchronizer::synchronize()
         sig->asyncEmit();
     }
 
-    bool matrixFound       = false;
-    size_t syncMatricesNbr = 0;
+    bool matrixFound            = false;
+    std::size_t syncMatricesNbr = 0;
     for(const auto& tlIdx : availableMatricesTL)
     {
         CSPTR(data::MatrixTL::BufferType) buffer;
@@ -388,7 +388,7 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             auto& matrixVector = m_matrices[tlIdx];
 
-            for(size_t k = 0 ; k < matrixVector.size() ; ++k)
+            for(std::size_t k = 0 ; k < matrixVector.size() ; ++k)
             {
                 const auto matrix = matrixVector[k].lock();
                 SIGHT_ASSERT("Matrix with indices '" << tlIdx << ", " << k << "' does not exist", matrix);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void SConcatenateMatrices::updating()
 
         data::Matrix4 inverse;
 
-        size_t index = 0;
+        std::size_t index = 0;
         for(const bool invertCurrentMatrix : m_invertVector)
         {
             auto inputMatrix = m_matrices[index++].lock();

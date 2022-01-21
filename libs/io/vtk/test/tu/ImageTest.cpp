@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,11 +78,11 @@ void compareImageAttributes(
 )
 {
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<size_t>(expDim),
-        static_cast<size_t>(dim)
+        static_cast<std::size_t>(expDim),
+        static_cast<std::size_t>(dim)
     );
 
-    for(size_t i = 0 ; i < static_cast<size_t>(dim) ; ++i)
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>(dim) ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
             static_cast<data::Image::Spacing::value_type>(expSpacing[i]),
@@ -351,8 +351,8 @@ void ImageTest::testFromVtk()
 
     const auto dumpLock = image->lock();
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
-        static_cast<size_t>(image->numComponents())
+        static_cast<std::size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
+        static_cast<std::size_t>(image->numComponents())
     );
     compareImageAttributes(
         vtkImage->GetDimensions(),
@@ -407,7 +407,7 @@ void fromToTest(data::Image::PixelFormat format)
     auto itr2      = image2->begin<TYPE>();
     const auto end = image->end<TYPE>();
 
-    size_t count = 0;
+    std::size_t count = 0;
     for( ; itr != end ; ++itr, ++itr2, ++count)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("[" + type.string() + "] pixel[" + std::to_string(count) + "]", *itr, *itr2);

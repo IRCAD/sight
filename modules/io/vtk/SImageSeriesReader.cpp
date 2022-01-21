@@ -87,7 +87,7 @@ void SImageSeriesReader::openLocationDialog()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(size_t i = 1 ; i < ext.size() ; i++)
+        for(std::size_t i = 1 ; i < ext.size() ; i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }

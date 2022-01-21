@@ -306,7 +306,7 @@ void DictionaryReader::read()
     const auto length = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    buf.resize(static_cast<size_t>(length));
+    buf.resize(static_cast<std::size_t>(length));
     char* buffer = &buf[0];
 
     file.read(buffer, static_cast<std::streamsize>(length));

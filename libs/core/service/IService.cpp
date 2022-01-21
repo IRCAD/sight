@@ -118,7 +118,7 @@ void IService::info(std::ostream&)
 
 //-----------------------------------------------------------------------------
 
-data::Object::csptr IService::getObject(std::string_view _key, data::Access _access, size_t _index) const
+data::Object::csptr IService::getObject(std::string_view _key, data::Access _access, std::size_t _index) const
 {
     const auto key = std::make_pair(std::string(_key), _index);
     if(_access == data::Access::in)
@@ -151,7 +151,7 @@ data::Object::csptr IService::getObject(std::string_view _key, data::Access _acc
 
 //-----------------------------------------------------------------------------
 
-void IService::setOutput(std::string_view key, data::Object::sptr object, size_t index)
+void IService::setOutput(std::string_view key, data::Object::sptr object, std::size_t index)
 {
     this->_setOutput(key, object, index);
 
@@ -160,7 +160,7 @@ void IService::setOutput(std::string_view key, data::Object::sptr object, size_t
 
 //-----------------------------------------------------------------------------
 
-void IService::_setOutput(std::string_view key, data::Object::sptr object, size_t index)
+void IService::_setOutput(std::string_view key, data::Object::sptr object, std::size_t index)
 {
     auto keyPair = std::make_pair(std::string(key), index);
     if(m_outputsMap.find(keyPair) != m_outputsMap.end())
@@ -184,7 +184,7 @@ void IService::_setOutput(std::string_view key, data::Object::sptr object, size_
 void IService::setInput(
     data::Object::csptr obj,
     std::string_view key,
-    size_t index
+    std::size_t index
 )
 {
     this->_setInput(obj, key, index);
@@ -197,7 +197,7 @@ void IService::setInput(
     std::string_view key,
     const bool autoConnect,
     const bool optional,
-    size_t index
+    std::size_t index
 )
 {
     this->_registerObject(key, data::Access::in, index, autoConnect, optional);
@@ -209,7 +209,7 @@ void IService::setInput(
 void IService::_setInput(
     data::Object::csptr obj,
     std::string_view key,
-    size_t index
+    std::size_t index
 )
 {
     auto keyPair = std::make_pair(std::string(key), index);
@@ -232,7 +232,7 @@ void IService::_setInput(
 void IService::setInOut(
     data::Object::sptr obj,
     std::string_view key,
-    size_t index
+    std::size_t index
 )
 {
     this->_setInOut(obj, key, index);
@@ -245,7 +245,7 @@ void IService::setInOut(
     std::string_view key,
     const bool autoConnect,
     const bool optional,
-    size_t index
+    std::size_t index
 )
 {
     this->_registerObject(key, data::Access::inout, index, autoConnect, optional);
@@ -257,7 +257,7 @@ void IService::setInOut(
 void IService::_setInOut(
     data::Object::sptr obj,
     std::string_view key,
-    size_t index
+    std::size_t index
 )
 {
     auto keyPair = std::make_pair(std::string(key), index);
@@ -280,7 +280,7 @@ void IService::_setInOut(
 void IService::setObject(
     data::Object::sptr obj,
     std::string_view key,
-    size_t index,
+    std::size_t index,
     data::Access access,
     const bool autoConnect,
     const bool optional
@@ -313,7 +313,7 @@ void IService::setObject(
 
 void IService::resetObject(
     std::string_view key,
-    size_t index,
+    std::size_t index,
     data::Access access
 )
 {
@@ -344,7 +344,7 @@ void IService::registerObject(
     const data::Access access,
     const bool autoConnect,
     const bool optional,
-    size_t index
+    std::size_t index
 )
 {
     // TODO: remove this method, should be replaced by a correct usage of data::ptr + setObjectId() or its replacement
@@ -355,7 +355,7 @@ void IService::registerObject(
 
 //-----------------------------------------------------------------------------
 
-bool IService::hasObjectId(std::string_view _key, const size_t _index) const
+bool IService::hasObjectId(std::string_view _key, const std::size_t _index) const
 {
     bool hasId = false;
     if(auto itr = m_serviceConfig.m_objects.find({std::string(_key), _index}); itr != m_serviceConfig.m_objects.end())
@@ -368,7 +368,7 @@ bool IService::hasObjectId(std::string_view _key, const size_t _index) const
 
 //-----------------------------------------------------------------------------
 
-IService::IdType IService::getObjectId(std::string_view _key, const size_t _index) const
+IService::IdType IService::getObjectId(std::string_view _key, const std::size_t _index) const
 {
     auto keyItr = m_serviceConfig.m_objects.find({std::string(_key), _index});
     SIGHT_THROW_IF(
@@ -384,7 +384,7 @@ IService::IdType IService::getObjectId(std::string_view _key, const size_t _inde
 
 //-----------------------------------------------------------------------------
 
-void IService::setObjectId(std::string_view _key, const IService::IdType& _id, const size_t _index)
+void IService::setObjectId(std::string_view _key, const IService::IdType& _id, const std::size_t _index)
 {
     auto keyItr = m_serviceConfig.m_objects.find({std::string(_key), _index});
     SIGHT_THROW_IF(
@@ -1170,7 +1170,7 @@ SERVICE_API void IService::notify(NotificationType type, const std::string& mess
 
 //------------------------------------------------------------------------------
 
-std::optional<std::tuple<const std::string&, size_t,
+std::optional<std::tuple<const std::string&, std::size_t,
                          const service::IService::ObjectServiceConfig&> > IService::_getObjInfoFromId(
     const std::string& objId
 ) const
@@ -1198,7 +1198,7 @@ std::optional<std::tuple<const std::string&, size_t,
 void IService::_registerObject(
     const std::string_view key,
     const data::Access access,
-    size_t index,
+    std::size_t index,
     const bool autoConnect,
     const bool optional
 )

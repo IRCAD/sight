@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ ImageDiffCommand::ImageDiffCommand(const data::Image::sptr& img, filter::image::
 
 //------------------------------------------------------------------------------
 
-size_t ImageDiffCommand::getSize() const
+std::size_t ImageDiffCommand::getSize() const
 {
     return sizeof(*this) + m_diff.getSize();
 }

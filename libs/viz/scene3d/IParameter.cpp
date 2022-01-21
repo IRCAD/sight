@@ -300,17 +300,17 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
         for(int i = 0 ; i < nbPoints * 3 ; )
         {
-            paramValues[i] = static_cast<float>(points[static_cast<size_t>(i)]->getCoord()[0]);
+            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
             i++;
 
-            paramValues[i] = static_cast<float>(points[static_cast<size_t>(i)]->getCoord()[1]);
+            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
             i++;
 
-            paramValues[i] = static_cast<float>(points[static_cast<size_t>(i)]->getCoord()[2]);
+            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
             i++;
         }
 
-        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<size_t>(3));
+        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<std::size_t>(3));
 
         delete[] paramValues;
     }
@@ -323,17 +323,17 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
         for(int i = 0 ; i < 16 ; i++)
         {
-            paramValues[i] = static_cast<float>(transValue->getCoefficients()[static_cast<size_t>(i)]);
+            paramValues[i] = static_cast<float>(transValue->getCoefficients()[static_cast<std::size_t>(i)]);
         }
 
-        params->setNamedConstant(m_paramName, paramValues, static_cast<size_t>(16), static_cast<size_t>(1));
+        params->setNamedConstant(m_paramName, paramValues, static_cast<std::size_t>(16), static_cast<std::size_t>(1));
     }
     else if(objClass == "sight::data::Array")
     {
         data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
         SIGHT_ASSERT("The object is nullptr", arrayObject);
 
-        const size_t numComponents = arrayObject->getSize()[0];
+        const std::size_t numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {
             const auto dumpLock = arrayObject->lock();

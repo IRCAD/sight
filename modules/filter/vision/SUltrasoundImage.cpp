@@ -71,7 +71,7 @@ SUltrasoundImage::SUltrasoundImage() noexcept
     newSignal<IntegerChangedSignalType>(s_INTEGER_CHANGED_SIG);
 
     // Extraction corner reference points of US image initialization.
-    for(size_t i = 0 ; i < m_echoRefPoints.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_echoRefPoints.size() ; ++i)
     {
         m_echoRefPoints[i] = {{0.0, 0.0, 0.0}};
     }
@@ -344,7 +344,7 @@ void SUltrasoundImage::process(const cv::Mat& input)
     cv::erode(lowThresh, lowThresh, elementErode);
 
     // Compute final lines
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
         cv::Vec4d l = lines.at(i);
 
@@ -431,7 +431,7 @@ void SUltrasoundImage::process(const cv::Mat& input)
 
     /* Display information about the intersection lines found */
     SIGHT_DEBUG("Number of lines found: " << foundLines.size());
-    for(size_t i = 0 ; i < foundLines.size() ; i++)
+    for(std::size_t i = 0 ; i < foundLines.size() ; i++)
     {
         cv::Vec2f v = foundLines.at(i);
         SIGHT_DEBUG(" - " << v[0] << " * x + " << v[1]);
@@ -472,7 +472,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
 
     int nbHorizontalLines(0), nbVerticalLines(0);
     cv::Vec2d meanCenter(0.0, 0.0);
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
         if(std::isinf(lines.at(i)[0]))
         {
@@ -491,7 +491,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
 
     double meanLeftX(0.0), meanRightX(0.0), meanTopY(0.0), meanBottomY(0.0);
     int nbLeftLines(0), nbTopLines(0);
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
         cv::Vec2d currentLine = lines.at(i);
 
@@ -595,9 +595,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     meanInter[0] = meanInter[1] = 0.0;
 
     // Compute all the intersection to find the closest one to the a specific point.
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
-        for(size_t j = 0 ; j < lines.size() ; j++)
+        for(std::size_t j = 0 ; j < lines.size() ; j++)
         {
             /* Avoid auto intersecting lines */
             if(i == j)
@@ -1005,7 +1005,7 @@ double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vec
 
 bool SUltrasoundImage::isDataUnderArc(const cv::Mat& input, const std::vector<cv::Point2d>& points) const
 {
-    for(size_t i = 0 ; i < points.size() ; ++i)
+    for(std::size_t i = 0 ; i < points.size() ; ++i)
     {
         if(input.at<uchar>(static_cast<int>(points[i].y), static_cast<int>(points[i].x)) != 0)
         {

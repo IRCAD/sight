@@ -39,7 +39,7 @@ namespace sight::module::geometry::base
  * @brief  Returns a pointList containing the position of a landmark on a CrossHair
  *
  * @section Slots Slots
- * - \b updateSelectedPoint( std::string, size_t ): update selected landmark point position on the crosshair
+ * - \b updateSelectedPoint( std::string, std::size_t ): update selected landmark point position on the crosshair
  * - \b updatePoint( std::string ): update last landmark point position on the crosshair
  * - \b removePoint(): remove the landmark's position on the crosshair
  *
@@ -103,7 +103,7 @@ protected:
 private:
 
     /// SLOT: updates selected landmark point position on the crosshair.
-    void updateSelectedPoint(std::string name, size_t index);
+    void updateSelectedPoint(std::string name, std::size_t index);
 
     /// SLOT: updates last landmark point position on the crosshair.
     void updatePoint(std::string name);
@@ -115,7 +115,7 @@ private:
     std::string m_label {""};
 
     /// Index of the point to modify in the landmark group.
-    size_t m_index {0};
+    std::size_t m_index {0};
 
     /// Bool showing if a landmark is selected.
     bool m_landmarkSelected {false};

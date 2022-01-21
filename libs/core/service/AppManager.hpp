@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -417,7 +417,7 @@ private:
     mutable std::string m_uid;
 
     /// Number of instantiated AppManager, it allows to create unique identifier for object and channels
-    static size_t s_counter;
+    static std::size_t s_counter;
 };
 
 //------------------------------------------------------------------------------

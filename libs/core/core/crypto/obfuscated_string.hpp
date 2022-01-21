@@ -75,7 +75,7 @@ template<typename TL, typename TR>
 using Concat_t = typename Concat<TL, TR>::type;
 
 // Count from zero to n-1
-template<size_t s>
+template<std::size_t s>
 struct Count
 {
     using type = Concat_t<typename Count<s - 1>::type, StList<s - 1> >;
@@ -87,7 +87,7 @@ struct Count<0>
     using type = StList<>;
 };
 
-template<size_t s>
+template<std::size_t s>
 using Count_t = typename Count<s>::type;
 
 // Get a scrambled character of a string
@@ -147,7 +147,7 @@ constexpr std::array<std::uint8_t, N> get_key()
 template<typename T>
 struct array_info;
 
-template<typename T, size_t N>
+template<typename T, std::size_t N>
 struct array_info<T [N]>
 {
     using type = T;
@@ -158,7 +158,7 @@ struct array_info<T [N]>
     };
 };
 
-template<typename T, size_t N>
+template<typename T, std::size_t N>
 struct array_info<const T(&)[N]>: array_info<T [N]> {};
 
 // Scramble a string

@@ -404,10 +404,10 @@ void ImageExtruder::operator()(Parameters& _param)
 
     // Get the smallest dimension in terms of voxel to loop over the minimum of voxel.
     std::uint8_t axis = 2;
-    size_t voxel      = (indexXEnd - indexXBeg) * (indexYEnd - indexYBeg);
+    std::size_t voxel = (indexXEnd - indexXBeg) * (indexYEnd - indexYBeg);
 
-    size_t voxelXZ = (indexXEnd - indexXBeg) * (indexZEnd - indexZBeg);
-    size_t voxelYZ = (indexYEnd - indexYBeg) * (indexZEnd - indexZBeg);
+    std::size_t voxelXZ = (indexXEnd - indexXBeg) * (indexZEnd - indexZBeg);
+    std::size_t voxelYZ = (indexYEnd - indexYBeg) * (indexZEnd - indexZBeg);
     if(voxelXZ < voxel)
     {
         axis  = 1;

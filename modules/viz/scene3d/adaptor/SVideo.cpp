@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -432,7 +432,7 @@ void SVideo::updatePL()
     data::PointList::PointListContainer& outPoints = m_pointList->getPoints();
     outPoints.clear();
 
-    for(size_t i = 0 ; i < inPoints.size() ; ++i)
+    for(std::size_t i = 0 ; i < inPoints.size() ; ++i)
     {
         const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
         outPoints.push_back(

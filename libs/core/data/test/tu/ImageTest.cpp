@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,13 +124,13 @@ void ImageTest::testAllocation()
 {
     const core::tools::Type TYPE     = core::tools::Type::create("int16");
     const data::Image::Size IMG_SIZE = {14, 15, 26};
-    const size_t NB_ELTS             = 14 * 15 * 26;
-    const size_t SIZE                = NB_ELTS * TYPE.sizeOf();
+    const std::size_t NB_ELTS        = 14 * 15 * 26;
+    const std::size_t SIZE           = NB_ELTS * TYPE.sizeOf();
 
     // process
     data::Image::sptr img1 = data::Image::New();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), img1->numElements());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), img1->numElements());
 
     img1->resize(IMG_SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
@@ -156,42 +156,42 @@ void ImageTest::testReallocation()
     const data::Image::Size IMG_SIZE3 = {5, 5, 5};
     const data::Image::Size IMG_SIZE5 = {0, 0, 0};
     const data::Image::Size IMG_SIZE6 = {42, 20};
-    const size_t SIZE1                = 10 * 10 * 10 * TYPE1.sizeOf();
-    const size_t SIZE2                = 20 * 20 * 20 * TYPE2.sizeOf();
-    const size_t SIZE3                = 5 * 5 * 5 * TYPE3.sizeOf();
-    const size_t SIZE4                = 5 * 5 * 5 * 4 * TYPE3.sizeOf();
-    const size_t SIZE5                = 0;
-    const size_t SIZE6                = 42 * 20;
-    const size_t SIZE7                = 42 * 20 * 3;
+    const std::size_t SIZE1           = 10 * 10 * 10 * TYPE1.sizeOf();
+    const std::size_t SIZE2           = 20 * 20 * 20 * TYPE2.sizeOf();
+    const std::size_t SIZE3           = 5 * 5 * 5 * TYPE3.sizeOf();
+    const std::size_t SIZE4           = 5 * 5 * 5 * 4 * TYPE3.sizeOf();
+    const std::size_t SIZE5           = 0;
+    const std::size_t SIZE6           = 42 * 20;
+    const std::size_t SIZE7           = 42 * 20 * 3;
 
     // process
     data::Image::sptr img1 = data::Image::New();
 
-    const size_t resized1 = img1->resize(IMG_SIZE1, TYPE1, data::Image::PixelFormat::GRAY_SCALE);
+    const std::size_t resized1 = img1->resize(IMG_SIZE1, TYPE1, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized1, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE1, img1->getSizeInBytes());
 
-    const size_t resized2 = img1->resize(IMG_SIZE2, TYPE2, data::Image::PixelFormat::GRAY_SCALE);
+    const std::size_t resized2 = img1->resize(IMG_SIZE2, TYPE2, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized2, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE2, img1->getSizeInBytes());
 
-    const size_t resized3 = img1->resize(IMG_SIZE3, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
+    const std::size_t resized3 = img1->resize(IMG_SIZE3, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized3, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE3, img1->getSizeInBytes());
 
-    const size_t resized4 = img1->resize(IMG_SIZE3, TYPE3, data::Image::PixelFormat::RGBA);
+    const std::size_t resized4 = img1->resize(IMG_SIZE3, TYPE3, data::Image::PixelFormat::RGBA);
     CPPUNIT_ASSERT_EQUAL(resized4, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE4, img1->getSizeInBytes());
 
-    const size_t resized5 = img1->resize(IMG_SIZE5, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
+    const std::size_t resized5 = img1->resize(IMG_SIZE5, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized5, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE5, img1->getSizeInBytes());
 
-    const size_t resized6 = img1->resize(IMG_SIZE6, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
+    const std::size_t resized6 = img1->resize(IMG_SIZE6, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized6, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE6, img1->getSizeInBytes());
 
-    const size_t resized7 = img1->resize(IMG_SIZE6, TYPE3, data::Image::PixelFormat::RGB);
+    const std::size_t resized7 = img1->resize(IMG_SIZE6, TYPE3, data::Image::PixelFormat::RGB);
     CPPUNIT_ASSERT_EQUAL(resized7, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE7, img1->getSizeInBytes());
 }
@@ -221,11 +221,11 @@ void ImageTest::testSetGetPixel()
     }
 
     data::Image::csptr constImg = img;
-    for(size_t x = 0 ; x < SIZE[0] ; ++x)
+    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
     {
-        for(size_t y = 0 ; y < SIZE[1] ; ++y)
+        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
         {
-            for(size_t z = 0 ; z < SIZE[2] ; ++z)
+            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
             {
                 const data::Image::IndexType index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
                 const std::int16_t val             = static_cast<std::int16_t>(index);
@@ -244,11 +244,11 @@ void ImageTest::testSetGetPixel()
     }
 
     // test 2 : set pixel value
-    for(size_t x = 0 ; x < SIZE[0] ; ++x)
+    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
     {
-        for(size_t y = 0 ; y < SIZE[1] ; ++y)
+        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
         {
-            for(size_t z = 0 ; z < SIZE[2] ; ++z)
+            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
             {
                 const auto index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
 
@@ -308,7 +308,7 @@ void ImageTest::testSetGetPixel()
         auto iterImg2          = img2->begin<std::int16_t>();
         const auto iterImg2End = img2->end<std::int16_t>();
 
-        size_t i = 0;
+        std::size_t i = 0;
         for( ; iterImg2 != iterImg2End ; ++iterImg2, ++iterImg1)
         {
             ++i;
@@ -342,13 +342,13 @@ void ImageTest::testSetGetPixelRGBA()
     }
 
     data::Image::csptr constImg = img;
-    for(size_t x = 0 ; x < SIZE[0] ; ++x)
+    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
     {
-        for(size_t y = 0 ; y < SIZE[1] ; ++y)
+        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
         {
-            for(size_t z = 0 ; z < SIZE[2] ; ++z)
+            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
             {
-                for(size_t c = 0 ; c < img->numComponents() ; ++c)
+                for(std::size_t c = 0 ; c < img->numComponents() ; ++c)
                 {
                     const data::Image::IndexType index = c + 4 * (x + y * SIZE[0] + z * SIZE[0] * SIZE[1]);
                     const std::uint8_t val             = static_cast<std::uint8_t>(index);
@@ -379,17 +379,17 @@ void ImageTest::testSetGetPixelRGBA()
     }
 
     // test 2 : set pixel value
-    for(size_t z = 0 ; z < SIZE[2] ; ++z)
+    for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
     {
-        for(size_t y = 0 ; y < SIZE[1] ; ++y)
+        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
         {
-            for(size_t x = 0 ; x < SIZE[0] ; ++x)
+            for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
             {
                 const auto index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
 
                 if(index % 2 == 0)
                 {
-                    for(size_t c = 0 ; c < img->numComponents() ; ++c)
+                    for(std::size_t c = 0 ; c < img->numComponents() ; ++c)
                     {
                         const std::uint8_t val = static_cast<std::uint8_t>((index * 4 + c) * 2);
                         img->at<std::uint8_t>(x, y, z, c) = val;
@@ -453,7 +453,7 @@ void ImageTest::testSetGetPixelRGBA()
         auto iterImg2          = img2->begin<std::uint8_t>();
         const auto iterImg2End = img2->end<std::uint8_t>();
 
-        size_t i = 0;
+        std::size_t i = 0;
         for( ; iterImg2 != iterImg2End ; ++iterImg2, ++iterImg1)
         {
             ++i;

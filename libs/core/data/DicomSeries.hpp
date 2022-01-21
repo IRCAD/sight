@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,10 @@
 #include "data/config.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
 
 #include <core/memory/BufferObject.hpp>
+
+#include <data/factory/new.hpp>
 
 #include <filesystem>
 
@@ -120,7 +121,7 @@ public:
      * @brief Gets the number of instances in the series.
      * @return The number of instances in the series.
      */
-    size_t numInstances() const
+    std::size_t numInstances() const
     {
         return m_numberOfInstances;
     }
@@ -195,7 +196,7 @@ public:
 protected:
 
     /// Defines the number of instances in the series.
-    size_t m_numberOfInstances;
+    std::size_t m_numberOfInstances;
 
     /// Stores DICOM.
     DicomContainerType m_dicomContainer;

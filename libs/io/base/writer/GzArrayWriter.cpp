@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ void GzArrayWriter::write()
     const auto dumpLock = array->lock();
 
     // file is OK : process now
-    const size_t arraySizeInBytes = array->getSizeInBytes();
+    const std::size_t arraySizeInBytes = array->getSizeInBytes();
 
     const int uncompressedbyteswrited =
         gzwrite(rawFile, array->getBuffer(), static_cast<unsigned int>(arraySizeInBytes));

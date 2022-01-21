@@ -138,10 +138,10 @@ void SNegato::updateBufferFromImage(QImage* qimg)
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    auto image                   = m_image.lock();
-    const data::Image::Size size = image->getSize();
-    const short* imgBuff         = static_cast<const short*>(image->getBuffer());
-    const size_t imageZOffset    = size[0] * size[1];
+    auto image                     = m_image.lock();
+    const data::Image::Size size   = image->getSize();
+    const short* imgBuff           = static_cast<const short*>(image->getBuffer());
+    const std::size_t imageZOffset = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
@@ -152,14 +152,14 @@ void SNegato::updateBufferFromImage(QImage* qimg)
     // Fill image according to current slice type:
     if(m_orientation == orientation_t::SAGITTAL) // sagittal
     {
-        const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex);
+        const std::size_t sagitalIndex = static_cast<std::size_t>(m_sagittalIndex);
 
-        for(size_t z = 0 ; z < size[2] ; ++z)
+        for(std::size_t z = 0 ; z < size[2] ; ++z)
         {
-            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
-            const size_t zxOffset = zOffset + sagitalIndex;
+            const std::size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const std::size_t zxOffset = zOffset + sagitalIndex;
 
-            for(size_t y = 0 ; y < size[1] ; ++y)
+            for(std::size_t y = 0 ; y < size[1] ; ++y)
             {
                 const QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, tfWin, tf);
 
@@ -171,15 +171,15 @@ void SNegato::updateBufferFromImage(QImage* qimg)
     }
     else if(m_orientation == orientation_t::FRONTAL) // frontal
     {
-        const size_t frontalIndex = static_cast<size_t>(m_frontalIndex);
-        const size_t yOffset      = frontalIndex * size[0];
+        const std::size_t frontalIndex = static_cast<std::size_t>(m_frontalIndex);
+        const std::size_t yOffset      = frontalIndex * size[0];
 
-        for(size_t z = 0 ; z < size[2] ; ++z)
+        for(std::size_t z = 0 ; z < size[2] ; ++z)
         {
-            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
-            const size_t zyOffset = zOffset + yOffset;
+            const std::size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const std::size_t zyOffset = zOffset + yOffset;
 
-            for(size_t x = 0 ; x < size[0] ; ++x)
+            for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
                 const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
 
@@ -191,15 +191,15 @@ void SNegato::updateBufferFromImage(QImage* qimg)
     }
     else if(m_orientation == orientation_t::AXIAL) // axial
     {
-        const size_t axialIndex = static_cast<size_t>(m_axialIndex);
-        const size_t zOffset    = axialIndex * imageZOffset;
+        const std::size_t axialIndex = static_cast<std::size_t>(m_axialIndex);
+        const std::size_t zOffset    = axialIndex * imageZOffset;
 
-        for(size_t y = 0 ; y < size[1] ; ++y)
+        for(std::size_t y = 0 ; y < size[1] ; ++y)
         {
-            const size_t yOffset  = y * size[0];
-            const size_t zyOffset = zOffset + yOffset;
+            const std::size_t yOffset  = y * size[0];
+            const std::size_t zyOffset = zOffset + yOffset;
 
-            for(size_t x = 0 ; x < size[0] ; ++x)
+            for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
                 const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
 
@@ -217,7 +217,7 @@ void SNegato::updateBufferFromImage(QImage* qimg)
 //-----------------------------------------------------------------------------
 
 QRgb SNegato::getQImageVal(
-    const size_t index,
+    const std::size_t index,
     const short* buffer,
     double wlMin,
     double tfWin,

@@ -99,7 +99,7 @@ bool intersect_triangle(
 bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertexIndex, const fwVec3d& _p)
 {
     const unsigned int X = 0, Y = 1, Z = 2;
-    const size_t ElementNbr = _vertexIndex.size();
+    const std::size_t ElementNbr = _vertexIndex.size();
     if(ElementNbr == 0)
     {
         return false;
@@ -107,7 +107,7 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
 
     // on regarde tous les triangles du maillage
     unsigned int intersectionNbr = 0;
-    for(size_t i = 0 ; i < ElementNbr ; ++i)
+    for(std::size_t i = 0 ; i < ElementNbr ; ++i)
     {
         //recuperation des trois sommets du triangle
         const fwVec3d P1 =
@@ -273,7 +273,7 @@ bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
     // close each hole
     for(const Contours::value_type& contour : contours)
     {
-        size_t newVertexIndex = _vertex.size();
+        std::size_t newVertexIndex = _vertex.size();
         // create gravity point & insert new triangle
         std::vector<float> massCenter(3, 0);
 

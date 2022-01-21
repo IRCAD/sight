@@ -72,7 +72,7 @@ void SPointListFromMatrices::stopping()
 
 void SPointListFromMatrices::updating()
 {
-    const size_t numMatrices = m_matrices.size();
+    const std::size_t numMatrices = m_matrices.size();
     SIGHT_ASSERT("no matrices found", numMatrices != 0);
 
     auto pointList = m_pointList.lock();
@@ -81,7 +81,7 @@ void SPointListFromMatrices::updating()
         pointList->getPoints().clear();
     }
 
-    for(size_t j = 0 ; j < numMatrices ; ++j)
+    for(std::size_t j = 0 ; j < numMatrices ; ++j)
     {
         const auto mat = m_matrices[j].lock();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -210,8 +210,8 @@ void fromVTKPointSet(vtkPointSet& dataset, data::Mesh& mesh)
                           };
 
         {
-            size_t skip = 0;
-            vtkIdType i = 0;
+            std::size_t skip = 0;
+            vtkIdType i      = 0;
             switch(firstCellType)
             {
                 case VTK_VERTEX:
@@ -364,13 +364,13 @@ void updatePointsAndAttributes(vtkPointSet& pointSetDst, const data::Mesh& meshS
         );
     }
 
-    unsigned char* newColors       = nullptr;
-    float* newNormals              = nullptr;
-    float* newTexCoords            = nullptr;
-    const size_t nbColorComponents = 4;
+    unsigned char* newColors            = nullptr;
+    float* newNormals                   = nullptr;
+    float* newTexCoords                 = nullptr;
+    const std::size_t nbColorComponents = 4;
     if(meshSrc.has<data::Mesh::Attributes::POINT_COLORS>())
     {
-        newColors = new unsigned char [static_cast<size_t>(nbPoints) * nbColorComponents];
+        newColors = new unsigned char [static_cast<std::size_t>(nbPoints) * nbColorComponents];
         i         = 0;
         for(auto& c : meshSrc.crange<data::iterator::point::rgba>())
         {
@@ -384,7 +384,7 @@ void updatePointsAndAttributes(vtkPointSet& pointSetDst, const data::Mesh& meshS
 
     if(meshSrc.has<data::Mesh::Attributes::POINT_NORMALS>())
     {
-        newNormals = new float [static_cast<size_t>(nbPoints * 3)];
+        newNormals = new float [static_cast<std::size_t>(nbPoints * 3)];
         i          = 0;
         for(auto& n : meshSrc.crange<data::iterator::point::nxyz>())
         {
@@ -397,7 +397,7 @@ void updatePointsAndAttributes(vtkPointSet& pointSetDst, const data::Mesh& meshS
 
     if(meshSrc.has<data::Mesh::Attributes::POINT_TEX_COORDS>())
     {
-        newTexCoords = new float [static_cast<size_t>(nbPoints * 2)];
+        newTexCoords = new float [static_cast<std::size_t>(nbPoints * 2)];
         i            = 0;
         for(auto& uv : meshSrc.crange<data::iterator::point::uv>())
         {
@@ -482,10 +482,10 @@ void toVTKPointSet(const data::Mesh& mesh, vtkPointSet& dataset)
             grid->Allocate(static_cast<int>(nbCells));
         }
 
-        unsigned char* newColors       = nullptr;
-        float* newNormals              = nullptr;
-        float* newTexCoords            = nullptr;
-        const size_t nbColorComponents = 4;
+        unsigned char* newColors            = nullptr;
+        float* newNormals                   = nullptr;
+        float* newTexCoords                 = nullptr;
+        const std::size_t nbColorComponents = 4;
 
         if(mesh.has<data::Mesh::Attributes::CELL_COLORS>())
         {

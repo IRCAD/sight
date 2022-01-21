@@ -246,8 +246,8 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
     {
         m_timer = m_worker->createTimer();
 
-        const size_t fps = static_cast<size_t>(m_videoCapture.get(cv::CAP_PROP_FPS));
-        m_videoFramesNb = static_cast<size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_COUNT));
+        const std::size_t fps = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FPS));
+        m_videoFramesNb = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_COUNT));
 
         if(fps == 0)
         {
@@ -336,14 +336,15 @@ void SFrameGrabber::readDevice(const data::Camera& _camera)
         m_timer = m_worker->createTimer();
         float fps = _camera.getMaximumFrameRate();
         fps = fps <= 0.f ? 30.f : fps;
-        const size_t height = _camera.getHeight();
-        const size_t width  = _camera.getWidth();
+        const std::size_t height = _camera.getHeight();
+        const std::size_t width  = _camera.getWidth();
 
         m_videoCapture.set(cv::CAP_PROP_FPS, static_cast<int>(fps));
         m_videoCapture.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
         m_videoCapture.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
-        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+        core::thread::Timer::TimeDurationType duration =
+            std::chrono::milliseconds(1000 / static_cast<std::size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -377,15 +378,15 @@ void SFrameGrabber::readStream(const data::Camera& _camera)
         m_timer = m_worker->createTimer();
         float fps = _camera.getMaximumFrameRate();
         fps = fps <= 0.f ? 30.f : fps;
-        const size_t height = _camera.getHeight();
-        const size_t width  = _camera.getWidth();
+        const std::size_t height = _camera.getHeight();
+        const std::size_t width  = _camera.getWidth();
 
         m_videoCapture.set(cv::CAP_PROP_FPS, static_cast<int>(fps));
         m_videoCapture.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
         m_videoCapture.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
         const core::thread::Timer::TimeDurationType duration =
-            std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+            std::chrono::milliseconds(1000 / static_cast<std::size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -462,8 +463,8 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if(width > 0 && height > 0)
         {
-            const size_t w = static_cast<size_t>(width);
-            const size_t h = static_cast<size_t>(height);
+            const std::size_t w = static_cast<std::size_t>(width);
+            const std::size_t h = static_cast<std::size_t>(height);
 
             auto frameTL = m_frame.lock();
 
@@ -597,11 +598,11 @@ void SFrameGrabber::grabVideo()
 
             if(!m_isInitialized)
             {
-                const size_t width  = static_cast<size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
-                const size_t height = static_cast<size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_HEIGHT));
+                const std::size_t width  = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
+                const std::size_t height = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_HEIGHT));
 
-                const size_t w = static_cast<size_t>(image.size().width);
-                const size_t h = static_cast<size_t>(image.size().height);
+                const std::size_t w = static_cast<std::size_t>(image.size().width);
+                const std::size_t h = static_cast<std::size_t>(image.size().height);
 
                 if(width != w || height != h)
                 {
@@ -662,7 +663,7 @@ void SFrameGrabber::grabVideo()
             }
 
             // Get time slider position.
-            const size_t ms        = static_cast<size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
+            const std::size_t ms   = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
             const auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
 
@@ -698,7 +699,7 @@ void SFrameGrabber::grabVideo()
         if(m_loopVideo)
         {
             // Loop the video.
-            const size_t currentF = static_cast<size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
+            const std::size_t currentF = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
 
             if(currentF == m_videoFramesNb)
             {
@@ -740,8 +741,8 @@ void SFrameGrabber::grabImage()
 
         SIGHT_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
 
-        const size_t width  = static_cast<size_t>(image.size().width);
-        const size_t height = static_cast<size_t>(image.size().height);
+        const std::size_t width  = static_cast<std::size_t>(image.size().width);
+        const std::size_t height = static_cast<std::size_t>(image.size().height);
 
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
         {
@@ -849,7 +850,7 @@ void SFrameGrabber::setPosition(int64_t position)
     }
     else if(!m_imageToRead.empty())
     {
-        const size_t newPos = static_cast<size_t>(position / 30);
+        const std::size_t newPos = static_cast<std::size_t>(position / 30);
         if(newPos < m_imageToRead.size())
         {
             m_imageCount = newPos;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,12 +78,12 @@ void CalibrationInfoTest::calibrationInfoTest()
 
     data::CalibrationInfo::ImageContainerType imgList = calInfo->getImageContainer();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), imgList.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), imgList.size());
     CPPUNIT_ASSERT_EQUAL(img, imgList.front());
 
     data::CalibrationInfo::PointListContainerType plList = calInfo->getPointListContainer();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), plList.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), plList.size());
     CPPUNIT_ASSERT_EQUAL(pl, plList.front());
 
     data::PointList::sptr pl1 = calInfo->getPointList(imgList.front());

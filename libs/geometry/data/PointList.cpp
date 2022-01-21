@@ -61,14 +61,14 @@ sight::data::Array::sptr PointList::computeDistance(
 
     const sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
     const sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
-    const size_t size                                        = points1.size();
+    const std::size_t size                                   = points1.size();
 
     sight::data::Array::sptr outputArray = sight::data::Array::New();
     outputArray->resize({size}, sight::core::tools::Type::s_DOUBLE);
     const auto dumpLock   = outputArray->lock();
     auto distanceArrayItr = outputArray->begin<double>();
 
-    for(size_t i = 0 ; i < size ; ++i)
+    for(std::size_t i = 0 ; i < size ; ++i)
     {
         const sight::data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
         const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
@@ -89,9 +89,9 @@ void PointList::transform(
 )
 {
     sight::data::PointList::PointListContainer points = _pointList->getPoints();
-    const size_t size                                 = points.size();
+    const std::size_t size                            = points.size();
 
-    for(size_t i = 0 ; i < size ; ++i)
+    for(std::size_t i = 0 ; i < size ; ++i)
     {
         sight::data::Point& pt = *points[i];
 
@@ -115,7 +115,7 @@ void PointList::associate(
     sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
     sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
 
-    const size_t size = points1.size();
+    const std::size_t size = points1.size();
 
     // Transform first point list into vector< glm::dvec3 > (no erase is performed)
     std::vector<glm::dvec3> vec1;
@@ -123,7 +123,7 @@ void PointList::associate(
     //and second one into a list (since we will erase associated points)
     std::list<glm::dvec3> list2;
 
-    for(size_t i = 0 ; i < size ; ++i)
+    for(std::size_t i = 0 ; i < size ; ++i)
     {
         const sight::data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
         const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
@@ -133,7 +133,7 @@ void PointList::associate(
         list2.push_back(glm::dvec3(tmp2[0], tmp2[1], tmp2[2]));
     }
 
-    size_t index = 0;
+    std::size_t index = 0;
     for(auto point1 : vec1)
     {
         // Identify the closest point
@@ -184,11 +184,11 @@ const sight::data::Point::sptr PointList::removeClosestPoint(
         // Data to find the closest point
         float closest                  = std::numeric_limits<float>::max();
         sight::data::Point::sptr point = nullptr;
-        size_t index                   = 0;
+        std::size_t index              = 0;
         bool pointIsFound              = false;
 
         // Find the closest one
-        for(size_t i = 0 ; i < list.size() ; ++i)
+        for(std::size_t i = 0 ; i < list.size() ; ++i)
         {
             const auto& coord2 = list[i]->getCoord();
             const glm::vec3 p2 {coord2[0], coord2[1], coord2[2]};

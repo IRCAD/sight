@@ -129,7 +129,7 @@ void GetObjectTest::invalidPathTest()
         data::reflection::getObject(composite, "@values.invalidPath", true),
         data::reflection::exception::ObjectNotFound
     );
-    CPPUNIT_ASSERT_EQUAL(size_t(2), composite->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), composite->size());
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Vector tests

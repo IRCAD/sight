@@ -122,7 +122,7 @@ const std::filesystem::path& System::getTempPath() noexcept
 
 //------------------------------------------------------------------------------
 
-const std::string System::genTempFileName(size_t _length)
+const std::string System::genTempFileName(std::size_t _length)
 {
     static const char chrs[] = {"0123456789"
                                 "abcdefghijklmnopqrstuvwxyz"
@@ -134,7 +134,7 @@ const std::string System::genTempFileName(size_t _length)
 
     std::string s;
     s.reserve(_length);
-    size_t length = _length;
+    std::size_t length = _length;
 
     while(length--)
     {

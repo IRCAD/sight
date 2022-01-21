@@ -112,11 +112,11 @@ void TextTest::factoryTest()
     CPPUNIT_ASSERT(movableText1 != nullptr); // Check if the object was created.
 
     rootNode->attachObject(textObj1);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), rootNode->getAttachedObjects().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), rootNode->getAttachedObjects().size());
     CPPUNIT_ASSERT_EQUAL(movableText1, rootNode->getAttachedObject(0));
 
     rootNode->detachObject(movableText1);
-    CPPUNIT_ASSERT_EQUAL(size_t(0), rootNode->getAttachedObjects().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), rootNode->getAttachedObjects().size());
 
     sceneManager->destroyMovableObject(textObj1);
     CPPUNIT_ASSERT_EQUAL(false, sceneManager->hasMovableObject(textName1, factoryName));

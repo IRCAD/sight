@@ -53,7 +53,7 @@ class PointList;
  * The buffer type is defined by core::tools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
  * float and double).
  *
- * The image size is a 3D size_t array but the third dimension can be 0 for a 2D image.
+ * The image size is a 3D std::size_t array but the third dimension can be 0 for a 2D image.
  *
  * The image PixelFormat represents the buffer organization in components (GRAY_SCALE: 1 component, RGB and BGR: 3
  * components, RGBA and BGRA: 4 components).
@@ -93,7 +93,7 @@ class PointList;
 
     // or you can compute the index like
     const auto size = image->getSize();
-    const size_t index = x + y*size[0] + z*size[0]*size[1];
+    const std::size_t index = x + y*size[0] + z*size[0]*size[1];
     value = image->at<std::int16_t>(index);
    @endcode
  *
@@ -146,11 +146,11 @@ class PointList;
 
     auto iter    = image->begin<Color>();
 
-    for (size_t z=0 ; z<size[2] ; ++z)
+    for (std::size_t z=0 ; z<size[2] ; ++z)
     {
-        for (size_t y=0 ; y<size[1] ; ++y)
+        for (std::size_t y=0 ; y<size[1] ; ++y)
         {
-            for (size_t x=0 ; x<size[0] ; ++x)
+            for (std::size_t x=0 ; x<size[0] ; ++x)
             {
                 // do something with x and y ....
 
@@ -178,7 +178,7 @@ public:
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Image))
 
     /// Image size
-    typedef std::array<size_t, 3> Size;
+    typedef std::array<std::size_t, 3> Size;
     /// Image origin
     typedef std::array<double, 3> Origin;
     /// Image spacing
@@ -235,7 +235,7 @@ public:
     const Size& getSize() const;
 
     /// Number of dimensions of the image (3 for 3D image)
-    DATA_API size_t numDimensions() const;
+    DATA_API std::size_t numDimensions() const;
 
     /** @{
      *  @brief Get/set preferred window center
@@ -252,10 +252,10 @@ public:
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
-    DATA_API size_t numElements() const;
+    DATA_API std::size_t numElements() const;
 
     /// Get the number of components of an image pixel
-    size_t numComponents() const;
+    std::size_t numComponents() const;
 
     /// Get image type
     DATA_API core::tools::Type getType() const;
@@ -278,13 +278,13 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API size_t resize(const Size& size, const core::tools::Type& type, PixelFormat format);
+    DATA_API std::size_t resize(const Size& size, const core::tools::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
-    DATA_API size_t getSizeInBytes() const;
+    DATA_API std::size_t getSizeInBytes() const;
     /// @brief return allocated image size in bytes
-    DATA_API size_t getAllocatedSizeInBytes() const;
+    DATA_API std::size_t getAllocatedSizeInBytes() const;
 
     /**
      * @name Signals
@@ -565,7 +565,7 @@ private:
      *
      * @return Allocated size in bytes
      */
-    DATA_API size_t _resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc);
+    DATA_API std::size_t _resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc);
     /// @}
 
     /**
@@ -598,7 +598,7 @@ private:
     ///@}
 
     //! Number of components
-    size_t m_numComponents {1};
+    std::size_t m_numComponents {1};
 
     //! type of image pixel
     core::tools::Type m_type {core::tools::Type::s_UNSPECIFIED_TYPE};
@@ -640,7 +640,7 @@ inline void Image::setWindowWidth(double val)
 
 //-----------------------------------------------------------------------------
 
-inline size_t Image::numComponents() const
+inline std::size_t Image::numComponents() const
 {
     return m_numComponents;
 }

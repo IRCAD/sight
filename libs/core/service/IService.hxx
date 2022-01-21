@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::service
 //------------------------------------------------------------------------------
 
 template<class DATATYPE, typename CONST_DATATYPE>
-inline data::mt::weak_ptr<CONST_DATATYPE> IService::getInput(std::string_view key, size_t index) const
+inline data::mt::weak_ptr<CONST_DATATYPE> IService::getInput(std::string_view key, std::size_t index) const
 {
     data::mt::weak_ptr<CONST_DATATYPE> input;
 
@@ -47,7 +47,7 @@ inline data::mt::weak_ptr<CONST_DATATYPE> IService::getInput(std::string_view ke
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-inline data::mt::weak_ptr<DATATYPE> IService::getInOut(std::string_view key, size_t index) const
+inline data::mt::weak_ptr<DATATYPE> IService::getInOut(std::string_view key, std::size_t index) const
 {
     data::mt::weak_ptr<DATATYPE> inout;
 
@@ -64,7 +64,7 @@ inline data::mt::weak_ptr<DATATYPE> IService::getInOut(std::string_view key, siz
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-inline data::mt::weak_ptr<DATATYPE> IService::getOutput(std::string_view key, size_t index) const
+inline data::mt::weak_ptr<DATATYPE> IService::getOutput(std::string_view key, std::size_t index) const
 {
     data::mt::weak_ptr<DATATYPE> out;
 

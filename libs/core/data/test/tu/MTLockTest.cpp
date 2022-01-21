@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,7 +108,7 @@ void MTLockTest::multipleLockTest()
     auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 99, "lili"));
 
     // read the last four letters and check that it is "tata" or "lili"
-    for(size_t i = 0 ; i < 40 ; i += 4)
+    for(std::size_t i = 0 ; i < 40 ; i += 4)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         data::mt::ObjectReadLock readLock(m_string);
@@ -119,7 +119,7 @@ void MTLockTest::multipleLockTest()
     }
 
     // read the last four letters and replace by something else
-    for(size_t i = 0 ; i < 40 ; i += 4)
+    for(std::size_t i = 0 ; i < 40 ; i += 4)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         data::mt::ObjectReadToWriteLock lock(m_string);
@@ -140,11 +140,11 @@ void MTLockTest::multipleLockTest()
     CPPUNIT_ASSERT_NO_THROW(future1.get()); // Trigger exceptions
     CPPUNIT_ASSERT_NO_THROW(future2.get()); // Trigger exceptions
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(200 * 4), m_string->value().size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(200 * 4), m_string->value().size());
 
     // check that the letters from "lili" and "tata" are not mixed
     const std::string str = m_string->value();
-    for(size_t i = 0 ; i < str.size() ; i += 4)
+    for(std::size_t i = 0 ; i < str.size() ; i += 4)
     {
         const std::string substr = str.substr(i, 4);
         CPPUNIT_ASSERT_MESSAGE(m_string->value(), substr == "lili" || substr == "tata");
@@ -153,9 +153,9 @@ void MTLockTest::multipleLockTest()
 
 //-----------------------------------------------------------------------------
 
-void MTLockTest::runMultipleLock(size_t nb, const char value[4])
+void MTLockTest::runMultipleLock(std::size_t nb, const char value[4])
 {
-    for(size_t i = 0 ; i < nb ; ++i)
+    for(std::size_t i = 0 ; i < nb ; ++i)
     {
         {
             data::mt::ObjectWriteLock writeLock(m_string);

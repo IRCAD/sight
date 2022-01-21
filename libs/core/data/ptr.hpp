@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,7 +118,7 @@ public:
     virtual ~base_ptr() = default;
 
     /// Assignment operator
-    DATA_API virtual void set(const sight::data::Object::sptr& _obj, size_t _index = 0) = 0;
+    DATA_API virtual void set(const sight::data::Object::sptr& _obj, std::size_t _index = 0) = 0;
 
 protected:
 
@@ -152,7 +152,7 @@ public:
     DATA_API virtual void _registerObject(
         std::string_view _key,
         const Access _access,
-        size_t index,
+        std::size_t index,
         const bool _autoConnect = false,
         const bool _optional    = false
     )                           = 0;
@@ -182,18 +182,18 @@ public:
     )                                   = 0;
 
     /// Registers a pointer
-    void _registerPtr(std::string_view _key, base_ptr* _data, size_t = 0)
+    void _registerPtr(std::string_view _key, base_ptr* _data, std::size_t = 0)
     {
         m_dataContainer[_key] = _data;
     }
 
-    DATA_API virtual void _setOutput(std::string_view key, data::Object::sptr object, size_t index = 0) = 0;
+    DATA_API virtual void _setOutput(std::string_view key, data::Object::sptr object, std::size_t index = 0) = 0;
 
 protected:
 
     /// Set the actual content of the pointer
     template<Access A>
-    void setPtrObject(std::string_view _key, const typename access_traits<A>::value& _obj, size_t index = 0);
+    void setPtrObject(std::string_view _key, const typename access_traits<A>::value& _obj, std::size_t index = 0);
 
 private:
 
@@ -259,7 +259,7 @@ private:
     friend class IHasData;
 
     /// Assign the content of the pointer
-    void set(const sight::data::Object::sptr& _obj, size_t = 0) override
+    void set(const sight::data::Object::sptr& _obj, std::size_t = 0) override
     {
         if(_obj == nullptr)
         {
@@ -300,7 +300,7 @@ public:
         ptr_t(
             IHasData* _holder,
             std::string_view _key,
-            size_t _index
+            std::size_t _index
         ) noexcept :
             m_holder(_holder),
             m_key(_key),
@@ -360,10 +360,10 @@ public:
 
         IHasData* m_holder;
         std::string_view m_key;
-        size_t m_index;
+        std::size_t m_index;
     };
 
-    using container_ptr_t = std::map<size_t, ptr_t>;
+    using container_ptr_t = std::map<std::size_t, ptr_t>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
     ptr_vector(
@@ -387,7 +387,7 @@ public:
 
     /// Accessor for individual weak pointers
     /// This method is only available if it is an output
-    ptr_t& operator[](const size_t _index)
+    ptr_t& operator[](const std::size_t _index)
     {
         if(m_ptrs.find(_index) == m_ptrs.end())
         {
@@ -399,13 +399,13 @@ public:
     }
 
     /// Accessor for individual weak pointers
-    const ptr_t& operator[](const size_t _index) const
+    const ptr_t& operator[](const std::size_t _index) const
     {
         return m_ptrs[_index];
     }
 
     /// Return the number of registered pointers
-    size_t size() const
+    std::size_t size() const
     {
         return m_ptrs.size();
     }
@@ -444,7 +444,7 @@ private:
     friend class IHasData;
 
     /// Pointer assignment
-    void set(const sight::data::Object::sptr& _obj, size_t _index = 0) override
+    void set(const sight::data::Object::sptr& _obj, std::size_t _index = 0) override
     {
         if(_obj == nullptr)
         {
@@ -479,7 +479,7 @@ template<Access A>
 inline void IHasData::setPtrObject(
     std::string_view _key,
     const typename access_traits<A>::value& _obj,
-    size_t index
+    std::size_t index
 )
 {
     auto itData = m_dataContainer.find(_key);

@@ -126,9 +126,9 @@ void SOrientationMarker::updateCameraMatrix()
         const auto transform = m_matrix.lock();
 
         // Fill the ogreMatrix.
-        for(size_t lt = 0 ; lt < 3 ; lt++)
+        for(std::size_t lt = 0 ; lt < 3 ; lt++)
         {
-            for(size_t ct = 0 ; ct < 3 ; ct++)
+            for(std::size_t ct = 0 ; ct < 3 ; ct++)
             {
                 ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
             }

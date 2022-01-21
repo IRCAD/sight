@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
         return;
     }
 
-    const size_t numberOfPoints = fwPoints2d->getPoints().size();
+    const std::size_t numberOfPoints = fwPoints2d->getPoints().size();
 
     float shiftX = 0.f, shiftY = 0.f;
     // Shift back 2d points to compensate "shifted" camera in a 3dScene.
@@ -77,7 +77,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
     points2d.resize(numberOfPoints);
     points3d.resize(numberOfPoints);
 
-    for(size_t i = 0 ; i < numberOfPoints ; ++i)
+    for(std::size_t i = 0 ; i < numberOfPoints ; ++i)
     {
         // 2d
         data::Point::csptr p2d = fwPoints2d->getPoints()[i];

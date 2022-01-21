@@ -93,14 +93,14 @@ public:
 
     struct ProbeSimulationSettings
     {
-        int depth          = 120;
-        int width          = 90;
-        int angle          = 60;
-        int deltaDepth     = 50;
-        size_t matrixWidth = 310;
-        size_t matrixDepth = 290;
-        bool simuEchoOn    = false;
-        bool echoShapeOn   = false;
+        int depth               = 120;
+        int width               = 90;
+        int angle               = 60;
+        int deltaDepth          = 50;
+        std::size_t matrixWidth = 310;
+        std::size_t matrixDepth = 290;
+        bool simuEchoOn         = false;
+        bool echoShapeOn        = false;
 
         fwVec3d centerPosition {0., 0., 0.};
         fwVec3d direction {1., 0., 0.};

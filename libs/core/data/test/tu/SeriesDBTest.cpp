@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,13 +63,13 @@ void SeriesDBTest::containerTest()
     m_series->getContainer().push_back(series2);
     m_series->getContainer().push_back(series3);
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), m_series->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), m_series->size());
     CPPUNIT_ASSERT_EQUAL(series1, (*m_series)[0]);
     CPPUNIT_ASSERT_EQUAL(series2, (*m_series)[1]);
     CPPUNIT_ASSERT_EQUAL(series3, (*m_series)[2]);
 
     m_series->getContainer().clear();
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), m_series->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), m_series->size());
     CPPUNIT_ASSERT(m_series->empty());
 
     data::SeriesDB::ContainerType series;
@@ -80,16 +80,16 @@ void SeriesDBTest::containerTest()
 
     m_series->setContainer(series);
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), m_series->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), m_series->size());
     CPPUNIT_ASSERT_EQUAL(series1, (*m_series)[0]);
     CPPUNIT_ASSERT_EQUAL(series2, (*m_series)[1]);
     CPPUNIT_ASSERT_EQUAL(series3, (*m_series)[2]);
 
     m_series->getContainer().clear();
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), m_series->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), m_series->size());
     CPPUNIT_ASSERT(m_series->empty());
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), series.size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), series.size());
     CPPUNIT_ASSERT_EQUAL(series1, series[0]);
     CPPUNIT_ASSERT_EQUAL(series2, series[1]);
     CPPUNIT_ASSERT_EQUAL(series3, series[2]);

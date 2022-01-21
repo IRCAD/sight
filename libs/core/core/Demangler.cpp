@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,8 +63,8 @@ std::string Demangler::getLeafClassname() const
 {
     std::string demangled(this->demangle());
 
-    const size_t lt_pos = demangled.find(LT);
-    size_t colons_pos   = demangled.rfind(COLONS, lt_pos);
+    const std::size_t lt_pos = demangled.find(LT);
+    std::size_t colons_pos   = demangled.rfind(COLONS, lt_pos);
 
     colons_pos = (colons_pos == std::string::npos) ? 0 : colons_pos + COLONS.size();
     return demangled.replace(0, colons_pos, "");

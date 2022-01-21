@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,10 +72,10 @@ void GzBufferImageWriter::write()
     const auto dumpLock = image->lock();
 
     // file is OK : process now
-    const size_t imageSizeInBytes = image->getSizeInBytes();
+    const std::size_t imageSizeInBytes = image->getSizeInBytes();
 
-    const char* ptr     = static_cast<char*>(image->getBuffer());
-    size_t writtenBytes = 0;
+    const char* ptr          = static_cast<char*>(image->getBuffer());
+    std::size_t writtenBytes = 0;
 
     int uncompressedbyteswrited = 0;
 
@@ -83,7 +83,7 @@ void GzBufferImageWriter::write()
           && (uncompressedbyteswrited =
                   gzwrite(rawFile, ptr + writtenBytes, static_cast<unsigned int>(imageSizeInBytes - writtenBytes))) > 0)
     {
-        writtenBytes += static_cast<size_t>(uncompressedbyteswrited);
+        writtenBytes += static_cast<std::size_t>(uncompressedbyteswrited);
     }
 
     gzclose(rawFile);

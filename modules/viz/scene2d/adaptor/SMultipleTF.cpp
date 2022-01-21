@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -1058,7 +1058,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     this->buildLayer();
 
     // Updates the TF with the new point position.
-    size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
     // If the window is negative, the TF point list is reversed compared to the TF data.
     if(_subTF->m_tf->getWindow() < 0)
@@ -1153,7 +1153,7 @@ void SMultipleTF::rightButtonClickOnPointEvent(
     auto pointIt =
         std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), _TFPoint);
     SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
-    size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
     const data::TransferFunction::sptr tf = _subTF->m_tf;
     {
@@ -1253,7 +1253,7 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(
         auto pointIt =
             std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), _TFPoint);
         SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
-        size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
+        std::size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
         const data::TransferFunction::sptr tf = _subTF->m_tf;
         {

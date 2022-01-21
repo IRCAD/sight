@@ -187,7 +187,7 @@ private:
     unsigned int m_fps;
 
     /// Counter used by the image reader.
-    size_t m_imageCount;
+    std::size_t m_imageCount;
 
     core::thread::Timer::sptr m_timer;
 
@@ -228,7 +228,7 @@ private:
     unsigned long m_stepChanged;
 
     /// Total number of frames in a video file.
-    size_t m_videoFramesNb;
+    std::size_t m_videoFramesNb;
 
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };

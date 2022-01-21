@@ -335,7 +335,7 @@ void helperTest::toolCalibrationBasic()
     const glm::dvec3 translation(radius, 0, 0);
 
     // generates matrices
-    for(size_t i = 0 ; i < nbMatrices ; ++i)
+    for(std::size_t i = 0 ; i < nbMatrices ; ++i)
     {
         const double angleInDegrees = safeRand() % 180;
         const double angle          = glm::radians(angleInDegrees);
@@ -409,7 +409,7 @@ void helperTest::toolCalibration()
     const glm::dvec3 translation(-459.45, 46.6, -88.54);
 
     // generates matrices
-    for(size_t i = 0 ; i < nbMatrices ; ++i)
+    for(std::size_t i = 0 ; i < nbMatrices ; ++i)
     {
         const double angleInDegrees = safeRand() % 360;
         const double angle          = glm::radians(angleInDegrees);
@@ -491,7 +491,7 @@ void helperTest::generateCharucoDict()
 
         CPPUNIT_ASSERT_NO_THROW(
             generatedDict =
-                geometry::vision::helper::generateArucoDictionary(static_cast<size_t>(x[ii]), 2, bits[ii])
+                geometry::vision::helper::generateArucoDictionary(static_cast<std::size_t>(x[ii]), 2, bits[ii])
         );
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("markerSize are not equal", DictExpected->markerSize, generatedDict->markerSize);
@@ -533,7 +533,7 @@ void helperTest::chessboardDetectionTest()
 
         CPPUNIT_ASSERT_EQUAL(false, chessRgb0.empty());
         CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb0.elemSize1());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessRgb0.elemSize1());
 
         const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
             chessRgb0,
@@ -593,7 +593,7 @@ void helperTest::chessboardDetectionTest()
 
         CPPUNIT_ASSERT_EQUAL(false, chessRgb1.empty());
         CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb1.elemSize1());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessRgb1.elemSize1());
 
         const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
             chessRgb1,
@@ -656,7 +656,7 @@ void helperTest::chessboardDetectionTest()
 
         CPPUNIT_ASSERT_EQUAL(false, chessGray.empty());
         CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessGray.elemSize1());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessGray.elemSize1());
 
         const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
             chessGray,

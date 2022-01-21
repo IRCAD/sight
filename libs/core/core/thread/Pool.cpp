@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ Pool::Pool() :
 
 //-----------------------------------------------------------------------------
 
-Pool::Pool(size_t _threads) :
+Pool::Pool(std::size_t _threads) :
     m_stop(false)
 {
     SIGHT_WARN_IF(
@@ -46,7 +46,7 @@ Pool::Pool(size_t _threads) :
         _threads > std::thread::hardware_concurrency()
     );
 
-    for(size_t i = 0 ; i < _threads ; ++i)
+    for(std::size_t i = 0 ; i < _threads ; ++i)
     {
         m_workers.emplace_back(
             [this]

@@ -63,10 +63,10 @@ void SLabelGeometryImage::configuring()
 
         SIGHT_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
 
-        for(size_t i = 0 ; i < clusterVect.size() ; ++i)
+        for(std::size_t i = 0 ; i < clusterVect.size() ; ++i)
         {
             std::string clusterStr = clusterVect[i]->getValue();
-            std::vector<size_t> clusterLabels;
+            std::vector<std::size_t> clusterLabels;
             const boost::char_separator<char> separator(",");
             const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
 
@@ -142,7 +142,7 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
 
     data::PointList::sptr selectedPointList = m_lPointListCentroids.at(indexPlane);
 
-    for(size_t idPoint = 0 ; idPoint < selectedPointList->getPoints().size() ; ++idPoint)
+    for(std::size_t idPoint = 0 ; idPoint < selectedPointList->getPoints().size() ; ++idPoint)
     {
         selectedPointList->getPoints().at(idPoint)->setLabel(std::to_string(idPoint));
     }

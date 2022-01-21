@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -158,7 +158,7 @@ private:
 
     core::thread::Worker::sptr m_worker; ///< Worker for the readMatrices timer
 
-    size_t m_tsMatricesCount; ///< counter used by matrices reader
+    std::size_t m_tsMatricesCount; ///< counter used by matrices reader
 
     bool m_createNewTS; ///< bool to handle if we create a new timestamp
 

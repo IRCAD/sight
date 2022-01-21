@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -151,11 +151,11 @@ data::Mesh::sptr DicomSurface::convertToData()
 
     // Cells
     {
-        size_t index = 0;
+        std::size_t index = 0;
 
         for(auto& cell : mesh->range<data::iterator::cell::triangle>())
         {
-            for(size_t i = 0 ; i < 3 ; ++i)
+            for(std::size_t i = 0 ; i < 3 ; ++i)
             {
                 // Index shall start at 0 in Sight
                 cell.pt[i] = static_cast<data::Mesh::point_t>(m_cellBuffer[index]) - 1;

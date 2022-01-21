@@ -265,7 +265,7 @@ void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
 
-    const size_t uiNumVertices = _mesh->numPoints();
+    const std::size_t uiNumVertices = _mesh->numPoints();
     if(uiNumVertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");

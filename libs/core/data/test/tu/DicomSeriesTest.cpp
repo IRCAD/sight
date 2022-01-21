@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ void DicomSeriesTest::dicomTest()
     file.close();
 
     //None
-    const size_t nbInstances = 100;
+    const std::size_t nbInstances = 100;
     CPPUNIT_ASSERT(!m_series->isInstanceAvailable(42));
     m_series->setNumberOfInstances(nbInstances);
     CPPUNIT_ASSERT_EQUAL(nbInstances, m_series->numInstances());

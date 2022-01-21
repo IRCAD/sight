@@ -101,8 +101,8 @@ void CameraTest::copyToCv()
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(sightCam->getWidth(), static_cast<size_t>(imgSize.width));
-    CPPUNIT_ASSERT_EQUAL(sightCam->getHeight(), static_cast<size_t>(imgSize.height));
+    CPPUNIT_ASSERT_EQUAL(sightCam->getWidth(), static_cast<std::size_t>(imgSize.width));
+    CPPUNIT_ASSERT_EQUAL(sightCam->getHeight(), static_cast<std::size_t>(imgSize.height));
 
     CPPUNIT_ASSERT_EQUAL(5, distCoeffs.size[0]);
 
