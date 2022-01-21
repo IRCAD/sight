@@ -228,13 +228,11 @@ void SlotTest::asyncTest()
 
     slot1->setWorker(w);
     slot2->setWorker(w);
-    slot3->setWorker(w);
-    slot4->setWorker(w);
 
     slot1->asyncRun(40, 2).wait();
     slot2->asyncRun();
-    slot3->asyncRun(2.1f).wait();
-    slot4->asyncRun(40, 2, 3).wait();
+    slot3->asyncRun(w, 2.1f).wait();
+    slot4->asyncRun(w, 40, 2, 3).wait();
 
     CPPUNIT_ASSERT_EQUAL(42, lastSumResult);
     CPPUNIT_ASSERT(a.m_method0);
@@ -248,8 +246,8 @@ void SlotTest::asyncTest()
 
     std::shared_future<int> f1   = slot1->asyncCall(40, 2);
     std::shared_future<void> f2  = slot2->asyncCall();
-    std::shared_future<float> f3 = slot3->asyncCall(2.1f);
-    std::shared_future<int> f4   = slot4->asyncCall(40, 2, 3);
+    std::shared_future<float> f3 = slot3->asyncCall(w, 2.1f);
+    std::shared_future<int> f4   = slot4->asyncCall(w, 40, 2, 3);
 
     f1.wait();
     CPPUNIT_ASSERT(f1.valid());
@@ -597,6 +595,26 @@ void SlotTest::sloppinessTest()
     CPPUNIT_ASSERT_EQUAL(4.2f, f3.get());
     CPPUNIT_ASSERT(f3.valid());
     CPPUNIT_ASSERT(a.m_method1);
+
+    w->stop();
+}
+
+//------------------------------------------------------------------------------
+
+void SlotTest::noWorkerTest()
+{
+    // Tests whether the good exception is thrown when asynchronously calling a
+    // slot without worker
+    core::com::Slot<int(int, int)>::sptr slot = core::com::newSlot(&sum);
+
+    CPPUNIT_ASSERT_THROW(slot->asyncRun(5, 6), core::com::exception::NoWorker);
+    CPPUNIT_ASSERT_THROW(slot->asyncCall(4, 5), core::com::exception::NoWorker);
+
+    core::thread::Worker::sptr w = core::thread::Worker::New();
+    slot->setWorker(w);
+
+    CPPUNIT_ASSERT_THROW(slot->asyncRun(nullptr, 5, 6), core::com::exception::NoWorker);
+    CPPUNIT_ASSERT_THROW(slot->asyncCall(nullptr, 4, 5), core::com::exception::NoWorker);
 
     w->stop();
 }

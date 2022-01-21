@@ -42,6 +42,7 @@ CPPUNIT_TEST(slotBaseTest);
 CPPUNIT_TEST(exceptionTest);
 CPPUNIT_TEST(workerSwapTest);
 CPPUNIT_TEST(sloppinessTest);
+CPPUNIT_TEST(noWorkerTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -59,6 +60,7 @@ public:
     void exceptionTest();
     void workerSwapTest();
     void sloppinessTest();
+    void noWorkerTest();
 };
 
 } //namespace ut
