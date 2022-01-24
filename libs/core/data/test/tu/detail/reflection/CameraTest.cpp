@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,55 +122,55 @@ void CameraTest::propertiesTest()
     dch::compareSimplePropertyValue(camera, "@description", DESC);
     dch::compareSimplePropertyValue(camera, "@camera_id", CAM_ID);
     dch::compareSimplePropertyValue(camera, "@is_calibrated", "1");
-    dch::compareSimplePropertyValue(camera, "@skew", ::boost::lexical_cast<std::string>(SKEW));
-    dch::compareSimplePropertyValue(camera, "@intrinsic.2", ::boost::lexical_cast<std::string>(CX));
-    dch::compareSimplePropertyValue(camera, "@intrinsic.3", ::boost::lexical_cast<std::string>(CY));
-    dch::compareSimplePropertyValue(camera, "@intrinsic.0", ::boost::lexical_cast<std::string>(FX));
-    dch::compareSimplePropertyValue(camera, "@intrinsic.1", ::boost::lexical_cast<std::string>(FY));
+    dch::compareSimplePropertyValue(camera, "@skew", boost::lexical_cast<std::string>(SKEW));
+    dch::compareSimplePropertyValue(camera, "@intrinsic.2", boost::lexical_cast<std::string>(CX));
+    dch::compareSimplePropertyValue(camera, "@intrinsic.3", boost::lexical_cast<std::string>(CY));
+    dch::compareSimplePropertyValue(camera, "@intrinsic.0", boost::lexical_cast<std::string>(FX));
+    dch::compareSimplePropertyValue(camera, "@intrinsic.1", boost::lexical_cast<std::string>(FY));
     dch::compareSimplePropertyValue(
         camera,
         "@distortion_coefficient.0",
-        ::boost::lexical_cast<std::string>(K1)
+        boost::lexical_cast<std::string>(K1)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@distortion_coefficient.1",
-        ::boost::lexical_cast<std::string>(K2)
+        boost::lexical_cast<std::string>(K2)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@distortion_coefficient.2",
-        ::boost::lexical_cast<std::string>(P1)
+        boost::lexical_cast<std::string>(P1)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@distortion_coefficient.3",
-        ::boost::lexical_cast<std::string>(P2)
+        boost::lexical_cast<std::string>(P2)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@distortion_coefficient.4",
-        ::boost::lexical_cast<std::string>(K3)
+        boost::lexical_cast<std::string>(K3)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@max_framerate",
-        ::boost::lexical_cast<std::string>(MAX_FRAMERATE)
+        boost::lexical_cast<std::string>(MAX_FRAMERATE)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@width",
-        ::boost::lexical_cast<std::string>(WIDTH)
+        boost::lexical_cast<std::string>(WIDTH)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@height",
-        ::boost::lexical_cast<std::string>(HEIGHT)
+        boost::lexical_cast<std::string>(HEIGHT)
     );
     dch::compareSimplePropertyValue(
         camera,
         "@scale",
-        ::boost::lexical_cast<std::string>(SCALE)
+        boost::lexical_cast<std::string>(SCALE)
     );
 }
 

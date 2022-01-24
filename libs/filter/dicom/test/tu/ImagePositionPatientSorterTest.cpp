@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ void ImagePositionPatientSorterTest::tearDown()
 
 double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
 {
-    ::gdcm::ImageReader reader;
+    gdcm::ImageReader reader;
     const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     reader.SetStream(*streamInfo.stream);
 
@@ -77,19 +77,19 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
     }
 
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
     // Check tags availability
-    if(!dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0037)))
+    if(!dataset.FindDataElement(gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(gdcm::Tag(0x0020, 0x0037)))
     {
         const std::string msg = "Unable to compute the spacing between slices of the series.";
         throw io::dicom::exception::Failed(msg);
     }
 
     // Retrieve image position
-    const ::gdcm::Image& gdcmImage = reader.GetImage();
-    const double* gdcmOrigin       = gdcmImage.GetOrigin();
-    const fwVec3d imagePosition    = {{gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]}};
+    const gdcm::Image& gdcmImage = reader.GetImage();
+    const double* gdcmOrigin     = gdcmImage.GetOrigin();
+    const fwVec3d imagePosition  = {{gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]}};
 
     // Retrieve image orientation
     const double* directionCosines  = gdcmImage.GetDirectionCosines();

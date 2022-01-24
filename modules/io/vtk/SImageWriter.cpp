@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ bool SImageWriter::saveImage(
     sight::io::base::writer::IObjectWriter::sptr myWriter;
     sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
     std::string ext = imgFile.extension().string();
-    ::boost::algorithm::to_lower(ext);
+    boost::algorithm::to_lower(ext);
 
     if(ext == ".vtk")
     {

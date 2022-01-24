@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(::gdcm::DataSet& dataset) const;
+    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
 
     /// Get SOP Class UID
     const std::string& getSOPClassUID() const
@@ -108,7 +108,7 @@ protected:
      * @see PS 3.3  Table C.18.3
      * @param[in] dataset Destination dataset
      */
-    void writeReferencedSOPSequence(::gdcm::DataSet& dataset) const;
+    void writeReferencedSOPSequence(gdcm::DataSet& dataset) const;
 
     /// Referenced SOP Class UID (0008,1150)
     std::string m_sopClassUID;

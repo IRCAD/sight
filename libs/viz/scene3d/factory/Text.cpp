@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,18 +31,18 @@ namespace factory
 
 //-----------------------------------------------------------------------------
 
-const ::Ogre::String Text::FACTORY_TYPE_NAME = "Text";
+const Ogre::String Text::FACTORY_TYPE_NAME = "Text";
 
 //-----------------------------------------------------------------------------
 
-const ::Ogre::String& Text::getType(void) const
+const Ogre::String& Text::getType(void) const
 {
     return FACTORY_TYPE_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::MovableObject* Text::createInstanceImpl(const ::Ogre::String& name, const ::Ogre::NameValuePairList*)
+Ogre::MovableObject* Text::createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList*)
 {
     return new viz::scene3d::Text(name);
 }
@@ -50,7 +50,7 @@ const ::Ogre::String& Text::getType(void) const
 //-----------------------------------------------------------------------------
 
 #if OGRE_VERSION_PATCH < 9
-void Text::destroyInstance(::Ogre::MovableObject* obj)
+void Text::destroyInstance(Ogre::MovableObject* obj)
 {
     delete obj;
 }

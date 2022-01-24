@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,14 +53,14 @@ public:
      * @param[in] type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static const ::gdcm::PixelFormat getPixelType(const core::tools::Type& type);
+    IO_DICOM_API static const gdcm::PixelFormat getPixelType(const core::tools::Type& type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.
      * @param[in] image Image
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
-    IO_DICOM_API static const ::gdcm::PhotometricInterpretation getPhotometricInterpretation(
+    IO_DICOM_API static const gdcm::PhotometricInterpretation getPhotometricInterpretation(
         const data::Image::csptr& image
     );
 
@@ -70,7 +70,7 @@ public:
      * @param[in] representationMode Surface representation mode.
      * @return Corresponding recommended presentation type.
      */
-    IO_DICOM_API static ::gdcm::Surface::VIEWType convertToPresentationType(
+    IO_DICOM_API static gdcm::Surface::VIEWType convertToPresentationType(
         data::Material::RepresentationType representationMode
     );
 
@@ -80,7 +80,7 @@ public:
      * @return Corresponding representation mode
      */
     IO_DICOM_API static data::Material::RepresentationType convertToRepresentationMode(
-        ::gdcm::Surface::VIEWType presentationType
+        gdcm::Surface::VIEWType presentationType
     );
 
     /**

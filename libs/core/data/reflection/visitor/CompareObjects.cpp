@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,14 +80,14 @@ struct PropertyVisitor : public camp::ValueVisitor<PropType>
 
     PropType operator()(long value)
     {
-        return std::make_pair(m_prefix, ::boost::lexical_cast<std::string>(value));
+        return std::make_pair(m_prefix, boost::lexical_cast<std::string>(value));
     }
 
     //------------------------------------------------------------------------------
 
     PropType operator()(double value)
     {
-        return std::make_pair(m_prefix, ::boost::lexical_cast<std::string>(value));
+        return std::make_pair(m_prefix, boost::lexical_cast<std::string>(value));
     }
 
     //------------------------------------------------------------------------------
@@ -134,10 +134,10 @@ struct PropertyVisitor : public camp::ValueVisitor<PropType>
                         const std::size_t buffsize = bo->getSize();
                         for(size_t i = 0 ; i < buffsize ; ++i)
                         {
-                            ::boost::hash_combine(seed, buffer[i]);
+                            boost::hash_combine(seed, buffer[i]);
                         }
 
-                        return std::make_pair(m_prefix, ::boost::lexical_cast<std::string>(seed));
+                        return std::make_pair(m_prefix, boost::lexical_cast<std::string>(seed));
                     }
                 }
             }

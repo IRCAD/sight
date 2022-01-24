@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(::gdcm::DataSet& dataset) const;
+    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
 
     /// Get Numeric value
     const double& getNumValue() const
@@ -95,7 +95,7 @@ protected:
      * @see PS 3.3  Table C.18.1
      * @param[in] dataset Destination dataset
      */
-    void writeMeasuredValueSequence(::gdcm::DataSet& dataset) const;
+    void writeMeasuredValueSequence(gdcm::DataSet& dataset) const;
 
     /// Numeric Value
     double m_numValue;

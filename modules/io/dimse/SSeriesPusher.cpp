@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -206,7 +206,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Inform the user that some series are already on the PACS
         if(!duplicateSeriesVector.empty())
         {
-            ::std::stringstream ss;
+            std::stringstream ss;
             ss << "Those series are already on the PACS: \n";
 
             // Display duplicated Series
@@ -235,7 +235,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
     {
         const auto pacsConfiguration = m_config.lock();
 
-        ::std::stringstream ss;
+        std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
         << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
         << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
@@ -313,7 +313,7 @@ void SSeriesPusher::pushSeries()
     {
         const auto pacsConfiguration = m_config.lock();
 
-        ::std::stringstream ss;
+        std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
         << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
         << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
@@ -347,7 +347,7 @@ void SSeriesPusher::progressCallback(
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::displayMessage(const ::std::string& message, bool error) const
+void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 {
     SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;

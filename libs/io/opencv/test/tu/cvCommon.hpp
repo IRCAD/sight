@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ declareCvFormat(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
 //------------------------------------------------------------------------------
 
 template<typename T>
-::cv::Mat genCvImage(
+cv::Mat genCvImage(
     const std::vector<T>& _imageBuffer,
     size_t _w,
     size_t _h,
@@ -86,7 +86,7 @@ template<typename T>
     cvSize.push_back(static_cast<int>(_w));
 
     const auto cvType = getCvFormat<T>::type[_numChannels - 1];
-    ::cv::Mat cvImage = ::cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
+    cv::Mat cvImage   = cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
 
     return cvImage;
 }

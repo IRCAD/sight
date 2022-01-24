@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ void SArucoTracker::configuring()
         MarkerIDType markersID;
         for(const auto& it : tok)
         {
-            const int id = ::boost::lexical_cast<int>(it);
+            const int id = boost::lexical_cast<int>(it);
             markersID.push_back(id);
         }
 

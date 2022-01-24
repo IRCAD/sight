@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,37 +104,37 @@ public:
      * @brief Gets the type of the light.
      * @return The light type.
      */
-    MODULE_VIZ_SCENE3D_API ::Ogre::Light::LightTypes getType() const override;
+    MODULE_VIZ_SCENE3D_API Ogre::Light::LightTypes getType() const override;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the new light type.
      */
-    MODULE_VIZ_SCENE3D_API void setType(::Ogre::Light::LightTypes _type) override;
+    MODULE_VIZ_SCENE3D_API void setType(Ogre::Light::LightTypes _type) override;
 
     /**
      * @brief Gets the diffuse color of the light.
      * @return The light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API ::Ogre::ColourValue getDiffuseColor() const override;
+    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getDiffuseColor() const override;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the new light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override;
+    MODULE_VIZ_SCENE3D_API void setDiffuseColor(Ogre::ColourValue _diffuseColor) override;
 
     /**
      * @brief Gets the specular color of the light.
      * @return The light specular color.
      */
-    MODULE_VIZ_SCENE3D_API ::Ogre::ColourValue getSpecularColor() const override;
+    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getSpecularColor() const override;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    MODULE_VIZ_SCENE3D_API void setSpecularColor(::Ogre::ColourValue _specularColor) override;
+    MODULE_VIZ_SCENE3D_API void setSpecularColor(Ogre::ColourValue _specularColor) override;
 
     /**
      * @brief Gets the light activation state.
@@ -157,7 +157,7 @@ public:
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _thetaOffset the value of the thta offset.
-     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
+     * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     MODULE_VIZ_SCENE3D_API void setThetaOffset(float _thetaOffset) override;
 
@@ -170,7 +170,7 @@ public:
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phiOffset the phi of the thta offset.
-     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
+     * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phiOffset) override;
 
@@ -212,13 +212,13 @@ protected:
 private:
 
     /// Containes the Ogre light managed by this adaptor.
-    ::Ogre::Light* m_light {nullptr};
+    Ogre::Light* m_light {nullptr};
 
     /// Defines the name of the associated Ogre light.
     std::string m_lightName;
 
     /// Sets the type of the associated Ogre light.
-    ::Ogre::Light::LightTypes m_lightType {::Ogre::Light::LT_DIRECTIONAL};
+    Ogre::Light::LightTypes m_lightType {Ogre::Light::LT_DIRECTIONAL};
 
     /// Enables the light.
     bool m_switchedOn {true};
@@ -230,7 +230,7 @@ private:
     float m_phiOffset {0.f};
 
     /// Contains the node used to attach the light
-    ::Ogre::SceneNode* m_lightNode {nullptr};
+    Ogre::SceneNode* m_lightNode {nullptr};
 
     /// Defines the visual feedback visibility state.
     bool m_visualFeedback {false};
@@ -239,13 +239,13 @@ private:
     data::Material::sptr m_material {nullptr};
 
     /// Contains the sphere at the light position.
-    ::Ogre::ManualObject* m_lightPosition {nullptr};
+    Ogre::ManualObject* m_lightPosition {nullptr};
 
     /// Defines the length of the visual feedback object.
     float m_length {50.f};
 
     /// Contains objects used for the directional light visual feedback.
-    std::pair< ::Ogre::ManualObject*, ::Ogre::ManualObject*> m_directionalFeedback {nullptr, nullptr};
+    std::pair<Ogre::ManualObject*, Ogre::ManualObject*> m_directionalFeedback {nullptr, nullptr};
 };
 
 //------------------------------------------------------------------------------
@@ -264,21 +264,21 @@ inline void SLight::setName(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::Light::LightTypes SLight::getType() const
+inline Ogre::Light::LightTypes SLight::getType() const
 {
     return m_lightType;
 }
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::ColourValue SLight::getDiffuseColor() const
+inline Ogre::ColourValue SLight::getDiffuseColor() const
 {
     return m_light->getDiffuseColour();
 }
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::ColourValue SLight::getSpecularColor() const
+inline Ogre::ColourValue SLight::getSpecularColor() const
 {
     return m_light->getSpecularColour();
 }

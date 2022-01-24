@@ -288,7 +288,7 @@ void AppManager::startServices()
 
     m_isStarted = true;
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
     futures.clear();
 
     for(const auto& srv : serviceToUpdate)
@@ -296,7 +296,7 @@ void AppManager::startServices()
         futures.push_back(srv->update());
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 //------------------------------------------------------------------------------
@@ -458,7 +458,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             futures.push_back(this->start(srvInfo));
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
         futures.clear();
 
         for(const auto& srv : serviceToUpdate)
@@ -466,7 +466,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             futures.push_back(srv->update());
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
     }
 
     m_registeredObject.insert(std::make_pair(id, obj));

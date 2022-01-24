@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,8 @@ namespace sight::viz::scene3d
 
 viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
     const std::string& _name,
-    ::Ogre::SubEntity* _sourceObject,
-    ::Ogre::SceneManager* _sceneManager,
+    Ogre::SubEntity* _sourceObject,
+    Ogre::SceneManager* _sceneManager,
     data::Mesh::CellType _primitiveType,
     const std::string& _mtlName
 )
@@ -51,14 +51,14 @@ viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
 
     // Input material name
 
-    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName, RESOURCE_GROUP);
+    Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(_mtlName, RESOURCE_GROUP);
     instance->setMaterial(mat);
     return instance;
 }
 
 //-----------------------------------------------------------------------------
 
-viz::scene3d::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
+viz::scene3d::R2VBRenderable::R2VBRenderable(const Ogre::String& _name) :
     SimpleRenderable(_name),
     m_dirty(false),
     m_inputPrimitiveType(data::Mesh::CellType::TRIANGLE),
@@ -78,9 +78,9 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
     if(m_maxOutputVertexCount < _vertexCount)
     {
         const std::string r2vbMaterial = (m_r2vbBuffer) ? m_r2vbBuffer->getRenderToBufferMaterial()->getName() : "";
-        m_r2vbBuffer = ::Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
+        m_r2vbBuffer = Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
 
-        m_r2vbBuffer->setOperationType(::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+        m_r2vbBuffer->setOperationType(Ogre::RenderOperation::OT_TRIANGLE_LIST);
         m_r2vbBuffer->setResetsEveryUpdate(true);
 
         const size_t numVertices = m_inputPrimitiveType == data::Mesh::CellType::QUAD ? _vertexCount * 2
@@ -99,24 +99,24 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
     }
 
     // Define feedback vertex declarations
-    ::Ogre::VertexDeclaration* vtxDecl = m_r2vbBuffer->getVertexDeclaration();
+    Ogre::VertexDeclaration* vtxDecl = m_r2vbBuffer->getVertexDeclaration();
     vtxDecl->removeAllElements();
 
     size_t ofst = 0;
-    ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION).getSize();
+    ofst += vtxDecl->addElement(0, ofst, Ogre::VET_FLOAT3, Ogre::VES_POSITION).getSize();
     if(_hasNormals)
     {
-        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
+        ofst += vtxDecl->addElement(0, ofst, Ogre::VET_FLOAT3, Ogre::VES_NORMAL).getSize();
     }
 
     if(_hasColor)
     {
-        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE).getSize();
+        ofst += vtxDecl->addElement(0, ofst, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE).getSize();
     }
 
     if(_hasTexCoord)
     {
-        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES).getSize();
+        ofst += vtxDecl->addElement(0, ofst, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES).getSize();
     }
 
     // Set bounds.
@@ -127,14 +127,14 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
 
 //-----------------------------------------------------------------------------
 
-const ::Ogre::String& R2VBRenderable::getMovableType(void) const
+const Ogre::String& R2VBRenderable::getMovableType(void) const
 {
     return factory::R2VBRenderable::FACTORY_TYPE_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* _queue)
+void R2VBRenderable::_updateRenderQueue(Ogre::RenderQueue* _queue)
 {
     // Don't do anything if the object is not visible
     if(m_srcObject->getParent()->isVisible())
@@ -153,7 +153,7 @@ void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* _queue)
 
 //-----------------------------------------------------------------------------
 
-void R2VBRenderable::getRenderOperation(::Ogre::RenderOperation& _op)
+void R2VBRenderable::getRenderOperation(Ogre::RenderOperation& _op)
 {
     m_r2vbBuffer->getRenderOperation(_op);
 }

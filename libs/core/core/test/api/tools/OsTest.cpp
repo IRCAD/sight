@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ void Os::getSharedLibraryPath()
     const auto cwd = fs::current_path();
 
     {
-        const auto execPath = ::boost::dll::program_location().remove_filename();
+        const auto execPath = boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
         const auto actualPath       = core::tools::os::getSharedLibraryPath("sight_core.dll");
@@ -90,7 +90,7 @@ void Os::getSharedLibraryPath()
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";
 #endif
-    auto handle = ::boost::dll::shared_library(campPath.string());
+    auto handle = boost::dll::shared_library(campPath.string());
     CPPUNIT_ASSERT_MESSAGE("Could not load camp for testing", handle);
 
     CPPUNIT_ASSERT_EQUAL(campPath, core::tools::os::getSharedLibraryPath("camp"));

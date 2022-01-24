@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
      * @param _parentNode The parent node of the created node.
      * @return The node matching m_transformId.
      */
-    VIZ_SCENE3D_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* const _parentNode);
+    VIZ_SCENE3D_API Ogre::SceneNode* getTransformNode(Ogre::SceneNode* const _parentNode);
 
     /**
      * @brief Retrieve the node matching the given node name.
@@ -62,9 +62,9 @@ public:
      * @param _parentNode The parent node of the created node.
      * @return The node matching m_transformId.
      */
-    VIZ_SCENE3D_API static ::Ogre::SceneNode* getTransformNode(
+    VIZ_SCENE3D_API static Ogre::SceneNode* getTransformNode(
         const std::string& _name,
-        ::Ogre::SceneNode* const _parentNode
+        Ogre::SceneNode* const _parentNode
     );
 
     /// The xml attribute to retrieve the transform's id.
@@ -73,7 +73,7 @@ public:
 private:
 
     /// Ogre transform node.
-    ::Ogre::SceneNode* m_transformNode;
+    Ogre::SceneNode* m_transformNode;
 
     /// This transform identifier
     viz::scene3d::SRender::OgreObjectIdType m_transformId;

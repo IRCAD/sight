@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,9 +116,9 @@ public:
 
     typedef std::string FieldNameType;
     typedef std::vector<FieldNameType> FieldNameVectorType;
-    typedef ::std::unordered_map<FieldNameType, data::Object::sptr> FieldMapType;
+    typedef std::unordered_map<FieldNameType, data::Object::sptr> FieldMapType;
 
-    typedef ::std::unordered_map<data::Object::csptr, data::Object::sptr> DeepCopyCacheType;
+    typedef std::unordered_map<data::Object::csptr, data::Object::sptr> DeepCopyCacheType;
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).

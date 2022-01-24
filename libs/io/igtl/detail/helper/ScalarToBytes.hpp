@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ public:
         io::igtl::detail::helper::detail::ConvertData<T> convertData;
         RawDataType bytes;
 
-        BOOST_STATIC_ASSERT(::boost::is_arithmetic<T>::value);
+        BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
         convertData.scalar = scalar;
         bytes.resize(sizeof(T));
 

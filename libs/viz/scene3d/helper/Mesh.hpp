@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ public:
      * @param _numComponents[in] number of components, must be 3 or 4
      */
     VIZ_SCENE3D_API static void copyColors(
-        ::Ogre::RGBA* _dest,
+        Ogre::RGBA* _dest,
         const std::uint8_t* _src,
         size_t _numPoints,
         size_t _numComponents

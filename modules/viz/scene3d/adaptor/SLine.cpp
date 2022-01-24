@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ void SLine::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     m_line = sceneMgr->createManualObject(this->getID() + "_line");
     // Set the line as dynamic, so we can update it later on, when the length changes
@@ -132,9 +132,9 @@ void SLine::starting()
     this->drawLine(false);
 
     // Set the bounding box of your Manual Object
-    ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
-    ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
-    ::Ogre::AxisAlignedBox box(bbMin, bbMax);
+    Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
+    Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
+    Ogre::AxisAlignedBox box(bbMin, bbMax);
     m_line->setBoundingBox(box);
 
     this->attachNode(m_line);
@@ -146,8 +146,8 @@ void SLine::starting()
 
 void SLine::updating()
 {
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
     transNode->setVisible(m_isVisible);
     this->requestRender();
 }
@@ -169,10 +169,10 @@ void SLine::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SLine::attachNode(::Ogre::MovableObject* object)
+void SLine::attachNode(Ogre::MovableObject* object)
 {
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
     transNode->setVisible(m_isVisible);
     transNode->attachObject(object);
 }
@@ -185,7 +185,7 @@ void SLine::drawLine(bool _existingLine)
     {
         m_line->begin(
             m_materialAdaptor->getMaterialName(),
-            ::Ogre::RenderOperation::OT_LINE_LIST,
+            Ogre::RenderOperation::OT_LINE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );
     }
@@ -225,9 +225,9 @@ void SLine::updateLength(float _length)
     this->drawLine(true);
 
     // Set the bounding box of your Manual Object
-    ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
-    ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
-    ::Ogre::AxisAlignedBox box(bbMin, bbMax);
+    Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
+    Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
+    Ogre::AxisAlignedBox box(bbMin, bbMax);
     m_line->setBoundingBox(box);
 
     this->requestRender();

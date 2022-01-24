@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,10 +89,10 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Defines the extrinsic x Intrinsic camera calibrations.
-    using CameraCalibrationsType = std::vector< ::Ogre::Matrix4>;
+    using CameraCalibrationsType = std::vector<Ogre::Matrix4>;
 
     /// Defines the set of overlays enabled on a layer.
-    using OverlaySetType = std::vector< ::Ogre::Overlay*>;
+    using OverlaySetType = std::vector<Ogre::Overlay*>;
 
     /// Definest the viewport parameters relatively to the screen: left, top, width ,height.
     using ViewportConfigType = std::tuple<float, float, float, float>;
@@ -147,7 +147,7 @@ public:
     VIZ_SCENE3D_API virtual ~Layer();
 
     /// Sets the render window containing this layer.
-    VIZ_SCENE3D_API void setRenderTarget(::Ogre::RenderTarget* _renderTarget);
+    VIZ_SCENE3D_API void setRenderTarget(Ogre::RenderTarget* _renderTarget);
 
     /// Set the associated scene manager ID of this viewport
     VIZ_SCENE3D_API void setID(const std::string& id);
@@ -159,7 +159,7 @@ public:
     VIZ_SCENE3D_API const std::string& getLayerID() const;
 
     /// @returns the scene manager associated to this viewport.
-    VIZ_SCENE3D_API ::Ogre::SceneManager* getSceneManager() const;
+    VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager() const;
 
     /// Creates the scene.
     VIZ_SCENE3D_API void createScene();
@@ -186,7 +186,7 @@ public:
     VIZ_SCENE3D_API void resetCameraClippingRange() const;
 
     /// Resets the camera clipping range (near and far).
-    VIZ_SCENE3D_API void resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
+    VIZ_SCENE3D_API void resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
 
     /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
     VIZ_SCENE3D_API void addInteractor(
@@ -258,13 +258,13 @@ public:
     VIZ_SCENE3D_API service::IHasServices::ServiceVector getRegisteredAdaptors() const;
 
     /// @returns the viewport.
-    VIZ_SCENE3D_API ::Ogre::Viewport* getViewport() const;
+    VIZ_SCENE3D_API Ogre::Viewport* getViewport() const;
 
     /// @returns the default camera.
-    VIZ_SCENE3D_API ::Ogre::Camera* getDefaultCamera() const;
+    VIZ_SCENE3D_API Ogre::Camera* getDefaultCamera() const;
 
     /// Gets the projection matrix used to define nth viewpoint. The index must be lower than the number of viewpoints.
-    VIZ_SCENE3D_API ::Ogre::Matrix4 getCameraProjMat(const std::uint8_t cameraIdx) const;
+    VIZ_SCENE3D_API Ogre::Matrix4 getCameraProjMat(const std::uint8_t cameraIdx) const;
 
     /// @returns the number of cameras (viewpoints) used by this layer. Defined by the stereo mode.
     VIZ_SCENE3D_API std::uint8_t numCameras() const;
@@ -279,7 +279,7 @@ public:
     VIZ_SCENE3D_API std::vector<SPTR(viz::scene3d::ILight)> getLightAdaptors() const;
 
     /// @returns the computed bounding box of the scene.
-    VIZ_SCENE3D_API ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
+    VIZ_SCENE3D_API Ogre::AxisAlignedBox computeWorldBoundingBox() const;
 
     /// @returns the OIT selected.
     VIZ_SCENE3D_API compositor::transparencyTechnique getTransparencyTechnique();
@@ -303,7 +303,7 @@ public:
     VIZ_SCENE3D_API void removeDefaultLight();
 
     /// @returns or create the overlay panel in which adaptors can render 2D text.
-    VIZ_SCENE3D_API ::Ogre::OverlayContainer* getOverlayTextPanel();
+    VIZ_SCENE3D_API Ogre::OverlayContainer* getOverlayTextPanel();
 
     /// Defines the overlay scripts to enable on this layer's viewport.
     VIZ_SCENE3D_API void setEnabledOverlays(const std::vector<std::string>& _overlayScripts);
@@ -329,16 +329,16 @@ private:
     void forAllInteractors(const std::function<void(const interactor::IInteractor::sptr&)>&& _f);
 
     /// Contains the Ogre scene manager of this viewport.
-    ::Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Contains the Ogre render window containing this viewport.
-    ::Ogre::RenderTarget* m_renderTarget {nullptr};
+    Ogre::RenderTarget* m_renderTarget {nullptr};
 
     /// Contains the Ogre viewport representing this layer.
-    ::Ogre::Viewport* m_viewport {nullptr};
+    Ogre::Viewport* m_viewport {nullptr};
 
     /// Contains the overlay panel to which all the UI's text is attached.
-    ::Ogre::OverlayContainer* m_overlayTextPanel {nullptr};
+    Ogre::OverlayContainer* m_overlayTextPanel {nullptr};
 
     /// Defines stereoscopic rendering mode.
     compositor::Core::StereoModeType m_stereoMode {compositor::Core::StereoModeType::NONE};
@@ -375,7 +375,7 @@ private:
     float m_bottomScale {1.f};
 
     /// Contains the Ogre camera.
-    ::Ogre::Camera* m_camera {nullptr};
+    Ogre::Camera* m_camera {nullptr};
 
     /// Stores the list of interactors, sorted by priority.
     std::multimap<int, viz::scene3d::interactor::IInteractor::wptr, std::greater<int> > m_interactors;

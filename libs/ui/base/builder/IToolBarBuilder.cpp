@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,12 +107,12 @@ void IToolBarBuilder::initialize(core::runtime::ConfigurationElement::sptr confi
         {
             if((*iter)->hasAttribute("height"))
             {
-                m_toolBitmapSize.second = ::boost::lexical_cast<int>((*iter)->getExistingAttributeValue("height"));
+                m_toolBitmapSize.second = boost::lexical_cast<int>((*iter)->getExistingAttributeValue("height"));
             }
 
             if((*iter)->hasAttribute("width"))
             {
-                m_toolBitmapSize.first = ::boost::lexical_cast<int>((*iter)->getExistingAttributeValue("width"));
+                m_toolBitmapSize.first = boost::lexical_cast<int>((*iter)->getExistingAttributeValue("width"));
             }
         }
     }

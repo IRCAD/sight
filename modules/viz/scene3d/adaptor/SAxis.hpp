@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,7 +118,7 @@ private:
     bool m_enableLabel {true};
 
     /// Contains the origin of the axis.
-    ::Ogre::ManualObject* m_origin {nullptr};
+    Ogre::ManualObject* m_origin {nullptr};
 
     /// Enables the origin visibility.
     bool m_originVisibility {false};
@@ -127,25 +127,25 @@ private:
     std::string m_originColor {"#FFFFFF"};
 
     /// Contains the line along the x axis.
-    ::Ogre::ManualObject* m_xLine {nullptr};
+    Ogre::ManualObject* m_xLine {nullptr};
 
     /// Contains the line along the y axis.
-    ::Ogre::ManualObject* m_yLine {nullptr};
+    Ogre::ManualObject* m_yLine {nullptr};
 
     /// Contains the line along the z axis.
-    ::Ogre::ManualObject* m_zLine {nullptr};
+    Ogre::ManualObject* m_zLine {nullptr};
 
     /// Contains the arrow of the x axis.
-    ::Ogre::ManualObject* m_xCone {nullptr};
+    Ogre::ManualObject* m_xCone {nullptr};
 
     /// Contains the arrow of the y axis.
-    ::Ogre::ManualObject* m_yCone {nullptr};
+    Ogre::ManualObject* m_yCone {nullptr};
 
     /// Contains the arrow of the z axis.
-    ::Ogre::ManualObject* m_zCone {nullptr};
+    Ogre::ManualObject* m_zCone {nullptr};
 
     /// Contains the scene node where all of manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores labels attached to each axis.
     std::array<sight::viz::scene3d::Text*, 3> m_axisLabels {{nullptr, nullptr, nullptr}};

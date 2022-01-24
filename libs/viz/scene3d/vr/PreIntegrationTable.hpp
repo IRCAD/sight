@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
     VIZ_SCENE3D_API void tfUpdate(const data::TransferFunction::sptr& _tf, float _sampleDistance);
 
     /// Get the texture holding the pre-integration table.
-    VIZ_SCENE3D_API inline ::Ogre::TexturePtr getTexture() const;
+    VIZ_SCENE3D_API inline Ogre::TexturePtr getTexture() const;
 
     /// Returns the image value interval.
     VIZ_SCENE3D_API inline std::pair<int, int> getMinMax() const;
@@ -85,7 +85,7 @@ private:
     };
 
     /// Pixel structure used when computing the table.
-    typedef ::glm::vec4 IntegralPixel;
+    typedef glm::vec4 IntegralPixel;
 
     /// Array storing table values.
     TablePixel* m_table;
@@ -94,7 +94,7 @@ private:
     IntegralPixel* m_integralTable;
 
     /// Table's GPU texture.
-    ::Ogre::TexturePtr m_tableTexture;
+    Ogre::TexturePtr m_tableTexture;
 
     /// Image value interval.
     std::pair<int, int> m_valueInterval;
@@ -105,7 +105,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-::Ogre::TexturePtr PreIntegrationTable::getTexture() const
+Ogre::TexturePtr PreIntegrationTable::getTexture() const
 {
     return m_tableTexture;
 }

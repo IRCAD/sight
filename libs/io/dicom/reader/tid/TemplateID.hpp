@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
      */
     IO_DICOM_API TemplateID(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const SPTR(DATATYPE)& object,
         const core::log::Logger::sptr& logger
@@ -73,7 +73,7 @@ protected:
     CSPTR(data::DicomSeries) m_dicomSeries;
 
     /// GDCM Reader
-    SPTR(::gdcm::Reader) m_reader;
+    SPTR(gdcm::Reader) m_reader;
 
     /// DICOM Instance
     SPTR(io::dicom::container::DicomInstance) m_instance;
@@ -90,7 +90,7 @@ protected:
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
     const CSPTR(data::DicomSeries)& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const SPTR(DATATYPE)& object,
     const core::log::Logger::sptr& logger

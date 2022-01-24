@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::geometry::vision
 namespace helper
 {
 
-typedef std::pair<double, std::vector< ::cv::Point2f> > ErrorAndPointsType;
+typedef std::pair<double, std::vector<cv::Point2f> > ErrorAndPointsType;
 
 /**
  * @brief compute the mean error of reprojection
@@ -52,16 +52,16 @@ typedef std::pair<double, std::vector< ::cv::Point2f> > ErrorAndPointsType;
  * @param _tvecs: translation vector
  * @param _cameraMatrix: camera matrix (fx, fy, cx, cy)
  * @param _distCoeffs: distorsion coefficients of the camera
- * @return std::pair< double, std::vector< ::cv::Point2f > >, first element is the arithmetical root-squared mean error
+ * @return std::pair< double, std::vector< cv::Point2f > >, first element is the arithmetical root-squared mean error
  * and the second element is a vector of reprojected 2d points (for display purpose)
  */
 GEOMETRY_VISION_API ErrorAndPointsType computeReprojectionError(
-    const std::vector< ::cv::Point3f>& _objectPoints,
-    const std::vector< ::cv::Point2f>& _imagePoints,
-    const ::cv::Mat& _rvecs,
-    const ::cv::Mat& _tvecs,
-    const ::cv::Mat& _cameraMatrix,
-    const ::cv::Mat& _distCoeffs
+    const std::vector<cv::Point3f>& _objectPoints,
+    const std::vector<cv::Point2f>& _imagePoints,
+    const cv::Mat& _rvecs,
+    const cv::Mat& _tvecs,
+    const cv::Mat& _cameraMatrix,
+    const cv::Mat& _distCoeffs
 );
 
 /**
@@ -70,15 +70,15 @@ GEOMETRY_VISION_API ErrorAndPointsType computeReprojectionError(
  * @param _imagePoints: vector of 2d points
  * @param _cameraMatrix: camera matrix (fx, fy, cx, cy)
  * @param _distCoeffs: distorsion coefficients of the camera
- * @param _flag: ::cv::solvePnP method to use
- * @return ::cv::Mat (4x4 with float values) corresponding to the camera pose
+ * @param _flag: cv::solvePnP method to use
+ * @return cv::Mat (4x4 with float values) corresponding to the camera pose
  */
-GEOMETRY_VISION_API ::cv::Matx44f cameraPoseMonocular(
-    const std::vector< ::cv::Point3f>& _objectPoints,
-    const std::vector< ::cv::Point2f>& _imagePoints,
-    const ::cv::Mat _cameraMatrix,
-    const ::cv::Mat& _distCoeffs,
-    const int _flag = ::cv::SOLVEPNP_ITERATIVE
+GEOMETRY_VISION_API cv::Matx44f cameraPoseMonocular(
+    const std::vector<cv::Point3f>& _objectPoints,
+    const std::vector<cv::Point2f>& _imagePoints,
+    const cv::Mat _cameraMatrix,
+    const cv::Mat& _distCoeffs,
+    const int _flag = cv::SOLVEPNP_ITERATIVE
 );
 
 /**
@@ -94,16 +94,16 @@ GEOMETRY_VISION_API ::cv::Matx44f cameraPoseMonocular(
  * @param _T: translation vector from camera1 to camera2
  * @return
  */
-GEOMETRY_VISION_API ::cv::Matx44f cameraPoseStereo(
-    const std::vector< ::cv::Point3f>& _objectPoints,
-    const ::cv::Mat& _cameraMatrix1,
-    const ::cv::Mat& _distCoeffs1,
-    const ::cv::Mat& _cameraMatrix2,
-    const ::cv::Mat& _distCoeffs2,
-    const std::vector< ::cv::Point2f>& _imgPoints1,
-    const std::vector< ::cv::Point2f>& _imgPoints2,
-    const ::cv::Mat& _R,
-    const ::cv::Mat& _T
+GEOMETRY_VISION_API cv::Matx44f cameraPoseStereo(
+    const std::vector<cv::Point3f>& _objectPoints,
+    const cv::Mat& _cameraMatrix1,
+    const cv::Mat& _distCoeffs1,
+    const cv::Mat& _cameraMatrix2,
+    const cv::Mat& _distCoeffs2,
+    const std::vector<cv::Point2f>& _imgPoints1,
+    const std::vector<cv::Point2f>& _imgPoints2,
+    const cv::Mat& _R,
+    const cv::Mat& _T
 );
 
 /**
@@ -126,10 +126,10 @@ GEOMETRY_VISION_API void calibratePointingTool(
  * @param _width: width of charuco board
  * @param _height: height of charuco board
  * @param _markerSizeInBits : bits size of marker (can be 4, 5, 6 or 7)
- * @return a ::cv::Ptr of ::cv::aruco::Dictionary.
+ * @return a cv::Ptr of cv::aruco::Dictionary.
  * @throw std::invalid_argument if _markerSizeInBits != [4, 5, 6, 7]
  */
-GEOMETRY_VISION_API ::cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(
+GEOMETRY_VISION_API cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
     const size_t _width,
     const size_t _height,
     const int _markerSizeInBits
@@ -148,7 +148,7 @@ GEOMETRY_VISION_API ::cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(
  * @return List of detected chessboard points. nullptr if detection failed.
  */
 GEOMETRY_VISION_API sight::data::PointList::sptr detectChessboard(
-    const ::cv::Mat& _img,
+    const cv::Mat& _img,
     size_t _xDim,
     size_t _yDim,
     float _scale

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,8 +50,8 @@ public:
     DATA_API virtual bool operator>=(const GenericFieldBase& lf) = 0;
     DATA_API friend std::ostream& operator<<(std::ostream&, const GenericFieldBase&);
 
-    DATA_API virtual ::std::string toString() const               = 0;
-    DATA_API virtual void fromString(const ::std::string& _value) = 0;
+    DATA_API virtual std::string toString() const               = 0;
+    DATA_API virtual void fromString(const std::string& _value) = 0;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "geometry/glm/config.hpp"
 
-#include <glm/glm.hpp>
-
 #include <boost/unordered_map.hpp>
+
+#include <glm/glm.hpp>
 
 namespace sight::geometry::glm
 {
@@ -152,7 +152,7 @@ bool isBorderlessSurface(
 )
 {
     typedef std::pair<T, T> Edge; // always Edge.first < Edge.second !!
-    typedef ::boost::unordered_map<Edge, int> EdgeHistogram;
+    typedef boost::unordered_map<Edge, int> EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 

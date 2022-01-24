@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 namespace sight::core::tools
 {
 
-typedef ::boost::mpl::vector<
+typedef boost::mpl::vector<
         std::int8_t,
         std::uint8_t,
         std::int16_t,

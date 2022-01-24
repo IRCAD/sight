@@ -75,8 +75,8 @@ void Series::write()
     // Retrieve series SOPClassUID
     const std::string& sopClassUID = instance->getSOPClassUID();
 
-    if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage)
-       || sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
+    if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage)
+       || sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
         data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
         SIGHT_ASSERT("sight::data::ImageSeries not instanced", imageSeries);
@@ -106,7 +106,7 @@ void Series::write()
             }
         }
     }
-    else if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
+    else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         SPTR(io::dicom::container::DicomInstance) imageInstance = this->getImageInstance();
         io::dicom::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->getFolder() / "imSeg");

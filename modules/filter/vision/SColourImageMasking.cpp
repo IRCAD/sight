@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,9 +48,9 @@ const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMas
 SColourImageMasking::SColourImageMasking() noexcept :
     m_lastVideoTimestamp(0.),
     m_scaleFactor(1.),
-    m_maskDownsize(::cv::Size(0, 0)),
-    m_lowerColor(::cv::Scalar(0, 0, 0)),
-    m_upperColor(::cv::Scalar(255, 255, 255)),
+    m_maskDownsize(cv::Size(0, 0)),
+    m_lowerColor(cv::Scalar(0, 0, 0)),
+    m_upperColor(cv::Scalar(255, 255, 255)),
     m_noise(0.),
     m_backgroundComponents(5),
     m_foregroundComponents(5)
@@ -95,34 +95,34 @@ void SColourImageMasking::configuring()
         m_foregroundComponents > 0
     );
 
-    m_lowerColor = ::cv::Scalar(0, 0, 0);
-    m_upperColor = ::cv::Scalar(255, 255, 255);
+    m_lowerColor = cv::Scalar(0, 0, 0);
+    m_upperColor = cv::Scalar(255, 255, 255);
 
     const service::IService::ConfigType hsvConfig = this->getConfigTree().get_child("HSV");
     std::string s_lowerValue                      = hsvConfig.get<std::string>("lower", "");
     std::string s_upperValue                      = hsvConfig.get<std::string>("upper", "");
 
-    const ::boost::char_separator<char> sep {",", ";"};
+    const boost::char_separator<char> sep {",", ";"};
 
     if(!s_lowerValue.empty())
     {
-        const ::boost::tokenizer<boost::char_separator<char> > tokLower {s_lowerValue, sep};
+        const boost::tokenizer<boost::char_separator<char> > tokLower {s_lowerValue, sep};
         int i = 0;
         for(const auto& it : tokLower)
         {
             SIGHT_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
-            m_lowerColor[i++] = ::boost::lexical_cast<double>(it);
+            m_lowerColor[i++] = boost::lexical_cast<double>(it);
         }
     }
 
     if(!s_upperValue.empty())
     {
-        const ::boost::tokenizer<boost::char_separator<char> > tokUpper {s_upperValue, sep};
+        const boost::tokenizer<boost::char_separator<char> > tokUpper {s_upperValue, sep};
         int i = 0;
         for(const auto& it : tokUpper)
         {
             SIGHT_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
-            m_upperColor[i++] = ::boost::lexical_cast<double>(it);
+            m_upperColor[i++] = boost::lexical_cast<double>(it);
         }
     }
 }
@@ -214,23 +214,23 @@ void SColourImageMasking::updating()
         m_lastVideoTimestamp = videoTimestamp;
 
         // convert the ::fw::Data::Image mask to an OpenCV image
-        ::cv::Mat maskCV = io::opencv::Image::copyToCv(mask.get_shared());
+        cv::Mat maskCV = io::opencv::Image::copyToCv(mask.get_shared());
 
-        ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
         maskCV = (maskCV > 0);
 
         //convert the data::FrameTL videoTL to an OpenCV image
-        const ::cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+        const cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
         // Create image mask to put inside the timeline
         SPTR(data::FrameTL::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
         std::uint8_t* frameBuffOutMask = maskBuffer->addElement(0);
 
-        ::cv::Mat videoMaskCV = io::opencv::FrameTL::moveToCv(videoMaskTL.get_shared(), frameBuffOutMask);
+        cv::Mat videoMaskCV = io::opencv::FrameTL::moveToCv(videoMaskTL.get_shared(), frameBuffOutMask);
 
         // Get the foreground mask
-        ::cv::Mat foregroundMask = m_masker->makeMask(videoCV, m_maskDownsize, maskCV);
+        cv::Mat foregroundMask = m_masker->makeMask(videoCV, m_maskDownsize, maskCV);
 
         // Create an openCV mat that aliases the buffer created from the output timeline
         videoCV.copyTo(videoMaskCV, foregroundMask);
@@ -263,35 +263,35 @@ void SColourImageMasking::setBackground()
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert the data::FrameTL videoTL to an OpenCV image
-    const ::cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+    const cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // convert the data::Image mask to an OpenCV image
-    ::cv::Mat maskCV = io::opencv::Image::copyToCv(mask.get_shared());
+    cv::Mat maskCV = io::opencv::Image::copyToCv(mask.get_shared());
 
     // Convert color mask to grayscale value
-    ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
+    cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
 
     maskCV = (maskCV > 0);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
-    m_maskDownsize = ::cv::Size(
+    m_maskDownsize = cv::Size(
         static_cast<int>(static_cast<float>(maskCV.size[1]) * m_scaleFactor),
         static_cast<int>(static_cast<float>(maskCV.size[0]) * m_scaleFactor)
     );
 
     // Erode a little bit the mask to avoid the borders
     // Construct element type
-    int elementType = ::cv::MORPH_ELLIPSE;
+    int elementType = cv::MORPH_ELLIPSE;
     // Choose element size
     int elementErodeSize(1);
     // Construct erosion element
-    ::cv::Mat elementErode = ::cv::getStructuringElement(
+    cv::Mat elementErode = cv::getStructuringElement(
         elementType,
-        ::cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
-        ::cv::Point(elementErodeSize, elementErodeSize)
+        cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
+        cv::Point(elementErodeSize, elementErodeSize)
     );
     // Perform erosion
-    ::cv::erode(maskCV, maskCV, elementErode);
+    cv::erode(maskCV, maskCV, elementErode);
 
     // Learn background color model
     m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
@@ -318,31 +318,31 @@ void SColourImageMasking::setForeground()
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert mask to an OpenCV image:
-    ::cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+    cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // Convert RGB to HSV
-    ::cv::Mat videoBGR, videoHSV;
-    ::cv::cvtColor(videoCV, videoBGR, ::cv::COLOR_RGBA2BGR);
-    ::cv::cvtColor(videoBGR, videoHSV, ::cv::COLOR_BGR2HSV);
+    cv::Mat videoBGR, videoHSV;
+    cv::cvtColor(videoCV, videoBGR, cv::COLOR_RGBA2BGR);
+    cv::cvtColor(videoBGR, videoHSV, cv::COLOR_BGR2HSV);
 
     // Get the mask to learn the foreground model
-    ::cv::Mat foregroundMask;
-    ::cv::inRange(videoHSV, m_lowerColor, m_upperColor, foregroundMask);
+    cv::Mat foregroundMask;
+    cv::inRange(videoHSV, m_lowerColor, m_upperColor, foregroundMask);
 
     // Remove small objects by performing an opening
-    ::cv::Mat openForegroundMask;
+    cv::Mat openForegroundMask;
     // Construct element type
-    int elementType = ::cv::MORPH_ELLIPSE;
+    int elementType = cv::MORPH_ELLIPSE;
     // Choose element size
     int elementErodeSize(2);
     // Construct erosion element
-    ::cv::Mat elementErode = ::cv::getStructuringElement(
+    cv::Mat elementErode = cv::getStructuringElement(
         elementType,
-        ::cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
-        ::cv::Point(elementErodeSize, elementErodeSize)
+        cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
+        cv::Point(elementErodeSize, elementErodeSize)
     );
     // Perform erosion
-    ::cv::erode(foregroundMask, openForegroundMask, elementErode);
+    cv::erode(foregroundMask, openForegroundMask, elementErode);
 
     // Learn foreground color model
     m_masker->trainForegroundModel(videoCV, openForegroundMask, m_foregroundComponents, m_noise);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ void GetObjectTest::invalidPathTest()
 
     // no exception version
     obj = data::reflection::getObject(composite, "@values.vector.values.2.spacing.2");
-    data::Float::sptr zspacing = ::std::dynamic_pointer_cast<data::Float>(obj);
+    data::Float::sptr zspacing = std::dynamic_pointer_cast<data::Float>(obj);
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
         img->getSpacing()[2] - 0.001 < zspacing->value()
@@ -155,7 +155,7 @@ void GetObjectTest::invalidPathTest()
 
     // with exception version
     obj      = data::reflection::getObject(composite, "@values.vector.values.2.spacing.2", true);
-    zspacing = ::std::dynamic_pointer_cast<data::Float>(obj);
+    zspacing = std::dynamic_pointer_cast<data::Float>(obj);
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
         img->getSpacing()[2] - 0.001 < zspacing->value()

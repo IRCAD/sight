@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,10 +129,10 @@ private:
     int m_markerSizeInBits;
 
     /// Charuco dictionary
-    ::cv::Ptr< ::cv::aruco::Dictionary> m_dictionary;
+    cv::Ptr<cv::aruco::Dictionary> m_dictionary;
 
     /// Chessboard-aruco board
-    ::cv::Ptr< ::cv::aruco::CharucoBoard> m_board;
+    cv::Ptr<cv::aruco::CharucoBoard> m_board;
 
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo {this, "calibrationInfo"};
     data::ptr<data::Camera, data::Access::inout> m_camera {this, "camera"};

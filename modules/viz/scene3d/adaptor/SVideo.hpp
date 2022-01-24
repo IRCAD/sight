@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -147,19 +147,19 @@ private:
     void clearEntity();
 
     /// Contains the Ogre texture used to store the image.
-    ::Ogre::TexturePtr m_texture;
+    Ogre::TexturePtr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
-    ::Ogre::MaterialPtr m_material;
+    Ogre::MaterialPtr m_material;
 
     /// Contains the Ogre mesh used to display the video plane.
-    ::Ogre::MeshPtr m_mesh;
+    Ogre::MeshPtr m_mesh;
 
     /// Contains the node where the plane is attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Contains the Ogre entity used to display the video plane.
-    ::Ogre::Entity* m_entity {nullptr};
+    Ogre::Entity* m_entity {nullptr};
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF;

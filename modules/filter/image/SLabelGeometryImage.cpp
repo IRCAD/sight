@@ -67,8 +67,8 @@ void SLabelGeometryImage::configuring()
         {
             std::string clusterStr = clusterVect[i]->getValue();
             std::vector<size_t> clusterLabels;
-            const ::boost::char_separator<char> separator(",");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tok {clusterStr, separator};
+            const boost::char_separator<char> separator(",");
+            const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
 
             for(const auto& t : tok)
             {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,9 @@
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
-#include <glm/vec3.hpp>
-
 #include <service/IService.hpp>
+
+#include <glm/vec3.hpp>
 
 namespace sight::module::geometry::base
 {
@@ -121,7 +121,7 @@ private:
     bool m_landmarkSelected {false};
 
     /// Target landmark.
-    ::glm::dvec3 m_targetLandmark {0.};
+    glm::dvec3 m_targetLandmark {0.};
 
     /// Width of the background image (pixels).
     int m_width {400};

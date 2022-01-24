@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ void Server::start(std::uint16_t port)
 
     if(result != Server::s_SUCCESS)
     {
-        throw Exception("Cannot create server on port : " + ::boost::lexical_cast<std::string>(port));
+        throw Exception("Cannot create server on port : " + boost::lexical_cast<std::string>(port));
     }
 
     m_isStarted = true;

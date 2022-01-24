@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,9 +85,9 @@ public:
      */
     VIZ_SCENE3D_API IVolumeRenderer(
         std::string parentId,
-        ::Ogre::SceneManager* const sceneManager,
-        ::Ogre::SceneNode* const volumeNode,
-        ::Ogre::TexturePtr imageTexture,
+        Ogre::SceneManager* const sceneManager,
+        Ogre::SceneNode* const volumeNode,
+        Ogre::TexturePtr imageTexture,
         PreIntegrationTable& preintegrationTable
     );
 
@@ -107,7 +107,7 @@ public:
     VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) = 0;
 
     /// Computes image positions.
-    VIZ_SCENE3D_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
+    VIZ_SCENE3D_API virtual void clipImage(const Ogre::AxisAlignedBox& clippingBox);
 
     /// Returns the sampling rate.
     VIZ_SCENE3D_API float getSamplingRate() const;
@@ -124,28 +124,28 @@ protected:
     );
 
     /// Computes the camera's plane.
-    VIZ_SCENE3D_API ::Ogre::Plane getCameraPlane() const;
+    VIZ_SCENE3D_API Ogre::Plane getCameraPlane() const;
 
     /// Computes the sample distance and returns the index to the closest vertex to the camera.
-    VIZ_SCENE3D_API unsigned computeSampleDistance(const ::Ogre::Plane& cameraPlane);
+    VIZ_SCENE3D_API unsigned computeSampleDistance(const Ogre::Plane& cameraPlane);
 
     /// ID of this object's parent.
     std::string m_parentId;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager* m_sceneManager;
+    Ogre::SceneManager* m_sceneManager;
 
     /// 3D Image texture.
-    ::Ogre::TexturePtr m_3DOgreTexture;
+    Ogre::TexturePtr m_3DOgreTexture;
 
     /// Pre-integration table.
     PreIntegrationTable& m_preIntegrationTable;
 
     /// This object's scene node.
-    ::Ogre::SceneNode* m_volumeSceneNode;
+    Ogre::SceneNode* m_volumeSceneNode;
 
     /// Camera used for rendering.
-    ::Ogre::Camera* m_camera;
+    Ogre::Camera* m_camera;
 
     /// Sampling rate.
     uint16_t m_nbSlices;
@@ -157,7 +157,7 @@ protected:
     bool m_preIntegratedRendering;
 
     /// Intersection between the image and the clipping box.
-    ::Ogre::Vector3 m_clippedImagePositions[8];
+    Ogre::Vector3 m_clippedImagePositions[8];
 };
 
 //-----------------------------------------------------------------------------

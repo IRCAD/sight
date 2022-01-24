@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -244,7 +244,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.total = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.total = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("MemFree") != std::string::npos)
     {
@@ -254,7 +254,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.free = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.free = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("Buffers") != std::string::npos)
     {
@@ -264,7 +264,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.buffered = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.buffered = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("SwapCached") != std::string::npos) // Test before => line.find("Cached")
     {
@@ -274,7 +274,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.swapcached = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.swapcached = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("Cached") != std::string::npos)
     {
@@ -284,7 +284,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.cached = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.cached = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("SwapTotal") != std::string::npos)
     {
@@ -294,7 +294,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.swaptotal = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.swaptotal = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("SwapFree") != std::string::npos)
     {
@@ -304,7 +304,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        meminfo.swapfree = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        meminfo.swapfree = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
 }
 
@@ -341,7 +341,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmPeak = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmPeak = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmSize") != std::string::npos)
     {
@@ -351,7 +351,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmSize = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmSize = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmLck") != std::string::npos)
     {
@@ -361,7 +361,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmLck = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmLck = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmHWM") != std::string::npos)
     {
@@ -371,7 +371,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmHWM = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmHWM = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmRSS") != std::string::npos)
     {
@@ -381,7 +381,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmRSS = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmRSS = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmData") != std::string::npos)
     {
@@ -391,7 +391,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmData = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmData = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmStk") != std::string::npos)
     {
@@ -401,7 +401,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmStk = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmStk = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmExe") != std::string::npos)
     {
@@ -411,7 +411,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmExe = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmExe = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmLib") != std::string::npos)
     {
@@ -421,7 +421,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmLib = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmLib = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
     else if(line.find("VmPTE") != std::string::npos)
     {
@@ -431,7 +431,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
             machine_format,
             std::regex_constants::match_default | std::regex_constants::format_sed
         );
-        stat.VmPTE = ::boost::lexical_cast<std::uint64_t>(size) * 1024;
+        stat.VmPTE = boost::lexical_cast<std::uint64_t>(size) * 1024;
     }
 }
 

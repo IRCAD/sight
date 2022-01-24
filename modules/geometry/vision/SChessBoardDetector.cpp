@@ -213,7 +213,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
     if(isValid)
     {
-        const ::cv::Mat cvImg = io::opencv::Image::moveToCv(img.get_shared());
+        const cv::Mat cvImg = io::opencv::Image::moveToCv(img.get_shared());
 
         m_pointLists[_imageIndex] =
             sight::geometry::vision::helper::detectChessboard(cvImg, m_width, m_height, m_scale);

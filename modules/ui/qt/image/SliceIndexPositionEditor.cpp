@@ -152,8 +152,8 @@ void SliceIndexPositionEditor::configuring()
         SIGHT_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1);
         SIGHT_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty());
         std::string orientation = (*slideIndexCfg.begin())->getValue();
-        ::boost::algorithm::trim(orientation);
-        ::boost::algorithm::to_lower(orientation);
+        boost::algorithm::trim(orientation);
+        boost::algorithm::to_lower(orientation);
 
         if(orientation == "axial")
         {

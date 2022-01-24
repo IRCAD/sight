@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -195,10 +195,10 @@ public:
     VIZ_SCENE3D_API bool isShownOnScreen();
 
     /// @returns the scene manager corresponding to the sceneID.
-    VIZ_SCENE3D_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
+    VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager(const std::string& sceneID);
 
     /// @returns the layer corresponding to the sceneID.
-    VIZ_SCENE3D_API viz::scene3d::Layer::sptr getLayer(const ::std::string& sceneID);
+    VIZ_SCENE3D_API viz::scene3d::Layer::sptr getLayer(const std::string& sceneID);
 
     /// @returns this render layers.
     VIZ_SCENE3D_API LayerMapType getLayers();
@@ -274,7 +274,7 @@ private:
     overlay::ViewportListener m_viewportListener {m_viewportOverlaysMap};
 
     /// Contains the Ogre root.
-    ::Ogre::Root* m_ogreRoot {nullptr};
+    Ogre::Root* m_ogreRoot {nullptr};
 
     /// Defines how the rendering is triggered.
     RenderMode m_renderMode {RenderMode::AUTO};

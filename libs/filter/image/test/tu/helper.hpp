@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,11 +38,11 @@ template<class P, size_t N>
  * @tparam P Pixel type
  * @tparam N Number of channels
  */
-sight::data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
+sight::data::Image::sptr createSphereImage(itk::Vector<double, N> spacing = itk::Vector<double, N>(1.))
 {
-    using ImageType                      = ::itk::Image<P, N>;
-    using EllipseType                    = ::itk::EllipseSpatialObject<N>;
-    using SpatialObjectToImageFilterType = ::itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
+    using ImageType                      = itk::Image<P, N>;
+    using EllipseType                    = itk::EllipseSpatialObject<N>;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
     using TransformType                  = typename EllipseType::TransformType;
     static_assert(std::is_arithmetic<P>::value, "P type must be numeric");
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,18 +136,18 @@ void SOpenCVWriter::updating()
     size_t numberOfCameras = camSeries->numCameras();
 
     std::vector<data::Camera::sptr> cameras;
-    std::vector< ::cv::Mat> cameraMatrices;
-    std::vector< ::cv::Mat> cameraDistCoefs;
+    std::vector<cv::Mat> cameraMatrices;
+    std::vector<cv::Mat> cameraDistCoefs;
 
     // Set the cameras
     data::Matrix4::sptr extrinsicMatrix;
-    ::cv::Mat extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
     for(size_t i = 0 ; i < numberOfCameras ; ++i)
     {
         cameras.push_back(camSeries->getCamera(i));
-        cameraMatrices.push_back(::cv::Mat::eye(3, 3, CV_64F));
-        cameraDistCoefs.push_back(::cv::Mat::eye(5, 1, CV_64F));
+        cameraMatrices.push_back(cv::Mat::eye(3, 3, CV_64F));
+        cameraDistCoefs.push_back(cv::Mat::eye(5, 1, CV_64F));
 
         cameraMatrices[i].at<double>(0, 0) = cameras[i]->getFx();
         cameraMatrices[i].at<double>(1, 1) = cameras[i]->getFy();
@@ -160,7 +160,7 @@ void SOpenCVWriter::updating()
         }
     }
 
-    ::cv::FileStorage fs(this->getFile().string().c_str(), ::cv::FileStorage::WRITE);
+    cv::FileStorage fs(this->getFile().string().c_str(), cv::FileStorage::WRITE);
 
     fs << "nbCameras" << static_cast<int>(numberOfCameras);
 

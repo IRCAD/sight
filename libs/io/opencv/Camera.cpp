@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,20 +27,20 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-std::tuple< ::cv::Mat, ::cv::Size, ::cv::Mat> Camera::copyToCv(const data::Camera::csptr& _src)
+std::tuple<cv::Mat, cv::Size, cv::Mat> Camera::copyToCv(const data::Camera::csptr& _src)
 {
-    ::cv::Mat intrinsic = ::cv::Mat::eye(3, 3, CV_64F);
+    cv::Mat intrinsic = cv::Mat::eye(3, 3, CV_64F);
 
     intrinsic.at<double>(0, 0) = _src->getFx();
     intrinsic.at<double>(1, 1) = _src->getFy();
     intrinsic.at<double>(0, 2) = _src->getCx();
     intrinsic.at<double>(1, 2) = _src->getCy();
 
-    ::cv::Size imgSize;
+    cv::Size imgSize;
     imgSize.width  = static_cast<int>(_src->getWidth());
     imgSize.height = static_cast<int>(_src->getHeight());
 
-    ::cv::Mat distortionCoeffs = ::cv::Mat::zeros(5, 1, CV_64F);
+    cv::Mat distortionCoeffs = cv::Mat::zeros(5, 1, CV_64F);
 
     for(size_t i = 0 ; i < 5 ; ++i)
     {

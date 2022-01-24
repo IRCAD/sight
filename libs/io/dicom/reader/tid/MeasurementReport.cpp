@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace tid
 
 MeasurementReport::MeasurementReport(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
     const core::log::Logger::sptr& logger

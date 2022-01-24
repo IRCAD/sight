@@ -141,7 +141,7 @@ public:
 
 private:
 
-    typedef ::std::pair<std::string, bool> ConfigAttribute;
+    typedef std::pair<std::string, bool> ConfigAttribute;
     typedef service::helper::ProxyConnections ProxyConnections;
     typedef service::IService::Config Config;
 

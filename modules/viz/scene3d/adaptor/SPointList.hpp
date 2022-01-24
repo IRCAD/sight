@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -181,7 +181,7 @@ private:
      * @brief Attachs a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(::Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* _node);
 
     /// Detachs and destroy @ref m_entity from the scene graph.
     void detachAndDestroyEntity();
@@ -202,7 +202,7 @@ private:
     bool m_customMaterial {false};
 
     /// Contains the node in the scene graph.
-    ::Ogre::Entity* m_entity {nullptr};
+    Ogre::Entity* m_entity {nullptr};
 
     /// Contains the material attached to the mesh.
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
@@ -229,16 +229,16 @@ private:
     data::Color::sptr m_labelColor {nullptr};
 
     /// Defines the mask for picking requests.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Stores label of each point.
     std::vector<sight::viz::scene3d::Text*> m_labels;
 
     /// Stores label points nodes.
-    std::vector< ::Ogre::SceneNode*> m_nodes;
+    std::vector<Ogre::SceneNode*> m_nodes;
 
     /// Contains the scene node where all of our manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};

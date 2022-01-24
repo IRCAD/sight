@@ -70,7 +70,7 @@ namespace ut
 //------------------------------------------------------------------------------
 
 std::string getValue(
-    const ::boost::property_tree::ptree& node,
+    const boost::property_tree::ptree& node,
     const std::string& name,
     const std::filesystem::path& filePath
 )
@@ -88,7 +88,7 @@ std::string getValue(
             value = value.substr(first, last - first + 1);
         }
     }
-    catch(::boost::property_tree::ptree_bad_path&)
+    catch(boost::property_tree::ptree_bad_path&)
     {
         SIGHT_WARN(name + " information are missing in '" + filePath.string() + "'.");
         value = "";
@@ -118,8 +118,8 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         const std::string metaName           = filename + "/" + series->getInstanceUID() + ".json";
         const std::filesystem::path metaFile = metaPath / metaName;
         const std::string mf                 = metaFile.string();
-        ::boost::property_tree::ptree root;
-        ::boost::property_tree::json_parser::read_json(mf, root);
+        boost::property_tree::ptree root;
+        boost::property_tree::json_parser::read_json(mf, root);
 
         // Series
         CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesInstanceUID", mf), series->getInstanceUID());
@@ -169,7 +169,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
 
         // SliceThickness - This value is recomputed using the SliceThicknessModifier filter.
 //        std::string spacingZ = getValue(root, "SliceThickness", mf);
-//        CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(spacingZ), image->getSpacing()[2], 0.0001);
+//        CPPUNIT_ASSERT_DOUBLES_EQUAL(boost::lexical_cast< double >(spacingZ), image->getSpacing()[2], 0.0001);
 
         // Origin - Not checked as the image could be rotated
 
@@ -180,9 +180,9 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         if(!windowCenter.empty())
         {
             std::vector<std::string> windowCenterValues;
-            ::boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
+            boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
-                ::boost::lexical_cast<double>(windowCenterValues[0]),
+                boost::lexical_cast<double>(windowCenterValues[0]),
                 image->getWindowCenter(),
                 delta
             );
@@ -197,9 +197,9 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         if(!windowWidth.empty())
         {
             std::vector<std::string> windowWidthValues;
-            ::boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
+            boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
-                ::boost::lexical_cast<double>(windowWidthValues[0]),
+                boost::lexical_cast<double>(windowWidthValues[0]),
                 image->getWindowWidth(),
                 delta
             );
@@ -990,9 +990,9 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     CPPUNIT_ASSERT(dumpLock.getBuffer());
 
     // Compute sha1 digest
-    ::boost::uuids::detail::sha1 sha1;
+    boost::uuids::detail::sha1 sha1;
     sha1.process_bytes(static_cast<char*>(dumpLock.getBuffer()), image->getSizeInBytes());
-    ::boost::uuids::detail::sha1::digest_type digest = {0};
+    boost::uuids::detail::sha1::digest_type digest = {0};
     sha1.get_digest(digest);
 
     // Check digests

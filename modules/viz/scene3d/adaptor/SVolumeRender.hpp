@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -366,10 +366,10 @@ private:
     sight::viz::scene3d::vr::RayTracingVolumeRenderer* m_volumeRenderer {nullptr};
 
     /// Contains the GPU 3D Image texture.
-    ::Ogre::TexturePtr m_3DOgreTexture;
+    Ogre::TexturePtr m_3DOgreTexture;
 
     /// Contains the buffering texture for the 3D image.
-    ::Ogre::TexturePtr m_bufferingTexture;
+    Ogre::TexturePtr m_bufferingTexture;
 
     /// Prevents the service from accessing the textures while they are swapped.
     std::mutex m_bufferSwapMutex;
@@ -384,13 +384,13 @@ private:
     sight::viz::scene3d::vr::PreIntegrationTable m_preIntegrationTable;
 
     /// Stores the scene manager.
-    ::Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Stores the scene node of the volume.
-    ::Ogre::SceneNode* m_volumeSceneNode {nullptr};
+    Ogre::SceneNode* m_volumeSceneNode {nullptr};
 
     /// Stores the camera used for rendering.
-    ::Ogre::Camera* m_camera {nullptr};
+    Ogre::Camera* m_camera {nullptr};
 
     /// Stores the widgets used for clipping.
     std::shared_ptr<sight::viz::scene3d::interactor::ClippingBoxInteractor> m_widget;

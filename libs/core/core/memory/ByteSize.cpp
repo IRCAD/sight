@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -211,16 +211,16 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
 
 bool ByteSize::parseSize(const std::string& s, SizeType& size)
 {
-    using ::boost::phoenix::ref;
-    using ::boost::spirit::ascii::no_case;
-    using ::boost::spirit::ascii::space;
-    using ::boost::spirit::qi::as;
-    using ::boost::spirit::qi::_1;
-    using ::boost::spirit::qi::double_;
-    using ::boost::spirit::qi::eoi;
-    using ::boost::spirit::qi::phrase_parse;
-    using ::boost::spirit::qi::symbols;
-    using ::boost::spirit::qi::ulong_long;
+    using boost::phoenix::ref;
+    using boost::spirit::ascii::no_case;
+    using boost::spirit::ascii::space;
+    using boost::spirit::qi::as;
+    using boost::spirit::qi::_1;
+    using boost::spirit::qi::double_;
+    using boost::spirit::qi::eoi;
+    using boost::spirit::qi::phrase_parse;
+    using boost::spirit::qi::symbols;
+    using boost::spirit::qi::ulong_long;
 
     std::string::const_iterator first = s.begin();
     std::string::const_iterator last  = s.end();

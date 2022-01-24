@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,8 @@ public:
 
     typedef PowellMetric Self;
     typedef PowellOptimizer::PowellOptimizerType::MetricType Superclass;
-    typedef ::itk::SmartPointer<Self> Pointer;
-    typedef ::itk::SmartPointer<const Self> ConstPointer;
+    typedef itk::SmartPointer<Self> Pointer;
+    typedef itk::SmartPointer<const Self> ConstPointer;
     itkNewMacro(Self);
 
     //-----------------------------------------------------------------------------
@@ -164,7 +164,7 @@ PowellOptimizer::FunctionParametersType PowellOptimizer::optimize(
     {
         m_powellOptimizer->StartOptimization();
     }
-    catch(::itk::ExceptionObject& e)
+    catch(itk::ExceptionObject& e)
     {
         SIGHT_ERROR("Powell optimizer exception : " << e);
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include "modules/ui/viz/helper/Utils.hpp"
 
-#include <viz/scene3d/SRender.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
@@ -37,6 +35,8 @@
 #include <service/registry/ObjectService.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -185,7 +185,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
     ILight::sptr checkedLightAdaptor =
         this->retrieveLightAdaptor(_item->text().toStdString());
 
-    checkedLightAdaptor->switchOn(_item->checkState() == ::Qt::Checked);
+    checkedLightAdaptor->switchOn(_item->checkState() == Qt::Checked);
 }
 
 //------------------------------------------------------------------------------
@@ -273,8 +273,8 @@ void SLightSelector::onEditAmbientColor(bool)
     );
     QWidget* const container = qtContainer->getQtContainer();
 
-    Layer::sptr layer             = m_currentLayer.lock();
-    ::Ogre::ColourValue ogreColor = layer->getSceneManager()->getAmbientLight();
+    Layer::sptr layer           = m_currentLayer.lock();
+    Ogre::ColourValue ogreColor = layer->getSceneManager()->getAmbientLight();
 
     QColor qColor = QColorDialog::getColor(
         module::ui::viz::helper::Utils::convertOgreColorToQColor(ogreColor),
@@ -346,12 +346,12 @@ void SLightSelector::updateLightsList()
 
     for(auto lightAdaptor : m_lightAdaptors)
     {
-        QString lightName           = lightAdaptor->getName().c_str();
-        ::Qt::CheckState lightState = lightAdaptor->isSwitchedOn() ? ::Qt::Checked
-                                                                   : ::Qt::Unchecked;
+        QString lightName         = lightAdaptor->getName().c_str();
+        Qt::CheckState lightState = lightAdaptor->isSwitchedOn() ? Qt::Checked
+                                                                 : Qt::Unchecked;
 
         QListWidgetItem* nextLight = new QListWidgetItem(lightName, m_lightsList);
-        nextLight->setFlags(nextLight->flags() | ::Qt::ItemIsUserCheckable);
+        nextLight->setFlags(nextLight->flags() | Qt::ItemIsUserCheckable);
         nextLight->setCheckState(lightState);
     }
 }
@@ -371,7 +371,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
             lightDiffuseColor,
             lightSpecularColor
         );
-        lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
+        lightAdaptor->setType(Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
         service::IService::ConfigType config;
@@ -438,7 +438,7 @@ void SLightSelector::onCheckAllBoxes(bool _visible)
     for(int i = 0 ; i < m_lightsList->count() ; ++i)
     {
         auto item = m_lightsList->item(i);
-        item->setCheckState(_visible ? ::Qt::Checked : ::Qt::Unchecked);
+        item->setCheckState(_visible ? Qt::Checked : Qt::Unchecked);
     }
 }
 

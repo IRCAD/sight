@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -243,7 +243,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
         return;
     }
 
-    m_board = ::cv::aruco::CharucoBoard::create(
+    m_board = cv::aruco::CharucoBoard::create(
         static_cast<int>(m_width),
         static_cast<int>(m_height),
         m_squareSize,
@@ -326,34 +326,34 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
 
         std::uint8_t* frameBuff = const_cast<std::uint8_t*>(&buffer->getElement(0));
 
-        ::cv::Mat grayImg;
-        const ::cv::Mat img = io::opencv::FrameTL::moveToCv(tl, frameBuff);
+        cv::Mat grayImg;
+        const cv::Mat img = io::opencv::FrameTL::moveToCv(tl, frameBuff);
         if(tl->numComponents() == 1)
         {
             grayImg = img;
         }
         else if(tl->numComponents() == 3)
         {
-            ::cv::cvtColor(img, grayImg, ::cv::COLOR_RGB2GRAY);
+            cv::cvtColor(img, grayImg, cv::COLOR_RGB2GRAY);
         }
         else if(tl->numComponents() == 4)
         {
-            ::cv::cvtColor(img, grayImg, ::cv::COLOR_RGBA2GRAY);
+            cv::cvtColor(img, grayImg, cv::COLOR_RGBA2GRAY);
         }
         else
         {
             SIGHT_FATAL("Wrong type of image (nb of components = " << tl->numComponents() << ").");
         }
 
-        std::vector<std::vector< ::cv::Point2f> > arucoCorners;
+        std::vector<std::vector<cv::Point2f> > arucoCorners;
         std::vector<int> arucoIds;
 
-        ::cv::aruco::detectMarkers(grayImg, m_dictionary, arucoCorners, arucoIds);
+        cv::aruco::detectMarkers(grayImg, m_dictionary, arucoCorners, arucoIds);
 
         if(arucoIds.size())
         {
-            ::cv::Mat chessBoardCorners, chessBoardIds;
-            ::cv::aruco::interpolateCornersCharuco(
+            cv::Mat chessBoardCorners, chessBoardIds;
+            cv::aruco::interpolateCornersCharuco(
                 arucoCorners,
                 arucoIds,
                 grayImg,
@@ -370,9 +370,9 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
             {
                 data::Point::sptr point =
                     data::Point::New(
-                        (chessBoardCorners.at< ::cv::Point2f>(::cv::Point(0, i))).x,
-                        (chessBoardCorners.at< ::cv::Point2f>(::cv::Point(0, i))).y,
-                        (static_cast<float>(chessBoardIds.at<int>(::cv::Point(0, i))))
+                        (chessBoardCorners.at<cv::Point2f>(cv::Point(0, i))).x,
+                        (chessBoardCorners.at<cv::Point2f>(cv::Point(0, i))).y,
+                        (static_cast<float>(chessBoardIds.at<int>(cv::Point(0, i))))
                     );
                 points.push_back(point);
             }
@@ -381,12 +381,12 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
             {
                 SPTR(data::FrameTL::BufferType) detectionBuffer = tlDetection->createBuffer(timestamp);
                 std::uint8_t* frameDetectionBuffer = detectionBuffer->addElement(0);
-                ::cv::Mat frameDetectionCV         = io::opencv::FrameTL::moveToCv(tlDetection, frameDetectionBuffer);
+                cv::Mat frameDetectionCV           = io::opencv::FrameTL::moveToCv(tlDetection, frameDetectionBuffer);
 
-                ::cv::Mat imgCpy;
+                cv::Mat imgCpy;
                 img.copyTo(imgCpy);
 
-                ::cv::aruco::drawDetectedCornersCharuco(imgCpy, chessBoardCorners, chessBoardIds);
+                cv::aruco::drawDetectedCornersCharuco(imgCpy, chessBoardCorners, chessBoardIds);
 
                 imgCpy.copyTo(frameDetectionCV);
 

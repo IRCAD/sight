@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -255,7 +255,7 @@ void BufferObjectTest::lockThreadedStressTest()
 {
     core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
 
-    ::boost::thread_group group;
+    boost::thread_group group;
 
     group.create_thread(std::bind(&stressLock, bo, 800, 600));
     group.create_thread(std::bind(&stressLock, bo, 600, 800));

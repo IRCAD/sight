@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -262,7 +262,7 @@ void SWizard::createActivity(std::string activityID)
     m_actSeries->setModality("OT");
     m_actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID());
 
-    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     m_actSeries->setDate(core::tools::getDate(now));
     m_actSeries->setTime(core::tools::getTime(now));
 

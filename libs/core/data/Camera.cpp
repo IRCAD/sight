@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "data/Camera.hpp"
 
-#include <data/Exception.hpp>
-#include <data/registry/macros.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 #include <boost/assign.hpp>
 #include <boost/bimap/bimap.hpp>
@@ -87,9 +87,9 @@ Camera::~Camera() noexcept
 
 //------------------------------------------------------------------------------
 
-typedef ::boost::bimaps::bimap<Camera::PixelFormat, std::string> PixelFormatTranslatorType;
+typedef boost::bimaps::bimap<Camera::PixelFormat, std::string> PixelFormatTranslatorType;
 PixelFormatTranslatorType pixelFormatTranslator =
-    ::boost::assign::list_of<PixelFormatTranslatorType::relation>
+    boost::assign::list_of<PixelFormatTranslatorType::relation>
         (Camera::PixelFormat::INVALID, std::string("INVALID"))
         (Camera::PixelFormat::ARGB32, std::string("ARGB32"))
         (Camera::PixelFormat::ARGB32_PREMULTIPLIED, std::string("ARGB32_PREMULTIPLIED"))

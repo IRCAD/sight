@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,17 +40,17 @@ bool invert(
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
-    const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input.getCoefficients().data());
-    const ::glm::dmat4x4 matInverse = ::glm::inverse(mat);
+    const glm::dmat4x4 mat        = glm::make_mat4<double>(_input.getCoefficients().data());
+    const glm::dmat4x4 matInverse = glm::inverse(mat);
 
     auto& coefs = _output.getCoefficients();
     for(size_t i = 0 ; i < 4 ; ++i)
     {
-        const size_t rowDst          = i * 4;
-        const ::glm::length_t rowSrc = static_cast< ::glm::length_t>(i);
+        const size_t rowDst        = i * 4;
+        const glm::length_t rowSrc = static_cast<glm::length_t>(i);
         for(size_t j = 0 ; j < 4 ; ++j)
         {
-            const ::glm::length_t colSrc = static_cast< ::glm::length_t>(j);
+            const glm::length_t colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = matInverse[rowSrc][colSrc];
         }
     }
@@ -69,19 +69,19 @@ void multiply(
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
-    const ::glm::dmat4x4 matA = ::glm::make_mat4<double>(_trfA.getCoefficients().data());
-    const ::glm::dmat4x4 matB = ::glm::make_mat4<double>(_trfB.getCoefficients().data());
+    const glm::dmat4x4 matA = glm::make_mat4<double>(_trfA.getCoefficients().data());
+    const glm::dmat4x4 matB = glm::make_mat4<double>(_trfB.getCoefficients().data());
 
-    const ::glm::dmat4x4 matC = matB * matA;
+    const glm::dmat4x4 matC = matB * matA;
 
     auto& coefs = _output.getCoefficients();
     for(size_t i = 0 ; i < 4 ; ++i)
     {
-        const size_t rowDst          = i * 4;
-        const ::glm::length_t rowSrc = static_cast< ::glm::length_t>(i);
+        const size_t rowDst        = i * 4;
+        const glm::length_t rowSrc = static_cast<glm::length_t>(i);
         for(size_t j = 0 ; j < 4 ; ++j)
         {
-            const ::glm::length_t colSrc = static_cast< ::glm::length_t>(j);
+            const glm::length_t colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = matC[rowSrc][colSrc];
         }
     }
@@ -111,16 +111,16 @@ void multiply(
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
-    const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf.getCoefficients().data());
+    const glm::dmat4x4 mat = glm::make_mat4<double>(_trf.getCoefficients().data());
 
     const auto& inCoord = _input.getCoord();
-    ::glm::dvec4 in;
+    glm::dvec4 in;
     in[0] = inCoord[0];
     in[1] = inCoord[1];
     in[2] = inCoord[2];
     in[3] = 1;
 
-    ::glm::dvec4 out          = in * mat;
+    glm::dvec4 out            = in * mat;
     std::array<double, 3> res = {{out[0], out[1], out[2]}};
     _output.setCoord(res);
 }

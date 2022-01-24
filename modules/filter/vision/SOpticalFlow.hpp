@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,10 +108,10 @@ private:
     NoMotionSignalType::sptr m_noMotionSignal;
 
     /// Stores last image.
-    ::cv::Mat m_lastGrayImg;
+    cv::Mat m_lastGrayImg;
 
     /// Stores last corners.
-    ::cv::Mat m_lastCorners;
+    cv::Mat m_lastCorners;
 
     /// Waiting time between to frames.
     unsigned int m_latency;

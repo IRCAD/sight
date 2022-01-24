@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ struct PathVisitor
      */
     PathVisitor(const std::string& path)
     {
-        ::boost::split(m_vectObj, path, ::boost::is_any_of("."));
+        boost::split(m_vectObj, path, boost::is_any_of("."));
     }
 
     /**

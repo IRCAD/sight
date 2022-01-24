@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,7 +140,7 @@ Layer::sptr IAdaptor::getLayer() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneManager* IAdaptor::getSceneManager()
+Ogre::SceneManager* IAdaptor::getSceneManager()
 {
     return m_renderService.lock()->getSceneManager(m_layerID);
 }

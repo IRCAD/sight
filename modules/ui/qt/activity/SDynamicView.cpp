@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -443,7 +443,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
             }
 
             submatch.replace(0, 1, "!");
-            ::boost::algorithm::replace_all(newTabInfo, submatch, tabInfoSeshat);
+            boost::algorithm::replace_all(newTabInfo, submatch, tabInfoSeshat);
         }
 
         tabInfo = newTabInfo;

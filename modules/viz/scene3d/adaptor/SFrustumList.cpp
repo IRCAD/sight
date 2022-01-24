@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,7 +118,7 @@ service::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 
 void SFrustumList::updating()
 {
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_sceneNode = this->getTransformNode(rootSceneNode);
     m_sceneNode->attachObject(m_frustumList.front());
 
@@ -153,9 +153,9 @@ void SFrustumList::addFrustum()
     //Get camera parameters
     const auto cameraData = m_camera.lock();
 
-    ::Ogre::Camera* ogreCamera =
+    Ogre::Camera* ogreCamera =
         this->getSceneManager()->createCamera(
-            ::Ogre::String(
+            Ogre::String(
                 this->getID() + "_camera"
                 + std::to_string(m_currentCamIndex)
             )
@@ -178,12 +178,12 @@ void SFrustumList::addFrustum()
     // Set data to camera
     const float width  = static_cast<float>(cameraData->getWidth());
     const float height = static_cast<float>(cameraData->getHeight());
-    ::Ogre::Matrix4 m  =
+    Ogre::Matrix4 m    =
         sight::viz::scene3d::helper::Camera::computeProjectionMatrix(*cameraData, width, height, m_near, m_far);
     ogreCamera->setCustomProjectionMatrix(true, m);
 
     // Set position
-    ::Ogre::Affine3 ogreMat;
+    Ogre::Affine3 ogreMat;
     {
         const auto transform = m_transform.lock();
 
@@ -191,19 +191,19 @@ void SFrustumList::addFrustum()
         {
             for(size_t ct = 0 ; ct < 4 ; ct++)
             {
-                ogreMat[ct][lt] = static_cast< ::Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMat[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
             }
         }
     }
 
     // Decompose the matrix
-    ::Ogre::Vector3 position;
-    ::Ogre::Vector3 scale;
-    ::Ogre::Quaternion orientation;
+    Ogre::Vector3 position;
+    Ogre::Vector3 scale;
+    Ogre::Quaternion orientation;
     ogreMat.decomposition(position, scale, orientation);
 
-    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
-    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    const Ogre::Quaternion rotateX(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotateZ(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
     orientation = orientation * rotateZ * rotateX;
 
     ogreCamera->setOrientation(orientation);

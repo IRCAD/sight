@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,11 +39,11 @@ class ResizeListener;
 /**
  * @brief Class used to display overlay text.
  *
- * This class inherits from '::Ogre::MovableObject' so it can be attached to 3D object and follow them around.
+ * This class inherits from 'Ogre::MovableObject' so it can be attached to 3D object and follow them around.
  * It can also be displayed in 2D if not attached to anything and it's position can be set and updated through
  * the 'setPosition' method.
  */
-class VIZ_SCENE3D_CLASS_API Text : public ::Ogre::MovableObject
+class VIZ_SCENE3D_CLASS_API Text : public Ogre::MovableObject
 {
 public:
 
@@ -60,12 +60,12 @@ public:
      */
     static VIZ_SCENE3D_API Text* New(
         const std::string& _id,
-        ::Ogre::SceneManager* _sm,
-        ::Ogre::OverlayContainer* _parent,
+        Ogre::SceneManager* _sm,
+        Ogre::OverlayContainer* _parent,
         const std::string& _fontSource,
         size_t _fontSize,
         float _fontResolution,
-        ::Ogre::Camera* _cam
+        Ogre::Camera* _cam
     );
 
     /**
@@ -80,10 +80,10 @@ public:
     [[deprecated("Text objects manage their own font now.")]] static VIZ_SCENE3D_API
     Text* New(
         const std::string& _id,
-        ::Ogre::SceneManager* _sm,
-        ::Ogre::OverlayContainer* _parent,
-        ::Ogre::FontPtr _font,
-        ::Ogre::Camera* _cam = nullptr
+        Ogre::SceneManager* _sm,
+        Ogre::OverlayContainer* _parent,
+        Ogre::FontPtr _font,
+        Ogre::Camera* _cam = nullptr
     );
 
     /// Constructors, instantiates the overlay text element.
@@ -111,36 +111,36 @@ public:
     void setDotsPerInch(float _dpi);
 
     /// Text color, white by default.
-    VIZ_SCENE3D_API void setTextColor(const ::Ogre::ColourValue& _color);
+    VIZ_SCENE3D_API void setTextColor(const Ogre::ColourValue& _color);
 
-    /// Set the visibility of the text. Beware this hides ::Ogre::MovableObject::setVisible() which is not virtual !
+    /// Set the visibility of the text. Beware this hides Ogre::MovableObject::setVisible() which is not virtual !
     VIZ_SCENE3D_API void setVisible(bool _visible);
 
     /// Aligns the text by setting the x and y coordinates' origin.
     VIZ_SCENE3D_API void setTextAlignment(
-        const ::Ogre::TextAreaOverlayElement::Alignment _hAlignement,
-        const ::Ogre::GuiVerticalAlignment _vAlignment = ::Ogre::GVA_TOP
+        const Ogre::TextAreaOverlayElement::Alignment _hAlignement,
+        const Ogre::GuiVerticalAlignment _vAlignment = Ogre::GVA_TOP
     );
 
     /// Returns this MovableObject's type as a string.
-    VIZ_SCENE3D_API const ::Ogre::String& getMovableType() const override;
+    VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /// MovableObject interface. Unused here, always returns an empty bounding box.
-    VIZ_SCENE3D_API const ::Ogre::AxisAlignedBox& getBoundingBox() const override;
+    VIZ_SCENE3D_API const Ogre::AxisAlignedBox& getBoundingBox() const override;
 
     /// MovableObject interface. Unused here, always returns 0.
-    VIZ_SCENE3D_API ::Ogre::Real getBoundingRadius() const override;
+    VIZ_SCENE3D_API Ogre::Real getBoundingRadius() const override;
 
     /**
      * @brief function called before rendering a frame
      *
      * We use it to update the text's position from its parent node (if it has one).
      */
-    VIZ_SCENE3D_API void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
+    VIZ_SCENE3D_API void _updateRenderQueue(Ogre::RenderQueue* _queue) override;
 
     /// MovableObject interface. Not used here.
     VIZ_SCENE3D_API virtual void visitRenderables(
-        ::Ogre::Renderable::Visitor* _visitor,
+        Ogre::Renderable::Visitor* _visitor,
         bool _debugRenderables
     ) override;
 
@@ -149,38 +149,38 @@ private:
     friend class ResizeListener;
 
     /// Sets the font to be used for rendering. Updates the text's material.
-    void setFont(::Ogre::FontPtr _font);
+    void setFont(Ogre::FontPtr _font);
 
     /// Recomputes the text height and position when the viewport is resized.
     void resize();
 
     /// Viewport in which the parent node is displayed, used to compute its projection onto the screen.
-    ::Ogre::Camera* m_camera {nullptr};
+    Ogre::Camera* m_camera {nullptr};
 
     /// Overlay element displaying the text.
-    ::Ogre::TextAreaOverlayElement* m_overlayText {nullptr};
+    Ogre::TextAreaOverlayElement* m_overlayText {nullptr};
 
     /// Infinite bounding box returned by the 'getBoundingBox' method.
     /// This allows to be always updated, otherwise the text can get stuck against the viewport edges.
-    const ::Ogre::AxisAlignedBox m_bb {::Ogre::AxisAlignedBox::EXTENT_INFINITE};
+    const Ogre::AxisAlignedBox m_bb {Ogre::AxisAlignedBox::EXTENT_INFINITE};
 
     /// Container holding the text.
-    ::Ogre::OverlayContainer* m_parentContainer {nullptr};
+    Ogre::OverlayContainer* m_parentContainer {nullptr};
 
     /// Font used to display the text.
-    ::Ogre::FontPtr m_font;
+    Ogre::FontPtr m_font;
 
     /// The text's height in pixels. Computed using the font size and screen dpi.
     float m_heightInPixels {0.f};
 
     /// Current position not taking alignemnt into account.
-    ::Ogre::Vector2 m_position {0.f, 0.f};
+    Ogre::Vector2 m_position {0.f, 0.f};
 
     /// Listens to when the viewport dimension are changed. Resizes the text.
     ResizeListener* m_listener {nullptr};
 
     /// Color of the displayed text.
-    ::Ogre::ColourValue m_textColor {1.f, 1.f, 1.f, 1.f};
+    Ogre::ColourValue m_textColor {1.f, 1.f, 1.f, 1.f};
 };
 
 } // namespace sight::viz::scene3d

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -289,7 +289,7 @@ void Matrix4Test::glmGetterSetterTest()
                        .13, 0.1, -0.1, 0.2
     };
 
-    glmMat = ::glm::make_mat4<double>(coefs2);
+    glmMat = glm::make_mat4<double>(coefs2);
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::setTF3DFromMatrix");

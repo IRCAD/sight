@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include <data/Matrix4.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <viz/scene3d/Layer.hpp>
 #include <viz/scene3d/Material.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <OGRE/OgreCamera.h>
 
@@ -75,11 +75,11 @@ void SOrientationMarker::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
     m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     // Sets the material
     m_material = data::Material::New();
@@ -121,7 +121,7 @@ void SOrientationMarker::updating()
 void SOrientationMarker::updateCameraMatrix()
 {
     // Copy orientation matrix to Ogre.
-    ::Ogre::Matrix3 ogreMatrix;
+    Ogre::Matrix3 ogreMatrix;
     {
         const auto transform = m_matrix.lock();
 
@@ -130,19 +130,19 @@ void SOrientationMarker::updateCameraMatrix()
         {
             for(size_t ct = 0 ; ct < 3 ; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast< ::Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
             }
         }
     }
 
     // Get the transformation as sceneNode.
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
 
     // Convert to quaterion.
-    ::Ogre::Quaternion orientation(ogreMatrix);
+    Ogre::Quaternion orientation(ogreMatrix);
 
-    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotateX(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
 
     // Reset the camera position & orientation, since s_MATRIX_IN is a global transform.
     transformNode->setPosition(0, 0, 0);

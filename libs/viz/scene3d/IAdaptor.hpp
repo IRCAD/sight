@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,7 +124,7 @@ protected:
      * @brief Gets the Ogre SceneManager
      * @return Ogre default scene manager
      */
-    VIZ_SCENE3D_API ::Ogre::SceneManager* getSceneManager();
+    VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager();
 
     /// Asks the render service to update rendering.
     VIZ_SCENE3D_API virtual void requestRender();
@@ -142,7 +142,7 @@ protected:
     VIZ_SCENE3D_API virtual void setVisible(bool _visible);
 
     /// Defines the layer ID:
-    ::std::string m_layerID;
+    std::string m_layerID;
 
     /// Contqins the t=render service which this adaptor is attached.
     viz::scene3d::SRender::wptr m_renderService;

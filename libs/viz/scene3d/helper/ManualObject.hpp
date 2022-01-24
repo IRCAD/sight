@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,8 +37,8 @@ class ManualObject
 public:
 
     /**
-     * @brief createCylinder create a cylinder in a ::Ogre::ManualObject along the x axis
-     * @param _object the ::Ogre::ManualObject used to store the cylinder
+     * @brief createCylinder create a cylinder in a Ogre::ManualObject along the x axis
+     * @param _object the Ogre::ManualObject used to store the cylinder
      * @param _material the material used to create the cylinder
      * @param _color the cylinder's color
      * @param _radius the cylinder's radius
@@ -46,17 +46,17 @@ public:
      * @param _sample the number of samples used to create the cylinder
      */
     VIZ_SCENE3D_API static void createCylinder(
-        ::Ogre::ManualObject* _object,
+        Ogre::ManualObject* _object,
         const std::string& _material,
-        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _radius                     = 1.f,
-        float _length                     = 100.f,
-        unsigned int _sample              = 64
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _radius                   = 1.f,
+        float _length                   = 100.f,
+        unsigned int _sample            = 64
     );
 
     /**
-     * @brief createCone create a cone in a ::Ogre::ManualObject along the x axis
-     * @param _object the ::Ogre::ManualObject used to store the cone
+     * @brief createCone create a cone in a Ogre::ManualObject along the x axis
+     * @param _object the Ogre::ManualObject used to store the cone
      * @param _material the material used to create the cone
      * @param _color the cone's color
      * @param _radius the cone's radius
@@ -64,42 +64,42 @@ public:
      * @param _sample the number of samples used to create the cone
      */
     VIZ_SCENE3D_API static void createCone(
-        ::Ogre::ManualObject* _object,
+        Ogre::ManualObject* _object,
         const std::string& _material,
-        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _radius                     = 1.f,
-        float _length                     = 100.f,
-        unsigned int _sample              = 64
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _radius                   = 1.f,
+        float _length                   = 100.f,
+        unsigned int _sample            = 64
     );
 
     /**
-     * @brief createCube create a cube in a ::Ogre::ManualObject centered in the center of the cube
-     * @param _object the ::Ogre::ManualObject used to store the cube
+     * @brief createCube create a cube in a Ogre::ManualObject centered in the center of the cube
+     * @param _object the Ogre::ManualObject used to store the cube
      * @param _material the material used to create the cube
      * @param _color the cube's color
      * @param _length the cube's length
      */
     VIZ_SCENE3D_API static void createCube(
-        ::Ogre::ManualObject* _object,
+        Ogre::ManualObject* _object,
         const std::string& _material,
-        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _length                     = 100.f
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _length                   = 100.f
     );
 
     /**
-     * @brief createSphere create a sphere in a ::Ogre::ManualObject centered in the center of the sphere
-     * @param _object the ::Ogre::ManualObject used to store the sphere
+     * @brief createSphere create a sphere in a Ogre::ManualObject centered in the center of the sphere
+     * @param _object the Ogre::ManualObject used to store the sphere
      * @param _material the material used to create the sphere
      * @param _color the sphere's color
      * @param _radius the sphere's radius
      * @param _sample the number of samples used to create the sphere
      */
     VIZ_SCENE3D_API static void createSphere(
-        ::Ogre::ManualObject* _object,
+        Ogre::ManualObject* _object,
         const std::string& _material,
-        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _radius                     = 100.f,
-        unsigned int _sample              = 50
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _radius                   = 100.f,
+        unsigned int _sample            = 50
     );
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
     typedef core::HiResClock::HiResClockType TimestampType;
     typedef std::map<TimestampType, SPTR(data::timeline::Buffer)> TimelineType;
     typedef std::pair<TimestampType, SPTR(data::timeline::Buffer)> BufferPairType;
-    typedef ::boost::pool<> PoolType;
+    typedef boost::pool<> PoolType;
 
     /**
      * @brief Constructor

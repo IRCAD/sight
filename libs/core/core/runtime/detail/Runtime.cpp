@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/IPlugin.hpp"
 #include "core/runtime/Profile.hpp"
+
 #include <core/tools/Os.hpp>
 
 #include <boost/dll.hpp>
@@ -59,7 +60,7 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 Runtime::Runtime()
 {
     // The lib location is 'SIGHT_DIR/lib/sight_core.dll'
-    m_workingPath = ::boost::dll::this_line_location().parent_path().parent_path().string();
+    m_workingPath = boost::dll::this_line_location().parent_path().parent_path().string();
 }
 
 //------------------------------------------------------------------------------

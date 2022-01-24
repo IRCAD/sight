@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,11 +59,11 @@ public:
      */
     CORE_API static xmlNodePtr runningModulesToXml();
 
-    CORE_API static ::boost::property_tree::ptree toPropertyTree(
+    CORE_API static boost::property_tree::ptree toPropertyTree(
         core::runtime::ConfigurationElement::csptr _cfgElement
     );
 
-    CORE_API static core::runtime::ConfigurationElement::sptr fromPropertyTree(::boost::property_tree::ptree pt);
+    CORE_API static core::runtime::ConfigurationElement::sptr fromPropertyTree(boost::property_tree::ptree pt);
 
 private:
 

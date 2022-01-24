@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,7 +116,7 @@ data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
     data::Image::Spacing roundSpacing;
     for(size_t i = 0 ; i < 3 ; ++i)
     {
-        data::Image::Spacing::value_type roundVal = ::boost::math::round(_spacing[i] * 100.) / 100.;
+        data::Image::Spacing::value_type roundVal = boost::math::round(_spacing[i] * 100.) / 100.;
         roundSpacing[i] = roundVal;
     }
 
@@ -128,7 +128,7 @@ data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
 std::string formatTime(const std::string& _time)
 {
     std::string formatTime = _time;
-    ::boost::algorithm::trim(formatTime);
+    boost::algorithm::trim(formatTime);
 
     const std::string regexHour = "[0-9]{2}";
     const std::string regexMin  = "[0-9]{2}";

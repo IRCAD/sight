@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -149,12 +149,12 @@ void IFrameLayoutManager::initialize(ConfigurationType configuration)
         if(minSize.at(0)->hasAttribute("width"))
         {
             m_frameInfo.m_minSize.first =
-                ::boost::lexical_cast<int>(minSize.at(0)->getExistingAttributeValue("width"));
+                boost::lexical_cast<int>(minSize.at(0)->getExistingAttributeValue("width"));
         }
 
         if(minSize.at(0)->hasAttribute("height"))
         {
-            m_frameInfo.m_minSize.second = ::boost::lexical_cast<int>(
+            m_frameInfo.m_minSize.second = boost::lexical_cast<int>(
                 minSize.at(0)->getExistingAttributeValue(
                     "height"
                 )

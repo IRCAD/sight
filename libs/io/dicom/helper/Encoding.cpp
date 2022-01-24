@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,7 +138,7 @@ std::string Encoding::convertString(
 
     // Retrieve DICOM Specific Character Set List
     std::vector<std::string> definedTermList;
-    ::boost::split(definedTermList, definedCharsetTerm, ::boost::is_any_of("\\"));
+    boost::split(definedTermList, definedCharsetTerm, boost::is_any_of("\\"));
 
     // Only one charset without code extension techniques is used
     if(definedCharsetTerm.empty() || definedTermList.size() == 1)
@@ -157,7 +157,7 @@ std::string Encoding::convertString(
 
         // Check for characters ESC delimiter
         std::vector<std::string> sequenceList;
-        ::boost::split(sequenceList, source, ::boost::is_any_of("\033"));
+        boost::split(sequenceList, source, boost::is_any_of("\033"));
 
         std::string result;
 
@@ -230,7 +230,7 @@ std::string Encoding::convertStringWithoutCodeExtensions(
     }
     else
     {
-        return ::boost::locale::conv::to_utf<char>(source, charset);
+        return boost::locale::conv::to_utf<char>(source, charset);
     }
 }
 
@@ -322,7 +322,7 @@ std::string Encoding::convertSequenceWithCodeExtensions(
     }
     else
     {
-        return ::boost::locale::conv::to_utf<char>(sequence.substr(escapeSize), definedTermAndCharset.second);
+        return boost::locale::conv::to_utf<char>(sequence.substr(escapeSize), definedTermAndCharset.second);
     }
 }
 

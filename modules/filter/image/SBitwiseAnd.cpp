@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,9 +60,9 @@ struct AndImageFilter
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->numDimensions() == dimension);
 
-        typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
-        typedef typename ::itk::Image<MASK_PIXELTYPE, dimension> MaskImageType;
-        typedef typename ::itk::Image<PIXELTYPE, dimension> OutputImageType;
+        typedef typename itk::Image<PIXELTYPE, dimension> InputImageType;
+        typedef typename itk::Image<MASK_PIXELTYPE, dimension> MaskImageType;
+        typedef typename itk::Image<PIXELTYPE, dimension> OutputImageType;
 
         typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(inputImage);
         typename MaskImageType::Pointer itkMaskImage   = io::itk::moveToItk<MaskImageType>(mask);
@@ -84,7 +84,7 @@ struct AndImageFilter
 
         typename InputImageType::Pointer itkMaskImageCasted = rescaler->GetOutput();
 
-        typedef typename ::itk::AndImageFilter<InputImageType, InputImageType, OutputImageType> ITKFilterType;
+        typedef typename itk::AndImageFilter<InputImageType, InputImageType, OutputImageType> ITKFilterType;
         typename ITKFilterType::Pointer filter = ITKFilterType::New();
         filter->SetInput1(itkInputImage);
         filter->SetInput2(itkMaskImageCasted);

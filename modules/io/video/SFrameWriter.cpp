@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,7 +176,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 
             const std::uint8_t* imageBuffer = &buffer->getElement(0);
 
-            ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*) imageBuffer, ::cv::Mat::AUTO_STEP);
+            cv::Mat image(cv::Size(width, height), m_imageType, (void*) imageBuffer, cv::Mat::AUTO_STEP);
 
             const size_t time = static_cast<size_t>(timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
@@ -185,20 +185,20 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
             if(image.type() == CV_8UC3)
             {
                 // convert the read image from BGR to RGB
-                ::cv::Mat imageRgb;
-                ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGR2RGB);
-                ::cv::imwrite(path.string(), imageRgb);
+                cv::Mat imageRgb;
+                cv::cvtColor(image, imageRgb, cv::COLOR_BGR2RGB);
+                cv::imwrite(path.string(), imageRgb);
             }
             else if(image.type() == CV_8UC4)
             {
                 // convert the read image from BGRA to RGBA
-                ::cv::Mat imageRgb;
-                ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGRA2RGBA);
-                ::cv::imwrite(path.string(), imageRgb);
+                cv::Mat imageRgb;
+                cv::cvtColor(image, imageRgb, cv::COLOR_BGRA2RGBA);
+                cv::imwrite(path.string(), imageRgb);
             }
             else
             {
-                ::cv::imwrite(path.string(), image);
+                cv::imwrite(path.string(), image);
             }
         }
     }

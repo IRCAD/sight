@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,9 +30,9 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-#include <glm/glm.hpp>
-
 #include <service/macros.hpp>
+
+#include <glm/glm.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -336,8 +336,8 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                 p.z = static_cast<float>(pz);
 
                 // Transform point to the rgb sensor world
-                const ::glm::dvec4 point(px, py, pz, 1.0);
-                const ::glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
+                const glm::dvec4 point(px, py, pz, 1.0);
+                const glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
 
                 // project point to the rgb image
                 size_t rgbPx, rgbPy;

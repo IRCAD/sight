@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ public:
     VIZ_SCENE3D_API virtual ~IParameter() noexcept;
 
     /// Set the shaderType by passing the value of the ShaderEnumType of this adaptor.
-    VIZ_SCENE3D_API void setShaderType(::Ogre::GpuProgramType shaderType);
+    VIZ_SCENE3D_API void setShaderType(Ogre::GpuProgramType shaderType);
 
     /// Set the name of the parameter m_paramName.
     VIZ_SCENE3D_API void setParamName(const std::string& paramName);
@@ -90,10 +90,10 @@ protected:
     VIZ_SCENE3D_API void stopping() override;
 
     /// Set the parameter for a given technique
-    VIZ_SCENE3D_API virtual bool setParameter(::Ogre::Technique& technique);
+    VIZ_SCENE3D_API virtual bool setParameter(Ogre::Technique& technique);
 
     /// Set the material to update
-    VIZ_SCENE3D_API void setMaterial(const ::Ogre::MaterialPtr& material);
+    VIZ_SCENE3D_API void setMaterial(const Ogre::MaterialPtr& material);
 
     /// Connect the input parameter modified signal to this service update slot.
     VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -131,11 +131,11 @@ private:
     /// Parameter name
     std::string m_defaultValue;
     /// Stores the value of the enum representing the shader's type.
-    ::Ogre::GpuProgramType m_shaderType;
+    Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material
-    ::Ogre::MaterialPtr m_material;
+    Ogre::MaterialPtr m_material;
     /// Pointer on a texture if the parameter is an image
-    ::Ogre::TexturePtr m_texture;
+    Ogre::TexturePtr m_texture;
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty;
 

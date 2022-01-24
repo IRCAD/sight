@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
      */
     IO_DICOM_API SpatialFiducials(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::Image::sptr& series,
         const core::log::Logger::sptr& logger = nullptr,
@@ -68,12 +68,12 @@ public:
     /**
      * @brief Read image landmarks from dataset
      */
-    void readLandmark(const ::gdcm::DataSet& fiducialDataset);
+    void readLandmark(const gdcm::DataSet& fiducialDataset);
 
     /**
      * @brief Read image distances from dataset
      */
-    void readDistance(const ::gdcm::DataSet& fiducialDataset);
+    void readDistance(const gdcm::DataSet& fiducialDataset);
 };
 
 } // namespace ie

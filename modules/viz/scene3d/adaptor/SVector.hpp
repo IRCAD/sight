@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,13 +126,13 @@ private:
     std::string m_color {"#FFFFFF"};
 
     /// Contains the line along the z axis.
-    ::Ogre::ManualObject* m_line {nullptr};
+    Ogre::ManualObject* m_line {nullptr};
 
     /// Contains the arrow of the z axis.
-    ::Ogre::ManualObject* m_cone {nullptr};
+    Ogre::ManualObject* m_cone {nullptr};
 
     /// Contains the scene node where all of our manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Contains the material used to draw the vector.
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};

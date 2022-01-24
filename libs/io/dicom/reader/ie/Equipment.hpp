@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
      */
     IO_DICOM_API Equipment(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::Equipment::sptr& equipment,
         const core::log::Logger::sptr& logger = nullptr,

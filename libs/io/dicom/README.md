@@ -43,7 +43,7 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **SegmentedPropertyRegistry**: defines a registry which links a structure type to an entry.
 - **SOPClass**: contains tools (functions) to manage SOPClass.
 - **StructuredReport**: contains helpers for DICOM Structured Reporting (SR).
-- **tags**: parses group and element strings and return a ::gdcm::Tag instance
+- **tags**: parses group and element strings and return a gdcm::Tag instance
 
 ## How to use it
 

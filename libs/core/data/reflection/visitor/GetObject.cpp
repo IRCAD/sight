@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -224,7 +224,7 @@ void GetObject::visit(const camp::ArrayProperty& property)
         SIGHT_DEBUG("Ok ArrayProperty name =" << name);
         std::string key = this->getNextPropertyName();
 
-        size_t index = ::boost::lexical_cast<size_t>(key);
+        size_t index = boost::lexical_cast<size_t>(key);
 
         m_pathVisitor->addObject(key);
 

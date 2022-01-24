@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ void SliceThicknessModifierTest::simpleApplication()
     // Check that the computed value has been added to the DicomSeries
     const double delta          = 1e-8;
     const double sliceThickness =
-        ::boost::lexical_cast<double>(dicomSeries->getComputedTagValues().at("SliceThickness"));
+        boost::lexical_cast<double>(dicomSeries->getComputedTagValues().at("SliceThickness"));
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8, sliceThickness, delta);
 }
 

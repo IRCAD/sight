@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,9 +62,9 @@ DicomCodedAttribute::DicomCodedAttributeVectorType DicomCodedAttribute::convertE
 
 //------------------------------------------------------------------------------
 
-::gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCodedAttribute(const std::string& entry)
+gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCodedAttribute(const std::string& entry)
 {
-    ::gdcm::Segment::BasicCodedEntryVector result;
+    gdcm::Segment::BasicCodedEntryVector result;
 
     DicomCodedAttributeVectorType codedAttributes = convertEntryToCodedAttribute(entry);
     for(const auto& attribute : codedAttributes)

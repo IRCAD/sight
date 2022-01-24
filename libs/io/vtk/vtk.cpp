@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -323,7 +323,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 
 // ------------------------------------------------------------------------------
 
-void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage)
+void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _pDataImage)
 {
     const auto dumpLock = _pDataImage->lock();
 

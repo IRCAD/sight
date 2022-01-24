@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,33 +130,33 @@ void SVideoWriter::writeBuffer(int width, int height, CSPTR(data::FrameTL::Buffe
     SIGHT_ASSERT("OpenCV video writer not initialized", m_writer);
     const std::uint8_t* imageBuffer = &buffer->getElement(0);
 
-    const ::cv::Mat image(
-        ::cv::Size(width, height),
+    const cv::Mat image(
+        cv::Size(width, height),
         m_imageType, const_cast<std::uint8_t*>(imageBuffer),
-        ::cv::Mat::AUTO_STEP
+        cv::Mat::AUTO_STEP
     );
     if(m_imageType == CV_16UC1)
     {
         // Convert the image to a RGB image
-        ::cv::Mat img8bit;
-        ::cv::Mat imgColor;
+        cv::Mat img8bit;
+        cv::Mat imgColor;
         image.convertTo(img8bit, CV_8UC1, 1 / 100.0);
-        ::cv::cvtColor(img8bit, imgColor, ::cv::COLOR_GRAY2RGB);
+        cv::cvtColor(img8bit, imgColor, cv::COLOR_GRAY2RGB);
 
         m_writer->write(imgColor);
     }
     else if(m_imageType == CV_8UC3)
     {
         // convert the image from RGB to BGR
-        ::cv::Mat imageBGR;
-        ::cv::cvtColor(image, imageBGR, ::cv::COLOR_RGB2BGR);
+        cv::Mat imageBGR;
+        cv::cvtColor(image, imageBGR, cv::COLOR_RGB2BGR);
         m_writer->write(imageBGR);
     }
     else if(m_imageType == CV_8UC4)
     {
         // convert the image from RGBA to BGR
-        ::cv::Mat imageBGR;
-        ::cv::cvtColor(image, imageBGR, ::cv::COLOR_RGBA2BGR);
+        cv::Mat imageBGR;
+        cv::cvtColor(image, imageBGR, cv::COLOR_RGBA2BGR);
         m_writer->write(imageBGR);
     }
     else
@@ -237,16 +237,16 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
                 }
 
                 m_writer =
-                    std::make_unique< ::cv::VideoWriter>(
+                    std::make_unique<cv::VideoWriter>(
                         path.string(),
-                        ::cv::VideoWriter::fourcc(
+                        cv::VideoWriter::fourcc(
                             codec[0],
                             codec[1],
                             codec[2],
                             codec[3]
                         ),
                         fps,
-                        ::cv::Size(width, height),
+                        cv::Size(width, height),
                         true
                     );
 

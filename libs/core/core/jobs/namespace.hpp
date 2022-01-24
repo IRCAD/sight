@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@
                     break;
                 }
 
-                ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(1000) );
+                boost::this_thread::sleep_for( boost::chrono::milliseconds(1000) );
 
                 runningJob.doneWork(i);
             }

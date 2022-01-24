@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ class IO_IGTL_CLASS_API MessageFactory
 {
 public:
 
-    typedef ::boost::function< ::igtl::MessageBase::Pointer()> CreatorType;
+    typedef boost::function< ::igtl::MessageBase::Pointer()> CreatorType;
     typedef std::map<std::string, CreatorType> CreatorContainer;
 
     /**

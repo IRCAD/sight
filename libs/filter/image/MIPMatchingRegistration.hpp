@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,17 +110,17 @@ private:
         Z = 2
     };
 
-    using Image3DType    = ::itk::Image<PIX, 3>;
-    using Image2DType    = ::itk::Image<float, 2>;
-    using Image3DPtrType = typename ::itk::Image<PIX, 3>::Pointer;
-    using Image2DPtrType = typename ::itk::Image<float, 2>::Pointer;
+    using Image3DType    = itk::Image<PIX, 3>;
+    using Image2DType    = itk::Image<float, 2>;
+    using Image3DPtrType = typename itk::Image<PIX, 3>::Pointer;
+    using Image2DPtrType = typename itk::Image<float, 2>::Pointer;
 
-    using MIPFilterType           = ::itk::MaximumProjectionImageFilter<Image3DType, Image2DType>;
-    using CorrelationFilterType   = ::itk::FFTNormalizedCorrelationImageFilter<Image2DType, Image2DType>;
-    using ExtractFilter3Dto2DType = ::itk::RegionOfInterestImageFilter<Image3DType, Image2DType>;
-    using ExtractFilter2Dto2DType = ::itk::RegionOfInterestImageFilter<Image2DType, Image2DType>;
-    using FlipFilterType          = ::itk::FlipImageFilter<Image3DType>;
-    using MinMaxCalculatorType    = ::itk::MinimumMaximumImageCalculator<Image2DType>;
+    using MIPFilterType           = itk::MaximumProjectionImageFilter<Image3DType, Image2DType>;
+    using CorrelationFilterType   = itk::FFTNormalizedCorrelationImageFilter<Image2DType, Image2DType>;
+    using ExtractFilter3Dto2DType = itk::RegionOfInterestImageFilter<Image3DType, Image2DType>;
+    using ExtractFilter2Dto2DType = itk::RegionOfInterestImageFilter<Image2DType, Image2DType>;
+    using FlipFilterType          = itk::FlipImageFilter<Image3DType>;
+    using MinMaxCalculatorType    = itk::MinimumMaximumImageCalculator<Image2DType>;
 
     /**
      * @brief Compute the maximum intensity projection (MIP) of an image along the specified axis.
@@ -224,7 +224,7 @@ typename MIPMatchingRegistration<PIX>::Image2DType::PointType MIPMatchingRegistr
     // origin by setting it to some arbitrary value and adding the translation vector between origins to the computed
     // registration.
     Image2DType::PointType origin(0.);
-    ::itk::Vector<Image2DType::PointValueType, 2> tOrigin = img->GetOrigin() - _template->GetOrigin();
+    itk::Vector<Image2DType::PointValueType, 2> tOrigin = img->GetOrigin() - _template->GetOrigin();
     _template->SetOrigin(origin);
     img->SetOrigin(origin);
     auto templateSize = _template->GetLargestPossibleRegion().GetSize();

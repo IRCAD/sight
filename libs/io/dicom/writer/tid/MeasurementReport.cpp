@@ -59,7 +59,7 @@ namespace tid
 //------------------------------------------------------------------------------
 
 MeasurementReport::MeasurementReport(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image
 ) :
@@ -160,7 +160,7 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
         imagingMeasurementsNode->addSubNode(idNode);
 
         // Create Tracking UID node
-        ::gdcm::UIDGenerator generator;
+        gdcm::UIDGenerator generator;
         SPTR(io::dicom::container::sr::DicomSRUIDRefNode) uidNode =
             std::make_shared<io::dicom::container::sr::DicomSRUIDRefNode>(
                 io::dicom::container::DicomCodedAttribute("112040", "DCM", "Tracking Unique Identifier"),

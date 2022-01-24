@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ void multVecMatrix(const fwMatrix4x4& matrix, const fwVec3d& source, fwVec3d& de
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
 
-    ::glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
-                       matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
-                       matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
-                       matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
+    glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
+                     matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
+                     matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
+                     matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
 
-    ::glm::dvec4 vec(source[0], source[1], source[2], 1.0);
-    ::glm::dvec4 res = mat * vec;
+    glm::dvec4 vec(source[0], source[1], source[2], 1.0);
+    glm::dvec4 res = mat * vec;
 
     dest[0] = res[0];
     dest[1] = res[1];
@@ -57,12 +57,12 @@ fwMatrix4x4 getInverse(const fwMatrix4x4& matrix)
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
 
-    ::glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
-                       matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
-                       matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
-                       matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
+    glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
+                     matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
+                     matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
+                     matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
 
-    ::glm::dmat4x4 matInv = ::glm::inverse(mat);
+    glm::dmat4x4 matInv = glm::inverse(mat);
 
     fwMatrix4x4 inverse = {matInv[0][0], matInv[1][0], matInv[2][0], matInv[3][0],
                            matInv[0][1], matInv[1][1], matInv[2][1], matInv[3][1],
@@ -124,17 +124,17 @@ fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
 
 fwMatrix4x4 operator*(const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2)
 {
-    ::glm::dmat4x4 mat1(matrix1[0][0], matrix1[1][0], matrix1[2][0], matrix1[3][0],
-                        matrix1[0][1], matrix1[1][1], matrix1[2][1], matrix1[3][1],
-                        matrix1[0][2], matrix1[1][2], matrix1[2][2], matrix1[3][2],
-                        matrix1[0][3], matrix1[1][3], matrix1[2][3], matrix1[3][3]);
+    glm::dmat4x4 mat1(matrix1[0][0], matrix1[1][0], matrix1[2][0], matrix1[3][0],
+                      matrix1[0][1], matrix1[1][1], matrix1[2][1], matrix1[3][1],
+                      matrix1[0][2], matrix1[1][2], matrix1[2][2], matrix1[3][2],
+                      matrix1[0][3], matrix1[1][3], matrix1[2][3], matrix1[3][3]);
 
-    ::glm::dmat4x4 mat2(matrix2[0][0], matrix2[1][0], matrix2[2][0], matrix2[3][0],
-                        matrix2[0][1], matrix2[1][1], matrix2[2][1], matrix2[3][1],
-                        matrix2[0][2], matrix2[1][2], matrix2[2][2], matrix2[3][2],
-                        matrix2[0][3], matrix2[1][3], matrix2[2][3], matrix2[3][3]);
+    glm::dmat4x4 mat2(matrix2[0][0], matrix2[1][0], matrix2[2][0], matrix2[3][0],
+                      matrix2[0][1], matrix2[1][1], matrix2[2][1], matrix2[3][1],
+                      matrix2[0][2], matrix2[1][2], matrix2[2][2], matrix2[3][2],
+                      matrix2[0][3], matrix2[1][3], matrix2[2][3], matrix2[3][3]);
 
-    ::glm::dmat4x4 prod = mat1 * mat2;
+    glm::dmat4x4 prod = mat1 * mat2;
 
     fwMatrix4x4 product = {prod[0][0], prod[1][0], prod[2][0], prod[3][0],
                            prod[0][1], prod[1][1], prod[2][1], prod[3][1],

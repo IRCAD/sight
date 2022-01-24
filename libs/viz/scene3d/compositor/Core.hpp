@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,9 +49,9 @@ class VIZ_SCENE3D_CLASS_API Core //TODO : Manage occlusion query
     // purposes
     //    An example of working occlusion query is used in the experimental branch
     // flavien_sg rev 76
-    //public ::Ogre::FrameListener,
-    //public ::Ogre::RenderTargetListener,
-    //public ::Ogre::RenderObjectListener
+    //public Ogre::FrameListener,
+    //public Ogre::RenderTargetListener,
+    //public Ogre::RenderObjectListener
 {
 public:
 
@@ -64,7 +64,7 @@ public:
     };
 
     /// Render queue group for surface rendering.
-    static constexpr std::uint8_t s_SURFACE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
+    static constexpr std::uint8_t s_SURFACE_RQ_GROUP_ID = Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
 
     /// Render queue group for volume rendering. Leave an extra render queue between
     /// surfaces and volumes for some effects.
@@ -73,7 +73,7 @@ public:
     typedef std::shared_ptr<Core> sptr;
 
     /// Default Compositor, one per "default" layer
-    VIZ_SCENE3D_API Core(::Ogre::Viewport* viewport);
+    VIZ_SCENE3D_API Core(Ogre::Viewport* viewport);
 
     /// Destructor of default compositor
     VIZ_SCENE3D_API ~Core();
@@ -103,9 +103,9 @@ public:
 
 private:
 
-    //virtual void notifyRenderSingleObject(::Ogre::Renderable* rend, const ::Ogre::Pass* pass,
-    //                                      const ::Ogre::AutoParamDataSource* source,
-    //                                      const ::Ogre::LightList* pLightList, bool suppressRenderStateChanges);
+    //virtual void notifyRenderSingleObject(Ogre::Renderable* rend, const Ogre::Pass* pass,
+    //                                      const Ogre::AutoParamDataSource* source,
+    //                                      const Ogre::LightList* pLightList, bool suppressRenderStateChanges);
 
     /// Set number of ping pong peels for Depth Peeling compositor
     VIZ_SCENE3D_API void setTransparencyDepthOfDepthPeeling(int depth);
@@ -133,13 +133,13 @@ private:
     transparencyTechnique m_transparencyTechnique;
 
     /// OIT used - string name
-    ::Ogre::String m_coreCompositorName;
+    Ogre::String m_coreCompositorName;
 
     /// OIT compositor instance used
-    ::Ogre::CompositorInstance* m_compositorInstance;
+    Ogre::CompositorInstance* m_compositorInstance;
 
     /// Cel shading activated
-    ::Ogre::String m_celShadingName;
+    Ogre::String m_celShadingName;
 
     StereoModeType m_stereoMode {StereoModeType::NONE};
 
@@ -147,9 +147,9 @@ private:
 
     //bool m_doOcclusionQuery;
 
-    //::Ogre::HardwareOcclusionQuery* m_OITQuery;
+    //Ogre::HardwareOcclusionQuery* m_OITQuery;
 
-    //::Ogre::HardwareOcclusionQuery* m_activeQuery;
+    //Ogre::HardwareOcclusionQuery* m_activeQuery;
 
     /// Number of peels computed for Depth Peeling or 2x Dual Depth Peeling
     int m_numPass;
@@ -161,7 +161,7 @@ private:
     //bool m_isPong;
 
     /// Viewport linked to compositor
-    ::Ogre::Viewport* m_viewport;
+    Ogre::Viewport* m_viewport;
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render

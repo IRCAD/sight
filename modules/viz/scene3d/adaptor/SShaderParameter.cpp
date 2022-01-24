@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ void SShaderParameter::starting()
     this->initialize();
 
     // Retrieves the associated material
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
+    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
         m_materialName,
         sight::viz::scene3d::RESOURCE_GROUP
     );

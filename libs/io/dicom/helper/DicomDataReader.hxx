@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,30 +56,32 @@ public:
      * definied and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static std::string getTagValue(const ::gdcm::DataSet& dataset,
-                                   const std::string& charset            = "",
-                                   const core::log::Logger::sptr& logger = nullptr)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static std::string getTagValue(
+        const gdcm::DataSet& dataset,
+        const std::string& charset            = "",
+        const core::log::Logger::sptr& logger = nullptr
+)
     {
         std::string result = "";
 
-        const ::gdcm::Tag tag(GROUP, ELEMENT);
+        const gdcm::Tag tag(GROUP, ELEMENT);
 
-        if (dataset.FindDataElement(tag))
+        if(dataset.FindDataElement(tag))
         {
-            const ::gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
+            const gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
 
-            if (!dataElement.IsEmpty()) // Can be type 2
+            if(!dataElement.IsEmpty()) // Can be type 2
             {
                 // Retrieve buffer
-                const ::gdcm::ByteValue* bv = dataElement.GetByteValue();
+                const gdcm::ByteValue* bv = dataElement.GetByteValue();
 
                 if(bv)
                 {
                     std::string buffer(bv->GetPointer(), bv->GetLength());
 
                     // Trim buffer
-                    const std::string trimmedBuffer = ::gdcm::LOComp::Trim(buffer.c_str());
+                    const std::string trimmedBuffer = gdcm::LOComp::Trim(buffer.c_str());
 
                     try
                     {
@@ -93,6 +95,7 @@ public:
                             ss << "Could not read tag " << tag << " : " << e.what();
                             logger->warning(ss.str());
                         }
+
                         result = trimmedBuffer;
                     }
                 }
@@ -113,17 +116,19 @@ public:
      * definied and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static std::string getTagValue(const std::string& buffer,
-                                   const std::string& charset            = "",
-                                   const core::log::Logger::sptr& logger = 0)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static std::string getTagValue(
+        const std::string& buffer,
+        const std::string& charset            = "",
+        const core::log::Logger::sptr& logger = 0
+)
     {
         std::string result = "";
 
-        const ::gdcm::Tag tag = ::gdcm::Attribute< GROUP, ELEMENT >::GetTag();
+        const gdcm::Tag tag = gdcm::Attribute<GROUP, ELEMENT>::GetTag();
 
         // Trim buffer
-        const std::string trimmedBuffer = ::gdcm::LOComp::Trim(buffer.c_str());
+        const std::string trimmedBuffer = gdcm::LOComp::Trim(buffer.c_str());
 
         try
         {
@@ -137,6 +142,7 @@ public:
                 ss << "Could not read tag " << tag << " : " << e.what();
                 logger->warning(ss.str());
             }
+
             result = trimmedBuffer;
         }
 
@@ -151,15 +157,15 @@ public:
      * @param[in] dataset Data set of tags.
      * @return The tag value.
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT, typename T >
-    static const T getTagValue(const ::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT, typename T>
+    static const T getTagValue(const gdcm::DataSet& dataset)
     {
-        ::gdcm::Attribute< GROUP, ELEMENT > attribute;
+        gdcm::Attribute<GROUP, ELEMENT> attribute;
         attribute.SetFromDataSet(dataset);
         return attribute.GetValue();
     }
-
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ SMesh::~SMesh() noexcept
 {
     if(m_entity)
     {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
     }
 }
@@ -152,7 +152,7 @@ void SMesh::starting()
         this->setTransformId(this->getID() + "_TF");
     }
 
-    m_meshGeometry = ::std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
+    m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
     m_meshGeometry->setDynamic(m_isDynamic);
     m_meshGeometry->setDynamicVertices(m_isDynamicVertices);
 
@@ -213,8 +213,8 @@ void SMesh::updating()
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+        Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
         m_meshGeometry->clearMesh(*sceneMgr);
     }
 
@@ -227,8 +227,8 @@ void SMesh::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
 
     this->unregisterServices();
 
@@ -262,8 +262,8 @@ void module::viz::scene3d::adaptor::SMesh::setVisible(bool _visible)
 
 void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
 {
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
 
     const size_t uiNumVertices = _mesh->numPoints();
     if(uiNumVertices == 0)
@@ -489,7 +489,7 @@ void SMesh::modifyVertices()
 
     m_meshGeometry->updateVertices(mesh.get_shared());
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     m_meshGeometry->updateR2VB(
         mesh.get_shared(),
         *sceneMgr,
@@ -523,8 +523,8 @@ void SMesh::modifyPointColors()
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+        Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
         m_meshGeometry->clearMesh(*sceneMgr);
         this->updateMesh(mesh.get_shared());
     }
@@ -557,12 +557,12 @@ void SMesh::modifyTexCoords()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::attachNode(::Ogre::MovableObject* _node)
+void SMesh::attachNode(Ogre::MovableObject* _node)
 {
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
 
-    ::Ogre::SceneNode* node = _node->getParentSceneNode();
+    Ogre::SceneNode* node = _node->getParentSceneNode();
 
     if(node != transNode)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,15 +102,15 @@ void SOpenCVIntrinsic::updating()
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point3f> > objectPoints;
+        std::vector<std::vector<cv::Point3f> > objectPoints;
 
-        std::vector< ::cv::Point3f> points;
+        std::vector<cv::Point3f> points;
         for(unsigned int y = 0 ; y < m_height - 1 ; ++y)
         {
             for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
                 points.push_back(
-                    ::cv::Point3f(
+                    cv::Point3f(
                         static_cast<float>(x) * m_squareSize,
                         static_cast<float>(y) * m_squareSize,
                         0
@@ -119,17 +119,17 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        std::vector<std::vector< ::cv::Point2f> > imagePoints;
+        std::vector<std::vector<cv::Point2f> > imagePoints;
 
         for(data::PointList::sptr capture : calInfo->getPointListContainer())
         {
-            std::vector< ::cv::Point2f> dst;
+            std::vector<cv::Point2f> dst;
 
             for(data::Point::csptr point : capture->getPoints())
             {
                 SIGHT_ASSERT("point is null", point);
                 dst.push_back(
-                    ::cv::Point2f(
+                    cv::Point2f(
                         static_cast<float>(point->getCoord()[0]),
                         static_cast<float>(point->getCoord()[1])
                     )
@@ -142,13 +142,13 @@ void SOpenCVIntrinsic::updating()
 
         data::Image::sptr img = calInfo->getImageContainer().front();
 
-        ::cv::Mat cameraMatrix;
+        cv::Mat cameraMatrix;
         std::vector<float> distCoeffs;
         std::vector<cv::Mat> rvecs;
         std::vector<cv::Mat> tvecs;
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
+        cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
-        double err = ::cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
+        double err = cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 

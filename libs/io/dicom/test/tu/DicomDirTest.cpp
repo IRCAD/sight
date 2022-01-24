@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ void DicomDirTest::readDicomDir()
 
     const std::filesystem::path path = utestData::Data::dir()
                                        / "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
-    const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+    const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",

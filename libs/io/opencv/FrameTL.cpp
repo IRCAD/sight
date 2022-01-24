@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,17 +43,17 @@ static void toCv(
 
     const auto cvType = io::opencv::Type::toCv(imageType, imageComp);
 
-    ::cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
+    cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
 
     auto buffer = static_cast<void*>(const_cast<data::FrameTL::BufferType::ElementType*>(_buffer));
     if(_copy)
     {
-        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, buffer);
+        cv::Mat mat = cv::Mat(cvSize, cvType, buffer);
         _cvImage = mat.clone();
     }
     else
     {
-        _cvImage = ::cv::Mat(cvSize, cvType, buffer);
+        _cvImage = cv::Mat(cvSize, cvType, buffer);
     }
 }
 
@@ -62,7 +62,7 @@ static void toCv(
 void FrameTL::moveToCv(
     const data::FrameTL::csptr& _timeline,
     data::FrameTL::BufferType::ElementType* _buffer,
-    ::cv::Mat& _cvImage
+    cv::Mat& _cvImage
 )
 {
     toCv(_timeline, _buffer, _cvImage, false);
@@ -75,7 +75,7 @@ const cv::Mat FrameTL::moveToCv(
     const data::FrameTL::BufferType::ElementType* _buffer
 )
 {
-    ::cv::Mat mat;
+    cv::Mat mat;
     toCv(_timeline, _buffer, mat, false);
     return mat;
 }
@@ -85,7 +85,7 @@ const cv::Mat FrameTL::moveToCv(
 void FrameTL::copyFromCv(
     const data::FrameTL::csptr& _timeline,
     data::FrameTL::BufferType::ElementType* _buffer,
-    const ::cv::Mat& _cvImage
+    const cv::Mat& _cvImage
 )
 {
     const auto prevImageType = _timeline->getType();
@@ -118,7 +118,7 @@ void FrameTL::copyFromCv(
 void FrameTL::copyToCv(
     const data::FrameTL::csptr& _timeline,
     const data::FrameTL::BufferType::ElementType* _buffer,
-    ::cv::Mat& _cvImage
+    cv::Mat& _cvImage
 )
 {
     toCv(_timeline, _buffer, _cvImage, true);

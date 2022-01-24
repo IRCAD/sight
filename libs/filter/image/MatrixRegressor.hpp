@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ class FILTER_IMAGE_CLASS_API MatrixRegressor
 {
 public:
 
-    typedef ::glm::dvec4 PointType;
+    typedef glm::dvec4 PointType;
 
     /**
      * @brief Constructor
@@ -71,7 +71,7 @@ public:
 
 private:
 
-    std::vector< ::glm::dmat4> m_matList;
+    std::vector<glm::dmat4> m_matList;
 
     std::vector<PointType> m_pointList;
 };

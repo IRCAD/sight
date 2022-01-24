@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace ie
 
 Surface::Surface(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::ModelSeries::sptr& series,
     const core::log::Logger::sptr& logger,
@@ -85,14 +85,14 @@ bool Surface::loadSegmentedPropertyRegistry(const std::filesystem::path& filepat
 void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
 {
     // Retrieve Surface Reader
-    SPTR(::gdcm::SurfaceReader) surfaceReader = std::static_pointer_cast< ::gdcm::SurfaceReader>(m_reader);
+    SPTR(gdcm::SurfaceReader) surfaceReader = std::static_pointer_cast<gdcm::SurfaceReader>(m_reader);
 
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = surfaceReader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = surfaceReader->GetFile().GetDataSet();
 
     // Segment Sequence (0x0062,0x0002) - Type 1
-    const ::gdcm::DataElement& sequenceDataElement = dataset.GetDataElement(::gdcm::Tag(0x0062, 0x0002));
-    const auto segmentSequence                     = sequenceDataElement.GetValueAsSQ();
+    const gdcm::DataElement& sequenceDataElement = dataset.GetDataElement(gdcm::Tag(0x0062, 0x0002));
+    const auto segmentSequence                   = sequenceDataElement.GetValueAsSQ();
 
     // Segment container
     const auto& segmentContainer = surfaceReader->GetSegments();
@@ -101,11 +101,11 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
     data::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
 
     // Lambda used to display reading errors
-    auto displayError = [&](const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+    auto displayError = [&](const gdcm::SmartPointer<gdcm::Segment>& segment,
                             const std::string& error)
                         {
                             std::string segmentLabel = segment->GetSegmentLabel();
-                            segmentLabel = ::gdcm::LOComp::Trim(segmentLabel.c_str());
+                            segmentLabel = gdcm::LOComp::Trim(segmentLabel.c_str());
                             const std::string msg = "Error while reading the '" + segmentLabel + "' segment: " + error;
 
                             SIGHT_WARN_IF(msg, !m_logger);
@@ -132,11 +132,11 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
         data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
 
         // Retrieve the Segment Sequence Item
-        const ::gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
+        const gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
 
         // Get the associated surface of the current segmentation
-        const auto& surfaceContainer                          = segment->GetSurfaces();
-        const ::gdcm::SmartPointer< ::gdcm::Surface>& surface = surfaceContainer[0];
+        const auto& surfaceContainer                     = segment->GetSurfaces();
+        const gdcm::SmartPointer<gdcm::Surface>& surface = surfaceContainer[0];
 
         try
         {
@@ -168,25 +168,25 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
 //------------------------------------------------------------------------------
 
 std::string getStructureTypeFromSegmentIdentification(
-    const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+    const gdcm::SmartPointer<gdcm::Segment>& segment,
     const io::dicom::helper::SegmentedPropertyRegistry& registry
 )
 {
     // Lambda used to format single entry
-    const auto format = [&](const ::gdcm::SegmentHelper::BasicCodedEntry& entry) -> std::string
+    const auto format = [&](const gdcm::SegmentHelper::BasicCodedEntry& entry) -> std::string
                         {
                             if(!entry.IsEmpty())
                             {
-                                return "(" + ::gdcm::LOComp::Trim(entry.CV.c_str())
-                                       + ";" + ::gdcm::LOComp::Trim(entry.CSD.c_str())
-                                       + ";" + ::gdcm::LOComp::Trim(entry.CM.c_str()) + ")";
+                                return "(" + gdcm::LOComp::Trim(entry.CV.c_str())
+                                       + ";" + gdcm::LOComp::Trim(entry.CSD.c_str())
+                                       + ";" + gdcm::LOComp::Trim(entry.CM.c_str()) + ")";
                             }
 
                             return "";
                         };
 
     // Lambda used to format multiple entries
-    const auto formatVector = [&](const std::vector< ::gdcm::SegmentHelper::BasicCodedEntry>& entries) -> std::string
+    const auto formatVector = [&](const std::vector<gdcm::SegmentHelper::BasicCodedEntry>& entries) -> std::string
                               {
                                   std::string result;
 
@@ -212,21 +212,21 @@ std::string getStructureTypeFromSegmentIdentification(
 
 void Surface::readSurfaceSegmentationModule(
     const data::Reconstruction::sptr& reconstruction,
-    const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
-    const ::gdcm::Item& segmentItem
+    const gdcm::SmartPointer<gdcm::Segment>& segment,
+    const gdcm::Item& segmentItem
 )
 {
     // Retrieve segment's dataset
-    const ::gdcm::DataSet& segmentDataset = segmentItem.GetNestedDataSet();
+    const gdcm::DataSet& segmentDataset = segmentItem.GetNestedDataSet();
 
     // Organ Name - Segment Label (0x0062,0x0005) - Type 1
     std::string organName = segment->GetSegmentLabel();
-    organName = ::gdcm::LOComp::Trim(organName.c_str());
+    organName = gdcm::LOComp::Trim(organName.c_str());
     reconstruction->setOrganName(organName);
 
     // Structure Type from Private Tag (0x5649,0x1000)
-    const ::gdcm::Tag structureTypeTag(0x5649, 0x1000);
-    auto privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(structureTypeTag).c_str());
+    const gdcm::Tag structureTypeTag(0x5649, 0x1000);
+    auto privateCreator = gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(structureTypeTag).c_str());
     if(segmentDataset.FindDataElement(structureTypeTag))
     {
         const auto structureType = io::dicom::helper::DicomDataReader::getTagValue<0x5649, 0x1000>(segmentDataset);
@@ -250,11 +250,11 @@ void Surface::readSurfaceSegmentationModule(
     }
 
     // Computed Mask Volume (0x5649, 0x1001)
-    const ::gdcm::Tag computedMaskVolumeTag(0x5649, 0x1001);
-    privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
+    const gdcm::Tag computedMaskVolumeTag(0x5649, 0x1001);
+    privateCreator = gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
     if(segmentDataset.FindDataElement(computedMaskVolumeTag))
     {
-        ::gdcm::Attribute<0x5649, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1> attribute;
+        gdcm::Attribute<0x5649, 0x1001, gdcm::VR::OD, gdcm::VM::VM1> attribute;
         attribute.SetFromDataSet(segmentDataset);
         const double volume = attribute.GetValue();
         reconstruction->setComputedMaskVolume(volume);
@@ -269,7 +269,7 @@ void Surface::readSurfaceSegmentationModule(
 
 void Surface::readSurfaceMeshModule(
     const data::Reconstruction::sptr& reconstruction,
-    const ::gdcm::SmartPointer< ::gdcm::Surface>& surface
+    const gdcm::SmartPointer<gdcm::Surface>& surface
 )
 {
     // Create material
@@ -277,15 +277,15 @@ void Surface::readSurfaceMeshModule(
 
     // Convert CIE Lab to RGBA
     const unsigned short* lab = surface->GetRecommendedDisplayCIELabValue();
-    ::gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + sizeof(lab) / sizeof(unsigned short));
-    std::vector<float> colorVector = ::gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1);
+    gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + sizeof(lab) / sizeof(unsigned short));
+    std::vector<float> colorVector = gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1);
 
     // Recommended Presentation Opacity
     colorVector.push_back(surface->GetRecommendedPresentationOpacity());
 
     // Adapt color to material
     data::Color::ColorArray rgba;
-    ::boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.f, 1.f);
+    boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.f, 1.f);
 
     // Set reconstruction's visibility
     const double epsilon = 1e-3;
@@ -302,20 +302,20 @@ void Surface::readSurfaceMeshModule(
     material->setRepresentationMode(representationMode);
 
     // Manifold
-    if(surface->GetManifold() == ::gdcm::Surface::YES)
+    if(surface->GetManifold() == gdcm::Surface::YES)
     {
         throw io::dicom::exception::Failed("Manifold meshes are not supported by the selected reader.");
     }
 
     // Mesh Primitive
-    ::gdcm::SmartPointer< ::gdcm::MeshPrimitive> meshPrimitive = surface->GetMeshPrimitive();
-    if(meshPrimitive->GetPrimitiveType() != ::gdcm::MeshPrimitive::TRIANGLE)
+    gdcm::SmartPointer<gdcm::MeshPrimitive> meshPrimitive = surface->GetMeshPrimitive();
+    if(meshPrimitive->GetPrimitiveType() != gdcm::MeshPrimitive::TRIANGLE)
     {
         throw io::dicom::exception::Failed("The primitive type is not supported by the selected reader.");
     }
 
     // Point Coordinates Data
-    const ::gdcm::ByteValue* pointCoordinates = surface->GetPointCoordinatesData().GetByteValue();
+    const gdcm::ByteValue* pointCoordinates = surface->GetPointCoordinatesData().GetByteValue();
     if(!pointCoordinates || !pointCoordinates->GetPointer())
     {
         throw io::dicom::exception::Failed("No point coordinates data found.");
@@ -329,8 +329,8 @@ void Surface::readSurfaceMeshModule(
     }
 
     // Surface Points Normals
-    const ::gdcm::ByteValue* normalCoordinates = surface->GetVectorCoordinateData().GetByteValue();
-    const char* normalCoordinatesPointer       = nullptr;
+    const gdcm::ByteValue* normalCoordinates = surface->GetVectorCoordinateData().GetByteValue();
+    const char* normalCoordinatesPointer     = nullptr;
     if(!surface->GetVectorCoordinateData().IsEmpty())
     {
         // Check that the surface contains normals
@@ -350,7 +350,7 @@ void Surface::readSurfaceMeshModule(
     }
 
     // Triangle Point Index List
-    const ::gdcm::ByteValue* pointIndices = meshPrimitive->GetPrimitiveData().GetByteValue();
+    const gdcm::ByteValue* pointIndices = meshPrimitive->GetPrimitiveData().GetByteValue();
     if(!pointIndices || !pointIndices->GetPointer())
     {
         throw io::dicom::exception::Failed("No triangle point index list found.");

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,7 +108,7 @@ private:
      * @brief Attachs a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(::Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* _node);
 
     /**
      * @brief Draws a line.
@@ -129,13 +129,13 @@ private:
     data::Material::sptr m_material {nullptr};
 
     /// Contains the manual object of the line.
-    ::Ogre::ManualObject* m_line {nullptr};
+    Ogre::ManualObject* m_line {nullptr};
 
     /// Defines the length of the line (in mm).
     float m_length {50.f};
 
     /// Defines the color of the line.
-    ::Ogre::ColourValue m_color;
+    Ogre::ColourValue m_color;
 
     /// Enables if the line is dashed or not.
     bool m_dashed {false};

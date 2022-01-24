@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include "modules/ui/viz/helper/Utils.hpp"
 
-#include <viz/scene3d/helper/Scene.hpp>
-
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
@@ -33,6 +31,8 @@
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/helper/Scene.hpp>
 
 #include <QColorDialog>
 #include <QHBoxLayout>
@@ -81,7 +81,7 @@ void SLightEditor::starting()
     );
 
     m_lightNameLabel = new QLabel("No light selected");
-    m_lightNameLabel->setAlignment(::Qt::AlignHCenter);
+    m_lightNameLabel->setAlignment(Qt::AlignHCenter);
 
     m_lightTypeBox = new QComboBox();
     m_lightTypeBox->addItems(
@@ -101,27 +101,27 @@ void SLightEditor::starting()
     m_specularColorBtn = new QPushButton("Specular color");
     m_specularColorBtn->setEnabled(false);
 
-    m_thetaSlider = new QSlider(::Qt::Horizontal);
+    m_thetaSlider = new QSlider(Qt::Horizontal);
     m_thetaSlider->setMinimum(0);
     m_thetaSlider->setMaximum(ILight::s_OFFSET_RANGE);
     m_thetaSlider->setEnabled(false);
 
-    m_phiSlider = new QSlider(::Qt::Horizontal);
+    m_phiSlider = new QSlider(Qt::Horizontal);
     m_phiSlider->setMinimum(0);
     m_phiSlider->setMaximum(ILight::s_OFFSET_RANGE);
     m_phiSlider->setEnabled(false);
 
-    m_xTranslation = new QSlider(::Qt::Horizontal);
+    m_xTranslation = new QSlider(Qt::Horizontal);
     m_xTranslation->setMinimum(-2000);
     m_xTranslation->setMaximum(2000);
     m_xTranslation->setEnabled(false);
 
-    m_yTranslation = new QSlider(::Qt::Horizontal);
+    m_yTranslation = new QSlider(Qt::Horizontal);
     m_yTranslation->setMinimum(-2000);
     m_yTranslation->setMaximum(2000);
     m_yTranslation->setEnabled(false);
 
-    m_zTranslation = new QSlider(::Qt::Horizontal);
+    m_zTranslation = new QSlider(Qt::Horizontal);
     m_zTranslation->setMinimum(-2000);
     m_zTranslation->setMaximum(2000);
     m_zTranslation->setEnabled(false);
@@ -245,7 +245,7 @@ void SLightEditor::stopping()
 
 void SLightEditor::onEditDiffuseColor(bool)
 {
-    ::Ogre::ColourValue newDiffuseColor = this->editColor(
+    Ogre::ColourValue newDiffuseColor = this->editColor(
         m_currentLight->getDiffuseColor(),
         "Light diffuse color"
     );
@@ -257,7 +257,7 @@ void SLightEditor::onEditDiffuseColor(bool)
 
 void SLightEditor::onEditSpecularColor(bool)
 {
-    ::Ogre::ColourValue newSpecularColor = this->editColor(
+    Ogre::ColourValue newSpecularColor = this->editColor(
         m_currentLight->getSpecularColor(),
         "Light specular color"
     );
@@ -285,7 +285,7 @@ void SLightEditor::onEditType(const QString& _type)
 {
     if(_type == ILight::s_POINT_LIGHT.c_str())
     {
-        m_currentLight->setType(::Ogre::Light::LT_POINT);
+        m_currentLight->setType(Ogre::Light::LT_POINT);
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
         if(m_currentLight->getName().find(Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
@@ -300,7 +300,7 @@ void SLightEditor::onEditType(const QString& _type)
     }
     else if(_type == ILight::s_DIRECTIONAL_LIGHT.c_str())
     {
-        m_currentLight->setType(::Ogre::Light::LT_DIRECTIONAL);
+        m_currentLight->setType(Ogre::Light::LT_DIRECTIONAL);
         if(m_currentLight->getName().find(Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_thetaSlider->setEnabled(true);
@@ -334,9 +334,9 @@ void SLightEditor::onToggleFeedback(bool _enable)
 
 void SLightEditor::onEditXTranslation(int _value)
 {
-    ::Ogre::Node* const lightNode    = this->getLightNode();
-    const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(static_cast< ::Ogre::Real>(_value), currentPos[1], currentPos[2]));
+    Ogre::Node* const lightNode    = this->getLightNode();
+    const Ogre::Vector3 currentPos = lightNode->getPosition();
+    lightNode->setPosition(Ogre::Vector3(static_cast<Ogre::Real>(_value), currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_xLabel->setText(QString("X: %1").arg(_value));
@@ -346,9 +346,9 @@ void SLightEditor::onEditXTranslation(int _value)
 
 void SLightEditor::onEditYTranslation(int _value)
 {
-    ::Ogre::Node* const lightNode    = this->getLightNode();
-    const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(currentPos[0], static_cast< ::Ogre::Real>(_value), currentPos[2]));
+    Ogre::Node* const lightNode    = this->getLightNode();
+    const Ogre::Vector3 currentPos = lightNode->getPosition();
+    lightNode->setPosition(Ogre::Vector3(currentPos[0], static_cast<Ogre::Real>(_value), currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_yLabel->setText(QString("Y: %1").arg(_value));
@@ -358,9 +358,9 @@ void SLightEditor::onEditYTranslation(int _value)
 
 void SLightEditor::onEditZTranslation(int _value)
 {
-    ::Ogre::Node* const lightNode    = this->getLightNode();
-    const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], static_cast< ::Ogre::Real>(_value)));
+    Ogre::Node* const lightNode    = this->getLightNode();
+    const Ogre::Vector3 currentPos = lightNode->getPosition();
+    lightNode->setPosition(Ogre::Vector3(currentPos[0], currentPos[1], static_cast<Ogre::Real>(_value)));
     m_currentLight->getRenderService()->requestRender();
 
     m_zLabel->setText(QString("Z: %1").arg(_value));
@@ -370,9 +370,9 @@ void SLightEditor::onEditZTranslation(int _value)
 
 void SLightEditor::onResetXTranslation(bool)
 {
-    ::Ogre::Node* const lightNode    = this->getLightNode();
-    const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(0.f, currentPos[1], currentPos[2]));
+    Ogre::Node* const lightNode    = this->getLightNode();
+    const Ogre::Vector3 currentPos = lightNode->getPosition();
+    lightNode->setPosition(Ogre::Vector3(0.f, currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_xLabel->setText("X: 0");
@@ -383,9 +383,9 @@ void SLightEditor::onResetXTranslation(bool)
 
 void SLightEditor::onResetYTranslation(bool)
 {
-    ::Ogre::Node* const lightNode    = this->getLightNode();
-    const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(currentPos[0], 0.f, currentPos[2]));
+    Ogre::Node* const lightNode    = this->getLightNode();
+    const Ogre::Vector3 currentPos = lightNode->getPosition();
+    lightNode->setPosition(Ogre::Vector3(currentPos[0], 0.f, currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_yLabel->setText("Y: 0");
@@ -396,9 +396,9 @@ void SLightEditor::onResetYTranslation(bool)
 
 void SLightEditor::onResetZTranslation(bool)
 {
-    ::Ogre::Node* const lightNode    = this->getLightNode();
-    const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], 0.f));
+    Ogre::Node* const lightNode    = this->getLightNode();
+    const Ogre::Vector3 currentPos = lightNode->getPosition();
+    lightNode->setPosition(Ogre::Vector3(currentPos[0], currentPos[1], 0.f));
     m_currentLight->getRenderService()->requestRender();
 
     m_zLabel->setText("Z: 0");
@@ -407,10 +407,10 @@ void SLightEditor::onResetZTranslation(bool)
 
 //------------------------------------------------------------------------------
 
-::Ogre::Node* SLightEditor::getLightNode() const
+Ogre::Node* SLightEditor::getLightNode() const
 {
-    ::Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
-    ::Ogre::Node* const lightNode =
+    Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
+    Ogre::Node* const lightNode =
         sight::viz::scene3d::helper::Scene::getNodeById(m_currentLight->getTransformId(), root);
     return lightNode;
 }
@@ -434,12 +434,12 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
         if(m_currentLight->getName().find(Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_visualFeedback->setEnabled(true);
-            if(m_currentLight->getType() == ::Ogre::Light::LT_DIRECTIONAL)
+            if(m_currentLight->getType() == Ogre::Light::LT_DIRECTIONAL)
             {
                 m_thetaSlider->setEnabled(true);
                 m_phiSlider->setEnabled(true);
             }
-            else if(m_currentLight->getType() == ::Ogre::Light::LT_POINT)
+            else if(m_currentLight->getType() == Ogre::Light::LT_POINT)
             {
                 m_xTranslation->setEnabled(true);
                 m_yTranslation->setEnabled(true);
@@ -477,12 +477,12 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
                              + ILight::s_OFFSET_RANGE / 2)
         );
 
-        ::Ogre::SceneNode* const root       = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
-        const ::Ogre::Node* const lightNode = sight::viz::scene3d::helper::Scene::getNodeById(
+        Ogre::SceneNode* const root       = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
+        const Ogre::Node* const lightNode = sight::viz::scene3d::helper::Scene::getNodeById(
             m_currentLight->getTransformId(),
             root
         );
-        const ::Ogre::Vector3 currentPos = lightNode->getPosition();
+        const Ogre::Vector3 currentPos = lightNode->getPosition();
 
         m_xTranslation->setValue(static_cast<int>(currentPos[0]));
         m_yTranslation->setValue(static_cast<int>(currentPos[1]));
@@ -501,7 +501,7 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
 
 //------------------------------------------------------------------------------
 
-::Ogre::ColourValue SLightEditor::editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title)
+Ogre::ColourValue SLightEditor::editColor(const Ogre::ColourValue& _currentColor, const std::string& _title)
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()

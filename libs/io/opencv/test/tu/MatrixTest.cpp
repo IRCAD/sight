@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ void MatrixTest::tearDown()
 
 void MatrixTest::copyFromCvFloat()
 {
-    ::cv::Matx44f cvMat       = ::cv::Matx44f::eye();
+    cv::Matx44f cvMat         = cv::Matx44f::eye();
     data::Matrix4::sptr fwMat = data::Matrix4::New();
 
     //identity test
@@ -76,7 +76,7 @@ void MatrixTest::copyFromCvFloat()
     }
 
     // 1 to 16 values
-    cvMat = ::cv::Matx44f(
+    cvMat = cv::Matx44f(
         1.f,
         2.f,
         3.f,
@@ -118,7 +118,7 @@ void MatrixTest::copyFromCvFloat()
 void MatrixTest::copyToCvFloat()
 {
     data::Matrix4::sptr fwMat = data::Matrix4::New();
-    ::cv::Matx44f cvMat       = ::cv::Matx44f::eye();
+    cv::Matx44f cvMat         = cv::Matx44f::eye();
 
     //identity test
     io::opencv::Matrix::copyToCv(fwMat, cvMat);
@@ -167,7 +167,7 @@ void MatrixTest::copyToCvFloat()
 
 void MatrixTest::copyFromCvDouble()
 {
-    ::cv::Matx44d cvMat       = ::cv::Matx44d::eye();
+    cv::Matx44d cvMat         = cv::Matx44d::eye();
     data::Matrix4::sptr fwMat = data::Matrix4::New();
 
     //identity test
@@ -189,7 +189,7 @@ void MatrixTest::copyFromCvDouble()
     }
 
     // 1 to 16 values
-    cvMat = ::cv::Matx44d(
+    cvMat = cv::Matx44d(
         1.,
         2.,
         3.,
@@ -231,7 +231,7 @@ void MatrixTest::copyFromCvDouble()
 void MatrixTest::copyToCvDouble()
 {
     data::Matrix4::sptr fwMat = data::Matrix4::New();
-    ::cv::Matx44d cvMat       = ::cv::Matx44d::eye();
+    cv::Matx44d cvMat         = cv::Matx44d::eye();
 
     //identity test
     io::opencv::Matrix::copyToCv(fwMat, cvMat);
@@ -283,7 +283,7 @@ void MatrixTest::copyFromCvMat()
 {
     // identity test
     data::Matrix4::sptr fwMat = data::Matrix4::New();
-    ::cv::Mat cvMat           = ::cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat cvMat             = cv::Mat::eye(4, 4, CV_64F);
 
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyFromCv(cvMat, fwMat));
 
@@ -304,7 +304,7 @@ void MatrixTest::copyFromCvMat()
 
     // values test
 
-    cvMat = (::cv::Mat_<double>(4, 4)
+    cvMat = (cv::Mat_<double>(4, 4)
              << 1., 2., 3., 4.,
              5., 6., 7., 8.,
              9., 10., 11.9874563, 12.,
@@ -333,7 +333,7 @@ void MatrixTest::copyFromCvMat()
 void MatrixTest::copyToCvMat()
 {
     data::Matrix4::sptr fwMat = data::Matrix4::New();
-    ::cv::Mat cvMat           = ::cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat cvMat             = cv::Mat::eye(4, 4, CV_64F);
 
     //identity test
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyToCv(fwMat, cvMat));
@@ -384,11 +384,11 @@ void MatrixTest::copyToCvMat()
 void MatrixTest::copyFromRvecTvec()
 {
     // Identity test.
-    ::cv::Mat cvMat = ::cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat cvMat = cv::Mat::eye(4, 4, CV_64F);
     // Convert to rvec tvec.
-    ::cv::Mat tvec = cvMat(::cv::Rect(3, 0, 1, 3));
-    ::cv::Mat rvec;
-    ::cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
+    cv::Mat tvec = cvMat(cv::Rect(3, 0, 1, 3));
+    cv::Mat rvec;
+    cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
     data::Matrix4::sptr fwMat = data::Matrix4::New();
 
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyFromCv(rvec, tvec, fwMat));
@@ -409,14 +409,14 @@ void MatrixTest::copyFromRvecTvec()
     }
 
     // Values test (30 degrees around X and translations on every axes).
-    cvMat = (::cv::Mat_<double>(4, 4)
+    cvMat = (cv::Mat_<double>(4, 4)
              << 1., 0., 0., 4.,
              0., 0.86601905, -0.50001100, 8.,
              0., 0.50001100, 0.86601905, 12.,
              0., 0., 0., 1.);
 
-    tvec = cvMat(::cv::Rect(3, 0, 1, 3));
-    ::cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
+    tvec = cvMat(cv::Rect(3, 0, 1, 3));
+    cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
 
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyFromCv(rvec, tvec, fwMat));
 
@@ -435,10 +435,10 @@ void MatrixTest::copyFromRvecTvec()
         }
     }
 
-    // Values test (without ::cv::Rodrigues)
+    // Values test (without cv::Rodrigues)
     // Should be equals to the cvMat above.
-    rvec = (::cv::Mat_<double>(3, 1) << 0.523611478769991, 0, 0);
-    tvec = (::cv::Mat_<double>(3, 1) << 4, 8, 12);
+    rvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0, 0);
+    tvec = (cv::Mat_<double>(3, 1) << 4, 8, 12);
 
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyFromCv(rvec, tvec, fwMat));
 
@@ -463,9 +463,9 @@ void MatrixTest::copyFromRvecTvec()
 void MatrixTest::copyToRvecTvec()
 {
     data::Matrix4::sptr fwMat = data::Matrix4::New();
-    ::cv::Mat expectedRvec = (::cv::Mat_<double>(3, 1) << 0., 0., 0.);
-    ::cv::Mat expectedTvec = (::cv::Mat_<double>(3, 1) << 0., 0., 0.);
-    ::cv::Mat rvec, tvec;
+    cv::Mat expectedRvec = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+    cv::Mat expectedTvec = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+    cv::Mat rvec, tvec;
 
     //identity test
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyToCv(fwMat, rvec, tvec));
@@ -497,8 +497,8 @@ void MatrixTest::copyToRvecTvec()
 
     //values test
     io::opencv::Matrix::copyToCv(fwMat, rvec, tvec);
-    expectedRvec = (::cv::Mat_<double>(3, 1) << 0.523611478769991, 0., 0.);
-    expectedTvec = (::cv::Mat_<double>(3, 1) << 4., 8., 12.);
+    expectedRvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0., 0.);
+    expectedTvec = (cv::Mat_<double>(3, 1) << 4., 8., 12.);
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
@@ -518,9 +518,9 @@ void MatrixTest::copyToRvecTvec()
     }
 
     // Reconstruct 4x4 matrix and compare with original Sight one.
-    ::cv::Mat mat4x4 = ::cv::Mat::eye(4, 4, CV_64F);
-    ::cv::Rodrigues(rvec, mat4x4(::cv::Rect(0, 0, 3, 3)));
-    tvec.copyTo(mat4x4(::cv::Rect(3, 0, 1, 3)));
+    cv::Mat mat4x4 = cv::Mat::eye(4, 4, CV_64F);
+    cv::Rodrigues(rvec, mat4x4(cv::Rect(0, 0, 3, 3)));
+    tvec.copyTo(mat4x4(cv::Rect(3, 0, 1, 3)));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {

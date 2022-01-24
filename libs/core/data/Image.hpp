@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,13 @@
 #include "data/Array.hpp"
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
-#include <data/iterator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/memory/IBuffered.hpp>
 #include <core/tools/Type.hpp>
+
+#include <data/iterator.hpp>
 
 #include <boost/shared_array.hpp>
 
@@ -185,7 +186,7 @@ public:
 
     typedef Size::value_type IndexType;
     typedef std::uint8_t BufferType;
-    typedef ::boost::shared_array<BufferType> SharedArray;
+    typedef boost::shared_array<BufferType> SharedArray;
 
     /// Image format
     enum PixelFormat

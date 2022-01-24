@@ -36,14 +36,14 @@ namespace sight::module::viz::scene3dQt
 
 // ----------------------------------------------------------------------------
 
-static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModifiers(::Qt::KeyboardModifiers _qmods)
+static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModifiers(Qt::KeyboardModifiers _qmods)
 {
     using SightOgreModType = sight::viz::scene3d::interactor::IInteractor::Modifier;
     SightOgreModType mods = SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::ShiftModifier) ? SightOgreModType::SHIFT : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::ControlModifier) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::AltModifier) ? SightOgreModType::ALT : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::MetaModifier) ? SightOgreModType::META : SightOgreModType::NONE;
+    mods |= (_qmods& Qt::ShiftModifier) ? SightOgreModType::SHIFT : SightOgreModType::NONE;
+    mods |= (_qmods& Qt::ControlModifier) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
+    mods |= (_qmods& Qt::AltModifier) ? SightOgreModType::ALT : SightOgreModType::NONE;
+    mods |= (_qmods& Qt::MetaModifier) ? SightOgreModType::META : SightOgreModType::NONE;
 
     return mods;
 }
@@ -524,7 +524,7 @@ void Window::ogreResize(const QSize& _newSize)
 
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
-    ::Ogre::Viewport* viewport = nullptr;
+    Ogre::Viewport* viewport = nullptr;
     for(unsigned short i = 0 ; i < numViewports ; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
@@ -535,9 +535,9 @@ void Window::ogreResize(const QSize& _newSize)
         viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
     }
 
-    if(viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+    if(viewport && Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
     {
-        ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+        Ogre::CompositorChain* chain = Ogre::CompositorManager::getSingleton().getCompositorChain(
             viewport
         );
 

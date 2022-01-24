@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ public:
     typedef std::map<std::string, std::string> UIDMap;
 
     /// Map used to store exception value
-    typedef std::map< ::gdcm::Tag, std::string> ExceptionTagMapType;
+    typedef std::map<gdcm::Tag, std::string> ExceptionTagMapType;
 
     /// Anonymize a folder containing Dicom files
     IO_DICOM_API void anonymize(const std::filesystem::path& dirPath);
@@ -110,10 +110,10 @@ public:
     IO_DICOM_API void resetIndex();
 
     /// The removed tag will not be process by anonymization tag
-    IO_DICOM_API void removeAnonymizeTag(const ::gdcm::Tag& tag);
+    IO_DICOM_API void removeAnonymizeTag(const gdcm::Tag& tag);
 
     /// Set Reference date for shifting
-    IO_DICOM_API void setReferenceDate(const ::boost::gregorian::date& referenceDate);
+    IO_DICOM_API void setReferenceDate(const boost::gregorian::date& referenceDate);
 
     /**
      * @brief Add a date tag that must be shifted.
@@ -122,19 +122,19 @@ public:
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    IO_DICOM_API void addShiftDateTag(const ::gdcm::Tag& tag);
+    IO_DICOM_API void addShiftDateTag(const gdcm::Tag& tag);
 
     /**
      * @brief Tells the anonymizer to do not anonymize the given private tag.
      *
      * @param tag private tag to be preserved from anonymisation
      */
-    IO_DICOM_API void preservePrivateTag(const ::gdcm::Tag& tag);
+    IO_DICOM_API void preservePrivateTag(const gdcm::Tag& tag);
 
     /**
      * @name Access tags according to their associated action code
      * @{ */
-    typedef std::set< ::gdcm::Tag> TagContainerType;
+    typedef std::set<gdcm::Tag> TagContainerType;
     IO_DICOM_API const TagContainerType& getActionCodeDTags();
     IO_DICOM_API const TagContainerType& getActionCodeZTags();
     IO_DICOM_API const TagContainerType& getActionCodeXTags();
@@ -148,7 +148,7 @@ private:
     void anonymizationProcess(const std::filesystem::path& dirPath);
 
     ///D: replace with a non-zero length value that may be a dummy value and consistent with the VR
-    void applyActionCodeD(const ::gdcm::Tag& tag);
+    void applyActionCodeD(const gdcm::Tag& tag);
 
     /**
      * Z: replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
@@ -158,7 +158,7 @@ private:
      *
      * @note This method applies action code D only.
      */
-    void applyActionCodeZ(const ::gdcm::Tag& tag);
+    void applyActionCodeZ(const gdcm::Tag& tag);
 
     /**
      * X: remove tag
@@ -171,39 +171,39 @@ private:
      *
      * @note This method applies action code X only.
      */
-    void applyActionCodeX(const ::gdcm::Tag& tag);
+    void applyActionCodeX(const gdcm::Tag& tag);
 
     /// K: keep (unchanged for non-sequence attributes, cleaned for sequences)
-    void applyActionCodeK(const ::gdcm::Tag& tag);
+    void applyActionCodeK(const gdcm::Tag& tag);
 
     /**
      * C: clean, that is replace with values of similar meaning known not to contain identifying information and
      * consistent with the VR
      */
-    void applyActionCodeC(const ::gdcm::Tag& tag);
+    void applyActionCodeC(const gdcm::Tag& tag);
 
     /// U: if UID is not empty, replace with a non-zero length UID
     /// that is internally consistent within a set of Instances
-    void applyActionCodeU(const ::gdcm::Tag& tag);
+    void applyActionCodeU(const gdcm::Tag& tag);
 
     /**
      * Shift date according to the interval between the date and the reference date.
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    void applyActionShiftDate(const ::gdcm::Tag& tag);
+    void applyActionShiftDate(const gdcm::Tag& tag);
 
     /// Generate a value consistent with the VR
-    void generateDummyValue(const ::gdcm::Tag& tag);
+    void generateDummyValue(const gdcm::Tag& tag);
 
     /// Anonymizer
-    ::gdcm::Anonymizer m_anonymizer;
+    gdcm::Anonymizer m_anonymizer;
 
     /// String filter used to convert DataElement to String
-    ::gdcm::StringFilter m_stringFilter;
+    gdcm::StringFilter m_stringFilter;
 
     /// Public Dicom Dictionary
-    const ::gdcm::Dict& m_publicDictionary;
+    const gdcm::Dict& m_publicDictionary;
 
     /// UID Map
     UIDMap m_uidMap;
@@ -224,7 +224,7 @@ private:
     unsigned int m_fileIndex;
 
     /// Reference date for shifting
-    ::boost::gregorian::date m_referenceDate;
+    boost::gregorian::date m_referenceDate;
 
     /**
      * @name Tags to be processed with associated action code.

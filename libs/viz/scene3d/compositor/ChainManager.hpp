@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ namespace compositor
 /**
  * @brief   Manages the compositors in a layer view.
  */
-class VIZ_SCENE3D_CLASS_API ChainManager : ::boost::noncopyable,
+class VIZ_SCENE3D_CLASS_API ChainManager : boost::noncopyable,
                                            public service::IHasServices
 {
 public:
@@ -59,7 +59,7 @@ public:
     typedef std::pair<CompositorIdType, bool> CompositorType;
     typedef std::vector<CompositorType> CompositorChainType;
 
-    VIZ_SCENE3D_API ChainManager(::Ogre::Viewport* viewport);
+    VIZ_SCENE3D_API ChainManager(Ogre::Viewport* viewport);
     VIZ_SCENE3D_API virtual ~ChainManager();
 
     /// Inserts the new compositor in the compositor chain vector
@@ -77,7 +77,7 @@ public:
 
     VIZ_SCENE3D_API CompositorChainType getCompositorChain();
 
-    VIZ_SCENE3D_API void setOgreViewport(::Ogre::Viewport* _viewport);
+    VIZ_SCENE3D_API void setOgreViewport(Ogre::Viewport* _viewport);
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
@@ -121,7 +121,7 @@ private:
 
     /// The parent layer's viewport.
     /// The ogre's compositor manager needs it in order to access the right compositor chain.
-    ::Ogre::Viewport* m_ogreViewport;
+    Ogre::Viewport* m_ogreViewport;
 
     /// Map allowing to keep the objects of the created adaptors alive
     data::Composite::sptr m_adaptorsObjectsOwner;
@@ -137,7 +137,7 @@ inline ChainManager::CompositorChainType ChainManager::getCompositorChain()
 
 //-----------------------------------------------------------------------------
 
-inline void ChainManager::setOgreViewport(::Ogre::Viewport* _viewport)
+inline void ChainManager::setOgreViewport(Ogre::Viewport* _viewport)
 {
     m_ogreViewport = _viewport;
 }

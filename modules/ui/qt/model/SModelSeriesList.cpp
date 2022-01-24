@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,12 +84,12 @@ public:
         else if(_obj->isA("sight::data::Integer"))
         {
             data::Integer::sptr fwValue = data::Integer::dynamicCast(_obj);
-            return ::boost::lexical_cast<std::string>(fwValue->getValue());
+            return boost::lexical_cast<std::string>(fwValue->getValue());
         }
         else if(_obj->isA("sight::data::Float"))
         {
             data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
-            return ::boost::lexical_cast<std::string>(fwValue->getValue());
+            return boost::lexical_cast<std::string>(fwValue->getValue());
         }
         else
         {
@@ -117,7 +117,7 @@ public:
             {
                 std::stringstream ss;
                 data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
-                ss << ::boost::format("%11.2f") % (fwValue->getValue());
+                ss << boost::format("%11.2f") % (fwValue->getValue());
                 return ss.str();
             }
 
@@ -129,7 +129,7 @@ public:
             if(fwValue->getValue() > 0)
             {
                 std::stringstream ss;
-                ss << ::boost::format("%11.2f") % (fwValue->getValue());
+                ss << boost::format("%11.2f") % (fwValue->getValue());
                 return ss.str();
             }
 

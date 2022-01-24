@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,9 +72,9 @@ void STransform::configuring()
 void STransform::starting()
 {
     this->initialize();
-    ::Ogre::SceneManager* const sceneManager = this->getSceneManager();
+    Ogre::SceneManager* const sceneManager = this->getSceneManager();
 
-    ::Ogre::SceneNode* const rootSceneNode = sceneManager->getRootSceneNode();
+    Ogre::SceneNode* const rootSceneNode = sceneManager->getRootSceneNode();
     SIGHT_ASSERT("Root scene node not found", rootSceneNode);
 
     if(!m_parentTransformId.empty())
@@ -97,10 +97,10 @@ void STransform::updating()
 {
     {
         const auto transform = m_matrix.lock();
-        m_ogreTransform = ::Ogre::Affine3(sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared()));
+        m_ogreTransform = Ogre::Affine3(sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 
-    if(m_ogreTransform == ::Ogre::Affine3::ZERO)
+    if(m_ogreTransform == Ogre::Affine3::ZERO)
     {
         m_parentTransformNode->removeChild(m_transformNode);
     }
@@ -112,9 +112,9 @@ void STransform::updating()
         }
 
         // Decompose the matrix
-        ::Ogre::Vector3 position;
-        ::Ogre::Vector3 scale;
-        ::Ogre::Quaternion orientation;
+        Ogre::Vector3 position;
+        Ogre::Vector3 scale;
+        Ogre::Quaternion orientation;
         m_ogreTransform.decomposition(position, scale, orientation);
 
         m_transformNode->setOrientation(orientation);

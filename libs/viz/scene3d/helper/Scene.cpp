@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,32 +32,32 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* Scene::getNodeById(
+Ogre::SceneNode* Scene::getNodeById(
     viz::scene3d::SRender::OgreObjectIdType _nodeId,
-    ::Ogre::SceneNode* _sceneNode
+    Ogre::SceneNode* _sceneNode
 )
 {
     SIGHT_ASSERT("Scene node is null", _sceneNode);
 
-    ::Ogre::SceneNode* foundNode = nullptr;
+    Ogre::SceneNode* foundNode = nullptr;
 
     // Use a vector as a stack to benefit from iterators.
-    std::vector< ::Ogre::Node*> stack;
+    std::vector<Ogre::Node*> stack;
     stack.push_back(_sceneNode);
 
     // Recursive search in the graph
     while(!stack.empty())
     {
-        ::Ogre::Node* const topNode = stack.back();
+        Ogre::Node* const topNode = stack.back();
 
         if(topNode->getName() == _nodeId)
         {
-            foundNode = dynamic_cast< ::Ogre::SceneNode*>(topNode);
+            foundNode = dynamic_cast<Ogre::SceneNode*>(topNode);
             SIGHT_ASSERT("'" + _nodeId + "' is not a scene node.", foundNode);
             break;
         }
 
-        const ::Ogre::Node::ChildNodeMap& nodeChildren = topNode->getChildren();
+        const Ogre::Node::ChildNodeMap& nodeChildren = topNode->getChildren();
         stack.pop_back();
 
         std::copy(nodeChildren.cbegin(), nodeChildren.cend(), std::back_inserter(stack));

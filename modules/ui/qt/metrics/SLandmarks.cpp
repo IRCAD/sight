@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ namespace sight::module::ui::qt::metrics
 //------------------------------------------------------------------------------
 
 static const char* s_GROUP_PROPERTY_NAME = "group";
-static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
+static const int s_GROUP_NAME_ROLE       = Qt::UserRole + 1;
 
 static const core::com::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const core::com::Slots::SlotKeyType s_PICK_SLOT             = "pick";
@@ -684,7 +684,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
                 const auto matrix = m_matrix.lock();
                 if(matrix)
                 {
-                    const auto pickedPoint = ::glm::dvec4 {pickedPos[0], pickedPos[1], pickedPos[2], 1.0};
+                    const auto pickedPoint = glm::dvec4 {pickedPos[0], pickedPos[1], pickedPos[2], 1.0};
                     const auto mat         = geometry::data::getMatrixFromTF3D(*matrix);
 
                     const auto modifiedPoint = mat * pickedPoint;

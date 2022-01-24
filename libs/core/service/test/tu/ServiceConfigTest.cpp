@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
         futures.push_back(std::async(std::launch::async, fn));
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
     service::extension::Config::sptr currentServiceConfig;
     currentServiceConfig = service::extension::Config::getDefault();

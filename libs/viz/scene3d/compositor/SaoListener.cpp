@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace compositor
 
 //-----------------------------------------------------------------------------
 
-void SaoListener::notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
+void SaoListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
 {
     // change the sao arguments
     auto fragmentParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
@@ -47,11 +47,11 @@ void SaoListener::notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialP
     // try to go here only when the AO_mat is called
     if(pass_id == 1)
     {
-        ::Ogre::CompositorChain* compChain =
-            ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
+        Ogre::CompositorChain* compChain =
+            Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
 
-        ::Ogre::CompositorInstance* saoCompositor = compChain->getCompositor("SAO");
-        ::Ogre::TexturePtr mip0, mip1, mip2, mip3, mip4, mip5, mip6, mip7, mip8, rt0;
+        Ogre::CompositorInstance* saoCompositor = compChain->getCompositor("SAO");
+        Ogre::TexturePtr mip0, mip1, mip2, mip3, mip4, mip5, mip6, mip7, mip8, rt0;
 
         mip0 = saoCompositor->getTextureInstance("mip0", 0);
         mip1 = saoCompositor->getTextureInstance("mip1", 0);
@@ -73,9 +73,9 @@ void SaoListener::notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialP
         rt0->setWidth(mip0.get()->getWidth());
         rt0->setHeight(mip0.get()->getHeight());
         rt0->setNumMipmaps(8);
-        rt0->setFormat(::Ogre::PixelFormat::PF_FLOAT32_R);
-        rt0->setUsage(::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-        rt0->setTextureType(::Ogre::TextureType::TEX_TYPE_2D);
+        rt0->setFormat(Ogre::PixelFormat::PF_FLOAT32_R);
+        rt0->setUsage(Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
+        rt0->setTextureType(Ogre::TextureType::TEX_TYPE_2D);
 
         rt0->createInternalResources();
 
@@ -95,23 +95,23 @@ void SaoListener::notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialP
 
         fragmentParams->setNamedConstant("u_numSamples", 11);
 
-        const ::Ogre::Matrix4& proj = m_viewport->getCamera()->getProjectionMatrix();
+        const Ogre::Matrix4& proj = m_viewport->getCamera()->getProjectionMatrix();
 
-        const ::Ogre::Vector4 projInfo(-2.f / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
-                                       -2.f / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
-                                       (1.f - proj[0][2]) / proj[0][0],
-                                       (1.f + proj[1][2]) / proj[1][1]);
+        const Ogre::Vector4 projInfo(-2.f / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
+                                     -2.f / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
+                                     (1.f - proj[0][2]) / proj[0][0],
+                                     (1.f + proj[1][2]) / proj[1][1]);
         fragmentParams->setNamedConstant("eu_projInfo", projInfo);
     }
 
     if(pass_id >= 41)
     {
-        ::Ogre::CompositorChain* compChain =
-            ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
+        Ogre::CompositorChain* compChain =
+            Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
 
-        ::Ogre::CompositorInstance* Sao_compositor = compChain->getCompositor("SAO");
+        Ogre::CompositorInstance* Sao_compositor = compChain->getCompositor("SAO");
 
-        ::Ogre::TexturePtr prevMip = Sao_compositor->getTextureInstance("mip" + std::to_string(pass_id - 41), 0);
+        Ogre::TexturePtr prevMip = Sao_compositor->getTextureInstance("mip" + std::to_string(pass_id - 41), 0);
 
         fragmentParams->setNamedConstant("eu_vpWidth", static_cast<float>(prevMip.get()->getWidth()));
         fragmentParams->setNamedConstant("eu_vpHeight", static_cast<float>(prevMip.get()->getHeight()));

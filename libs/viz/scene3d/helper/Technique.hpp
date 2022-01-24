@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ public:
      * @return the newly created technique
      */
     static VIZ_SCENE3D_API Ogre::Technique* copyToMaterial(
-        const ::Ogre::Technique* _tech,
+        const Ogre::Technique* _tech,
         const std::string& _schemeName,
         Ogre::Material* _mtl
     );

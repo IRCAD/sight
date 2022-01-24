@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader>(new ::gdcm::Reader);
+    SPTR(gdcm::Reader) reader = std::shared_ptr<gdcm::Reader>(new gdcm::Reader);
 
     // Read the first file
     const auto& dicomContainer                               = m_dicomSeries->getDicomContainer();

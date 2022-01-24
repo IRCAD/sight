@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -191,10 +191,10 @@ private:
     bool m_debugMarkers;
 
     /// aruco detector parameters structure
-    cv::Ptr< ::cv::aruco::DetectorParameters> m_detectorParams;
+    cv::Ptr<cv::aruco::DetectorParameters> m_detectorParams;
 
     /// Dictionary/Set of markers. It contains the inner codification
-    cv::Ptr< ::cv::aruco::Dictionary> m_dictionary;
+    cv::Ptr<cv::aruco::Dictionary> m_dictionary;
 
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;

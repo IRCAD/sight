@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ void UtilsTest::convertOgreColorToQColor()
 {
     QColor refColor(255, 255, 255);
 
-    QColor resultColor = module::ui::viz::helper::Utils::convertOgreColorToQColor(::Ogre::ColourValue());
+    QColor resultColor = module::ui::viz::helper::Utils::convertOgreColorToQColor(Ogre::ColourValue());
     CPPUNIT_ASSERT(resultColor.red() == refColor.red());
     CPPUNIT_ASSERT(resultColor.green() == refColor.green());
     CPPUNIT_ASSERT(resultColor.blue() == refColor.blue());
@@ -65,9 +65,9 @@ void UtilsTest::convertOgreColorToQColor()
 
 void UtilsTest::convertQColorToOgreColor()
 {
-    ::Ogre::ColourValue refColor;
+    Ogre::ColourValue refColor;
 
-    ::Ogre::ColourValue resultColor = module::ui::viz::helper::Utils::convertQColorToOgreColor(QColor(255, 255, 255));
+    Ogre::ColourValue resultColor = module::ui::viz::helper::Utils::convertQColorToOgreColor(QColor(255, 255, 255));
     CPPUNIT_ASSERT(static_cast<int>(resultColor.r) == static_cast<int>(refColor.r));
     CPPUNIT_ASSERT(static_cast<int>(resultColor.g) == static_cast<int>(refColor.g));
     CPPUNIT_ASSERT(static_cast<int>(resultColor.b) == static_cast<int>(refColor.b));

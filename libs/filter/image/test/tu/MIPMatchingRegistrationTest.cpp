@@ -71,7 +71,7 @@ void MIPMatchingRegistrationTest::tearDown()
 
 void MIPMatchingRegistrationTest::identityTest()
 {
-    data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::csptr moving = createSphereImage<std::uint16_t, 3>();
     data::Image::csptr fixed  = data::Object::copy(moving);
     data::Matrix4::sptr mat   = data::Matrix4::New();
 
@@ -97,7 +97,7 @@ void MIPMatchingRegistrationTest::identityTest()
 
 void MIPMatchingRegistrationTest::translateTransformTest()
 {
-    data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::csptr moving = createSphereImage<std::uint16_t, 3>();
     data::Image::sptr fixed   = data::Image::New();
 
     data::Matrix4::sptr transform = data::Matrix4::New();
@@ -128,12 +128,12 @@ void MIPMatchingRegistrationTest::translateTransformTest()
 
 void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
 {
-    using ImageType = ::itk::Image<std::uint16_t, 3>;
+    using ImageType = itk::Image<std::uint16_t, 3>;
 
     // Create the moving image
     auto movingSpacing = ImageType::SpacingType(1.);
     movingSpacing[1] = 1.3;
-    data::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
+    data::Image::sptr moving = createSphereImage<std::uint16_t, 3>(movingSpacing);
     data::Image::sptr fixed  = data::Image::New();
     moving->setOrigin({107., 50., -30.});
 
@@ -165,7 +165,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
         newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
     }
 
-    auto resample = ::itk::ResampleImageFilter<ImageType, ImageType>::New();
+    auto resample = itk::ResampleImageFilter<ImageType, ImageType>::New();
     resample->SetInput(itkFixed);
     resample->SetSize(newSize);
     resample->SetOutputSpacing(newSpacing);

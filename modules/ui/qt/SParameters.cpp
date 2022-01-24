@@ -234,14 +234,14 @@ void SParameters::starting()
             std::vector<std::string> values;
             std::vector<std::string> data;
 
-            const ::boost::char_separator<char> sep(", ;");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {options, sep};
+            const boost::char_separator<char> sep(", ;");
+            const boost::tokenizer<boost::char_separator<char> > tokens {options, sep};
 
             for(const auto& token : tokens)
             {
                 //split again values separated by '='
-                const ::boost::char_separator<char> subsep("=");
-                const ::boost::tokenizer< ::boost::char_separator<char> > subtokens {token, subsep};
+                const boost::char_separator<char> subsep("=");
+                const boost::tokenizer<boost::char_separator<char> > subtokens {token, subsep};
                 auto it = subtokens.begin();
 
                 if(it != subtokens.end())
@@ -798,7 +798,7 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
     if(checkbox)
     {
         int value = checkbox->property("defaultValue").toInt();
-        checkbox->setCheckState(::Qt::CheckState(value));
+        checkbox->setCheckState(Qt::CheckState(value));
 
         const QString key = checkbox->property("key").toString();
         if(!m_blockSignals)

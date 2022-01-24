@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -173,7 +173,7 @@ std::string SScan::selectDevice()
     // TODO: Check if a device is already selected (via Qt).
 
     // Obtain a list of devices currently present on the system
-    ::rs2::context ctx;
+    rs2::context ctx;
     const auto devices          = ctx.query_devices();
     const uint32_t device_count = devices.size();
     std::string selectedDevice;
@@ -222,11 +222,11 @@ std::string SScan::selectDevice()
 
 //-----------------------------------------------------------------------------
 
-void SScan::initialize(const ::rs2::pipeline_profile& _profile)
+void SScan::initialize(const rs2::pipeline_profile& _profile)
 {
-    const auto depthStream    = _profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
-    const auto colorStream    = _profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
-    const auto infraredStream = _profile.get_stream(RS2_STREAM_INFRARED).as< ::rs2::video_stream_profile>();
+    const auto depthStream    = _profile.get_stream(RS2_STREAM_DEPTH).as<rs2::video_stream_profile>();
+    const auto colorStream    = _profile.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
+    const auto infraredStream = _profile.get_stream(RS2_STREAM_INFRARED).as<rs2::video_stream_profile>();
 
     std::stringstream str;
     str << "-- fps : " << depthStream.fps() << std::endl;
@@ -466,11 +466,11 @@ void SScan::startCamera()
         }
     }
 
-    ::rs2::config cfg;
+    rs2::config cfg;
 
-    m_pipe = std::make_unique< ::rs2::pipeline>();
+    m_pipe = std::make_unique<rs2::pipeline>();
 
-    ::rs2::pipeline_profile profile;
+    rs2::pipeline_profile profile;
     try
     {
         if(m_deviceID.empty() && !m_playbackMode)
@@ -560,7 +560,7 @@ void SScan::startCamera()
             advanced_mode_dev.load_json(json_content);
         }
 
-        auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor>();
+        auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
 
         // Get the depth scale: depth in mm corresponding to a depth value of 1.
         m_depthScale = depthSensor.get_depth_scale() * s_METERS_TO_MMS;
@@ -656,11 +656,11 @@ void SScan::pauseCamera()
         {
             if(m_pause)
             {
-                m_currentDevice.as< ::rs2::recorder>().pause();
+                m_currentDevice.as<rs2::recorder>().pause();
             }
             else
             {
-                m_currentDevice.as< ::rs2::recorder>().resume();
+                m_currentDevice.as<rs2::recorder>().resume();
             }
         }
     }
@@ -779,7 +779,7 @@ void SScan::setBoolParameter(bool _value, std::string _key)
             // Change the parameter live if grabber is running, otherwise it will be changed on next startCamera.
             if(!m_deviceID.empty() && m_running)
             {
-                auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor>();
+                auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
                 depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (_value ? 1.f : 0.f));
             }
         }
@@ -1002,16 +1002,16 @@ void SScan::popMessageDialog(const std::string& _message)
 void SScan::grab()
 {
     // Declare pointcloud object, for calculating pointclouds and texture mappings
-    ::rs2::pointcloud pc;
-    ::rs2::spatial_filter spatialFilter;                // Spatial    - edge-preserving spatial smoothing
-    ::rs2::temporal_filter temporalFilter;              // Temporal   - reduces temporal noise
-    ::rs2::hole_filling_filter holesFilter;             // Holes filling
-    ::rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
-    ::rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
+    rs2::pointcloud pc;
+    rs2::spatial_filter spatialFilter;                // Spatial    - edge-preserving spatial smoothing
+    rs2::temporal_filter temporalFilter;              // Temporal   - reduces temporal noise
+    rs2::hole_filling_filter holesFilter;             // Holes filling
+    rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
+    rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
 
     bool needAligment = false;
 
-    ::rs2::align alignFrames(RS2_STREAM_COLOR);
+    rs2::align alignFrames(RS2_STREAM_COLOR);
 
     // Since RS2_STREAM_* is an enum, and DEPTH, COLOR & INFRARED are stored in this order, we can eliminate other
     // value, and default one.
@@ -1022,7 +1022,7 @@ void SScan::grab()
     }
 
     // We want the points object to be persistent so we can display the last cloud when a frame drops
-    ::rs2::points points;
+    rs2::points points;
 
     while(m_running)
     {
@@ -1046,7 +1046,7 @@ void SScan::grab()
             auto depth = frames.get_depth_frame();
             auto color = frames.get_color_frame();
             auto infra = frames.get_infrared_frame();
-            ::rs2::frame mapframe, colorOrInfra;
+            rs2::frame mapframe, colorOrInfra;
 
             // push infrared in color TL if needed.
             m_switchInfra2Color ? colorOrInfra = infra : colorOrInfra = color;
@@ -1266,7 +1266,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 
 //-----------------------------------------------------------------------------
 
-void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture)
+void SScan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture)
 {
     auto pointcloud = m_pointCloudOutput.lock();
 

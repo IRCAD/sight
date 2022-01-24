@@ -210,7 +210,7 @@ private:
     double m_initialLevel {0.f};
 
     /// Defines the mouse position at the time the windowing interaction started.
-    ::Ogre::Vector2i m_initialPos {-1, -1};
+    Ogre::Vector2i m_initialPos {-1, -1};
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";

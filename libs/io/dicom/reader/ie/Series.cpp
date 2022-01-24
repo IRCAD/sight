@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ namespace ie
 
 Series::Series(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Series::sptr& series,
     const core::log::Logger::sptr& logger,
@@ -70,7 +70,7 @@ Series::~Series()
 void Series::readGeneralSeriesModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     const std::string& modality = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0060>(dataset);
     m_object->setModality(modality);
@@ -95,7 +95,7 @@ void Series::readGeneralSeriesModule()
     if(!performingPhysicianNamesStr.empty())
     {
         data::DicomValuesType performingPhysicianNames;
-        ::boost::split(performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
+        boost::split(performingPhysicianNames, performingPhysicianNamesStr, boost::is_any_of("\\"));
         m_object->setPerformingPhysiciansName(performingPhysicianNames);
     }
 

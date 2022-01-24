@@ -125,7 +125,7 @@ void SNegato2D::starting()
     }
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         sight::viz::scene3d::RESOURCE_GROUP,
         true
@@ -163,7 +163,7 @@ void SNegato2D::stopping()
 
     m_plane.reset();
 
-    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
+    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
@@ -367,7 +367,7 @@ service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
+void SNegato2D::createPlane(const Ogre::Vector3& _spacing)
 {
     this->getRenderService()->makeCurrent();
 

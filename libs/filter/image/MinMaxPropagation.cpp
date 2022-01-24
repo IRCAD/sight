@@ -259,7 +259,7 @@ struct MinMaxPropagator
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
+        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
         typedef MinMaxPropagCriterion<ImageType> CriterionType;
 
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.inputImage);
@@ -281,7 +281,7 @@ struct MinMaxPropagator
         criterion->SetInputImage(itkImage);
         criterion->setParams(params.roi, itkSeeds, params.radius, params.overwrite, params.mode);
 
-        ::itk::FloodFilledImageFunctionConditionalIterator<ImageType, CriterionType> iter(
+        itk::FloodFilledImageFunctionConditionalIterator<ImageType, CriterionType> iter(
             itkImage, criterion, itkSeeds);
 
         const auto dumpLock = params.outputImage->lock();

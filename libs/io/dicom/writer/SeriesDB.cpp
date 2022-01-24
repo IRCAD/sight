@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ SeriesDB::~SeriesDB()
 void SeriesDB::write()
 {
 //    // Disable GDCM Warnings
-//    ::gdcm::Trace::SetWarning(false);
+//    gdcm::Trace::SetWarning(false);
 
     data::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SIGHT_ASSERT("SeriesDB not instanced", seriesDB);
@@ -79,7 +79,7 @@ void SeriesDB::write()
 
         // Forward event progress to its parents
         core::tools::ProgressAdviser::ProgessHandler handler =
-            std::bind(&Series::notifyProgress, this, ::std::placeholders::_1, ::std::placeholders::_2);
+            std::bind(&Series::notifyProgress, this, std::placeholders::_1, std::placeholders::_2);
         writer->addHandler(handler);
 
         // Write a series

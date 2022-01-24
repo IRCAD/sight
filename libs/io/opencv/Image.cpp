@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
+static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 {
     const auto imageType = _image->getType();
     const auto imageComp = _image->numComponents();
@@ -51,22 +51,22 @@ static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     if(cvSize.size() == 1)
     {
-        // If we have a single row, we want to initialize the ::cv::Math with (1, N) since it takes (rows,cols)
+        // If we have a single row, we want to initialize the cv::Math with (1, N) since it takes (rows,cols)
         cvSize.push_back(1);
     }
 
     // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
     std::reverse(cvSize.begin(), cvSize.end());
 
-    ::cv::Mat cvImage;
+    cv::Mat cvImage;
     if(_copy)
     {
-        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
+        cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
         cvImage = mat.clone();
     }
     else
     {
-        cvImage = ::cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
+        cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
     }
 
     return cvImage;
@@ -74,21 +74,21 @@ static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::moveToCv(data::Image::sptr& _image)
+cv::Mat Image::moveToCv(data::Image::sptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-const ::cv::Mat Image::moveToCv(const data::Image::csptr& _image)
+const cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
+void Image::copyFromCv(data::Image& _image, const cv::Mat& _cvImage)
 {
     const auto prevImageType = _image.getType();
     const auto prevImageComp = _image.numComponents();
@@ -161,7 +161,7 @@ void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::copyToCv(const data::Image::csptr& _image)
+cv::Mat Image::copyToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, true);
 }

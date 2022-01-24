@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ PointListConverter::~PointListConverter()
             srcPoint->getCoord().begin(),
             srcPoint->getCoord().end(),
             pos,
-            ::boost::numeric_cast<double, float>
+            boost::numeric_cast<double, float>
         );
         elem = ::igtl::PointElement::New();
         elem->SetPosition(pos);
@@ -99,7 +99,7 @@ data::Object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase
             &igtlPos[0],
             &igtlPos[3],
             fwPoint->getCoord().begin(),
-            ::boost::numeric_cast<float, double>
+            boost::numeric_cast<float, double>
         );
         fwPoints.push_back(fwPoint);
     }

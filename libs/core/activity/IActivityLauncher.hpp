@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class ACTIVITY_CLASS_API IActivityLauncher
 {
 public:
 
-    typedef ::boost::property_tree::ptree ConfigurationType;
+    typedef boost::property_tree::ptree ConfigurationType;
     typedef activity::extension::ActivityAppConfigParam ParameterType;
     typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;

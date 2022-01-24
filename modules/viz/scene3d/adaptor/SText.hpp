@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,13 +125,13 @@ private:
     sight::viz::scene3d::Text* m_text {nullptr};
 
     /// Defines the text's color.
-    ::Ogre::ColourValue m_textColor;
+    Ogre::ColourValue m_textColor;
 
     /// Defines the font size in points.
     size_t m_fontSize {16};
 
     /// Defines the position of the text.
-    ::Ogre::Vector2 m_position {0.f, 0.f};
+    Ogre::Vector2 m_position {0.f, 0.f};
 
     /// Defines the vertical alignment type (top, center or bottom).
     std::string m_verticalAlignment;

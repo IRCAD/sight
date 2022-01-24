@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,8 +55,8 @@ CsvReader::~CsvReader()
 
 //------------------------------------------------------------------------------
 
-typedef ::boost::char_separator<char> CharSeparatorType;
-typedef ::boost::tokenizer<CharSeparatorType> TokenizerType;
+typedef boost::char_separator<char> CharSeparatorType;
+typedef boost::tokenizer<CharSeparatorType> TokenizerType;
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ CsvReader::TokenContainerType CsvReader::getLine(const std::string& separator)
 {
     std::string line;
     TokenContainerType tokens;
-    const CharSeparatorType sep(separator.c_str(), "", ::boost::keep_empty_tokens);
+    const CharSeparatorType sep(separator.c_str(), "", boost::keep_empty_tokens);
 
     if(std::getline(m_stream, line))
     {

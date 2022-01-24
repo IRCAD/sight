@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ void MemoryConsumption::configuring()
     if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))
     {
         std::string value = consumptionCfg->getAttributeValue("value");
-        size_t sizeInMo   = ::boost::lexical_cast<size_t>(value);
+        size_t sizeInMo   = boost::lexical_cast<size_t>(value);
         m_memorySizeInBytes = sizeInMo * 1024 * 1024;
     }
 }

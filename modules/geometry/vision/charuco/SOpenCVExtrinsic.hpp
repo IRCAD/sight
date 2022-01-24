@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,8 +120,8 @@ private:
      * @return true if a degenerateConfiguration is detected, false otherwise.
      */
     bool checkDegeneratedConfiguration(
-        const std::vector< ::cv::Point2f>& _undistortedPoints,
-        const std::vector< ::cv::Point2f>& _boardCoords,
+        const std::vector<cv::Point2f>& _undistortedPoints,
+        const std::vector<cv::Point2f>& _boardCoords,
         const cv::Size& _boardSize
     );
 

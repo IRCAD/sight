@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,12 +48,12 @@ public:
     /// Numeric type used for internal computations.
     typedef double RealType;
 
-    typedef typename ::itk::Image<float, 3> RegisteredImageType;
+    typedef typename itk::Image<float, 3> RegisteredImageType;
 
-    typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
+    typedef typename itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
 
     /// Shrink factors per level and smoothing sigmas per level
-    typedef std::vector<std::pair< ::itk::SizeValueType, RealType> > MultiResolutionParametersType;
+    typedef std::vector<std::pair<itk::SizeValueType, RealType> > MultiResolutionParametersType;
 
     typedef std::function<void ()> IterationCallbackType;
 
@@ -98,19 +98,19 @@ public:
     FILTER_IMAGE_API RealType getGradientMagnitudeTolerance() const;
 
     /// Current optimizer iteration.
-    FILTER_IMAGE_API ::itk::SizeValueType getCurrentIteration() const;
+    FILTER_IMAGE_API itk::SizeValueType getCurrentIteration() const;
 
     /// Current multi-resolution level.
-    FILTER_IMAGE_API ::itk::SizeValueType getCurrentLevel() const;
+    FILTER_IMAGE_API itk::SizeValueType getCurrentLevel() const;
 
     /// Current registration result.
     FILTER_IMAGE_API void getCurrentMatrix(const data::Matrix4::sptr& _trf) const;
 
 private:
 
-    typedef typename ::itk::Euler3DTransform<RealType> TransformType;
+    typedef typename itk::Euler3DTransform<RealType> TransformType;
 
-    typedef typename ::itk::ImageRegistrationMethodv4<RegisteredImageType, RegisteredImageType, TransformType>
+    typedef typename itk::ImageRegistrationMethodv4<RegisteredImageType, RegisteredImageType, TransformType>
         RegistrationMethodType;
 
     OptimizerType::Pointer m_optimizer {nullptr};

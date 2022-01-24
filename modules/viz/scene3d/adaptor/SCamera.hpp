@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,19 +129,19 @@ private:
     void updateTF3D();
 
     /// Defines the near clipping plane position.
-    void setNearClipDistance(::Ogre::Real _nearClipDistance);
+    void setNearClipDistance(Ogre::Real _nearClipDistance);
 
     /// Defines the far clipping plane position.
-    void setFarClipDistance(::Ogre::Real _farClipDistance);
+    void setFarClipDistance(Ogre::Real _farClipDistance);
 
     /// Defines the aspect ratio.
-    void setAspectRatio(::Ogre::Real _ratio);
+    void setAspectRatio(Ogre::Real _ratio);
 
     /// Contains the Ogre camera managed by this adaptor.
-    ::Ogre::Camera* m_camera {nullptr};
+    Ogre::Camera* m_camera {nullptr};
 
     /// Defines the aspect ratio for the frustum viewport.
-    ::Ogre::Real m_aspectRatio {0.f};
+    Ogre::Real m_aspectRatio {0.f};
 
     /// Handles connection with the layer.
     core::com::helper::SigSlotConnection m_layerConnection;

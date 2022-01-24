@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "core/jobs/Job.hpp"
 
 #include "core/jobs/exception/Waiting.hpp"
+
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
@@ -88,7 +89,7 @@ IJob::SharedFuture Job::runImpl()
         this->finish();
     }
 
-    return ::std::async([](){});
+    return std::async([](){});
 }
 
 //------------------------------------------------------------------------------

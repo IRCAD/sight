@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,7 +105,7 @@ protected:
 private:
 
     /// Updates parameter according to the attached data::Object.
-    void updateValue(::Ogre::MaterialPtr& _mat);
+    void updateValue(Ogre::MaterialPtr& _mat);
 
     /// Defines the material name.
     std::string m_compositorName;
@@ -114,7 +114,7 @@ private:
     CompositorListener* m_listener;
 
     /// Contains the compositor we work on.
-    ::Ogre::CompositorInstance* m_compositor;
+    Ogre::CompositorInstance* m_compositor;
 
     friend class CompositorListener;
 };

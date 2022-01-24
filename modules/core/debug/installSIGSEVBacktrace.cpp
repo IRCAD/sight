@@ -172,7 +172,7 @@ BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG
 #endif
 {
     std::list<std::string>* pLoadedModules = reinterpret_cast<std::list<std::string>*>(UserContext);
-    pLoadedModules->push_back(std::string((char*) ModuleName) + "\t" + ::boost::lexical_cast<std::string>(ModuleBase));
+    pLoadedModules->push_back(std::string((char*) ModuleName) + "\t" + boost::lexical_cast<std::string>(ModuleBase));
     return true;
 }
 
@@ -290,14 +290,14 @@ void LoadCallStack(
             UnDecorateSymbolName(pSymbol->Name, undecoratedName, MAX_SYM_NAME, UNDNAME_COMPLETE);
             callStack.push_back(
                 std::string((char*) undecoratedName) + "+"
-                + ::boost::lexical_cast<std::string>(symDisplacement)
+                + boost::lexical_cast<std::string>(symDisplacement)
             );
 
             if(SymGetLineFromAddr64(hProcess, tempStackFrame.AddrPC.Offset, &lineDisplacement, &lineInfo))
             {
                 fileStack.push_back(
                     std::string(lineInfo.FileName) + "\tl:"
-                    + ::boost::lexical_cast<std::string>(lineInfo.LineNumber)
+                    + boost::lexical_cast<std::string>(lineInfo.LineNumber)
                 );
             }
             else

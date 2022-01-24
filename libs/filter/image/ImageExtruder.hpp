@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,9 +82,9 @@ private:
     /// Represents a 3D triangle by three points.
     struct Triangle
     {
-        const ::glm::vec3 a;
-        const ::glm::vec3 b;
-        const ::glm::vec3 c;
+        const glm::vec3 a;
+        const glm::vec3 b;
+        const glm::vec3 c;
     };
 };
 

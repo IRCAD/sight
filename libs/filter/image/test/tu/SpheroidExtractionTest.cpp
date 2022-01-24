@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace sight::filter::image
 namespace ut
 {
 
-typedef ::itk::Image<std::int16_t, 3> ImageType;
+typedef itk::Image<std::int16_t, 3> ImageType;
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ static void plantSphere(ImageType::Pointer _image, const double radius[3], const
 
     imageFilter->Update();
 
-    typedef typename ::itk::OrImageFilter<ImageType, ImageType> OrFilterType;
+    typedef typename itk::OrImageFilter<ImageType, ImageType> OrFilterType;
 
     typename OrFilterType::Pointer orFilter = OrFilterType::New();
     orFilter->SetInput1(_image);

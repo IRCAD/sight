@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -211,7 +211,7 @@ void DicomSeriesCampTest::propertiesTest()
     ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_comments", performedProcedureComments);
 
     // Number of instances
-    ::std::stringstream ss;
+    std::stringstream ss;
     ss << obj->numInstances();
     ::DataCampHelper::compareSimplePropertyValue(obj, "@number_of_instances", ss.str());
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,8 +32,8 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
-GenericTL<BUFFER_TYPE>::GenericTL ( data::Object::Key key ) :
+template<class BUFFER_TYPE>
+GenericTL<BUFFER_TYPE>::GenericTL(data::Object::Key key) :
     BufferTL(key),
     m_maxElementNum(~0u)
 {
@@ -41,22 +41,26 @@ GenericTL<BUFFER_TYPE>::GenericTL ( data::Object::Key key ) :
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
-GenericTL<BUFFER_TYPE>::~GenericTL ()
+template<class BUFFER_TYPE>
+GenericTL<BUFFER_TYPE>::~GenericTL()
 {
 }
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
 
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy(_source);
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
@@ -73,28 +77,30 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 CSPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
-GenericTL<BUFFER_TYPE>::getClosestBuffer( core::HiResClock::HiResClockType timestamp,
-                                          DirectionType direction) const
+GenericTL<BUFFER_TYPE>::getClosestBuffer(
+    core::HiResClock::HiResClockType timestamp,
+    DirectionType direction
+) const
 {
     CSPTR(data::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
-    return std::dynamic_pointer_cast< const BufferType >(buffer);
+    return std::dynamic_pointer_cast<const BufferType>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 CSPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
 GenericTL<BUFFER_TYPE>::getBuffer(core::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(data::timeline::Object) buffer = this->getObject(timestamp);
-    return std::dynamic_pointer_cast< const BufferType >(buffer);
+    return std::dynamic_pointer_cast<const BufferType>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 void GenericTL<BUFFER_TYPE>::initPoolSize(unsigned int maxElementNum)
 {
     m_maxElementNum = maxElementNum;
@@ -103,7 +109,7 @@ void GenericTL<BUFFER_TYPE>::initPoolSize(unsigned int maxElementNum)
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 SPTR(data::timeline::Object)
 GenericTL<BUFFER_TYPE>::createObject(core::HiResClock::HiResClockType timestamp)
 {
@@ -112,31 +118,32 @@ GenericTL<BUFFER_TYPE>::createObject(core::HiResClock::HiResClockType timestamp)
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 SPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
 GenericTL<BUFFER_TYPE>::createBuffer(core::HiResClock::HiResClockType timestamp)
 {
-    SPTR(BufferType) obj = std::make_shared< BufferType >(
-        m_maxElementNum, timestamp,
+    SPTR(BufferType) obj = std::make_shared<BufferType>(
+        m_maxElementNum,
+        timestamp,
         (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
-        ::boost::bind( &::boost::pool<>::free, m_pool, _1)
-        );
+        boost::bind(&boost::pool<>::free, m_pool, _1)
+    );
     return obj;
 }
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 bool GenericTL<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::Object)& obj) const
 {
-    CSPTR(BufferType) srcObj = std::dynamic_pointer_cast< const BufferType >(obj);
+    CSPTR(BufferType) srcObj = std::dynamic_pointer_cast<const BufferType>(obj);
     return srcObj != NULL;
 }
 
 //------------------------------------------------------------------------------
 
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 unsigned int GenericTL<BUFFER_TYPE>::getMaxElementNum() const
 {
     return m_maxElementNum;

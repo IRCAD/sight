@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,10 +58,10 @@ MemoryArchiveSink::~MemoryArchiveSink()
 void MemoryArchiveSink::archive()
 {
     size_t size;
-    ::boost::posix_time::ptime now = ::boost::date_time::not_a_date_time;
+    boost::posix_time::ptime now = boost::date_time::not_a_date_time;
 
     struct archive_entry* entry = archive_entry_new();
-    now = ::boost::posix_time::microsec_clock::universal_time();
+    now = boost::posix_time::microsec_clock::universal_time();
     archive_entry_set_pathname(entry, m_path.string().c_str());
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);
@@ -185,9 +185,9 @@ bool MemoryWriteArchive::createDir(const std::filesystem::path& path)
 
 SPTR(std::ostream) MemoryWriteArchive::createFile(const std::filesystem::path& path)
 {
-    SPTR(::boost::iostreams::stream<MemoryArchiveSink>) os;
+    SPTR(boost::iostreams::stream<MemoryArchiveSink>) os;
 
-    os = std::make_shared< ::boost::iostreams::stream<MemoryArchiveSink> >(m_archive, path);
+    os = std::make_shared<boost::iostreams::stream<MemoryArchiveSink> >(m_archive, path);
     m_sinks.push_back(os);
     return os;
 }

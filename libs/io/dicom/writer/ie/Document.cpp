@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Document::Document(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image,
     bool use3DSR,
@@ -76,9 +76,9 @@ Document::~Document()
 void Document::writeSRDocumentGeneralModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    ::boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
 
     // Instance Number - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(0, dataset);
@@ -109,47 +109,47 @@ void Document::writeSRDocumentGeneralModule()
 void Document::writePertinentOtherEvidenceSequence()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Pertinent Other Evidence Sequence - Type 1C
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
     sequence->SetLengthToUndefined();
     io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0040, 0xa385>(dataset);
 
     // Add new study to sequence
-    ::gdcm::Item studyItem;
+    gdcm::Item studyItem;
     studyItem.SetVLToUndefined();
-    ::gdcm::DataSet& studyItemDataset = studyItem.GetNestedDataSet();
+    gdcm::DataSet& studyItemDataset = studyItem.GetNestedDataSet();
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000D>(
         m_instance->getStudyInstanceUID(),
         studyItemDataset
     );
 
     // Referenced Series Sequence - Type 1
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> seriesSequence = new ::gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> seriesSequence = new gdcm::SequenceOfItems();
     seriesSequence->SetLengthToUndefined();
     io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1115>(seriesSequence, studyItemDataset);
 
     // Add new series to sequence
-    ::gdcm::Item seriesItem;
+    gdcm::Item seriesItem;
     seriesItem.SetVLToUndefined();
-    ::gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
+    gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000E>(
         m_instance->getSeriesInstanceUID(),
         seriesItemDataset
     );
 
     // Referenced SOP Sequence - Type 1
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sopSequence = new ::gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> sopSequence = new gdcm::SequenceOfItems();
     sopSequence->SetLengthToUndefined();
     io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1199>(sopSequence, seriesItemDataset);
 
     for(const std::string& instanceUID : m_instance->getSOPInstanceUIDContainer())
     {
         // Add new instance to sequence
-        ::gdcm::Item instanceItem;
+        gdcm::Item instanceItem;
         instanceItem.SetVLToUndefined();
-        ::gdcm::DataSet& instanceItemDataset = instanceItem.GetNestedDataSet();
+        gdcm::DataSet& instanceItemDataset = instanceItem.GetNestedDataSet();
 
         // Referenced SOP Class UID - Type 1
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(
@@ -172,7 +172,7 @@ void Document::writePertinentOtherEvidenceSequence()
 void Document::writeSRDocumentContentModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Create SR Root node
     io::dicom::writer::tid::MeasurementReport report(m_writer, m_instance, m_object);
@@ -188,25 +188,25 @@ void Document::writeSRDocumentContentModule()
 void Document::writeSOPCommonModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Class UID
     std::string sopClassUID;
     if(!m_use3DSR)
     {
-        sopClassUID = ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::ComprehensiveSR);
+        sopClassUID = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::ComprehensiveSR);
     }
     else
     {
         // FIXME Remove hard coded string
-        // sopClassUID = ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::Comprehensive3DSR);
+        // sopClassUID = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::Comprehensive3DSR);
         sopClassUID = "1.2.840.10008.5.1.4.1.1.88.34";
     }
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0016>(sopClassUID, dataset);
 
     // SOP Instance UID
-    ::gdcm::UIDGenerator uidGenerator;
+    gdcm::UIDGenerator uidGenerator;
     std::string sopInstanceUID = uidGenerator.Generate();
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0018>(sopInstanceUID, dataset);
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,11 +42,11 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     // Redirect Ogre Log to Sight Log.
-    m_logManager = new ::Ogre::LogManager();
+    m_logManager = new Ogre::LogManager();
     m_log        = m_logManager->createLog("Ogre.log", true, false, false);
     m_listener   = new SightOgreListener();
     m_log->addListener(m_listener);
-    m_log->setLogDetail(::Ogre::LL_BOREME);
+    m_log->setLogDetail(Ogre::LL_BOREME);
 }
 
 //------------------------------------------------------------------------------
@@ -61,10 +61,10 @@ void Plugin::stop() noexcept
 //------------------------------------------------------------------------------
 
 void SightOgreListener::messageLogged(
-    const ::Ogre::String& _message,
-    ::Ogre::LogMessageLevel _lml,
+    const Ogre::String& _message,
+    Ogre::LogMessageLevel _lml,
     bool,
-    const ::Ogre::String&,
+    const Ogre::String&,
     bool& _skipThisMessage
 )
 {
@@ -72,19 +72,19 @@ void SightOgreListener::messageLogged(
     {
         switch(_lml)
         {
-            case ::Ogre::LML_TRIVIAL:
+            case Ogre::LML_TRIVIAL:
                 SIGHT_INFO(_message);
                 break;
 
-            case ::Ogre::LML_NORMAL:
+            case Ogre::LML_NORMAL:
                 SIGHT_DEBUG(_message);
                 break;
 
-            case ::Ogre::LML_WARNING:
+            case Ogre::LML_WARNING:
                 SIGHT_WARN(_message);
                 break;
 
-            case ::Ogre::LML_CRITICAL:
+            case Ogre::LML_CRITICAL:
                 SIGHT_ERROR(_message);
                 break;
         }

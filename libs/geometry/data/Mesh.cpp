@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,11 +32,11 @@
 
 #include <geometry/data/MeshFunctions.hpp>
 
+#include <boost/multi_array/multi_array_ref.hpp>
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-
-#include <boost/multi_array/multi_array_ref.hpp>
 
 #include <cstdlib>
 #include <ctime>
@@ -416,7 +416,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
             static_cast<NormalsMultiArrayType::element*>(buf),
-            ::boost::extents[nbOfNormals]
+            boost::extents[nbOfNormals]
         );
 
         sight::data::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);

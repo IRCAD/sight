@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void SRecurrentSignal::configuring()
     SIGHT_WARN_IF("Missing \"timeStep\" tag.", !timeStepConfig);
     if(timeStepConfig)
     {
-        m_timeStep = ::boost::lexical_cast<unsigned int>(timeStepConfig->getValue());
+        m_timeStep = boost::lexical_cast<unsigned int>(timeStepConfig->getValue());
     }
 }
 

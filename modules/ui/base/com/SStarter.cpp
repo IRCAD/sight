@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void SStarter::stopping()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
-    for(VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices))
+    for(VectPairIDActionType::value_type serviceUid : boost::adaptors::reverse(m_uuidServices))
     {
         bool srv_exists = core::tools::fwID::exist(serviceUid.first);
         if(srv_exists && (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()))
@@ -75,7 +75,7 @@ void SStarter::stopping()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
     this->actionServiceStopping();
 }

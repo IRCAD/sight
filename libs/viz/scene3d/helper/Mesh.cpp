@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,15 +34,15 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-void Mesh::copyColors(::Ogre::RGBA* _dest, const std::uint8_t* _src, size_t _numPoints, size_t _numComponents)
+void Mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, size_t _numPoints, size_t _numComponents)
 {
     if(_numComponents == 3)
     {
         for(unsigned int i = 0 ; i < (_numPoints - 1) ; ++i)
         {
             // Fastest way to copy tested so far, take 1.0 in alpha as default
-            ::Ogre::RGBA argb = 0xFF000000;
-            argb    |= *reinterpret_cast<const ::Ogre::RGBA*>(_src);
+            Ogre::RGBA argb = 0xFF000000;
+            argb    |= *reinterpret_cast<const Ogre::RGBA*>(_src);
             *_dest++ = argb;
             _src    += 3;
         }

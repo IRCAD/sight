@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::viz::scene3d
 
 // ----------------------------------------------------------------------------
 
-void WindowManager::registerWindow(::Ogre::RenderWindow* _window)
+void WindowManager::registerWindow(Ogre::RenderWindow* _window)
 {
     if(m_windows.empty())
     {
@@ -43,13 +43,13 @@ void WindowManager::registerWindow(::Ogre::RenderWindow* _window)
 
 // ----------------------------------------------------------------------------
 
-void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
+void WindowManager::unregisterWindow(Ogre::RenderWindow* _window)
 {
     m_windows.erase(_window);
 
     if(_window != m_firstWindow)
     {
-        ::Ogre::Root* root = viz::scene3d::Utils::getOgreRoot();
+        Ogre::Root* root = viz::scene3d::Utils::getOgreRoot();
         SIGHT_ASSERT("Ogre root not found", root);
         root->destroyRenderTarget(_window);
     }

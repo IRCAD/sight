@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -171,9 +171,9 @@ void SPreferencesConfiguration::configuring()
             ConfigurationType valuesCfg = elt->findConfigurationElement("values");
             SIGHT_ASSERT("element 'values' is missing.", valuesCfg);
 
-            const ::boost::char_separator<char> sep(", ;");
+            const boost::char_separator<char> sep(", ;");
             const std::string s = valuesCfg->getValue();
-            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {s, sep};
+            const boost::tokenizer<boost::char_separator<char> > tokens {s, sep};
 
             pref.m_comboBox = new QComboBox();
             for(const std::string& value : tokens)

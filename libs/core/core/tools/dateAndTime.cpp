@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,9 +33,9 @@ namespace sight::core::tools
 
 //------------------------------------------------------------------------------
 
-::boost::gregorian::date strToBoostDate(const std::string& dateStr)
+boost::gregorian::date strToBoostDate(const std::string& dateStr)
 {
-    ::boost::gregorian::date resDate(::boost::gregorian::from_undelimited_string("19000101"));
+    boost::gregorian::date resDate(boost::gregorian::from_undelimited_string("19000101"));
     if(dateStr.size() < 8)
     {
         SIGHT_WARN(
@@ -54,7 +54,7 @@ namespace sight::core::tools
 
         if(std::regex_match(dateStr, isNumber))
         {
-            resDate = ::boost::gregorian::date(::boost::gregorian::from_undelimited_string(dateStr));
+            resDate = boost::gregorian::date(boost::gregorian::from_undelimited_string(dateStr));
         }
         else
         {
@@ -70,12 +70,12 @@ namespace sight::core::tools
 
 //------------------------------------------------------------------------------
 
-::boost::posix_time::time_duration strToBoostTime(const std::string& timeStr)
+boost::posix_time::time_duration strToBoostTime(const std::string& timeStr)
 {
-    using ::boost::posix_time::time_duration;
-    using ::boost::posix_time::hours;
-    using ::boost::posix_time::minutes;
-    using ::boost::posix_time::seconds;
+    using boost::posix_time::time_duration;
+    using boost::posix_time::hours;
+    using boost::posix_time::minutes;
+    using boost::posix_time::seconds;
 
     time_duration td;
     if(timeStr.size() < 6)
@@ -96,9 +96,9 @@ namespace sight::core::tools
         std::regex isNumber("[0-9]+");
         if(std::regex_match(timeStr, isNumber))
         {
-            std::uint16_t h = ::boost::lexical_cast<std::uint16_t>(timeStr.substr(0, 2));
-            std::uint16_t m = ::boost::lexical_cast<std::uint16_t>(timeStr.substr(2, 2));
-            std::uint16_t s = ::boost::lexical_cast<std::uint16_t>(timeStr.substr(4, 2));
+            std::uint16_t h = boost::lexical_cast<std::uint16_t>(timeStr.substr(0, 2));
+            std::uint16_t m = boost::lexical_cast<std::uint16_t>(timeStr.substr(2, 2));
+            std::uint16_t s = boost::lexical_cast<std::uint16_t>(timeStr.substr(4, 2));
             td = hours(h) + minutes(m) + seconds(s);
         }
         else
@@ -116,24 +116,24 @@ namespace sight::core::tools
 
 //------------------------------------------------------------------------------
 
-::boost::posix_time::ptime strToBoostDateAndTime(const std::string& dateStr, const std::string& timeStr)
+boost::posix_time::ptime strToBoostDateAndTime(const std::string& dateStr, const std::string& timeStr)
 {
-    return ::boost::posix_time::ptime(strToBoostDate(dateStr), strToBoostTime(timeStr));
+    return boost::posix_time::ptime(strToBoostDate(dateStr), strToBoostTime(timeStr));
 }
 
 //------------------------------------------------------------------------------
 
-std::string getDate(const ::boost::posix_time::ptime& dateAndTime)
+std::string getDate(const boost::posix_time::ptime& dateAndTime)
 {
-    std::string dateAndTimeStr = ::boost::posix_time::to_iso_string(dateAndTime);
+    std::string dateAndTimeStr = boost::posix_time::to_iso_string(dateAndTime);
     return dateAndTimeStr.substr(0, 8);
 }
 
 //------------------------------------------------------------------------------
 
-std::string getTime(const ::boost::posix_time::ptime& dateAndTime)
+std::string getTime(const boost::posix_time::ptime& dateAndTime)
 {
-    std::string dateAndTimeStr = ::boost::posix_time::to_iso_string(dateAndTime);
+    std::string dateAndTimeStr = boost::posix_time::to_iso_string(dateAndTime);
     return dateAndTimeStr.substr(9, 6);
 }
 
@@ -141,8 +141,8 @@ std::string getTime(const ::boost::posix_time::ptime& dateAndTime)
 
 std::string getCurrentTime()
 {
-    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    std::string nowStr             = ::boost::posix_time::to_simple_string(now);
+    boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+    std::string nowStr           = boost::posix_time::to_simple_string(now);
     return nowStr.substr(0, 21);
 }
 

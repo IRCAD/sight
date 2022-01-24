@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ public:
     MODULE_VIZ_SCENE3D_API ~SMaterial() noexcept override;
 
     /// Gets Ogre associated material.
-    MODULE_VIZ_SCENE3D_API ::Ogre::MaterialPtr getMaterial();
+    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();
 
     /// Gets material name.
     MODULE_VIZ_SCENE3D_API std::string getMaterialName() const;
@@ -235,9 +235,9 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::MaterialPtr SMaterial::getMaterial()
+inline Ogre::MaterialPtr SMaterial::getMaterial()
 {
-    return ::Ogre::MaterialManager::getSingleton().getByName(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
+    return Ogre::MaterialManager::getSingleton().getByName(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
 }
 
 //------------------------------------------------------------------------------

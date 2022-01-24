@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,7 +112,7 @@ Mesh::Mesh(const std::string& _name)
     m_binding[COLOUR]          = 0xFFFF;
     m_binding[TEXCOORD]        = 0xFFFF;
 
-    auto& meshMgr = ::Ogre::MeshManager::getSingleton();
+    auto& meshMgr = Ogre::MeshManager::getSingleton();
 
     // Create Mesh Data Structure
     const auto meshName = _name + "_Mesh";
@@ -135,7 +135,7 @@ Mesh::Mesh(const std::string& _name)
 Mesh::~Mesh()
 {
     // Destroy Ogre Mesh
-    auto& meshMgr = ::Ogre::MeshManager::getSingleton();
+    auto& meshMgr = Ogre::MeshManager::getSingleton();
     meshMgr.remove(m_ogreMesh->getHandle());
     meshMgr.remove(m_r2vbMesh->getHandle());
     m_ogreMesh.reset();
@@ -147,14 +147,14 @@ Mesh::~Mesh()
 void Mesh::bindLayer(
     const data::Mesh::csptr& _mesh,
     BufferBinding _binding,
-    ::Ogre::VertexElementSemantic _semantic,
-    ::Ogre::VertexElementType _type
+    Ogre::VertexElementSemantic _semantic,
+    Ogre::VertexElementType _type
 )
 {
-    ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SIGHT_ASSERT("Invalid vertex buffer binding", bind);
 
-    ::Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
+    Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
 
     // Create the buffer semantic if it does not exist.
     if(!vtxDecl->findElementBySemantic(_semantic))
@@ -165,7 +165,7 @@ void Mesh::bindLayer(
     }
 
     // Get requested buffer size and previous buffer size.
-    ::Ogre::HardwareVertexBufferSharedPtr cbuf;
+    Ogre::HardwareVertexBufferSharedPtr cbuf;
 
     const size_t uiNumVertices = _mesh->numPoints();
     size_t uiPrevNumVertices   = 0;
@@ -181,13 +181,13 @@ void Mesh::bindLayer(
         FW_PROFILE_AVG("REALLOC LAYER", 5);
 
         // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
-        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
-                                              ? ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                              : ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
+                                            ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                            : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
-        const size_t offset = ::Ogre::VertexElement::getTypeSize(_type);
+        const size_t offset = Ogre::VertexElement::getTypeSize(_type);
 
-        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+        Ogre::HardwareBufferManager& mgr = Ogre::HardwareBufferManager::getSingleton();
         cbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
         bind->setBinding(m_binding[_binding], cbuf);
     }
@@ -229,11 +229,11 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     // Create vertex data structure for all vertices shared between submeshes
     if(!m_ogreMesh->sharedVertexData)
     {
-        m_ogreMesh->sharedVertexData = new ::Ogre::VertexData();
+        m_ogreMesh->sharedVertexData = new Ogre::VertexData();
     }
 
-    ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t prevNumVertices            = 0;
+    Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    size_t prevNumVertices          = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
         prevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
@@ -265,31 +265,31 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
-        ::Ogre::HardwareVertexBufferSharedPtr vbuf;
-        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
-                                              ? ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                              : ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        Ogre::HardwareVertexBufferSharedPtr vbuf;
+        Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
+                                            ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                            : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
         size_t offset = 0;
 
         // Create declaration (memory format) of vertex data based on data::Mesh
-        ::Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
+        Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
 
         // Clear if necessary
         declMain->removeAllElements();
 
         // 1st buffer
-        declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
-        offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
+        declMain->addElement(m_binding[POSITION_NORMAL], offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+        offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
 
         if(m_hasNormal)
         {
-            declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
-            offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
+            declMain->addElement(m_binding[POSITION_NORMAL], offset, Ogre::VET_FLOAT3, Ogre::VES_NORMAL);
+            offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
         }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
-        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+        Ogre::HardwareBufferManager& mgr = Ogre::HardwareBufferManager::getSingleton();
         vbuf = mgr.createVertexBuffer(offset, numVertices, usage, false);
         bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
@@ -347,29 +347,29 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                     {
                         // Use r2vb pipeline for per-primitive color
                         m_subMesh                = m_r2vbMesh->createSubMesh(name);
-                        m_subMesh->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST_ADJ;
+                        m_subMesh->operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST_ADJ;
                     }
                     else
                     {
                         m_subMesh                = m_ogreMesh->createSubMesh(name);
-                        m_subMesh->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
+                        m_subMesh->operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST;
                     }
                 }
                 else if(cellType == data::Mesh::CellType::LINE)
                 {
                     m_subMesh                = m_ogreMesh->createSubMesh(name);
-                    m_subMesh->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
+                    m_subMesh->operationType = Ogre::RenderOperation::OT_LINE_LIST;
                 }
                 else if(cellType == data::Mesh::CellType::POINT)
                 {
                     m_subMesh                = m_ogreMesh->createSubMesh(name);
-                    m_subMesh->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
+                    m_subMesh->operationType = Ogre::RenderOperation::OT_POINT_LIST;
                 }
                 else if(cellType == data::Mesh::CellType::QUAD || cellType == data::Mesh::CellType::TETRA)
                 {
                     // Use r2vb pipeline to generate quads or tetrahedrons
                     m_subMesh                = m_r2vbMesh->createSubMesh(name);
-                    m_subMesh->operationType = ::Ogre::RenderOperation::OT_LINE_LIST_ADJ;
+                    m_subMesh->operationType = Ogre::RenderOperation::OT_LINE_LIST_ADJ;
                 }
 
                 m_subMesh->useSharedVertices     = true;
@@ -378,8 +378,8 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
             if(cellType != data::Mesh::CellType::POINT)
             {
-                ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMesh->indexData->indexBuffer;
-                const unsigned int numIndices             = _mesh->numCells() * _mesh->getCellSize();
+                Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMesh->indexData->indexBuffer;
+                const unsigned int numIndices           = _mesh->numCells() * _mesh->getCellSize();
 
                 // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
                 // We don't reallocate if we have more space than requested
@@ -393,14 +393,14 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
                 if(createIndexBuffer)
                 {
-                    ::Ogre::HardwareBuffer::Usage usage = m_isDynamic
-                                                          ? ::Ogre::HardwareBuffer::
-                                                          HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                                          :
-                                                          ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+                    Ogre::HardwareBuffer::Usage usage = m_isDynamic
+                                                        ? Ogre::HardwareBuffer::
+                                                        HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                                        :
+                                                        Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
-                    ibuf = ::Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
-                        indices32Bits ? ::Ogre::HardwareIndexBuffer::IT_32BIT : ::Ogre::HardwareIndexBuffer::IT_16BIT,
+                    ibuf = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
+                        indices32Bits ? Ogre::HardwareIndexBuffer::IT_32BIT : Ogre::HardwareIndexBuffer::IT_16BIT,
                         numIndices,
                         usage
                     );
@@ -412,7 +412,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                 SIGHT_DEBUG("Index #" << m_subMesh->indexData->indexCount);
 
                 // Lock index data, we are going to write into it in the next loop
-                indexBuffer = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+                indexBuffer = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
                 if(indices32Bits)
                 {
@@ -454,11 +454,11 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
     // Create vertex data structure for all vertices shared between submeshes
     if(!m_ogreMesh->sharedVertexData)
     {
-        m_ogreMesh->sharedVertexData = new ::Ogre::VertexData();
+        m_ogreMesh->sharedVertexData = new Ogre::VertexData();
     }
 
-    ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t uiPrevNumVertices          = 0;
+    Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    size_t uiPrevNumVertices        = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
         uiPrevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
@@ -473,25 +473,25 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
-        ::Ogre::HardwareVertexBufferSharedPtr vbuf;
-        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
-                                              ? ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                              : ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        Ogre::HardwareVertexBufferSharedPtr vbuf;
+        Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
+                                            ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                            : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
         size_t offset = 0;
 
         // Create declaration (memory format) of vertex data based on data::Mesh
-        ::Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
+        Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
 
         // Clear if necessary
         declMain->removeAllElements();
 
         // 1st buffer
-        declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
-        offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
+        declMain->addElement(m_binding[POSITION_NORMAL], offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+        offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
-        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+        Ogre::HardwareBufferManager& mgr = Ogre::HardwareBufferManager::getSingleton();
         vbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
         bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
@@ -506,7 +506,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
         const size_t pointType = static_cast<size_t>(data::Mesh::CellType::POINT);
         m_cellType               = data::Mesh::CellType::POINT;
         m_subMesh                = m_ogreMesh->createSubMesh(std::to_string(pointType));
-        m_subMesh->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
+        m_subMesh->operationType = Ogre::RenderOperation::OT_POINT_LIST;
     }
 }
 
@@ -514,7 +514,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
 std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
     const data::Mesh::sptr& _mesh,
-    ::Ogre::SceneManager& _sceneMgr,
+    Ogre::SceneManager& _sceneMgr,
     const std::string& _materialName
 )
 {
@@ -535,7 +535,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
     {
         if(!m_r2vbMesh->sharedVertexData)
         {
-            m_r2vbMesh->sharedVertexData = new ::Ogre::VertexData();
+            m_r2vbMesh->sharedVertexData = new Ogre::VertexData();
         }
 
         *m_r2vbMesh->sharedVertexData->vertexBufferBinding = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
@@ -616,11 +616,11 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     FW_PROFILE_AVG("UPDATE VERTICES", 5);
 
     // Getting Vertex Buffer
-    ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
+    Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
 
     /// Upload the vertex data to the GPU
-    void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+    void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with data::Mesh
     const auto dumpLock = _mesh->lock();
@@ -693,7 +693,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
        && yMax > std::numeric_limits<position_t>::lowest()
        && zMax > std::numeric_limits<position_t>::lowest())
     {
-        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox(xMin, yMin, zMin, xMax, yMax, zMax));
+        m_ogreMesh->_setBounds(Ogre::AxisAlignedBox(xMin, yMin, zMin, xMax, yMax, zMax));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
@@ -702,10 +702,10 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
         if(valid)
         {
             m_ogreMesh->_setBoundingSphereRadius(
-                ::Ogre::Math::Sqrt(
-                    ::Ogre::Math::Sqr(xMax - xMin)
-                    + ::Ogre::Math::Sqr(yMax - yMin)
-                    + ::Ogre::Math::Sqr(zMax - zMin)
+                Ogre::Math::Sqrt(
+                    Ogre::Math::Sqr(xMax - xMin)
+                    + Ogre::Math::Sqr(yMax - yMin)
+                    + Ogre::Math::Sqr(zMax - zMin)
                 ) / 2
             );
         }
@@ -714,13 +714,13 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
             SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
 
             // This silent the problem so there is no crash in Ogre
-            m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
+            m_ogreMesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
         }
     }
     else
     {
         // An extent was not found or is NaN
-        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
+        m_ogreMesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
     }
 
     /// Notify Mesh object that it has been modified
@@ -734,11 +734,11 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
     FW_PROFILE_AVG("UPDATE VERTICES", 5);
 
     // Getting Vertex Buffer
-    ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
+    Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
 
     /// Upload the vertex data to the GPU
-    void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+    void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with data::Mesh
     const size_t uiStrideFloat = 3;
@@ -805,7 +805,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
         const float yMaxF = static_cast<float>(yMax);
         const float zMaxF = static_cast<float>(zMax);
 
-        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF));
+        m_ogreMesh->_setBounds(Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
@@ -818,10 +818,10 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
             const float zLenF = zMaxF - xMinF;
 
             m_ogreMesh->_setBoundingSphereRadius(
-                ::Ogre::Math::Sqrt(
-                    ::Ogre::Math::Sqr(xLenF)
-                    + ::Ogre::Math::Sqr(yLenF)
-                    + ::Ogre::Math::Sqr(zLenF)
+                Ogre::Math::Sqrt(
+                    Ogre::Math::Sqr(xLenF)
+                    + Ogre::Math::Sqr(yLenF)
+                    + Ogre::Math::Sqr(zLenF)
                 ) / 2.0f
             );
         }
@@ -830,13 +830,13 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
             SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
 
             // This silent the problem so there is no crash in Ogre
-            m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
+            m_ogreMesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
         }
     }
     else
     {
         // An extent was not found or is NaN
-        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
+        m_ogreMesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
     }
 
     /// Notify Mesh object that it has been modified
@@ -849,7 +849,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
 {
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
-    ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SIGHT_ASSERT("Invalid vertex buffer binding", bind);
 
     const bool hasVertexColor    = _mesh->has<data::Mesh::Attributes::POINT_COLORS>();
@@ -858,7 +858,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     // 1 - Initialization
     if(hasVertexColor)
     {
-        bindLayer(_mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_COLOUR);
+        bindLayer(_mesh, COLOUR, Ogre::VES_DIFFUSE, Ogre::VET_COLOUR);
     }
     else
     {
@@ -890,7 +890,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         {
             static std::uint64_t i = 0;
             m_perPrimitiveColorTextureName = "PerCellColorTexture_" + std::to_string(i++);
-            m_perPrimitiveColorTexture     = ::Ogre::TextureManager::getSingleton().create(
+            m_perPrimitiveColorTexture     = Ogre::TextureManager::getSingleton().create(
                 m_perPrimitiveColorTextureName,
                 viz::scene3d::RESOURCE_GROUP,
                 true
@@ -911,8 +911,8 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
                 width,
                 height,
                 1,
-                ::Ogre::PF_BYTE_RGBA,
-                ::Ogre::TEX_TYPE_2D,
+                Ogre::PF_BYTE_RGBA,
+                Ogre::TEX_TYPE_2D,
                 (m_isDynamic || m_isDynamicVertices)
             );
         }
@@ -933,9 +933,9 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     if(hasVertexColor)
     {
         // Source points
-        ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
-        ::Ogre::RGBA* pColor                       =
-            static_cast< ::Ogre::RGBA*>(cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD));
+        Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
+        Ogre::RGBA* pColor                       =
+            static_cast<Ogre::RGBA*>(cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
 
         // Destination
         const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::point::rgba>())->r;
@@ -950,10 +950,10 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     if(hasPrimitiveColor)
     {
         // Source cells
-        ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
-        pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-        const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        ::Ogre::RGBA* pColorDest         = reinterpret_cast< ::Ogre::RGBA*>(pixelBox.data);
+        Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
+        pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+        Ogre::RGBA* pColorDest         = reinterpret_cast<Ogre::RGBA*>(pixelBox.data);
 
         // Destination
         const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::cell::rgba>())->r;
@@ -984,14 +984,14 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
     if(m_hasUV)
     {
-        bindLayer(_mesh, TEXCOORD, ::Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
+        bindLayer(_mesh, TEXCOORD, Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
 
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
-        ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
-        void* pBuf                                  = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-        float* pUV                                  = static_cast<float*>(pBuf);
+        Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+        Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
+        void* pBuf                                = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        float* pUV                                = static_cast<float*>(pBuf);
 
         // Copy UV coordinates for each mesh point
         for(const auto& uv : _mesh->crange<data::iterator::point::uv>())
@@ -1010,7 +1010,7 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
 
 //-----------------------------------------------------------------------------
 
-void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
+void Mesh::clearMesh(Ogre::SceneManager& _sceneMgr)
 {
     // Destroy all the submeshes, but keep the two meshes alive
 
@@ -1097,11 +1097,11 @@ void Mesh::invalidateR2VB()
 
 //------------------------------------------------------------------------------
 
-bool Mesh::areBoundsValid(const ::Ogre::MeshPtr& _ogreMesh)
+bool Mesh::areBoundsValid(const Ogre::MeshPtr& _ogreMesh)
 {
-    const ::Ogre::AxisAlignedBox& bounds = _ogreMesh->getBounds();
-    const ::Ogre::Vector3& maximum       = bounds.getMaximum();
-    const ::Ogre::Vector3& minimum       = bounds.getMinimum();
+    const Ogre::AxisAlignedBox& bounds = _ogreMesh->getBounds();
+    const Ogre::Vector3& maximum       = bounds.getMaximum();
+    const Ogre::Vector3& minimum       = bounds.getMinimum();
 
     return !maximum.isNaN() && !minimum.isNaN()
            && !std::isinf(maximum[0]) && !std::isinf(maximum[1]) && !std::isinf(maximum[2])

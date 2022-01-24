@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,19 +89,19 @@ void SDepthImageMasking::updating()
         const auto depthImage = m_depthImage.lock();
         SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
 
-        const ::cv::Mat cvVideoImage = io::opencv::Image::moveToCv(videoImage.get_shared());
-        const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
+        const cv::Mat cvVideoImage = io::opencv::Image::moveToCv(videoImage.get_shared());
+        const cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
 
-        ::cv::Mat cvMaskedDepth;
+        cv::Mat cvMaskedDepth;
         cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
 
-        ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
+        cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
 
-        ::cv::Mat morphElem = ::cv::getStructuringElement(::cv::MORPH_ELLIPSE, ::cv::Size(7, 7));
-        ::cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
-        ::cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
+        cv::Mat morphElem = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
+        cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
+        cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
 
-        ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
+        cv::Mat cvMaskedVideo = cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
         cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
 
         auto foregroundImage = m_foregroundImage.lock();
@@ -130,22 +130,22 @@ void SDepthImageMasking::setBackground()
     if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE)
        && (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
     {
-        const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
+        const cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
         m_cvMaskImage = io::opencv::Image::moveToCv(maskImage.get_shared());
         if(m_cvMaskImage.channels() == 4)
         {
-            ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
+            cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
         }
         else if(m_cvMaskImage.channels() == 3)
         {
-            ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGR2GRAY);
+            cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGR2GRAY);
         }
 
         m_cvMaskImage = (m_cvMaskImage > 0);
 
         if(m_cvDepthMaskImage.empty())
         {
-            m_cvDepthMaskImage = ::cv::Mat::zeros(cvDepthImage.rows, cvDepthImage.cols, cvDepthImage.type());
+            m_cvDepthMaskImage = cv::Mat::zeros(cvDepthImage.rows, cvDepthImage.cols, cvDepthImage.type());
         }
 
         cvDepthImage.copyTo(m_cvDepthMaskImage, m_cvMaskImage);

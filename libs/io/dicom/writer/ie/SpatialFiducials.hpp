@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SpatialFiducials(
-        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::Image::csptr& series,
         const core::log::Logger::sptr& logger = nullptr,
@@ -88,12 +88,12 @@ protected:
      * @brief Write image landmarks into sequence
      * @throw(io::dicom::exception::Failed)
      */
-    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence);
+    void writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence);
 
     /**
      * @brief Write image distances into sequence
      */
-    void writeDistances(::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence);
+    void writeDistances(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence);
 
     /**
      * @brief Add a frame number to the referenced image sequence
@@ -103,7 +103,7 @@ protected:
      */
     void addReferencedImage(
         int frameNumber,
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> referencedImageSequence
+        gdcm::SmartPointer<gdcm::SequenceOfItems> referencedImageSequence
     );
 };
 

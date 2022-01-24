@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ RawMessage::RawDataType& RawMessage::getMessage()
 
 int RawMessage::GetBodyPackSize()
 {
-    return ::boost::numeric_cast<int>(sizeof(uint32_t) + m_msg.size());
+    return boost::numeric_cast<int>(sizeof(uint32_t) + m_msg.size());
 }
 
 //-----------------------------------------------------------------------------

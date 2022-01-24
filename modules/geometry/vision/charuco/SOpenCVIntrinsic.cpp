@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,20 +104,20 @@ void SOpenCVIntrinsic::updating()
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point2f> > cornersPoints;
+        std::vector<std::vector<cv::Point2f> > cornersPoints;
         std::vector<std::vector<int> > ids;
 
         {
             for(data::PointList::sptr capture : calInfo->getPointListContainer())
             {
-                std::vector< ::cv::Point2f> cdst;
+                std::vector<cv::Point2f> cdst;
                 std::vector<int> idst;
 
                 for(data::Point::csptr point : capture->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
                     cdst.push_back(
-                        ::cv::Point2f(
+                        cv::Point2f(
                             static_cast<float>(point->getCoord()[0]),
                             static_cast<float>(point->getCoord()[1])
                         )
@@ -132,13 +132,13 @@ void SOpenCVIntrinsic::updating()
 
         data::Image::sptr img = calInfo->getImageContainer().front();
 
-        ::cv::Mat cameraMatrix;
+        cv::Mat cameraMatrix;
         std::vector<double> distCoeffs;
-        std::vector< ::cv::Mat> rvecs;
-        std::vector< ::cv::Mat> tvecs;
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
+        std::vector<cv::Mat> rvecs;
+        std::vector<cv::Mat> tvecs;
+        cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
-        double err = ::cv::aruco::calibrateCameraCharuco(
+        double err = cv::aruco::calibrateCameraCharuco(
             cornersPoints,
             ids,
             m_board,
@@ -226,7 +226,7 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
         return;
     }
 
-    m_board = ::cv::aruco::CharucoBoard::create(
+    m_board = cv::aruco::CharucoBoard::create(
         static_cast<int>(m_width),
         static_cast<int>(m_height),
         m_squareSize,

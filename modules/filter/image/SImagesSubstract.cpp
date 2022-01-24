@@ -86,7 +86,7 @@ void SImagesSubstract::updating()
             ImageType::Pointer output;
 
             //Create filter
-            typedef ::itk::SubtractImageFilter<ImageType, ImageType, ImageType> SubtractImageFilterType;
+            typedef itk::SubtractImageFilter<ImageType, ImageType, ImageType> SubtractImageFilterType;
             SubtractImageFilterType::Pointer filter;
             filter = SubtractImageFilterType::New();
             assert(filter);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -451,8 +451,8 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
         }
 
         // Add 2 calibration info in ActivitySeries if not exist
-        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + ::boost::lexical_cast<std::string>(cameraIdx);
-        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + ::boost::lexical_cast<std::string>(cameraIdx);
+        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + boost::lexical_cast<std::string>(cameraIdx);
+        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + boost::lexical_cast<std::string>(cameraIdx);
 
         const auto activitySeries  = m_activitySeries.lock();
         data::Composite::sptr data = activitySeries->getData();

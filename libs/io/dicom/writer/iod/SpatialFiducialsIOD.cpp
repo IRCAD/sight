@@ -85,7 +85,7 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
     SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
-    SPTR(::gdcm::Writer) writer = std::make_shared< ::gdcm::Writer>();
+    SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());

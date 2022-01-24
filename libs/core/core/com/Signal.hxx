@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,34 +41,34 @@ namespace sight::core::com
 
 //------------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-typename Signal< R(A ...) >::sptr Signal< R(A ...) >::New()
+template<typename R, typename ... A>
+typename Signal<R(A ...)>::sptr Signal<R(A ...)>::New()
 {
-    return std::make_shared< Signal< R(A ...) > > ();
+    return std::make_shared<Signal<R(A ...)> >();
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-Connection Signal< R(A ...) >::connect( SlotBase::sptr slot )
+template<typename R, typename ... A>
+Connection Signal<R(A ...)>::connect(SlotBase::sptr slot)
 {
-    return this->connect< SignatureType >(slot);
+    return this->connect<SignatureType>(slot);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-void Signal< R(A ...) >::disconnect( SlotBase::sptr slot )
+template<typename R, typename ... A>
+void Signal<R(A ...)>::disconnect(SlotBase::sptr slot)
 {
     core::mt::ReadToWriteLock lock(m_connectionsMutex);
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter != m_connections.end())
+    if(iter != m_connections.end())
     {
-        SlotConnectionBase::sptr connection( iter->second.lock() );
-        SIGHT_ASSERT( "Connection has been previously destroyed", connection );
-        if (connection)
+        SlotConnectionBase::sptr connection(iter->second.lock());
+        SIGHT_ASSERT("Connection has been previously destroyed", connection);
+        if(connection)
         {
             core::mt::UpgradeToWriteLock writeLock(lock);
             connection->disconnectWeakLock();
@@ -77,22 +77,22 @@ void Signal< R(A ...) >::disconnect( SlotBase::sptr slot )
     }
     else
     {
-        SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "No such slot connected" ) );
+        SIGHT_THROW_EXCEPTION(core::com::exception::BadSlot("No such slot connected"));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-void Signal< R(A ...) >::disconnectAll()
+template<typename R, typename ... A>
+void Signal<R(A ...)>::disconnectAll()
 {
     core::mt::WriteLock lock(m_connectionsMutex);
 
     ConnectionMapType connections = m_connections;
 
-    for( const typename ConnectionMapType::value_type& conn : connections )
+    for(const typename ConnectionMapType::value_type& conn : connections)
     {
-        SlotConnectionBase::sptr connection( conn.second.lock() );
+        SlotConnectionBase::sptr connection(conn.second.lock());
 
         if(connection)
         {
@@ -103,15 +103,15 @@ void Signal< R(A ...) >::disconnectAll()
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-void Signal< R(A ...) >::emit( A ... a ) const
+template<typename R, typename ... A>
+void Signal<R(A ...)>::emit(A ... a) const
 {
     core::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
-    for ( iter = m_slots.begin(); iter != end; ++iter )
+    for(iter = m_slots.begin() ; iter != end ; ++iter)
     {
-        if ((*iter)->first)
+        if((*iter)->first)
         {
             (*iter)->second->run(a ...);
         }
@@ -120,15 +120,15 @@ void Signal< R(A ...) >::emit( A ... a ) const
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-void Signal< R(A ...) >::asyncEmit( A ... a ) const
+template<typename R, typename ... A>
+void Signal<R(A ...)>::asyncEmit(A ... a) const
 {
     core::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
-    for ( iter = m_slots.begin(); iter != end; ++iter )
+    for(iter = m_slots.begin() ; iter != end ; ++iter)
     {
-        if ((*iter)->first)
+        if((*iter)->first)
         {
             (*iter)->second->asyncRun(a ...);
         }
@@ -137,69 +137,67 @@ void Signal< R(A ...) >::asyncEmit( A ... a ) const
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-template< typename FROM_F >
-Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
+template<typename R, typename ... A>
+template<typename FROM_F>
+Connection Signal<R(A ...)>::connect(SlotBase::sptr slot)
 {
     {
         core::mt::ReadLock lock(m_connectionsMutex);
 
-        if(m_connections.find( slot ) != m_connections.end())
+        if(m_connections.find(slot) != m_connections.end())
         {
-            SIGHT_THROW_EXCEPTION( core::com::exception::AlreadyConnected("Slot already connected") );
+            SIGHT_THROW_EXCEPTION(core::com::exception::AlreadyConnected("Slot already connected"));
         }
     }
 
-    typedef SlotConnection< void ( A ... ) > ConnectionType;
+    typedef SlotConnection<void (A ...)> ConnectionType;
     Connection connection;
 
-    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
-    if ( sigArity == slot->arity() )
+    unsigned int sigArity = boost::function_types::function_arity<SignatureType>::value;
+    if(sigArity == slot->arity())
     {
-        SlotSptr slotToConnect = std::dynamic_pointer_cast< SlotRunType >(slot);
+        SlotSptr slotToConnect = std::dynamic_pointer_cast<SlotRunType>(slot);
         if(slotToConnect)
         {
             core::mt::WriteLock lock(m_connectionsMutex);
-            typename Signal< R( A ... ) >::sptr sig =
-                std::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
+            typename Signal<R(A ...)>::sptr sig =
+                std::dynamic_pointer_cast<Signal<R(A ...)> >(this->shared_from_this());
+            typename ConnectionType::sptr slotConnection = ConnectionType::New(sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
+            m_connections.insert(typename ConnectionMapType::value_type(slot, slotConnection));
             slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
         {
-            SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "Incompatible slot" ) );
+            SIGHT_THROW_EXCEPTION(core::com::exception::BadSlot("Incompatible slot"));
         }
     }
-    else if ( sigArity > slot->arity() )
+    else if(sigArity > slot->arity())
     {
-
-        typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename SPTR(WrappedSlotRunType) wrappedSlot = std::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typedef SlotRun<FROM_F> WrappedSlotRunType;
+        typename SPTR(WrappedSlotRunType) wrappedSlot = std::dynamic_pointer_cast<WrappedSlotRunType>(slot);
 
         if(wrappedSlot)
         {
             core::mt::WriteLock lock(m_connectionsMutex);
-            SlotSptr slotToConnect                  = Slot < Slot < void (A ...) > >::New(wrappedSlot);
-            typename Signal< R( A ... ) >::sptr sig =
-                std::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
+            SlotSptr slotToConnect              = Slot<Slot<void(A ...)> >::New(wrappedSlot);
+            typename Signal<R(A ...)>::sptr sig =
+                std::dynamic_pointer_cast<Signal<R(A ...)> >(this->shared_from_this());
+            typename ConnectionType::sptr slotConnection = ConnectionType::New(sig, slot, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
+            m_connections.insert(typename ConnectionMapType::value_type(slot, slotConnection));
             slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
         {
-            connection = this->connect< typename core::com::util::remove_last_arg< FROM_F >::type >( slot );
+            connection = this->connect<typename core::com::util::remove_last_arg<FROM_F>::type>(slot);
         }
-
     }
     else
     {
-        SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "Incompatible slot" ) );
+        SIGHT_THROW_EXCEPTION(core::com::exception::BadSlot("Incompatible slot"));
     }
 
     return connection;
@@ -207,26 +205,27 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ... A >
-Connection Signal< R( A ... ) >::getConnection( SlotBase::sptr slot, bool throws )
+template<typename R, typename ... A>
+Connection Signal<R(A ...)>::getConnection(SlotBase::sptr slot, bool throws)
 {
     core::mt::ReadLock lock(m_connectionsMutex);
     Connection connection;
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter == m_connections.end() )
+    if(iter == m_connections.end())
     {
         if(throws)
         {
-            SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "No such slot connected" ) );
+            SIGHT_THROW_EXCEPTION(core::com::exception::BadSlot("No such slot connected"));
         }
     }
     else
     {
         SlotConnectionBase::sptr slotConnection(iter->second);
-        connection = Connection( slotConnection );
+        connection = Connection(slotConnection);
     }
+
     return connection;
 }
 

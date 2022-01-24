@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,10 +97,10 @@ private:
     void updateCameraMatrix();
 
     /// Contains the scene node where all of manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores the entity associated to the marker mesh
-    ::Ogre::Entity* m_patientMesh {nullptr};
+    Ogre::Entity* m_patientMesh {nullptr};
 
     /// Resource used for the marker
     std::string m_patientMeshRc {"human.mesh"};

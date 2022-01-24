@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ class MemoryArchiveSource
 public:
 
     typedef char char_type;
-    typedef ::boost::iostreams::source_tag category;
+    typedef boost::iostreams::source_tag category;
 
     /**
      * @brief constructor
@@ -103,7 +103,7 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
     m_SIZE(size),
     m_BUFFER(buffer)
 {
-    SPTR(::boost::iostreams::stream<MemoryArchiveSource>) is;
+    SPTR(boost::iostreams::stream<MemoryArchiveSource>) is;
     std::string filename;
     struct archive_entry* entry;
     BufferSPtr fileContent;
@@ -127,7 +127,7 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
             fileContent = BufferSPtr(new std::vector<char>);
             filename    = std::string(archive_entry_pathname(entry));
             this->readEntry(fileContent);
-            is                  = std::make_shared< ::boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
+            is                  = std::make_shared<boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
             m_streams[filename] = is;
         }
     }

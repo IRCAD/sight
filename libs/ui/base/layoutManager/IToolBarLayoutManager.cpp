@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,7 +140,7 @@ void IToolBarLayoutManager::initialize(ConfigurationType configuration)
 
             if((*iter)->hasAttribute("size"))
             {
-                info.m_size = ::boost::lexical_cast<int>((*iter)->getExistingAttributeValue("size"));
+                info.m_size = boost::lexical_cast<int>((*iter)->getExistingAttributeValue("size"));
             }
 
             m_actionInfo.push_back(info);

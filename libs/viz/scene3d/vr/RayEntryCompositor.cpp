@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ RayEntryCompositor::RayEntryCompositor(
 ) :
     m_compositorName(_compositorName)
 {
-    auto& cm = ::Ogre::CompositorManager::getSingleton();
+    auto& cm = Ogre::CompositorManager::getSingleton();
     std::lock_guard<std::mutex> guard(s_compositorManagerLock);
 
     m_compositor = cm.getByName(m_compositorName, RESOURCE_GROUP);
@@ -97,61 +97,61 @@ RayEntryCompositor::RayEntryCompositor(
             const auto texTargetName = m_compositorName + "Texture" + schemeSuffix;
 
             auto* texDef = compTech->createTextureDefinition(texTargetName);
-            texDef->scope = ::Ogre::CompositionTechnique::TextureScope::TS_CHAIN;
-            texDef->formatList.push_back(::Ogre::PixelFormat::PF_FLOAT32_GR);
+            texDef->scope = Ogre::CompositionTechnique::TextureScope::TS_CHAIN;
+            texDef->formatList.push_back(Ogre::PixelFormat::PF_FLOAT32_GR);
             texDef->heightFactor = heightFactor;
             texDef->widthFactor  = widthFactor;
 
             auto* backFacesTargetPass = compTech->createTargetPass();
-            backFacesTargetPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_NONE);
+            backFacesTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
             backFacesTargetPass->setOutputName(texTargetName);
 
             auto* clearPass = backFacesTargetPass->createPass();
-            clearPass->setType(::Ogre::CompositionPass::PT_CLEAR);
-            clearPass->setClearBuffers(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH);
-            clearPass->setClearColour(::Ogre::ColourValue(0.f, 1.f, 1.f, 1.f));
+            clearPass->setType(Ogre::CompositionPass::PT_CLEAR);
+            clearPass->setClearBuffers(Ogre::FBT_COLOUR | Ogre::FBT_DEPTH);
+            clearPass->setClearColour(Ogre::ColourValue(0.f, 1.f, 1.f, 1.f));
 
             auto* backFacesPass = backFacesTargetPass->createPass();
             backFacesPass->setMaterialScheme(schemePrefix + "_BackFaces" + schemeSuffix);
-            backFacesPass->setType(::Ogre::CompositionPass::PT_RENDERSCENE);
+            backFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             backFacesPass->setFirstRenderQueue(_rqGroup);
             backFacesPass->setLastRenderQueue(_rqGroup);
 
             auto* frontFacesTargetPass = compTech->createTargetPass();
-            frontFacesTargetPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_NONE);
+            frontFacesTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
             frontFacesTargetPass->setOutputName(texTargetName);
 
             auto* frontFacesPass = frontFacesTargetPass->createPass();
             frontFacesPass->setMaterialScheme(schemePrefix + "_FrontFaces" + schemeSuffix);
-            frontFacesPass->setType(::Ogre::CompositionPass::PT_RENDERSCENE);
+            frontFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             frontFacesPass->setFirstRenderQueue(_rqGroup);
             frontFacesPass->setLastRenderQueue(_rqGroup);
 
             auto* backFacesMaxTargetPass = compTech->createTargetPass();
-            backFacesMaxTargetPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_NONE);
+            backFacesMaxTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
             backFacesMaxTargetPass->setOutputName(texTargetName);
 
             auto* backFacesMaxPass = backFacesMaxTargetPass->createPass();
             backFacesMaxPass->setMaterialScheme(schemePrefix + "_BackFacesMax" + schemeSuffix);
-            backFacesMaxPass->setType(::Ogre::CompositionPass::PT_RENDERSCENE);
+            backFacesMaxPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             backFacesMaxPass->setFirstRenderQueue(_rqGroup);
             backFacesMaxPass->setLastRenderQueue(_rqGroup);
 
             if(_enableMixedRendering)
             {
                 auto* frontFacesMinTargetPass = compTech->createTargetPass();
-                frontFacesMinTargetPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_NONE);
+                frontFacesMinTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
                 frontFacesMinTargetPass->setOutputName(texTargetName);
 
                 auto* frontFacesMinPass = frontFacesMinTargetPass->createPass();
                 frontFacesMinPass->setMaterialScheme(schemePrefix + "_FrontFacesMin" + schemeSuffix);
-                frontFacesMinPass->setType(::Ogre::CompositionPass::PT_RENDERSCENE);
+                frontFacesMinPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
                 frontFacesMinPass->setLastRenderQueue(compositor::Core::s_SURFACE_RQ_GROUP_ID);
             }
         }
 
         auto* outputTargetPass = compTech->getOutputTargetPass();
-        outputTargetPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+        outputTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
     }
 }
 
@@ -159,7 +159,7 @@ RayEntryCompositor::RayEntryCompositor(
 
 RayEntryCompositor::~RayEntryCompositor()
 {
-    auto& cm = ::Ogre::CompositorManager::getSingleton();
+    auto& cm = Ogre::CompositorManager::getSingleton();
 
     std::lock_guard<std::mutex> guard(s_compositorManagerLock);
     // If this is the last reference. (Plus the one kept by the manager)

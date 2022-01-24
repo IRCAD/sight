@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,7 +132,7 @@ bool IInteractor::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer, bool _
 
 // ----------------------------------------------------------------------------
 
-bool IInteractor::isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp)
+bool IInteractor::isInViewport(int _mouseX, int _mouseY, const Ogre::Viewport* const _vp)
 {
     const int top    = _vp->getActualTop();
     const int left   = _vp->getActualLeft();

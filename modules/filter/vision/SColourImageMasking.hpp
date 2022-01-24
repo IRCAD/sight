@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,13 +146,13 @@ private:
     float m_scaleFactor;
 
     /// Opencv scale factor.
-    ::cv::Size m_maskDownsize;
+    cv::Size m_maskDownsize;
 
     /// Opencv HSV lower value to threshold the image used during foreground color model learning step.
-    ::cv::Scalar m_lowerColor;
+    cv::Scalar m_lowerColor;
 
     /// Opencv HSV upper value to threshold the image used during foreground color model learning step.
-    ::cv::Scalar m_upperColor;
+    cv::Scalar m_upperColor;
 
     /// Noise level to add during the foreground learning step.
     double m_noise;

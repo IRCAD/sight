@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ struct PoolTestHandler
 
     void nextStep()
     {
-        ::std::this_thread::sleep_for(::std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         this->nextStepNoSleep();
     }
 
@@ -94,12 +94,12 @@ void PoolTest::basicTest()
 
         core::thread::Pool pool(1);
 
-        std::vector< ::std::shared_future<void> > futures;
-        futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
-        futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
-        futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+        std::vector<std::shared_future<void> > futures;
+        futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
+        futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
+        futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
         CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
         CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
@@ -111,13 +111,13 @@ void PoolTest::basicTest()
 
         core::thread::Pool pool(10);
 
-        std::vector< ::std::shared_future<void> > futures;
+        std::vector<std::shared_future<void> > futures;
         for(int i = 0 ; i < 50 ; ++i)
         {
-            futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+            futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
         CPPUNIT_ASSERT_EQUAL(50, handler.m_step);
         CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
@@ -131,7 +131,7 @@ void PoolTest::basicTest()
 
             for(int i = 0 ; i < 50 ; ++i)
             {
-                pool.post(::std::bind(&PoolTestHandler::nextStep, &handler));
+                pool.post(std::bind(&PoolTestHandler::nextStep, &handler));
             }
         }
         CPPUNIT_ASSERT_EQUAL(50, handler.m_step);
@@ -147,12 +147,12 @@ void PoolTest::defaultPoolTest()
     PoolTestHandler handler;
     core::thread::Pool& pool = core::thread::getDefaultPool();
 
-    std::vector< ::std::shared_future<void> > futures;
-    futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
-    futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
-    futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+    std::vector<std::shared_future<void> > futures;
+    futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
+    futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
+    futures.push_back(pool.post(std::bind(&PoolTestHandler::nextStep, &handler)));
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
     CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
     CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);

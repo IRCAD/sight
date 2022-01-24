@@ -104,7 +104,7 @@ void SSliceIndexDicomEditor::configuring()
     std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
     if(success)
     {
-        m_delay = ::boost::lexical_cast<std::size_t>(delayStr);
+        m_delay = boost::lexical_cast<std::size_t>(delayStr);
     }
 }
 

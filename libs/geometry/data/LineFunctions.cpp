@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ namespace sight::geometry::data
 
 bool getClosestPoints(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
 {
-    const ::glm::dvec3 pos1 = ::glm::make_vec3<double>(_ray1.first.data());
-    const ::glm::dvec3 dir1 = ::glm::make_vec3<double>(_ray1.second.data());
+    const glm::dvec3 pos1 = glm::make_vec3<double>(_ray1.first.data());
+    const glm::dvec3 dir1 = glm::make_vec3<double>(_ray1.second.data());
 
-    const ::glm::dvec3 pos2 = ::glm::make_vec3<double>(_ray2.first.data());
-    const ::glm::dvec3 dir2 = ::glm::make_vec3<double>(_ray2.second.data());
+    const glm::dvec3 pos2 = glm::make_vec3<double>(_ray2.first.data());
+    const glm::dvec3 dir2 = glm::make_vec3<double>(_ray2.second.data());
 
-    double dd    = ::glm::dot(dir1, dir2);
+    double dd    = glm::dot(dir1, dir2);
     double delta = 1.0 - dd * dd;
 
     if(delta < std::numeric_limits<double>::epsilon())
@@ -51,11 +51,11 @@ bool getClosestPoints(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointO
         return false;
     }
 
-    double t2 = (::glm::dot(dir2, pos1 - pos2) - ::glm::dot(dir1, pos1 - pos2) * dd) / delta;
-    double t1 = (-::glm::dot(dir1, pos1 - pos2) + ::glm::dot(dir2, pos1 - pos2) * dd) / delta;
+    double t2 = (glm::dot(dir2, pos1 - pos2) - glm::dot(dir1, pos1 - pos2) * dd) / delta;
+    double t1 = (-glm::dot(dir1, pos1 - pos2) + glm::dot(dir2, pos1 - pos2) * dd) / delta;
 
-    const ::glm::dvec3 pointOnThis   = pos1 + t1 * dir1;
-    const ::glm::dvec3 pointOnfwLine = pos2 + t2 * dir2;
+    const glm::dvec3 pointOnThis   = pos1 + t1 * dir1;
+    const glm::dvec3 pointOnfwLine = pos2 + t2 * dir2;
 
     _pointOnThis[0] = pointOnThis[0];
     _pointOnThis[1] = pointOnThis[1];
@@ -72,12 +72,12 @@ bool getClosestPoints(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointO
 
 fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point)
 {
-    const ::glm::dvec3 pos   = ::glm::make_vec3<double>(_ray.first.data());
-    const ::glm::dvec3 dir   = ::glm::make_vec3<double>(_ray.second.data());
-    const ::glm::dvec3 point = ::glm::make_vec3<double>(_point.data());
+    const glm::dvec3 pos   = glm::make_vec3<double>(_ray.first.data());
+    const glm::dvec3 dir   = glm::make_vec3<double>(_ray.second.data());
+    const glm::dvec3 point = glm::make_vec3<double>(_point.data());
 
-    double t              = ::glm::dot(point - pos, dir);
-    const ::glm::dvec3 pt = (pos + t * dir);
+    double t            = glm::dot(point - pos, dir);
+    const glm::dvec3 pt = (pos + t * dir);
 
     fwVec3d res;
     res[0] = pt[0];
@@ -91,11 +91,11 @@ fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point)
 
 bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _point)
 {
-    fwVec3d point          = getClosestPoint(_ray, _point);
-    const ::glm::dvec3 pt1 = ::glm::make_vec3<double>(_point.data());
-    const ::glm::dvec3 pt2 = ::glm::make_vec3<double>(point.data());
-    ::glm::dvec3 tmp       = pt1 - pt2;
-    double length          = ::glm::length(tmp);
+    fwVec3d point        = getClosestPoint(_ray, _point);
+    const glm::dvec3 pt1 = glm::make_vec3<double>(_point.data());
+    const glm::dvec3 pt2 = glm::make_vec3<double>(point.data());
+    glm::dvec3 tmp       = pt1 - pt2;
+    double length        = glm::length(tmp);
     return length <= _radius;
 }
 
@@ -110,10 +110,10 @@ bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _origin, const
         return false;
     }
 
-    const ::glm::dvec3 pt1 = ::glm::make_vec3<double>(_point.data());
-    const ::glm::dvec3 pt2 = ::glm::make_vec3<double>(pThis.data());
-    ::glm::dvec3 tmp       = pt1 - pt2;
-    double length          = ::glm::length(tmp);
+    const glm::dvec3 pt1 = glm::make_vec3<double>(_point.data());
+    const glm::dvec3 pt2 = glm::make_vec3<double>(pThis.data());
+    glm::dvec3 tmp       = pt1 - pt2;
+    double length        = glm::length(tmp);
 
     return length <= _radius;
 }

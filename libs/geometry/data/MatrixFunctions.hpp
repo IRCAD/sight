@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ GEOMETRY_DATA_API void multVecMatrix(const fwMatrix4x4& _matrix, const fwVec3d& 
 
 /**
  * @brief Compute a matrix rotation
- * @deprecated The function implementation seems very dodgy, prefer ::glm::yawPitchRoll() or ::glm::orientate4()
+ * @deprecated The function implementation seems very dodgy, prefer glm::yawPitchRoll() or glm::orientate4()
  *  @param [in]  _vecNorm
  *  @return rotation matrix
  *

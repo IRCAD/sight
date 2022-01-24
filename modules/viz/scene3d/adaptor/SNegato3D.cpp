@@ -160,15 +160,15 @@ void SNegato3D::starting()
     m_gpuTF->createTexture(this->getID());
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Negato3DTexture",
         sight::viz::scene3d::RESOURCE_GROUP,
         true
     );
 
     // Scene node's instantiation
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
     m_negatoSceneNode = transformNode->createChildSceneNode();
 
     // Instanciation of the planes
@@ -200,19 +200,19 @@ void SNegato3D::starting()
         this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
-        const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName(
+        const auto basicAmbientMat = Ogre::MaterialManager::getSingleton().getByName(
             "BasicAmbient",
             sight::viz::scene3d::RESOURCE_GROUP
         );
         auto crossMat = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
-        crossMat->setAmbient(::Ogre::ColourValue::Red);
-        crossMat->setDiffuse(::Ogre::ColourValue::Red);
+        crossMat->setAmbient(Ogre::ColourValue::Red);
+        crossMat->setDiffuse(Ogre::ColourValue::Red);
         crossMat->setDepthCheckEnabled(false);
         m_pickingCross->estimateVertexCount(4);
-        m_pickingCross->begin(crossMat, ::Ogre::RenderOperation::OT_LINE_LIST);
+        m_pickingCross->begin(crossMat, Ogre::RenderOperation::OT_LINE_LIST);
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
-            m_pickingCross->position(::Ogre::Vector3::ZERO);
+            m_pickingCross->position(Ogre::Vector3::ZERO);
         }
 
         m_pickingCross->end();
@@ -288,12 +288,12 @@ void SNegato3D::stopping()
     if(m_pickingCross)
     {
         auto crossMtl = m_pickingCross->getSection(0)->getMaterial();
-        ::Ogre::MaterialManager::getSingleton().remove(crossMtl);
+        Ogre::MaterialManager::getSingleton().remove(crossMtl);
 
         this->getSceneManager()->destroyManualObject(m_pickingCross);
     }
 
-    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
+    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
 
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
@@ -303,7 +303,7 @@ void SNegato3D::stopping()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin)
+void SNegato3D::createPlanes(const Ogre::Vector3& _spacing, const Ogre::Vector3& _origin)
 {
     // Fits the planes to the new texture
     for(const auto& plane : m_planes)
@@ -410,7 +410,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
     imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
 
-    const ::Ogre::Vector3 sliceIndices = {
+    const Ogre::Vector3 sliceIndices = {
         static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
         static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
         static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
@@ -613,7 +613,7 @@ void SNegato3D::moveSlices(int _x, int _y)
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
         pickedPt                     = (pickedPt - origin) / spacing;
 
-        const ::Ogre::Vector3i pickedPtI(pickedPt);
+        const Ogre::Vector3i pickedPtI(pickedPt);
         const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
                              (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
         sig->asyncEmit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
@@ -665,7 +665,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-std::optional< ::Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
+std::optional<Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
     SIGHT_ASSERT("Scene manager not created yet.", sceneManager);
@@ -693,7 +693,7 @@ std::optional< ::Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin)
+void SNegato3D::updatePickingCross(const Ogre::Vector3& _pickedPos, const Ogre::Vector3& _imgOrigin)
 {
     const float h = m_pickedPlane->getHeight();
     const float w = m_pickedPlane->getWidth();

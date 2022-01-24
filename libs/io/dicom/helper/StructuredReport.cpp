@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-SPTR(io::dicom::container::sr::DicomSRContainerNode) StructuredReport::readSR(const ::gdcm::DataSet& dataset)
+SPTR(io::dicom::container::sr::DicomSRContainerNode) StructuredReport::readSR(const gdcm::DataSet& dataset)
 {
     SPTR(io::dicom::container::sr::DicomSRContainerNode) result;
 
@@ -63,19 +63,19 @@ SPTR(io::dicom::container::sr::DicomSRContainerNode) StructuredReport::readSR(co
 //------------------------------------------------------------------------------
 
 void StructuredReport::readSubNodeContainer(
-    const ::gdcm::DataSet& dataset,
+    const gdcm::DataSet& dataset,
     SPTR(io::dicom::container::sr::DicomSRNode)parent
 )
 {
     // Retrieve the content sequence
-    if(dataset.FindDataElement(::gdcm::Tag(0x0040, 0xa730)))
+    if(dataset.FindDataElement(gdcm::Tag(0x0040, 0xa730)))
     {
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence =
-            dataset.GetDataElement(::gdcm::Tag(0x0040, 0xa730)).GetValueAsSQ();
+        gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
+            dataset.GetDataElement(gdcm::Tag(0x0040, 0xa730)).GetValueAsSQ();
 
         for(unsigned int i = 1 ; i <= sequence->GetNumberOfItems() ; ++i)
         {
-            const ::gdcm::DataSet& itemDataset = sequence->GetItem(i).GetNestedDataSet();
+            const gdcm::DataSet& itemDataset = sequence->GetItem(i).GetNestedDataSet();
             io::dicom::helper::StructuredReport::readSubNode(itemDataset, parent);
         }
     }
@@ -84,7 +84,7 @@ void StructuredReport::readSubNodeContainer(
 //------------------------------------------------------------------------------
 
 void StructuredReport::readSubNode(
-    const ::gdcm::DataSet& dataset,
+    const gdcm::DataSet& dataset,
     SPTR(io::dicom::container::sr::DicomSRNode)parent
 )
 {
@@ -115,13 +115,13 @@ void StructuredReport::readSubNode(
     else if(type == "NUM")
     {
         // Retrieve the measured value sequence
-        if(dataset.FindDataElement(::gdcm::Tag(0x0040, 0xa300)))
+        if(dataset.FindDataElement(gdcm::Tag(0x0040, 0xa300)))
         {
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence =
-                dataset.GetDataElement(::gdcm::Tag(0x0040, 0xa300)).GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
+                dataset.GetDataElement(gdcm::Tag(0x0040, 0xa300)).GetValueAsSQ();
             if(sequence->GetNumberOfItems() > 0)
             {
-                const ::gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
+                const gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
 
                 // Numerical value - Type 1
                 const double numValue =
@@ -144,8 +144,8 @@ void StructuredReport::readSubNode(
     else if(type == "SCOORD")
     {
         // Graphic Data - Type 1C
-        ::gdcm::Attribute<0x0070, 0x0022> graphicDataAttribute;
-        graphicDataAttribute.SetFromDataElement(dataset.GetDataElement(::gdcm::Tag(0x0070, 0x0022)));
+        gdcm::Attribute<0x0070, 0x0022> graphicDataAttribute;
+        graphicDataAttribute.SetFromDataElement(dataset.GetDataElement(gdcm::Tag(0x0070, 0x0022)));
         const float* graphicData = graphicDataAttribute.GetValues();
 
         // Graphic Type - Type 1
@@ -185,8 +185,8 @@ void StructuredReport::readSubNode(
             io::dicom::helper::DicomDataReader::getTagValue<0x3006, 0x0024>(dataset);
 
         // Graphic Data - Type 1C
-        ::gdcm::Attribute<0x0070, 0x0022> graphicDataAttribute;
-        graphicDataAttribute.SetFromDataElement(dataset.GetDataElement(::gdcm::Tag(0x0070, 0x0022)));
+        gdcm::Attribute<0x0070, 0x0022> graphicDataAttribute;
+        graphicDataAttribute.SetFromDataElement(dataset.GetDataElement(gdcm::Tag(0x0070, 0x0022)));
         const float* graphicData = graphicDataAttribute.GetValues();
 
         // Graphic Type - Type 1
@@ -224,13 +224,13 @@ void StructuredReport::readSubNode(
     else if(type == "IMAGE")
     {
         // Retrieve the referenced SOP sequence
-        if(dataset.FindDataElement(::gdcm::Tag(0x0008, 0x1199)))
+        if(dataset.FindDataElement(gdcm::Tag(0x0008, 0x1199)))
         {
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence =
-                dataset.GetDataElement(::gdcm::Tag(0x0008, 0x1199)).GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
+                dataset.GetDataElement(gdcm::Tag(0x0008, 0x1199)).GetValueAsSQ();
             if(sequence->GetNumberOfItems() > 0)
             {
-                const ::gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
+                const gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
 
                 // Referenced SOP Class UID - Type 1
                 const std::string sopClassUID = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1150>(

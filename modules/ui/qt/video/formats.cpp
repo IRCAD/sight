@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace video
 {
 
 // The format of the code is shitty, that's because of uncrustify who doesn't allow us to write a pair per line.
-PixelFormatTranslatorType pixelFormatTranslator = ::boost::assign::list_of<PixelFormatTranslatorType::relation>
+PixelFormatTranslatorType pixelFormatTranslator = boost::assign::list_of<PixelFormatTranslatorType::relation>
                                                   (
     QVideoFrame::PixelFormat::Format_Invalid,
     data::Camera::PixelFormat::INVALID

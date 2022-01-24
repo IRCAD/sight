@@ -6,7 +6,7 @@ uniform mat4 u_worldViewProj;
 
 out vec2 uv;
 
-// Specific for generating background with an ::Ogre::Rectangle2D
+// Specific for generating background with an Ogre::Rectangle2D
 void main()
 {
         // transform is the classic transformation apply to a point (matrixviewprojection) in fixed function pipeline

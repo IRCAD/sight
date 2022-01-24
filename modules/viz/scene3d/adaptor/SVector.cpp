@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,8 +91,8 @@ void SVector::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
     m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
     // set the material
@@ -141,9 +141,9 @@ void SVector::stopping()
 
     this->deleteVector();
 
-    ::Ogre::SceneManager* sceneMgr   = this->getSceneManager();
-    ::Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
-    ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneManager* sceneMgr   = this->getSceneManager();
+    Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
+    Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
     transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
 
     this->unregisterServices();
@@ -164,10 +164,10 @@ void SVector::createVector()
     // Color
     std::uint8_t color[4];
     data::tools::Color::hexaStringToRGBA(m_color, color);
-    ::Ogre::ColourValue ogreColor(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
+    Ogre::ColourValue ogreColor(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
 
     // Draw
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
     m_line = sceneMgr->createManualObject(this->getID() + "_line");
     m_cone = sceneMgr->createManualObject(this->getID() + "_cone");
 
@@ -180,10 +180,10 @@ void SVector::createVector()
         cylinderLength,
         sample
     );
-    ::Ogre::SceneNode* lineNode = m_sceneNode->createChildSceneNode(this->getID() + "_lineNode");
+    Ogre::SceneNode* lineNode = m_sceneNode->createChildSceneNode(this->getID() + "_lineNode");
     lineNode->attachObject(m_line);
     // Rotate around y axis to create the cylinder on z Axis (consistent with SLine adaptor)
-    lineNode->yaw(::Ogre::Degree(-90));
+    lineNode->yaw(Ogre::Degree(-90));
 
     // Cone
     sight::viz::scene3d::helper::ManualObject::createCone(
@@ -194,11 +194,11 @@ void SVector::createVector()
         coneLength,
         sample
     );
-    ::Ogre::SceneNode* coneNode = m_sceneNode->createChildSceneNode(this->getID() + "_coneNode");
+    Ogre::SceneNode* coneNode = m_sceneNode->createChildSceneNode(this->getID() + "_coneNode");
 
     coneNode->attachObject(m_cone);
     coneNode->translate(0.f, 0.f, cylinderLength);
-    coneNode->yaw(::Ogre::Degree(-90));
+    coneNode->yaw(Ogre::Degree(-90));
 }
 
 //-----------------------------------------------------------------------------
@@ -211,7 +211,7 @@ void SVector::deleteVector()
         m_sceneNode->removeAndDestroyChild(this->getID() + "_coneNode");
     }
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     sceneMgr->destroyManualObject(m_line);
     sceneMgr->destroyManualObject(m_cone);

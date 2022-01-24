@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
 #include "core/runtime/detail/Runtime.hpp"
+
 #include <core/spyLog.hpp>
 
 #include <algorithm>
@@ -107,7 +108,7 @@ ConfigurationElement::sptr findConfigurationElement(
 {
     ConfigurationElement::sptr resultConfig;
     const auto elements     = getAllConfigurationElementsForPoint(pointIdentifier);
-    const auto foundElement = ::std::find_if(
+    const auto foundElement = std::find_if(
         elements.begin(),
         elements.end(),
         ConfigurationElementIdentifierPredicate(identifier)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Image::Image(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image,
     const core::log::Logger::sptr& logger,
@@ -70,7 +70,7 @@ void Image::writeGeneralImageModule()
 void Image::writeGeneralImageModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Instance Number
     io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(instanceNumber, dataset);
@@ -81,11 +81,11 @@ void Image::writeGeneralImageModuleSpecificTags(unsigned int instanceNumber)
 void Image::writeImagePlaneModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter>(m_writer);
-    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
+    SPTR(gdcm::ImageWriter) imageWriter = std::static_pointer_cast<gdcm::ImageWriter>(m_writer);
+    gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY Sight), but stuff like "Pixel Aspect Ratio"
@@ -97,7 +97,7 @@ void Image::writeImagePlaneModule()
     }
 
     // Slice Thickness - Type 2
-    // NOTE: ::gdcm::ImageWriter may replace SliceThickness values according to Image Origins
+    // NOTE: gdcm::ImageWriter may replace SliceThickness values according to Image Origins
     io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0018, 0x0050>(spacing[2], dataset);
 
     // Image Orientation (Patient) - Type 1
@@ -109,8 +109,8 @@ void Image::writeImagePlaneModule()
 void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter>(m_writer);
-    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
+    SPTR(gdcm::ImageWriter) imageWriter = std::static_pointer_cast<gdcm::ImageWriter>(m_writer);
+    gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
     const auto& origin  = m_object->getOrigin();
@@ -125,16 +125,16 @@ void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
 void Image::writeImagePixelModule()
 {
     // Retrieve GDCM image
-    ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter>(m_writer).get();
-    ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
+    gdcm::ImageWriter* imageWriter = std::static_pointer_cast<gdcm::ImageWriter>(m_writer).get();
+    gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Image's photometric interpretation - Type 1
-    ::gdcm::PhotometricInterpretation photoInter =
+    gdcm::PhotometricInterpretation photoInter =
         io::dicom::helper::DicomDataTools::getPhotometricInterpretation(m_object);
     gdcmImage.SetPhotometricInterpretation(photoInter);
 
     // Image's pixel type
-    ::gdcm::PixelFormat pixelFormat = io::dicom::helper::DicomDataTools::getPixelType(m_object->getType());
+    gdcm::PixelFormat pixelFormat = io::dicom::helper::DicomDataTools::getPixelType(m_object->getType());
     gdcmImage.SetPixelFormat(pixelFormat);
 
     //Image's number of dimension
@@ -157,8 +157,8 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     SIGHT_ASSERT("Wrong instance number.", m_instance->getIsMultiFiles() || instanceNumber == 0);
 
     // Retrieve GDCM image
-    ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter>(m_writer).get();
-    ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
+    gdcm::ImageWriter* imageWriter = std::static_pointer_cast<gdcm::ImageWriter>(m_writer).get();
+    gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
     const data::Image::Size& size = m_object->getSize();
@@ -170,7 +170,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     const char* imageBuffer = static_cast<char*>(m_object->getBuffer());
 
     // Pixel Data - Type 1C
-    ::gdcm::DataElement pixeldata(::gdcm::Tag(0x7fe0, 0x0010));
+    gdcm::DataElement pixeldata(gdcm::Tag(0x7fe0, 0x0010));
     pixeldata.SetByteValue(imageBuffer + instanceNumber * bufferLength, static_cast<unsigned int>(bufferLength));
     gdcmImage.SetDataElement(pixeldata);
 }
@@ -180,7 +180,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
 void Image::writeVOILUTModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     const double windowCenter = m_object->getWindowCenter();
     const double windowWidth  = m_object->getWindowWidth();
@@ -199,7 +199,7 @@ void Image::writeVOILUTModule()
 void Image::writeSOPCommonModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Class UID
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0016>(m_instance->getSOPClassUID(), dataset);
@@ -210,7 +210,7 @@ void Image::writeSOPCommonModule()
 void Image::writeSOPCommonModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Instance UID
     const std::string sopInstanceUID = m_instance->getSOPInstanceUIDContainer()[instanceNumber];
@@ -222,11 +222,11 @@ void Image::writeSOPCommonModuleSpecificTags(unsigned int instanceNumber)
 void Image::writeCTImageModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Image Type - Type 1 - FIXME: Fake Value
-    const ::gdcm::String<92, 16> imageType = "ORIGINAL\\PRIMARY\\AXIAL";
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<92, 16>, 0x0008, 0x0008>(
+    const gdcm::String<92, 16> imageType = "ORIGINAL\\PRIMARY\\AXIAL";
+    io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<92, 16>, 0x0008, 0x0008>(
         &imageType,
         1,
         dataset
@@ -248,35 +248,35 @@ void Image::writeCTImageModule()
 void Image::writeMRImageModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Image Type - Type 1 - FIXME: Fake Value
-    const ::gdcm::String<92, 16> imageType = "ORIGINAL\\PRIMARY\\MPR";
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<92, 16>, 0x0008, 0x0008>(
+    const gdcm::String<92, 16> imageType = "ORIGINAL\\PRIMARY\\MPR";
+    io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<92, 16>, 0x0008, 0x0008>(
         &imageType,
         1,
         dataset
     );
 
     // Scanning Sequence - Type 1 - FIXME: Fake Value
-    const ::gdcm::String<92, 16> scanningSequence = "SE";
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<92, 16>, 0x0018, 0x0020>(
+    const gdcm::String<92, 16> scanningSequence = "SE";
+    io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<92, 16>, 0x0018, 0x0020>(
         &scanningSequence,
         1,
         dataset
     );
 
     // Sequence Variant - Type 1 - FIXME: Fake Value
-    const ::gdcm::String<92, 16> sequenceVariant = "NONE";
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<92, 16>, 0x0018, 0x0021>(
+    const gdcm::String<92, 16> sequenceVariant = "NONE";
+    io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<92, 16>, 0x0018, 0x0021>(
         &sequenceVariant,
         1,
         dataset
     );
 
     // Scan Options - Type 2 - FIXME: Fake Value
-    const ::gdcm::String<92, 16> scanOption = "";
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<92, 16>, 0x0018, 0x0022>(
+    const gdcm::String<92, 16> scanOption = "";
+    io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<92, 16>, 0x0018, 0x0022>(
         &scanOption,
         1,
         dataset

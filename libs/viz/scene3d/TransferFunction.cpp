@@ -68,20 +68,20 @@ TransferFunction::~TransferFunction()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::createTexture(const ::Ogre::String& _parentId)
+void TransferFunction::createTexture(const Ogre::String& _parentId)
 {
-    m_texture = ::Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture", RESOURCE_GROUP);
+    m_texture = Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture", RESOURCE_GROUP);
     if(!m_texture)
     {
-        m_texture = ::Ogre::TextureManager::getSingleton().createManual(
+        m_texture = Ogre::TextureManager::getSingleton().createManual(
             _parentId + "_tfTexture",     // name
             viz::scene3d::RESOURCE_GROUP, // resource groupe
-            ::Ogre::TEX_TYPE_1D,          // type
+            Ogre::TEX_TYPE_1D,            // type
             TEXTURE_SIZE,
-            1,                   // width, height
-            0,                   // number of mipmaps (depth)
-            ::Ogre::PF_A8R8G8B8, // pixel format
-            ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+            1,                 // width, height
+            0,                 // number of mipmaps (depth)
+            Ogre::PF_A8R8G8B8, // pixel format
+            Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE
         ); // usage
     }
 }
@@ -92,7 +92,7 @@ void TransferFunction::removeTexture()
 {
     if(m_texture)
     {
-        ::Ogre::TextureManager::getSingleton().remove(m_texture);
+        Ogre::TextureManager::getSingleton().remove(m_texture);
     }
 
     m_texture.reset();
@@ -106,12 +106,12 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
     using TFValuePairType = data::TransferFunction::TFValuePairType;
 
     // Retrieves the pixel buffer from the texture
-    ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
+    Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
 
     // Discards the entire buffer while locking so that we can easily refill it from scratch
-    pixBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-    ::Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
-    std::uint8_t* pDest     = static_cast<std::uint8_t*>(pixBox.data);
+    pixBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+    Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
+    std::uint8_t* pDest   = static_cast<std::uint8_t*>(pixBox.data);
 
     // Retrieves the transfer function's intensity window
     const TFValuePairType intensityMinMax = _tf->getWLMinMax();
@@ -145,7 +145,7 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
     m_isClamped = _tf->getIsClamped();
 
     const auto tfWLMinMax = _tf->getWLMinMax();
-    m_tfWindow = ::Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
+    m_tfWindow = Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
 }
 
 //-----------------------------------------------------------------------------

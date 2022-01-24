@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::viz::scene3d
 namespace factory
 {
 
-class VIZ_SCENE3D_CLASS_API Text : public ::Ogre::MovableObjectFactory
+class VIZ_SCENE3D_CLASS_API Text : public Ogre::MovableObjectFactory
 {
 public:
 
@@ -46,21 +46,21 @@ public:
     {
     }
 
-    /// Type of '::Ogre::MovableObject' produced by this factory. 'Text' in this case.
-    VIZ_SCENE3D_API static const ::Ogre::String FACTORY_TYPE_NAME;
+    /// Type of 'Ogre::MovableObject' produced by this factory. 'Text' in this case.
+    VIZ_SCENE3D_API static const Ogre::String FACTORY_TYPE_NAME;
 
     /// Get the produced object's type. Always returns 'Text'.
-    VIZ_SCENE3D_API const ::Ogre::String& getType(void) const override;
+    VIZ_SCENE3D_API const Ogre::String& getType(void) const override;
 #if OGRE_VERSION_PATCH < 9
-    VIZ_SCENE3D_API void destroyInstance(::Ogre::MovableObject* obj) override;
+    VIZ_SCENE3D_API void destroyInstance(Ogre::MovableObject* obj) override;
 #endif
 
 protected:
 
     /// Create a 'Text' instance with the given name and parameters.
-    VIZ_SCENE3D_API ::Ogre::MovableObject* createInstanceImpl(
-        const ::Ogre::String& name,
-        const ::Ogre::NameValuePairList* params
+    VIZ_SCENE3D_API Ogre::MovableObject* createInstanceImpl(
+        const Ogre::String& name,
+        const Ogre::NameValuePairList* params
     ) override;
 };
 

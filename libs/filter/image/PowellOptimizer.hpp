@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ class FILTER_IMAGE_CLASS_API PowellOptimizer
 {
 public:
 
-    typedef ::itk::PowellOptimizerv4<double> PowellOptimizerType;
+    typedef itk::PowellOptimizerv4<double> PowellOptimizerType;
 
     typedef typename PowellOptimizerType::ParametersType FunctionParametersType;
 

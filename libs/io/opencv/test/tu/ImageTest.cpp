@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,7 +112,7 @@ static data::Image::sptr genImage(
 
 template<typename T>
 static void compareImages(
-    const ::cv::Mat& _cvImage,
+    const cv::Mat& _cvImage,
     const data::Image::csptr& _image,
     size_t _w,
     size_t _h,
@@ -123,8 +123,8 @@ static void compareImages(
     const auto dumpLock  = _image->lock();
     const T* imageBuffer = reinterpret_cast<const T*>(_image->getBuffer());
 
-    std::vector< ::cv::Mat> channels(_numChannels);
-    ::cv::split(_cvImage, channels);
+    std::vector<cv::Mat> channels(_numChannels);
+    cv::split(_cvImage, channels);
 
     if(_d > 0)
     {
@@ -195,7 +195,7 @@ static void testMoveToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     data::Image::sptr image          = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::cv::Mat cvImage = io::opencv::Image::moveToCv(image);
+    cv::Mat cvImage = io::opencv::Image::moveToCv(image);
 
     // Since we share the same buffer, compare the pointers
     const auto dumpLock = image->lock();
@@ -210,7 +210,7 @@ template<typename T>
 static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    const cv::Mat cvImage            = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     data::Image::sptr image = data::Image::New();
     io::opencv::Image::copyFromCv(*image.get(), cvImage);
@@ -230,7 +230,7 @@ static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     data::Image::csptr image         = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::cv::Mat cvImage = io::opencv::Image::copyToCv(image);
+    cv::Mat cvImage = io::opencv::Image::copyToCv(image);
 
     // Since we copy the buffer, ensure the pointers are different
     const auto dumpLock = image->lock();

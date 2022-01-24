@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformat
 
 //-----------------------------------------------------------------------------
 
-struct SCamera::CameraNodeListener : public ::Ogre::MovableObject::Listener
+struct SCamera::CameraNodeListener : public Ogre::MovableObject::Listener
 {
     SCamera* m_layer {nullptr};
 
@@ -55,7 +55,7 @@ struct SCamera::CameraNodeListener : public ::Ogre::MovableObject::Listener
 
     //------------------------------------------------------------------------------
 
-    void objectMoved(::Ogre::MovableObject*) override
+    void objectMoved(Ogre::MovableObject*) override
     {
         m_layer->updateTF3D();
     }
@@ -127,7 +127,7 @@ service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 
 void SCamera::updating()
 {
-    ::Ogre::Affine3 ogreMatrix;
+    Ogre::Affine3 ogreMatrix;
     {
         const auto transform = m_transform.lock();
 
@@ -142,20 +142,20 @@ void SCamera::updating()
     }
 
     // Decompose the camera matrix
-    ::Ogre::Vector3 position;
-    ::Ogre::Vector3 scale;
-    ::Ogre::Quaternion orientation;
+    Ogre::Vector3 position;
+    Ogre::Vector3 scale;
+    Ogre::Quaternion orientation;
     ogreMatrix.decomposition(position, scale, orientation);
 
     // Reverse view-up and direction for AR
-    const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
-    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    const Ogre::Quaternion rotateY(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
+    const Ogre::Quaternion rotateZ(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
     orientation = orientation * rotateZ * rotateY;
 
     // Flag to skip updateTF3D() when called from the camera listener
     m_skipUpdate = true;
 
-    ::Ogre::Node* parent = m_camera->getParentNode();
+    Ogre::Node* parent = m_camera->getParentNode();
 
     // Reset the camera position
     parent->setPosition(0, 0, 0);
@@ -193,15 +193,15 @@ void SCamera::updateTF3D()
         return;
     }
 
-    const ::Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
-    const ::Ogre::Quaternion& orientation = camNode->getOrientation();
+    const Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
+    const Ogre::Quaternion& orientation = camNode->getOrientation();
 
-    ::Ogre::Matrix3 mat33;
+    Ogre::Matrix3 mat33;
     orientation.ToRotationMatrix(mat33);
 
-    const ::Ogre::Vector3& position = camNode->getPosition();
+    const Ogre::Vector3& position = camNode->getPosition();
 
-    ::Ogre::Matrix4 newTransMat;
+    Ogre::Matrix4 newTransMat;
 
     for(size_t i = 0 ; i < 3 ; i++)
     {
@@ -225,13 +225,13 @@ void SCamera::updateTF3D()
     newTransMat[3][3] = 1;
 
     // Now nullify the reverse of the view-up and direction
-    ::Ogre::Quaternion rotate;
-    const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
-    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    Ogre::Quaternion rotate;
+    const Ogre::Quaternion rotateY(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
+    const Ogre::Quaternion rotateZ(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
     rotate = rotateZ * rotateY;
     rotate = rotate.Inverse();
 
-    newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
+    newTransMat = newTransMat * Ogre::Matrix4(rotate);
 
     const auto transform = m_transform.lock();
 
@@ -253,7 +253,7 @@ void SCamera::updateTF3D()
 
 //------------------------------------------------------------------------------
 
-void SCamera::setNearClipDistance(::Ogre::Real _nearClipDistance)
+void SCamera::setNearClipDistance(Ogre::Real _nearClipDistance)
 {
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
@@ -262,7 +262,7 @@ void SCamera::setNearClipDistance(::Ogre::Real _nearClipDistance)
 
 //------------------------------------------------------------------------------
 
-void SCamera::setFarClipDistance(::Ogre::Real _farClipDistance)
+void SCamera::setFarClipDistance(Ogre::Real _farClipDistance)
 {
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
@@ -271,7 +271,7 @@ void SCamera::setFarClipDistance(::Ogre::Real _farClipDistance)
 
 //-----------------------------------------------------------------------------
 
-void SCamera::setAspectRatio(::Ogre::Real _ratio)
+void SCamera::setAspectRatio(Ogre::Real _ratio)
 {
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
@@ -321,7 +321,7 @@ void SCamera::calibrateMonoCamera(const data::Camera& _cam)
 
     if(_cam.getIsCalibrated())
     {
-        ::Ogre::Matrix4 m = sight::viz::scene3d::helper::Camera::computeProjectionMatrix(
+        Ogre::Matrix4 m = sight::viz::scene3d::helper::Camera::computeProjectionMatrix(
             _cam,
             width,
             height,
@@ -361,7 +361,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
     else
     {
         sight::viz::scene3d::Layer::CameraCalibrationsType calibrations;
-        ::Ogre::Matrix4 extrinsicMx(::Ogre::Matrix4::IDENTITY);
+        Ogre::Matrix4 extrinsicMx(Ogre::Matrix4::IDENTITY);
 
         for(size_t i = 0 ; i < nbCams ; ++i)
         {

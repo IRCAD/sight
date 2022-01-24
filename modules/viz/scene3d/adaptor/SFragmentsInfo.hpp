@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,10 +82,10 @@ public:
      *
      * @param _viewport related layer's viewport.
      */
-    MODULE_VIZ_SCENE3D_API void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
+    MODULE_VIZ_SCENE3D_API void viewportDimensionsChanged(Ogre::Viewport* _viewport) override;
 
     /// Calls updating(). This is called right after the layer render target has been rendered.
-    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&) override;
+    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent&) override;
 
 protected:
 
@@ -114,7 +114,7 @@ private:
     void destroyCompositor();
 
     /// Contains the created compositor.
-    ::Ogre::CompositorPtr m_compositor {nullptr};
+    Ogre::CompositorPtr m_compositor {nullptr};
 
     /// Defines the compositor name.
     std::string m_compositorName;

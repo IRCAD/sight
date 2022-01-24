@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace video
 
 //-----------------------------------------------------------------------------
 
-typedef ::boost::bimaps::bimap<QVideoFrame::PixelFormat, data::Camera::PixelFormat> PixelFormatTranslatorType;
+typedef boost::bimaps::bimap<QVideoFrame::PixelFormat, data::Camera::PixelFormat> PixelFormatTranslatorType;
 extern MODULE_UI_QT_API PixelFormatTranslatorType pixelFormatTranslator;
 
 } // video

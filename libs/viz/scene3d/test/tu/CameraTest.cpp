@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void CameraTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void compareMatrix(const ::Ogre::Matrix4& _m1, const ::Ogre::Matrix4& _m2)
+void compareMatrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
 {
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
@@ -97,10 +97,10 @@ void CameraTest::computeProjectionMatrix()
     const float f       = 100;
 
     // Original matrix
-    ::Ogre::Matrix4 expected(1.6568645238876f, 0.f, -0.0295966863632202f, 0.f,
-                             0.f, 3.01612949371338f, 0.0245949625968933f, 0.f,
-                             0.f, 0.f, -1.00200200080872f, -0.200200200080872f,
-                             0.f, 0.f, -1.f, 0.f);
+    Ogre::Matrix4 expected(1.6568645238876f, 0.f, -0.0295966863632202f, 0.f,
+                           0.f, 3.01612949371338f, 0.0245949625968933f, 0.f,
+                           0.f, 0.f, -1.00200200080872f, -0.200200200080872f,
+                           0.f, 0.f, -1.f, 0.f);
 
     // Original camera
     data::Camera::sptr camera = data::Camera::New();
@@ -160,7 +160,7 @@ void CameraTest::computeProjectionMatrix()
             // Change the expected result
             expected[std::get<2>(tu)][std::get<3>(tu)] = std::get<4>(tu);
 
-            ::Ogre::Matrix4 actual =
+            Ogre::Matrix4 actual =
                 viz::scene3d::helper::Camera::computeProjectionMatrix(
                     *camera,
                     static_cast<float>(camera->getWidth()),
@@ -210,7 +210,7 @@ void CameraTest::computeProjectionMatrix()
             // Change the expected result
             expected[std::get<2>(tu)][std::get<3>(tu)] = std::get<4>(tu);
 
-            ::Ogre::Matrix4 actual =
+            Ogre::Matrix4 actual =
                 viz::scene3d::helper::Camera::computeProjectionMatrix(
                     *camera,
                     static_cast<float>(camera->getWidth()),
@@ -258,43 +258,43 @@ void CameraTest::convertPixelToWorldSpace()
     camera->setOrthoWindowWidth(1920);
     camera->setOrthoWindowHeight(1080);
 
-    camera->setProjectionType(::Ogre::ProjectionType::PT_PERSPECTIVE);
+    camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
     {
         // Manually project a point
-        const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
-        const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
-        const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz() / clippedPoint.w;
+        const Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
+        const Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
+        const Ogre::Vector3 ndcPoint     = clippedPoint.xyz() / clippedPoint.w;
 
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Real fX = (ndcPoint.x + 1.f) * 0.5f;
-        const ::Ogre::Real fY = 1.f - (ndcPoint.y + 1.f) * 0.5f;
-        const ::Ogre::Real fZ = (ndcPoint.z + 1.f) * 0.5f;
-        const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
+        const Ogre::Real fX = (ndcPoint.x + 1.f) * 0.5f;
+        const Ogre::Real fY = 1.f - (ndcPoint.y + 1.f) * 0.5f;
+        const Ogre::Real fZ = (ndcPoint.z + 1.f) * 0.5f;
+        const Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
-        const ::Ogre::Vector3 unprojectedPoint =
+        const Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
+        const Ogre::Vector3 unprojectedPoint =
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
     }
 
-    camera->setProjectionType(::Ogre::ProjectionType::PT_ORTHOGRAPHIC);
+    camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     {
         // Manually project a point
-        const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
-        const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
-        const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz() / clippedPoint.w;
+        const Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
+        const Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
+        const Ogre::Vector3 ndcPoint     = clippedPoint.xyz() / clippedPoint.w;
 
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Real fX = (ndcPoint.x + 1.f) * 0.5f;
-        const ::Ogre::Real fY = 1.f - (ndcPoint.y + 1.f) * 0.5f;
-        const ::Ogre::Real fZ = (ndcPoint.z + 1.f) * 0.5f;
-        const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
+        const Ogre::Real fX = (ndcPoint.x + 1.f) * 0.5f;
+        const Ogre::Real fY = 1.f - (ndcPoint.y + 1.f) * 0.5f;
+        const Ogre::Real fZ = (ndcPoint.z + 1.f) * 0.5f;
+        const Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
-        const ::Ogre::Vector3 unprojectedPoint =
+        const Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
+        const Ogre::Vector3 unprojectedPoint =
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);

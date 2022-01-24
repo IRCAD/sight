@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,15 +42,15 @@ struct ValueMapper<sight::data::NavigationSeries::CoordinateType>
     {
         std::string result;
 
-        std::string current = ::boost::lexical_cast<std::string>(source[0]);
+        std::string current = boost::lexical_cast<std::string>(source[0]);
         result += current;
         result += ";";
 
-        current = ::boost::lexical_cast<std::string>(source[1]);
+        current = boost::lexical_cast<std::string>(source[1]);
         result += current;
         result += ";";
 
-        current = ::boost::lexical_cast<std::string>(source[2]);
+        current = boost::lexical_cast<std::string>(source[2]);
         result += current;
         result += ";";
 
@@ -103,7 +103,7 @@ struct ValueMapper<sight::data::NavigationSeries::CoordinateType>
     {
         std::vector<std::string> result;
         ReturnType coord {0., 0., 0.};
-        ::boost::split(result, source, ::boost::is_any_of(";"));
+        boost::split(result, source, boost::is_any_of(";"));
 
         if(result.size() >= 3)
         {

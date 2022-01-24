@@ -138,11 +138,11 @@ private:
      * @param _origin image origin.
      * @param _spacing image spacing.
      */
-    std::pair<bool, ::Ogre::Vector3> computeRayImageIntersection(
-        const ::Ogre::Ray& _ray,
+    std::pair<bool, Ogre::Vector3> computeRayImageIntersection(
+        const Ogre::Ray& _ray,
         const data::Image::csptr _image,
-        const ::Ogre::Vector3& _origin,
-        const ::Ogre::Vector3& _spacing
+        const Ogre::Vector3& _origin,
+        const Ogre::Vector3& _spacing
     );
 
     /// Defines the orientation of the image used to pick on the current slice.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ struct isMappingSingleMPLHelper;
 template<class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer>
 bool isMapping(const KeyType_or_KeyTypeContainer& key)
 {
-    namespace mpl = ::boost::mpl;
+    namespace mpl = boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
             mpl::is_sequence<TSingle_or_TSEQ>,
             isMappingMultiMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>,
@@ -149,7 +149,7 @@ isMappingMultiMPLHelper
 
     static bool evaluate(const KeyTypeContainer& keys)
     {
-        namespace mpl = ::boost::mpl;
+        namespace mpl = boost::mpl;
 
         if(keys.size() != static_cast<unsigned long>(mpl::size<TSEQ>::value))
         {
@@ -172,7 +172,7 @@ bool isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(
     typename KeyTypeContainer::const_iterator& end
 )
 {
-    namespace mpl = ::boost::mpl;
+    namespace mpl = boost::mpl;
 
     typedef BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type Head;
     typedef BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type Tail;

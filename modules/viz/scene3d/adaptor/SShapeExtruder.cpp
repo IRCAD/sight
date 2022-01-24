@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,9 +49,9 @@ static const std::string s_LINE_COLOR_CONFIG = "lineColor";
 static const std::string s_EDGE_COLOR_CONFIG = "edgeColor";
 
 SShapeExtruder::Triangle2D::Triangle2D(
-    const ::Ogre::Vector2& _a,
-    const ::Ogre::Vector2& _b,
-    const ::Ogre::Vector2& _c
+    const Ogre::Vector2& _a,
+    const Ogre::Vector2& _b,
+    const Ogre::Vector2& _c
 ) :
     a(_a),
     b(_b),
@@ -60,41 +60,41 @@ SShapeExtruder::Triangle2D::Triangle2D(
     id = s_id++;
 
     // Matrix to rotate of 90 degree over the Z axis.
-    const ::Ogre::Matrix3 quarterRotation {0, -1, 0, 1, 0, 0, 0, 0, 1};
+    const Ogre::Matrix3 quarterRotation {0, -1, 0, 1, 0, 0, 0, 0, 1};
 
     // Compute the circumscribed circle of the triangle.
-    ::Ogre::Vector2 firstBisectorPos;
-    ::Ogre::Vector2 firstBisectorDir;
+    Ogre::Vector2 firstBisectorPos;
+    Ogre::Vector2 firstBisectorDir;
 
     if(a.y != b.y)
     {
         firstBisectorPos = (a + b) / 2.f;
-        const ::Ogre::Vector2 firstEdgeDir = (a - b).normalisedCopy();
-        firstBisectorDir = (quarterRotation * ::Ogre::Vector3(firstEdgeDir.x, firstEdgeDir.y, 0)).xy();
+        const Ogre::Vector2 firstEdgeDir = (a - b).normalisedCopy();
+        firstBisectorDir = (quarterRotation * Ogre::Vector3(firstEdgeDir.x, firstEdgeDir.y, 0)).xy();
     }
     else
     {
         firstBisectorPos = (c + b) / 2.f;
-        const ::Ogre::Vector2 firstEdgeDir = (c - b).normalisedCopy();
-        firstBisectorDir = (quarterRotation * ::Ogre::Vector3(firstEdgeDir.x, firstEdgeDir.y, 0)).xy();
+        const Ogre::Vector2 firstEdgeDir = (c - b).normalisedCopy();
+        firstBisectorDir = (quarterRotation * Ogre::Vector3(firstEdgeDir.x, firstEdgeDir.y, 0)).xy();
     }
 
-    ::Ogre::Vector2 secondBisectorPos;
-    ::Ogre::Vector2 secondBisectorDir;
+    Ogre::Vector2 secondBisectorPos;
+    Ogre::Vector2 secondBisectorDir;
 
     if(a.y != c.y)
     {
         secondBisectorPos = (a + c) / 2.f;
-        ::Ogre::Vector2 secondEdgeDir = (a - c).normalisedCopy();
+        Ogre::Vector2 secondEdgeDir = (a - c).normalisedCopy();
         secondBisectorDir =
-            (quarterRotation * ::Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
+            (quarterRotation * Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
     }
     else
     {
         secondBisectorPos = (b + c) / 2.f;
-        ::Ogre::Vector2 secondEdgeDir = (b - c).normalisedCopy();
+        Ogre::Vector2 secondEdgeDir = (b - c).normalisedCopy();
         secondBisectorDir =
-            (quarterRotation * ::Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
+            (quarterRotation * Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
     }
 
     const float aPrim = firstBisectorDir.y / firstBisectorDir.x;
@@ -106,10 +106,10 @@ SShapeExtruder::Triangle2D::Triangle2D(
     const float intersectX = (bSec - bPrim) / (aPrim - aSec);
     const float intersectY = aPrim * intersectX + bPrim;
 
-    center = ::Ogre::Vector2(intersectX, intersectY);
+    center = Ogre::Vector2(intersectX, intersectY);
     radius = a.distance(center);
 
-    const ::Ogre::Vector2 baryDir(((a + b) / 2.f) - c);
+    const Ogre::Vector2 baryDir(((a + b) / 2.f) - c);
     barycentre = c + 2.f / 3.f * baryDir;
 }
 
@@ -117,18 +117,18 @@ SShapeExtruder::Triangle2D::Triangle2D(
 
 bool SShapeExtruder::Edge::intersect(Edge _edge) const
 {
-    const ::Ogre::Vector2 p = a;
-    const ::Ogre::Vector2 r = (b - a);
+    const Ogre::Vector2 p = a;
+    const Ogre::Vector2 r = (b - a);
 
-    const ::Ogre::Vector2 q = _edge.a;
-    const ::Ogre::Vector2 s = (_edge.b - _edge.a);
+    const Ogre::Vector2 q = _edge.a;
+    const Ogre::Vector2 s = (_edge.b - _edge.a);
 
-    const ::Ogre::Vector2 qp = (q - p);
-    const float qpXs         = (qp.x * s.y - qp.y * s.x);
-    const float qpXr         = (qp.x * r.y - qp.y * r.x);
-    const float rXs          = (r.x * s.y - r.y * s.x);
-    const float t            = qpXs / rXs;
-    const float u            = qpXr / rXs;
+    const Ogre::Vector2 qp = (q - p);
+    const float qpXs       = (qp.x * s.y - qp.y * s.x);
+    const float qpXr       = (qp.x * r.y - qp.y * r.x);
+    const float rXs        = (r.x * s.y - r.y * s.x);
+    const float t          = qpXs / rXs;
+    const float u          = qpXr / rXs;
 
     if(rXs != 0 && t >= 0 && t < 1 && u >= 0 && u < 1)
     {
@@ -140,10 +140,10 @@ bool SShapeExtruder::Edge::intersect(Edge _edge) const
 
 //------------------------------------------------------------------------------
 
-::Ogre::Vector3 SShapeExtruder::getCamDirection(const ::Ogre::Camera* const _cam)
+Ogre::Vector3 SShapeExtruder::getCamDirection(const Ogre::Camera* const _cam)
 {
-    const ::Ogre::Matrix4 view = _cam->getViewMatrix();
-    ::Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
+    const Ogre::Matrix4 view = _cam->getViewMatrix();
+    Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
     direction.normalise();
     return -direction;
 }
@@ -204,7 +204,7 @@ void SShapeExtruder::starting()
     layer->addInteractor(interactor, m_priority);
 
     // Create entities.
-    ::Ogre::SceneManager* const sceneMng = this->getSceneManager();
+    Ogre::SceneManager* const sceneMng = this->getSceneManager();
 
     m_lassoNode = sceneMng->getRootSceneNode()->createChildSceneNode(this->getID() + "_lassoNode");
 
@@ -249,7 +249,7 @@ void SShapeExtruder::stopping()
     m_material.reset();
 
     // Destroy entities.
-    ::Ogre::SceneManager* const sceneMng = this->getSceneManager();
+    Ogre::SceneManager* const sceneMng = this->getSceneManager();
 
     sceneMng->destroyManualObject(m_lastLassoLine);
     sceneMng->destroyManualObject(m_lasso);
@@ -318,7 +318,7 @@ void SShapeExtruder::deleteLastMesh()
 
 //-----------------------------------------------------------------------------
 
-std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3> SShapeExtruder::getNearFarRayPositions(
+std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> SShapeExtruder::getNearFarRayPositions(
     int _x,
     int _y
 ) const
@@ -326,40 +326,40 @@ std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3> SShapeExtruder::g
     // Compute the ray.
     sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
-    const ::Ogre::Camera* const camera = layer->getDefaultCamera();
-    const ::Ogre::Viewport* const vp   = camera->getViewport();
+    const Ogre::Camera* const camera = layer->getDefaultCamera();
+    const Ogre::Viewport* const vp   = camera->getViewport();
 
     const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
     const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-    ::Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
+    Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
 
     // Compute the intersection between the ray and the far working plane.
-    std::pair<bool, ::Ogre::Real> farHit = ::Ogre::Math::intersects(ray, m_lassoFarPlane);
+    std::pair<bool, Ogre::Real> farHit = Ogre::Math::intersects(ray, m_lassoFarPlane);
     SIGHT_ASSERT("The ray must hit the plane", farHit.first);
-    const ::Ogre::Vector3 farPosition = ray.getPoint(farHit.second);
+    const Ogre::Vector3 farPosition = ray.getPoint(farHit.second);
 
     // Launch the ray on the near plane after since the ray must be in front or behind it due to the frustum curve.
-    std::pair<bool, ::Ogre::Real> nearHit = ::Ogre::Math::intersects(ray, m_lassoNearPlane);
+    std::pair<bool, Ogre::Real> nearHit = Ogre::Math::intersects(ray, m_lassoNearPlane);
     if(!nearHit.first)
     {
         ray.setDirection(-ray.getDirection());
-        nearHit = ::Ogre::Math::intersects(ray, m_lassoNearPlane);
+        nearHit = Ogre::Math::intersects(ray, m_lassoNearPlane);
     }
 
     SIGHT_ASSERT("The ray must hit the plane", nearHit.first);
-    const ::Ogre::Vector3 nearPosition = ray.getPoint(nearHit.second);
+    const Ogre::Vector3 nearPosition = ray.getPoint(nearHit.second);
 
     // Launch the ray on the tool plane.
-    std::pair<bool, ::Ogre::Real> toolHit = ::Ogre::Math::intersects(ray, m_lassoToolPlane);
+    std::pair<bool, Ogre::Real> toolHit = Ogre::Math::intersects(ray, m_lassoToolPlane);
     if(!toolHit.first)
     {
         ray.setDirection(-ray.getDirection());
-        toolHit = ::Ogre::Math::intersects(ray, m_lassoToolPlane);
+        toolHit = Ogre::Math::intersects(ray, m_lassoToolPlane);
     }
 
     SIGHT_ASSERT("The ray must hit the plane", toolHit.first);
-    const ::Ogre::Vector3 toolPosition = ray.getPoint(toolHit.second);
+    const Ogre::Vector3 toolPosition = ray.getPoint(toolHit.second);
 
     return {toolPosition, nearPosition, farPosition};
 }
@@ -393,14 +393,14 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
 
             // Compute the plane where the tool will work.
             // This plane allows to generate all points of the lasso on the same plane to simplify further algorithms.
-            const ::Ogre::Camera* const camera = layer->getDefaultCamera();
-            const ::Ogre::Vector3 direction    = this->getCamDirection(camera);
+            const Ogre::Camera* const camera = layer->getDefaultCamera();
+            const Ogre::Vector3 direction    = this->getCamDirection(camera);
 
             // Compute the near plane and the far plane.
             const Ogre::Vector3 camPos = camera->getDerivedPosition();
-            m_lassoToolPlane = ::Ogre::Plane(direction, camPos + direction);
-            m_lassoNearPlane = ::Ogre::Plane(direction, camPos + direction * camera->getNearClipDistance());
-            m_lassoFarPlane  = ::Ogre::Plane(direction, camPos + direction * camera->getFarClipDistance());
+            m_lassoToolPlane = Ogre::Plane(direction, camPos + direction);
+            m_lassoNearPlane = Ogre::Plane(direction, camPos + direction * camera->getNearClipDistance());
+            m_lassoFarPlane  = Ogre::Plane(direction, camPos + direction * camera->getFarClipDistance());
         }
 
         m_leftButtonMoveState = false;
@@ -416,7 +416,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
         {
             // Check if the point can be added.
             bool near = false;
-            for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
+            for(const Ogre::Vector3 pos : m_lassoEdgePositions)
             {
                 if((std::get<0>(toolNearFarPos) - pos).length() < m_lassoEdgeSize)
                 {
@@ -473,7 +473,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
 
         m_lastLassoLine->begin(
             m_materialAdaptor->getMaterialName(),
-            ::Ogre::RenderOperation::OT_LINE_STRIP,
+            Ogre::RenderOperation::OT_LINE_STRIP,
             sight::viz::scene3d::RESOURCE_GROUP
         );
 
@@ -508,7 +508,7 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier, int _
         {
             // Check if the point can be added.
             bool near = false;
-            for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
+            for(const Ogre::Vector3 pos : m_lassoEdgePositions)
             {
                 if((std::get<0>(toolNearFarPos) - pos).length() < m_lassoEdgeSize)
                 {
@@ -609,11 +609,11 @@ void SShapeExtruder::drawLasso()
     // Draw the lasso line.
     m_lasso->begin(
         m_materialAdaptor->getMaterialName(),
-        ::Ogre::RenderOperation::OT_LINE_STRIP,
+        Ogre::RenderOperation::OT_LINE_STRIP,
         sight::viz::scene3d::RESOURCE_GROUP
     );
     m_lasso->colour(m_lineColor);
-    for(const ::Ogre::Vector3 pos : m_lassoToolPositions)
+    for(const Ogre::Vector3 pos : m_lassoToolPositions)
     {
         m_lasso->position(pos);
     }
@@ -622,20 +622,20 @@ void SShapeExtruder::drawLasso()
 
     // Draw the spheres at the edge of each line.
     const unsigned int sample = 16;
-    const float deltaRing     = static_cast<float>(::Ogre::Math::PI / sample);
-    const float deltaSeg      = 2 * static_cast<float>(::Ogre::Math::PI / sample);
+    const float deltaRing     = static_cast<float>(Ogre::Math::PI / sample);
+    const float deltaSeg      = 2 * static_cast<float>(Ogre::Math::PI / sample);
 
-    for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
+    for(const Ogre::Vector3 pos : m_lassoEdgePositions)
     {
         // Begin a new section.
         m_lasso->begin(
             m_materialAdaptor->getMaterialName(),
-            ::Ogre::RenderOperation::OT_TRIANGLE_LIST,
+            Ogre::RenderOperation::OT_TRIANGLE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );
         m_lasso->colour(m_edgeColor);
 
-        ::Ogre::uint32 index = 0;
+        Ogre::uint32 index = 0;
         for(unsigned ring = 0 ; ring <= sample ; ++ring)
         {
             const float r0 = m_lassoEdgeSize * std::sin(static_cast<float>(ring) * deltaRing);
@@ -645,7 +645,7 @@ void SShapeExtruder::drawLasso()
             {
                 const float x0 = r0 * std::sin(static_cast<float>(seg) * deltaSeg);
                 const float z0 = r0 * std::cos(static_cast<float>(seg) * deltaSeg);
-                ::Ogre::Vector3 point(x0, y0, z0);
+                Ogre::Vector3 point(x0, y0, z0);
 
                 m_lasso->position(pos + point);
 
@@ -794,33 +794,33 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 //------------------------------------------------------------------------------
 
 void SShapeExtruder::generateDelaunayTriangulation(
-    const std::vector< ::Ogre::Vector3>& _points,
+    const std::vector<Ogre::Vector3>& _points,
     std::vector<Triangle3D>& _wordTriangulation
 ) const
 {
     // Retrieve the camera.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    const ::Ogre::Camera* const camera           = layer->getDefaultCamera();
-    const ::Ogre::Matrix4 viewMatrix             = camera->getViewMatrix();
+    const Ogre::Camera* const camera             = layer->getDefaultCamera();
+    const Ogre::Matrix4 viewMatrix               = camera->getViewMatrix();
 
     // Transform all point from world space to view space to get them in a 2D plane with a constant Z value.
-    std::vector< ::Ogre::Vector2> points;
-    for(const ::Ogre::Vector3 point : _points)
+    std::vector<Ogre::Vector2> points;
+    for(const Ogre::Vector3 point : _points)
     {
-        const ::Ogre::Vector2 viewPoint = (viewMatrix * ::Ogre::Vector4(point, 1.f)).xy();
+        const Ogre::Vector2 viewPoint = (viewMatrix * Ogre::Vector4(point, 1.f)).xy();
         points.push_back(viewPoint);
     }
 
     // Get the depth of the 2D plane.
-    const float depth = (viewMatrix * ::Ogre::Vector4(_points[0], 1.f)).z;
+    const float depth = (viewMatrix * Ogre::Vector4(_points[0], 1.f)).z;
 
     // Compute the bounding box of points.
     const float min = std::numeric_limits<float>::lowest();
     const float max = std::numeric_limits<float>::max();
-    ::Ogre::Vector2 minBound(max, max);
-    ::Ogre::Vector2 maxBound(min, min);
+    Ogre::Vector2 minBound(max, max);
+    Ogre::Vector2 maxBound(min, min);
 
-    for(const ::Ogre::Vector2 point : points)
+    for(const Ogre::Vector2 point : points)
     {
         minBound.x = std::min(point.x, minBound.x);
         maxBound.x = std::max(point.x, maxBound.x);
@@ -833,26 +833,26 @@ void SShapeExtruder::generateDelaunayTriangulation(
     maxBound += 1;
 
     // Compute a triangle large enough to contains all points.
-    const ::Ogre::Vector2 bottomLeft = minBound;
-    const ::Ogre::Vector2 bottomRight(minBound.x + (maxBound.x - minBound.x) * 2.f, minBound.y);
-    const ::Ogre::Vector2 topLeft(minBound.x, minBound.y + (maxBound.y - minBound.y) * 2.f);
+    const Ogre::Vector2 bottomLeft = minBound;
+    const Ogre::Vector2 bottomRight(minBound.x + (maxBound.x - minBound.x) * 2.f, minBound.y);
+    const Ogre::Vector2 topLeft(minBound.x, minBound.y + (maxBound.y - minBound.y) * 2.f);
     const Triangle2D superTriangle(bottomLeft, bottomRight, topLeft);
 
     // Store triangles.
     std::vector<Triangle2D> triangulation {superTriangle};
 
     // Triangulate points with the Bowyer-Watson algorithm.
-    for(const ::Ogre::Vector2 sommet : points)
+    for(const Ogre::Vector2 sommet : points)
     {
         this->addDelaunayPoint(triangulation, sommet);
     }
 
     // Some input segment are missing from the triangulation, we insert them.
     // Add missing segments while new constraints are added to the previous iteration.
-    std::vector< ::Ogre::Vector2> oldPoints = points;
-    std::vector< ::Ogre::Vector2> newPoints = points;
-    const int maxIteration                  = 3;
-    int count                               = 0;
+    std::vector<Ogre::Vector2> oldPoints = points;
+    std::vector<Ogre::Vector2> newPoints = points;
+    const int maxIteration               = 3;
+    int count                            = 0;
     do
     {
         oldPoints = newPoints;
@@ -861,7 +861,7 @@ void SShapeExtruder::generateDelaunayTriangulation(
         {
             const size_t previousIndex = index - 1 < 0 ? oldPoints.size() - 1 : static_cast<size_t>(index - 1);
             const Edge edge(oldPoints[previousIndex], oldPoints[static_cast<size_t>(index)]);
-            std::list< ::Ogre::Vector2> constraintes = this->addConstraints(triangulation, edge);
+            std::list<Ogre::Vector2> constraintes = this->addConstraints(triangulation, edge);
 
             newPoints.push_back(oldPoints[previousIndex]);
             newPoints.insert(newPoints.end(), constraintes.begin(), constraintes.end());
@@ -919,9 +919,9 @@ void SShapeExtruder::generateDelaunayTriangulation(
     // Gets back triangle coordinates to the wolrd space.
     for(const Triangle2D& triangle : triangulation)
     {
-        ::Ogre::Vector3 a = (viewMatrix.inverse() * ::Ogre::Vector4(triangle.a.x, triangle.a.y, depth, 1.f)).xyz();
-        ::Ogre::Vector3 b = (viewMatrix.inverse() * ::Ogre::Vector4(triangle.b.x, triangle.b.y, depth, 1.f)).xyz();
-        ::Ogre::Vector3 c = (viewMatrix.inverse() * ::Ogre::Vector4(triangle.c.x, triangle.c.y, depth, 1.f)).xyz();
+        Ogre::Vector3 a = (viewMatrix.inverse() * Ogre::Vector4(triangle.a.x, triangle.a.y, depth, 1.f)).xyz();
+        Ogre::Vector3 b = (viewMatrix.inverse() * Ogre::Vector4(triangle.b.x, triangle.b.y, depth, 1.f)).xyz();
+        Ogre::Vector3 c = (viewMatrix.inverse() * Ogre::Vector4(triangle.c.x, triangle.c.y, depth, 1.f)).xyz();
 
         _wordTriangulation.push_back(Triangle3D(a, b, c));
     }
@@ -929,7 +929,7 @@ void SShapeExtruder::generateDelaunayTriangulation(
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const ::Ogre::Vector2& _sommet) const
+void SShapeExtruder::addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet) const
 {
     // first find all the triangles that are no longer valid due to the insertion.
     std::list<Triangle2D> badTriangles;
@@ -1017,7 +1017,7 @@ void SShapeExtruder::addDelaunayPoint(std::vector<Triangle2D>& _triangulation, c
 
 //------------------------------------------------------------------------------
 
-std::list< ::Ogre::Vector2> SShapeExtruder::addConstraints(
+std::list<Ogre::Vector2> SShapeExtruder::addConstraints(
     std::vector<Triangle2D>& _triangulation,
     const Edge& _edge,
     int _depth
@@ -1042,15 +1042,15 @@ std::list< ::Ogre::Vector2> SShapeExtruder::addConstraints(
         }
     }
 
-    std::list< ::Ogre::Vector2> addedPoints;
+    std::list<Ogre::Vector2> addedPoints;
     if(!found)
     {
-        const ::Ogre::Vector2 midPoint = (_edge.a + _edge.b) / 2.f;
+        const Ogre::Vector2 midPoint = (_edge.a + _edge.b) / 2.f;
         this->addDelaunayPoint(_triangulation, midPoint);
 
-        const int depth                        = _depth + 1;
-        std::list< ::Ogre::Vector2> frontAdded = this->addConstraints(_triangulation, Edge(_edge.a, midPoint), depth);
-        std::list< ::Ogre::Vector2> backAdded  = this->addConstraints(_triangulation, Edge(midPoint, _edge.b), depth);
+        const int depth                     = _depth + 1;
+        std::list<Ogre::Vector2> frontAdded = this->addConstraints(_triangulation, Edge(_edge.a, midPoint), depth);
+        std::list<Ogre::Vector2> backAdded  = this->addConstraints(_triangulation, Edge(midPoint, _edge.b), depth);
 
         addedPoints = frontAdded;
         addedPoints.push_back(midPoint);

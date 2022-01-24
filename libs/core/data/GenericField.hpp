@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -202,16 +202,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    ::std::string toString() const override
+    std::string toString() const override
     {
-        return ::boost::lexical_cast< ::std::string>(this->m_value);
+        return boost::lexical_cast<std::string>(this->m_value);
     }
 
     //------------------------------------------------------------------------------
 
-    void fromString(const ::std::string& _value) override
+    void fromString(const std::string& _value) override
     {
-        this->m_value = ::boost::lexical_cast<T>(_value);
+        this->m_value = boost::lexical_cast<T>(_value);
     }
 
 protected:

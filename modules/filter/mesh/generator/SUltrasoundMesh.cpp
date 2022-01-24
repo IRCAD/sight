@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,7 +95,7 @@ void SUltrasoundMesh::starting()
     // Allocate position array
     const long x = static_cast<long>(m_resolutionX);
     const long y = static_cast<long>(m_resolutionY);
-    m_meshPositionArray.resize(::boost::extents[x][y][3]);
+    m_meshPositionArray.resize(boost::extents[x][y][3]);
 
     const auto mesh = m_mesh.lock();
 

@@ -58,7 +58,7 @@ namespace tid
 //------------------------------------------------------------------------------
 
 Fiducial::Fiducial(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image
 ) :
@@ -123,7 +123,7 @@ void Fiducial::createFiducial(
     rootNode->addSubNode(idNode);
 
     // Create Fiducial UID node
-    ::gdcm::UIDGenerator generator;
+    gdcm::UIDGenerator generator;
     SPTR(io::dicom::container::sr::DicomSRUIDRefNode) uidNode =
         std::make_shared<io::dicom::container::sr::DicomSRUIDRefNode>(
             io::dicom::container::DicomCodedAttribute("dd1202", "DCM", "Fiducial UID"),

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,11 @@ namespace sight::geometry::vision
 //-----------------------------------------------------------------------------
 
 ReprojectionError::ReprojectionError(
-    const ::cv::Mat& _cameraMat,
-    const ::cv::Mat& _distCoef,
-    const ::cv::Point2f& _imagePoints,
-    const ::cv::Point3f& _objectPoints,
-    const ::cv::Mat& _extrinsic
+    const cv::Mat& _cameraMat,
+    const cv::Mat& _distCoef,
+    const cv::Point2f& _imagePoints,
+    const cv::Point3f& _objectPoints,
+    const cv::Mat& _extrinsic
 ) :
     m_imagePoint(_imagePoints),
     m_objectPoint(_objectPoints),
@@ -45,11 +45,11 @@ ReprojectionError::ReprojectionError(
 //-----------------------------------------------------------------------------
 
 ::ceres::CostFunction* ReprojectionError::Create(
-    const ::cv::Mat& _cameraMatrix,
-    const ::cv::Mat& _distCoef,
-    const ::cv::Point2f& _imagePoints,
-    const ::cv::Point3f& _objectPoints,
-    const ::cv::Mat& _extrinsic
+    const cv::Mat& _cameraMatrix,
+    const cv::Mat& _distCoef,
+    const cv::Point2f& _imagePoints,
+    const cv::Point3f& _objectPoints,
+    const cv::Mat& _extrinsic
 )
 {
     ReprojectionError* rep = new ReprojectionError(_cameraMatrix, _distCoef, _imagePoints, _objectPoints, _extrinsic);

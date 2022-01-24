@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -272,8 +272,8 @@ void SMatricesReader::startReading()
             while(std::getline(*m_filestream, line))
             {
                 // parse the cvs file with tokenizer
-                const ::boost::char_separator<char> sep(", ;");
-                const ::boost::tokenizer< ::boost::char_separator<char> > tok {line, sep};
+                const boost::char_separator<char> sep(", ;");
+                const boost::tokenizer<boost::char_separator<char> > tok {line, sep};
 
                 // nb of 4x4 matrices = nb of elements - 1 (timestamp) / 16.
                 const auto nbOfElements = std::distance(tok.begin(), tok.end());
@@ -290,7 +290,7 @@ void SMatricesReader::startReading()
 
                 TimeStampedMatrices currentTsMat;
 
-                ::boost::tokenizer< ::boost::char_separator<char> >::iterator iter = tok.begin();
+                boost::tokenizer<boost::char_separator<char> >::iterator iter = tok.begin();
                 currentTsMat.timestamp = std::stod(iter.current_token());
 
                 ++iter;

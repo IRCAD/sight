@@ -393,7 +393,7 @@ void AppConfigManager::stopStartedServices()
         futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -470,7 +470,7 @@ void AppConfigManager::processStartItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -519,7 +519,7 @@ void AppConfigManager::processUpdateItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------

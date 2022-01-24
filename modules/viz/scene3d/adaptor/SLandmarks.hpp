@@ -183,8 +183,8 @@ private:
     struct Landmark
     {
         Landmark(
-            ::Ogre::SceneNode* _node,
-            ::Ogre::ManualObject* _object,
+            Ogre::SceneNode* _node,
+            Ogre::ManualObject* _object,
             std::string _groupName,
             size_t _index,
             sight::viz::scene3d::Text* _label
@@ -197,8 +197,8 @@ private:
         {
         }
 
-        ::Ogre::SceneNode* m_node {nullptr};          /*!< Contains the node of the landmark */
-        ::Ogre::ManualObject* m_object {nullptr};     /*!< Contains the manual object that represent the landmark */
+        Ogre::SceneNode* m_node {nullptr};            /*!< Contains the node of the landmark */
+        Ogre::ManualObject* m_object {nullptr};       /*!< Contains the manual object that represent the landmark */
         std::string m_groupName {""};                 /*!< Defines the group name of the landmark */
         size_t m_index {0};                           /*!< Defines the index of the landmark */
         sight::viz::scene3d::Text* m_label {nullptr}; /*!< Defines the text label of the landmark (can be nullptr) */
@@ -225,7 +225,7 @@ private:
      * @param _cam camera from which to extract the direction vector.
      * @return A vector representing the camera direction
      */
-    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const _cam);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const _cam);
 
     /**
      * @brief SLOT: removes an entire group.
@@ -324,7 +324,7 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional< ::Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
+    std::optional<Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
@@ -345,7 +345,7 @@ private:
     );
 
     /// Contains the root scene node.
-    ::Ogre::SceneNode* m_transNode {nullptr};
+    Ogre::SceneNode* m_transNode {nullptr};
 
     /// Contains the material data.
     data::Material::sptr m_material {nullptr};
@@ -390,7 +390,7 @@ private:
     std::uint32_t m_queryMask {0xFFFFFFFF};
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_landmarksQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_landmarksQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view s_LANDMARKS_INPUT = "landmarks";
     static constexpr std::string_view s_IMAGE_INPUT     = "image";

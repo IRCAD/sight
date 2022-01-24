@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,12 +36,12 @@ namespace sight::viz::scene3d::overlay
 /**
  * @brief Listens to render events triggered for a given viewport and activates the overlays enabled for that viewport.
  */
-class ViewportListener final : public ::Ogre::RenderTargetListener
+class ViewportListener final : public Ogre::RenderTargetListener
 {
 public:
 
     /// Maps each viewport to the overlays enabled on it.
-    using ViewportOverlaysMapType = std::map< ::Ogre::Viewport*, std::reference_wrapper<const Layer::OverlaySetType> >;
+    using ViewportOverlaysMapType = std::map<Ogre::Viewport*, std::reference_wrapper<const Layer::OverlaySetType> >;
 
     /// Constructor, sets the reference to the map between layers and viewports.
     VIZ_SCENE3D_API ViewportListener(ViewportOverlaysMapType& _vpLayerMap);
@@ -52,7 +52,7 @@ public:
 private:
 
     /// Called right before rendering in the viewport. Activates the overlays enabled for this viewport.
-    virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) final;
+    virtual void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;
 
     /// Called right after rendering in the viewport. Disables the overlays enabled for this viewport.
     virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;

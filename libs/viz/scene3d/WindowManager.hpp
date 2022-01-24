@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,10 +47,10 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Registers an Ogre window.
-    VIZ_SCENE3D_API void registerWindow(::Ogre::RenderWindow* _window);
+    VIZ_SCENE3D_API void registerWindow(Ogre::RenderWindow* _window);
 
     /// Unregisters an Ogre window.
-    VIZ_SCENE3D_API void unregisterWindow(::Ogre::RenderWindow* _window);
+    VIZ_SCENE3D_API void unregisterWindow(Ogre::RenderWindow* _window);
 
     /**
      * @brief Gets the unique instance of this class.
@@ -67,10 +67,10 @@ public:
 private:
 
     /// Contains the first window.
-    ::Ogre::RenderWindow* m_firstWindow;
+    Ogre::RenderWindow* m_firstWindow;
 
     /// Stores all Ogre windows.
-    std::set< ::Ogre::RenderWindow*> m_windows;
+    std::set<Ogre::RenderWindow*> m_windows;
 };
 
 } // namespace sight::viz::scene3d.

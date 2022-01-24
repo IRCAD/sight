@@ -397,11 +397,11 @@ void IService::setObjectId(std::string_view _key, const IService::IdType& _id, c
 
 //-----------------------------------------------------------------------------
 
-void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
+void displayPt(boost::property_tree::ptree& pt, std::string indent = "")
 {
     SIGHT_ERROR(indent << " data : '" << pt.data() << "'");
 
-    for(::boost::property_tree::ptree::value_type& v : pt)
+    for(boost::property_tree::ptree::value_type& v : pt)
     {
         SIGHT_ERROR((indent + "  '") << v.first << "':");
         displayPt(v.second, indent + "      ");

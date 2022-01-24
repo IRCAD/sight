@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,23 +42,23 @@ namespace compositor
 {
 
 // Here we add the class derivated from the Ogre Listener
-class VIZ_SCENE3D_CLASS_API SaoListener : public ::Ogre::CompositorInstance::Listener
+class VIZ_SCENE3D_CLASS_API SaoListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
     VIZ_SCENE3D_API SaoListener() = delete;
 
-    VIZ_SCENE3D_API SaoListener(::Ogre::Viewport* vp) :
+    VIZ_SCENE3D_API SaoListener(Ogre::Viewport* vp) :
         m_viewport(vp)
     {
     }
 
     /// Method called before a render_target operation involving a material to set dynamically the material parameters.
-    VIZ_SCENE3D_API void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat);
+    VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat);
 
 private:
 
-    ::Ogre::Viewport* m_viewport;
+    Ogre::Viewport* m_viewport;
 };
 
 } // namespace compositor.

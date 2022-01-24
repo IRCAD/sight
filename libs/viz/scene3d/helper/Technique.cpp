@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,13 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* Technique::copyToMaterial(
+Ogre::Technique* Technique::copyToMaterial(
     const Ogre::Technique* _tech,
     const std::string& _schemeName,
     Ogre::Material* _mtl
 )
 {
-    ::Ogre::Technique* newTech = _mtl->createTechnique();
+    Ogre::Technique* newTech = _mtl->createTechnique();
     *newTech = *_tech;
     newTech->setName(_schemeName);
     newTech->setSchemeName(_schemeName);

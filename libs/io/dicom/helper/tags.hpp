@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,23 +37,23 @@ namespace helper
 {
 
 /**
- * @brief Parse group and element strings and return a ::gdcm::Tag instance
+ * @brief Parse group and element strings and return a gdcm::Tag instance
  *
  * @param group the group part of the tag
  * @param element the element part of the tag
  *
- * @return a ::gdcm::Tag instance
+ * @return a gdcm::Tag instance
  */
-IO_DICOM_API ::gdcm::Tag getGdcmTag(const std::string& group, const std::string& element);
+IO_DICOM_API gdcm::Tag getGdcmTag(const std::string& group, const std::string& element);
 
 /**
  * @brief List of private GDCM tags type
  *
- * @note Do not use ::gdcm::PrivateTag because it casts element part as uint8_t
+ * @note Do not use gdcm::PrivateTag because it casts element part as uint8_t
  * and we may have uint16_t (for instance Philips tag 0x00E1,0x1022).
  * See part 05 of Dicom Standard, section 7.8.1.
  */
-typedef std::vector< ::gdcm::Tag> PrivateTagVecType;
+typedef std::vector<gdcm::Tag> PrivateTagVecType;
 
 /**
  * @brief Load a set of private tags from given CSV file.
@@ -66,7 +66,7 @@ typedef std::vector< ::gdcm::Tag> PrivateTagVecType;
  * @pre file must exist
  * @param tagsPath path to CSV file containing private tags
  *
- * @return a list of ::gdcm::PrivateTag instances
+ * @return a list of gdcm::PrivateTag instances
  */
 IO_DICOM_API PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,21 +78,21 @@ void TextTest::factoryTest()
     );
     ogreRenderWindow->setVisible(false);
     ogreRenderWindow->setAutoUpdated(false);
-    ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Load the material manually because the Font will need it
-    ::Ogre::MaterialManager::getSingleton().load("Text", viz::scene3d::RESOURCE_GROUP);
+    Ogre::MaterialManager::getSingleton().load("Text", viz::scene3d::RESOURCE_GROUP);
 
-    ::Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
-    const auto& factoryName            = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
-    const auto& textName1              = "COUCOU";
+    Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
+    const auto& factoryName          = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
+    const auto& textName1            = "COUCOU";
 
-    ::Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
+    Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
 
-    auto& overlayManager = ::Ogre::OverlayManager::getSingleton();
+    auto& overlayManager = Ogre::OverlayManager::getSingleton();
 
     auto overlayTextPanel =
-        static_cast< ::Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "_GUI"));
+        static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "_GUI"));
 
     auto* const camera = sceneManager->createCamera("TestCamera");
     ogreRenderWindow->addViewport(camera);
@@ -108,7 +108,7 @@ void TextTest::factoryTest()
     );
     CPPUNIT_ASSERT(textObj1 != nullptr); // See if it has the right type.
 
-    ::Ogre::MovableObject* movableText1 = textObj1;
+    Ogre::MovableObject* movableText1 = textObj1;
     CPPUNIT_ASSERT(movableText1 != nullptr); // Check if the object was created.
 
     rootNode->attachObject(textObj1);

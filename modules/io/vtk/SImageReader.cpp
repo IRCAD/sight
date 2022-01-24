@@ -216,7 +216,7 @@ bool SImageReader::loadImage(
     bool ok = true;
 
     std::string ext = imgFile.extension().string();
-    ::boost::algorithm::to_lower(ext);
+    boost::algorithm::to_lower(ext);
 
     sight::io::base::reader::IObjectReader::sptr imageReader;
     if(ext == ".vtk")

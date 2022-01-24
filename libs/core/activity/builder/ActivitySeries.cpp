@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,7 +115,7 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
     actSeries->setModality("OT");
     actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID());
 
-    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     actSeries->setDate(core::tools::getDate(now));
     actSeries->setTime(core::tools::getTime(now));
 

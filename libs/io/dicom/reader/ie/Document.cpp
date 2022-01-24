@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace ie
 
 Document::Document(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
     const core::log::Logger::sptr& logger,
@@ -63,7 +63,7 @@ Document::~Document()
 void Document::readSR()
 {
     // Retrieve dataset
-    const ::gdcm::DataSet& datasetRoot = m_reader->GetFile().GetDataSet();
+    const gdcm::DataSet& datasetRoot = m_reader->GetFile().GetDataSet();
 
     // Create SR from Dataset
     SPTR(io::dicom::container::sr::DicomSRContainerNode) rootContainerNode =

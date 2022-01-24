@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -175,40 +175,40 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCylinder(
         m_xLine,
         materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(::Ogre::ColourValue::Red),
+        Ogre::ColourValue(Ogre::ColourValue::Red),
         cylinderRadius,
         cylinderLength,
         sample
     );
     Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
     xLineNode->attachObject(m_xLine);
-    xLineNode->pitch(::Ogre::Degree(90));
+    xLineNode->pitch(Ogre::Degree(90));
 
     // Y axis
     sight::viz::scene3d::helper::ManualObject::createCylinder(
         m_yLine,
         materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(::Ogre::ColourValue::Green),
+        Ogre::ColourValue(Ogre::ColourValue::Green),
         cylinderRadius,
         cylinderLength,
         sample
     );
     Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
     yLineNode->attachObject(m_yLine);
-    yLineNode->roll(::Ogre::Degree(90));
+    yLineNode->roll(Ogre::Degree(90));
 
     // Z axis
     sight::viz::scene3d::helper::ManualObject::createCylinder(
         m_zLine,
         materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(::Ogre::ColourValue::Blue),
+        Ogre::ColourValue(Ogre::ColourValue::Blue),
         cylinderRadius,
         cylinderLength,
         sample
     );
     Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
     zLineNode->attachObject(m_zLine);
-    zLineNode->yaw(::Ogre::Degree(-90));
+    zLineNode->yaw(Ogre::Degree(-90));
 
     Ogre::OverlayContainer* const textContainer = this->getLayer()->getOverlayTextPanel();
     Ogre::Camera* const cam                     = this->getLayer()->getDefaultCamera();
@@ -217,7 +217,7 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCone(
         m_xCone,
         materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(::Ogre::ColourValue::Red),
+        Ogre::ColourValue(Ogre::ColourValue::Red),
         coneRadius,
         coneLength,
         sample
@@ -246,7 +246,7 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCone(
         m_yCone,
         materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(::Ogre::ColourValue::Green),
+        Ogre::ColourValue(Ogre::ColourValue::Green),
         coneRadius,
         coneLength,
         sample
@@ -270,13 +270,13 @@ void SAxis::starting()
     }
 
     yConeNode->translate(0.f, cylinderLength, 0.f);
-    yConeNode->roll(::Ogre::Degree(90));
+    yConeNode->roll(Ogre::Degree(90));
 
     // Z cone
     sight::viz::scene3d::helper::ManualObject::createCone(
         m_zCone,
         materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(::Ogre::ColourValue::Blue),
+        Ogre::ColourValue(Ogre::ColourValue::Blue),
         coneRadius,
         coneLength,
         sample
@@ -300,7 +300,7 @@ void SAxis::starting()
     }
 
     zConeNode->translate(0.f, 0.f, cylinderLength);
-    zConeNode->yaw(::Ogre::Degree(-90));
+    zConeNode->yaw(Ogre::Degree(-90));
 
     // Display Name if provided.
     if(!m_axisName.empty())

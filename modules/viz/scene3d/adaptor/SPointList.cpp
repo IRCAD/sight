@@ -77,7 +77,7 @@ SPointList::~SPointList() noexcept
 {
     if(m_entity)
     {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
     }
 }
@@ -169,9 +169,9 @@ void SPointList::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry = ::std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
+    m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_sceneNode = this->getTransformNode(rootSceneNode);
 
     const auto pointList = m_pointList.lock();
@@ -221,8 +221,8 @@ void SPointList::stopping()
 
     this->unregisterServices();
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
     m_meshGeometry->clearMesh(*sceneMgr);
 
     if(m_entity)
@@ -272,10 +272,10 @@ void SPointList::updating()
 
 void SPointList::createLabel(const data::PointList::csptr& _pointList)
 {
-    ::Ogre::SceneManager* sceneMgr          = this->getSceneManager();
-    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
-    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* sceneMgr          = this->getSceneManager();
+    Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
+    Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
+    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
 
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
@@ -306,7 +306,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
         );
         m_labels[i]->setText(labelNumber);
         m_labels[i]->setTextColor(
-            ::Ogre::ColourValue(
+            Ogre::ColourValue(
                 m_labelColor->red(),
                 m_labelColor->green(),
                 m_labelColor->blue()
@@ -324,9 +324,9 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
 
 void SPointList::destroyLabel()
 {
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
-    for(::Ogre::SceneNode* node : m_nodes)
+    for(Ogre::SceneNode* node : m_nodes)
     {
         m_sceneNode->removeAndDestroyChild(node);
     }
@@ -345,8 +345,8 @@ void SPointList::destroyLabel()
 
 void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 {
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
 
     detachAndDestroyEntity();
 
@@ -404,8 +404,8 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 
 void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 {
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
 
     detachAndDestroyEntity();
 
@@ -420,7 +420,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(::std::const_pointer_cast<data::Mesh>(_mesh), true);
+    m_meshGeometry->updateMesh(std::const_pointer_cast<data::Mesh>(_mesh), true);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -514,16 +514,16 @@ void SPointList::updateMaterialAdaptor()
 
             if(!m_textureName.empty())
             {
-                const auto texture = ::Ogre::TextureManager::getSingleton().load(
+                const auto texture = Ogre::TextureManager::getSingleton().load(
                     m_textureName,
                     sight::viz::scene3d::RESOURCE_GROUP
                 );
-                ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
+                Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
                     m_materialAdaptor->getMaterialName(),
                     sight::viz::scene3d::RESOURCE_GROUP
                 );
 
-                ::Ogre::TextureUnitState* texUnitState = material->getTechnique(0)->getPass(0)->getTextureUnitState(
+                Ogre::TextureUnitState* texUnitState = material->getTechnique(0)->getPass(0)->getTextureUnitState(
                     "sprite"
                 );
                 texUnitState->setTexture(texture);
@@ -553,10 +553,10 @@ void SPointList::updateMaterialAdaptor()
 
 //-----------------------------------------------------------------------------
 
-void SPointList::attachNode(::Ogre::MovableObject* _node)
+void SPointList::attachNode(Ogre::MovableObject* _node)
 {
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
     transNode->attachObject(_node);
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
@@ -569,9 +569,9 @@ void SPointList::detachAndDestroyEntity()
 {
     if(m_entity)
     {
-        ::Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
-        ::Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
-        ::Ogre::SceneNode* const transNode     = this->getTransformNode(rootSceneNode);
+        Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
+        Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
+        Ogre::SceneNode* const transNode     = this->getTransformNode(rootSceneNode);
         transNode->detachObject(m_entity);
         sceneMgr->destroyEntity(m_entity);
         m_entity = nullptr;

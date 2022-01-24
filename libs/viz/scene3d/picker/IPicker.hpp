@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,31 +59,31 @@ public:
      * @brief Get the selected object if there is one.
      * @return The selected object.
      */
-    VIZ_SCENE3D_API ::Ogre::MovableObject* getSelectedObject() const;
+    VIZ_SCENE3D_API Ogre::MovableObject* getSelectedObject() const;
 
     /**
      * @brief Get the intersection position in the world space.
      * @return The intersection position.
      */
-    VIZ_SCENE3D_API ::Ogre::Vector3 getIntersectionInWorldSpace() const;
+    VIZ_SCENE3D_API Ogre::Vector3 getIntersectionInWorldSpace() const;
 
     /**
      * @brief Get the intersection position in the view space.
      * @return The intersection position.
      */
-    VIZ_SCENE3D_API ::Ogre::Vector2 getIntersectionInViewSpace() const;
+    VIZ_SCENE3D_API Ogre::Vector2 getIntersectionInViewSpace() const;
 
     /**
      * @brief Get the intersection position in the screen space.
      * @return The intersection position.
      */
-    VIZ_SCENE3D_API ::Ogre::Vector2 getIntersectionInPixel() const;
+    VIZ_SCENE3D_API Ogre::Vector2 getIntersectionInPixel() const;
 
     /**
      * @brief Set the scene manager.
      * @param _sceneMgr The scene manager.
      */
-    VIZ_SCENE3D_API void setSceneManager(::Ogre::SceneManager* _sceneMgr);
+    VIZ_SCENE3D_API void setSceneManager(Ogre::SceneManager* _sceneMgr);
 
     /**
      * @brief Check if there is a scene manager.
@@ -94,25 +94,25 @@ public:
 protected:
 
     /// Current scene manager.
-    ::Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Selected movable object.
-    ::Ogre::MovableObject* m_selectedObject {nullptr};
+    Ogre::MovableObject* m_selectedObject {nullptr};
 
     /// True if a scene manager is setted.
     bool m_hasSceneManager {false};
 
     /// Intersection between the ray and the selected object.
-    ::Ogre::Vector3 m_rayIntersect {};
+    Ogre::Vector3 m_rayIntersect {};
 
     /// Returns the scene node containing the default camera.
-    ::Ogre::SceneNode* getCameraSceneNode() const;
+    Ogre::SceneNode* getCameraSceneNode() const;
 };
 
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline ::Ogre::MovableObject* IPicker::getSelectedObject() const
+inline Ogre::MovableObject* IPicker::getSelectedObject() const
 {
     return m_selectedObject;
 }

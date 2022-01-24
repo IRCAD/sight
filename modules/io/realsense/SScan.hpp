@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -238,7 +238,7 @@ private:
         ///If frames needs to be aligned on in a particular STREAM.
         /// Value can be RS2_STREAM_COUNT = No alignement, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
         // values are ignored.
-        ::rs2_stream streamToAlignTo = RS2_STREAM_COUNT;
+        rs2_stream streamToAlignTo = RS2_STREAM_COUNT;
 
         /// Re-init all values to default.
         void reset()
@@ -344,7 +344,7 @@ private:
      * @brief initialize is called at "startCamera" and will do the initialization of sight data.
      * @param[in] _profile: realsense pipeline_profile created in 'startCamera'
      */
-    void initialize(const ::rs2::pipeline_profile& _profile);
+    void initialize(const rs2::pipeline_profile& _profile);
 
     /**
      * @brief  grabbing thread (launched from startCamera)
@@ -388,7 +388,7 @@ private:
      * @param[in] _pc : realsense points.
      * @param[in] _texture : realsense video_frame used to add color on points.
      */
-    void onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture);
+    void onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture);
 
     // Slots
 
@@ -410,7 +410,7 @@ private:
 
     // Members
 
-    std::unique_ptr< ::rs2::pipeline> m_pipe; ///< RealSense Pipeline
+    std::unique_ptr<rs2::pipeline> m_pipe; ///< RealSense Pipeline
 
     std::string m_depthKey; ///< Depth frame key.
     std::string m_colorKey; ///< Color frame key.
@@ -431,7 +431,7 @@ private:
     FilterSettings m_filterSettings;
 
     /// Contain the current realsense device (needed when parameters changed live).
-    ::rs2::device m_currentDevice;
+    rs2::device m_currentDevice;
 
     /// Map of json presets (in RC folder).
     std::map<std::string, ::fs::path> m_jsonPresets;

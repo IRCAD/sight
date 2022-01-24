@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,10 +37,10 @@ namespace stream
 namespace in
 {
 
-struct HoldCounterStream : ::boost::iostreams::stream< ::boost::iostreams::array_source>
+struct HoldCounterStream : boost::iostreams::stream<boost::iostreams::array_source>
 {
     HoldCounterStream(char* buf, size_t size, const Buffer::LockType& lock) :
-        ::boost::iostreams::stream< ::boost::iostreams::array_source>(buf, size),
+        boost::iostreams::stream<boost::iostreams::array_source>(buf, size),
         m_counter(lock)
     {
     }

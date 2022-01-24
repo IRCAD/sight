@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(::gdcm::DataSet& dataset) const;
+    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
 
     /**
      * @brief Add a sub node
@@ -134,7 +134,7 @@ protected:
      * @param[in] dataset Destination dataset
      * @param[in] codedAttribute Coded attribute to write
      */
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> createConceptNameCodeSequence(
+    gdcm::SmartPointer<gdcm::SequenceOfItems> createConceptNameCodeSequence(
         const DicomCodedAttribute& codedAttribute
     ) const;
 
@@ -143,7 +143,7 @@ protected:
      * @see PS 3.3  Table 8.8-1
      * @param[in] dataset Destination dataset
      */
-    void writeContentSequence(::gdcm::DataSet& dataset) const;
+    void writeContentSequence(gdcm::DataSet& dataset) const;
 
     /// SubNode container
     SubNodeContainer m_subNodeContainer;

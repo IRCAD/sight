@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -171,11 +171,11 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     for(std::filesystem::path filename : oldFilenames)
     {
         // Try to open the file
-        ::gdcm::Reader reader;
+        gdcm::Reader reader;
         reader.SetFileName(filename.string().c_str());
         CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \"" + filename.string() + "\"", reader.Read());
-        ::gdcm::File& gdcmFile   = reader.GetFile();
-        ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
+        gdcm::File& gdcmFile   = reader.GetFile();
+        gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
         std::string data;
         data = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x9161>(dataset); //Concatenation UID
@@ -295,22 +295,22 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
 
 //------------------------------------------------------------------------------
 
-std::string getDummyValue(const ::gdcm::Tag& tag)
+std::string getDummyValue(const gdcm::Tag& tag)
 {
-    switch(::gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(tag).GetVR())
+    switch(gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(tag).GetVR())
     {
-        case ::gdcm::VR::AE:
+        case gdcm::VR::AE:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::AS:
+        case gdcm::VR::AS:
             return "000Y";
 
-        case ::gdcm::VR::AT:
+        case gdcm::VR::AT:
             return "00H,00H,00H,00H";
 
-        case ::gdcm::VR::CS:
+        case gdcm::VR::CS:
             //Patient's Sex
-            if(tag == ::gdcm::Tag(0x0010, 0x0040))
+            if(tag == gdcm::Tag(0x0010, 0x0040))
             {
                 return "O";
             }
@@ -319,74 +319,74 @@ std::string getDummyValue(const ::gdcm::Tag& tag)
                 return "ANONYMIZED";
             }
 
-        case ::gdcm::VR::DA:
+        case gdcm::VR::DA:
             return "19000101";
 
-        case ::gdcm::VR::DS:
+        case gdcm::VR::DS:
             return "0";
 
-        case ::gdcm::VR::DT:
+        case gdcm::VR::DT:
             return "19000101000000.000000";
 
-        case ::gdcm::VR::FD:
+        case gdcm::VR::FD:
             return "0";
 
-        case ::gdcm::VR::FL:
+        case gdcm::VR::FL:
             return "0";
 
-        case ::gdcm::VR::IS:
+        case gdcm::VR::IS:
             return "0";
 
-        case ::gdcm::VR::LO:
+        case gdcm::VR::LO:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::LT:
+        case gdcm::VR::LT:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::OB:
+        case gdcm::VR::OB:
             return "00H00H";
 
-        case ::gdcm::VR::OF:
+        case gdcm::VR::OF:
             return "0";
 
-        case ::gdcm::VR::OW:
+        case gdcm::VR::OW:
             return "0";
 
-        case ::gdcm::VR::PN:
+        case gdcm::VR::PN:
             return "ANONYMIZED^ANONYMIZED";
 
-        case ::gdcm::VR::SH:
+        case gdcm::VR::SH:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::SL:
+        case gdcm::VR::SL:
             return "0";
 
-        case ::gdcm::VR::SQ:
+        case gdcm::VR::SQ:
             CPPUNIT_FAIL("We should not be there...");
             break;
 
-        case ::gdcm::VR::SS:
+        case gdcm::VR::SS:
             return "0";
 
-        case ::gdcm::VR::ST:
+        case gdcm::VR::ST:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::TM:
+        case gdcm::VR::TM:
             return "000000.000000";
 
-        case ::gdcm::VR::UI:
+        case gdcm::VR::UI:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::UL:
+        case gdcm::VR::UL:
             return "0";
 
-        case ::gdcm::VR::UN:
+        case gdcm::VR::UN:
             return "ANONYMIZED";
 
-        case ::gdcm::VR::US:
+        case gdcm::VR::US:
             return "0";
 
-        case ::gdcm::VR::UT:
+        case gdcm::VR::UT:
             return "ANONYMIZED";
 
         default:
@@ -399,7 +399,7 @@ std::string getDummyValue(const ::gdcm::Tag& tag)
 
 template<uint16_t GROUP, uint16_t ELEMENT>
 void processTag(
-    const ::gdcm::DataSet& dataset,
+    const gdcm::DataSet& dataset,
     const std::string& actionCode,
     const std::set<std::string>& uidContainer
 )
@@ -415,7 +415,7 @@ void processTag(
     if(actionCode == "X" || actionCode == "X/Z" || actionCode == "X/D" || actionCode == "X/Z/D"
        || actionCode == "X/Z/U*")
     {
-        CPPUNIT_ASSERT(!dataset.FindDataElement(::gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
+        CPPUNIT_ASSERT(!dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
     }
     //Z - replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with the
     // VR
@@ -423,33 +423,33 @@ void processTag(
     //Z/D - Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
     else if(actionCode == "Z" || actionCode == "D" || actionCode == "Z/D")
     {
-        if(::gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(
-               ::gdcm::Tag(
+        if(gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(
+               gdcm::Tag(
                    GROUP,
                    ELEMENT
                )
         ).GetVR()
-           == ::gdcm::VR::SQ)
+           == gdcm::VR::SQ)
         {
-            CPPUNIT_ASSERT(!dataset.FindDataElement(::gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
+            CPPUNIT_ASSERT(!dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
         }
         else
         {
-            CPPUNIT_ASSERT_EQUAL(getDummyValue(::gdcm::Tag(GROUP, ELEMENT)), dataStr);
+            CPPUNIT_ASSERT_EQUAL(getDummyValue(gdcm::Tag(GROUP, ELEMENT)), dataStr);
         }
     }
     //K - keep (unchanged for non-sequence attributes, cleaned for sequences)
     else if(actionCode == "K")
     {
-        if(::gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(
-               ::gdcm::Tag(
+        if(gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(
+               gdcm::Tag(
                    GROUP,
                    ELEMENT
                )
         ).GetVR()
-           == ::gdcm::VR::SQ)
+           == gdcm::VR::SQ)
         {
-            CPPUNIT_ASSERT(!dataset.FindDataElement(::gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
+            CPPUNIT_ASSERT(!dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
         }
     }
     //C - clean, that is replace with values of similar meaning known not to contain identifying information and
@@ -471,11 +471,11 @@ void processTag(
 void DicomAnonymizerTest::testAnonymizedFile(const std::filesystem::path& filename)
 {
     // Try to open the file
-    ::gdcm::Reader reader;
+    gdcm::Reader reader;
     reader.SetFileName(filename.string().c_str());
     CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \"" + filename.string() + "\"", reader.Read());
-    ::gdcm::File& gdcmFile   = reader.GetFile();
-    ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
+    gdcm::File& gdcmFile   = reader.GetFile();
+    gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
     processTag<0x0008, 0x0050>(dataset, "Z", m_uidContainer);     //Accession Number
     processTag<0x0018, 0x4000>(dataset, "X", m_uidContainer);     //Acquisition Comments

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ void Plugin::start()
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
     // Don't output the log to the terminal and delete the file when the test is done.
-    ::Ogre::LogManager* logMgr = ::Ogre::LogManager::getSingletonPtr();
+    Ogre::LogManager* logMgr = Ogre::LogManager::getSingletonPtr();
     logMgr->createLog("OgreTest.log", true, false, true);
 }
 

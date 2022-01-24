@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
         std::string parentId,
         Layer::sptr layer,
         Ogre::SceneNode* const parentNode,
-        ::Ogre::TexturePtr imageTexture,
+        Ogre::TexturePtr imageTexture,
         const TransferFunction::sptr& gpuVolumeTF,
         PreIntegrationTable& preintegrationTable,
         bool ambientOcclusion      = false,
@@ -127,7 +127,7 @@ public:
     VIZ_SCENE3D_API void setFocalLength(float focalLength);
 
     /// Computes image positions, updates the proxy geometry.
-    VIZ_SCENE3D_API void clipImage(const ::Ogre::AxisAlignedBox& clippingBox) override;
+    VIZ_SCENE3D_API void clipImage(const Ogre::AxisAlignedBox& clippingBox) override;
 
     /// IllumVolume getter.
     VIZ_SCENE3D_API IllumAmbientOcclusionSAT::sptr getIllumVolume();
@@ -139,7 +139,7 @@ public:
     viz::scene3d::Layer::sptr getLayer() const;
 
     /// Sets the texture holding the image to be displayed. Doesn't recompute the proxy geometry.
-    VIZ_SCENE3D_API void set3DTexture(const ::Ogre::TexturePtr& _texture);
+    VIZ_SCENE3D_API void set3DTexture(const Ogre::TexturePtr& _texture);
 
 protected:
 
@@ -163,10 +163,10 @@ protected:
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
-    /// ::Ogre::MaterialManager::getSingletonPtr()->getByName("RTV_Mat")->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(paramName,
+    /// Ogre::MaterialManager::getSingletonPtr()->getByName("RTV_Mat")->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(paramName,
     /// m_idvrAlphaCorrection);
     /// Only seems to update them when instancing the corresponding material
-    ::Ogre::GpuSharedParametersPtr m_RTVSharedParameters;
+    Ogre::GpuSharedParametersPtr m_RTVSharedParameters;
 
     /// Name of the material
     std::string m_currentMtlName;
@@ -187,10 +187,10 @@ private:
     void updateVolIllumMat();
 
     /// Sets the default diffuse, specular and shininess in the material.
-    void setMaterialLightParams(::Ogre::MaterialPtr mtl);
+    void setMaterialLightParams(Ogre::MaterialPtr mtl);
 
     /// Object containing the proxy geometry, this is a cube for now.
-    ::Ogre::ManualObject* m_entryPointGeometry;
+    Ogre::ManualObject* m_entryPointGeometry;
 
     /// Proxy geometry defining ray entry and exit points.
     viz::scene3d::vr::GridProxyGeometry* m_proxyGeometry;
@@ -211,7 +211,7 @@ private:
     TransferFunction::wptr m_gpuVolumeTF;
 
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
-    ::Ogre::Vector4 m_volIllumFactor;
+    Ogre::Vector4 m_volIllumFactor;
 
     /// Inverse of the sampling rate accounted by the TF.
     float m_opacityCorrectionFactor;

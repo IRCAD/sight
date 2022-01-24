@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -195,7 +195,7 @@ private:
     core::thread::Worker::sptr m_worker;
 
     /// OpenCV video grabber.
-    ::cv::VideoCapture m_videoCapture;
+    cv::VideoCapture m_videoCapture;
 
     /// List of image paths to read.
     ImageFilesType m_imageToRead;

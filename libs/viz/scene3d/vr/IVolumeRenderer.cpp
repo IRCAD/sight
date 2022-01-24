@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,15 +44,15 @@ const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
 };
 
 /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
-static const ::Ogre::Vector3 s_imagePositions[8] = {
-    ::Ogre::Vector3(1, 1, 1),
-    ::Ogre::Vector3(1, 0, 1),
-    ::Ogre::Vector3(1, 1, 0),
-    ::Ogre::Vector3(0, 1, 1),
-    ::Ogre::Vector3(0, 0, 1),
-    ::Ogre::Vector3(1, 0, 0),
-    ::Ogre::Vector3(0, 1, 0),
-    ::Ogre::Vector3(0, 0, 0)
+static const Ogre::Vector3 s_imagePositions[8] = {
+    Ogre::Vector3(1, 1, 1),
+    Ogre::Vector3(1, 0, 1),
+    Ogre::Vector3(1, 1, 0),
+    Ogre::Vector3(0, 1, 1),
+    Ogre::Vector3(0, 0, 1),
+    Ogre::Vector3(1, 0, 0),
+    Ogre::Vector3(0, 1, 0),
+    Ogre::Vector3(0, 0, 0)
 };
 
 //-----------------------------------------------------------------------------
@@ -68,9 +68,9 @@ const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = {{
 
 IVolumeRenderer::IVolumeRenderer(
     std::string parentId,
-    ::Ogre::SceneManager* const sceneManager,
-    ::Ogre::SceneNode* const volumeNode,
-    ::Ogre::TexturePtr imageTexture,
+    Ogre::SceneManager* const sceneManager,
+    Ogre::SceneNode* const volumeNode,
+    Ogre::TexturePtr imageTexture,
     PreIntegrationTable& preintegrationTable
 ) :
     m_parentId(parentId),
@@ -100,17 +100,17 @@ void IVolumeRenderer::updateVolumeTF()
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
+void IVolumeRenderer::clipImage(const Ogre::AxisAlignedBox& clippingBox)
 {
-    const ::Ogre::Vector3 min = clippingBox.getMinimum();
-    const ::Ogre::Vector3 max = clippingBox.getMaximum();
+    const Ogre::Vector3 min = clippingBox.getMinimum();
+    const Ogre::Vector3 max = clippingBox.getMaximum();
 
     for(unsigned i = 0 ; i < 8 ; ++i)
     {
-        m_clippedImagePositions[i] = ::Ogre::Vector3(
-            ::boost::algorithm::clamp(s_imagePositions[i].x, min.x, max.x),
-            ::boost::algorithm::clamp(s_imagePositions[i].y, min.y, max.y),
-            ::boost::algorithm::clamp(s_imagePositions[i].z, min.z, max.z)
+        m_clippedImagePositions[i] = Ogre::Vector3(
+            boost::algorithm::clamp(s_imagePositions[i].x, min.x, max.x),
+            boost::algorithm::clamp(s_imagePositions[i].y, min.y, max.y),
+            boost::algorithm::clamp(s_imagePositions[i].z, min.z, max.z)
         );
     }
 }
@@ -135,12 +135,12 @@ void IVolumeRenderer::scaleTranslateCube(
     const double height = static_cast<double>(m_3DOgreTexture->getHeight()) * spacing[1];
     const double depth  = static_cast<double>(m_3DOgreTexture->getDepth()) * spacing[2];
 
-    const ::Ogre::Vector3 scaleFactors(
+    const Ogre::Vector3 scaleFactors(
         static_cast<float>(width),
         static_cast<float>(height),
         static_cast<float>(depth));
 
-    const ::Ogre::Vector3 ogreOrigin(
+    const Ogre::Vector3 ogreOrigin(
         static_cast<float>(origin[0]),
         static_cast<float>(origin[1]),
         static_cast<float>(origin[2]));
@@ -151,9 +151,9 @@ void IVolumeRenderer::scaleTranslateCube(
 
 //-----------------------------------------------------------------------------
 
-::Ogre::Plane IVolumeRenderer::getCameraPlane() const
+Ogre::Plane IVolumeRenderer::getCameraPlane() const
 {
-    return ::Ogre::Plane(
+    return Ogre::Plane(
         m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true).normalisedCopy(),
         m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition())
     );
@@ -161,17 +161,17 @@ void IVolumeRenderer::scaleTranslateCube(
 
 //-----------------------------------------------------------------------------
 
-unsigned IVolumeRenderer::computeSampleDistance(const ::Ogre::Plane& cameraPlane)
+unsigned IVolumeRenderer::computeSampleDistance(const Ogre::Plane& cameraPlane)
 {
     // get the cube's closest and furthest vertex to the camera
-    const auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+    const auto comp = [&cameraPlane](const Ogre::Vector3& v1, const Ogre::Vector3& v2)
                       {return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2);};
 
     const auto closestVtxIterator = std::min_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
     const auto closestVtxIndex    = std::distance(m_clippedImagePositions, closestVtxIterator);
 
-    const ::Ogre::Vector3 furthestVtx = *std::max_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
-    const ::Ogre::Vector3 closestVtx  = *closestVtxIterator;
+    const Ogre::Vector3 furthestVtx = *std::max_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
+    const Ogre::Vector3 closestVtx  = *closestVtxIterator;
 
     // get distance between slices
     const float closestVtxDistance  = cameraPlane.getDistance(closestVtx);

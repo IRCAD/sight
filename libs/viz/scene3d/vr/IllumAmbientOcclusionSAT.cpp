@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ namespace vr
 
 //-----------------------------------------------------------------------------
 
-class VolIllumCompositorListener : public ::Ogre::CompositorInstance::Listener
+class VolIllumCompositorListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
@@ -70,20 +70,20 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(::Ogre::uint32 /*pass_id*/, ::Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
     {
-        ::Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
-        ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
+        Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
+        Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
 
         volIllumParams->setNamedConstant("u_sliceIndex", m_currentSliceIndex);
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialSetup(::Ogre::uint32 /*pass_id*/, ::Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialSetup(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
     {
-        ::Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
-        ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
+        Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
+        Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
 
         volIllumParams->setNamedConstant("u_nbShells", m_nbShells);
         volIllumParams->setNamedConstant("u_shellRadius", m_shellRadius);
@@ -107,7 +107,7 @@ private:
 
 IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(
     std::string parentId,
-    ::Ogre::SceneManager* sceneManager,
+    Ogre::SceneManager* sceneManager,
     float satSizeRatio,
     bool ao,
     bool shadows,
@@ -146,7 +146,7 @@ void IllumAmbientOcclusionSAT::updateSatFromRatio(float _satSizeRatio)
 //-----------------------------------------------------------------------------
 
 void IllumAmbientOcclusionSAT::SATUpdate(
-    ::Ogre::TexturePtr _img,
+    Ogre::TexturePtr _img,
     const viz::scene3d::TransferFunction::sptr& _tf,
     float _sampleDistance
 )
@@ -164,7 +164,7 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
 
     const int depth = static_cast<int>(m_illuminationVolume->getDepth());
 
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
 
     VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius,
                                                 m_coneAngle, m_samplesAlongCone);
@@ -174,32 +174,32 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
     currentMaterialName += m_ao ? "_AO" : "";
     currentMaterialName += m_shadows ? "_Shadows" : "";
 
-    ::Ogre::MaterialPtr volIllumMtl = ::Ogre::MaterialManager::getSingleton().getByName(
+    Ogre::MaterialPtr volIllumMtl = Ogre::MaterialManager::getSingleton().getByName(
         currentMaterialName,
         RESOURCE_GROUP
     );
-    ::Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
-    ::Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
+    Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
+    Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
 
     satImgState->setTexture(m_sat.getTexture());
 
     // Update illumination volume slice by slice.
     for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
     {
-        ::Ogre::RenderTarget* rt =
+        Ogre::RenderTarget* rt =
             m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(m_currentSliceIndex));
-        ::Ogre::Viewport* vp = rt->getViewport(0);
+        Ogre::Viewport* vp = rt->getViewport(0);
 
         // Add compositor.
         compositorManager.addCompositor(vp, "VolumeIllumination");
         compositorManager.setCompositorEnabled(vp, "VolumeIllumination", true);
 
-        ::Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
+        Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
             "VolumeIllumination"
         );
 
-        const auto& passes                = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
-        ::Ogre::CompositionPass* compPass = passes[0];
+        const auto& passes              = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
+        Ogre::CompositionPass* compPass = passes[0];
 
         if(compPass->getMaterial()->getName() != currentMaterialName)
         {
@@ -222,9 +222,9 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
 
 void IllumAmbientOcclusionSAT::updateTexture()
 {
-    ::Ogre::TexturePtr satTexture = m_sat.getSpareTexture();
+    Ogre::TexturePtr satTexture = m_sat.getSpareTexture();
 
-    ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
+    Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 
     // Removes the ping pong buffers if they have to be resized
     textureManager.remove(m_parentId + BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
@@ -232,13 +232,13 @@ void IllumAmbientOcclusionSAT::updateTexture()
     m_illuminationVolume = textureManager.createManual(
         m_parentId + BUFFER_NAME,
         viz::scene3d::RESOURCE_GROUP,
-        ::Ogre::TEX_TYPE_3D,
+        Ogre::TEX_TYPE_3D,
         satTexture->getWidth(),
         satTexture->getHeight(),
         satTexture->getDepth(),
         0,
-        ::Ogre::PF_A8R8G8B8,
-        ::Ogre::TU_RENDERTARGET
+        Ogre::PF_A8R8G8B8,
+        Ogre::TU_RENDERTARGET
     );
 
     if(!m_dummyCamera)
@@ -250,9 +250,9 @@ void IllumAmbientOcclusionSAT::updateTexture()
     for(int sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
     {
         // Init source buffer
-        ::Ogre::RenderTarget* renderTarget =
+        Ogre::RenderTarget* renderTarget =
             m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(sliceIndex));
-        ::Ogre::Viewport* vp = renderTarget->addViewport(m_dummyCamera);
+        Ogre::Viewport* vp = renderTarget->addViewport(m_dummyCamera);
 
         vp->setOverlaysEnabled(false);
     }

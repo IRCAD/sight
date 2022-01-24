@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "data/RawBufferTL.hpp"
 
 #include "data/timeline/RawBuffer.hpp"
+
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
@@ -117,7 +118,7 @@ SPTR(data::timeline::RawBuffer) RawBufferTL::createBuffer(core::HiResClock::HiRe
         timestamp,
         (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
-        ::boost::bind(&::boost::pool<>::free, m_pool, _1)
+        boost::bind(&boost::pool<>::free, m_pool, _1)
     );
 }
 

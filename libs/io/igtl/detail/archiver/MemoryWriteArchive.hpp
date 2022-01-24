@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ class MemoryArchiveSink
 public:
 
     typedef char char_type;
-    typedef ::boost::iostreams::sink_tag category;
+    typedef boost::iostreams::sink_tag category;
 
     /**
      * @brief constructor
@@ -181,7 +181,7 @@ public:
 
 protected:
 
-    typedef SPTR(::boost::iostreams::stream<MemoryArchiveSink>) StreamSPtr;
+    typedef SPTR(boost::iostreams::stream<MemoryArchiveSink>) StreamSPtr;
 
     /// archive path
     std::filesystem::path m_archivePath;

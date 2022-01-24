@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace compositor
 /**
  * @brief Generates transparency techniques at runtime.
  */
-class VIZ_SCENE3D_CLASS_API MaterialMgrListener : public ::Ogre::MaterialManager::Listener
+class VIZ_SCENE3D_CLASS_API MaterialMgrListener : public Ogre::MaterialManager::Listener
 {
 public:
 
@@ -43,12 +43,12 @@ public:
     virtual ~MaterialMgrListener();
 
     /// Callback called each time a scheme is not found
-    virtual ::Ogre::Technique* handleSchemeNotFound(
+    virtual Ogre::Technique* handleSchemeNotFound(
         unsigned short _schemeIndex,
-        const ::Ogre::String& _schemeName,
-        ::Ogre::Material* _originalMaterial,
+        const Ogre::String& _schemeName,
+        Ogre::Material* _originalMaterial,
         unsigned short _lodIndex,
-        const ::Ogre::Renderable* _renderable
+        const Ogre::Renderable* _renderable
     );
 
 private:
@@ -61,7 +61,7 @@ private:
      * @param[in] _algoPassName new suffix to use
      * @param[in] _baseName new suffix to use
      */
-    static ::Ogre::GpuProgramPtr ensureFPCreated(
+    static Ogre::GpuProgramPtr ensureFPCreated(
         const std::string& _name,
         const std::string& _algoName,
         const std::string& _algoPassName,

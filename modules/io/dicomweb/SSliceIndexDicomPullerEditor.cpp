@@ -104,7 +104,7 @@ void SSliceIndexDicomPullerEditor::configuring()
     std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
     if(success)
     {
-        m_delay = ::boost::lexical_cast<unsigned int>(delayStr);
+        m_delay = boost::lexical_cast<unsigned int>(delayStr);
     }
 
     if(m_delayTimer && m_delayTimer->isRunning())

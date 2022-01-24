@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,12 +140,12 @@ void SCalibrationInfoReader::updating()
 
         for(const std::filesystem::path& dirEntry : std::filesystem::directory_iterator(folder))
         {
-            ::cv::Mat img = ::cv::imread(dirEntry.string(), ::cv::IMREAD_COLOR);
+            cv::Mat img = cv::imread(dirEntry.string(), cv::IMREAD_COLOR);
             std::string errorMessage;
 
             if(!img.empty())
             {
-                ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
+                cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
 
                 data::PointList::sptr chessboardPts = geometry::vision::helper::detectChessboard(
                     img,

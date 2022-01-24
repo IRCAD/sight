@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,9 +103,9 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     srcImg->GetSpacing(igtlSpacing);
     srcImg->GetOrigin(igtlOrigins);
     srcImg->GetDimensions(igtlDimensions);
-    std::transform(igtlSpacing, igtlSpacing + 3, spacing.begin(), ::boost::numeric_cast<double, float>);
+    std::transform(igtlSpacing, igtlSpacing + 3, spacing.begin(), boost::numeric_cast<double, float>);
     std::copy(igtlDimensions, igtlDimensions + 3, size.begin());
-    std::transform(igtlOrigins, igtlOrigins + 3, origins.begin(), ::boost::numeric_cast<double, float>);
+    std::transform(igtlOrigins, igtlOrigins + 3, origins.begin(), boost::numeric_cast<double, float>);
     destImg->setOrigin(origins);
     destImg->setSpacing(spacing);
 

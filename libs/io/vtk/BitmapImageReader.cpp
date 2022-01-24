@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,7 +140,7 @@ void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& ext)
     vtkSmartPointer<vtkImageReader2Collection> ir2c = vtkSmartPointer<vtkImageReader2Collection>::New();
     vtkImageReader2Factory::GetRegisteredReaders(ir2c);
 
-    const ::boost::char_separator<char> sep(" ");
+    const boost::char_separator<char> sep(" ");
 
     /* Iterate over the elements of the collection */
     ir2c->InitTraversal();
@@ -150,7 +150,7 @@ void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& ext)
 
         /* Split the string returned by GetFileExtensions() (several extensions can be available for the same type) */
         const std::string s = ir2->GetFileExtensions();
-        const ::boost::tokenizer< ::boost::char_separator<char> > tokens {s, sep};
+        const boost::tokenizer<boost::char_separator<char> > tokens {s, sep};
 
         for(const auto& token : tokens)
         {

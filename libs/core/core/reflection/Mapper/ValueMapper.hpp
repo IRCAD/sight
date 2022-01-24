@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,9 +63,9 @@ struct wrapperTribbol
 {
     //------------------------------------------------------------------------------
 
-    static ::boost::logic::tribool get(const T&)
+    static boost::logic::tribool get(const T&)
     {
-        return ::boost::logic::tribool();
+        return boost::logic::tribool();
     }
 };
 
@@ -76,9 +76,9 @@ struct wrapperTribbol<std::string>
 {
     //------------------------------------------------------------------------------
 
-    static ::boost::logic::tribool get(const std::string& source)
+    static boost::logic::tribool get(const std::string& source)
     {
-        ::boost::logic::tribool value;
+        boost::logic::tribool value;
 
         if(source.compare("true") == 0)
         {
@@ -100,13 +100,13 @@ struct wrapperTribbol<std::string>
 //-----------------------------------------------------------------------------
 
 template<>
-struct ValueMapper< ::boost::logic::tribool>
+struct ValueMapper<boost::logic::tribool>
 {
     // The corresponding CAMP type is "string"
     static const int type = camp::stringType;
 
     // Convert from MyStringClass to std::string
-    static std::string to(const ::boost::logic::tribool& source)
+    static std::string to(const boost::logic::tribool& source)
     {
         std::string value;
 
@@ -129,7 +129,7 @@ struct ValueMapper< ::boost::logic::tribool>
     //------------------------------------------------------------------------------
 
     template<typename T>
-    static ::boost::logic::tribool from(const T& source)
+    static boost::logic::tribool from(const T& source)
     {
         return wrapperTribbol<T>::get(source);
     }
@@ -138,7 +138,7 @@ struct ValueMapper< ::boost::logic::tribool>
 //-----------------------------------------------------------------------------
 
 template<>
-struct ValueMapper< ::boost::posix_time::ptime>
+struct ValueMapper<boost::posix_time::ptime>
 {
     typedef boost::posix_time::ptime ReturnType;
     static const int type = camp::stringType;

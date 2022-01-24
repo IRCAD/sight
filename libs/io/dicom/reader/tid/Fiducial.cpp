@@ -46,7 +46,7 @@ namespace tid
 
 Fiducial::Fiducial(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
     const core::log::Logger::sptr& logger

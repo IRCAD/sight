@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,31 +93,31 @@ void processDirInformation(
     );
 
     // Try to read the file
-    ::gdcm::Reader reader;
+    gdcm::Reader reader;
     reader.SetFileName(dicomdir.string().c_str());
     if(!reader.Read())
     {
         return;
     }
 
-    const ::gdcm::File& gdcmFile   = reader.GetFile();
-    const ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
+    const gdcm::File& gdcmFile   = reader.GetFile();
+    const gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
     // Check if the file is a DICOMDIR
-    ::gdcm::MediaStorage mediaStorage;
+    gdcm::MediaStorage mediaStorage;
     mediaStorage.SetFromFile(gdcmFile);
-    if(mediaStorage != ::gdcm::MediaStorage::MediaStorageDirectoryStorage)
+    if(mediaStorage != gdcm::MediaStorage::MediaStorageDirectoryStorage)
     {
         SIGHT_ERROR("This file is not a DICOMDIR");
         return;
     }
 
     // Check the MediaStorageSOPClass
-    const ::gdcm::FileMetaInformation& fileMetaInformation = gdcmFile.GetHeader();
-    const std::string& mediaStorageSOP                     =
+    const gdcm::FileMetaInformation& fileMetaInformation = gdcmFile.GetHeader();
+    const std::string& mediaStorageSOP                   =
         io::dicom::helper::DicomDataReader::getTagValue<0x0002, 0x0002>(fileMetaInformation);
 
-    if(mediaStorageSOP != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
+    if(mediaStorageSOP != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
     {
         SIGHT_ERROR("This file is not a DICOMDIR");
         return;
@@ -130,15 +130,15 @@ void processDirInformation(
     for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end() ; ++it)
     {
         // Directory Record Sequence
-        if(it->GetTag() == ::gdcm::Tag(0x0004, 0x1220))
+        if(it->GetTag() == gdcm::Tag(0x0004, 0x1220))
         {
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
             ptotal += static_cast<double>(sequence->GetNumberOfItems());
 
             for(unsigned int index = 1 ; index <= sequence->GetNumberOfItems() ; ++index)
             {
                 // Retrieve item
-                ::gdcm::Item& item = sequence->GetItem(index);
+                gdcm::Item& item = sequence->GetItem(index);
 
                 // Directory Record Type
                 const std::string recordType =
@@ -167,7 +167,7 @@ void processDirInformation(
                     }
                     else if(std::filesystem::exists(path))
                     {
-                        auto instanceNumber = ::boost::lexical_cast<unsigned int>(
+                        auto instanceNumber = boost::lexical_cast<unsigned int>(
                             io::dicom::helper::DicomDataReader::getTagValue<0x0020,
                                                                             0x0013>(item.GetNestedDataSet())
                         );
@@ -244,31 +244,31 @@ void DicomDir::retrieveDicomSeries(
     );
 
     // Try to read the file
-    ::gdcm::Reader reader;
+    gdcm::Reader reader;
     reader.SetFileName(dicomdir.string().c_str());
     if(!reader.Read())
     {
         return;
     }
 
-    const ::gdcm::File& gdcmFile   = reader.GetFile();
-    const ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
+    const gdcm::File& gdcmFile   = reader.GetFile();
+    const gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
     // Check if the file is a DICOMDIR
-    ::gdcm::MediaStorage mediaStorage;
+    gdcm::MediaStorage mediaStorage;
     mediaStorage.SetFromFile(gdcmFile);
-    if(mediaStorage != ::gdcm::MediaStorage::MediaStorageDirectoryStorage)
+    if(mediaStorage != gdcm::MediaStorage::MediaStorageDirectoryStorage)
     {
         SIGHT_ERROR("This file is not a DICOMDIR");
         return;
     }
 
     // Check the MediaStorageSOPClass
-    const ::gdcm::FileMetaInformation& fileMetaInformation = gdcmFile.GetHeader();
-    const std::string& mediaStorageSOP                     =
+    const gdcm::FileMetaInformation& fileMetaInformation = gdcmFile.GetHeader();
+    const std::string& mediaStorageSOP                   =
         io::dicom::helper::DicomDataReader::getTagValue<0x0002, 0x0002>(fileMetaInformation);
 
-    if(mediaStorageSOP != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
+    if(mediaStorageSOP != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
     {
         SIGHT_ERROR("This file is not a DICOMDIR");
         return;
@@ -287,9 +287,9 @@ void DicomDir::retrieveDicomSeries(
         for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end() ; ++it)
         {
             // Directory Record Sequence
-            if(it->GetTag() == ::gdcm::Tag(0x0004, 0x1220))
+            if(it->GetTag() == gdcm::Tag(0x0004, 0x1220))
             {
-                ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
+                gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
 
                 ptotal += static_cast<double>(sequence->GetNumberOfItems());
             }

@@ -173,14 +173,14 @@ void SVolumeRender::starting()
 
     m_sceneManager = this->getSceneManager();
 
-    ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
+    Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
     m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
 
     m_camera = this->getLayer()->getDefaultCamera();
 
     // Create textures
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         sight::viz::scene3d::RESOURCE_GROUP,
         true
@@ -188,7 +188,7 @@ void SVolumeRender::starting()
 
     if(m_dynamic)
     {
-        m_bufferingTexture = ::Ogre::TextureManager::getSingleton().create(
+        m_bufferingTexture = Ogre::TextureManager::getSingleton().create(
             this->getID() + "_Texture2",
             sight::viz::scene3d::RESOURCE_GROUP,
             true
@@ -275,18 +275,18 @@ void SVolumeRender::stopping()
 
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
-    ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    auto transformNode               = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
+    auto transformNode             = this->getTransformNode(rootSceneNode);
 
     m_sceneManager->getRootSceneNode()->removeChild(transformNode);
-    this->getSceneManager()->destroySceneNode(static_cast< ::Ogre::SceneNode*>(transformNode));
+    this->getSceneManager()->destroySceneNode(static_cast<Ogre::SceneNode*>(transformNode));
 
-    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
+    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
 
     if(m_bufferingTexture)
     {
-        ::Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
+        Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
         m_bufferingTexture.reset();
     }
 
@@ -783,7 +783,7 @@ void SVolumeRender::createWidget()
 {
     auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
 
-    ::Ogre::Matrix4 ogreClippingMx = ::Ogre::Matrix4::IDENTITY;
+    Ogre::Matrix4 ogreClippingMx = Ogre::Matrix4::IDENTITY;
 
     const auto clippingMatrix = m_clippingMatrix.lock();
     if(clippingMatrix)
@@ -852,7 +852,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
     {
         if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_ambientOcclusionSAT)
         {
-            m_ambientOcclusionSAT = ::std::make_shared<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
+            m_ambientOcclusionSAT = std::make_shared<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
                 this->getID(),
                 m_sceneManager,
                 m_satSizeRatio,
@@ -922,7 +922,7 @@ void SVolumeRender::updateClippingBox()
     if(m_widget)
     {
         bool matrixSet = false;
-        ::Ogre::Matrix4 clippingMx;
+        Ogre::Matrix4 clippingMx;
         {
             const auto clippingMatrix = m_clippingMatrix.lock();
             if(clippingMatrix)

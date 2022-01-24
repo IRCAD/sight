@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,7 +102,7 @@ struct ValueMapper<sight::data::TransferFunction::TFColor>
     {
         std::vector<std::string> result;
         ReturnType tfColor;
-        ::boost::split(result, source, boost::is_any_of(";"));
+        boost::split(result, source, boost::is_any_of(";"));
 
         if(result.size() >= 4)
         {

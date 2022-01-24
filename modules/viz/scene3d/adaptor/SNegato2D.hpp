@@ -158,10 +158,10 @@ private:
      * @brief Initializes the planar mesh on which the negato is displayed.
      * @param _spacing spacing of the input image.
      */
-    void createPlane(const ::Ogre::Vector3& _spacing);
+    void createPlane(const Ogre::Vector3& _spacing);
 
     /// Contains the Ogre texture which will be displayed on the negato.
-    ::Ogre::TexturePtr m_3DOgreTexture;
+    Ogre::TexturePtr m_3DOgreTexture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF;
@@ -173,7 +173,7 @@ private:
     bool m_enableAlpha {false};
 
     /// Contains the scene node allowing to move the entire negato.
-    ::Ogre::SceneNode* m_negatoSceneNode {nullptr};
+    Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};

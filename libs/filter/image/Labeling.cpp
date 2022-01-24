@@ -110,16 +110,16 @@ struct LabelImageFilter
         data::Image::sptr image      = params.i_image;
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
-        typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
+        typedef typename itk::Image<PIXELTYPE, dimension> InputImageType;
         typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(image);
 
         typedef PIXELTYPE LabelType;
-        typedef ::itk::Image<LabelType, dimension> OutputImageType;
-        typedef ::itk::ShapeLabelObject<LabelType, dimension> ShapeLabelObjectType;
-        typedef ::itk::LabelMap<ShapeLabelObjectType> LabelMapType;
+        typedef itk::Image<LabelType, dimension> OutputImageType;
+        typedef itk::ShapeLabelObject<LabelType, dimension> ShapeLabelObjectType;
+        typedef itk::LabelMap<ShapeLabelObjectType> LabelMapType;
 
         // Extract shapes
-        typedef typename ::itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType> I2LType;
+        typedef typename itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType> I2LType;
 
         typename I2LType::Pointer i2l = I2LType::New();
         i2l->SetInput(itkInputImage);

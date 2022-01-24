@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ static const std::string s_PIXELLIGHTING = "PixelLit";
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isColorTechnique(const ::Ogre::Technique& _tech)
+bool Shading::isColorTechnique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const std::regex regexDualPeelInit("Dual.*/peelInit.*");
@@ -71,7 +71,7 @@ bool Shading::isColorTechnique(const ::Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isPeelTechnique(const ::Ogre::Technique& _tech)
+bool Shading::isPeelTechnique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const bool peelTech     = std::regex_match(name, s_PEEL_REGEX);
@@ -81,7 +81,7 @@ bool Shading::isPeelTechnique(const ::Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isGeometricTechnique(const ::Ogre::Technique& _tech)
+bool Shading::isGeometricTechnique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
 
@@ -94,7 +94,7 @@ bool Shading::isGeometricTechnique(const ::Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isDepthOnlyTechnique(const ::Ogre::Technique& _tech)
+bool Shading::isDepthOnlyTechnique(const Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const bool depth        = std::regex_match(name, s_DEPTH_MAP_REGEX);
@@ -211,38 +211,38 @@ std::string Shading::setTechniqueInProgramName(const std::string& _name, const s
 
 //------------------------------------------------------------------------------
 
-Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _material)
+Shading::ShaderConstantsType Shading::findMaterialConstants(Ogre::Material& _material)
 {
     ShaderConstantsType constants;
 
     // Only work on the first technique
-    ::Ogre::Pass* pass = _material.getTechnique(0)->getPass(0);
+    Ogre::Pass* pass = _material.getTechnique(0)->getPass(0);
 
     // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
     // with the given data::Object ID
     if(pass->isProgrammable())
     {
-        ::Ogre::GpuProgramParametersSharedPtr params;
+        Ogre::GpuProgramParametersSharedPtr params;
 
         // Getting params for each program type
         if(pass->hasVertexProgram())
         {
             params = pass->getVertexProgramParameters();
-            auto vpConstants = findShaderConstants(params, ::Ogre::GPT_VERTEX_PROGRAM);
+            auto vpConstants = findShaderConstants(params, Ogre::GPT_VERTEX_PROGRAM);
             std::move(vpConstants.begin(), vpConstants.end(), std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasFragmentProgram())
         {
             params = pass->getFragmentProgramParameters();
-            auto fpConstants = findShaderConstants(params, ::Ogre::GPT_FRAGMENT_PROGRAM);
+            auto fpConstants = findShaderConstants(params, Ogre::GPT_FRAGMENT_PROGRAM);
             std::move(fpConstants.begin(), fpConstants.end(), std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasGeometryProgram())
         {
             params = pass->getGeometryProgramParameters();
-            auto gpConstants = findShaderConstants(params, ::Ogre::GPT_GEOMETRY_PROGRAM);
+            auto gpConstants = findShaderConstants(params, Ogre::GPT_GEOMETRY_PROGRAM);
             std::move(gpConstants.begin(), gpConstants.end(), std::inserter(constants, constants.begin()));
         }
 
@@ -263,14 +263,14 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
 //------------------------------------------------------------------------------
 
 Shading::ShaderConstantsType Shading::findShaderConstants(
-    ::Ogre::GpuProgramParametersSharedPtr _params,
-    ::Ogre::GpuProgramType _shaderType,
+    Ogre::GpuProgramParametersSharedPtr _params,
+    Ogre::GpuProgramType _shaderType,
     bool _enableLightConstants
 )
 {
     ShaderConstantsType parameters;
 
-    ::Ogre::GpuNamedConstants constantsDefinitionMap = _params->getConstantDefinitions();
+    Ogre::GpuNamedConstants constantsDefinitionMap = _params->getConstantDefinitions();
 
     // Get only user constants
     for(const auto& cstDef : constantsDefinitionMap.map)
@@ -285,7 +285,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
             }
         }
 
-        if(!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
+        if(!Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
             ConstantValueType constantValue;
             bool found = false;
@@ -336,13 +336,13 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType _type, ConstantValueType _value)
+data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantType _type, ConstantValueType _value)
 {
     data::Object::sptr object;
 
     switch(_type)
     {
-        case ::Ogre::GpuConstantType::GCT_FLOAT1:
+        case Ogre::GpuConstantType::GCT_FLOAT1:
         {
             auto newObj = data::Float::New();
             newObj->setValue(_value.f[0]);
@@ -350,7 +350,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_FLOAT2:
+        case Ogre::GpuConstantType::GCT_FLOAT2:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -365,7 +365,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_FLOAT3:
+        case Ogre::GpuConstantType::GCT_FLOAT3:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -381,7 +381,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_FLOAT4:
+        case Ogre::GpuConstantType::GCT_FLOAT4:
         {
             auto newObj = data::Color::New();
             newObj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
@@ -389,11 +389,11 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
+        case Ogre::GpuConstantType::GCT_MATRIX_4X4:
             object = data::Matrix4::New();
             break;
 
-        case ::Ogre::GpuConstantType::GCT_INT1:
+        case Ogre::GpuConstantType::GCT_INT1:
         {
             auto newObj = data::Integer::New();
             newObj->setValue(_value.i[0]);
@@ -401,7 +401,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_INT2:
+        case Ogre::GpuConstantType::GCT_INT2:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -416,7 +416,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_INT3:
+        case Ogre::GpuConstantType::GCT_INT3:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -432,7 +432,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_INT4:
+        case Ogre::GpuConstantType::GCT_INT4:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -449,7 +449,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_DOUBLE1:
+        case Ogre::GpuConstantType::GCT_DOUBLE1:
         {
             auto newObj = data::Float::New();
             newObj->setValue(static_cast<float>(_value.d[0]));
@@ -457,7 +457,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_DOUBLE2:
+        case Ogre::GpuConstantType::GCT_DOUBLE2:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -472,7 +472,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_DOUBLE3:
+        case Ogre::GpuConstantType::GCT_DOUBLE3:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -488,7 +488,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_DOUBLE4:
+        case Ogre::GpuConstantType::GCT_DOUBLE4:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
@@ -505,7 +505,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             break;
         }
 
-        case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
+        case Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
             object = data::Matrix4::New();
             break;
 
@@ -563,31 +563,31 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
 // ----------------------------------------------------------------------------
 
-::Ogre::GpuProgramPtr Shading::createProgramFrom(
+Ogre::GpuProgramPtr Shading::createProgramFrom(
     const std::string& _name,
     const std::string& _sourceFileName,
     const GpuProgramParametersType& _parameters,
-    ::Ogre::GpuProgramType _shaderType,
+    Ogre::GpuProgramType _shaderType,
     const std::string& _baseName
 )
 {
-    auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
+    auto& mgr = Ogre::HighLevelGpuProgramManager::getSingleton();
 
     auto resource = mgr.getResourceByName(_name, RESOURCE_GROUP);
     if(resource)
     {
-        return ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(resource);
+        return Ogre::dynamic_pointer_cast<Ogre::GpuProgram>(resource);
     }
 
     // Create shader object
-    ::Ogre::HighLevelGpuProgramPtr newProgram;
+    Ogre::HighLevelGpuProgramPtr newProgram;
     newProgram = mgr.createProgram(_name, RESOURCE_GROUP, "glsl", _shaderType);
 
     newProgram->setSourceFile(_sourceFileName);
 
-    auto srcResource                   = mgr.getResourceByName(_baseName, RESOURCE_GROUP);
-    auto srcProgram                    = ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(srcResource);
-    ::Ogre::String preprocessorDefines = srcProgram->getParameter("preprocessor_defines");
+    auto srcResource                 = mgr.getResourceByName(_baseName, RESOURCE_GROUP);
+    auto srcProgram                  = Ogre::dynamic_pointer_cast<Ogre::GpuProgram>(srcResource);
+    Ogre::String preprocessorDefines = srcProgram->getParameter("preprocessor_defines");
 
     for(const auto& params : _parameters)
     {
@@ -604,12 +604,12 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
     newProgram->setParameter("preprocessor_defines", preprocessorDefines);
 
     // Copy parameters from the source program
-    const ::Ogre::GpuProgramParametersSharedPtr& baseParams = srcProgram->getDefaultParameters();
-    const ::Ogre::GpuProgramParametersSharedPtr& params     = newProgram->getDefaultParameters();
+    const Ogre::GpuProgramParametersSharedPtr& baseParams = srcProgram->getDefaultParameters();
+    const Ogre::GpuProgramParametersSharedPtr& params     = newProgram->getDefaultParameters();
     params->copyMatchingNamedConstantsFrom(*baseParams);
 
     newProgram->load();
-    return ::Ogre::GpuProgramPtr(newProgram);
+    return Ogre::GpuProgramPtr(newProgram);
 }
 
 //-----------------------------------------------------------------------------

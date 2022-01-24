@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ void SLabelImageToBinaryImage::starting()
 
 void SLabelImageToBinaryImage::updating()
 {
-    typedef typename ::itk::Image<std::uint8_t, 3> ImageType;
+    typedef typename itk::Image<std::uint8_t, 3> ImageType;
 
     const auto labelImage = m_labelImage.lock();
     SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", labelImage);
@@ -164,8 +164,8 @@ void SLabelImageToBinaryImage::updating()
 
     typename ImageType::Pointer itkLabelImg = io::itk::moveToItk<ImageType>(labelImage.get_shared());
 
-    ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
-        ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
+    itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
+        itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
 
     labelToMaskFilter->SetFunctor(functor);
     labelToMaskFilter->SetInput(itkLabelImg);

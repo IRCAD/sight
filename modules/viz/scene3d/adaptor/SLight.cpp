@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,16 +108,16 @@ void SLight::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     m_light = sceneMgr->createLight(this->getID() + "_" + m_lightName);
 
     // Sets the default light direction to the camera's view direction,
-    m_light->setDirection(::Ogre::Vector3::NEGATIVE_UNIT_Z);
+    m_light->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Z);
     m_light->setType(m_lightType);
     m_light->setVisible(m_switchedOn);
 
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
     m_lightNode = transNode->createChildSceneNode(this->getID() + "_light");
     m_lightNode->attachObject(m_light);
 
@@ -161,7 +161,7 @@ void SLight::starting()
         sight::viz::scene3d::helper::ManualObject::createSphere(
             m_lightPosition,
             materialAdaptor->getMaterialName(),
-            ::Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
+            Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
             originRadius,
             sample
         );
@@ -175,31 +175,31 @@ void SLight::starting()
         sight::viz::scene3d::helper::ManualObject::createCylinder(
             m_directionalFeedback.first,
             materialAdaptor->getMaterialName(),
-            ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+            Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
             cylinderRadius,
             cylinderLength,
             sample
         );
-        ::Ogre::SceneNode* lineNode = m_lightNode->createChildSceneNode(this->getID() + "_lineNode");
+        Ogre::SceneNode* lineNode = m_lightNode->createChildSceneNode(this->getID() + "_lineNode");
         lineNode->attachObject(m_directionalFeedback.first);
-        lineNode->yaw(::Ogre::Degree(-90));
+        lineNode->yaw(Ogre::Degree(-90));
 
         sight::viz::scene3d::helper::ManualObject::createCone(
             m_directionalFeedback.second,
             materialAdaptor->getMaterialName(),
-            ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+            Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
             coneRadius,
             coneLength,
             sample
         );
-        ::Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->getID() + "_coneNode");
+        Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->getID() + "_coneNode");
 
         coneNode->attachObject(m_directionalFeedback.second);
         coneNode->translate(0.f, 0.f, cylinderLength);
-        coneNode->yaw(::Ogre::Degree(-90));
+        coneNode->yaw(Ogre::Degree(-90));
 
-        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
-        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
     }
 
     updating();
@@ -225,15 +225,15 @@ void SLight::updating()
 
     this->getRenderService()->makeCurrent();
 
-    const ::Ogre::ColourValue diffuseColor(lightDiffuseColor->red(),
-                                           lightDiffuseColor->green(),
-                                           lightDiffuseColor->blue(),
-                                           lightDiffuseColor->alpha());
+    const Ogre::ColourValue diffuseColor(lightDiffuseColor->red(),
+                                         lightDiffuseColor->green(),
+                                         lightDiffuseColor->blue(),
+                                         lightDiffuseColor->alpha());
 
-    const ::Ogre::ColourValue specularColor(lightSpecularColor->red(),
-                                            lightSpecularColor->green(),
-                                            lightSpecularColor->blue(),
-                                            lightSpecularColor->alpha());
+    const Ogre::ColourValue specularColor(lightSpecularColor->red(),
+                                          lightSpecularColor->green(),
+                                          lightSpecularColor->blue(),
+                                          lightSpecularColor->alpha());
 
     m_light->setDiffuseColour(diffuseColor);
     m_light->setSpecularColour(specularColor);
@@ -250,7 +250,7 @@ void SLight::stopping()
 
     this->unregisterServices();
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     if(m_lightName != sight::viz::scene3d::Layer::s_DEFAULT_LIGHT_NAME)
     {
         m_lightNode->removeAndDestroyChild(this->getID() + "_lineNode");
@@ -275,7 +275,7 @@ void SLight::stopping()
 
 //------------------------------------------------------------------------------
 
-void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
+void SLight::setDiffuseColor(Ogre::ColourValue _diffuseColor)
 {
     const auto lightDiffuseColor = m_diffuse.lock();
 
@@ -287,7 +287,7 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 //------------------------------------------------------------------------------
 
-void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
+void SLight::setSpecularColor(Ogre::ColourValue _specularColor)
 {
     const auto lightSpecularColor = m_specular.lock();
 
@@ -319,10 +319,10 @@ void SLight::setThetaOffset(float _thetaOffset)
     const float thetaDelta = _thetaOffset - m_thetaOffset;
     m_thetaOffset = _thetaOffset;
 
-    ::Ogre::Radian thetaOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(thetaDelta)));
-    ::Ogre::Vector3 yAxis = m_lightNode->getOrientation().yAxis();
+    Ogre::Radian thetaOffsetRadDelta(Ogre::Degree(static_cast<Ogre::Real>(thetaDelta)));
+    Ogre::Vector3 yAxis = m_lightNode->getOrientation().yAxis();
 
-    m_lightNode->rotate(yAxis, thetaOffsetRadDelta, ::Ogre::Node::TS_WORLD);
+    m_lightNode->rotate(yAxis, thetaOffsetRadDelta, Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -335,10 +335,10 @@ void SLight::setPhiOffset(float _phiOffset)
     const float phiDelta = _phiOffset - m_phiOffset;
     m_phiOffset = _phiOffset;
 
-    ::Ogre::Radian phiOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(phiDelta)));
-    ::Ogre::Vector3 xAxis = m_lightNode->getOrientation().xAxis();
+    Ogre::Radian phiOffsetRadDelta(Ogre::Degree(static_cast<Ogre::Real>(phiDelta)));
+    Ogre::Vector3 xAxis = m_lightNode->getOrientation().xAxis();
 
-    m_lightNode->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
+    m_lightNode->rotate(xAxis, phiOffsetRadDelta, Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -350,20 +350,20 @@ void SLight::enableVisualFeedback(bool _enable)
     if(m_lightPosition)
     {
         m_lightPosition->setVisible(m_visualFeedback);
-        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
-        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::setType(::Ogre::Light::LightTypes _type)
+void SLight::setType(Ogre::Light::LightTypes _type)
 {
     m_lightType = _type;
     if(m_directionalFeedback.first)
     {
-        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
-        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
     }
 }
 

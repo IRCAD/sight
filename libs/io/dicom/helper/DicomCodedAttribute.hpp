@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ public:
      * Several DicomCodedAttributes can be detected in a single entry.
      * @param[in] entry Entry containing one or several coded attributes.
      */
-    IO_DICOM_API static ::gdcm::Segment::BasicCodedEntryVector convertEntryToGDCMCodedAttribute(
+    IO_DICOM_API static gdcm::Segment::BasicCodedEntryVector convertEntryToGDCMCodedAttribute(
         const std::string& entry
     );
 

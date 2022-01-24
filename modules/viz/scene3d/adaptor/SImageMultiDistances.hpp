@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,13 +146,13 @@ private:
     struct DistanceData
     {
         data::PointList::sptr m_pointList;
-        ::Ogre::SceneNode* m_node1;
-        ::Ogre::ManualObject* m_sphere1;
-        ::Ogre::SceneNode* m_node2;
-        ::Ogre::ManualObject* m_sphere2;
-        ::Ogre::ManualObject* m_line;
-        ::Ogre::ManualObject* m_dashedLine;
-        ::Ogre::SceneNode* m_labelNode;
+        Ogre::SceneNode* m_node1;
+        Ogre::ManualObject* m_sphere1;
+        Ogre::SceneNode* m_node2;
+        Ogre::ManualObject* m_sphere2;
+        Ogre::ManualObject* m_line;
+        Ogre::ManualObject* m_dashedLine;
+        Ogre::SceneNode* m_labelNode;
         sight::viz::scene3d::Text* m_label;
     };
 
@@ -171,19 +171,19 @@ private:
      * @param _id ID of the distance.
      * @return The generated color.
      */
-    static ::Ogre::ColourValue generateColor(core::tools::fwID::IDType _id);
+    static Ogre::ColourValue generateColor(core::tools::fwID::IDType _id);
 
     /**
-     * @brief Generates a dashed line in a ::Ogre::ManualObject.
+     * @brief Generates a dashed line in a Ogre::ManualObject.
      * @param _object Object where generate the dashed line.
      * @param _begin Begin position of the line.
      * @param _end End position of the line.
      * @param _thickness Thickness of dash.
      */
     static void generateDashedLine(
-        ::Ogre::ManualObject* const _object,
-        const ::Ogre::Vector3& _begin,
-        const ::Ogre::Vector3& _end,
+        Ogre::ManualObject* const _object,
+        const Ogre::Vector3& _begin,
+        const Ogre::Vector3& _end,
         float _thickness
     );
 
@@ -191,13 +191,13 @@ private:
      * @brief Gets the formated string used to display the length of a distance.
      * @return The formated string.
      */
-    static std::string getLength(const ::Ogre::Vector3&, const ::Ogre::Vector3&);
+    static std::string getLength(const Ogre::Vector3&, const Ogre::Vector3&);
 
     /**
      * @brief Gets the normalized camera direction vector.
      * @return A vector representing the camera direction
      */
-    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const);
 
     /// Retrieves distances from the image and adds them to the scene.
     void addDistances();
@@ -214,7 +214,7 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional< ::Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
+    std::optional<Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
 
     /**
      * @brief Creates a distance and add it into m_distances.
@@ -228,7 +228,7 @@ private:
      * @param _begin New begin position.
      * @param _end New end position
      */
-    void updateDistance(const DistanceData* const _data, ::Ogre::Vector3 _begin, ::Ogre::Vector3 _end);
+    void updateDistance(const DistanceData* const _data, Ogre::Vector3 _begin, Ogre::Vector3 _end);
 
     /**
      * @brief Destroys a distance from its ID and remove it from m_distances.
@@ -258,7 +258,7 @@ private:
     std::uint32_t m_queryMask {0xFFFFFFFF};
 
     /// Defines the mask used to filter distances, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_distanceQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_distanceQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines the material name with no depth check for spheres.
     std::string m_sphereMaterialName;

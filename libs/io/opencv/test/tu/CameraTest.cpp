@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ void CameraTest::copyToCv()
     sightCam->setHeight(8640);
     sightCam->setDistortionCoefficient(2., 3., 5., 8., 13.);
 
-    ::cv::Mat intrinsic, distCoeffs;
-    ::cv::Size imgSize;
+    cv::Mat intrinsic, distCoeffs;
+    cv::Size imgSize;
 
     std::tie(intrinsic, imgSize, distCoeffs) = io::opencv::Camera::copyToCv(sightCam);
 

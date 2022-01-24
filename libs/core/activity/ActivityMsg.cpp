@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ ActivityMsg::ActivityMsg(
             }
 
             submatch.replace(0, 1, "!");
-            ::boost::algorithm::replace_all(newTabInfo, submatch, tabInfoSeshat);
+            boost::algorithm::replace_all(newTabInfo, submatch, tabInfoSeshat);
         }
 
         m_tabInfo = newTabInfo;

@@ -226,7 +226,7 @@ void SRender::starting()
     }
 
     // Initialize resources to load overlay scripts.
-    ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
 
@@ -453,7 +453,7 @@ void SRender::requestRender()
         const auto image = m_offScreenImage.lock();
         {
             this->makeCurrent();
-            ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
+            Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
             SIGHT_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
             viz::scene3d::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
         }
@@ -516,7 +516,7 @@ bool SRender::isShownOnScreen()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::SceneManager* SRender::getSceneManager(const ::std::string& sceneID)
+Ogre::SceneManager* SRender::getSceneManager(const std::string& sceneID)
 {
     viz::scene3d::Layer::sptr layer = this->getLayer(sceneID);
     return layer->getSceneManager();
@@ -524,7 +524,7 @@ bool SRender::isShownOnScreen()
 
 // ----------------------------------------------------------------------------
 
-viz::scene3d::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
+viz::scene3d::Layer::sptr SRender::getLayer(const std::string& sceneID)
 {
     SIGHT_ASSERT("Empty sceneID", !sceneID.empty());
     SIGHT_ASSERT("Layer ID " << sceneID << " does not exist", m_layers.find(sceneID) != m_layers.end());

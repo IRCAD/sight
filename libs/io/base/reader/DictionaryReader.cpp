@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 inline std::string trim(std::string& s)
 {
-    return ::boost::algorithm::trim_copy(s);
+    return boost::algorithm::trim_copy(s);
 }
 
 //------------------------------------------------------------------------------
@@ -118,9 +118,9 @@ inline std::string trim(std::string& s)
 /// Reformat string in the following way :first letter is uppercase and the rest is lowercase).
 std::string reformatString(std::string& expr)
 {
-    std::string trimStr = ::boost::algorithm::trim_copy(expr);
-    std::string result  = ::boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
-                          + ::boost::algorithm::to_lower_copy(trimStr.substr(1));
+    std::string trimStr = boost::algorithm::trim_copy(expr);
+    std::string result  = boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
+                          + boost::algorithm::to_lower_copy(trimStr.substr(1));
     return result;
 }
 
@@ -345,7 +345,7 @@ void DictionaryReader::read()
             )
         );
         std::vector<std::string> categorylist;
-        ::boost::algorithm::split(categorylist, line.catgegory, ::boost::algorithm::is_any_of(","));
+        boost::algorithm::split(categorylist, line.catgegory, boost::algorithm::is_any_of(","));
         data::StructureTraits::CategoryContainer categories;
         for(std::string category : categorylist)
         {

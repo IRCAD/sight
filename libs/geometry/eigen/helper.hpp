@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,37 +35,37 @@ namespace helper
 {
 
 /**
- * @brief RvecTvecType is a std::pair of ::Eigen::Vector3d that handles Rotation and Translation Vectors (Rvec, Tvec)
+ * @brief RvecTvecType is a std::pair of Eigen::Vector3d that handles Rotation and Translation Vectors (Rvec, Tvec)
  * The first element is the rotation vector (Rvec)
  * The second element is the translation vector (Tvec)
  */
-typedef std::pair< ::Eigen::Vector3d, ::Eigen::Vector3d> RvecTvecType;
-typedef ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> EigenMatrix;
+typedef std::pair<Eigen::Vector3d, Eigen::Vector3d> RvecTvecType;
+typedef Eigen::Matrix<double, 4, 4, Eigen::RowMajor> EigenMatrix;
 /**
  * @brief Convert from an Eigen float 4x4 Matrix to a data::Matrix4
  * @param _mat : the eigen matrix
  * @return a pointer to a data::Matrix4
  */
-GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s(const ::Eigen::Matrix4f& _mat);
+GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s(const Eigen::Matrix4f& _mat);
 
 /**
  * @brief Convert from an Eigen double 4x4 Matrix to a data::Matrix4
  * @param _mat : the eigen matrix
  * @return a pointer to a data::Matrix4
  */
-GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s(const ::Eigen::Matrix4d& _mat);
+GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s(const Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform a eigen 4x4 matrix to a rvec tvec representation
  * @param _mat : input matrix
- * @return std::pair of ::Eigen::Vector3d (see RvecTvecType)
+ * @return std::pair of Eigen::Vector3d (see RvecTvecType)
  */
-GEOMETRY_EIGEN_API RvecTvecType eigenMatToRvecTvec(const ::Eigen::Matrix4d& _mat);
+GEOMETRY_EIGEN_API RvecTvecType eigenMatToRvecTvec(const Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
  * @param _mat : input data::Matrix4
- * @return std::pair of ::Eigen::Vector3d (see RvecTvecType)
+ * @return std::pair of Eigen::Vector3d (see RvecTvecType)
  */
 GEOMETRY_EIGEN_API RvecTvecType f4sMatToRvecTvec(const data::Matrix4::csptr _mat);
 /**
@@ -85,7 +85,7 @@ GEOMETRY_EIGEN_API EigenMatrix toEigen(const std::array<double, 16>& _farray);
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
  * @param _mat : input matrix
- * @return std::pair of ::Eigen::Vector3d (see RvecTvecType)
+ * @return std::pair of Eigen::Vector3d (see RvecTvecType)
  */
 GEOMETRY_EIGEN_API RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _farray);
 
@@ -95,9 +95,9 @@ GEOMETRY_EIGEN_API RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _
  * @param _mat : output matrix
  */
 template<class T>
-::Eigen::Matrix<T, 4, 4, ::Eigen::RowMajor> toEigen(const data::Matrix4::csptr _trf)
+Eigen::Matrix<T, 4, 4, Eigen::RowMajor> toEigen(const data::Matrix4::csptr _trf)
 {
-    ::Eigen::Matrix<T, 4, 4> mat;
+    Eigen::Matrix<T, 4, 4> mat;
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)

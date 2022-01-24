@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,7 @@ void Client::throwExceptionIfFailed(const std::string& msg, bool result)
 void Client::connect(const std::string& addr, std::uint16_t port)
 {
     int result                = -1;
-    const std::string portStr = ::boost::lexical_cast<std::string>(port);
+    const std::string portStr = boost::lexical_cast<std::string>(port);
 
     {
         std::lock_guard lock(s_connectLock);

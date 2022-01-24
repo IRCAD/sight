@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ struct Resampling
 {
     struct Parameters
     {
-        ::itk::AffineTransform<double, 3>::Pointer i_trf;
+        itk::AffineTransform<double, 3>::Pointer i_trf;
         data::Image::csptr i_image;
         data::Image::sptr o_image;
         std::optional<std::tuple<data::Image::Size,
@@ -55,14 +55,14 @@ struct Resampling
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
+        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
-        typename ::itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
-            ::itk::ResampleImageFilter<ImageType, ImageType>::New();
+        typename itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
+            itk::ResampleImageFilter<ImageType, ImageType>::New();
 
-        typename ::itk::MinimumMaximumImageCalculator<ImageType>::Pointer minCalculator =
-            ::itk::MinimumMaximumImageCalculator<ImageType>::New();
+        typename itk::MinimumMaximumImageCalculator<ImageType>::Pointer minCalculator =
+            itk::MinimumMaximumImageCalculator<ImageType>::New();
 
         minCalculator->SetImage(itkImage);
         minCalculator->ComputeMinimum();
@@ -159,9 +159,9 @@ data::Image::sptr Resampler::resample(
     const data::Image::Spacing& _outputSpacing
 )
 {
-    using PointType           = ::itk::Point<double, 3>;
-    using VectorContainerType = ::itk::VectorContainer<int, PointType>;
-    using BoundingBoxType     = ::itk::BoundingBox<int, 3, double, VectorContainerType>;
+    using PointType           = itk::Point<double, 3>;
+    using VectorContainerType = itk::VectorContainer<int, PointType>;
+    using BoundingBoxType     = itk::BoundingBox<int, 3, double, VectorContainerType>;
 
     const auto& inputSize    = _img->getSize();
     const auto& inputOrigin  = _img->getOrigin();
@@ -185,7 +185,7 @@ data::Image::sptr Resampler::resample(
     inputBB->SetMaximum(max);
 
     const auto inputCorners = inputBB->GetCorners();
-    const ::itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
+    const itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
 
     // Apply transform matrix to all bounding box corners.
     typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();
@@ -197,7 +197,7 @@ data::Image::sptr Resampler::resample(
         [&matrix](const PointType& _in)
         {
             // Convert input to homogeneous coordinates.
-            const ::itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
+            const itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
             const auto p = matrix * input;
             return PointType(p.GetDataPointer());
         });

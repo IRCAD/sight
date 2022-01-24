@@ -68,7 +68,7 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("sight::data::Image not instanced", image);
 
     // Create GDCM Reader
-    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader>(new ::gdcm::Reader);
+    SPTR(gdcm::Reader) reader = std::shared_ptr<gdcm::Reader>(new gdcm::Reader);
 
     // Read the first file
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
@@ -102,29 +102,29 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
         m_logger, m_progressCallback, m_cancelRequestedCallback);
 
     // Retrieve dataset
-    const ::gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
+    const gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
 
     // Retrieve Fiducial Set Sequence
-    const ::gdcm::DataElement& fiducialSetSequenceDataElement =
-        datasetRoot.GetDataElement(::gdcm::Tag(0x0070, 0x031C));
-    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> fiducialSetSequence =
+    const gdcm::DataElement& fiducialSetSequenceDataElement =
+        datasetRoot.GetDataElement(gdcm::Tag(0x0070, 0x031C));
+    const gdcm::SmartPointer<gdcm::SequenceOfItems> fiducialSetSequence =
         fiducialSetSequenceDataElement.GetValueAsSQ();
 
     for(unsigned int i = 1 ; i <= fiducialSetSequence->GetNumberOfItems() ; ++i)
     {
-        ::gdcm::Item sequenceSetItem              = fiducialSetSequence->GetItem(i);
-        const ::gdcm::DataSet& sequenceSetDataset = sequenceSetItem.GetNestedDataSet();
+        gdcm::Item sequenceSetItem              = fiducialSetSequence->GetItem(i);
+        const gdcm::DataSet& sequenceSetDataset = sequenceSetItem.GetNestedDataSet();
 
-        const ::gdcm::DataElement& fiducialSequenceDataElement =
-            sequenceSetDataset.GetDataElement(::gdcm::Tag(0x0070, 0x031E));
-        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> fiducialSequence =
+        const gdcm::DataElement& fiducialSequenceDataElement =
+            sequenceSetDataset.GetDataElement(gdcm::Tag(0x0070, 0x031E));
+        const gdcm::SmartPointer<gdcm::SequenceOfItems> fiducialSequence =
             fiducialSequenceDataElement.GetValueAsSQ();
 
         for(unsigned int j = 1 ; j <= fiducialSequence->GetNumberOfItems() ; ++j)
         {
-            ::gdcm::Item fiducialItem              = fiducialSequence->GetItem(j);
-            const ::gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
-            const std::string shapeType            =
+            gdcm::Item fiducialItem              = fiducialSequence->GetItem(j);
+            const gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
+            const std::string shapeType          =
                 io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x0306>(fiducialDataset);
 
             if(shapeType == "POINT")

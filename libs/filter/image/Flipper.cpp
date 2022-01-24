@@ -50,14 +50,14 @@ struct Flipping
 
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PixelType, dimension> ImageType;
+        typedef typename itk::Image<PixelType, dimension> ImageType;
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
-        typename ::itk::FlipImageFilter<ImageType>::Pointer flipFilter =
-            ::itk::FlipImageFilter<ImageType>::New();
+        typename itk::FlipImageFilter<ImageType>::Pointer flipFilter =
+            itk::FlipImageFilter<ImageType>::New();
 
         flipFilter->SetInput(itkImage);
-        typename ::itk::FlipImageFilter<ImageType>::FlipAxesArrayType axes;
+        typename itk::FlipImageFilter<ImageType>::FlipAxesArrayType axes;
         for(size_t i = 0 ; i < axes.Size() && i < params.i_flipAxes.size() ; i++)
         {
             axes[i] = params.i_flipAxes[i];

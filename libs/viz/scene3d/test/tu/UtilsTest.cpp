@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ void UtilsTest::convertOgreColorToFwColor()
     data::Color::sptr refColor = data::Color::New();
     refColor->setRGBA(1.f, 1.f, 1.f, 1.f);
 
-    data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(::Ogre::ColourValue());
+    data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(Ogre::ColourValue());
     CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
     CPPUNIT_ASSERT(static_cast<int>(resultColor->green()) == static_cast<int>(refColor->green()));
     CPPUNIT_ASSERT(static_cast<int>(resultColor->blue()) == static_cast<int>(refColor->blue()));
@@ -82,7 +82,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             coeff = dist(rng);
         }
 
-        const ::Ogre::Matrix4 ogreMat0 = viz::scene3d::Utils::convertTM3DToOgreMx(mat0);
+        const Ogre::Matrix4 ogreMat0 = viz::scene3d::Utils::convertTM3DToOgreMx(mat0);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -109,7 +109,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
     // Convert from ogre to Sight and back to ogre.
     {
-        ::Ogre::Matrix4 ogreMat1;
+        Ogre::Matrix4 ogreMat1;
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
@@ -129,7 +129,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
 
-        const ::Ogre::Matrix4 ogreMat1Copy = viz::scene3d::Utils::convertTM3DToOgreMx(mat1Copy);
+        const Ogre::Matrix4 ogreMat1Copy = viz::scene3d::Utils::convertTM3DToOgreMx(mat1Copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {

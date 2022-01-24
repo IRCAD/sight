@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,7 +91,7 @@ private:
     sight::viz::scene3d::Text* m_statsText {nullptr};
 
     /// Defines the text's color.
-    ::Ogre::ColourValue m_textColor;
+    Ogre::ColourValue m_textColor;
 
     /// Defines the text's font height in points.
     size_t m_fontSize {12};

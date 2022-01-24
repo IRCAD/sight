@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,7 +83,7 @@ void STDataListener::configuring()
 
         for(const auto& m : matrices)
         {
-            const unsigned long index = ::boost::lexical_cast<unsigned long>(m->getAttributeValue("index"));
+            const unsigned long index = boost::lexical_cast<unsigned long>(m->getAttributeValue("index"));
             m_matrixNameIndex[m->getAttributeValue("name")] = index;
         }
     }

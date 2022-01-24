@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-::gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
+gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
 {
     SIGHT_ASSERT("Group and element can not be empty", !group.empty() && !element.empty());
 
@@ -53,8 +53,8 @@ namespace helper
         const unsigned long groupL   = std::stoul(group, nullptr, 16);
         const unsigned long elementL = std::stoul(element, nullptr, 16);
 
-        groupDest   = ::boost::numeric_cast<DestType>(groupL);
-        elementDest = ::boost::numeric_cast<DestType>(elementL);
+        groupDest   = boost::numeric_cast<DestType>(groupL);
+        elementDest = boost::numeric_cast<DestType>(elementL);
     }
     catch(std::out_of_range& e)
     {
@@ -72,7 +72,7 @@ namespace helper
             )
         );
     }
-    catch(::boost::bad_numeric_cast& e)
+    catch(boost::bad_numeric_cast& e)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
@@ -81,7 +81,7 @@ namespace helper
         );
     }
 
-    return ::gdcm::Tag(groupDest, elementDest);
+    return gdcm::Tag(groupDest, elementDest);
 }
 
 //------------------------------------------------------------------------------

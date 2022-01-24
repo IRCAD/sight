@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,12 +55,12 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::uint8_t _viewpoi
 
 AutoStereoCompositorListener::~AutoStereoCompositorListener()
 {
-    auto& mtlManager = ::Ogre::MaterialManager::getSingleton();
+    auto& mtlManager = Ogre::MaterialManager::getSingleton();
     // We need to clean the VR techniques because we want to set the correct textures
     // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& techMatPair : m_createdTechniques)
     {
-        ::Ogre::MaterialPtr mtl = mtlManager.getByName(techMatPair.second, RESOURCE_GROUP);
+        Ogre::MaterialPtr mtl = mtlManager.getByName(techMatPair.second, RESOURCE_GROUP);
 
         if(mtl == nullptr)
         {
@@ -68,9 +68,9 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             continue;
         }
 
-        ::Ogre::Technique* tech = techMatPair.first;
+        Ogre::Technique* tech = techMatPair.first;
 
-        const ::Ogre::Material::Techniques techniques = mtl->getTechniques();
+        const Ogre::Material::Techniques techniques = mtl->getTechniques();
 
         std::vector<unsigned short> removeTechniqueVector;
 
@@ -95,29 +95,29 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
+Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
     unsigned short /*_schemeIndex*/,
-    const ::Ogre::String& _schemeName,
-    ::Ogre::Material* _originalMaterial,
+    const Ogre::String& _schemeName,
+    Ogre::Material* _originalMaterial,
     unsigned short /*_lodIndex*/,
-    const ::Ogre::Renderable* /*_renderable*/
+    const Ogre::Renderable* /*_renderable*/
 )
 {
-    ::Ogre::Technique* newTech = nullptr;
+    Ogre::Technique* newTech = nullptr;
     if(_schemeName.find("AutoStereo") != std::string::npos)
     {
         const std::string passIdStr = _schemeName.substr(_schemeName.size() - 1);
 
-        ::Ogre::Technique* matchingTech = nullptr;
+        Ogre::Technique* matchingTech = nullptr;
 
-        if(::Ogre::StringUtil::startsWith(_schemeName, "VolumeEntries"))
+        if(Ogre::StringUtil::startsWith(_schemeName, "VolumeEntries"))
         {
             // Volume entries technique names follow this pattern : VolumeEntries<AutoStereo>_<technique><viewport>
             const size_t techNamePos   = _schemeName.find("_") + 1;
             const size_t techNameSize  = _schemeName.size() - 1 - techNamePos;
             const std::string techName = _schemeName.substr(techNamePos, techNameSize);
 
-            auto entryPointsMtl = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
+            auto entryPointsMtl = Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
 
             matchingTech = entryPointsMtl->getTechnique(techName);
         }
@@ -141,7 +141,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
                 vpNewName,
                 vpSourceFileName,
                 parameters,
-                ::Ogre::GPT_VERTEX_PROGRAM,
+                Ogre::GPT_VERTEX_PROGRAM,
                 vpBaseName
             );
 
@@ -151,23 +151,23 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             // We use a shared parameters block to upload the custom projection matrices
             const std::string projParamName = "ProjectionMatrixParam/" + passIdStr;
 
-            auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
+            auto& gpuProgramMgr            = Ogre::GpuProgramManager::getSingleton();
             const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
 
             if(sharedParameterMap.find(projParamName) == sharedParameterMap.end())
             {
-                auto projParam = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
+                auto projParam = Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
 
                 // define the shared param structure
-                projParam->addConstantDefinition("u_proj", ::Ogre::GCT_MATRIX_4X4);
+                projParam->addConstantDefinition("u_proj", Ogre::GCT_MATRIX_4X4);
             }
 
             vpParams->addSharedParameters(projParamName);
-            vpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
+            vpParams->setNamedAutoConstant("u_worldView", Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
         }
 
         const auto fpBaseName = pass->getFragmentProgramName();
-        if(::Ogre::StringUtil::startsWith(fpBaseName, "RTV_FP"))
+        if(Ogre::StringUtil::startsWith(fpBaseName, "RTV_FP"))
         {
             const auto fpSourceFileName = pass->getFragmentProgram()->getSourceFile();
             const auto fpNewName        = fpBaseName + "+AutoStereo";
@@ -179,7 +179,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
                 fpNewName,
                 fpSourceFileName,
                 parameters,
-                ::Ogre::GPT_FRAGMENT_PROGRAM,
+                Ogre::GPT_FRAGMENT_PROGRAM,
                 fpBaseName
             );
 
@@ -190,33 +190,33 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             const std::string invProjParamName = "InverseProjectionMatrixParam/" + passIdStr;
             const std::string projParamName    = "ProjectionMatrixParam/" + passIdStr;
 
-            auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
+            auto& gpuProgramMgr            = Ogre::GpuProgramManager::getSingleton();
             const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
 
             if(sharedParameterMap.find(projParamName) == sharedParameterMap.end())
             {
-                auto params = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
-                params->addConstantDefinition("u_proj", ::Ogre::GCT_MATRIX_4X4);
+                auto params = Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
+                params->addConstantDefinition("u_proj", Ogre::GCT_MATRIX_4X4);
             }
 
             if(sharedParameterMap.find(invProjParamName) == sharedParameterMap.end())
             {
-                auto params = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(invProjParamName);
-                params->addConstantDefinition("u_invProj", ::Ogre::GCT_MATRIX_4X4);
+                auto params = Ogre::GpuProgramManager::getSingleton().createSharedParameters(invProjParamName);
+                params->addConstantDefinition("u_invProj", Ogre::GCT_MATRIX_4X4);
             }
 
             fpParams->addSharedParameters(projParamName);
             fpParams->addSharedParameters(invProjParamName);
-            fpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
+            fpParams->setNamedAutoConstant("u_worldView", Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
             fpParams->setNamedAutoConstant(
                 "u_invWorldView",
-                ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX
+                Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX
             );
 
-            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
+            Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
 
             SIGHT_ASSERT("No texture named 'entryPoints' in " + _originalMaterial->getName(), texUnitState);
-            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            texUnitState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
 
             const auto compName = "VolumeEntries" + std::to_string(m_viewpointNumber);
             texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);

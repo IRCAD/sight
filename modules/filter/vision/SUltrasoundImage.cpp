@@ -730,7 +730,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     SIGHT_DEBUG("B:" << m_echoRefPoints[1][0] << " " << m_echoRefPoints[1][1]);
 
     fwVec3d AmC, BmC;
-    ::glm::dvec3 BmA;
+    glm::dvec3 BmA;
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
@@ -740,9 +740,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         BmC[i] = m_echoRefPoints[1][i] - probeSettings.centerPosition[i];
     }
 
-    BmA = ::glm::normalize(BmA);
+    BmA = glm::normalize(BmA);
 
-    ::glm::dvec3 v1, v2;
+    glm::dvec3 v1, v2;
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
@@ -752,9 +752,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         v2[i] = BmC[i];
     }
 
-    v1                  = ::glm::normalize(v1);
-    v2                  = ::glm::normalize(v2);
-    probeSettings.angle = static_cast<int>(std::nearbyint(::glm::degrees(::glm::angle(v1, v2))));
+    v1                  = glm::normalize(v1);
+    v2                  = glm::normalize(v2);
+    probeSettings.angle = static_cast<int>(std::nearbyint(glm::degrees(glm::angle(v1, v2))));
 
     // Compute the outer radius.
     int iOut;
@@ -932,8 +932,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         v2[i] = m_echoRefPoints[3][i] - m_echoRefPoints[2][i];
     }
 
-    probeSettings.depth = static_cast<int>(std::nearbyint(::glm::length(v1)));
-    probeSettings.width = static_cast<int>(std::nearbyint(::glm::length(v2)));
+    probeSettings.depth = static_cast<int>(std::nearbyint(glm::length(v1)));
+    probeSettings.width = static_cast<int>(std::nearbyint(glm::length(v2)));
 
     probeSettings.echoShapeOn = true;
 
@@ -998,7 +998,7 @@ double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vec
 
     const double opposit = center[0] - arcPointMinY[0];
     const double side    = -center[1] + arcPointMinY[1];
-    return ::glm::degrees(std::atan2(opposit, side));
+    return glm::degrees(std::atan2(opposit, side));
 }
 
 // -----------------------------------------------------------------------------
@@ -1054,8 +1054,8 @@ void SUltrasoundImage::updateBeamExtractionMap()
     m_extractionMap = cv::Mat(mapSize, CV_32FC2);
 
     const float halfAngle  = static_cast<float>(m_probeSettings.angle) * 0.5f;
-    const float angleBegin = ::glm::radians(90.f - halfAngle);
-    const float angleEnd   = ::glm::radians(90.f + halfAngle);
+    const float angleBegin = glm::radians(90.f - halfAngle);
+    const float angleEnd   = glm::radians(90.f + halfAngle);
 
     const float angleStep = (angleEnd - angleBegin) / static_cast<float>(mapSize.width - 1);
 

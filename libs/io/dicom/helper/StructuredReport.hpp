@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
      * @param[in] dataset Dataset from which the SR must be created
      */
     IO_DICOM_API static SPTR(io::dicom::container::sr::DicomSRContainerNode)
-    readSR(const ::gdcm::DataSet& dataset);
+    readSR(const gdcm::DataSet& dataset);
 
     /**
      * @brief Dump the SR in graphviz format
@@ -66,7 +66,7 @@ protected:
      * @param[in] dataset Dataset from which the sub nodes must been read
      * @param[in] parent Parent node
      */
-    static void readSubNodeContainer(const ::gdcm::DataSet& dataset,
+    static void readSubNodeContainer(const gdcm::DataSet& dataset,
                                      SPTR(io::dicom::container::sr::DicomSRNode) parent);
 
     /**
@@ -74,7 +74,7 @@ protected:
      * @param[in] dataset Dataset from which the sub node must been read
      * @param[in] parent Parent node
      */
-    static void readSubNode(const ::gdcm::DataSet& dataset,
+    static void readSubNode(const gdcm::DataSet& dataset,
                             SPTR(io::dicom::container::sr::DicomSRNode) parent);
 
     /**
@@ -97,25 +97,25 @@ protected:
      * @tparam ELEMENT Element group of the code sequence.
      */
     template<uint16_t GROUP, uint16_t ELEMENT>
-    static io::dicom::container::DicomCodedAttribute readCodeSequence(const ::gdcm::DataSet& dataset)
+    static io::dicom::container::DicomCodedAttribute readCodeSequence(const gdcm::DataSet& dataset)
     {
         io::dicom::container::DicomCodedAttribute codedAttributes;
 
-        if(!dataset.FindDataElement(::gdcm::Tag(GROUP, ELEMENT)))
+        if(!dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)))
         {
             // Return empty coded attributes
             return codedAttributes;
         }
 
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence =
-            dataset.GetDataElement(::gdcm::Tag(GROUP, ELEMENT)).GetValueAsSQ();
+        gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
+            dataset.GetDataElement(gdcm::Tag(GROUP, ELEMENT)).GetValueAsSQ();
         if(sequence->GetNumberOfItems() == 0) // One Item shall be permitted
         {
             // Return empty coded attributes
             return codedAttributes;
         }
 
-        const ::gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
+        const gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
 
         // Code value - Type 1
         auto codeValue = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0100>(itemDataset);

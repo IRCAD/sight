@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,8 +104,8 @@ void SNegato2DCamera::starting()
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
     layer->addInteractor(interactor, m_priority);
 
-    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
-    cam->setProjectionType(::Ogre::ProjectionType::PT_ORTHOGRAPHIC);
+    Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
+    cam->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
 
     this->resetCamera();
 }
@@ -166,9 +166,9 @@ void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
         const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
         // Compute the mouse's position in the camera's view.
-        const ::Ogre::Vector3 screenPos(static_cast< ::Ogre::Real>(_x),
-                                        static_cast< ::Ogre::Real>(_y),
-                                        ::Ogre::Real(0));
+        const Ogre::Vector3 screenPos(static_cast<Ogre::Real>(_x),
+                                      static_cast<Ogre::Real>(_y),
+                                      Ogre::Real(0));
         const auto mousePosView =
             sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
@@ -203,12 +203,12 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier,
         auto* const camera  = layer->getDefaultCamera();
         auto* const camNode = camera->getParentNode();
 
-        const ::Ogre::Vector3 deltaScreenPos(static_cast< ::Ogre::Real>(_x - _dx),
-                                             static_cast< ::Ogre::Real>(_y - _dy),
-                                             ::Ogre::Real(0));
-        const ::Ogre::Vector3 screenPos(static_cast< ::Ogre::Real>(_x),
-                                        static_cast< ::Ogre::Real>(_y),
-                                        ::Ogre::Real(0));
+        const Ogre::Vector3 deltaScreenPos(static_cast<Ogre::Real>(_x - _dx),
+                                           static_cast<Ogre::Real>(_y - _dy),
+                                           Ogre::Real(0));
+        const Ogre::Vector3 screenPos(static_cast<Ogre::Real>(_x),
+                                      static_cast<Ogre::Real>(_y),
+                                      Ogre::Real(0));
 
         const auto previousMousePosView =
             sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, deltaScreenPos);
@@ -290,7 +290,7 @@ void SNegato2DCamera::resetCamera()
     // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
     camera->setNearClipDistance(1e-3f);
 
-    camNode->setPosition(::Ogre::Vector3::ZERO);
+    camNode->setPosition(Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
     const auto origin  = image->getOrigin();
@@ -305,23 +305,23 @@ void SNegato2DCamera::resetCamera()
         switch(m_currentNegatoOrientation)
         {
             case Orientation::X_AXIS:
-                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
-                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
+                camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.f));
+                camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(-90.f));
                 width  = static_cast<double>(size[1]) * spacing[1];
                 height = static_cast<double>(size[2]) * spacing[2];
                 ratio  = static_cast<float>(width / height);
                 break;
 
             case Orientation::Y_AXIS:
-                camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
+                camNode->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(90.f));
                 width  = static_cast<double>(size[0]) * spacing[0];
                 height = static_cast<double>(size[2]) * spacing[2];
                 ratio  = static_cast<float>(width / height);
                 break;
 
             case Orientation::Z_AXIS:
-                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
-                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
+                camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.f));
+                camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.f));
                 height = static_cast<double>(size[0]) * spacing[0];
                 width  = static_cast<double>(size[1]) * spacing[1];
                 ratio  = static_cast<float>(width / height);
@@ -330,27 +330,27 @@ void SNegato2DCamera::resetCamera()
 
         if(vpRatio > ratio)
         {
-            const ::Ogre::Real h = static_cast< ::Ogre::Real>(height);
+            const Ogre::Real h = static_cast<Ogre::Real>(height);
             // Zoom out the camera (add 10% of the height), allow the image to not be stuck on the viewport.
             camera->setOrthoWindowHeight(h + h * 0.1f);
         }
         else
         {
-            const ::Ogre::Real w = static_cast< ::Ogre::Real>(width);
+            const Ogre::Real w = static_cast<Ogre::Real>(width);
             // Zoom out the camera (add 10% of the width), allow the image to not be stuck on the viewport.
             camera->setOrthoWindowWidth(w + w * 0.1f);
         }
 
         const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
-        ::Ogre::Vector3 camPos(
-            static_cast< ::Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
-            static_cast< ::Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
-            static_cast< ::Ogre::Real>(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5)
+        Ogre::Vector3 camPos(
+            static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
+            static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
+            static_cast<Ogre::Real>(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5)
         );
 
         camPos[orientation] =
-            static_cast< ::Ogre::Real>(origin[orientation] - static_cast<double>(size[orientation])
-                                       * spacing[orientation]);
+            static_cast<Ogre::Real>(origin[orientation] - static_cast<double>(size[orientation])
+                                    * spacing[orientation]);
         camNode->setPosition(camPos);
 
         const auto worldBoundingBox = layer->computeWorldBoundingBox();

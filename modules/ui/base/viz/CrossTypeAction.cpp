@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,8 +88,8 @@ void CrossTypeAction::configuring()
         std::vector<ConfigurationType> vectConfig = this->m_configuration->find("crossType");
         SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
         m_crossType = vectConfig.at(0)->getValue();
-        ::boost::algorithm::trim(m_crossType);
-        ::boost::algorithm::to_lower(m_crossType);
+        boost::algorithm::trim(m_crossType);
+        boost::algorithm::to_lower(m_crossType);
         SIGHT_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());
     }
 }

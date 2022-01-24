@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
      */
     IO_DICOM_API static void write(
         const std::filesystem::path& filename,
-        const SPTR(::gdcm::Writer)& writer
+        const SPTR(gdcm::Writer)& writer
     );
 };
 

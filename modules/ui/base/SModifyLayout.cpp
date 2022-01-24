@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,7 @@ void SModifyLayout::updating()
     for(ShowSrvVectType::value_type elt : m_showSrvWid)
     {
         std::string wid                                         = elt.first;
-        ::boost::logic::tribool isVisible                       = elt.second;
+        boost::logic::tribool isVisible                         = elt.second;
         sight::ui::base::container::fwContainer::sptr container =
             sight::ui::base::GuiRegistry::getWIDContainer(wid);
         SIGHT_ASSERT("::ui::base::IGuiContainer " << wid << " is unknown", container);
@@ -134,8 +134,8 @@ void SModifyLayout::updating()
 
     for(ShowSrvVectType::value_type elt : m_showSrvSid)
     {
-        std::string uid                   = elt.first;
-        ::boost::logic::tribool isVisible = elt.second;
+        std::string uid                 = elt.first;
+        boost::logic::tribool isVisible = elt.second;
         SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
         service::IService::sptr service = service::get(uid);
 
@@ -183,7 +183,7 @@ void SModifyLayout::configuring()
                     || actionCfg->getName() == "hide"
                     || actionCfg->getName() == "show_or_hide")
             {
-                ::boost::logic::tribool isVisible;
+                boost::logic::tribool isVisible;
                 if(actionCfg->getName() == "show")
                 {
                     isVisible = true;
@@ -194,7 +194,7 @@ void SModifyLayout::configuring()
                 }
                 else
                 {
-                    isVisible = ::boost::logic::indeterminate;
+                    isVisible = boost::logic::indeterminate;
                 }
 
                 if(actionCfg->hasAttribute("wid"))

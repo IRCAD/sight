@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -193,7 +193,7 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
     fs::path tmpDir              = createUniqueFolder(sysTmp / tmpDirName);
     tmpDirPath = tmpDir; // tmpDirPath always set to root tmp dir
 
-    fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
+    fs::path pidFile = tmpDir / (boost::lexical_cast<std::string>(getPID()) + ".pid");
     std::fstream(pidFile, std::ios::out).close();
 
     autoRemoveTempFolder = std::make_shared<RemoveTemporaryFolder>(tmpDirPath);
@@ -262,7 +262,7 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 
             try
             {
-                pid = ::boost::lexical_cast<int>(what.str(1));
+                pid = boost::lexical_cast<int>(what.str(1));
                 break;
             }
             catch(boost::bad_lexical_cast&)

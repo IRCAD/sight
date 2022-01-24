@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -154,7 +154,7 @@ public:
      * @brief Gets the associated entity.
      * @return The entity.
      */
-    MODULE_VIZ_SCENE3D_API ::Ogre::Entity* getEntity() const;
+    MODULE_VIZ_SCENE3D_API Ogre::Entity* getEntity() const;
 
     /**
      * @brief Gets the mesh visibility.
@@ -264,13 +264,13 @@ private:
      * @brief Attachs a node in the scene graph.
      * @param _node the node to attach.
      */
-    void attachNode(::Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* _node);
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {true};
 
     /// Contains the node in the scene graph whwre the mesh is attached.
-    ::Ogre::Entity* m_entity {nullptr};
+    Ogre::Entity* m_entity {nullptr};
 
     /// Contains the Ogre material adaptor.
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
@@ -309,7 +309,7 @@ private:
     std::map<data::Mesh::cell_t, module::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view s_MESH_INOUT = "mesh";
     data::ptr<data::Mesh, data::Access::inout> m_mesh {this, s_MESH_INOUT, true};
@@ -345,7 +345,7 @@ inline void SMesh::setAutoResetCamera(bool _autoResetCamera)
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::Entity* SMesh::getEntity() const
+inline Ogre::Entity* SMesh::getEntity() const
 {
     return m_entity;
 }

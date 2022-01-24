@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ viz::scene3d::SRender::OgreObjectIdType ITransformable::getTransformId() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* const _parentNode)
+Ogre::SceneNode* ITransformable::getTransformNode(Ogre::SceneNode* const _parentNode)
 {
     SIGHT_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
     m_transformNode = this->getTransformNode(m_transformId, _parentNode);
@@ -54,9 +54,9 @@ viz::scene3d::SRender::OgreObjectIdType ITransformable::getTransformId() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(
+Ogre::SceneNode* ITransformable::getTransformNode(
     const std::string& _name,
-    ::Ogre::SceneNode* const _parentNode
+    Ogre::SceneNode* const _parentNode
 )
 {
     SIGHT_ASSERT("Transform name is not set.", !_name.empty());

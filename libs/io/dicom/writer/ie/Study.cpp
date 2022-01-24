@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Study::Study(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Study::csptr& study,
     const core::log::Logger::sptr& logger,
@@ -61,7 +61,7 @@ Study::~Study()
 void Study::writeGeneralStudyModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000d>(m_object->getInstanceUID(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0010>(m_object->getStudyID(), dataset);
@@ -70,9 +70,9 @@ void Study::writeGeneralStudyModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0090>(m_object->getReferringPhysicianName(), dataset);
 
     //TODO: >getConsultingPhysicianName() contains only 1 value, gdcm wants a list (VM : 1-N).
-    ::gdcm::String<> consultingPhysisicianName[] = {m_object->getConsultingPhysicianName()};
+    gdcm::String<> consultingPhysisicianName[] = {m_object->getConsultingPhysicianName()};
 
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x009C>(
+    io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<>, 0x0008, 0x009C>(
         consultingPhysisicianName,
         1,
         dataset
@@ -88,7 +88,7 @@ void Study::writeGeneralStudyModule()
 void Study::writePatientStudyModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x1010>(m_object->getPatientAge(), dataset);
     // Following tags are represented as Decimal String, in GDCM DS = Double.

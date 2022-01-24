@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,15 +57,15 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
 
 template<typename T>
 static void compareImages(
-    const ::cv::Mat& _cvImage,
+    const cv::Mat& _cvImage,
     const data::FrameTL::BufferType::ElementType* _buffer,
     size_t _w,
     size_t _h,
     std::uint8_t _numChannels
 )
 {
-    std::vector< ::cv::Mat> channels(_numChannels);
-    ::cv::split(_cvImage, channels);
+    std::vector<cv::Mat> channels(_numChannels);
+    cv::split(_cvImage, channels);
 
     CPPUNIT_ASSERT_EQUAL(2, _cvImage.dims);
     CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[1]));
@@ -103,7 +103,7 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
     {
-        ::cv::Mat cvImage;
+        cv::Mat cvImage;
         io::opencv::FrameTL::moveToCv(frameTL, eltBuffer, cvImage);
 
         // Since we share the same buffer, compare the pointers
@@ -112,7 +112,7 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
         compareImages<T>(cvImage, eltBuffer, _w, _h, _numChannels);
     }
     {
-        ::cv::Mat cvImage2;
+        cv::Mat cvImage2;
         cvImage2 = io::opencv::FrameTL::moveToCv(frameTL, eltBuffer);
 
         // Since we share the same buffer, compare the pointers
@@ -128,7 +128,7 @@ template<typename T>
 static void testCopyFromCV(size_t _w, size_t _h, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
-    const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, 0, _numChannels);
+    const cv::Mat cvImage            = genCvImage<T>(imageBuffer, _w, _h, 0, _numChannels);
 
     data::FrameTL::sptr frameTL;
     SPTR(data::FrameTL::BufferType) buffer;
@@ -158,7 +158,7 @@ static void testCopyToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
     auto eltBuffer = buffer->addElement(0);
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
-    ::cv::Mat cvImage;
+    cv::Mat cvImage;
     io::opencv::FrameTL::copyToCv(frameTL, eltBuffer, cvImage);
 
     // Since we copy the buffer, ensure the pointers are different

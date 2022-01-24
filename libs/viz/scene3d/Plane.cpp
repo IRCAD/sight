@@ -40,10 +40,10 @@ namespace sight::viz::scene3d
 
 Plane::Plane(
     const core::tools::fwID::IDType& _negatoId,
-    ::Ogre::SceneNode* _parentSceneNode,
-    ::Ogre::SceneManager* _sceneManager,
+    Ogre::SceneNode* _parentSceneNode,
+    Ogre::SceneManager* _sceneManager,
     OrientationMode _orientation,
-    ::Ogre::TexturePtr _tex,
+    Ogre::TexturePtr _tex,
     FilteringEnumType _filtering,
     float _entityOpacity,
     bool _displayBorder
@@ -97,7 +97,7 @@ Plane::~Plane()
 
     if(m_slicePlane)
     {
-        ::Ogre::MeshManager::getSingleton().remove(m_slicePlane);
+        Ogre::MeshManager::getSingleton().remove(m_slicePlane);
     }
 
     if(m_border)
@@ -107,12 +107,12 @@ Plane::~Plane()
 
     if(m_texMaterial)
     {
-        ::Ogre::MaterialManager::getSingleton().remove(m_texMaterial);
+        Ogre::MaterialManager::getSingleton().remove(m_texMaterial);
     }
 
     if(m_borderMaterial)
     {
-        ::Ogre::MaterialManager::getSingleton().remove(m_borderMaterial);
+        Ogre::MaterialManager::getSingleton().remove(m_borderMaterial);
     }
 }
 
@@ -120,8 +120,8 @@ Plane::~Plane()
 
 void Plane::initializeMaterial()
 {
-    auto& materialMgr              = ::Ogre::MaterialManager::getSingleton();
-    ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato", RESOURCE_GROUP);
+    auto& materialMgr            = Ogre::MaterialManager::getSingleton();
+    Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato", RESOURCE_GROUP);
     SIGHT_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
 
     // If the texture material exists, delete it.
@@ -133,12 +133,12 @@ void Plane::initializeMaterial()
 
     m_texMaterial = defaultMat->clone(m_slicePlaneName + "_TextMaterial");
 
-    const ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    const Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
     const int orientationIndex = static_cast<int>(m_orientation);
 
-    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto* const tech : techniques)
     {
@@ -146,25 +146,25 @@ void Plane::initializeMaterial()
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* const pass = tech->getPass(0);
+            Ogre::Pass* const pass = tech->getPass(0);
 
-            ::Ogre::TextureUnitState* const texState = pass->getTextureUnitState("image");
+            Ogre::TextureUnitState* const texState = pass->getTextureUnitState("image");
             SIGHT_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
-            ::Ogre::TextureFilterOptions filterType = ::Ogre::TFO_NONE;
+            Ogre::TextureFilterOptions filterType = Ogre::TFO_NONE;
             switch(m_filtering)
             {
                 case FilteringEnumType::NONE:
-                    filterType = ::Ogre::TFO_NONE;
+                    filterType = Ogre::TFO_NONE;
                     break;
 
                 case FilteringEnumType::LINEAR:
-                    filterType = ::Ogre::TFO_BILINEAR;
+                    filterType = Ogre::TFO_BILINEAR;
                     break;
 
                 case FilteringEnumType::ANISOTROPIC:
-                    filterType = ::Ogre::TFO_ANISOTROPIC;
+                    filterType = Ogre::TFO_ANISOTROPIC;
                     break;
             }
 
@@ -185,29 +185,29 @@ void Plane::initializeMaterial()
             m_borderMaterial.reset();
         }
 
-        m_borderMaterial = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", RESOURCE_GROUP);
+        m_borderMaterial = Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", RESOURCE_GROUP);
         m_borderMaterial = m_borderMaterial->clone(m_slicePlaneName + "_BorderMaterial");
         if(m_orientation == OrientationMode::X_AXIS)
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
+            m_borderMaterial->setAmbient(Ogre::ColourValue::Blue);
+            m_borderMaterial->setDiffuse(Ogre::ColourValue::Blue);
         }
         else if(m_orientation == OrientationMode::Y_AXIS)
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Green);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Green);
+            m_borderMaterial->setAmbient(Ogre::ColourValue::Green);
+            m_borderMaterial->setDiffuse(Ogre::ColourValue::Green);
         }
         else
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
+            m_borderMaterial->setAmbient(Ogre::ColourValue::Red);
+            m_borderMaterial->setDiffuse(Ogre::ColourValue::Red);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Plane::setVoxelSpacing(const ::Ogre::Vector3& _spacing)
+void Plane::setVoxelSpacing(const Ogre::Vector3& _spacing)
 {
     m_spacing = _spacing;
 }
@@ -216,7 +216,7 @@ void Plane::setVoxelSpacing(const ::Ogre::Vector3& _spacing)
 
 void Plane::initializePlane()
 {
-    ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
+    Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
 
     // First delete mesh if it already exists.
     if(meshManager.resourceExists(m_slicePlaneName, RESOURCE_GROUP))
@@ -231,7 +231,7 @@ void Plane::initializePlane()
         m_sceneManager->destroyEntity(m_entityName);
     }
 
-    ::Ogre::MovablePlane plane = this->setDimensions();
+    Ogre::MovablePlane plane = this->setDimensions();
 
     // Mesh plane instanciation:
     // Y is the default upVector,
@@ -250,7 +250,7 @@ void Plane::initializePlane()
             1,
             1.0,
             1.0,
-            ::Ogre::Vector3::UNIT_Z
+            Ogre::Vector3::UNIT_Z
         );
     }
     else
@@ -265,7 +265,7 @@ void Plane::initializePlane()
     }
 
     // Entity creation.
-    ::Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
+    Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
     planeEntity->setMaterial(m_texMaterial);
     m_planeSceneNode->attachObject(planeEntity);
 
@@ -280,47 +280,47 @@ void Plane::initializePlane()
         // Create the border.
         m_border = m_sceneManager->createManualObject(m_slicePlaneName + "_Border");
         m_border->estimateVertexCount(5);
-        m_border->begin(m_borderMaterial, ::Ogre::RenderOperation::OT_LINE_STRIP);
+        m_border->begin(m_borderMaterial, Ogre::RenderOperation::OT_LINE_STRIP);
 
         if(m_orientation == OrientationMode::X_AXIS)
         {
-            m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
-            m_border->position(::Ogre::Vector3(0.f, m_height / 2.f, -m_width / 2.f));
-            m_border->position(::Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f));
-            m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, m_width / 2.f));
-            m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
+            m_border->position(Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
+            m_border->position(Ogre::Vector3(0.f, m_height / 2.f, -m_width / 2.f));
+            m_border->position(Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f));
+            m_border->position(Ogre::Vector3(0.f, -m_height / 2.f, m_width / 2.f));
+            m_border->position(Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
             m_border->setBoundingBox(
-                ::Ogre::AxisAlignedBox(
-                    ::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f),
-                    ::Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f)
+                Ogre::AxisAlignedBox(
+                    Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f),
+                    Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f)
                 )
             );
         }
         else if(m_orientation == OrientationMode::Y_AXIS)
         {
-            m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
-            m_border->position(::Ogre::Vector3(m_width / 2.f, 0.f, -m_height / 2.f));
-            m_border->position(::Ogre::Vector3(m_width / 2.f, 0.f, m_height / 2.f));
-            m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, m_height / 2.f));
-            m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->position(Ogre::Vector3(m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->position(Ogre::Vector3(m_width / 2.f, 0.f, m_height / 2.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.f, 0.f, m_height / 2.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
             m_border->setBoundingBox(
-                ::Ogre::AxisAlignedBox(
-                    ::Ogre::Vector3(-m_height / 2.f, 0.f, -m_width / 2.f),
-                    ::Ogre::Vector3(m_height / 2.f, 0.f, m_width / 2.f)
+                Ogre::AxisAlignedBox(
+                    Ogre::Vector3(-m_height / 2.f, 0.f, -m_width / 2.f),
+                    Ogre::Vector3(m_height / 2.f, 0.f, m_width / 2.f)
                 )
             );
         }
         else
         {
-            m_border->position(::Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
-            m_border->position(::Ogre::Vector3(m_width / 2.f, -m_height / 2.f, 0.f));
-            m_border->position(::Ogre::Vector3(m_width / 2.f, m_height / 2.f, 0.f));
-            m_border->position(::Ogre::Vector3(-m_width / 2.f, m_height / 2.f, 0.f));
-            m_border->position(::Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->position(Ogre::Vector3(m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->position(Ogre::Vector3(m_width / 2.f, m_height / 2.f, 0.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.f, m_height / 2.f, 0.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
             m_border->setBoundingBox(
-                ::Ogre::AxisAlignedBox(
-                    ::Ogre::Vector3(-m_height / 2.f, -m_width / 2.f, 0.f),
-                    ::Ogre::Vector3(m_height / 2.f, m_width / 2.f, 0.f)
+                Ogre::AxisAlignedBox(
+                    Ogre::Vector3(-m_height / 2.f, -m_width / 2.f, 0.f),
+                    Ogre::Vector3(m_height / 2.f, m_width / 2.f, 0.f)
                 )
             );
         }
@@ -359,7 +359,7 @@ void Plane::initializePosition()
 void Plane::moveAlongAxis()
 {
     this->initializePosition();
-    ::Ogre::Real distance = m_relativePosition * m_depth;
+    Ogre::Real distance = m_relativePosition * m_depth;
 
     switch(m_orientation)
     {
@@ -400,7 +400,7 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setTFData(const viz::scene3d::TransferFunction& _tfTexture)
 {
-    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
@@ -408,7 +408,7 @@ void Plane::setTFData(const viz::scene3d::TransferFunction& _tfTexture)
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            Ogre::Pass* pass = tech->getPass(0);
             _tfTexture.bind(pass, "tfTexture", pass->getFragmentProgramParameters());
         }
     }
@@ -418,7 +418,7 @@ void Plane::setTFData(const viz::scene3d::TransferFunction& _tfTexture)
 
 void Plane::switchThresholding(bool _threshold)
 {
-    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
@@ -426,7 +426,7 @@ void Plane::switchThresholding(bool _threshold)
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            Ogre::Pass* pass = tech->getPass(0);
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
 
@@ -447,7 +447,7 @@ void Plane::moveToOriginPosition()
 
 double Plane::getSliceWorldPosition() const
 {
-    ::Ogre::Real position = 0.f;
+    Ogre::Real position = 0.f;
 
     switch(m_orientation)
     {
@@ -472,7 +472,7 @@ double Plane::getSliceWorldPosition() const
 void Plane::setOrientationMode(OrientationMode _newMode)
 {
     m_orientation = _newMode;
-    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto* const tech : techniques)
     {
@@ -480,7 +480,7 @@ void Plane::setOrientationMode(OrientationMode _newMode)
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
-            const ::Ogre::Pass* const pass = tech->getPass(0);
+            const Ogre::Pass* const pass = tech->getPass(0);
             SIGHT_ASSERT("Material '" + m_texMaterial->getName() + "' does not define any pass.", pass);
 
             const int orientationIndex = static_cast<int>(_newMode);
@@ -493,18 +493,18 @@ void Plane::setOrientationMode(OrientationMode _newMode)
     {
         if(m_orientation == OrientationMode::X_AXIS)
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
+            m_borderMaterial->setAmbient(Ogre::ColourValue::Red);
+            m_borderMaterial->setDiffuse(Ogre::ColourValue::Red);
         }
         else if(m_orientation == OrientationMode::Y_AXIS)
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Green);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Green);
+            m_borderMaterial->setAmbient(Ogre::ColourValue::Green);
+            m_borderMaterial->setDiffuse(Ogre::ColourValue::Green);
         }
         else
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
+            m_borderMaterial->setAmbient(Ogre::ColourValue::Blue);
+            m_borderMaterial->setDiffuse(Ogre::ColourValue::Blue);
         }
     }
 
@@ -515,7 +515,7 @@ void Plane::setOrientationMode(OrientationMode _newMode)
 
 void Plane::enableAlpha(bool _enable)
 {
-    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto* const tech : techniques)
     {
@@ -523,7 +523,7 @@ void Plane::enableAlpha(bool _enable)
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* const pass = tech->getPass(0);
+            Ogre::Pass* const pass = tech->getPass(0);
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
             pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable);
@@ -537,16 +537,16 @@ void Plane::setEntityOpacity(float _f)
 {
     m_entityOpacity = _f;
 
-    ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    ::Ogre::Technique* tech = m_texMaterial->getTechnique(0);
+    Ogre::Technique* tech = m_texMaterial->getTechnique(0);
     SIGHT_ASSERT("Technique is not set", tech);
 
     if(viz::scene3d::helper::Shading::isColorTechnique(*tech)
        && !viz::scene3d::helper::Shading::isPeelTechnique(*tech))
     {
-        ::Ogre::Pass* pass = tech->getPass(0);
+        Ogre::Pass* pass = tech->getPass(0);
 
         // We don't want a depth check if we have non-OIT transparency
         const bool needDepthCheck = (m_entityOpacity - 1.f) < std::numeric_limits<float>::epsilon();
@@ -565,7 +565,7 @@ void Plane::setVisible(bool _visible)
 
 void Plane::changeSlice(float sliceIndex)
 {
-    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
@@ -573,7 +573,7 @@ void Plane::changeSlice(float sliceIndex)
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            Ogre::Pass* pass = tech->getPass(0);
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
 
@@ -587,13 +587,13 @@ void Plane::changeSlice(float sliceIndex)
 
 //-----------------------------------------------------------------------------
 
-::Ogre::MovablePlane Plane::setDimensions()
+Ogre::MovablePlane Plane::setDimensions()
 {
-    ::Ogre::Real tex_width  = static_cast< ::Ogre::Real>(m_texture->getWidth());
-    ::Ogre::Real tex_height = static_cast< ::Ogre::Real>(m_texture->getHeight());
-    ::Ogre::Real tex_depth  = static_cast< ::Ogre::Real>(m_texture->getDepth());
+    Ogre::Real tex_width  = static_cast<Ogre::Real>(m_texture->getWidth());
+    Ogre::Real tex_height = static_cast<Ogre::Real>(m_texture->getHeight());
+    Ogre::Real tex_depth  = static_cast<Ogre::Real>(m_texture->getDepth());
 
-    ::Ogre::MovablePlane plane(::Ogre::Vector3::ZERO, 0);
+    Ogre::MovablePlane plane(Ogre::Vector3::ZERO, 0);
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
@@ -618,15 +618,15 @@ void Plane::changeSlice(float sliceIndex)
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
-            plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_X, 0);
+            plane = Ogre::MovablePlane(Ogre::Vector3::UNIT_X, 0);
             break;
 
         case OrientationMode::Y_AXIS:
-            plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Y, 0);
+            plane = Ogre::MovablePlane(Ogre::Vector3::UNIT_Y, 0);
             break;
 
         case OrientationMode::Z_AXIS:
-            plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
+            plane = Ogre::MovablePlane(Ogre::Vector3::UNIT_Z, 0);
             break;
     }
 
@@ -635,7 +635,7 @@ void Plane::changeSlice(float sliceIndex)
 
 //-----------------------------------------------------------------------------
 
-const ::Ogre::MovableObject* Plane::getMovableObject() const
+const Ogre::MovableObject* Plane::getMovableObject() const
 {
     if(m_sceneManager->hasEntity(m_entityName))
     {

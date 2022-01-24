@@ -57,7 +57,7 @@ namespace tid
 //------------------------------------------------------------------------------
 
 Measurement::Measurement(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image
 ) :

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ SPTR(DATATYPE) getObject(
 )
 {
     SPTR(data::Object) subObject = getObject(object, path, raiseException);
-    SPTR(DATATYPE) casteDdata    = ::std::dynamic_pointer_cast<DATATYPE>(subObject);
+    SPTR(DATATYPE) casteDdata    = std::dynamic_pointer_cast<DATATYPE>(subObject);
     return casteDdata;
 }
 

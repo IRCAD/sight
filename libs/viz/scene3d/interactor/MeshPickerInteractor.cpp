@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
 
         if(m_picker.executeRaySceneQuery(_x, _y, m_queryMask))
         {
-            ::Ogre::Vector3 click = m_picker.getIntersectionInWorldSpace();
+            Ogre::Vector3 click = m_picker.getIntersectionInWorldSpace();
 
             data::tools::PickingInfo info;
             info.m_worldPos[0] = static_cast<double>(click.x);

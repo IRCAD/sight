@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     data::Image::sptr image = imageSeries->getImage();
 
     // Create writer
-    SPTR(::gdcm::ImageWriter) writer = std::make_shared< ::gdcm::ImageWriter>();
+    SPTR(gdcm::ImageWriter) writer = std::make_shared<gdcm::ImageWriter>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
@@ -118,12 +118,12 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     // Write Image Pixel Module - PS 3.3 C.7.6.3
     imageIE.writeImagePixelModule();
 
-    if(m_instance->getSOPClassUID() == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage))
+    if(m_instance->getSOPClassUID() == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage))
     {
         // Write CT Image Module - PS 3.3 C.8.2.1
         imageIE.writeCTImageModule();
     }
-    else if(m_instance->getSOPClassUID() == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
+    else if(m_instance->getSOPClassUID() == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
         // Write MR Image Module - PS 3.3 C.8.3.1
         imageIE.writeMRImageModule();
@@ -136,7 +136,7 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     imageIE.writeSOPCommonModule();
 
     // Copy dataset to avoid writing conflict with GDCM
-    const ::gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
+    const gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
     std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize()[2]) : 1;

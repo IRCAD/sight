@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
     /// Initializes the illumination volume with the give dimensions.
     VIZ_SCENE3D_API IllumAmbientOcclusionSAT(
         std::string parentId,
-        ::Ogre::SceneManager* sceneManager,
+        Ogre::SceneManager* sceneManager,
         float satSizeRatio   = 0.25f,
         bool ao              = false,
         bool shadows         = false,
@@ -64,13 +64,13 @@ public:
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
     VIZ_SCENE3D_API void SATUpdate(
-        ::Ogre::TexturePtr _img,
+        Ogre::TexturePtr _img,
         const viz::scene3d::TransferFunction::sptr& _tf,
         float _sampleDistance
     );
 
     /// Illumination volume texture getter.
-    VIZ_SCENE3D_API ::Ogre::TexturePtr getIlluminationVolume();
+    VIZ_SCENE3D_API Ogre::TexturePtr getIlluminationVolume();
 
     /// Ambient occlusion / color bleeding usage setter
     VIZ_SCENE3D_API void setAO(bool _ao);
@@ -99,7 +99,7 @@ private:
     viz::scene3d::vr::SummedAreaTable m_sat;
 
     /// Texture holding the illumination volume.
-    ::Ogre::TexturePtr m_illuminationVolume;
+    Ogre::TexturePtr m_illuminationVolume;
 
     /// Sets ambient occlusion / color bleeding usage.
     bool m_ao;
@@ -129,16 +129,16 @@ private:
     const std::string BUFFER_NAME = "__IlluminationVolume";
 
     /// Camera used
-    ::Ogre::Camera* m_dummyCamera;
+    Ogre::Camera* m_dummyCamera;
 
     /// Scene manager.
-    ::Ogre::SceneManager* m_sceneManager;
+    Ogre::SceneManager* m_sceneManager;
 };
 
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline ::Ogre::TexturePtr IllumAmbientOcclusionSAT::getIlluminationVolume()
+inline Ogre::TexturePtr IllumAmbientOcclusionSAT::getIlluminationVolume()
 {
     return m_illuminationVolume;
 }
