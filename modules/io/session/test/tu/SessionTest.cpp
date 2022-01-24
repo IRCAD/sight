@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #include "SessionTest.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/String.hpp>
@@ -47,17 +46,12 @@ namespace ut
 
 void SessionTest::setUp()
 {
-    // Set up context before running a test.
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
-    core::thread::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::tearDown()
 {
-    // Clean up after the test run.
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

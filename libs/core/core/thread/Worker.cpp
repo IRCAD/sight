@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,9 @@
 
 #include "core/thread/Worker.hpp"
 
+#include "core/LazyInstantiator.hpp"
+#include "core/mt/types.hpp"
+
 namespace sight::core::thread
 {
 
@@ -32,6 +35,183 @@ ThreadIdType getCurrentThreadId()
     return std::this_thread::get_id();
 }
 
-//SPTR(Worker) Worker::defaultFactory() => WorkerAsio.cpp
+/**
+ * @brief This internal class registers worker threads in the system. It creates a default worker.
+ * The life cycle of registered workers should be handled by the creator of the workers, but to avoid unneeded crashes,
+ * we do stop and destroy them if this not done outside. A non breaking error message is sent.
+ */
+class ActiveWorkers
+{
+public:
+
+    /// Constructor, creates the default worker
+    ActiveWorkers()
+    {
+    }
+
+    /// Destructor, destroys the default worker and the registered ones if necessary (this sends an error in this case)
+    virtual ~ActiveWorkers()
+    {
+        core::mt::WriteLock lock(m_registryMutex);
+
+        // Avoid double stop
+        if(m_defaultWorker)
+        {
+            m_defaultWorker->stop();
+        }
+
+        SIGHT_ERROR_IF(
+            "Workers are still registered, this is abnormal unless the application crashed before.",
+            !m_workers.empty()
+        );
+
+        for(const auto& elt : m_workers)
+        {
+            elt.second->stop();
+        }
+
+        m_workers.clear();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void addWorker(const WorkerKeyType& key, core::thread::Worker::sptr worker)
+    {
+        core::mt::WriteLock lock(m_registryMutex);
+        m_workers.insert(WorkerMapType::value_type(key, worker));
+    }
+
+    //------------------------------------------------------------------------------
+
+    void removeWorker(const WorkerKeyType& key)
+    {
+        core::mt::WriteLock lock(m_registryMutex);
+
+        WorkerMapType::const_iterator it = m_workers.find(key);
+
+        if(it != m_workers.end())
+        {
+            it->second->stop();
+            m_workers.erase(key);
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void removeWorker(core::thread::Worker::sptr worker)
+    {
+        core::mt::WriteLock lock(m_registryMutex);
+        for(const auto& [key, value] : m_workers)
+        {
+            if(value == worker)
+            {
+                worker->stop();
+
+                m_workers.erase(key);
+                return;
+            }
+        }
+
+        SIGHT_WARN("A worker was requested to be removed, but it could not be found");
+    }
+
+    //------------------------------------------------------------------------------
+
+    core::thread::Worker::sptr getWorker(const WorkerKeyType& key) const
+    {
+        core::mt::ReadLock lock(m_registryMutex);
+
+        if(auto it = m_workers.find(key); it != m_workers.end())
+        {
+            return it->second;
+        }
+
+        return core::thread::Worker::sptr();
+    }
+
+    //------------------------------------------------------------------------------
+
+    static std::shared_ptr<ActiveWorkers> get()
+    {
+        return core::LazyInstantiator<ActiveWorkers>::getInstance();
+    }
+
+    /// Specific pointer for the default worker
+    core::thread::Worker::sptr m_defaultWorker {core::thread::Worker::New()};
+
+protected:
+
+    typedef std::map<WorkerKeyType, core::thread::Worker::sptr> WorkerMapType;
+
+    /// Association key <=> worker
+    WorkerMapType m_workers;
+
+    /// Used to protect the registry access.
+    mutable core::mt::ReadWriteMutex m_registryMutex;
+};
+
+static auto activeWorkers = core::thread::ActiveWorkers::get();
+
+//-----------------------------------------------------------------------------
+
+core::thread::Worker::sptr getWorker(const WorkerKeyType& key)
+{
+    return ActiveWorkers::get()->getWorker(key);
+}
+
+//-----------------------------------------------------------------------------
+
+void addWorker(const WorkerKeyType& key, core::thread::Worker::sptr worker)
+{
+    ActiveWorkers::get()->addWorker(key, worker);
+}
+
+//-----------------------------------------------------------------------------
+
+void removeWorker(const WorkerKeyType& key)
+{
+    ActiveWorkers::get()->removeWorker(key);
+}
+
+//-----------------------------------------------------------------------------
+
+void removeWorker(core::thread::Worker::sptr worker)
+{
+    ActiveWorkers::get()->removeWorker(worker);
+}
+
+//-----------------------------------------------------------------------------
+
+core::thread::Worker::sptr getDefaultWorker()
+{
+    return ActiveWorkers::get()->m_defaultWorker;
+}
+
+//-----------------------------------------------------------------------------
+
+void setDefaultWorker(core::thread::Worker::sptr worker)
+{
+    SIGHT_THROW_IF("default worker can not be null", worker == nullptr);
+    auto registry = ActiveWorkers::get();
+
+    SIGHT_THROW_IF(
+        "Can not switch the default worker as the initial one is already used in the application",
+        registry->m_defaultWorker.use_count() > 1
+    );
+
+    registry->m_defaultWorker->stop();
+    registry->m_defaultWorker = worker;
+}
+
+//------------------------------------------------------------------------------
+
+void resetDefaultWorker()
+{
+    auto registry = ActiveWorkers::get();
+    registry->m_defaultWorker->stop();
+    registry->m_defaultWorker.reset();
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace sight::core::thread

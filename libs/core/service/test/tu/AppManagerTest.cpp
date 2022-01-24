@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "AppManagerTest.hpp"
-
-#include "core/thread/ActiveWorkers.hpp"
 
 #include "service/extension/AppConfig.hpp"
 #include "service/extension/Factory.hpp"
@@ -54,9 +52,6 @@ namespace ut
 void AppManagerTest::setUp()
 {
     // Set up context before running a test.
-
-    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -72,9 +67,6 @@ void AppManagerTest::tearDown()
         m_appMgr->destroy();
         m_appMgr = nullptr;
     }
-
-    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

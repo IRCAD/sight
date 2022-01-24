@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "viz/scene3d/registry/macros.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreCamera.h>
@@ -159,7 +158,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
                 {
                     // We use a timer on the main thread instead of a separate thread.
                     // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                    const auto worker = core::thread::ActiveWorkers::getDefault()->getDefaultWorker();
+                    const auto worker = core::thread::getDefaultWorker();
                     m_timer = worker->createTimer();
 
                     m_timer->setFunction(

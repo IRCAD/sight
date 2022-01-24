@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,6 +131,67 @@ protected:
     FutureType m_future;
 };
 
-} //namespace sight::core::thread
+typedef std::string WorkerKeyType;
+
+/**
+ * @brief Get a registered worker given a key, if the key does not exist a null pointer is returned
+ * @param key name of the worker thread
+ * @note This method is thread safe.
+ */
+CORE_API core::thread::Worker::sptr getWorker(const WorkerKeyType& key);
+
+/**
+ * @brief Registers a worker.
+ * The caller is still responsible of the lifetime of the worker and should call removeWorker() symmetrically.
+ * @param key name of the worker thread
+ * @param worker pointer to the worker thread
+ * @note This method is thread safe.
+ */
+CORE_API void addWorker(const WorkerKeyType& key, core::thread::Worker::sptr worker);
+
+/**
+ * @brief Stops and unregisters a worker
+ * @param key name of the worker thread
+ * @note This method is thread safe.
+ */
+CORE_API void removeWorker(const WorkerKeyType& key);
+
+/**
+ * @brief Stops and unregisters a worker
+ * @param worker pointer to the worker thread
+ * @note This method is thread safe.
+ */
+CORE_API void removeWorker(core::thread::Worker::sptr worker);
+
+/**
+ * @brief Get the default registered worker
+ * @note This method is thread safe.
+ */
+CORE_API core::thread::Worker::sptr getDefaultWorker();
+
+/**
+ * @brief Set the default registered worker.
+ *
+ * This is only needed in rare cases and should be used at the start of an application. This replaces and destroys
+ * the default WorkerAsio, which should not be already in use.
+ * If you use this method, you need to call resetDefaultWorker() to unregister the worker thread.
+ *
+ * @param worker pointer to the worker thread
+ * @note This method is thread safe.
+ * @throw sight::core::exception if the worker is null or if the previous default worker is already in use.
+ */
+CORE_API void setDefaultWorker(core::thread::Worker::sptr worker);
+
+/**
+ * @brief Reset the default registered worker.
+ *
+ * Beware that there would be no default thread registered after that call. So this is really intended to be called
+ * at the end of the run of an application.
+ *
+ * @note This method is thread safe.
+ */
+CORE_API void resetDefaultWorker();
+
+} // namespace sight::core::thread
 
 #include "core/thread/Worker.hxx"

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "SlotsSignalsStuff.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
@@ -59,15 +58,12 @@ void SigSlotConnectionTest::tearDown()
 
 void SigSlotConnectionTest::basicTest()
 {
-    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     Buffer::sptr buffer = Buffer::New();
 
     SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
     service::OSR::registerService(showTestSrv);
     showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT, true);
-    showTestSrv->setWorker(activeWorkers->getWorker(core::thread::ActiveWorkers::s_DEFAULT_WORKER));
+    showTestSrv->setWorker(core::thread::getDefaultWorker());
 
     data::Object::ModifiedSignalType::sptr sig =
         buffer->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
@@ -83,7 +79,6 @@ void SigSlotConnectionTest::basicTest()
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
     service::OSR::unregisterService(showTestSrv);
-    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

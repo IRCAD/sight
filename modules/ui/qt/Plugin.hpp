@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,10 +59,6 @@ public:
 protected:
 
     MODULE_UI_QT_API void loadStyleSheet();
-
-private:
-
-    SPTR(core::thread::Worker) m_workerQt;
 };
 
 } // namespace sight::module::ui::qt

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <data/ActivitySeries.hpp>

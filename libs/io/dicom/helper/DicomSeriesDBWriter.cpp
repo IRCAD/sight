@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
@@ -148,7 +147,7 @@ void DicomSeriesDBWriter::write()
                         }
                     }
                 },
-                core::thread::ActiveWorkers::getDefaultWorker()
+                core::thread::getDefaultWorker()
             );
 
         m_aggregator->addCancelHook(

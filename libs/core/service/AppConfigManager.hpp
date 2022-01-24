@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -263,6 +263,9 @@ private:
 
     /// Update ordered list of deferred services.
     std::vector<std::string> m_deferredUpdateSrv;
+
+    /// List of created workers
+    std::vector<core::thread::Worker::sptr> m_createdWorkers;
 
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.

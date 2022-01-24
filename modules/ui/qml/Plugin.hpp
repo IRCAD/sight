@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,10 +55,6 @@ public:
     MODULE_UI_QML_API void stop() noexcept;
 
     MODULE_UI_QML_API int run() noexcept;
-
-private:
-
-    SPTR(core::thread::Worker) m_workerQt;
 };
 
 } // namespace sight::module::ui::qt

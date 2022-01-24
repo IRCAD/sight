@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
@@ -81,9 +80,9 @@ void Plugin::start()
             return QSharedPointer<QGuiApplication>(new sight::ui::qml::App(argc, argv));
         };
 
-    m_workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
+    auto workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
+    core::thread::setDefaultWorker(workerQt);
 
-    core::thread::ActiveWorkers::setDefaultWorker(m_workerQt);
     auto engine = sight::ui::qml::QmlEngine::getDefault();
 
     // add custom controls and the singleton theme for all qml project
@@ -112,11 +111,7 @@ void Plugin::start()
 
 void Plugin::stop() noexcept
 {
-    if(m_workerQt)
-    {
-        m_workerQt->stop();
-        m_workerQt.reset();
-    }
+    core::thread::resetDefaultWorker();
 }
 
 //-----------------------------------------------------------------------------
@@ -130,15 +125,12 @@ void setup()
 
 int Plugin::run() noexcept
 {
-    m_workerQt->post(std::bind(&setup));
-    m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
+    auto workerQt = core::thread::getDefaultWorker();
+    workerQt->post(std::bind(&setup));
+    workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
     core::runtime::getCurrentProfile()->cleanup();
-    int result = std::any_cast<int>(m_workerQt->getFuture().get());
-
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
-    m_workerQt.reset();
-
+    int result = std::any_cast<int>(workerQt->getFuture().get());
     return result;
 }
 

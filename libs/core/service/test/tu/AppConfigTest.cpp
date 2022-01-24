@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "AppConfigTest.hpp"
 
 #include "core/com/Slot.hxx"
-#include "core/thread/ActiveWorkers.hpp"
 
 #include "service/extension/AppConfig.hpp"
 #include "service/registry/ObjectService.hpp"
@@ -67,12 +66,6 @@ namespace ut
 void AppConfigTest::setUp()
 {
     // Set up context before running a test.
-
-    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
-    // Set up context before running a test.
-    //modules location
     core::runtime::init();
     core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
@@ -101,9 +94,6 @@ void AppConfigTest::tearDown()
         m_appConfigMgr->stopAndDestroy();
         m_appConfigMgr = nullptr;
     }
-
-    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -1146,7 +1136,7 @@ void AppConfigTest::keyGroupTest()
                                srv1Swapped = true;
                            };
         auto swappedSlot = core::com::newSlot(fn);
-        swappedSlot->setWorker(core::thread::ActiveWorkers::getDefaultWorker());
+        swappedSlot->setWorker(core::thread::getDefaultWorker());
         core::com::Connection connection = srv1->signal(IService::s_SWAPPED_SIG)->connect(swappedSlot);
 
         service::OSR::registerServiceOutput(data3, "out3", genDataSrv);

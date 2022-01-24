@@ -28,7 +28,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::data
 {
@@ -41,7 +40,7 @@ namespace helper
 TransferFunction::TransferFunction(const std::function<void()>& _function) :
     m_updateTFPoints(_function)
 {
-    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::getDefaultWorker();
     m_slotUpdateTFPoints = core::com::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = core::com::newSlot(&TransferFunction::updateTFWindowing, this);
@@ -56,7 +55,7 @@ TransferFunction::TransferFunction(
     m_updateTFPoints(_functionPoints),
     m_updateTFWindowing(_functionWindow)
 {
-    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::getDefaultWorker();
     m_slotUpdateTFPoints = core::com::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = core::com::newSlot(&TransferFunction::updateTFWindowing, this);

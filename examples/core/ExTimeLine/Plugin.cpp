@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 
 #include <core/runtime/Runtime.hpp>
 #include <core/spyLog.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <service/extension/Factory.hpp>
 
@@ -35,7 +34,7 @@ namespace ExTimeLine
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::ExTimeLine::Plugin");
+SIGHT_REGISTER_PLUGIN("ExTimeLine::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -47,17 +46,12 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    m_worker = sight::core::thread::Worker::New();
-    sight::core::thread::ActiveWorkers::getDefault()
-    ->addWorker(sight::core::thread::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
-    m_worker->stop();
-    m_worker.reset();
 }
 
 //------------------------------------------------------------------------------

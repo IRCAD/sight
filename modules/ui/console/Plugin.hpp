@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,10 +54,6 @@ public:
 
     /// Run callback
     MODULE_UI_CONSOLE_API int run() noexcept;
-
-private:
-
-    SPTR(core::thread::Worker) m_worker;
 };
 
 } // namespace sight::module::ui::console

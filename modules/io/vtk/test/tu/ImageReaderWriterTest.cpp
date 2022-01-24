@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "ImageReaderWriterTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
@@ -84,17 +83,12 @@ void runImageSrv(
 
 void ImageReaderWriterTest::setUp()
 {
-    // Set up context before running a test.
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
-    core::thread::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::tearDown()
 {
-    // Clean up after the test run.
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

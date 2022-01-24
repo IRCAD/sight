@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "ProcessingTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>

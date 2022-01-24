@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/NotificationDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <functional>
 
@@ -59,7 +59,7 @@ void NotificationDialog::showNotificationDialog(
 
 NotificationDialog::NotificationDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -77,7 +77,7 @@ NotificationDialog::NotificationDialog(
     INotificationDialog::Position _pos
 )
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -107,7 +107,7 @@ void NotificationDialog::show()
     if(m_implementation)
     {
         std::function<void()> func = std::bind(&INotificationDialog::show, m_implementation);
-        std::shared_future<void> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
+        std::shared_future<void> f = core::thread::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
 }
@@ -116,7 +116,7 @@ void NotificationDialog::show()
 
 void NotificationDialog::setMessage(const std::string& _msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -132,7 +132,7 @@ void NotificationDialog::setMessage(const std::string& _msg)
 
 void NotificationDialog::setType(INotificationDialog::Type _type)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -148,7 +148,7 @@ void NotificationDialog::setType(INotificationDialog::Type _type)
 
 void NotificationDialog::setPosition(INotificationDialog::Position _position)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -164,7 +164,7 @@ void NotificationDialog::setPosition(INotificationDialog::Position _position)
 
 void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -180,7 +180,7 @@ void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 
 void NotificationDialog::setIndex(unsigned int _index)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -196,7 +196,7 @@ void NotificationDialog::setIndex(unsigned int _index)
 
 void NotificationDialog::setDuration(int _durationInMs)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -213,7 +213,7 @@ void NotificationDialog::setDuration(int _durationInMs)
 bool NotificationDialog::isVisible() const
 {
     bool visible = false;
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -231,7 +231,7 @@ bool NotificationDialog::isVisible() const
 
 void NotificationDialog::close() const
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -250,7 +250,7 @@ void NotificationDialog::moveDown()
     if(m_implementation)
     {
         std::function<void()> func = std::bind(&INotificationDialog::moveDown, m_implementation);
-        std::shared_future<void> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
+        std::shared_future<void> f = core::thread::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
 }
@@ -259,7 +259,7 @@ void NotificationDialog::moveDown()
 
 void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -275,7 +275,7 @@ void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 
 void NotificationDialog::setClosedCallback(std::function<void()> f)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {

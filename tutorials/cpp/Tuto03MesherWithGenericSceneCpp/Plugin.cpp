@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "Plugin.hpp"
 
 #include <core/com/Slot.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -534,9 +533,8 @@ void Plugin::initialize()
     *              connect the services
     ****************************************************************************************/
 
-    auto worker         = core::thread::Worker::New();
-    auto workerRegistry = core::thread::ActiveWorkers::getDefault();
-    workerRegistry->addWorker("Tuto09", worker);
+    auto worker = core::thread::Worker::New();
+    core::thread::addWorker("Tuto09", worker);
 
     auto proxy = service::registry::Proxy::getDefault();
 
@@ -622,6 +620,8 @@ void Plugin::uninitialize() noexcept
 
     m_appManager->destroy();
     m_appManager.reset();
+
+    core::thread::removeWorker("Tuto09");
 }
 
 //------------------------------------------------------------------------------

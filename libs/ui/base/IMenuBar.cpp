@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "ui/base/IMenuBar.hpp"
 
 #include <core/base.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
@@ -83,7 +82,7 @@ void IMenuBar::create()
     ui::base::container::fwMenuBar::sptr menuBar = m_registry->getParent();
     SIGHT_ASSERT("Parent menuBar is unknown.", menuBar);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -100,7 +99,7 @@ void IMenuBar::destroy()
 {
     m_registry->unmanage();
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -117,7 +116,7 @@ void IMenuBar::menuServiceStopping(std::string menuSrvSID)
 
     if(m_hideMenus)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -127,7 +126,7 @@ void IMenuBar::menuServiceStopping(std::string menuSrvSID)
     }
     else
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -145,7 +144,7 @@ void IMenuBar::menuServiceStarting(std::string menuSrvSID)
 
     if(m_hideMenus)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -155,7 +154,7 @@ void IMenuBar::menuServiceStarting(std::string menuSrvSID)
     }
     else
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {

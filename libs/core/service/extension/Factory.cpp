@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "service/extension/Factory.hpp"
-
-#include "core/thread/ActiveWorkers.hpp"
 
 #include "service/IService.hpp"
 
@@ -217,7 +215,7 @@ IService::sptr Factory::create(const std::string& _srvImpl) const
     // Setup worker here, this is a better place than the constructor
     // because here, the service slots are also set up
     // This allows to setup
-    service->setWorker(core::thread::ActiveWorkers::getDefaultWorker());
+    service->setWorker(core::thread::getDefaultWorker());
 
     return service;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,9 +117,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
     srv->setInOut(seriesDB, "data");
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
+    srv->start().wait();
+    srv->update().wait();
+    srv->stop().wait();
     service::remove(srv);
 
     // Data expected

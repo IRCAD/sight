@@ -25,7 +25,6 @@
 #include "ui/qt/util/FuncSlot.hpp"
 
 #include <core/runtime/Runtime.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/Os.hpp>
@@ -125,7 +124,7 @@ core::thread::Worker::sptr getQtWorker(
     SPTR(WorkerQt) workerQt = std::make_shared<WorkerQt>();
     workerQt->init(argc, argv);
     workerQt->setApp(callback(argc, argv), name, version);
-    return std::move(workerQt);
+    return workerQt;
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +239,7 @@ void WorkerQt::init(int& argc, char** argv)
 void WorkerQt::setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version)
 {
     m_app = app;
-    m_app.get()->setOrganizationName("IRCAD-IHU");
+    m_app.get()->setOrganizationName("IRCAD");
     m_app.get()->setOrganizationDomain("https://www.ircad.fr/");
     m_app.get()->setApplicationName(QString::fromStdString(name));
     m_app.get()->setApplicationVersion(QString::fromStdString(version));

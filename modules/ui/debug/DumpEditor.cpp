@@ -29,7 +29,6 @@
 #include <core/memory/ByteSize.hpp>
 #include <core/memory/IPolicy.hpp>
 #include <core/memory/tools/MemoryMonitorTools.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/tools/fwID.hpp>
 #include <core/tools/Stringizer.hpp>
 
@@ -532,8 +531,7 @@ void DumpEditor::starting()
     if(buffManager)
     {
         m_updateSlot = core::com::newSlot(&DumpEditor::onUpdate, this);
-        core::thread::ActiveWorkers::sptr workers = core::thread::ActiveWorkers::getDefault();
-        m_updateSlot->setWorker(workers->getWorker(core::thread::ActiveWorkers::s_DEFAULT_WORKER));
+        m_updateSlot->setWorker(core::thread::getDefaultWorker());
         m_connection = buffManager->getUpdatedSignal()->connect(m_updateSlot);
     }
 
