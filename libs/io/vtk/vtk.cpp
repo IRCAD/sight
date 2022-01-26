@@ -131,8 +131,6 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")},
     {VTK_FLOAT, core::tools::Type::create("float")},
     {VTK_DOUBLE, core::tools::Type::create("double")},
-    {VTK___INT64, core::tools::Type::create("int64")},
-    {VTK_UNSIGNED___INT64, core::tools::Type::create("uint64")},
     {VTK_LONG_LONG, core::tools::Type::create("int64")},
     {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")},
 
