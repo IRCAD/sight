@@ -54,7 +54,7 @@ lint:sheldon:
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/.build/sight-data
     # Launch tests
-    - ctest --timeout 480 --output-on-failure -O ctest.log -j4
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j4 --output-junit junit.xml
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -86,6 +86,8 @@ lint:sheldon:
       - .build/packages/*.tar.zst
       - .build/coverage
       - .build/bin/*.core
+    reports:
+      junit: .build/junit.xml
 
 build:linux-21.10-debug-gcc:
   extends: .linux_build
@@ -213,7 +215,7 @@ deploy_manual:apps-linux-release:
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
     # Launch tests
-    - ctest --timeout 480 --output-on-failure -O ctest.log -j6
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
@@ -234,6 +236,8 @@ deploy_manual:apps-linux-release:
       - build/fwTest.log
       - build/packages/*.exe
       - build/packages/sight-*.zip
+    reports:
+      junit: build/junit.xml
 
 build:windows-debug:
   extends: .windows_build
