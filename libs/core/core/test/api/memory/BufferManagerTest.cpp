@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -204,6 +204,75 @@ void BufferManagerTest::memoryInfoTest()
         bo2->destroy();
     }
     SIGHT_INFO(manager->toString().get());
+}
+
+//------------------------------------------------------------------------------
+
+void BufferManagerTest::swapTest()
+{
+    core::memory::BufferManager::sptr manager     = core::memory::BufferManager::getDefault();
+    core::memory::BufferObject::sptr bo1          = core::memory::BufferObject::New();
+    core::memory::BufferObject::sptr bo2          = core::memory::BufferObject::New();
+    core::memory::BufferAllocationPolicy::sptr p1 = core::memory::BufferMallocPolicy::New();
+    core::memory::BufferAllocationPolicy::sptr p2 = core::memory::BufferNewPolicy::New();
+    bo1->allocate(sizeof(int), p1);
+    bo2->allocate(sizeof(long), p2);
+    void* b1 = bo1->lock().getBuffer();
+    void* b2 = bo2->lock().getBuffer();
+    *static_cast<int*>(b1)  = 1;
+    *static_cast<long*>(b2) = 2l;
+    bo1->swap(bo2);
+    core::memory::BufferManager::BufferInfoMapType map = manager->getBufferInfos().get();
+    b1 = bo1->lock().getBuffer();
+    b2 = bo2->lock().getBuffer();
+    CPPUNIT_ASSERT_EQUAL(2l, *static_cast<long*>(b1));
+    CPPUNIT_ASSERT_EQUAL(p2, map[bo1->getBufferPointer()].bufferPolicy);
+    CPPUNIT_ASSERT_EQUAL(sizeof(long), map[bo1->getBufferPointer()].size);
+    CPPUNIT_ASSERT_EQUAL(1, *static_cast<int*>(b2));
+    CPPUNIT_ASSERT_EQUAL(p1, map[bo2->getBufferPointer()].bufferPolicy);
+    CPPUNIT_ASSERT_EQUAL(sizeof(int), map[bo2->getBufferPointer()].size);
+    bo1->destroy();
+    bo2->destroy();
+}
+
+//------------------------------------------------------------------------------
+
+void BufferManagerTest::dumpRestoreTest()
+{
+    core::memory::BufferManager::sptr manager        = core::memory::BufferManager::getDefault();
+    core::memory::BufferObject::sptr bo              = core::memory::BufferObject::New();
+    core::memory::BufferManager::BufferStats stats   = manager->getBufferStats().get();
+    const core::memory::BufferManager::SizeType zero = 0;
+    CPPUNIT_ASSERT_EQUAL(zero, stats.totalManaged);
+    CPPUNIT_ASSERT_EQUAL(zero, stats.totalDumped);
+
+    bo->allocate(sizeof(char));
+    stats = manager->getBufferStats().get();
+    CPPUNIT_ASSERT_EQUAL(sizeof(char), stats.totalManaged);
+    CPPUNIT_ASSERT_EQUAL(zero, stats.totalDumped);
+    *static_cast<char*>(bo->lock().getBuffer()) = '!';
+
+    manager->dumpBuffer(bo->getBufferPointer()).wait();
+    stats = manager->getBufferStats().get();
+    CPPUNIT_ASSERT_EQUAL(sizeof(char), stats.totalManaged);
+    CPPUNIT_ASSERT_EQUAL(sizeof(char), stats.totalDumped);
+
+    core::memory::BufferManager::BufferInfoMapType map = manager->getBufferInfos().get();
+    std::ifstream fs(map[bo->getBufferPointer()].fsFile.string());
+    char x;
+    fs >> x;
+    CPPUNIT_ASSERT_EQUAL('!', x);
+
+    manager->restoreBuffer(bo->getBufferPointer()).wait();
+    stats = manager->getBufferStats().get();
+    CPPUNIT_ASSERT_EQUAL(sizeof(char), stats.totalManaged);
+    CPPUNIT_ASSERT_EQUAL(zero, stats.totalDumped);
+    CPPUNIT_ASSERT_EQUAL('!', *static_cast<char*>(bo->lock().getBuffer()));
+
+    bo->destroy();
+    stats = manager->getBufferStats().get();
+    CPPUNIT_ASSERT_EQUAL(zero, stats.totalManaged);
+    CPPUNIT_ASSERT_EQUAL(zero, stats.totalDumped);
 }
 
 } // namespace ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,8 @@ class BufferManagerTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(BufferManagerTest);
 CPPUNIT_TEST(allocateTest);
 CPPUNIT_TEST(memoryInfoTest);
+CPPUNIT_TEST(swapTest);
+CPPUNIT_TEST(dumpRestoreTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +47,8 @@ public:
 
     void allocateTest();
     void memoryInfoTest();
+    void swapTest();
+    void dumpRestoreTest();
 };
 
 } // namespace ut
