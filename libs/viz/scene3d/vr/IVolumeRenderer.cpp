@@ -34,67 +34,97 @@ namespace vr
 
 //-----------------------------------------------------------------------------
 
-const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
-    {IVolumeRenderer::Z_POSITIVE, {{3, 4, 1, 0}}},
-    {IVolumeRenderer::Z_NEGATIVE, {{2, 5, 7, 6}}},
-    {IVolumeRenderer::Y_POSITIVE, {{2, 6, 3, 0}}},
-    {IVolumeRenderer::Y_NEGATIVE, {{1, 4, 7, 5}}},
-    {IVolumeRenderer::X_POSITIVE, {{0, 1, 5, 2}}},
-    {IVolumeRenderer::X_NEGATIVE, {{6, 7, 4, 3}}}
-};
-
-/// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
-static const Ogre::Vector3 s_imagePositions[8] = {
-    Ogre::Vector3(1, 1, 1),
-    Ogre::Vector3(1, 0, 1),
-    Ogre::Vector3(1, 1, 0),
-    Ogre::Vector3(0, 1, 1),
-    Ogre::Vector3(0, 0, 1),
-    Ogre::Vector3(1, 0, 0),
-    Ogre::Vector3(0, 1, 0),
-    Ogre::Vector3(0, 0, 0)
-};
-
-//-----------------------------------------------------------------------------
-
-const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = {{
-    {0, 1}, {1, 4}, {4, 3}, {3, 0},
-    {0, 2}, {1, 5}, {4, 7}, {3, 6},
-    {2, 5}, {5, 7}, {7, 6}, {6, 2}
-}
-};
-
-//-----------------------------------------------------------------------------
-
 IVolumeRenderer::IVolumeRenderer(
-    std::string parentId,
+    const std::string& parentId,
     Ogre::SceneManager* const sceneManager,
     Ogre::SceneNode* const volumeNode,
-    Ogre::TexturePtr imageTexture,
-    PreIntegrationTable& preintegrationTable
+    std::optional<Ogre::TexturePtr> imageTexture,
+    bool with_buffer,
+    bool preintegration
 ) :
     m_parentId(parentId),
     m_sceneManager(sceneManager),
-    m_3DOgreTexture(imageTexture),
-    m_preIntegrationTable(preintegrationTable),
-    m_volumeSceneNode(volumeNode),
-    m_nbSlices(512),
-    m_preIntegratedRendering(false)
+    m_3DOgreTexture(imageTexture.value_or(Ogre::TextureManager::getSingleton().create(
+                                              m_parentId + "_Texture",
+                                              sight::viz::scene3d::RESOURCE_GROUP,
+                                              true
+                                          ))),
+    m_with_buffer(with_buffer),
+    m_preintegration(preintegration),
+    m_volumeSceneNode(volumeNode)
 {
     m_camera = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
 
-    std::copy(s_imagePositions, s_imagePositions + 8, m_clippedImagePositions);
+    m_clippedImagePositions = s_imagePositions;
+
+    //Transfer function and preintegration table
+    {
+        m_gpuVolumeTF->createTexture(m_parentId + "_VolumeGpuTF");
+        m_preIntegrationTable.createTexture(m_parentId);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IVolumeRenderer::update()
+{
+    this->setSampling(m_nbSlices);
+    m_update_pending = false;
 }
 
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::~IVolumeRenderer()
 {
+    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
+    m_3DOgreTexture.reset();
+
+    if(m_bufferingTexture)
+    {
+        Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
+        m_bufferingTexture.reset();
+    }
+
+    m_preIntegrationTable.removeTexture();
+}
+
+//------------------------------------------------------------------------------
+
+void IVolumeRenderer::loadImage(const std::shared_ptr<sight::data::Image>& source)
+{
+    SIGHT_ASSERT("source cannot be nullptr", source != nullptr);
+
+    if(m_with_buffer)
+    {
+        if(m_bufferingTexture == nullptr)
+        {
+            m_bufferingTexture = Ogre::TextureManager::getSingleton().create(
+                m_parentId + "_Texture2",
+                sight::viz::scene3d::RESOURCE_GROUP,
+                true
+            );
+        }
+
+        Utils::convertImageForNegato(
+            m_bufferingTexture.get(),
+            source
+        );
+
+        // Swap texture pointers.
+        {
+            std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+            std::swap(m_3DOgreTexture, m_bufferingTexture);
+        }
+    }
+    else
+    {
+        sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), source);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::updateVolumeTF()
+void IVolumeRenderer::updateVolumeTF(std::shared_ptr<data::TransferFunction>&)
 {
 }
 
@@ -128,7 +158,7 @@ void IVolumeRenderer::scaleTranslateCube(
     const data::Image::Origin& origin
 )
 {
-    /// Scale the volume based on the image's spacing and move it to the image origin.
+    // Scale the volume based on the image's spacing and move it to the image origin.
     m_volumeSceneNode->resetToInitialState();
 
     const double width  = static_cast<double>(m_3DOgreTexture->getWidth()) * spacing[0];
@@ -151,37 +181,56 @@ void IVolumeRenderer::scaleTranslateCube(
 
 //-----------------------------------------------------------------------------
 
-Ogre::Plane IVolumeRenderer::getCameraPlane() const
+void IVolumeRenderer::updateSampleDistance()
 {
-    return Ogre::Plane(
+    //Update the plane with the current position and direction
+    m_cameraInfo.plane = Ogre::Plane(
         m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true).normalisedCopy(),
         m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition())
     );
-}
 
-//-----------------------------------------------------------------------------
+    //Compares the distances to the camera plane to get the cube's closest and furthest vertex to the camera
+    const auto comp = [this](const Ogre::Vector3& v1, const Ogre::Vector3& v2)
+                      {return m_cameraInfo.plane.getDistance(v1) < m_cameraInfo.plane.getDistance(v2);};
 
-unsigned IVolumeRenderer::computeSampleDistance(const Ogre::Plane& cameraPlane)
-{
-    // get the cube's closest and furthest vertex to the camera
-    const auto comp = [&cameraPlane](const Ogre::Vector3& v1, const Ogre::Vector3& v2)
-                      {return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2);};
+    //Closest vertex
+    {
+        const auto iterator = std::min_element(
+            m_clippedImagePositions.begin(),
+            m_clippedImagePositions.end(),
+            comp
+        );
+        const std::size_t index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
+        m_cameraInfo.closest       = *iterator;
+        m_cameraInfo.closest_index = index;
+    }
 
-    const auto closestVtxIterator = std::min_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
-    const auto closestVtxIndex    = std::distance(m_clippedImagePositions, closestVtxIterator);
+    //Furthest vertex
+    {
+        const auto iterator = std::max_element(
+            m_clippedImagePositions.begin(),
+            m_clippedImagePositions.end(),
+            comp
+        );
+        const std::size_t index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
 
-    const Ogre::Vector3 furthestVtx = *std::max_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
-    const Ogre::Vector3 closestVtx  = *closestVtxIterator;
+        m_cameraInfo.furthest       = *iterator;
+        m_cameraInfo.furthest_index = index;
+    }
 
-    // get distance between slices
-    const float closestVtxDistance  = cameraPlane.getDistance(closestVtx);
-    const float furthestVtxDistance = cameraPlane.getDistance(furthestVtx);
+    //The total distance between the vertices
+    const float total_distance =
+        std::abs(
+            m_cameraInfo.plane.getDistance(m_cameraInfo.closest)
+            - m_cameraInfo.plane.getDistance(m_cameraInfo.furthest)
+        );
 
-    const float firstToLastSliceDistance = std::abs(closestVtxDistance - furthestVtxDistance);
+    //Then simply uniformly divide it according to the total number of slices
+    m_sampleDistance = total_distance / m_nbSlices;
 
-    m_sampleDistance = firstToLastSliceDistance / m_nbSlices;
-
-    return static_cast<unsigned>(closestVtxIndex);
+    //Validation
+    SIGHT_ASSERT("Sampled distance is NaN.", !std::isnan(m_sampleDistance)); //NaN
+    SIGHT_ASSERT("Sample distance is denormalized.", m_sampleDistance > std::numeric_limits<float>::min());
 }
 
 //-----------------------------------------------------------------------------

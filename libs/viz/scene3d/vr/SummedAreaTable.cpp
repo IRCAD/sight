@@ -47,9 +47,8 @@ namespace sight::viz::scene3d
 namespace vr
 {
 
-//-----------------------------------------------------------------------------
-
-class SummedAreaTableInitCompositorListener : public Ogre::CompositorInstance::Listener
+/// Listener dedicated to watching the initialisation.
+class SummedAreaTable::SummedAreaTableInitCompositorListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
@@ -62,11 +61,18 @@ public:
 
     virtual void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
     {
-        Ogre::Pass* satInitPass = mat->getTechnique(0)->getPass(0);
+        if(mat->getNumTechniques() > 0)
+        {
+            Ogre::Technique* const technique = mat->getTechnique(0);
 
-        Ogre::GpuProgramParametersSharedPtr initPassParams = satInitPass->getFragmentProgramParameters();
+            if(technique->getNumPasses() > 0)
+            {
+                Ogre::Pass* const satInitPass                      = technique->getPass(0);
+                Ogre::GpuProgramParametersSharedPtr initPassParams = satInitPass->getFragmentProgramParameters();
 
-        initPassParams->setNamedConstant("u_sliceDepth", m_currentSliceDepth);
+                initPassParams->setNamedConstant("u_sliceDepth", m_currentSliceDepth);
+            }
+        }
     }
 
 private:
@@ -74,9 +80,8 @@ private:
     float& m_currentSliceDepth;
 };
 
-//-----------------------------------------------------------------------------
-
-class SummedAreaTableCompositorListener : public Ogre::CompositorInstance::Listener
+/// Listener dedicated to the compositor.
+class SummedAreaTable::SummedAreaTableCompositorListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
@@ -91,13 +96,27 @@ public:
 
     virtual void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
     {
-        Ogre::Pass* satPass = mat->getTechnique(0)->getPass(0);
+        if(mat->getNumTechniques() > 0)
+        {
+            Ogre::Technique* const technique = mat->getTechnique(0);
 
-        Ogre::GpuProgramParametersSharedPtr satPassParams = satPass->getFragmentProgramParameters();
+            if(technique != nullptr)
+            {
+                if(technique->getNumPasses() > 0)
+                {
+                    Ogre::Pass* const satPass = technique->getPass(0);
 
-        satPassParams->setNamedConstant("u_readOffset", m_readOffset);
-        satPassParams->setNamedConstant("u_passOrientation", m_passOrientation);
-        satPassParams->setNamedConstant("u_sliceIndex", static_cast<int>(m_currentSliceIndex));
+                    if(satPass != nullptr)
+                    {
+                        Ogre::GpuProgramParametersSharedPtr satPassParams = satPass->getFragmentProgramParameters();
+
+                        satPassParams->setNamedConstant("u_readOffset", m_readOffset);
+                        satPassParams->setNamedConstant("u_passOrientation", m_passOrientation);
+                        satPassParams->setNamedConstant("u_sliceIndex", static_cast<int>(m_currentSliceIndex));
+                    }
+                }
+            }
+        }
     }
 
 private:
@@ -130,37 +149,60 @@ SummedAreaTable::~SummedAreaTable()
 {
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 
-    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
-    textureManager.remove(m_parentId + TARGET_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    if(m_sourceBuffer != nullptr)
+    {
+        textureManager.remove(m_parentId + SOURCE_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    }
+
+    if(m_targetBuffer != nullptr)
+    {
+        textureManager.remove(m_parentId + TARGET_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    }
+
+    if(m_dummyCamera != nullptr)
+    {
+        m_sceneManager->destroyCamera(m_dummyCamera);
+    }
+
+    //Members of m_listeners are freed by the manager upon desctruction. Freeing them here causes a double-free.
 }
 
 //-----------------------------------------------------------------------------
 
 void SummedAreaTable::computeParallel(
     Ogre::TexturePtr _imgTexture,
-    const viz::scene3d::TransferFunction::sptr& _gpuTf,
+    const TransferFunction::sptr& _gpuTf,
     float _sampleDistance
 )
 {
-    if(!m_sourceBuffer)
+    SIGHT_ASSERT("imgTexture cannot be nullptr", _imgTexture != nullptr);
+    SIGHT_ASSERT("tf cannot be nullptr", _gpuTf != nullptr);
+
+    this->updateSatFromTexture(_imgTexture);
+
+    //Material (init)
     {
-        this->updateSatFromTexture(_imgTexture);
+        Ogre::MaterialPtr initPassMtl =
+            Ogre::MaterialManager::getSingleton().getByName("SummedAreaTableInit", RESOURCE_GROUP);
+
+        if(initPassMtl->getNumTechniques() > 0)
+        {
+            Ogre::Technique* const technique = initPassMtl->getTechnique(0);
+
+            if(technique->getNumPasses() > 0)
+            {
+                Ogre::Pass* const satInitPass            = technique->getPass(0);
+                Ogre::TextureUnitState* const tex3DState = satInitPass->getTextureUnitState("image");
+                SIGHT_ASSERT("'image' texture unit is not found", tex3DState);
+                tex3DState->setTexture(_imgTexture);
+
+                auto fpParams = satInitPass->getFragmentProgramParameters();
+                fpParams->setNamedConstant("u_sampleDistance", _sampleDistance);
+
+                _gpuTf->bind(satInitPass, "transferFunction", fpParams);
+            }
+        }
     }
-
-    Ogre::MaterialPtr initPassMtl = Ogre::MaterialManager::getSingleton().getByName(
-        "SummedAreaTableInit",
-        RESOURCE_GROUP
-    );
-    Ogre::Pass* satInitPass = initPassMtl->getTechnique(0)->getPass(0);
-
-    Ogre::TextureUnitState* tex3DState = satInitPass->getTextureUnitState("image");
-    SIGHT_ASSERT("'image' texture unit is not found", tex3DState);
-    tex3DState->setTexture(_imgTexture);
-
-    auto fpParams = satInitPass->getFragmentProgramParameters();
-    fpParams->setNamedConstant("u_sampleDistance", _sampleDistance);
-
-    _gpuTf->bind(satInitPass, "transferFunction", fpParams);
 
     Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
     const std::size_t depth                    = m_satSize[2];
@@ -168,69 +210,116 @@ void SummedAreaTable::computeParallel(
     // Copy our original image to the source buffer.
     for(std::size_t sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
     {
-        Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
-
-        compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", true);
-
+        Ogre::RenderTexture* const target = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
         m_currentSliceDepth = static_cast<float>(sliceIndex) / static_cast<float>(depth);
 
-        m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->update(false);
+        if(target->getNumViewports() > 0)
+        {
+            Ogre::Viewport* const vp = target->getViewport(0);
 
-        compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", false);
+            compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", true);
+            target->update(false);
+            compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", false);
+        }
     }
 
     // Enable SAT compositor.
     for(std::size_t sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
     {
-        Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
+        //Source
+        {
+            Ogre::RenderTexture* const target = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
 
-        compositorManager.setCompositorEnabled(vp, "SummedAreaTable", true);
+            if(target->getNumViewports() > 0)
+            {
+                Ogre::Viewport* const vp = target->getViewport(0);
 
-        vp = m_targetBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
+                compositorManager.setCompositorEnabled(vp, "SummedAreaTable", true);
+            }
+        }
 
-        compositorManager.setCompositorEnabled(vp, "SummedAreaTable", true);
+        //Target
+        {
+            Ogre::RenderTexture* const target = m_targetBuffer->getBuffer()->getRenderTarget(sliceIndex);
+
+            if(target->getNumViewports() > 0)
+            {
+                Ogre::Viewport* const vp = target->getViewport(0);
+                compositorManager.setCompositorEnabled(vp, "SummedAreaTable", true);
+            }
+        }
     }
 
-    Ogre::MaterialPtr satMtl = Ogre::MaterialManager::getSingleton().getByName(
-        "SummedAreaTable",
-        RESOURCE_GROUP
-    );
-    Ogre::Pass* satPass                 = satMtl->getTechnique(0)->getPass(0);
-    Ogre::TextureUnitState* srcImgState = satPass->getTextureUnitState("source");
-
-    for(m_passOrientation = 0 ; m_passOrientation < 3 ; ++m_passOrientation)
+    //Material (table)
     {
-        const int dim      = static_cast<int>(m_satSize[static_cast<std::size_t>(m_passOrientation)]);
-        const int nbPasses = static_cast<int>(std::ceil(std::log(dim) / std::log(m_nbTextReads)));
+        Ogre::MaterialPtr satMtl =
+            Ogre::MaterialManager::getSingleton().getByName("SummedAreaTable", RESOURCE_GROUP);
 
-        m_readOffset = 1;
-
-        for(int passIndex = 0 ; passIndex < nbPasses ; ++passIndex)
+        if(satMtl->getNumTechniques() > 0)
         {
-            srcImgState->setTexture(m_sourceBuffer);
-
-            for(m_sliceIndex = 0 ; m_sliceIndex < depth ; ++m_sliceIndex)
+            Ogre::Technique* const technique = satMtl->getTechnique(0);
+            if(technique->getNumPasses() > 0)
             {
-                m_targetBuffer->getBuffer()->getRenderTarget(static_cast<std::size_t>(m_sliceIndex))->update(false);
+                Ogre::Pass* const satPass                 = technique->getPass(0);
+                Ogre::TextureUnitState* const srcImgState = satPass->getTextureUnitState("source");
+
+                if(srcImgState != nullptr)
+                {
+                    for(m_passOrientation = 0 ; m_passOrientation < 3 ; ++m_passOrientation)
+                    {
+                        const int dim      = static_cast<int>(m_satSize[static_cast<std::size_t>(m_passOrientation)]);
+                        const int nbPasses = static_cast<int>(std::ceil(std::log(dim) / std::log(s_nbTextReads)));
+
+                        m_readOffset = 1;
+
+                        for(int passIndex = 0 ; passIndex < nbPasses ; ++passIndex)
+                        {
+                            srcImgState->setTexture(m_sourceBuffer);
+
+                            for(m_sliceIndex = 0 ; m_sliceIndex < depth ; ++m_sliceIndex)
+                            {
+                                m_targetBuffer->getBuffer()->getRenderTarget(static_cast<std::size_t>(m_sliceIndex))->
+                                update(
+                                    false
+                                );
+                            }
+
+                            m_readOffset *= s_nbTextReads;
+
+                            // Ping-pong swap.
+                            std::swap(m_sourceBuffer, m_targetBuffer);
+                        }
+                    }
+                }
             }
-
-            m_readOffset *= m_nbTextReads;
-
-            // Ping-pong swap.
-            std::swap(m_sourceBuffer, m_targetBuffer);
         }
     }
 
     // Disable SAT compositor.
     for(std::size_t sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
     {
-        Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
+        //Source
+        {
+            Ogre::RenderTexture* const target = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
 
-        compositorManager.setCompositorEnabled(vp, "SummedAreaTable", false);
+            if(target->getNumViewports() > 0)
+            {
+                Ogre::Viewport* const vp = target->getViewport(0);
 
-        vp = m_targetBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
+                compositorManager.setCompositorEnabled(vp, "SummedAreaTable", false);
+            }
+        }
 
-        compositorManager.setCompositorEnabled(vp, "SummedAreaTable", false);
+        //Target
+        {
+            Ogre::RenderTexture* const target = m_targetBuffer->getBuffer()->getRenderTarget(sliceIndex);
+
+            if(target->getNumViewports() > 0)
+            {
+                Ogre::Viewport* const vp = target->getViewport(0);
+                compositorManager.setCompositorEnabled(vp, "SummedAreaTable", false);
+            }
+        }
     }
 }
 
@@ -238,6 +327,8 @@ void SummedAreaTable::computeParallel(
 
 void SummedAreaTable::updateSatFromTexture(Ogre::TexturePtr _imgTexture)
 {
+    SIGHT_ASSERT("texture cannot be nullptr", _imgTexture != nullptr);
+
     m_currentImageSize =
     {
         static_cast<std::size_t>(_imgTexture->getWidth()),
@@ -251,7 +342,7 @@ void SummedAreaTable::updateSatFromTexture(Ogre::TexturePtr _imgTexture)
 
     m_satSize = {width, height, depth};
 
-    this->initializeSAT();
+    this->updateBuffers();
 }
 
 //-----------------------------------------------------------------------------
@@ -266,93 +357,165 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 
     m_satSize = {width, height, depth};
 
-    this->initializeSAT();
+    this->updateBuffers();
 }
 
 //-----------------------------------------------------------------------------
 
-void SummedAreaTable::initializeSAT()
+void SummedAreaTable::updateBuffers()
 {
-    Ogre::uint width  = static_cast<Ogre::uint>(m_satSize[0]);
-    Ogre::uint height = static_cast<Ogre::uint>(m_satSize[1]);
-    Ogre::uint depth  = static_cast<Ogre::uint>(m_satSize[2]);
+    const Ogre::uint width  = static_cast<Ogre::uint>(m_satSize[0]);
+    const Ogre::uint height = static_cast<Ogre::uint>(m_satSize[1]);
+    const Ogre::uint depth  = static_cast<Ogre::uint>(m_satSize[2]);
 
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 
     // Removes the ping pong buffers if they have to be resized
-    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
-    textureManager.remove(m_parentId + TARGET_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    if(m_sourceBuffer != nullptr)
+    {
+        textureManager.remove(m_parentId + SOURCE_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    }
 
-    m_sourceBuffer = textureManager.createManual(
-        m_parentId + SOURCE_BUFFER_NAME,
-        viz::scene3d::RESOURCE_GROUP,
-        Ogre::TEX_TYPE_3D,
-        width,
-        height,
-        depth,
-        0,
-        Ogre::PF_FLOAT32_RGBA,
-        Ogre::TU_RENDERTARGET
-    );
+    if(m_targetBuffer != nullptr)
+    {
+        textureManager.remove(m_parentId + TARGET_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+    }
 
-    m_targetBuffer = textureManager.createManual(
-        m_parentId + TARGET_BUFFER_NAME,
-        viz::scene3d::RESOURCE_GROUP,
-        Ogre::TEX_TYPE_3D,
-        width,
-        height,
-        depth,
-        0,
-        Ogre::PF_FLOAT32_RGBA,
-        Ogre::TU_RENDERTARGET
-    );
-
-    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
-
-    SummedAreaTableInitCompositorListener* satInitListener =
-        new SummedAreaTableInitCompositorListener(m_currentSliceDepth);
-
-    SummedAreaTableCompositorListener* satListener =
-        new SummedAreaTableCompositorListener(m_readOffset, m_passOrientation, m_sliceIndex);
-
-    if(!m_dummyCamera)
+    //Create the camera if this is the first call
+    if(m_dummyCamera == nullptr)
     {
         m_dummyCamera = m_sceneManager->createCamera(m_parentId + "_SummedAreaTable_DummyCamera");
     }
 
-    for(std::size_t sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
+    //Create the buffers with the update information
     {
-        // Init source buffer
-        Ogre::RenderTarget* renderTarget = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
-        Ogre::Viewport* vp               = renderTarget->addViewport(m_dummyCamera);
-
-        vp->setOverlaysEnabled(false);
-
-        compositorManager.addCompositor(vp, "SummedAreaTableInit");
-        compositorManager.addCompositor(vp, "SummedAreaTable");
-
-        Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
-            "SummedAreaTableInit"
+        m_sourceBuffer = textureManager.createManual(
+            m_parentId + SOURCE_BUFFER_NAME,
+            viz::scene3d::RESOURCE_GROUP,
+            Ogre::TEX_TYPE_3D,
+            width,
+            height,
+            depth,
+            0, //Mipmap
+            Ogre::PF_FLOAT32_RGBA,
+            Ogre::TU_RENDERTARGET
         );
-        compInstance->addListener(satInitListener);
 
-        compInstance = compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTable");
-        compInstance->addListener(satListener);
+        m_targetBuffer = textureManager.createManual(
+            m_parentId + TARGET_BUFFER_NAME,
+            viz::scene3d::RESOURCE_GROUP,
+            Ogre::TEX_TYPE_3D,
+            width,
+            height,
+            depth,
+            0, //Mipmap
+            Ogre::PF_FLOAT32_RGBA,
+            Ogre::TU_RENDERTARGET
+        );
+    }
 
-        // Init target buffer
-        renderTarget = m_targetBuffer->getBuffer()->getRenderTarget(sliceIndex);
-        vp           = renderTarget->addViewport(m_dummyCamera);
+    //Update the listeners
+    {
+        Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
 
-        vp->setOverlaysEnabled(false);
+        //Listeners updated with the current parameters
+        SummedAreaTableInitCompositorListener* const new_initlistener =
+            new SummedAreaTableInitCompositorListener(m_currentSliceDepth);
 
-        compositorManager.addCompositor(vp, "SummedAreaTableInit");
-        compositorManager.addCompositor(vp, "SummedAreaTable");
+        SummedAreaTableCompositorListener* const new_tablelistener =
+            new SummedAreaTableCompositorListener(
+                m_readOffset,
+                m_passOrientation,
+                m_sliceIndex
+            );
 
-        compInstance = compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTableInit");
-        compInstance->addListener(satInitListener);
+        for(std::size_t sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
+        {
+            //Source buffer
+            {
+                Ogre::RenderTarget* const renderTarget = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
+                Ogre::Viewport* const vp               = renderTarget->addViewport(m_dummyCamera);
 
-        compInstance = compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTable");
-        compInstance->addListener(satListener);
+                vp->setOverlaysEnabled(false);
+
+                compositorManager.addCompositor(vp, "SummedAreaTableInit");
+                compositorManager.addCompositor(vp, "SummedAreaTable");
+
+                //Init listener
+                {
+                    Ogre::CompositorInstance* const compInstance =
+                        compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTableInit");
+
+                    //Remove the old listener
+                    if(m_listeners.init != nullptr)
+                    {
+                        compInstance->removeListener(m_listeners.init);
+                    }
+
+                    //Replace it by the new
+                    compInstance->addListener(new_initlistener);
+                }
+
+                //Table listener
+                {
+                    Ogre::CompositorInstance* const compInstance =
+                        compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTable");
+
+                    //Remove the old listener
+                    if(m_listeners.table != nullptr)
+                    {
+                        compInstance->removeListener(m_listeners.table);
+                    }
+
+                    //Replace it by the new
+                    compInstance->addListener(new_tablelistener);
+                }
+            }
+
+            //Target buffer
+            {
+                Ogre::RenderTarget* const renderTarget = m_targetBuffer->getBuffer()->getRenderTarget(sliceIndex);
+                Ogre::Viewport* const vp               = renderTarget->addViewport(m_dummyCamera);
+
+                vp->setOverlaysEnabled(false);
+
+                compositorManager.addCompositor(vp, "SummedAreaTableInit");
+                compositorManager.addCompositor(vp, "SummedAreaTable");
+
+                //Init listener
+                {
+                    Ogre::CompositorInstance* const compInstance =
+                        compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTableInit");
+
+                    //Remove the old listener
+                    if(m_listeners.init != nullptr)
+                    {
+                        compInstance->removeListener(m_listeners.init);
+                    }
+
+                    compInstance->addListener(new_initlistener);
+                }
+
+                //Table listener
+                {
+                    Ogre::CompositorInstance* const compInstance =
+                        compositorManager.getCompositorChain(vp)->getCompositor("SummedAreaTable");
+
+                    //Remove the old listener
+                    if(m_listeners.table != nullptr)
+                    {
+                        compInstance->removeListener(m_listeners.table);
+                    }
+
+                    //Replace it by the new
+                    compInstance->addListener(new_tablelistener);
+                }
+            }
+        }
+
+        //Update the pointers
+        m_listeners.init  = new_initlistener;
+        m_listeners.table = new_tablelistener;
     }
 }
 
@@ -360,11 +523,38 @@ void SummedAreaTable::initializeSAT()
 
 void SummedAreaTable::computeSequential(data::Image::sptr _image, data::TransferFunction::sptr _tf)
 {
-    glm::vec4* satBuffer = new glm::vec4[m_satSize[0] * m_satSize[1] * m_satSize[2]];
+    std::vector<glm::vec4> buffer(m_satSize[0] * m_satSize[1] * m_satSize[2]);
+
+    //Convenience wrapper to get the value corresponding to a certain voxel
+    static const auto value_at =
+        [this](const std::vector<glm::vec4>& satBuffer, int x, int y, int z)
+        {
+            if(x < 0 || y < 0 || z < 0)
+            {
+                return glm::vec4(0.f);
+            }
+
+            const std::size_t index = static_cast<std::size_t>(x) + m_satSize[0]
+                                      * static_cast<std::size_t>(y) + m_satSize[0]
+                                      * m_satSize[1] * static_cast<std::size_t>(z);
+
+            //No range check here. It is assumed to be correct.
+            return satBuffer[index];
+        };
+
+    //Convenience wrapper to set the value corresponding to a certain voxel
+    static const auto set_value =
+        [this](std::vector<glm::vec4>& satBuffer, const glm::vec4& value, int x, int y, int z)
+        {
+            const std::size_t index = static_cast<std::size_t>(x) + m_satSize[0]
+                                      * static_cast<std::size_t>(y) + m_satSize[0]
+                                      * m_satSize[1] * static_cast<std::size_t>(z);
+
+            //No range check here. It is assumed to be correct.
+            satBuffer[index] = value;
+        };
 
     const auto dumpLock = _image->lock();
-
-    glm::vec4 satVal;
 
     for(int z = 0 ; z < static_cast<int>(m_satSize[2]) ; ++z)
     {
@@ -372,23 +562,23 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
         {
             for(int x = 0 ; x < static_cast<int>(m_satSize[0]) ; ++x)
             {
-                std::int16_t imgValue =
+                const std::int16_t imgValue =
                     _image->at<std::int16_t>(
                         static_cast<std::size_t>(x),
                         static_cast<std::size_t>(y),
                         static_cast<std::size_t>(z)
                     );
 
-                satVal = applyTf(_tf, imgValue)
-                         + getSatValue(satBuffer, x - 1, y - 1, z - 1)
-                         + getSatValue(satBuffer, x, y, z - 1)
-                         + getSatValue(satBuffer, x, y - 1, z)
-                         + getSatValue(satBuffer, x - 1, y, z)
-                         - getSatValue(satBuffer, x - 1, y - 1, z)
-                         - getSatValue(satBuffer, x, y - 1, z - 1)
-                         - getSatValue(satBuffer, x - 1, y, z - 1);
+                const glm::vec4 saturation = applyTf(_tf, imgValue)
+                                             + value_at(buffer, x - 1, y - 1, z - 1)
+                                             + value_at(buffer, x, y, z - 1)
+                                             + value_at(buffer, x, y - 1, z)
+                                             + value_at(buffer, x - 1, y, z)
+                                             - value_at(buffer, x - 1, y - 1, z)
+                                             - value_at(buffer, x, y - 1, z - 1)
+                                             - value_at(buffer, x - 1, y, z - 1);
 
-                setSatValue(satBuffer, satVal, x, y, z);
+                set_value(buffer, saturation, x, y, z);
             }
         }
     }
@@ -398,52 +588,33 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
     // Discards the entire buffer while locking so that we can easily refill it from scratch
     pixBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
     Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
-    std::uint8_t* pDest   = static_cast<std::uint8_t*>(pixBox.data);
 
-    std::memcpy(pDest, satBuffer, m_satSize[0] * m_satSize[1] * m_satSize[2] * sizeof(glm::vec4));
+    std::uint8_t* const pDest = static_cast<std::uint8_t*>(pixBox.data);
+
+    std::memcpy(pDest, buffer.data(), buffer.size() * sizeof(glm::vec4));
 
     pixBuffer->unlock();
-
-    delete[] satBuffer;
 }
 
 //-----------------------------------------------------------------------------
 
 glm::vec4 SummedAreaTable::applyTf(data::TransferFunction::sptr _tf, int16_t imgValue)
 {
-    double invWindow = 1. / _tf->getWindow();
+    //Window (extent)
+    const double invWindow = 1. / _tf->getWindow();
 
-    const data::TransferFunction::TFValuePairType intensityMinMax = _tf->getWLMinMax();
+    //Intensity min and max
+    const auto [i_min, i_max] = _tf->getWLMinMax();
 
-    const data::TransferFunction::TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
+    //TF min and max
+    const auto [tf_min, tf_max] = _tf->getMinMaxTFValues();
 
-    double value = (imgValue - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
+    //Scaled value, which needs to be interpolated
+    const double value = (imgValue - i_min) * (tf_max - tf_min) * invWindow + tf_min;
 
-    data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+    const data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
 
     return glm::vec4(interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
-}
-
-//-----------------------------------------------------------------------------
-
-glm::vec4 SummedAreaTable::getSatValue(glm::vec4* satBuffer, int x, int y, int z)
-{
-    if(x < 0 || y < 0 || z < 0)
-    {
-        return glm::vec4(0.f);
-    }
-
-    return satBuffer[static_cast<std::size_t>(x) + m_satSize[0] * static_cast<std::size_t>(y) + m_satSize[0]
-                     * m_satSize[1]
-                     * static_cast<std::size_t>(z)];
-}
-
-//-----------------------------------------------------------------------------
-
-void SummedAreaTable::setSatValue(glm::vec4* satBuffer, glm::vec4 value, int x, int y, int z)
-{
-    satBuffer[static_cast<std::size_t>(x) + m_satSize[0] * static_cast<std::size_t>(y) + m_satSize[0] * m_satSize[1]
-              * static_cast<std::size_t>(z)] = value;
 }
 
 //-----------------------------------------------------------------------------

@@ -61,6 +61,8 @@ class VIZ_SCENE3D_CLASS_API GridProxyGeometry : public R2VBRenderable
 {
 public:
 
+    /// Creates an instance of the objetc.
+    //As the object must be created through Ogre::...::createMovableObject, the constructor cannot be called directly
     static VIZ_SCENE3D_API GridProxyGeometry* New(
         const std::string& _name,
         Ogre::SceneManager* _sceneManager,
@@ -70,7 +72,7 @@ public:
     );
 
     /// Constructor, should never be called directly.
-    VIZ_SCENE3D_API GridProxyGeometry(const Ogre::String& name);
+    GridProxyGeometry(const Ogre::String& name);
 
     /// Destructor, frees resources if they have been allocated.
     VIZ_SCENE3D_API ~GridProxyGeometry() override;
@@ -105,6 +107,9 @@ private:
     /// Sets shader parameters and sets up the grid.
     void initializeGridMaterials();
 
+    /// Name of the texture used to store the transfer function
+    static inline const std::string s_TF_TEXUNIT_NAME = "transferFunction";
+
     /// Entity holding the source geometry used for proxy geometry rendering.
     Ogre::Entity* m_r2vbSource {nullptr};
 
@@ -118,16 +123,16 @@ private:
     Ogre::RenderOperation m_gridRenderOp;
 
     /// Grid defining the volume bricks.
-    Ogre::TexturePtr m_gridTexture;
+    Ogre::TexturePtr m_gridTexture {nullptr};
 
     /// Grid volume dimensions. (i.e. the number of bricks along each dimension)
     std::array<int, 3> m_gridSize {{2, 2, 2}};
 
     /// Size of a volume brick.
-    const std::array<int, 3> m_brickSize {{8, 8, 8}};
+    static constexpr std::array<int, 3> s_brickSize {{8, 8, 8}};
 
     /// Image from which we define a grid.
-    Ogre::TexturePtr m_3DImageTexture;
+    Ogre::TexturePtr m_3DImageTexture {nullptr};
 
     /// Transfer function to be applied to the image.
     TransferFunction::wptr m_gpuTF;
@@ -140,8 +145,8 @@ private:
 /**
  * @brief Factory class generating GridProxyGeometry objects.
  *
- * This is absolutely necessery for all ogre classes inheriting from Ogre::MovableObject.
- * The factory has to be registered at the ogre root. (@see Utils::getOgreRoot)
+ * This is absolutely necessary for all ogre classes inheriting from Ogre::MovableObject.
+ * The factory has to be registered at the Ogre root. (@see Utils::getOgreRoot)
  */
 class GridProxyGeometryFactory : public viz::scene3d::factory::R2VBRenderable
 {
@@ -158,12 +163,12 @@ public:
     }
 
     /// Produced object type name. (i.e. "GridProxyGeometry")
-    VIZ_SCENE3D_API static Ogre::String FACTORY_TYPE_NAME;
+    VIZ_SCENE3D_API static inline const Ogre::String FACTORY_TYPE_NAME = "GridProxyGeometry";
 
     /// Returns the object type name.
-    VIZ_SCENE3D_API const Ogre::String& getType(void) const override
+    VIZ_SCENE3D_API const Ogre::String& getType() const override
     {
-        return FACTORY_TYPE_NAME;
+        return GridProxyGeometryFactory::FACTORY_TYPE_NAME;
     }
 
 #if OGRE_VERSION_PATCH < 9
@@ -188,6 +193,21 @@ protected:
         return new viz::scene3d::vr::GridProxyGeometry(name);
     }
 };
+
+//------------------------------------------------------------------------------
+//Inline functions
+
+inline const Ogre::String& GridProxyGeometry::getMovableType() const
+{
+    return GridProxyGeometryFactory::FACTORY_TYPE_NAME;
+}
+
+//------------------------------------------------------------------------------
+
+inline void GridProxyGeometry::set3DImageTexture(const Ogre::TexturePtr& _texture)
+{
+    m_3DImageTexture = _texture;
+}
 
 } // namespace vr
 

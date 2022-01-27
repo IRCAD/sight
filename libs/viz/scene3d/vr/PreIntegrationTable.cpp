@@ -117,6 +117,17 @@ void PreIntegrationTable::imageUpdate(
                 break;
             }
 
+            case ::Ogre::PF_R32_SINT: //int32
+            {
+                int32_t* uintImgBuffer = static_cast<int32_t*>(_img->getBuffer());
+                auto minMax            = std::minmax_element(uintImgBuffer, uintImgBuffer + nbPixels);
+
+                m_valueInterval.first  = *minMax.first;
+                m_valueInterval.second = *minMax.second;
+
+                break;
+            }
+
             default:
                 SIGHT_FATAL("Invalid pixel format for pre-integration, pixels must be integers");
         }

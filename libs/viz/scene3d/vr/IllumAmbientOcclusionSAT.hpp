@@ -25,6 +25,8 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/vr/SummedAreaTable.hpp"
 
+#include <optional>
+
 namespace sight::viz::scene3d
 {
 
@@ -40,27 +42,41 @@ public:
 
     typedef std::shared_ptr<IllumAmbientOcclusionSAT> sptr;
 
+    /// Internal wrapper holding the Summed Area Table (SAT) parameters
+    struct sat_parameters_t
+    {
+        /// Ratio used to determine the size of the SAT regarding of the associated image size.
+        float size_ratio = 0.25f;
+
+        /// Number of shells used to compute the volume illumination from the SAT.
+        unsigned shells = 4;
+
+        /// Radius of the shells used to compute the volume illumination from the SAT.
+        unsigned radius = 4;
+
+        /// Angle used to define the soft shadows cones.
+        float angle = 0.1f;
+
+        /// Number of samples along the soft shadows cones.
+        unsigned samples = 50;
+    };
+
     /// Initializes the illumination volume with the give dimensions.
     VIZ_SCENE3D_API IllumAmbientOcclusionSAT(
         std::string parentId,
         Ogre::SceneManager* sceneManager,
-        float satSizeRatio   = 0.25f,
-        bool ao              = false,
-        bool shadows         = false,
-        int nbShells         = 3,
-        int shellRadius      = 3,
-        float coneAngle      = 0.1f,
-        int samplesAlongCone = 50
-    );
+        bool ao                                    = false,
+        bool shadows                               = false,
+        std::optional<sat_parameters_t> parameters = {});
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API virtual ~IllumAmbientOcclusionSAT();
+    VIZ_SCENE3D_API ~IllumAmbientOcclusionSAT();
 
     /// Computes a new SAT with a different resolution given by the size ratio.
     VIZ_SCENE3D_API void updateSatFromRatio(float _satSizeRatio);
 
     /// Recomputes the illumination volume using the current SAT.
-    VIZ_SCENE3D_API void updateVolIllum();
+    VIZ_SCENE3D_API void updateVolumeIllumination();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
     VIZ_SCENE3D_API void SATUpdate(
@@ -69,9 +85,6 @@ public:
         float _sampleDistance
     );
 
-    /// Illumination volume texture getter.
-    VIZ_SCENE3D_API Ogre::TexturePtr getIlluminationVolume();
-
     /// Ambient occlusion / color bleeding usage setter
     VIZ_SCENE3D_API void setAO(bool _ao);
 
@@ -79,24 +92,27 @@ public:
     VIZ_SCENE3D_API void setShadows(bool _shadows);
 
     /// Shells number setter.
-    VIZ_SCENE3D_API void setNbShells(int _nbShells);
+    VIZ_SCENE3D_API void setNbShells(unsigned _nbShells);
 
     /// Shell radius setter.
-    VIZ_SCENE3D_API void setShellRadius(int _shellRadius);
+    VIZ_SCENE3D_API void setShellRadius(unsigned _shellRadius);
 
     /// Cone angle setter.
     VIZ_SCENE3D_API void setConeAngle(float _coneAngle);
 
     /// Cone samples number setter.
-    VIZ_SCENE3D_API void setSamplesAlongCone(int _samplesAlongCone);
+    VIZ_SCENE3D_API void setSamplesAlongCone(unsigned _samplesAlongCone);
+
+    ///@brief Parameters
+    VIZ_SCENE3D_API const sat_parameters_t& parameters() const;
+
+    ///@brief Returns the texture used to store the illumination volume.
+    const Ogre::TexturePtr& getIlluminationVolume() const;
 
 private:
 
     /// Allocates or resize the texture used to store the illumination volume.
     void updateTexture();
-
-    /// SAT used to compute the illumination volume.
-    viz::scene3d::vr::SummedAreaTable m_sat;
 
     /// Texture holding the illumination volume.
     Ogre::TexturePtr m_illuminationVolume;
@@ -110,40 +126,34 @@ private:
     /// The index of the slice to which we currently render.
     int m_currentSliceIndex;
 
-    /// Number of shells used to compute the volume illumination from the SAT.
-    int m_nbShells;
-
-    /// Radius of the shells used to compute the volume illumination from the SAT.
-    int m_shellRadius;
-
-    /// Angle used to define the soft shadows cones.
-    float m_coneAngle;
-
-    /// Number of samples along the soft shadows cones.
-    int m_samplesAlongCone;
+    ///@brief Parameters
+    sat_parameters_t m_parameters;
 
     /// Prefix used to name the buffers.
     std::string m_parentId;
 
-    /// Resource name of the source buffer.
-    const std::string BUFFER_NAME = "__IlluminationVolume";
+    /// Resource name of the source buffer, i.e. "__IlluminationVolume".
+    static inline const std::string BUFFER_NAME = "__IlluminationVolume";
 
     /// Camera used
-    Ogre::Camera* m_dummyCamera;
+    std::unique_ptr<Ogre::Camera> m_dummyCamera {nullptr};
 
     /// Scene manager.
     Ogre::SceneManager* m_sceneManager;
+
+    /// SAT used to compute the illumination volume.
+    viz::scene3d::vr::SummedAreaTable m_sat;
 };
 
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline Ogre::TexturePtr IllumAmbientOcclusionSAT::getIlluminationVolume()
+inline const Ogre::TexturePtr& IllumAmbientOcclusionSAT::getIlluminationVolume() const
 {
     return m_illuminationVolume;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 inline void IllumAmbientOcclusionSAT::setAO(bool _ao)
 {
@@ -159,30 +169,37 @@ inline void IllumAmbientOcclusionSAT::setShadows(bool _shadows)
 
 //-----------------------------------------------------------------------------
 
-inline void IllumAmbientOcclusionSAT::setNbShells(int _nbShells)
+inline void IllumAmbientOcclusionSAT::setNbShells(unsigned _nbShells)
 {
-    m_nbShells = _nbShells;
+    m_parameters.shells = _nbShells;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void IllumAmbientOcclusionSAT::setShellRadius(int _shellRadius)
+inline void IllumAmbientOcclusionSAT::setShellRadius(unsigned _shellRadius)
 {
-    m_shellRadius = _shellRadius;
+    m_parameters.radius = _shellRadius;
 }
 
 //-----------------------------------------------------------------------------
 
 inline void IllumAmbientOcclusionSAT::setConeAngle(float _coneAngle)
 {
-    m_coneAngle = _coneAngle;
+    m_parameters.angle = _coneAngle;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void IllumAmbientOcclusionSAT::setSamplesAlongCone(int _samplesAlongCone)
+inline void IllumAmbientOcclusionSAT::setSamplesAlongCone(unsigned _samplesAlongCone)
 {
-    m_samplesAlongCone = _samplesAlongCone;
+    m_parameters.samples = _samplesAlongCone;
+}
+
+//------------------------------------------------------------------------------
+
+inline auto IllumAmbientOcclusionSAT::parameters() const -> const sat_parameters_t&
+{
+    return m_parameters;
 }
 
 //-----------------------------------------------------------------------------

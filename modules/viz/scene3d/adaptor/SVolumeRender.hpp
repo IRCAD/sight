@@ -137,6 +137,80 @@ public:
 
 protected:
 
+    // Slot keys
+    static inline const sight::core::com::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
+    static inline const sight::core::com::Slots::SlotKeyType s_BUFFER_IMAGE_SLOT         = "bufferImage";
+    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
+    static inline const sight::core::com::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
+    static inline const sight::core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+    static inline const sight::core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+    static inline const sight::core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
+
+    ///@brief Internal wrapper holding config defines.
+    struct config
+    {
+        static inline const std::string AUTORESET_CAMERA      = "autoresetcamera";
+        static inline const std::string PREINTEGRATION        = "preintegration";
+        static inline const std::string DYNAMIC               = "dynamic";
+        static inline const std::string WIDGETS               = "widgets";
+        static inline const std::string PRIORITY              = "priority";
+        static inline const std::string LAYER_ORDER_DEPENDANT = "layerOrderDependant";
+        static inline const std::string SAMPLES               = "samples";
+        static inline const std::string SAT_SIZE_RATIO        = "satSizeRatio";
+        static inline const std::string SAT_SHELLS            = "satShells";
+        static inline const std::string SAT_SHELL_RADIUS      = "satShellRadius";
+        static inline const std::string SAT_CONE_ANGLE        = "satConeAngle";
+        static inline const std::string SAT_CONE_SAMPLES      = "satConeSamples";
+        static inline const std::string AO_FACTOR             = "aoFactor";
+        static inline const std::string COLOR_BLEEDING_FACTOR = "colorBleedingFactor";
+        static inline const std::string AO                    = "ao";
+        static inline const std::string COLOR_BLEEDING        = "colorBleeding";
+        static inline const std::string SHADOWS               = "shadows";
+    };
+
+    /// Internal wrapper holding the inital config
+    struct config_data_t
+    {
+        using sat_parameters_t     = sight::viz::scene3d::vr::IllumAmbientOcclusionSAT::sat_parameters_t;
+        using shadows_parameters_t = sight::viz::scene3d::vr::RayTracingVolumeRenderer::shadows_parameters_t;
+
+        /// Enables whether the camera must be auto reset when a mesh is updated or not.
+        bool camera_autoreset {false};
+
+        /// Enables preintegration.
+        bool preintegration {false};
+
+        /// Enables dynamic buffering.
+        bool dynamic {false};
+
+        /// Sets the node visible or not.
+        bool visible {false};
+
+        /// Interactor priority.
+        int priority {2};
+
+        /// Indicates the the clipping box interactor layer is order-dependant.
+        bool order_dependent {false};
+
+        /// Sampling rate.
+        std::uint16_t samples {512};
+
+        /// SAT parameters.
+        sat_parameters_t sat {};
+
+        ///Shadows parameters
+        shadows_parameters_t shadows {};
+    };
+
+    /// Internal wrapper holding object keys
+    struct objects
+    {
+        static constexpr std::string_view IMAGE_INOUT           = "image";
+        static constexpr std::string_view VOLUME_TF_INOUT       = "tf";
+        static constexpr std::string_view CLIPPING_MATRIX_INOUT = "clippingMatrix";
+    };
+
     /// Configures the service.
     MODULE_VIZ_SCENE3D_API void configuring() override;
 
@@ -171,15 +245,18 @@ protected:
      */
     MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
 
+    ///@brief Configuration loaded.
+    config_data_t m_config {};
+
 private:
 
     /// Defines volume rendering effects.
-    typedef enum
+    enum class VREffectType
     {
         VR_AMBIENT_OCCLUSION,
         VR_COLOR_BLEEDING,
         VR_SHADOWS
-    } VREffectType;
+    };
 
     /// Updates the transfer function applied to the volume.
     void updateVolumeTF();
@@ -199,55 +276,55 @@ private:
      *
      * @pre _nbSamples must fit in a 16 bit unsigned int.
      */
-    void updateSampling(int _nbSamples);
+    void updateSampling(unsigned _nbSamples);
 
     /**
      * @brief Sets the opacity correction.
      * @param _opacityCorrection value of the opacity correction.
      */
-    void updateOpacityCorrection(int _opacityCorrection);
+    void updateOpacityCorrection(unsigned _opacityCorrection);
 
     /**
      * @brief Sets the ambient occlusion factor.
      * @param _aoFactor value of the ambient occlusion factor.
      */
-    void updateAOFactor(double _aoFactor);
+    void updateAOFactor(float _aoFactor);
 
     /**
      * @brief Sets the color bleeding factor.
      * @param _colorBleedingFactor value of the color bleeding factor.
      */
-    void updateColorBleedingFactor(double _colorBleedingFactor);
+    void updateColorBleedingFactor(float _colorBleedingFactor);
 
     /**
      * @brief Sets the SAT size ratio.
      * @param _sizeRatio value of the SAT size ratio.
      */
-    void updateSatSizeRatio(int _sizeRatio);
+    void updateSatSizeRatio(unsigned _sizeRatio);
 
     /**
      * @brief Sets the SAT shells number.
      * @param _shellsNumber the number of shells used by the SAT.
      */
-    void updateSatShellsNumber(int _shellsNumber);
+    void updateSatShellsNumber(unsigned _shellsNumber);
 
     /**
      * @brief Sets the SAT shells radius.
      * @param _shellRadius the shells radius used by the SAT.
      */
-    void updateSatShellRadius(int _shellRadius);
+    void updateSatShellRadius(unsigned _shellRadius);
 
     /**
      * @brief Sets the SAT cone angle.
      * @param _coneAngle the cone angle size of the SAT. Cones ares used to compute soft shadows.
      */
-    void updateSatConeAngle(int _coneAngle);
+    void updateSatConeAngle(float _coneAngle);
 
     /**
      * @brief Sets the SAT cone samples.
      * @param _nbConeSamples the cone sample number of the SAT. Cones ares used to compute soft shadows.
      */
-    void updateSatConeSamples(int _nbConeSamples);
+    void updateSatConeSamples(unsigned _nbConeSamples);
 
     /**
      * @brief Enables/disables the pre integration table.
@@ -344,14 +421,12 @@ private:
     /// Removes the widgets from the interactor and deletes it.
     void destroyWidget();
 
-    /// Computes the volume illumination and applies it to the ray tracing renderer.
-    void updateVolumeIllumination();
-
     /**
      * @brief Updates or creates the illumination volume according to the given VR effect.
      * @param _vrEffect volume rendering effects.
+     * @param _enable enable that effect or not.
      */
-    void toggleVREffect(VREffectType _vrEffect);
+    void toggleVREffect(VREffectType _vrEffect, bool _enable);
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
@@ -359,29 +434,17 @@ private:
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
 
-    /// Helps to manage the optional volume TF.
-    data::helper::TransferFunction m_helperVolumeTF;
+    ///Prevents concurrent access on certain operations (texture update, etc.)
+    std::mutex m_mutex;
 
     /// Implements a simple GPU ray-tracing renderer.
-    sight::viz::scene3d::vr::RayTracingVolumeRenderer* m_volumeRenderer {nullptr};
+    std::unique_ptr<sight::viz::scene3d::vr::RayTracingVolumeRenderer> m_volumeRenderer {nullptr};
 
-    /// Contains the GPU 3D Image texture.
-    Ogre::TexturePtr m_3DOgreTexture;
-
-    /// Contains the buffering texture for the 3D image.
-    Ogre::TexturePtr m_bufferingTexture;
-
-    /// Prevents the service from accessing the textures while they are swapped.
-    std::mutex m_bufferSwapMutex;
+    /// Helps to manage updates of the transfer function.
+    data::helper::TransferFunction m_helperVolumeTF;
 
     /// Fills the incoming image texture in a parallel thread.
     std::unique_ptr<sight::viz::scene3d::IGraphicsWorker> m_bufferingWorker;
-
-    /// Contains the GPU TF texture used for rendering.
-    sight::viz::scene3d::TransferFunction::sptr m_gpuVolumeTF;
-
-    /// Contains the pre-integration table.
-    sight::viz::scene3d::vr::PreIntegrationTable m_preIntegrationTable;
 
     /// Stores the scene manager.
     Ogre::SceneManager* m_sceneManager {nullptr};
@@ -389,73 +452,16 @@ private:
     /// Stores the scene node of the volume.
     Ogre::SceneNode* m_volumeSceneNode {nullptr};
 
-    /// Stores the camera used for rendering.
-    Ogre::Camera* m_camera {nullptr};
-
     /// Stores the widgets used for clipping.
     std::shared_ptr<sight::viz::scene3d::interactor::ClippingBoxInteractor> m_widget;
 
-    /// Stores the priority of the widget interactor.
-    int m_priority {2};
-
-    /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant {true};
-
-    /// Stores the sampling rate.
-    std::uint16_t m_nbSamples {512};
-
-    /// Enables the pre-integration usage.
-    bool m_preIntegratedRendering {false};
-
-    /// Enables background buffering for dynamic images.
-    bool m_dynamic {false};
-
-    /// Defines the usage of ambient occlusion.
-    bool m_ambientOcclusion {false};
-
-    /// Defines the usage of color bleeding.
-    bool m_colorBleeding {false};
-
-    /// Defines the usage of soft shadows.
-    bool m_shadows {false};
-
-    /// Toggles widget visibility.
-    bool m_widgetVisibilty {true};
-
-    /// Contains the ilumination volume used to render shadows and ambient occlusion.
-    std::shared_ptr<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT> m_ambientOcclusionSAT;
-
-    /// Stores the ratio used to determine the size of the SAT regarding of the associated image size.
-    float m_satSizeRatio {0.25f};
-
-    /// Stores the number of shells used to compute the volume illumination from the SAT.
-    int m_satShells {4};
-
-    /// Stores the radius of the shells used to compute the volume illumination from the SAT.
-    int m_satShellRadius {4};
-
-    /// Stores the angle used to define the soft shadows cones.
-    float m_satConeAngle {0.1f};
-
-    /// Number of samples along the soft shadows cones.
-    int m_satConeSamples {50};
-
-    /// Stores the factor parameter used to weight the ambient occlusion.
-    double m_aoFactor {1.};
-
-    /// Stores the factor parameter used to weight the color bleeding.
-    double m_colorBleedingFactor {1.};
-
-    /// Enables whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera {true};
-
-    static constexpr std::string_view s_IMAGE_INOUT           = "image";
-    static constexpr std::string_view s_VOLUME_TF_INOUT       = "tf";
-    static constexpr std::string_view s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
-
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_VOLUME_TF_INOUT};
-    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_clippingMatrix {this, s_CLIPPING_MATRIX_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, objects::IMAGE_INOUT};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, objects::VOLUME_TF_INOUT};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_clippingMatrix
+    {
+        this,
+        objects::CLIPPING_MATRIX_INOUT
+    };
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

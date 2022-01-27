@@ -51,39 +51,10 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const core::com::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
-static const core::com::Slots::SlotKeyType s_BUFFER_IMAGE_SLOT         = "bufferImage";
-static const core::com::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
-static const core::com::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
-static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
-
-static const std::string s_AUTORESET_CAMERA_CONFIG      = "autoresetcamera";
-static const std::string s_PREINTEGRATION_CONFIG        = "preintegration";
-static const std::string s_DYNAMIC_CONFIG               = "dynamic";
-static const std::string s_WIDGETS_CONFIG               = "widgets";
-static const std::string s_PRIORITY_CONFIG              = "priority";
-static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
-static const std::string s_SAMPLES_CONFIG               = "samples";
-static const std::string s_SAT_SIZE_RATIO_CONFIG        = "satSizeRatio";
-static const std::string s_SAT_SHELLS_CONFIG            = "satShells";
-static const std::string s_SAT_SHELL_RADIUS_CONFIG      = "satShellRadius";
-static const std::string s_SAT_CONE_ANGLE_CONFIG        = "satConeAngle";
-static const std::string s_SAT_CONE_SAMPLES_CONFIG      = "satConeSamples";
-static const std::string s_AO_FACOTR_CONFIG             = "aoFactor";
-static const std::string s_COLOR_BLEEDING_FACTOR_CONFIG = "colorBleedingFactor";
-static const std::string s_AO_CONFIG                    = "ao";
-static const std::string s_COLOR_BLEEDING_CONFIG        = "colorBleeding";
-static const std::string s_SHADOES_CONFIG               = "shadows";
-
-//-----------------------------------------------------------------------------
-
 SVolumeRender::SVolumeRender() noexcept :
     m_helperVolumeTF(std::bind(&SVolumeRender::updateVolumeTF, this))
 {
-    /// Handle connections between the layer and the volume renderer.
+    // Handle connections between the layer and the volume renderer.
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_BUFFER_IMAGE_SLOT, &SVolumeRender::bufferImage, this);
     newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
@@ -106,13 +77,9 @@ service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT);
-    connections.push(
-        s_CLIPPING_MATRIX_INOUT,
-        data::Matrix4::s_MODIFIED_SIG,
-        s_UPDATE_CLIPPING_BOX_SLOT
-    );
+    connections.push(objects::IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT);
+    connections.push(objects::IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT);
+    connections.push(objects::CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_CLIPPING_BOX_SLOT);
 
     return connections;
 }
@@ -126,25 +93,49 @@ void SVolumeRender::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_autoResetCamera        = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
-    m_preIntegratedRendering = config.get<bool>(s_PREINTEGRATION_CONFIG, false);
-    m_dynamic                = config.get<bool>(s_DYNAMIC_CONFIG, m_dynamic);
-    m_widgetVisibilty        = config.get<bool>(s_WIDGETS_CONFIG, true);
-    m_priority               = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_layerOrderDependant    = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
-    m_nbSamples              = config.get<std::uint16_t>(s_SAMPLES_CONFIG, m_nbSamples);
+    //TODO: When MSVC finally supports designated initialization, use it.
+    {
+        //Global parameters
+        {
+            m_config.camera_autoreset = config.get<bool>(config::AUTORESET_CAMERA, true);
+            m_config.preintegration   = config.get<bool>(config::PREINTEGRATION, false);
+            m_config.dynamic          = config.get<bool>(config::DYNAMIC, false);
+            m_config.visible          = config.get<bool>(config::WIDGETS, true);
+            m_config.priority         = config.get<int>(config::PRIORITY, 2);
+            m_config.order_dependent  = config.get<bool>(config::LAYER_ORDER_DEPENDANT, true);
+            m_config.samples          = config.get<std::uint16_t>(config::SAMPLES, 512);
+        }
 
-    // Advanced illumination parameters.
-    m_satSizeRatio        = config.get<float>(s_SAT_SIZE_RATIO_CONFIG, m_satSizeRatio);
-    m_satShells           = config.get<int>(s_SAT_SHELLS_CONFIG, m_satShells);
-    m_satShellRadius      = config.get<int>(s_SAT_SHELL_RADIUS_CONFIG, m_satShellRadius);
-    m_satConeAngle        = config.get<float>(s_SAT_CONE_ANGLE_CONFIG, m_satConeAngle);
-    m_satConeSamples      = config.get<int>(s_SAT_CONE_SAMPLES_CONFIG, m_satConeSamples);
-    m_aoFactor            = config.get<double>(s_AO_FACOTR_CONFIG, m_aoFactor);
-    m_colorBleedingFactor = config.get<double>(s_COLOR_BLEEDING_FACTOR_CONFIG, m_colorBleedingFactor);
-    m_ambientOcclusion    = config.get<bool>(s_AO_CONFIG, false);
-    m_colorBleeding       = config.get<bool>(s_COLOR_BLEEDING_CONFIG, false);
-    m_shadows             = config.get<bool>(s_SHADOES_CONFIG, false);
+        //SAT
+        {
+            m_config.sat.size_ratio = config.get<float>(config::SAT_SIZE_RATIO, 0.25f);
+            m_config.sat.shells     = static_cast<unsigned>(config.get<int>(config::SAT_SHELLS, 4));
+            m_config.sat.radius     = static_cast<unsigned>(config.get<int>(config::SAT_SHELL_RADIUS, 4));
+            m_config.sat.angle      = config.get<float>(config::SAT_CONE_ANGLE, 0.1f);
+            m_config.sat.samples    = static_cast<unsigned>(config.get<int>(config::SAT_CONE_SAMPLES, 50));
+        }
+
+        //Shadows
+        {
+            m_config.shadows.soft_shadows = config.get<bool>(config::SHADOWS, false);
+
+            //AO
+            {
+                m_config.shadows.ao.enabled = config.get<bool>(config::AO, false),
+                m_config.shadows.ao.factor  = static_cast<float>(config.get<double>(config::AO_FACTOR, 1.));
+            }
+
+            //Colour bleeding
+            {
+                const double colorBleedingFactor = config.get<double>(config::COLOR_BLEEDING_FACTOR, 1.);
+
+                m_config.shadows.colour_bleeding.enabled = config.get<bool>(config::COLOR_BLEEDING, false);
+                m_config.shadows.colour_bleeding.r       = static_cast<float>(colorBleedingFactor);
+                m_config.shadows.colour_bleeding.g       = static_cast<float>(colorBleedingFactor);
+                m_config.shadows.colour_bleeding.b       = static_cast<float>(colorBleedingFactor);
+            }
+        }
+    }
 
     this->setTransformId(
         config.get<std::string>(
@@ -163,76 +154,62 @@ void SVolumeRender::starting()
     auto renderService = this->getRenderService();
     renderService->makeCurrent();
 
-    m_gpuVolumeTF = std::make_shared<sight::viz::scene3d::TransferFunction>();
-
+    //Transfer function
     {
         const auto image = m_image.lock();
         const auto tf    = m_tf.lock();
         m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 
-    m_sceneManager = this->getSceneManager();
-
-    Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
-    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
-
-    m_camera = this->getLayer()->getDefaultCamera();
-
-    // Create textures
-    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
-        this->getID() + "_Texture",
-        sight::viz::scene3d::RESOURCE_GROUP,
-        true
-    );
-
-    if(m_dynamic)
+    //Scene (node, manager)
     {
-        m_bufferingTexture = Ogre::TextureManager::getSingleton().create(
-            this->getID() + "_Texture2",
-            sight::viz::scene3d::RESOURCE_GROUP,
-            true
-        );
+        m_sceneManager = this->getSceneManager();
+
+        Ogre::SceneNode* const rootSceneNode = m_sceneManager->getRootSceneNode();
+        Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+        m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
     }
 
-    m_gpuVolumeTF->createTexture(this->getID() + "_VolumeGpuTF");
+    //Renderer
+    {
+        sight::viz::scene3d::Layer::sptr layer = renderService->getLayer(m_layerID);
 
-    m_preIntegrationTable.createTexture(this->getID());
+        m_volumeRenderer.reset(
+            new sight::viz::scene3d::vr::RayTracingVolumeRenderer(
+                this->getID(),
+                layer,
+                m_volumeSceneNode,
+                {}, //No shared texture
+                m_config.dynamic,
+                m_config.preintegration,
+                m_config.shadows,
+                m_config.sat,
+                {} //Default shader
+            )
+        );
 
-    sight::viz::scene3d::Layer::sptr layer = renderService->getLayer(m_layerID);
-
-    m_volumeRenderer = new sight::viz::scene3d::vr::RayTracingVolumeRenderer(
-        this->getID(),
-        layer,
-        m_volumeSceneNode,
-        m_3DOgreTexture,
-        m_gpuVolumeTF,
-        m_preIntegrationTable,
-        m_ambientOcclusion,
-        m_colorBleeding
-    );
+        m_volumeRenderer->update();
+    }
 
     m_volumeSceneNode->setVisible(m_isVisible);
 
     // Initially focus on the image center.
     this->setFocalDistance(50);
 
-    m_volumeRenderer->setSampling(m_nbSamples);
-    m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
-
-    m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
-
     bool isValid = false;
+    //Image
     {
         const auto image = m_image.lock();
         isValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
     }
+
     if(isValid)
     {
         this->newImage();
     }
 
-    m_volumeRenderer->updateVolumeTF();
+    //Update the transfer function
+    this->updateVolumeTF();
 
     this->requestRender();
 }
@@ -247,7 +224,7 @@ void SVolumeRender::updating()
 
 void SVolumeRender::swapping(std::string_view _key)
 {
-    if(_key == s_VOLUME_TF_INOUT)
+    if(_key == objects::VOLUME_TF_INOUT)
     {
         this->getRenderService()->makeCurrent();
         {
@@ -270,8 +247,7 @@ void SVolumeRender::stopping()
 
     m_helperVolumeTF.removeTFConnections();
 
-    delete m_volumeRenderer;
-    m_volumeRenderer = nullptr;
+    m_volumeRenderer.reset();
 
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
@@ -281,21 +257,6 @@ void SVolumeRender::stopping()
     m_sceneManager->getRootSceneNode()->removeChild(transformNode);
     this->getSceneManager()->destroySceneNode(static_cast<Ogre::SceneNode*>(transformNode));
 
-    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
-    m_3DOgreTexture.reset();
-
-    if(m_bufferingTexture)
-    {
-        Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
-        m_bufferingTexture.reset();
-    }
-
-    m_gpuVolumeTF.reset();
-
-    m_preIntegrationTable.removeTexture();
-
-    m_ambientOcclusionSAT.reset();
-
     this->destroyWidget();
 }
 
@@ -304,25 +265,13 @@ void SVolumeRender::stopping()
 void SVolumeRender::updateVolumeTF()
 {
     this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+    std::lock_guard swapLock(m_mutex);
 
-    const data::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
+        data::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
         const data::mt::locked_ptr lock(tf);
 
-        m_gpuVolumeTF->updateTexture(tf);
-
-        if(m_preIntegratedRendering)
-        {
-            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
-        }
-
-        m_volumeRenderer->updateVolumeTF();
-
-        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-        {
-            this->updateVolumeIllumination();
-        }
+        m_volumeRenderer->updateVolumeTF(tf);
     }
 
     this->requestRender();
@@ -334,7 +283,7 @@ void SVolumeRender::newImage()
 {
     auto renderService = this->getRenderService();
     {
-        if(m_dynamic)
+        if(m_config.dynamic)
         {
             // Destroy the worker to wait for all pending buffering tasks to be cleared.
             m_bufferingWorker.reset();
@@ -349,7 +298,7 @@ void SVolumeRender::newImage()
             const auto tf    = m_tf.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
-            sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
+            m_volumeRenderer->loadImage(image.get_shared());
         }
         this->updateVolumeTF();
     }
@@ -361,27 +310,19 @@ void SVolumeRender::newImage()
 
 void SVolumeRender::bufferImage()
 {
-    if(m_dynamic)
+    if(m_config.dynamic)
     {
-        auto bufferingFn = [this]()
-                           {
-                               const auto image = m_image.lock();
+        auto bufferingFn =
+            [this]()
+            {
+                const auto image = m_image.lock();
 
-                               sight::viz::scene3d::Utils::convertImageForNegato(
-                                   m_bufferingTexture.get(),
-                                   image.get_shared()
-                               );
+                m_volumeRenderer->loadImage(image.get_shared());
 
-                               // Swap texture pointers.
-                               {
-                                   std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
-                                   std::swap(m_3DOgreTexture, m_bufferingTexture);
-                               }
-
-                               // Switch back to the main thread to compute the proxy geometry.
-                               // Ogre can't handle parallel rendering.
-                               this->slot(s_UPDATE_IMAGE_SLOT)->asyncRun();
-                           };
+                // Switch back to the main thread to compute the proxy geometry.
+                // Ogre can't handle parallel rendering.
+                this->slot(s_UPDATE_IMAGE_SLOT)->asyncRun();
+            };
 
         m_bufferingWorker->pushTask(bufferingFn);
     }
@@ -390,7 +331,7 @@ void SVolumeRender::bufferImage()
         this->getRenderService()->makeCurrent();
         {
             const auto image = m_image.lock();
-            sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
+            m_volumeRenderer->loadImage(image.get_shared());
         }
         this->updateImage();
     }
@@ -404,46 +345,16 @@ void SVolumeRender::updateImage()
 
     this->getRenderService()->makeCurrent();
 
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
-    m_volumeRenderer->set3DTexture(m_3DOgreTexture);
-
     const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
         data::mt::locked_ptr lock(volumeTF);
-
-        if(m_preIntegratedRendering)
-        {
-            m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
-        }
-
-        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-        {
-            if(m_ambientOcclusionSAT == nullptr)
-            {
-                m_ambientOcclusionSAT = std::make_shared<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
-                    this->getID(),
-                    m_sceneManager,
-                    m_satSizeRatio,
-                    (
-                        m_ambientOcclusion
-                        || m_colorBleeding),
-                    m_shadows,
-                    m_satShells,
-                    m_satShellRadius,
-                    m_satConeAngle,
-                    m_satConeSamples
-                );
-            }
-
-            this->updateVolumeIllumination();
-        }
 
         m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
     }
 
     // Create widgets on image update to take the image's size into account.
     this->createWidget();
-    if(m_autoResetCamera)
+    if(m_config.camera_autoreset)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
@@ -457,34 +368,20 @@ void SVolumeRender::updateImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSampling(int _nbSamples)
+void SVolumeRender::updateSampling(unsigned _nbSamples)
 {
     this->getRenderService()->makeCurrent();
 
-    SIGHT_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536 && _nbSamples >= 0);
-    m_nbSamples = static_cast<std::uint16_t>(_nbSamples);
+    SIGHT_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536);
 
-    m_volumeRenderer->setSampling(m_nbSamples);
-    m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
-
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-    {
-        this->updateVolumeIllumination();
-    }
-
-    if(m_preIntegratedRendering)
-    {
-        const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        const data::mt::locked_ptr lock(volumeTF);
-        m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
-    }
+    m_volumeRenderer->setSampling(static_cast<std::uint16_t>(_nbSamples));
 
     this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateOpacityCorrection(int _opacityCorrection)
+void SVolumeRender::updateOpacityCorrection(unsigned _opacityCorrection)
 {
     m_volumeRenderer->setOpacityCorrection(_opacityCorrection);
     this->requestRender();
@@ -492,54 +389,33 @@ void SVolumeRender::updateOpacityCorrection(int _opacityCorrection)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateAOFactor(double _aoFactor)
+void SVolumeRender::updateAOFactor(float _aoFactor)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->setAOFactor(_aoFactor))
     {
-        m_aoFactor = _aoFactor;
-
-        m_volumeRenderer->setAOFactor(m_aoFactor);
-
-        this->requestRender();
+        this->requestRender(); //Only request new render when AO was enabled, i.e. the call had an effect
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateColorBleedingFactor(double _colorBleedingFactor)
+void SVolumeRender::updateColorBleedingFactor(float _colorBleedingFactor)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->setColorBleedingFactor(_colorBleedingFactor))
     {
-        m_colorBleedingFactor = _colorBleedingFactor;
-
-        m_volumeRenderer->setColorBleedingFactor(m_colorBleedingFactor);
-
-        this->requestRender();
+        this->requestRender(); //Only request new render when AO was enabled, i.e. the call had an effect
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatSizeRatio(int _sizeRatio)
+void SVolumeRender::updateSatSizeRatio(unsigned _sizeRatio)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->shadows().parameters.enabled())
     {
         this->getRenderService()->makeCurrent();
 
-        float scaleCoef(.25f);
-        m_satSizeRatio = static_cast<float>(_sizeRatio) * scaleCoef;
-        m_ambientOcclusionSAT->updateSatFromRatio(m_satSizeRatio);
-
-        this->updateVolumeIllumination();
-
-        if(m_preIntegratedRendering)
-        {
-            const auto image = m_image.lock();
-
-            const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            const data::mt::locked_ptr lock(volumeTF);
-            m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
-        }
+        m_volumeRenderer->updateSATSizeRatio(_sizeRatio);
 
         this->requestRender();
     }
@@ -547,17 +423,13 @@ void SVolumeRender::updateSatSizeRatio(int _sizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatShellsNumber(int _shellsNumber)
+void SVolumeRender::updateSatShellsNumber(unsigned _shellsNumber)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->shadows().parameters.enabled())
     {
         this->getRenderService()->makeCurrent();
 
-        m_satShells = _shellsNumber;
-
-        auto illumVolume = m_volumeRenderer->getIllumVolume();
-        illumVolume->setNbShells(m_satShells);
-        illumVolume->updateVolIllum();
+        m_volumeRenderer->updateSATShellsNumber(_shellsNumber);
 
         this->requestRender();
     }
@@ -565,17 +437,13 @@ void SVolumeRender::updateSatShellsNumber(int _shellsNumber)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatShellRadius(int _shellRadius)
+void SVolumeRender::updateSatShellRadius(unsigned _shellRadius)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->shadows().parameters.enabled())
     {
         this->getRenderService()->makeCurrent();
 
-        m_satShellRadius = _shellRadius;
-
-        auto illumVolume = m_volumeRenderer->getIllumVolume();
-        illumVolume->setShellRadius(m_satShellRadius);
-        illumVolume->updateVolIllum();
+        m_volumeRenderer->updateSATShellRadius(_shellRadius);
 
         this->requestRender();
     }
@@ -583,17 +451,13 @@ void SVolumeRender::updateSatShellRadius(int _shellRadius)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatConeAngle(int _coneAngle)
+void SVolumeRender::updateSatConeAngle(float _coneAngle)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->shadows().parameters.enabled())
     {
         this->getRenderService()->makeCurrent();
 
-        m_satConeAngle = static_cast<float>(_coneAngle) / 100;
-
-        auto illumVolume = m_volumeRenderer->getIllumVolume();
-        illumVolume->setConeAngle(m_satConeAngle);
-        illumVolume->updateVolIllum();
+        m_volumeRenderer->updateSATConeAngle(_coneAngle);
 
         this->requestRender();
     }
@@ -601,17 +465,13 @@ void SVolumeRender::updateSatConeAngle(int _coneAngle)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatConeSamples(int _nbConeSamples)
+void SVolumeRender::updateSatConeSamples(unsigned _nbConeSamples)
 {
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    if(m_volumeRenderer->shadows().parameters.enabled())
     {
         this->getRenderService()->makeCurrent();
 
-        m_satConeSamples = _nbConeSamples;
-
-        auto illumVolume = m_volumeRenderer->getIllumVolume();
-        illumVolume->setSamplesAlongCone(m_satConeSamples);
-        illumVolume->updateVolIllum();
+        m_volumeRenderer->updateSATConeSamples(_nbConeSamples);
 
         this->requestRender();
     }
@@ -623,11 +483,9 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 {
     this->getRenderService()->makeCurrent();
 
-    m_preIntegratedRendering = _preintegration;
+    m_volumeRenderer->setPreIntegratedRendering(_preintegration);
 
-    m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
-
-    if(m_preIntegratedRendering)
+    if(_preintegration)
     {
         const auto image = m_image.lock();
 
@@ -635,7 +493,6 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
         const data::mt::locked_ptr lock(volumeTF);
 
         m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
-        m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -645,35 +502,32 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 
 void SVolumeRender::toggleAmbientOcclusion(bool _ambientOcclusion)
 {
-    m_ambientOcclusion = _ambientOcclusion;
-    this->toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION);
+    this->toggleVREffect(VREffectType::VR_AMBIENT_OCCLUSION, _ambientOcclusion);
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::toggleColorBleeding(bool _colorBleeding)
 {
-    m_colorBleeding = _colorBleeding;
-    this->toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING);
+    this->toggleVREffect(VREffectType::VR_COLOR_BLEEDING, _colorBleeding);
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::toggleShadows(bool _shadows)
 {
-    m_shadows = _shadows;
-    this->toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS);
+    this->toggleVREffect(VREffectType::VR_SHADOWS, _shadows);
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::toggleWidgets(bool _visible)
 {
-    m_widgetVisibilty = _visible;
+    m_config.visible = _visible;
 
     if(m_widget)
     {
-        m_widget->setBoxVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
+        m_widget->setBoxVisibility(m_config.visible && m_volumeRenderer->isVisible());
 
         this->requestRender();
     }
@@ -694,8 +548,17 @@ void SVolumeRender::setFocalDistance(int _focalDistance)
 
 void SVolumeRender::setBoolParameter(bool _val, std::string _key)
 {
+    SIGHT_ASSERT(
+        "Invalid slot key " + _key,
+        _key == "preIntegration"
+        || _key == "ambientOcclusion"
+        || _key == "colorBleeding"
+        || _key == "shadows"
+        || _key == "widgets"
+    );
+
     this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+    std::lock_guard swapLock(m_mutex);
 
     if(_key == "preIntegration")
     {
@@ -725,36 +588,46 @@ void SVolumeRender::setBoolParameter(bool _val, std::string _key)
 
 void SVolumeRender::setIntParameter(int _val, std::string _key)
 {
+    SIGHT_ASSERT(
+        "Invalid slot key " + _key,
+        _key == "sampling"
+        || _key == "opacityCorrection"
+        || _key == "satSizeRatio"
+        || _key == "satShellsNumber"
+        || _key == "satShellRadius"
+        || _key == "satConeSamples"
+    );
+
+    SIGHT_ASSERT("Int parameter cannot be negative in this context.", _val >= 0);
+
     this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+    std::lock_guard<std::mutex> swapLock(m_mutex);
+
+    const unsigned param = static_cast<unsigned>(_val);
 
     if(_key == "sampling")
     {
-        this->updateSampling(_val);
+        this->updateSampling(param);
     }
     else if(_key == "opacityCorrection")
     {
-        this->updateOpacityCorrection(_val);
+        this->updateOpacityCorrection(param);
     }
     else if(_key == "satSizeRatio")
     {
-        this->updateSatSizeRatio(_val);
+        this->updateSatSizeRatio(param);
     }
     else if(_key == "satShellsNumber")
     {
-        this->updateSatShellsNumber(_val);
+        this->updateSatShellsNumber(param);
     }
     else if(_key == "satShellRadius")
     {
-        this->updateSatShellRadius(_val);
-    }
-    else if(_key == "satConeAngle")
-    {
-        this->updateSatConeAngle(_val);
+        this->updateSatShellRadius(param);
     }
     else if(_key == "satConeSamples")
     {
-        this->updateSatConeSamples(_val);
+        this->updateSatConeSamples(param);
     }
 
     this->requestRender();
@@ -764,17 +637,32 @@ void SVolumeRender::setIntParameter(int _val, std::string _key)
 
 void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 {
-    this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+    SIGHT_ASSERT(
+        "Invalid slot key " + _key,
+        _key == "colorBleedingFactor"
+        || _key == "aoFactor"
+        || _key == "satConeAngle"
+    );
 
-    if(_key == "aoFactor")
+    this->getRenderService()->makeCurrent();
+    std::lock_guard swapLock(m_mutex);
+
+    const float param = static_cast<float>(_val);
+
+    if(_key == "colorBleedingFactor")
     {
-        this->updateAOFactor(_val);
+        this->updateColorBleedingFactor(param);
     }
-    else if(_key == "colorBleedingFactor")
+    else if(_key == "aoFactor")
     {
-        this->updateColorBleedingFactor(_val);
+        this->updateAOFactor(param);
     }
+    else if(_key == "satConeAngle")
+    {
+        this->updateSatConeAngle(param);
+    }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -796,7 +684,7 @@ void SVolumeRender::createWidget()
     this->destroyWidget(); // Destroys the old widgets if they were created.
     m_widget = std::make_shared<sight::viz::scene3d::interactor::ClippingBoxInteractor>(
         layer,
-        m_layerOrderDependant,
+        m_config.order_dependent,
         this->getID(),
         m_volumeSceneNode,
         ogreClippingMx,
@@ -805,11 +693,11 @@ void SVolumeRender::createWidget()
         "BasicPhong"
     );
 
-    layer->addInteractor(m_widget, m_priority);
+    layer->addInteractor(m_widget, m_config.priority);
 
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
-    m_widget->setBoxVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
+    m_widget->setBoxVisibility(m_config.visible && m_volumeRenderer->isVisible());
 }
 
 //-----------------------------------------------------------------------------
@@ -826,21 +714,11 @@ void SVolumeRender::destroyWidget()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateVolumeIllumination()
+void SVolumeRender::toggleVREffect(VREffectType _vrEffect, bool _enable)
 {
     this->getRenderService()->makeCurrent();
 
-    m_ambientOcclusionSAT->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
-
-    m_volumeRenderer->setAmbientOcclusionSAT(m_ambientOcclusionSAT);
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VREffectType _vrEffect)
-{
-    this->getRenderService()->makeCurrent();
-
+    //First, check the image is valid (requires locking locally thus the lambda)
     bool isValid = false;
     {
         const auto image = m_image.lock();
@@ -850,59 +728,31 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
     // Volume illumination is only implemented for raycasting rendering
     if(isValid)
     {
-        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_ambientOcclusionSAT)
-        {
-            m_ambientOcclusionSAT = std::make_shared<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
-                this->getID(),
-                m_sceneManager,
-                m_satSizeRatio,
-                (
-                    m_ambientOcclusion
-                    || m_colorBleeding),
-                m_shadows,
-                m_satShells,
-                m_satShellRadius
-            );
-            this->updateVolumeIllumination();
-        }
-        else if(m_ambientOcclusionSAT)
+        //Renderer update
         {
             switch(_vrEffect)
             {
-                case module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
-                case module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
-                    m_ambientOcclusionSAT->setAO(m_ambientOcclusion || m_colorBleeding);
+                case VREffectType::VR_AMBIENT_OCCLUSION:
+                {
+                    m_volumeRenderer->toggleAmbientOcclusion(_enable);
                     break;
+                }
 
-                case module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
-                    m_ambientOcclusionSAT->setShadows(m_shadows);
+                case VREffectType::VR_COLOR_BLEEDING:
+                {
+                    m_volumeRenderer->toggleColorBleeding(_enable);
                     break;
+                }
+
+                case VREffectType::VR_SHADOWS:
+                {
+                    m_volumeRenderer->toggleShadows(_enable);
+                    break;
+                }
             }
         }
 
-        switch(_vrEffect)
-        {
-            case module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
-                m_volumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
-                break;
-
-            case module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
-                m_volumeRenderer->setColorBleeding(m_colorBleeding);
-                break;
-
-            case module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
-                m_volumeRenderer->setShadows(m_shadows);
-                break;
-        }
-
-        this->updateSampling(m_nbSamples);
-        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
-        this->updateSatShellsNumber(m_satShells);
-        this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
-        this->updateSatConeSamples(m_satConeSamples);
-
-        if(m_preIntegratedRendering)
+        if(m_volumeRenderer->preintegration())
         {
             const auto image = m_image.lock();
 
@@ -959,7 +809,7 @@ void SVolumeRender::updateClippingTM3D()
         sig->asyncEmit();
     }
 
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+    std::lock_guard<std::mutex> swapLock(m_mutex);
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
     this->requestRender();
@@ -975,7 +825,7 @@ void SVolumeRender::setVisible(bool _visible)
 
         if(m_widget)
         {
-            m_widget->setBoxVisibility(_visible && m_widgetVisibilty);
+            m_widget->setBoxVisibility(_visible && m_config.visible);
         }
 
         this->requestRender();

@@ -81,8 +81,26 @@ public:
 
 private:
 
-    /// Creates the buffers and initializes the SAT
-    void initializeSAT();
+    class SummedAreaTableInitCompositorListener;
+    class SummedAreaTableCompositorListener;
+
+    /// Internal wrapper keeping trace of the current listeners in use.
+    struct listeners_t
+    {
+        /// SAT init listener.
+        SummedAreaTableInitCompositorListener* init = nullptr;
+
+        /// SAT table update listener.
+        SummedAreaTableCompositorListener* table = nullptr;
+    };
+
+    /// Creates the buffers and initializes the SAT.
+    void updateBuffers();
+
+    /// Returns the voxel colour after TF application.
+    glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
+
+    listeners_t m_listeners {};
 
     /// SAT size ratio used to computes its resolution.
     float m_satSizeRatio;
@@ -94,10 +112,10 @@ private:
     data::Image::Size m_currentImageSize;
 
     /// Texture used as source during SAT GPU computation, holds the result at the end.
-    Ogre::TexturePtr m_sourceBuffer;
+    Ogre::TexturePtr m_sourceBuffer {nullptr};
 
     /// Texture used as target during SAT GPU computation.
-    Ogre::TexturePtr m_targetBuffer;
+    Ogre::TexturePtr m_targetBuffer {nullptr};
 
     /// Prefix used to name the buffers.
     std::string m_parentId;
@@ -122,23 +140,14 @@ private:
     float m_currentSliceDepth;
 
     /// Number of texture reads per pass. A higher number will result in fewer passes.
-    /// /!\ This number must be the same as the one used in the FS.
-    const int m_nbTextReads = 32;
-
-    /// Returns the voxel colour after TF application.
-    glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
-
-    /// Returns the SAT value at position (x, y, z).
-    glm::vec4 getSatValue(glm::vec4* satBuffer, int x, int y, int z);
-
-    /// Sets the SAT value at position (x, y, z).
-    void setSatValue(glm::vec4* satBuffer, glm::vec4 value, int x, int y, int z);
+    /// /!\ This number must be the same as the one used in the fragment shader.
+    static constexpr int s_nbTextReads = 32;
 
     /// Resource name of the source buffer.
-    const std::string SOURCE_BUFFER_NAME = "__GPU_SummedAreaTable_Ping";
+    static inline const std::string SOURCE_BUFFER_NAME = "__GPU_SummedAreaTable_Ping";
 
     // Resource name of the target buffer.
-    const std::string TARGET_BUFFER_NAME = "__GPU_SummedAreaTable_Pong";
+    static inline const std::string TARGET_BUFFER_NAME = "__GPU_SummedAreaTable_Pong";
 };
 
 //-----------------------------------------------------------------------------

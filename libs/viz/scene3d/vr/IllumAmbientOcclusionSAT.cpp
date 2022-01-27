@@ -47,24 +47,17 @@ namespace sight::viz::scene3d
 namespace vr
 {
 
-//-----------------------------------------------------------------------------
-
+///@brief Internal listener used to update the material according to the parameters.
 class VolIllumCompositorListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
     VolIllumCompositorListener(
-        int& currentSliceIndex,
-        int nbShells,
-        int shellRadius,
-        float coneAngle,
-        int samplesAlongCone
+        const int& currentSliceIndex,
+        const IllumAmbientOcclusionSAT::sat_parameters_t& parameters
     ) :
         m_currentSliceIndex(currentSliceIndex),
-        m_nbShells(nbShells),
-        m_shellRadius(shellRadius),
-        m_coneAngle(coneAngle),
-        m_samplesAlongCone(samplesAlongCone)
+        m_parameters(parameters)
     {
     }
 
@@ -85,22 +78,18 @@ public:
         Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
 
-        volIllumParams->setNamedConstant("u_nbShells", m_nbShells);
-        volIllumParams->setNamedConstant("u_shellRadius", m_shellRadius);
+        volIllumParams->setNamedConstant("u_nbShells", m_parameters.shells);
+        volIllumParams->setNamedConstant("u_shellRadius", m_parameters.radius);
 
-        volIllumParams->setNamedConstant("u_scatteringConeAngle", m_coneAngle);
-        volIllumParams->setNamedConstant("u_nbSamplesAlongCone", m_samplesAlongCone);
+        volIllumParams->setNamedConstant("u_scatteringConeAngle", m_parameters.angle);
+        volIllumParams->setNamedConstant("u_nbSamplesAlongCone", m_parameters.samples);
     }
 
 private:
 
-    int& m_currentSliceIndex;
+    const int& m_currentSliceIndex;
 
-    int m_nbShells;
-    int m_shellRadius;
-
-    float m_coneAngle;
-    int m_samplesAlongCone;
+    const IllumAmbientOcclusionSAT::sat_parameters_t& m_parameters;
 };
 
 //-----------------------------------------------------------------------------
@@ -108,24 +97,16 @@ private:
 IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(
     std::string parentId,
     Ogre::SceneManager* sceneManager,
-    float satSizeRatio,
     bool ao,
     bool shadows,
-    int nbShells,
-    int shellRadius,
-    float coneAngle,
-    int samplesAlongCone
+    std::optional<sat_parameters_t> parameters
 ) :
-    m_sat(parentId, sceneManager, satSizeRatio),
     m_ao(ao),
     m_shadows(shadows),
-    m_nbShells(nbShells),
-    m_shellRadius(shellRadius),
-    m_coneAngle(coneAngle),
-    m_samplesAlongCone(samplesAlongCone),
+    m_parameters(parameters.value_or(sat_parameters_t {})),
     m_parentId(parentId),
-    m_dummyCamera(nullptr),
-    m_sceneManager(sceneManager)
+    m_sceneManager(sceneManager),
+    m_sat(m_parentId, m_sceneManager, m_parameters.size_ratio)
 {
 }
 
@@ -133,13 +114,18 @@ IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(
 
 IllumAmbientOcclusionSAT::~IllumAmbientOcclusionSAT()
 {
+    if(m_dummyCamera != nullptr)
+    {
+        m_sceneManager->destroyCamera(m_dummyCamera.get());
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void IllumAmbientOcclusionSAT::updateSatFromRatio(float _satSizeRatio)
 {
-    m_sat.updateSatFromRatio(_satSizeRatio);
+    m_parameters.size_ratio = _satSizeRatio;
+    m_sat.updateSatFromRatio(m_parameters.size_ratio);
     updateTexture();
 }
 
@@ -147,74 +133,103 @@ void IllumAmbientOcclusionSAT::updateSatFromRatio(float _satSizeRatio)
 
 void IllumAmbientOcclusionSAT::SATUpdate(
     Ogre::TexturePtr _img,
-    const viz::scene3d::TransferFunction::sptr& _tf,
+    const TransferFunction::sptr& _tf,
     float _sampleDistance
 )
 {
     m_sat.computeParallel(_img, _tf, _sampleDistance);
-    this->updateVolIllum();
+    this->updateVolumeIllumination();
 }
 
 //-----------------------------------------------------------------------------
 
-void IllumAmbientOcclusionSAT::updateVolIllum()
+void IllumAmbientOcclusionSAT::updateVolumeIllumination()
 {
     // Do this for now but at the end we should use our own texture
     m_illuminationVolume = m_sat.getSpareTexture();
 
-    const int depth = static_cast<int>(m_illuminationVolume->getDepth());
-
-    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
-
-    VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius,
-                                                m_coneAngle, m_samplesAlongCone);
-
-    std::string currentMaterialName("VolIllum");
-
-    currentMaterialName += m_ao ? "_AO" : "";
-    currentMaterialName += m_shadows ? "_Shadows" : "";
-
-    Ogre::MaterialPtr volIllumMtl = Ogre::MaterialManager::getSingleton().getByName(
-        currentMaterialName,
-        RESOURCE_GROUP
-    );
-    Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
-    Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
-
-    satImgState->setTexture(m_sat.getTexture());
-
-    // Update illumination volume slice by slice.
-    for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
+    if(m_illuminationVolume != nullptr)
     {
-        Ogre::RenderTarget* rt =
-            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<std::size_t>(m_currentSliceIndex));
-        Ogre::Viewport* vp = rt->getViewport(0);
+        const int depth = static_cast<int>(m_illuminationVolume->getDepth());
 
-        // Add compositor.
-        compositorManager.addCompositor(vp, "VolumeIllumination");
-        compositorManager.setCompositorEnabled(vp, "VolumeIllumination", true);
-
-        Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
-            "VolumeIllumination"
-        );
-
-        const auto& passes              = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
-        Ogre::CompositionPass* compPass = passes[0];
-
-        if(compPass->getMaterial()->getName() != currentMaterialName)
+        //Should never happen, but who knows
+        if(depth > 0)
         {
-            compPass->setMaterialName(currentMaterialName);
+            Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
+
+            const std::string currentMaterialName = "VolIllum"
+                                                    + std::string(m_ao ? "_AO" : "")
+                                                    + std::string(m_shadows ? "_Shadows" : "");
+
+            Ogre::MaterialPtr volIllumMtl = Ogre::MaterialManager::getSingleton().getByName(
+                currentMaterialName,
+                RESOURCE_GROUP
+            );
+
+            if(volIllumMtl->getNumTechniques() > 0)
+            {
+                Ogre::Technique* const technique = volIllumMtl->getTechnique(0);
+                if(technique->getNumPasses() > 0)
+                {
+                    Ogre::Pass* const pass                    = technique->getPass(0);
+                    Ogre::TextureUnitState* const satImgState = pass->getTextureUnitState("sat");
+
+                    if(satImgState != nullptr)
+                    {
+                        satImgState->setTexture(m_sat.getTexture());
+
+                        //Update illumination volume slice by slice.
+                        for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
+                        {
+                            //The current render target index
+                            const std::size_t target = static_cast<size_t>(m_currentSliceIndex);
+
+                            Ogre::RenderTarget* const rt =
+                                m_illuminationVolume->getBuffer()->getRenderTarget(target);
+
+                            if(rt->getNumViewports() > 0)
+                            {
+                                Ogre::Viewport* const vp = rt->getViewport(0);
+
+                                //Temporary listener used to update shaders parameters when the target is updated.s
+                                VolIllumCompositorListener listener(m_currentSliceIndex, m_parameters);
+
+                                //Add compositor
+                                compositorManager.addCompositor(vp, "VolumeIllumination");
+                                compositorManager.setCompositorEnabled(vp, "VolumeIllumination", true);
+
+                                Ogre::CompositorChain* const compChain       = compositorManager.getCompositorChain(vp);
+                                Ogre::CompositorInstance* const compInstance = compChain->getCompositor(
+                                    "VolumeIllumination"
+                                );
+
+                                //Compositor instance technique
+                                auto* const tech                      = compInstance->getTechnique();
+                                const auto& passes                    = tech->getOutputTargetPass()->getPasses();
+                                Ogre::CompositionPass* const compPass = passes[0];
+
+                                if(compPass->getMaterial()->getName() != currentMaterialName)
+                                {
+                                    compPass->setMaterialName(currentMaterialName);
+                                }
+
+                                //Add the temporary listener
+                                compInstance->addListener(&listener);
+
+                                // Compute the volume illumination
+                                rt->update(false);
+
+                                // Remove it
+                                compInstance->removeListener(&listener);
+
+                                compositorManager.setCompositorEnabled(vp, "VolumeIllumination", false);
+                                compositorManager.removeCompositor(vp, "VolumeIllumination");
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        compInstance->addListener(&volIllumListener);
-
-        // Compute volillum.
-        rt->update(false);
-
-        // Remove compositor.
-        compInstance->removeListener(&volIllumListener);
-        compositorManager.setCompositorEnabled(vp, "VolumeIllumination", false);
-        compositorManager.removeCompositor(vp, "VolumeIllumination");
     }
 }
 
@@ -241,9 +256,9 @@ void IllumAmbientOcclusionSAT::updateTexture()
         Ogre::TU_RENDERTARGET
     );
 
-    if(!m_dummyCamera)
+    if(m_dummyCamera == nullptr)
     {
-        m_dummyCamera = m_sceneManager->createCamera(m_parentId + "_VolumeIllumination_DummyCamera");
+        m_dummyCamera.reset(m_sceneManager->createCamera(m_parentId + "_VolumeIllumination_DummyCamera"));
     }
 
     const int depth = static_cast<int>(satTexture->getDepth());
@@ -252,7 +267,7 @@ void IllumAmbientOcclusionSAT::updateTexture()
         // Init source buffer
         Ogre::RenderTarget* renderTarget =
             m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<std::size_t>(sliceIndex));
-        Ogre::Viewport* vp = renderTarget->addViewport(m_dummyCamera);
+        Ogre::Viewport* vp = renderTarget->addViewport(m_dummyCamera.get());
 
         vp->setOverlaysEnabled(false);
     }
