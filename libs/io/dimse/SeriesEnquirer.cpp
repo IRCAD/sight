@@ -750,8 +750,8 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanc
     dataset.putAndInsertOFStringArray(DCM_InstanceNumber, ss.str().c_str());
 
     OFList<QRResponse*> responses = this->sendFindRequest(dataset);
-    OFIterator<QRResponse*> it    = responses.begin();
-    std::string sopInstanceUID    = "";
+    OFListIterator(QRResponse*) it = responses.begin();
+    std::string sopInstanceUID = "";
     if(it != responses.end() && (*it)->m_dataset)
     {
         OFString sop;

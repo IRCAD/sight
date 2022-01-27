@@ -58,7 +58,7 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
 {
     DicomSeriesContainer seriesContainer;
 
-    OFIterator<QRResponse*> it;
+    OFListIterator(QRResponse*) it;
     OFCondition result;
 
     // Every while loop run will get all image for a specific study
@@ -219,7 +219,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
 {
     InstanceUIDContainer instanceUIDContainer;
 
-    OFIterator<QRResponse*> it;
+    OFListIterator(QRResponse*) it;
     DcmDataset dataset;
     OFCondition result;
     // Every while loop run will get all image for a specific study
