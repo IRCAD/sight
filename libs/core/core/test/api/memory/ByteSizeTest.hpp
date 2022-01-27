@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@ class ByteSizeTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ByteSizeTest);
 CPPUNIT_TEST(byteSizeTest);
+CPPUNIT_TEST(invalidSizeTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +44,7 @@ public:
     void tearDown();
 
     void byteSizeTest();
+    void invalidSizeTest();
 };
 
 } // namespace ut

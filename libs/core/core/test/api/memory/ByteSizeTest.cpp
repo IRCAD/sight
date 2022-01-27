@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "ByteSizeTest.hpp"
 
 #include <core/memory/ByteSize.hpp>
+#include <core/memory/exception/BadCast.hpp>
 
 #include <limits>
 
@@ -183,6 +184,20 @@ void ByteSizeTest::byteSizeTest()
         core::memory::ByteSize::SizeType resultSize = bsize.getSize();
         CPPUNIT_ASSERT_EQUAL(refSize, resultSize);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ByteSizeTest::invalidSizeTest()
+{
+    CPPUNIT_ASSERT_THROW(core::memory::ByteSize a(-1.), core::memory::exception::BadCast);
+    CPPUNIT_ASSERT_THROW(core::memory::ByteSize a("-2B"), core::memory::exception::BadCast);
+    core::memory::ByteSize a;
+    CPPUNIT_ASSERT_THROW(a = -3., core::memory::exception::BadCast);
+    CPPUNIT_ASSERT_THROW(a = std::string("-4B"), core::memory::exception::BadCast);
+    CPPUNIT_ASSERT_THROW(a.setSize(-5.), core::memory::exception::BadCast);
+    CPPUNIT_ASSERT_THROW(a.setSize(std::string("-6B")), core::memory::exception::BadCast);
+    CPPUNIT_ASSERT_THROW(a = std::string("7A"), core::memory::exception::BadCast);
 }
 
 } // namespace ut
