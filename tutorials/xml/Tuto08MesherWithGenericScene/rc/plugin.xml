@@ -251,15 +251,11 @@
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>
-
             <!-- extract a sight::data::Image from the sight::data::ImageSeries -->
-            <service uid="extractImageSrv" type="sight::module::data::SExtractObj" >
-               <inout key="source" uid="imageSeries" >
-                   <extract from="@image" />
-               </inout>
-               <out group="target" >
-                   <key uid="image" />
-               </out>
+               <service uid="extractImageSrv" type="sight::module::data::SGetImage" >
+                <in key="imageSeries" uid="imageSeries" />
+                <out key="image" uid="image" />
+
             </service>
 
             <!-- This service converts a simple fwData::Image to medical Image -->

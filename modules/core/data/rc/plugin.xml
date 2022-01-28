@@ -57,6 +57,14 @@
          <desc>This service emits a signal for each added series (the signal contains the added series)</desc>
     </extension>
 
+ <extension implements="sight::service::extension::Factory">
+        <type>sight::service::IController</type>
+        <service>sight::module::data::SGetImage</service>
+        <object key="imageSeries">sight::data::ImageSeries</object>
+        <object key="image">sight::data::Image</object>
+        <desc>This service extract an image from image series</desc>
+    </extension>
+
     <extension implements="sight::service::extension::Factory">
          <type>sight::module::data::IUpdaterSrv</type>
          <service>sight::module::data::updater::SObjFromSlot</service>
@@ -70,4 +78,5 @@
          <object>sight::data::Image</object>
          <desc>This service forwards signals from an image ti another.</desc>
     </extension>
+
 </plugin>
