@@ -27,7 +27,6 @@
 #include <core/thread/Worker.hpp>
 
 #include <data/Composite.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
 #include <data/timeline/Buffer.hpp>
 

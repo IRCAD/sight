@@ -26,9 +26,6 @@
 #include <core/com/Signal.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <geometry/data/Matrix4.hpp>
 
 #include <service/macros.hpp>

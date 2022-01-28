@@ -114,7 +114,7 @@ void SPointCloudFromDepthMap::updating()
 
         pointCloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, attribute);
 
-        const auto dumpLock = pointCloud->lock();
+        const auto dumpLock = pointCloud->dump_lock();
 
         auto itr = pointCloud->begin<data::iterator::cell::point>();
 
@@ -210,7 +210,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     const std::size_t width  = size[0];
     const std::size_t height = size[1];
 
-    const auto depthDumpLock = depthMap->lock();
+    const auto depthDumpLock = depthMap->dump_lock();
 
     auto depthItr = depthMap->begin<std::uint16_t>();
 
@@ -219,7 +219,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
                  fx = depthCamera->getFx(),
                  fy = depthCamera->getFy();
 
-    const auto meshDumpLock = pointCloud->lock();
+    const auto meshDumpLock = pointCloud->dump_lock();
 
     auto pointsItr = pointCloud->begin<data::iterator::point::xyz>();
 
@@ -293,10 +293,10 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    const auto depthDumpLock = depthMap->lock();
+    const auto depthDumpLock = depthMap->dump_lock();
     auto depthItr            = depthMap->begin<std::uint16_t>();
 
-    const auto rgbDumpLock = colorMap->lock();
+    const auto rgbDumpLock = colorMap->dump_lock();
     const auto rgbBegin    = colorMap->begin<data::iterator::rgba>();
 
     const double cx = depthCamera->getCx(),
@@ -309,7 +309,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                  rgbFx = colorCamera->getFx(),
                  rgbFy = colorCamera->getFy();
 
-    const auto meshDumpLock = pointCloud->lock();
+    const auto meshDumpLock = pointCloud->dump_lock();
 
     auto pointsItr = pointCloud->zip_range<data::iterator::point::xyz, data::iterator::point::rgba>().begin();
 

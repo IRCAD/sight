@@ -260,7 +260,7 @@ QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
         QImage qImage(width, height, QImage::Format_ARGB32);
         std::uint8_t* qImageBuffer = qImage.bits();
 
-        const auto dumpLock = fwImage.lock();
+        const auto dumpLock = fwImage.dump_lock();
 
         auto imageItr = fwImage.begin<data::iterator::rgb>();
 

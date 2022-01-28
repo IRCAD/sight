@@ -44,10 +44,23 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
     std::uint8_t _numChannels
 )
 {
+    CPPUNIT_ASSERT(_numChannels == 1 || _numChannels == 3 || _numChannels == 4);
+
     const core::tools::Type type = core::tools::Type::create<T>();
 
     data::FrameTL::sptr frameTL = data::FrameTL::New();
-    frameTL->initPoolSize(_w, _h, type, _numChannels);
+    frameTL->initPoolSize(
+        _w,
+        _h,
+        type,
+        _numChannels == 1
+        ? data::FrameTL::PixelFormat::GRAY_SCALE
+        : _numChannels == 3
+        ? data::FrameTL::PixelFormat::RGB
+        : _numChannels == 4
+        ? data::FrameTL::PixelFormat::RGBA
+        : data::FrameTL::PixelFormat::UNDEFINED
+    );
     auto buffer = frameTL->createBuffer(core::HiResClock::getTimeInMilliSec());
 
     return std::make_pair(frameTL, buffer);
@@ -184,7 +197,6 @@ void FrameTLTest::tearDown()
 void FrameTLTest::moveToCv()
 {
     testMoveToCV<std::uint8_t>(10, 2, 1);
-    testMoveToCV<std::uint8_t>(1, 20, 2);
     testMoveToCV<std::uint8_t>(6, 12, 3);
     testMoveToCV<std::uint8_t>(10, 7, 4);
 }
@@ -195,7 +207,6 @@ void FrameTLTest::copyFromCv()
 {
     testCopyFromCV<std::uint8_t>(10, 7, 1);
     testCopyFromCV<std::uint8_t>(10, 2, 1);
-    testCopyFromCV<std::uint8_t>(1, 20, 2);
     testCopyFromCV<std::uint8_t>(6, 12, 3);
     testCopyFromCV<std::uint8_t>(10, 7, 4);
 }
@@ -205,7 +216,6 @@ void FrameTLTest::copyFromCv()
 void FrameTLTest::copyToCv()
 {
     testCopyToCV<std::uint8_t>(10, 2, 1);
-    testCopyToCV<std::uint8_t>(1, 20, 2);
     testCopyToCV<std::uint8_t>(6, 12, 3);
     testCopyToCV<std::uint8_t>(10, 7, 4);
 }

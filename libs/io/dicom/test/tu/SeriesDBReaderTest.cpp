@@ -460,7 +460,7 @@ void SeriesDBReaderTest::readJMSSeries()
     CPPUNIT_ASSERT(utestData::DicomReaderTest::checkSeriesJMSGenouTrimmed(series));
 
     // Read image in lazy mode
-    const auto dumpLock = series->getImage()->lock();
+    const auto dumpLock = series->getImage()->dump_lock();
 }
 
 //------------------------------------------------------------------------------
@@ -493,7 +493,7 @@ void SeriesDBReaderTest::readCTSeries()
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
@@ -559,7 +559,7 @@ void SeriesDBReaderTest::readMRSeries()
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
@@ -627,7 +627,7 @@ void SeriesDBReaderTest::readOTSeries()
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
@@ -744,7 +744,7 @@ void SeriesDBReaderTest::readSFSeries()
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Retrieve landmarks
     data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image);
@@ -796,7 +796,7 @@ void SeriesDBReaderTest::readSRSeries()
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     CPPUNIT_ASSERT(series);
     data::Image::sptr image = series->getImage();
-    const auto dumpLock     = image->lock();
+    const auto dumpLock     = image->dump_lock();
 
     // Retrieve landmarks
     data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*image);
@@ -861,7 +861,7 @@ void SeriesDBReaderTest::read3DSRSeries()
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Retrieve landmarks
     data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*image);
@@ -981,17 +981,15 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Get internal buffer
     auto buffer = image->getBuffer();
     CPPUNIT_ASSERT(buffer);
 
-    CPPUNIT_ASSERT(dumpLock.getBuffer());
-
     // Compute sha1 digest
     boost::uuids::detail::sha1 sha1;
-    sha1.process_bytes(static_cast<char*>(dumpLock.getBuffer()), image->getSizeInBytes());
+    sha1.process_bytes(static_cast<char*>(buffer), image->getSizeInBytes());
     boost::uuids::detail::sha1::digest_type digest = {0};
     sha1.get_digest(digest);
 

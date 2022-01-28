@@ -121,7 +121,7 @@ void Mesh::generateQuadMesh(
 
 void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, std::size_t nbPointsByEdge, float edgeDim)
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
     data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
     data::Mesh::size_t idx1, idx2, idx3, idx4;
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
@@ -231,7 +231,7 @@ void Mesh::addTriangleMesh(
     float edgeDim
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
     data::Mesh::size_t idx1, idx2, idx3, idx4;
@@ -386,7 +386,7 @@ data::Mesh::size_t Mesh::addPoint(
 void Mesh::shakePoints(const data::Mesh::sptr& mesh)
 {
     RandFloat randFloat;
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     auto itr          = mesh->begin<data::iterator::point::xyz>();
     const auto itrEnd = mesh->end<data::iterator::point::xyz>();

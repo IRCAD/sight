@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,7 +142,7 @@ void ConfigParserTest::testImageParser()
     CPPUNIT_ASSERT_EQUAL(sight::core::tools::Type::s_UINT8, image->getType());
 
     // We only test the image content, we do not really care about the image size and other attributes for now
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     auto itr            = image->begin<sight::data::iterator::rgba>();
     const auto itrEnd   = image->end<sight::data::iterator::rgba>();
 

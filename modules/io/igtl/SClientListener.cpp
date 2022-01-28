@@ -252,10 +252,36 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
     else if(frameTL)
     {
         data::Image::sptr im = data::Image::dynamicCast(obj);
+
         if(!m_tlInitialized)
         {
+            const auto frame_pixel_format =
+                [](data::Image::PixelFormat image_pixel_format) -> data::FrameTL::PixelFormat
+                {
+                    switch(image_pixel_format)
+                    {
+                        case data::Image::PixelFormat::BGR:
+                            return data::FrameTL::PixelFormat::BGR;
+
+                        case data::Image::PixelFormat::RGB:
+                            return data::FrameTL::PixelFormat::RGB;
+
+                        case data::Image::PixelFormat::RGBA:
+                            return data::FrameTL::PixelFormat::RGBA;
+
+                        case data::Image::PixelFormat::BGRA:
+                            return data::FrameTL::PixelFormat::BGRA;
+
+                        case data::Image::PixelFormat::GRAY_SCALE:
+                            return data::FrameTL::PixelFormat::GRAY_SCALE;
+
+                        default:
+                            return data::FrameTL::PixelFormat::UNDEFINED;
+                    }
+                }(im->getPixelFormat());
+
             frameTL->setMaximumSize(10);
-            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), im->numComponents());
+            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), frame_pixel_format);
             m_tlInitialized = true;
         }
 
@@ -263,7 +289,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 
         std::uint8_t* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        const auto dumpLock = im->lock();
+        const auto dumpLock = im->dump_lock();
         auto itr            = im->begin<std::uint8_t>();
         const auto end      = im->end<std::uint8_t>();
 

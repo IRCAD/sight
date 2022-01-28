@@ -87,7 +87,7 @@ class PointList;
     // 3D image of std::int16_t
 
     // prevent the buffer to be dumped on the disk
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     // retrieve the value at index (x, y, z)
     value = image->at<std::int16_t>(x, y, z);
@@ -215,9 +215,6 @@ public:
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     DATA_API void copyInformation(Image::csptr _source);
@@ -458,7 +455,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      * @throw Exception Index out of bounds
      */
     template<typename T>
@@ -478,7 +475,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      * @throw Exception Index out of bounds
      */
     template<typename T>
@@ -491,14 +488,14 @@ public:
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
     DATA_API void* getPixel(IndexType index);
 
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
     DATA_API void* getPixel(IndexType index) const;
 
@@ -506,7 +503,7 @@ public:
      * @brief Set pixel value represented as a void* buffer
      * @param index offset of the pixel
      * @param pixBuf pixel value represented as a void* buffer
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
     DATA_API void setPixel(IndexType index, BufferType* pixBuf);
 
@@ -516,17 +513,6 @@ public:
         IndexType y,
         IndexType z
     ) const;
-
-    /**
-     * @brief Return a lock on the image to prevent from dumping the buffer on the disk
-     *
-     * When the buffer is dumped, the memory is released and the buffer will not be accessible. When lock() is called,
-     * the buffer is restored from the disk if it was dumped and as long as the core::memory::BufferObject::Lock is
-     * maintained, the buffer will not be dumped.
-     *
-     * An exception will be raised if you try to access while the array is not locked.
-     */
-    [[nodiscard]] DATA_API core::memory::BufferObject::Lock lock() const;
 
     /// Return the buffer object
     DATA_API core::memory::BufferObject::sptr getBufferObject();
@@ -542,17 +528,12 @@ public:
 
 protected:
 
-    // To allow locked_ptr to access protected lockBuffer()
-    template<class DATATYPE>
-    friend class mt::locked_ptr;
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
-    /**
-     * @brief Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
-     *
-     * This is needed for IBuffered interface implementation
-     * The buffer cannot be accessed if the image is not locked
-     */
-    DATA_API void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const override;
+    /// Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
+    /// This is needed for IBuffered interface implementation
+    DATA_API void dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const override;
 
 private:
 

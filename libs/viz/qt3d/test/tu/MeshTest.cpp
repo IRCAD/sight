@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ void MeshTest::setCubeMesh()
     const data::Mesh::sptr mesh = data::Mesh::New();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     mesh->pushPoint(0.0, 0.0, 0.0);
     mesh->pushPoint(1.0, 0.0, 0.0);
@@ -163,7 +163,7 @@ void MeshTest::centerCameraOnCube()
     const data::Mesh::sptr mesh = data::Mesh::New();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     mesh->pushPoint(0.0, 0.0, 0.0);
     mesh->pushPoint(1.0, 0.0, 0.0);

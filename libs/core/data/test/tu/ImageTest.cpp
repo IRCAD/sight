@@ -176,7 +176,7 @@ void ImageTest::testSetGetPixel()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 2, allocatedSize);
 
-    const auto lock    = img->lock();
+    const auto lock    = img->dump_lock();
     auto iter          = img->begin<std::int16_t>();
     const auto iterEnd = img->end<std::int16_t>();
 
@@ -244,7 +244,7 @@ void ImageTest::testSetGetPixel()
 
     data::Image::csptr img2 = data::Image::copy(img);
 
-    const auto lock2 = img2->lock();
+    const auto lock2 = img2->dump_lock();
     {
         auto iterImg2          = img2->begin<std::int16_t>();
         auto iterImg1          = img->begin<std::int16_t>();
@@ -297,7 +297,7 @@ void ImageTest::testSetGetPixelRGBA()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, allocatedSize);
 
-    const auto lock    = img->lock();
+    const auto lock    = img->dump_lock();
     auto iter          = img->begin<std::uint8_t>();
     const auto iterEnd = img->end<std::uint8_t>();
 
@@ -386,7 +386,7 @@ void ImageTest::testSetGetPixelRGBA()
 
     data::Image::csptr img2 = data::Image::copy(img);
 
-    const auto lock2 = img2->lock();
+    const auto lock2 = img2->dump_lock();
     {
         auto iterImg2          = img2->begin<data::iterator::rgba>();
         auto iterImg1          = img->begin<data::iterator::rgba>();
@@ -448,7 +448,7 @@ void ImageTest::testIterator()
         CPPUNIT_ASSERT_THROW(img->begin(), core::Exception);
     }
 
-    const auto lock = img->lock();
+    const auto lock = img->dump_lock();
     {
         CPPUNIT_ASSERT_NO_THROW(img->getBuffer());
         CPPUNIT_ASSERT_NO_THROW(img->begin());
@@ -513,7 +513,7 @@ void ImageTest::testRGBIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3, img->numElements());
 
-    const auto lock = img->lock();
+    const auto lock = img->dump_lock();
 
     const data::iterator::rgb value = {18, 12, 68};
     std::fill(img->begin<data::iterator::rgb>(), img->end<data::iterator::rgb>(), value);
@@ -577,7 +577,7 @@ void ImageTest::testBGRIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 3, img->numElements());
 
-    const auto lock = img->lock();
+    const auto lock = img->dump_lock();
 
     auto iter          = img->begin<std::uint8_t>();
     const auto iterEnd = img->end<std::uint8_t>();
@@ -628,7 +628,7 @@ void ImageTest::testBGRAIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 4, img->numElements());
 
-    const auto lock = img->lock();
+    const auto lock = img->dump_lock();
 
     auto iter          = img->begin<std::uint8_t>();
     const auto iterEnd = img->end<std::uint8_t>();
@@ -682,7 +682,7 @@ void ImageTest::testRGBAIterator()
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, allocatedSize);
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img->numElements());
 
-    const auto lock = img->lock();
+    const auto lock = img->dump_lock();
 
     auto iter          = img->begin<data::iterator::rgba16>();
     const auto iterEnd = img->end<data::iterator::rgba16>();
@@ -738,7 +738,7 @@ void ImageTest::benchmarkIterator()
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGBA);
     {
-        const auto imgDumpLock = img->lock();
+        const auto imgDumpLock = img->dump_lock();
         utestData::generator::Image::randomizeImage(img);
     }
 
@@ -753,8 +753,8 @@ void ImageTest::benchmarkIterator()
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img2->numElements());
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, img2->getSizeInBytes());
 
-    const auto imgDumpLock  = img->lock();
-    const auto imgDumpLock2 = img2->lock();
+    const auto imgDumpLock  = img->dump_lock();
+    const auto imgDumpLock2 = img2->dump_lock();
     auto begin1             = img->begin<data::iterator::rgba16>();
     auto end1               = img->end<data::iterator::rgba16>();
     auto begin2             = img2->begin<data::iterator::rgba16>();
@@ -834,7 +834,7 @@ void ImageTest::imageDeepCopy()
         const auto format = data::Image::PixelFormat::RGB;
 
         {
-            const auto imgDumpLock = img->lock();
+            const auto imgDumpLock = img->dump_lock();
             utestData::generator::Image::generateImage(img, size, spacing, origin, type, format);
             utestData::generator::Image::randomizeImage(img);
         }
@@ -844,7 +844,7 @@ void ImageTest::imageDeepCopy()
         // Lock the imgCopy buffer to make sure the underlying array isn't deleted.
         // Attempting to delete a locked array raises an assert in
         // `core::memory::BufferManager::unregisterBufferImpl()`.
-        const auto imgCopyLock = imgCopy->lock();
+        const auto imgCopyLock = imgCopy->dump_lock();
 
         // Test a bit more image equality operator, which ensure the copy test is really working
         utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format);
@@ -866,7 +866,7 @@ void ImageTest::imageDeepCopy()
         const auto format = data::Image::PixelFormat::GRAY_SCALE;
 
         {
-            const auto imgDumpLock = img->lock();
+            const auto imgDumpLock = img->dump_lock();
             utestData::generator::Image::generateImage(img, size, spacing, origin, type, format);
             utestData::generator::Image::randomizeImage(img);
         }
@@ -875,7 +875,7 @@ void ImageTest::imageDeepCopy()
 
         CPPUNIT_ASSERT(*img != *imgCopy);
 
-        const auto imgCopyLock = imgCopy->lock();
+        const auto imgCopyLock = imgCopy->dump_lock();
 
         // Test a bit more image equality operator, which ensure the copy test is really working
         utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format);
@@ -896,7 +896,7 @@ void ImageTest::emptyIteratorTest()
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     auto iter      = image->begin<std::int16_t>();
     const auto end = image->end<std::int16_t>();

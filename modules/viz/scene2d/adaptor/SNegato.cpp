@@ -32,8 +32,6 @@
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <service/macros.hpp>
@@ -134,7 +132,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
     // Window min/max
     const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    const data::mt::ObjectReadLock tfLock(tf);
+    const data::mt::locked_ptr tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
@@ -575,7 +573,7 @@ void SNegato::changeImageMinMaxFromCoord(
 )
 {
     data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    data::mt::ObjectWriteLock tfLock(tf);
+    data::mt::locked_ptr tfLock(tf);
 
     const double min = tf->getWLMinMax().first;
     const double max = tf->getWLMinMax().second;

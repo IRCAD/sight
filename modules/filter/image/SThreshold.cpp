@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,8 +106,8 @@ struct ThresholdFilter
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->resize(imageOut->getSize(), imageOut->getType(), imageOut->getPixelFormat());
-        const auto lockin  = imageIn->lock();
-        const auto lockOut = imageOut->lock();
+        const auto lockin  = imageIn->dump_lock();
+        const auto lockOut = imageOut->dump_lock();
 
         // Get iterators on image buffers
         auto it1          = imageIn->begin<PIXELTYPE>();

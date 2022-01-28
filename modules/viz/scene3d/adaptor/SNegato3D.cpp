@@ -637,7 +637,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
                 return;
             }
 
-            const auto imageBufferLock = image->lock();
+            const auto imageBufferLock = image->dump_lock();
 
             const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
             const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;

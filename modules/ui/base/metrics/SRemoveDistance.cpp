@@ -27,7 +27,6 @@
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>

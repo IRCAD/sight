@@ -25,9 +25,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>

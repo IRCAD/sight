@@ -360,8 +360,8 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
 
-        const auto imageDumpLock         = image->lock();
-        const auto imageFromDiskDumpLock = imageFromDisk->lock();
+        const auto imageDumpLock         = image->dump_lock();
+        const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
         const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
         const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -432,8 +432,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    const auto imageDumpLock         = image->lock();
-    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+    const auto imageDumpLock         = image->dump_lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
     const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -522,8 +522,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    const auto imageDumpLock         = image->lock();
-    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+    const auto imageDumpLock         = image->dump_lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
     const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -586,8 +586,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    const auto imageDumpLock         = image->lock();
-    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+    const auto imageDumpLock         = image->dump_lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
     const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());

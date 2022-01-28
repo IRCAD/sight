@@ -298,7 +298,12 @@ void SColourImageMasking::setBackground()
 
     // Initialize the mask timeline
     const auto videoMaskTL = m_videoMaskTL.lock();
-    videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), core::tools::Type::s_UINT8, 4);
+    videoMaskTL->initPoolSize(
+        videoTL->getWidth(),
+        videoTL->getHeight(),
+        core::tools::Type::s_UINT8,
+        data::FrameTL::PixelFormat::RGBA
+    );
 }
 
 // ------------------------------------------------------------------------------

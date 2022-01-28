@@ -78,7 +78,7 @@ void LineDrawerTest::circleTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
             data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
@@ -122,7 +122,7 @@ void LineDrawerTest::circleTest()
             TYPE,
             data::Image::PixelFormat::GRAY_SCALE
         );
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         SPTR(data::Image::BufferType) val =
             data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
@@ -264,7 +264,7 @@ void LineDrawerTest::ellipseTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
             data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
@@ -372,7 +372,7 @@ void LineDrawerTest::borderTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
             data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
@@ -460,7 +460,7 @@ void LineDrawerTest::roiTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto roiDumpLock = roiImage->lock();
+        const auto roiDumpLock = roiImage->dump_lock();
 
         // draw a cube in ROI
         const data::Image::Size ROI_BEGIN = {{25, 25, 25}};
@@ -482,7 +482,7 @@ void LineDrawerTest::roiTest()
             }
         }
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
             data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 

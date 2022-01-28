@@ -64,7 +64,7 @@ void MeshTest::insertion()
 {
     {
         data::Mesh::sptr mesh = data::Mesh::New();
-        const auto lock       = mesh->lock();
+        const auto lock       = mesh->dump_lock();
         mesh->pushPoint(10, 20, 30);
         mesh->pushPoint(10, 10, 10);
         mesh->pushPoint(20, 21, 10);
@@ -173,7 +173,7 @@ void MeshTest::insertion()
         data::Mesh::sptr mesh = data::Mesh::New();
 
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
-        const auto lock = mesh->lock();
+        const auto lock = mesh->dump_lock();
 
         for(std::size_t i = 0 ; i < NB_POINTS ; ++i)
         {
@@ -226,7 +226,7 @@ void MeshTest::insertion()
         data::Mesh::sptr mesh = data::Mesh::New();
 
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
-        const auto lock                               = mesh->lock();
+        const auto lock                               = mesh->dump_lock();
         const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
         const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
         const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
@@ -317,7 +317,7 @@ void MeshTest::insertion()
             | data::Mesh::Attributes::CELL_TEX_COORDS;
         data::Mesh::sptr mesh = data::Mesh::New();
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE1, ATTRIBUTES_ARRAY);
-        const auto lock                               = mesh->lock();
+        const auto lock                               = mesh->dump_lock();
         const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
         const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
         const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
@@ -405,7 +405,7 @@ void MeshTest::copy()
     data::Mesh::sptr shallowCopyMesh = data::Mesh::New();
     CPPUNIT_ASSERT(*mesh == *shallowCopyMesh);
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     mesh->pushPoint(10, 20, 30);
     mesh->pushPoint(10, 10, 10);
@@ -441,7 +441,7 @@ void MeshTest::copy()
     // check deep copy
     {
         data::Mesh::sptr deepCopyMesh = data::Object::copy(mesh);
-        const auto copyDumpLock       = deepCopyMesh->lock();
+        const auto copyDumpLock       = deepCopyMesh->dump_lock();
 
         CPPUNIT_ASSERT(*mesh == *deepCopyMesh);
 
@@ -513,7 +513,7 @@ void MeshTest::allocationTest()
 {
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     mesh->pushPoint(10, 20, 30);
     mesh->pushPoint(10, 10, 10);
@@ -648,7 +648,7 @@ void MeshTest::iteratorTest()
     data::Mesh::sptr mesh = data::Mesh::New();
 
     mesh->resize(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     for(data::Mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
     {
@@ -826,7 +826,7 @@ void MeshTest::iteratorTest()
     }
 
     data::Mesh::csptr mesh2 = data::Mesh::copy(mesh);
-    const auto lock2        = mesh2->lock();
+    const auto lock2        = mesh2->dump_lock();
     {
         const auto range = mesh2->crange<point::xyz>();
 
@@ -886,7 +886,7 @@ void MeshTest::iteratorTest()
     }
 
     data::Mesh::sptr mesh3 = data::Mesh::New();
-    const auto lock3       = mesh3->lock();
+    const auto lock3       = mesh3->dump_lock();
     mesh3->resize(NB_POINTS, NB_CELLS, data::Mesh::CellType::QUAD, EXTRA_ARRAY);
 
     {
@@ -1026,7 +1026,7 @@ void MeshTest::iteratorCopyTest()
         | data::Mesh::Attributes::CELL_TEX_COORDS
     );
 
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     using namespace data::iterator;
     {
@@ -1135,7 +1135,7 @@ void MeshTest::iteratorCopyTest()
         | data::Mesh::Attributes::CELL_COLORS
         | data::Mesh::Attributes::CELL_TEX_COORDS
     );
-    const auto lock2 = copiedMesh->lock();
+    const auto lock2 = copiedMesh->dump_lock();
     {
         // copy the mesh points and cells with the iterator
         auto range = mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv,
@@ -1302,7 +1302,7 @@ void MeshTest::iteratorCopyTest()
 void MeshTest::benchmarkIterator()
 {
     data::Mesh::sptr mesh = data::Mesh::New();
-    const auto lock       = mesh->lock();
+    const auto lock       = mesh->dump_lock();
 
     static const std::size_t N = 1;
 

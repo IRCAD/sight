@@ -152,7 +152,12 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
                 auto tlDetection = m_detection[i].lock();
                 if(!tlDetection->isAllocated())
                 {
-                    tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), core::tools::Type::s_UINT8, 4);
+                    tlDetection->initPoolSize(
+                        tl->getWidth(),
+                        tl->getHeight(),
+                        core::tools::Type::s_UINT8,
+                        data::FrameTL::PixelFormat::RGBA
+                    );
                 }
 
                 charucoBoardPoints = this->detectCharucoBoard(tl.get_shared(), lastTimestamp, tlDetection.get_shared());
@@ -297,7 +302,7 @@ data::Image::sptr SCharucoBoardDetector::createImage(
         image->setWindowWidth(1);
         image->setWindowCenter(0);
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
         auto itr                      = image->begin<std::uint8_t>();

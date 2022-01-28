@@ -722,7 +722,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     // Creates the mesh from a list a 3D triangles.
     const data::Mesh::sptr mesh = data::Mesh::New();
     {
-        const auto lock = mesh->lock();
+        const auto lock = mesh->dump_lock();
 
         // 3 points per triangle and one cell per triangle.
         mesh->resize(

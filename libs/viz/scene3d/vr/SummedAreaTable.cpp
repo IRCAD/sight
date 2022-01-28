@@ -554,7 +554,7 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
             satBuffer[index] = value;
         };
 
-    const auto dumpLock = _image->lock();
+    const auto dumpLock = _image->dump_lock();
 
     for(int z = 0 ; z < static_cast<int>(m_satSize[2]) ; ++z)
     {

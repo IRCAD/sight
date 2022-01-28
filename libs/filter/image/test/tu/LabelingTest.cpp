@@ -67,7 +67,7 @@ void LabelingTest::computeCentroids()
     img->setOrigin(imgOrigin);
     img->resize(imgSize, type, data::Image::PixelFormat::GRAY_SCALE);
 
-    const auto dumpLock = img->lock();
+    const auto dumpLock = img->dump_lock();
 
     // Setup image with 0 values
     for(unsigned int x = 0 ; x < imgSize[0] ; ++x)

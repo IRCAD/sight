@@ -132,7 +132,7 @@ DicomSurface::~DicomSurface()
 data::Mesh::sptr DicomSurface::convertToData()
 {
     data::Mesh::sptr mesh = data::Mesh::New();
-    const auto lock       = mesh->lock();
+    const auto lock       = mesh->dump_lock();
 
     // Initialize number of points
     data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;

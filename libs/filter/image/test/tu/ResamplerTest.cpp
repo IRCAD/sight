@@ -82,8 +82,8 @@ void ResamplerTest::identityTest()
     CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
     CPPUNIT_ASSERT(imageOut->getType() == TYPE);
 
-    const auto inDumpLock  = imageIn->lock();
-    const auto outDumpLock = imageOut->lock();
+    const auto inDumpLock  = imageIn->dump_lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
     for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
@@ -122,7 +122,7 @@ void ResamplerTest::translateTest()
     SPTR(data::Image::BufferType) bufferValue =
         data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
 
     // Draw a tiny 2x2 cube at the center
     imageIn->at<std::uint8_t>(7, 7, 7) = value;
@@ -144,7 +144,7 @@ void ResamplerTest::translateTest()
         data::Matrix4::csptr(transMat)
     );
 
-    const auto dumpLock = imageOut->lock();
+    const auto dumpLock = imageOut->dump_lock();
 
     for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
@@ -187,7 +187,7 @@ void ResamplerTest::rotateTest()
 
     const float value = 1.f;
 
-    const auto dumpLock = imageIn->lock();
+    const auto dumpLock = imageIn->dump_lock();
 
     // draw the back Z face.
     for(std::size_t i = 0 ; i < 64 ; ++i)
@@ -216,7 +216,7 @@ void ResamplerTest::rotateTest()
         data::Matrix4::csptr(rotMat)
     );
 
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
     for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {

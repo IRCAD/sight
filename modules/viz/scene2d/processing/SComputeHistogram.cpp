@@ -31,8 +31,6 @@
 
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <service/macros.hpp>
 

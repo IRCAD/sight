@@ -67,7 +67,7 @@ void GzArrayWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    const auto dumpLock = array->lock();
+    const auto dumpLock = array->dump_lock();
 
     // file is OK : process now
     const std::size_t arraySizeInBytes = array->getSizeInBytes();

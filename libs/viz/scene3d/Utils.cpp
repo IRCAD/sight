@@ -318,7 +318,7 @@ Ogre::Image Utils::convertToOgreImage(const data::Image::csptr imageFw)
 
     const Ogre::PixelFormat pixelFormat = getPixelFormatOgre(imageFw);
 
-    const auto dumpLock = imageFw->lock();
+    const auto dumpLock = imageFw->dump_lock();
 
     imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageFw->getBuffer()), width, height, depth, pixelFormat);
 
@@ -357,7 +357,7 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
 
     // Lock the pixel buffer and copy it
     {
-        const auto dumpLock = _imageFw->lock();
+        const auto dumpLock = _imageFw->dump_lock();
 
         std::uint8_t* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_imageFw->getBuffer());
 
@@ -664,7 +664,7 @@ void copyNegatoImage(Ogre::Texture* _texture, const data::Image::sptr& _image)
 
     // Lock the pixel buffer and copy it
     {
-        const auto dumpLock = _image->lock();
+        const auto dumpLock = _image->dump_lock();
 
         typedef typename std::make_unsigned<DST_TYPE>::type unsignedType;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
     /**
      * @brief Constructor
      */
-    Viewport(sight::data::Object::Key key) :
+    Viewport(sight::data::Object::Key) :
         m_x(200.f),
         m_y(200.f),
         m_width(400.f),
@@ -56,9 +56,6 @@ public:
     /// Defines shallow copy
     VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& _source) override;
 
-    /// Defines deep copy
-    VIZ_SCENE2D_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     float getX() const;
     void setX(float _x);
     float getY() const;
@@ -68,6 +65,17 @@ public:
     void setWidth(float _width);
     float getHeight() const;
     void setHeight(float _height);
+
+    /// Equality comparison operators
+    /// @{
+    VIZ_SCENE2D_API bool operator==(const Viewport& other) const noexcept;
+    VIZ_SCENE2D_API bool operator!=(const Viewport& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    VIZ_SCENE2D_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 

@@ -285,8 +285,6 @@ public:
     using point_t = iterator::point_t;
     using size_t  = iterator::Size;
 
-    using locks_t = std::vector<core::memory::BufferObject::Lock>;
-
     /**
      * @name Signals
      * @{
@@ -608,15 +606,6 @@ public:
     auto czip_range() const;
     /// @}
 
-    /**
-     * @brief Return a lock on the mesh to prevent from dumping the buffers on the disk
-     *
-     * The buffer cannot be accessed if the mesh is not locked
-     *
-     * @warning You must allocate all the mesh's arrays before calling lock()
-     */
-    [[nodiscard]] DATA_API locks_t lock() const;
-
     /// Equality comparison operators
     /// @{
     DATA_API bool operator==(const Mesh& other) const noexcept;
@@ -628,15 +617,9 @@ protected:
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
-    template<class DATATYPE>
-    friend class mt::locked_ptr;
-
-    /**
-     * @brief Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
-     *
-     * This is needed for IBuffered interface implementation
-     */
-    DATA_API void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const override;
+    /// Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
+    /// This is needed for IBuffered interface implementation
+    DATA_API void dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const override;
 
 private:
 

@@ -24,9 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
@@ -150,7 +147,7 @@ void STransferFunction::stopping()
 void STransferFunction::createTFPoints()
 {
     sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::ObjectReadLock viewportLock(viewport);
+    const data::mt::locked_ptr viewportLock(viewport);
 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
@@ -239,7 +236,7 @@ void STransferFunction::destroyTFPoints()
 void STransferFunction::createTFPolygon()
 {
     const sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::ObjectReadLock viewportLock(viewport);
+    const data::mt::locked_ptr viewportLock(viewport);
 
     QVector<QPointF> position;
     QLinearGradient grad;

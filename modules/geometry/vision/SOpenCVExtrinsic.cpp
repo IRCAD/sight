@@ -33,8 +33,6 @@
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 #include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 
 #include <io/opencv/Matrix.hpp>

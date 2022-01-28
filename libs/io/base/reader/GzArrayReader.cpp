@@ -58,7 +58,7 @@ void GzArrayReader::read()
 
     data::Array::sptr array      = this->getConcreteObject();
     std::size_t arraySizeInBytes = array->resize(array->getSize());
-    const auto dumpLock          = array->lock();
+    const auto dumpLock          = array->dump_lock();
 
     void* buff = array->getBuffer();
 

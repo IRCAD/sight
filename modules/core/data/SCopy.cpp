@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,13 @@
 
 #include "SCopy.hpp"
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-#include <data/reflection/exception/NullPointer.hpp>
-#include <data/reflection/exception/ObjectNotFound.hpp>
-#include <data/reflection/getObject.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+
+#include <data/reflection/exception/NullPointer.hpp>
+#include <data/reflection/exception/ObjectNotFound.hpp>
+#include <data/reflection/getObject.hpp>
 
 namespace sight::module::data
 {

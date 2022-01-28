@@ -31,7 +31,6 @@
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
@@ -336,7 +335,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         const std::size_t numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             if(arrayObject->getType() == core::tools::Type::s_FLOAT)
             {
@@ -477,7 +476,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
                 arrayObject->resize({2}, core::tools::Type::s_INT32);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
         }
@@ -503,7 +502,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
                 arrayObject->resize({3}, core::tools::Type::s_INT32);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
             arrayObject->at<std::uint32_t>(2) = static_cast<std::uint32_t>(value3);
@@ -550,7 +549,7 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
                 arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             if(arrayObject->getType() == core::tools::Type::s_FLOAT)
             {
@@ -587,7 +586,7 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
                 arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             if(arrayObject->getType() == core::tools::Type::s_FLOAT)
             {

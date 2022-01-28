@@ -32,8 +32,6 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 

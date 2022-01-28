@@ -52,8 +52,8 @@ struct RoiApplier
 
         SIGHT_ASSERT("Null image pointer", p.img && p.roi);
 
-        const auto imgDumpLock = p.img->lock();
-        const auto roiDumpLock = p.roi->lock();
+        const auto imgDumpLock = p.img->dump_lock();
+        const auto roiDumpLock = p.roi->dump_lock();
 
         SIGHT_ASSERT("Null data buffers", p.img->getBuffer() && p.roi->getBuffer());
 
@@ -134,9 +134,9 @@ struct RoiTester
         typedef IMAGE_TYPE ImgType;
         typedef ROI_TYPE RoiType;
 
-        const auto imgDumpLock           = p.img->lock();
-        const auto imgRoiAppliedDumpLock = p.imgRoiApplied->lock();
-        const auto roiDumpLock           = p.roi->lock();
+        const auto imgDumpLock           = p.img->dump_lock();
+        const auto imgRoiAppliedDumpLock = p.imgRoiApplied->dump_lock();
+        const auto roiDumpLock           = p.roi->dump_lock();
 
         SIGHT_ASSERT(
             "Null data buffers",

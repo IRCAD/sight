@@ -708,22 +708,19 @@ void Mesh::setCellTexCoord(
 
 //------------------------------------------------------------------------------
 
-Mesh::locks_t Mesh::lock() const
+void Mesh::dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const
 {
-    locks_t locks;
+    for(const auto& point : m_points)
+    {
+        const auto& point_locks = point->dump_lock();
+        locks.insert(locks.end(), point_locks.cbegin(), point_locks.cend());
+    }
 
-    std::for_each(m_points.begin(), m_points.end(), [&locks](auto& array){locks.push_back(array->lock());});
-    std::for_each(m_cells.begin(), m_cells.end(), [&locks](auto& array){locks.push_back(array->lock());});
-
-    return locks;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const
-{
-    const locks_t& myLocks = this->lock();
-    locks.insert(std::end(locks), std::begin(myLocks), std::end(myLocks));
+    for(const auto& cell : m_cells)
+    {
+        const auto& cell_locks = cell->dump_lock();
+        locks.insert(locks.end(), cell_locks.cbegin(), cell_locks.cend());
+    }
 }
 
 //------------------------------------------------------------------------------

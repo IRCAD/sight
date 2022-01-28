@@ -291,7 +291,7 @@ void SDistortion::remap()
 
         cv::remap(img, undistortedImage, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
-        const auto outDumpLock = outputImage->lock();
+        const auto outDumpLock = outputImage->dump_lock();
         if(outputImage.get_shared() == inputImage.get_shared())
         {
             // Copy new image.

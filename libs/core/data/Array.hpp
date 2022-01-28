@@ -79,7 +79,7 @@ namespace sight::data
     // 2D array of std::int16_t
 
     // prevent the buffer to be dumped on the disk
-    const auto dumpLock = array->lock();
+    const auto dumpLock = array->dump_lock();
 
     // retrieve the value at index (x, y)
     value = array->at<std::int16_t>({x, y});
@@ -327,17 +327,6 @@ public:
     using const_iterator = array_iterator<const T>;
 
     /**
-     * @brief Return a lock on the array to prevent from dumping the buffer on the disk.
-     *
-     * When the buffer is dumped, the memory is released and the buffer will not be accessible. When lock() is called,
-     * the buffer is restored from the disk if it was dumped and as long as the core::memory::BufferObject::Lock is
-     * maintained, the buffer will not be dumped.
-     *
-     * An exception will be raised  if you try to access while the array is not locked.
-     */
-    [[nodiscard]] DATA_API core::memory::BufferObject::Lock lock() const;
-
-    /**
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
@@ -345,7 +334,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      * @throw Exception Index out of bounds
      */
     template<typename T>
@@ -359,7 +348,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      * @throw Exception Index out of bounds
      */
     template<typename T>
@@ -373,7 +362,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      * @throw Exception Index out of bounds
      */
     template<typename T>
@@ -387,7 +376,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      * @throw Exception Index out of bounds
      */
     template<typename T>
@@ -397,7 +386,7 @@ public:
      * @brief Getter for the array buffer
      *
      * @return Array's buffer, if exists, else NULL
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      * @{
      */
     DATA_API void* getBuffer();
@@ -414,7 +403,7 @@ public:
      * @param size           Size of the array view
      * @param type           Type of the array view
      * @param policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
-     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      */
     DATA_API void setBuffer(
         void* buf,
@@ -522,17 +511,6 @@ protected:
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
     );
 
-    // To allow locked_ptr to access protected lockBuffer()
-    template<class DATATYPE>
-    friend class mt::locked_ptr;
-
-    /**
-     * @brief Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
-     *
-     * This is needed for IBuffered interface implementation
-     */
-    DATA_API void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const override;
-
     /**
      * @brief Retrieves a pointer to the value at the given index.
      *
@@ -550,6 +528,10 @@ protected:
      * @return buffer offset
      */
     DATA_API std::size_t getBufferOffset(const Array::IndexType& id) const;
+
+    /// Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
+    /// This is needed for IBuffered interface implementation
+    DATA_API void dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const override;
 
     /// Not implemented
     Array(const Array&);

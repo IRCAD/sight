@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,8 +98,8 @@ void STransformDepthMap2mm::updating()
         scaledFrame->setWindowCenter(0);
     }
 
-    const auto origDumpLock   = originFrame->lock();
-    const auto scaledDumpLock = scaledFrame->lock();
+    const auto origDumpLock   = originFrame->dump_lock();
+    const auto scaledDumpLock = scaledFrame->dump_lock();
 
     auto depthBufferInItr     = originFrame->begin<std::uint16_t>();
     const auto depthBufferEnd = originFrame->end<std::uint16_t>();

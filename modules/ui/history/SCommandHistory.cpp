@@ -30,7 +30,6 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/reflection/exception/ObjectNotFound.hpp>
 #include <data/reflection/getObject.hpp>
 

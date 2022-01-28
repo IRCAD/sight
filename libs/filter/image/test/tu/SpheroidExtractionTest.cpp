@@ -56,7 +56,7 @@ static void makeNoise(
     PIXELTYPE rangeMax = std::numeric_limits<PIXELTYPE>::max()
 )
 {
-    const auto dumpLock = _image->lock();
+    const auto dumpLock = _image->dump_lock();
     auto iter           = _image->begin<PIXELTYPE>();
     const auto end      = _image->end<PIXELTYPE>();
 

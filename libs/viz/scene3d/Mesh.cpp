@@ -212,7 +212,7 @@ void Mesh::setVisible(bool _visible)
 
 void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 {
-    const auto dumpLock = _mesh->lock();
+    const auto dumpLock = _mesh->dump_lock();
 
     /// The values in this table refer to vertices in the above table
     const std::size_t numVertices = _mesh->numPoints();
@@ -623,7 +623,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     void* pVertex = vertex_buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with data::Mesh
-    const auto dumpLock = _mesh->lock();
+    const auto dumpLock = _mesh->dump_lock();
 
     std::size_t uiStrideFloat = 3;
     if(m_hasNormal)
@@ -928,7 +928,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         m_perPrimitiveColorTextureName = "";
     }
 
-    const auto lock = _mesh->lock();
+    const auto lock = _mesh->dump_lock();
     // 2 - Copy of vertices
     if(hasVertexColor)
     {

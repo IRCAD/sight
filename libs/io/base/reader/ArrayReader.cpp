@@ -57,7 +57,7 @@ void ArrayReader::read()
 
     data::Array::sptr array = this->getConcreteObject();
 
-    const auto dumpLock = array->lock();
+    const auto dumpLock = array->dump_lock();
 
     std::size_t arraySizeInBytes = array->resize(array->getSize());
     char* buff                   = static_cast<char*>(array->getBuffer());

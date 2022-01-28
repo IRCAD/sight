@@ -80,7 +80,7 @@ void DataConverterTest::meshConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     data::Mesh::sptr mesh         = data::Mesh::New();
-    const auto lock               = mesh->lock();
+    const auto lock               = mesh->dump_lock();
     utestData::generator::Mesh::generateMesh(mesh);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
@@ -91,7 +91,7 @@ void DataConverterTest::meshConverterTest()
 
     data::Mesh::sptr mesh2 = data::Mesh::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
-    const auto lock2 = mesh2->lock();
+    const auto lock2 = mesh2->dump_lock();
 
     CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), mesh2->numPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->numCells(), mesh2->numCells());
@@ -123,7 +123,7 @@ void DataConverterTest::meshConverterTest()
         mesh2->has<data::Mesh::Attributes::CELL_TEX_COORDS>()
     );
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
     using namespace data::iterator;
 
     const auto range1 = mesh->czip_range<point::xyz, point::rgba, point::nxyz>();

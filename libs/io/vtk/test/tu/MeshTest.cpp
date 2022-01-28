@@ -252,7 +252,7 @@ void MeshTest::testPointCloud()
 
     mesh1->reserve(NB_POINTS, NB_POINTS, data::Mesh::CellType::POINT);
 
-    const auto dumpLock = mesh1->lock();
+    const auto dumpLock = mesh1->dump_lock();
 
     for(data::Mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
     {

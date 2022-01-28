@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -215,7 +215,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     image->setWindowWidth(100);
     image->setWindowCenter(0);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     const std::uint8_t* frameBuff = &buffer->getElement(0);
     std::uint8_t* imgBuffer       = static_cast<std::uint8_t*>(image->getBuffer());

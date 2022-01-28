@@ -69,7 +69,7 @@ void GzBufferImageWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     // file is OK : process now
     const std::size_t imageSizeInBytes = image->getSizeInBytes();

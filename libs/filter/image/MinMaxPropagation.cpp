@@ -210,7 +210,7 @@ public:
 
     bool isInROI(const IndexType& index) const
     {
-        const auto dumpLock = m_roi->lock();
+        const auto dumpLock = m_roi->dump_lock();
         const auto size     = m_roi->getSize();
 
         data::Image::BufferType* roiVal =
@@ -284,7 +284,7 @@ struct MinMaxPropagator
         itk::FloodFilledImageFunctionConditionalIterator<ImageType, CriterionType> iter(
             itkImage, criterion, itkSeeds);
 
-        const auto dumpLock = params.outputImage->lock();
+        const auto dumpLock = params.outputImage->dump_lock();
 
         const std::uint8_t outImgPixelSize = params.outputImage->getType().sizeOf()
                                              * static_cast<std::uint8_t>(params.outputImage->numComponents());

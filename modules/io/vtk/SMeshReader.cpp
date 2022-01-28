@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 #include <core/jobs/IJob.hpp>
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
-
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <io/vtk/MeshReader.hpp>
 #include <io/vtk/ObjMeshReader.hpp>

@@ -84,7 +84,7 @@ void MeshTest::colorizePointsTest()
 
         geometry::data::Mesh::colorizeMeshPoints(mesh, R, G, B, A);
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         std::size_t count = 0;
         for(const auto& color : mesh->crange<point::rgba>())
@@ -121,7 +121,7 @@ void MeshTest::colorizePointsTest()
 
         geometry::data::Mesh::colorizeMeshPoints(mesh, vectorNumTriangle, R, G, B, A);
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         const auto cellIterBegin = mesh->cbegin<cell::triangle>();
 
@@ -181,7 +181,7 @@ void MeshTest::colorizeCellsTest()
 
         geometry::data::Mesh::colorizeMeshCells(mesh, R, G, B);
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
@@ -213,7 +213,7 @@ void MeshTest::colorizeCellsTest()
 
         geometry::data::Mesh::colorizeMeshCells(mesh, R, G, B, A);
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
@@ -249,7 +249,7 @@ void MeshTest::colorizeCellsTest()
 
         geometry::data::Mesh::colorizeMeshCells(mesh, vectorNumTriangle, R, G, B);
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
@@ -298,7 +298,7 @@ void MeshTest::colorizeCellsTest()
 
         geometry::data::Mesh::colorizeMeshCells(mesh, vectorNumTriangle, R, G, B, A);
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
@@ -329,13 +329,13 @@ void MeshTest::colorizeCellsTest()
 void MeshTest::transformTest()
 {
     sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
-    const auto lock              = mesh->lock();
+    const auto lock              = mesh->dump_lock();
     utestData::generator::Mesh::generateTriangleMesh(mesh);
     geometry::data::Mesh::generatePointNormals(mesh);
     geometry::data::Mesh::generateCellNormals(mesh);
 
     sight::data::Mesh::sptr meshOrig = sight::data::Mesh::copy(mesh);
-    const auto origLock              = meshOrig->lock();
+    const auto origLock              = meshOrig->dump_lock();
 
     glm::dmat4x4 matrix(1.);
     matrix = glm::rotate(matrix, glm::radians(90.), glm::dvec3(0., 0., 1.));
@@ -347,7 +347,7 @@ void MeshTest::transformTest()
 
     geometry::data::Mesh::transform(meshOrig, mesh, trans);
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
     {
         const auto origRange = meshOrig->czip_range<point::xyz, point::nxyz>();
         const auto range     = mesh->czip_range<point::xyz, point::nxyz>();
@@ -425,7 +425,7 @@ void MeshTest::isClosedTest()
 
     {
         sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
-        const auto dumpLock          = mesh->lock();
+        const auto dumpLock          = mesh->dump_lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -450,7 +450,7 @@ void MeshTest::isClosedTest()
 
     {
         sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
-        const auto dumpLock          = mesh->lock();
+        const auto dumpLock          = mesh->dump_lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -481,7 +481,7 @@ void MeshTest::isClosedTest()
 
     {
         sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
-        const auto dumpLock          = mesh->lock();
+        const auto dumpLock          = mesh->dump_lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -516,7 +516,7 @@ void MeshTest::isClosedTest()
 void MeshTest::cellNormalTest()
 {
     sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
-    const auto dumpLock          = mesh->lock();
+    const auto dumpLock          = mesh->dump_lock();
 
     mesh->pushPoint(0.f, 0.f, 0.f);
     mesh->pushPoint(1.f, 0.f, 0.f);
@@ -585,7 +585,7 @@ void MeshTest::cellNormalTest()
 void MeshTest::pointNormalTest()
 {
     sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
-    const auto dumpLock          = mesh->lock();
+    const auto dumpLock          = mesh->dump_lock();
 
     mesh->pushPoint(0.f, 0.f, 0.f);
     mesh->pushPoint(1.f, 0.f, 0.f);

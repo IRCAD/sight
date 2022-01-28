@@ -166,7 +166,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength * size[2]) : bufferLength;
 
     // Retrieve image buffer
-    const auto dumpLock     = m_object->lock();
+    const auto dumpLock     = m_object->dump_lock();
     const char* imageBuffer = static_cast<char*>(m_object->getBuffer());
 
     // Pixel Data - Type 1C

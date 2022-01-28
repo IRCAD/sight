@@ -61,7 +61,7 @@ ImageConverter::~ImageConverter()
     data::Image::csptr srcImg = data::Image::dynamicCast(src);
     ::igtl::Matrix4x4 matrix;
 
-    const auto dumpLock = srcImg->lock();
+    const auto dumpLock = srcImg->dump_lock();
     auto itr            = srcImg->begin();
     auto itrEnd         = srcImg->end();
 
@@ -91,7 +91,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     ::igtl::ImageMessage::Pointer srcImg;
     char* igtlImageBuffer;
     data::Image::sptr destImg = data::Image::New();
-    const auto dumpLock       = destImg->lock();
+    const auto dumpLock       = destImg->dump_lock();
     float igtlSpacing[3];
     float igtlOrigins[3];
     int igtlDimensions[3];

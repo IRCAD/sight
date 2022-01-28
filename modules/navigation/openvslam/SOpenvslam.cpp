@@ -29,9 +29,6 @@
 #include <core/Profiling.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <io/opencv/FrameTL.hpp>
 
 #include <navigation/openvslam/Helper.hpp>
@@ -878,7 +875,7 @@ void SOpenvslam::updatePointCloud()
 
         pointcloud->clear();
 
-        const auto dumpLock = pointcloud->lock();
+        const auto dumpLock = pointcloud->dump_lock();
 
         unsigned int i = 0;
         if(m_localMap)

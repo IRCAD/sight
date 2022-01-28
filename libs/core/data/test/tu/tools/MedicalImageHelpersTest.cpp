@@ -157,7 +157,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         auto itr    = image->begin<Type>();
         auto itrEnd = image->end<Type>();
@@ -198,7 +198,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         auto itr          = image->begin<Type>();
         const auto itrEnd = image->end<Type>();
@@ -251,7 +251,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         auto itr          = image->begin<Type>();
         const auto itrEnd = image->end<Type>();
@@ -288,7 +288,7 @@ data::Image::sptr createImageFromPixelBuffer()
     image->setOrigin({0., 0., 0.});
 
     // Zero the buffer
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     std::fill(image->begin(), image->end(), 0);
 
     return image;
@@ -307,7 +307,7 @@ void getPixelTestHelper(const P& pixelValue)
     // Pick some random coordinates and store the given pixel there
     std::size_t coords[3];
     std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     auto imageBufferPtr = image->getBuffer();
     SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr)
                           + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
@@ -379,7 +379,7 @@ void setPixelTestHelper(P& pixelValue)
     std::size_t coords[3];
     std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
     const std::size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
-    const auto dumpLock          = image->lock();
+    const auto dumpLock          = image->dump_lock();
     image->setPixel(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
@@ -443,7 +443,7 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
     auto image = createImageFromPixelBuffer<std::array<uint8_t, 3> >();
 
     {
-        const auto dumpLock                   = image->lock();
+        const auto dumpLock                   = image->dump_lock();
         const data::Image::BufferType* pixBuf =
             static_cast<data::Image::BufferType*>(image->getPixel(0));
 

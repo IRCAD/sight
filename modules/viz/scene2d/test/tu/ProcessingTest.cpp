@@ -74,7 +74,7 @@ void ProcessingTest::histogramTest()
     // Create image.
     image->resize({sizeX, sizeY, sizeZ}, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     auto itr            = image->begin<ImageType>();
     const auto itrEnd   = image->end<ImageType>();
 

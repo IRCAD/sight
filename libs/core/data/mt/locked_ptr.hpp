@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
     /// Constructor
     explicit inline locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
         m_data(data),
-        m_buffer_locks(data)
+        m_dump_locks(data)
     {
         if(m_data)
         {
@@ -89,7 +89,7 @@ public:
                                               core::mt::WriteLock>(data->getMutex());
             }
 
-            m_buffer_locks = buffer_locks<DATATYPE>(data);
+            m_dump_locks = dump_locks<DATATYPE>(data);
         }
 
         return *this;
@@ -191,20 +191,20 @@ private:
                                 core::mt::WriteLock> m_locker;
 
     template<class C, class = void>
-    class buffer_locks final
+    class dump_locks final
     {
     };
 
     template<class C>
-    class buffer_locks<C, typename std::enable_if_t<std::is_base_of_v<core::memory::IBuffered, C> > > final
+    class dump_locks<C, typename std::enable_if_t<std::is_base_of_v<core::memory::IBuffered, C> > > final
     {
     friend locked_ptr;
 
-    inline explicit buffer_locks(const std::shared_ptr<C>& data)
+    inline explicit dump_locks(const std::shared_ptr<C>& data)
     {
         if(data)
         {
-            data->lockBuffer(m_Locks);
+            m_Locks = data->dump_lock();
         }
     }
 
@@ -212,16 +212,16 @@ private:
     };
 
     template<class C>
-    class buffer_locks<C, typename std::enable_if_t<!std::is_base_of_v<core::memory::IBuffered, C> > >
+    class dump_locks<C, typename std::enable_if_t<!std::is_base_of_v<core::memory::IBuffered, C> > >
     {
     friend locked_ptr;
 
-    inline explicit buffer_locks(const std::shared_ptr<C>&)
+    inline explicit dump_locks(const std::shared_ptr<C>&)
     {
     }
     };
 
-    buffer_locks<DATATYPE> m_buffer_locks;
+    dump_locks<DATATYPE> m_dump_locks;
 };
 
 } // namespace mt

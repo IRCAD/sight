@@ -66,23 +66,6 @@ public:
 
     /// Destructor
     DATA_API virtual ~FrameTL();
-
-    /**
-     * @brief Initializes the size of the pool buffer.
-     * @deprecated Use initPoolSize(std::size_t width, std::size_t height, const core::tools::Type& type, const
-     * PixelFormat
-     * format,
-     * unsigned int maxElementNum = 1) instead, it will be removed in sight 22.0
-     */
-    [[deprecated("Initialize FrameTL with pixel format instead, it will be removed in sight 22.0")]]
-    DATA_API void initPoolSize(
-        std::size_t width,
-        std::size_t height,
-        const core::tools::Type& type,
-        std::size_t numberOfComponents = 1,
-        unsigned int maxElementNum     = 1
-    );
-
     /// Initializes the size of the pool buffer.
     DATA_API void initPoolSize(
         std::size_t width,

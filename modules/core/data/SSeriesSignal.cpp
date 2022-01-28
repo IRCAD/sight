@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "SSeriesSignal.hpp"
 
-#include <data/ActivitySeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
@@ -32,6 +29,8 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
+
+#include <data/ActivitySeries.hpp>
 
 #include <service/macros.hpp>
 

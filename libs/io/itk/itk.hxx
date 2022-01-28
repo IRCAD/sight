@@ -56,7 +56,7 @@ void moveFromItk(
     _dataImage->setSpacing(vSpacing);
 
     const auto pixelType = core::tools::Type::create<typename ITKIMAGE::PixelType>();
-    const auto dumpLock  = _dataImage->lock();
+    const auto dumpLock  = _dataImage->dump_lock();
     if(_bufferManagerIsDataImage)
     {
         SIGHT_ASSERT(
@@ -118,7 +118,7 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
         imageData->numDimensions() == ITKIMAGE::ImageDimension
     );
 
-    const auto dumpLock = imageData->lock();
+    const auto dumpLock = imageData->dump_lock();
 
     typename ITKIMAGE::Pointer itkImage = ITKIMAGE::New();
 

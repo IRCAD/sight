@@ -63,7 +63,7 @@ inline static void randomize(I& iterable, std::uint32_t seed = 0)
 template<typename I>
 inline static void randomizeIterable(I& iterable, std::uint32_t seed = 0)
 {
-    auto lock       = iterable.lock();
+    auto lock       = iterable.dump_lock();
     const auto type = iterable.getType();
 
     if(type == core::tools::Type::s_UNSPECIFIED_TYPE || type == core::tools::Type::s_UINT8)
@@ -127,7 +127,7 @@ void Image::generateImage(
     image->setSpacing(spacing);
     image->setOrigin(origin);
 
-    auto lock = image->lock();
+    auto lock = image->dump_lock();
     std::fill(image->begin(), image->end(), 0);
 }
 

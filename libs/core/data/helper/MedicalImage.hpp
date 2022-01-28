@@ -462,7 +462,7 @@ public:
     void operator()(Param& param)
     {
         const data::Image::csptr image = param.image;
-        const auto dumpLock            = image->lock();
+        const auto dumpLock            = image->dump_lock();
 
         auto itr       = image->begin<IMAGE>();
         const auto end = image->end<IMAGE>();

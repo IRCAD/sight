@@ -91,7 +91,12 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 
             if(scaledFrameTL->getWidth() == 0 || scaledFrameTL->getHeight() == 0)
             {
-                scaledFrameTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
+                scaledFrameTL->initPoolSize(
+                    width,
+                    height,
+                    core::tools::Type::s_UINT16,
+                    data::FrameTL::PixelFormat::GRAY_SCALE
+                );
             }
 
             const std::uint16_t* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));

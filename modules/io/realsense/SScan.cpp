@@ -380,7 +380,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
     //Only create the pointer one time.
 
     auto pointcloud     = data::Mesh::New();
-    const auto dumpLock = pointcloud->lock();
+    const auto dumpLock = pointcloud->dump_lock();
 
     const data::Mesh::size_t nbPoints = depthStreamW * depthStreamH;
 

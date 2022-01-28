@@ -53,7 +53,7 @@ void ArrayTest::tearDown()
 void ArrayTest::allocation()
 {
     data::Array::sptr array = data::Array::New();
-    auto lock               = array->lock();
+    auto lock               = array->dump_lock();
 
     CPPUNIT_ASSERT(array->empty());
     CPPUNIT_ASSERT(array->getBuffer() == nullptr);
@@ -120,7 +120,7 @@ void ArrayTest::resize()
     data::Array::SizeType size {10, 100};
 
     array->resize(size, core::tools::Type::s_UINT32, true);
-    auto lock = array->lock();
+    auto lock = array->dump_lock();
 
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
@@ -209,7 +209,7 @@ void ArrayTest::reallocate()
     data::Array::SizeType size = {10, 100};
 
     array->resize(size, core::tools::Type::s_UINT32, true);
-    auto lock = array->lock();
+    auto lock = array->dump_lock();
 
     std::uint32_t count = 0;
     auto iter           = array->begin<std::uint32_t>();
@@ -319,7 +319,7 @@ void ArrayTest::copy()
     data::Array::SizeType size = {10, 100};
 
     array->resize(size, core::tools::Type::s_UINT32, true);
-    auto arrayLock = array->lock();
+    auto arrayLock = array->dump_lock();
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
     std::uint32_t count = 0;
@@ -332,7 +332,7 @@ void ArrayTest::copy()
     }
 
     data::Array::sptr deepCopyArray = data::Object::copy(array);
-    auto deepCopyArrayLock          = deepCopyArray->lock();
+    auto deepCopyArrayLock          = deepCopyArray->dump_lock();
 
     // check deepCopy
     CPPUNIT_ASSERT_EQUAL(array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
@@ -366,7 +366,7 @@ void ArrayTest::copy()
     CPPUNIT_ASSERT_EQUAL(true, deepCopyArray->getIsBufferOwner());
 
     data::Array::csptr deepCopyArray2 = data::Object::copy(array);
-    auto deepCopyArrayLock2           = deepCopyArray->lock();
+    auto deepCopyArrayLock2           = deepCopyArray->dump_lock();
 
     CPPUNIT_ASSERT_EQUAL(array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
@@ -409,7 +409,7 @@ void ArrayTest::dumpLockTest()
 
     CPPUNIT_ASSERT_THROW(array->getBuffer(), data::Exception);
 
-    auto lock = array->lock();
+    auto lock = array->dump_lock();
     CPPUNIT_ASSERT_NO_THROW(array->getBuffer());
 }
 
@@ -430,7 +430,7 @@ void ArrayTest::bufferAccessTest()
         CPPUNIT_ASSERT_THROW(array->end(), core::Exception);
     }
 
-    const auto lock = array->lock();
+    const auto lock = array->dump_lock();
     {
         // Check that the iterator properly lock the buffer
         CPPUNIT_ASSERT_NO_THROW(array->begin());
@@ -510,7 +510,7 @@ void ArrayTest::constArrayTest()
     data::Array::SizeType size = {10, 100};
 
     array->resize(size, core::tools::Type::s_UINT32, true);
-    auto lock = array->lock();
+    auto lock = array->dump_lock();
 
     std::uint32_t count = 0;
     auto iter           = array->begin<std::uint32_t>();
@@ -520,7 +520,7 @@ void ArrayTest::constArrayTest()
     }
 
     data::Array::csptr array2 = data::Object::copy(array);
-    const auto lock2          = array2->lock();
+    const auto lock2          = array2->dump_lock();
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 10 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
@@ -553,7 +553,7 @@ void ArrayTest::emptyIteratorTest()
 {
     data::Array::sptr array = data::Array::New();
     array->resize({10, 100}, core::tools::Type::s_UINT32);
-    auto lock = array->lock();
+    auto lock = array->dump_lock();
 
     std::uint32_t count = 0;
     auto iterForFilling = array->begin<std::uint32_t>();
@@ -594,7 +594,7 @@ void ArrayTest::equalityTest()
     const data::Array::SizeType size {10, 10};
 
     array1->resize(size, core::tools::Type::s_UINT32, true);
-    auto lock = array1->lock();
+    auto lock = array1->dump_lock();
 
     std::uint32_t count = 0;
     for(auto it = array1->begin<std::uint32_t>(), end = array1->end<std::uint32_t>() ; it != end ; ++it)
@@ -606,7 +606,7 @@ void ArrayTest::equalityTest()
 
     // Fill array2
     array2->resize(size, core::tools::Type::s_UINT32, true);
-    auto lock2 = array2->lock();
+    auto lock2 = array2->dump_lock();
 
     count = 666;
     for(auto it = array2->begin<std::uint32_t>(), end = array2->end<std::uint32_t>() ; it != end ; ++it)

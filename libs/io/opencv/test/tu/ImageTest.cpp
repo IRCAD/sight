@@ -49,7 +49,7 @@ static data::Image::sptr genImage(
 )
 {
     data::Image::sptr image = data::Image::New();
-    const auto dumpLock     = image->lock();
+    const auto dumpLock     = image->dump_lock();
 
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
     std::size_t imageDim = 1;
@@ -120,7 +120,7 @@ static void compareImages(
     std::uint8_t _numChannels
 )
 {
-    const auto dumpLock  = _image->lock();
+    const auto dumpLock  = _image->dump_lock();
     const T* imageBuffer = reinterpret_cast<const T*>(_image->getBuffer());
 
     std::vector<cv::Mat> channels(_numChannels);
@@ -200,7 +200,7 @@ static void testMoveToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::ui
     cv::Mat cvImage = io::opencv::Image::moveToCv(image);
 
     // Since we share the same buffer, compare the pointers
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT_EQUAL(image->getBuffer(), static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
@@ -218,7 +218,7 @@ static void testCopyFromCV(std::size_t _w, std::size_t _h, std::size_t _d, std::
     io::opencv::Image::copyFromCv(*image.get(), cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
@@ -235,7 +235,7 @@ static void testCopyToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::ui
     cv::Mat cvImage = io::opencv::Image::copyToCv(image);
 
     // Since we copy the buffer, ensure the pointers are different
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);

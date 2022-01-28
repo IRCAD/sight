@@ -127,7 +127,7 @@ void ImageExtruder::operator()(Parameters& _param)
     }
 
     // Get images.
-    const auto dumpLock = _param.m_image->lock();
+    const auto dumpLock = _param.m_image->dump_lock();
 
     // Get image informations.
     const data::Image::Origin& origin   = _param.m_image->getOrigin();

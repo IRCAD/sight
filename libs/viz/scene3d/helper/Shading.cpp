@@ -361,7 +361,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({2}, core::tools::Type::s_FLOAT);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<float>(0) = _value.f[0];
             arrayObject->at<float>(1) = _value.f[1];
@@ -376,7 +376,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({3}, core::tools::Type::s_FLOAT);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<float>(0) = _value.f[0];
             arrayObject->at<float>(1) = _value.f[1];
@@ -412,7 +412,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({2}, core::tools::Type::s_INT32);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
@@ -427,7 +427,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({3}, core::tools::Type::s_INT32);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
@@ -443,7 +443,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({4}, core::tools::Type::s_INT32);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
@@ -468,7 +468,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<double>(0) = _value.d[0];
             arrayObject->at<double>(1) = _value.d[1];
@@ -483,7 +483,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<double>(0) = _value.d[0];
             arrayObject->at<double>(1) = _value.d[1];
@@ -499,7 +499,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
             arrayObject->resize({4}, core::tools::Type::s_DOUBLE);
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             arrayObject->at<double>(0) = _value.d[0];
             arrayObject->at<double>(1) = _value.d[1];

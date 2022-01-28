@@ -248,16 +248,10 @@ std::size_t Image::getAllocatedSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-core::memory::BufferObject::Lock Image::lock() const
+void Image::dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const
 {
-    return m_dataArray->lock();
-}
-
-//------------------------------------------------------------------------------
-
-void Image::lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const
-{
-    locks.push_back(this->lock());
+    const auto& array_locks = m_dataArray->dump_lock();
+    locks.insert(locks.end(), array_locks.cbegin(), array_locks.cend());
 }
 
 //-----------------------------------------------------------------------------

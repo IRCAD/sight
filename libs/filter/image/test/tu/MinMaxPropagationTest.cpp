@@ -49,7 +49,7 @@ static std::size_t computeOffset(const std::size_t x, const std::size_t y, const
 
 static void drawCube(data::Image::sptr image, const std::uint8_t value)
 {
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     SPTR(data::Image::BufferType) bufferValue =
         data::helper::MedicalImage::getPixelInImageSpace(image, value);
@@ -109,8 +109,8 @@ void MinMaxPropagationTest::minPropagTest()
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    const auto dumpLockIn  = imageIn->lock();
-    const auto dumpLockOut = imageOut->lock();
+    const auto dumpLockIn  = imageIn->dump_lock();
+    const auto dumpLockOut = imageOut->dump_lock();
 
     // Check that the image is not changed because the propagated value is the same
     for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
@@ -195,8 +195,8 @@ void MinMaxPropagationTest::maxPropagTest()
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
-    const auto dumpLockIn  = imageIn->lock();
-    const auto dumpLockOut = imageOut->lock();
+    const auto dumpLockIn  = imageIn->dump_lock();
+    const auto dumpLockOut = imageOut->dump_lock();
 
     // Check that the entire image is completely filled with propagated value
     for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
@@ -259,7 +259,7 @@ void MinMaxPropagationTest::radiusTest()
 
     propagator.propagate(seed, bufferValue.get(), 3.5, true, MinMaxPropagation::MIN);
 
-    const auto dumpLockOut = imageOut->lock();
+    const auto dumpLockOut = imageOut->dump_lock();
 
     // Check the voxel at 16,16,12
     std::uint8_t valueOut = imageOut->at<std::uint8_t>(16, 16, 12);

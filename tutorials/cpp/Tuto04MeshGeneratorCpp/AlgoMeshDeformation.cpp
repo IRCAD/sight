@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ void AlgoMeshDeformation::initSimu()
         geometry::data::Mesh::colorizeMeshPoints(mesh);
     }
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
@@ -137,8 +137,8 @@ void AlgoMeshDeformation::computeSimu()
     const float scale = static_cast<float>(m_step) / static_cast<float>(m_nbStep);
 
     const auto mesh         = m_mesh.lock();
-    const auto dumpLock     = mesh->lock();
-    const auto origDumpLock = m_originMesh->lock();
+    const auto dumpLock     = mesh->dump_lock();
+    const auto origDumpLock = m_originMesh->dump_lock();
 
     const auto origRange = m_originMesh->czip_range<point::xyz, point::rgba>();
     const auto range     = mesh->zip_range<point::xyz, point::rgba>();

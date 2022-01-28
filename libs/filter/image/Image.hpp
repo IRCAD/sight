@@ -71,8 +71,8 @@ void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask,
         core::tools::is_equal(imgDest->getOrigin(), mask->getOrigin())
     );
 
-    const auto imgDumpLock  = imgDest->lock();
-    const auto maskDumpLock = mask->lock();
+    const auto imgDumpLock  = imgDest->dump_lock();
+    const auto maskDumpLock = mask->dump_lock();
 
     auto imgItr          = imgDest->begin<ImgDestType>();
     const auto imgItrEnd = imgDest->end<ImgDestType>();

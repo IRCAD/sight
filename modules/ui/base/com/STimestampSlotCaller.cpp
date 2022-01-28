@@ -28,7 +28,6 @@
 
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <regex>
 

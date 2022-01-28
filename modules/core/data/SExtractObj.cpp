@@ -22,7 +22,6 @@
 
 #include "SExtractObj.hpp"
 
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/reflection/exception/NullPointer.hpp>
 #include <data/reflection/exception/ObjectNotFound.hpp>
 #include <data/reflection/getObject.hpp>

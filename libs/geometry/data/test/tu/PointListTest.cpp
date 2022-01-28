@@ -98,7 +98,7 @@ void PointListTest::computeDistance()
         // Compare the point lists
         auto outputArray = geometry::data::PointList::computeDistance(pl1, pl2);
 
-        const auto dumpLock   = outputArray->lock();
+        const auto dumpLock   = outputArray->dump_lock();
         auto distanceArrayItr = outputArray->begin<double>();
 
         for(std::size_t i = 0 ; i < nbPoints ; i++, ++distanceArrayItr)
@@ -126,7 +126,7 @@ void PointListTest::computeDistance()
 
         // Compare the point lists
         auto outputArray    = geometry::data::PointList::computeDistance(pl1, pl2);
-        const auto dumpLock = outputArray->lock();
+        const auto dumpLock = outputArray->dump_lock();
 
         auto distanceArrayItr = outputArray->begin<double>();
 

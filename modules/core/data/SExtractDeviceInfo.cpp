@@ -27,7 +27,6 @@
 #include "SExtractDeviceInfo.hpp"
 
 #include <data/Composite.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 

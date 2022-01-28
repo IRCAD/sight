@@ -200,7 +200,7 @@ void Mesh::generateCellNormals(sight::data::Mesh::sptr mesh)
             );
         }
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         sight::data::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
         rt(
@@ -345,7 +345,7 @@ void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
             );
         }
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         sight::data::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
@@ -409,7 +409,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
        && !array->empty()
        && array->numDimensions() == 2)
     {
-        const auto dumpLock = array->lock();
+        const auto dumpLock = array->dump_lock();
         void* buf;
         buf = array->getBuffer();
         const auto nbOfNormals = array->getSize().at(0);
@@ -436,7 +436,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
 
 void Mesh::shakePointNormals(sight::data::Mesh::sptr mesh)
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     RandFloat randFloat;
 
@@ -456,7 +456,7 @@ void Mesh::shakePointNormals(sight::data::Mesh::sptr mesh)
 
 void Mesh::shakeCellNormals(sight::data::Mesh::sptr mesh)
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     RandFloat randFloat;
 
@@ -486,7 +486,7 @@ void Mesh::colorizeMeshPoints(sight::data::Mesh::sptr mesh)
         );
     }
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     for(auto& c : mesh->range<point::rgba>())
     {
@@ -511,7 +511,7 @@ void Mesh::colorizeMeshCells(sight::data::Mesh::sptr mesh)
         );
     }
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     for(auto& c : mesh->range<cell::rgba>())
     {
@@ -528,7 +528,7 @@ void Mesh::shakePoint(sight::data::Mesh::sptr mesh)
 {
     RandFloat randFloat;
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     for(auto& p : mesh->range<point::xyz>())
     {
@@ -546,8 +546,8 @@ void Mesh::transform(
     const sight::data::Matrix4& t
 )
 {
-    const auto inDumpLock  = inMesh->lock();
-    const auto outDumpLock = outMesh->lock();
+    const auto inDumpLock  = inMesh->dump_lock();
+    const auto outDumpLock = outMesh->dump_lock();
 
     const glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
 
@@ -617,7 +617,7 @@ void Mesh::colorizeMeshPoints(
     const std::uint8_t colorA
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     SIGHT_ASSERT("color array must be allocated", mesh->has<sight::data::Mesh::Attributes::POINT_COLORS>());
 
@@ -644,7 +644,7 @@ void Mesh::colorizeMeshPoints(
     const std::uint8_t _colorA
 )
 {
-    const auto dumpLock = _mesh->lock();
+    const auto dumpLock = _mesh->dump_lock();
 
     auto itrCell = _mesh->begin<cell::triangle>();
 
@@ -691,7 +691,7 @@ void Mesh::colorizeMeshCells(
     const std::uint8_t colorA
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     SIGHT_ASSERT("color array must be allocated", mesh->has<sight::data::Mesh::Attributes::CELL_COLORS>());
 
@@ -718,7 +718,7 @@ void Mesh::colorizeMeshCells(
     const std::uint8_t colorA
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     auto itrCell = mesh->begin<cell::rgba>();
 
@@ -746,7 +746,7 @@ bool Mesh::isClosed(const sight::data::Mesh::csptr& mesh)
     typedef std::map<Edge, int> EdgeHistogram;
     EdgeHistogram edgesHistogram;
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     auto addEdge = [&edgesHistogram](const sight::data::Mesh::point_t& p1, const sight::data::Mesh::point_t& p2)
                    {

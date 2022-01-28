@@ -195,7 +195,7 @@ void ImageDiffTest::undoRedoTest()
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, FORMAT);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     ImageDiff diff(image->getType().sizeOf());
 

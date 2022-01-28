@@ -121,7 +121,7 @@ void fromVTKPointSet(vtkPointSet& dataset, data::Mesh& mesh)
             cellTexCoords = vtkFloatArray::SafeDownCast(cell_data->GetTCoords());
         }
 
-        const auto dumpLock = mesh.lock();
+        const auto dumpLock = mesh.dump_lock();
 
         int firstCellType = (numberOfCells > 0) ? dataset.GetCell(0)->GetCellType() : VTK_EMPTY_CELL;
 
@@ -462,7 +462,7 @@ void toVTKPointSet(const data::Mesh& mesh, vtkPointSet& dataset)
     dataset.SetPoints(pts);
 
     const auto nbCells  = mesh.numCells();
-    const auto dumpLock = mesh.lock();
+    const auto dumpLock = mesh.dump_lock();
 
     if(nbCells > 0)
     {

@@ -71,7 +71,7 @@ MeshConverter::~MeshConverter()
 
 void MeshConverter::copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const
 {
-    const auto dumpLock = meshSrc->lock();
+    const auto dumpLock = meshSrc->dump_lock();
 
     dest->SetLines(::igtl::PolyDataCellArray::New());
     dest->SetTriangleStrips(::igtl::PolyDataCellArray::New());
@@ -139,7 +139,7 @@ void MeshConverter::copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyD
 
 void MeshConverter::copyPointsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const
 {
-    const auto dumpLock = meshSrc->lock();
+    const auto dumpLock = meshSrc->dump_lock();
 
     dest->SetPoints(::igtl::PolyDataPointArray::New().GetPointer());
     for(const auto& p : meshSrc->crange<data::iterator::point::xyz>())
@@ -155,7 +155,7 @@ void MeshConverter::copyAttributesFromFwMesh(
     ::igtl::PolyDataMessage::Pointer dest
 ) const
 {
-    const auto dumpLock = meshSrc->lock();
+    const auto dumpLock = meshSrc->dump_lock();
 
     const std::size_t numberOfPoints = meshSrc->numPoints();
     const std::size_t numberOfCells  = meshSrc->numCells();
@@ -366,7 +366,7 @@ data::Object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     }
 
     mesh->reserve(numberOfPoints, numberOfCells, cellType, attributes);
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     ::igtl::PolyDataPointArray* points = meshMsg->GetPoints();
     unsigned int nbPoints              = static_cast<unsigned int>(points->GetNumberOfPoints());

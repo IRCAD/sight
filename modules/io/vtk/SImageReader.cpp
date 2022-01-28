@@ -32,7 +32,6 @@
 #include <core/location/SingleFolder.hpp>
 
 #include <data/Image.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
 #include <io/base/service/IReader.hpp>

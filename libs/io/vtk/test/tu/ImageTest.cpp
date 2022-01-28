@@ -121,7 +121,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtk_types)
         data::Image::PixelFormat::GRAY_SCALE
     );
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
     io::vtk::toVTKImage(image, vtkImage);
@@ -218,7 +218,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
     data::Image::sptr image = data::Image::New();
     io::vtk::fromVTKImage(vtkImage, image);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     compareImageAttributes(
         vtkImage->GetDimensions(),
@@ -349,7 +349,7 @@ void ImageTest::testFromVtk()
     data::Image::sptr image = data::Image::New();
     io::vtk::fromVTKImage(vtkImage, image);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT_EQUAL(
         static_cast<std::size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
         static_cast<std::size_t>(image->numComponents())
@@ -400,8 +400,8 @@ void fromToTest(data::Image::PixelFormat format)
     CPPUNIT_ASSERT_EQUAL(image->numComponents(), image2->numComponents());
     CPPUNIT_ASSERT_EQUAL(image->getPixelFormat(), image2->getPixelFormat());
 
-    const auto imageDumpLock  = image->lock();
-    const auto image2DumpLock = image2->lock();
+    const auto imageDumpLock  = image->dump_lock();
+    const auto image2DumpLock = image2->dump_lock();
 
     auto itr       = image->begin<TYPE>();
     auto itr2      = image2->begin<TYPE>();

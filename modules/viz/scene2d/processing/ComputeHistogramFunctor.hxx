@@ -53,7 +53,7 @@ struct ComputeHistogramFunctor
         data::Image::csptr image        = param.image;
         data::Histogram::sptr histogram = param.histogram;
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();

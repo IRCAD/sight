@@ -153,7 +153,7 @@ void ImageDiff::addDiff(
 
 void ImageDiff::applyDiff(const data::Image::sptr& img) const
 {
-    const auto dumpLock = img->lock();
+    const auto dumpLock = img->dump_lock();
 
     for(std::size_t i = 0 ; i < m_nbElts ; ++i)
     {
@@ -165,7 +165,7 @@ void ImageDiff::applyDiff(const data::Image::sptr& img) const
 
 void ImageDiff::revertDiff(const data::Image::sptr& img) const
 {
-    const auto dumpLock = img->lock();
+    const auto dumpLock = img->dump_lock();
 
     for(std::size_t i = 0 ; i < m_nbElts ; ++i)
     {

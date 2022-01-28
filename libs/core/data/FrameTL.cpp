@@ -69,15 +69,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 
     this->clearTimeline();
 
-    // FIXME: tmp to support old API (sight 22.0)
-    if(other->m_pixelFormat == data::FrameTL::PixelFormat::UNDEFINED)
-    {
-        this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_numberOfComponents);
-    }
-    else
-    {
-        this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
-    }
+    this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
 
     core::mt::WriteLock writeLock(m_tlMutex);
     core::mt::WriteLock readLock(other->m_tlMutex);
@@ -88,48 +80,6 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
-}
-
-//------------------------------------------------------------------------------
-
-void FrameTL::initPoolSize(
-    std::size_t width,
-    std::size_t height,
-    const core::tools::Type& type,
-    std::size_t numberOfComponents,
-    unsigned int maxElementNum
-)
-{
-    m_width              = width;
-    m_height             = height;
-    m_numberOfComponents = numberOfComponents;
-    m_type               = type;
-
-    // We assume that image with 3 components are RGB and image with 4 components are RGBA
-    switch(numberOfComponents)
-    {
-        case 1:
-            m_pixelFormat = data::FrameTL::PixelFormat::GRAY_SCALE;
-            break;
-
-        case 3:
-            m_pixelFormat = data::FrameTL::PixelFormat::RGB;
-            break;
-
-        case 4:
-            m_pixelFormat = data::FrameTL::PixelFormat::RGBA;
-            break;
-
-        default:
-            m_pixelFormat = data::FrameTL::PixelFormat::UNDEFINED;
-    }
-
-    std::size_t size = width * height * numberOfComponents * type.sizeOf();
-
-    SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
-
-    m_maxElementNum = maxElementNum;
-    this->allocPoolSize(size * m_maxElementNum);
 }
 
 //------------------------------------------------------------------------------

@@ -38,7 +38,7 @@ static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     const auto cvType = io::opencv::Type::toCv(imageType, imageComp);
 
-    const auto dumpLock = _image->lock();
+    const auto dumpLock = _image->dump_lock();
 
     SIGHT_ASSERT("Empty image buffer", _image->getBuffer());
 
@@ -152,7 +152,7 @@ void Image::copyFromCv(data::Image& _image, const cv::Mat& _cvImage)
         _image.resize(imageSize, imageType, format);
     }
 
-    const auto dumpLock = _image.lock();
+    const auto dumpLock = _image.dump_lock();
     SIGHT_ASSERT("Empty image buffer", _image.getAllocatedSizeInBytes() > 0);
 
     auto buffer = _image.begin<std::uint8_t>();

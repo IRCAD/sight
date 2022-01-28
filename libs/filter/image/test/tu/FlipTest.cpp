@@ -54,9 +54,9 @@ void FlipTest::flipAlongXAxisTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
     for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
@@ -91,9 +91,9 @@ void FlipTest::flipAlongYAxisTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
     for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
@@ -128,9 +128,9 @@ void FlipTest::flipAlongZAxisTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
     for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
@@ -166,9 +166,9 @@ void FlipTest::flipAlongMultipleAxesTest()
         utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
         utestData::generator::Image::randomizeImage(imageIn);
 
-        const auto inDumpLock = imageIn->lock();
+        const auto inDumpLock = imageIn->dump_lock();
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-        const auto outDumpLock = imageOut->lock();
+        const auto outDumpLock = imageOut->dump_lock();
 
         for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
@@ -200,9 +200,9 @@ void FlipTest::flipAlongMultipleAxesTest()
         utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
         utestData::generator::Image::randomizeImage(imageIn);
 
-        const auto inDumpLock = imageIn->lock();
+        const auto inDumpLock = imageIn->dump_lock();
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-        const auto outDumpLock = imageOut->lock();
+        const auto outDumpLock = imageOut->dump_lock();
 
         for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
@@ -242,9 +242,9 @@ void FlipTest::flipEmptyImageTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
     const data::Image::Size imageSize    = imageIn->getSize();
     const data::Image::Size imageOutSize = imageOut->getSize();

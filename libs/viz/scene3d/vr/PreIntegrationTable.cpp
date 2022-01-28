@@ -89,7 +89,7 @@ void PreIntegrationTable::imageUpdate(
     {
         Ogre::PixelFormat pixelFormat = viz::scene3d::Utils::getPixelFormatOgre(_img);
 
-        const auto dumpLock = _img->lock();
+        const auto dumpLock = _img->dump_lock();
 
         const std::size_t nbPixels = _img->numElements();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "LockDumpSrv.hpp"
+
+#include <core/memory/IBuffered.hpp>
 
 #include <service/macros.hpp>
 
@@ -48,14 +50,19 @@ void LockDumpSrv::starting()
     const auto object = m_target.lock();
     SIGHT_ASSERT("The inout key '" << s_TARGET_INOUT << "' is not correctly set.", object);
 
-    m_objLock = data::ObjectLock(object.get_shared());
+    const auto buffered = std::dynamic_pointer_cast<core::memory::IBuffered>(object.get_shared());
+
+    if(buffered)
+    {
+        m_locks = buffered->dump_lock();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void LockDumpSrv::stopping()
 {
-    m_objLock = data::ObjectLock();
+    m_locks.clear();
 }
 
 //-----------------------------------------------------------------------------

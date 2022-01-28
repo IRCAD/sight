@@ -716,7 +716,7 @@ inline data::Array::sptr _generate<data::Array>(const std::size_t variant)
 {
     auto object = data::Array::New();
 
-    const auto lock = object->lock();
+    const auto lock = object->dump_lock();
 
     auto fill =
         [&](auto type)
@@ -812,8 +812,8 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
         {
             using T = decltype(type);
 
-            const auto dumpLockExpected = expected->lock();
-            const auto dumpLockActual   = actual->lock();
+            const auto dumpLockExpected = expected->dump_lock();
+            const auto dumpLockActual   = actual->dump_lock();
 
             for(auto expectedIt = expected->begin<T>(),
                 expectedEnd = expected->end<T>(),
@@ -887,7 +887,7 @@ inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
 {
     auto object = data::Image::New();
 
-    const auto lock = object->lock();
+    const auto lock = object->dump_lock();
 
     auto fill =
         [&](auto type)
@@ -1028,8 +1028,8 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
         {
             using T = decltype(type);
 
-            const auto dumpLockExpected = expected->lock();
-            const auto dumpLockActual   = actual->lock();
+            const auto dumpLockExpected = expected->dump_lock();
+            const auto dumpLockActual   = actual->dump_lock();
 
             for(auto expectedIt = expected->begin<T>(),
                 expectedEnd = expected->end<T>(),

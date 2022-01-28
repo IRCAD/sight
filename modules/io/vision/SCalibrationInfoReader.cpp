@@ -27,7 +27,6 @@
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -126,7 +125,7 @@ void SCalibrationInfoReader::updating()
         const auto calibInfo = std::dynamic_pointer_cast<data::CalibrationInfo>(data.get_shared());
         SIGHT_ASSERT("Missing calibration info.", calibInfo);
 
-        data::mt::ObjectWriteLock calibInfoLock(calibInfo);
+        data::mt::locked_ptr calibInfoLock(calibInfo);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

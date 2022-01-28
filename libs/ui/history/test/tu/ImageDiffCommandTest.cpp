@@ -61,7 +61,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     filter::image::ImageDiff diff(image->getType().sizeOf());
 
@@ -130,7 +130,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     filter::image::ImageDiff diff(image->getType().sizeOf() * 64);
 

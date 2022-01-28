@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/memory/config.hpp"
 
-#include <data/ObjectLock.hpp>
+#include <core/memory/BufferObject.hpp>
 
 #include <service/IController.hpp>
 
@@ -78,8 +78,9 @@ protected:
 
 private:
 
-    data::ObjectLock m_objLock;
     sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_target {this, "target"};
+
+    std::vector<core::memory::BufferObject::Lock> m_locks;
 };
 
 } // sight::module::memory

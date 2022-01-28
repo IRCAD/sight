@@ -220,8 +220,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
             data::Mesh::csptr refMesh  = (*itRef)->getMesh();
             data::Mesh::csptr readMesh = (*itRead)->getMesh();
 
-            const auto reflock      = refMesh->lock();
-            const auto readMeshLock = readMesh->lock();
+            const auto reflock      = refMesh->dump_lock();
+            const auto readMeshLock = readMesh->dump_lock();
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Points.",

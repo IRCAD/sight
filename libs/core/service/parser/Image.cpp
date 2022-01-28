@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ void Image::createConfig(core::tools::Object::sptr _obj)
         image->setOrigin({0, 0, 0});
         image->resize({4, 4, 1}, core::tools::Type::s_UINT8, data::Image::RGBA);
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         auto itr            = image->begin<sight::data::iterator::rgba>();
         const auto itrEnd   = image->end<sight::data::iterator::rgba>();
 

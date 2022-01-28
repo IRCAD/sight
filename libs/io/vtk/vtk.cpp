@@ -312,7 +312,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 
         destination->resize(imageSize, TypeTranslator::translate(source->GetScalarType()), format);
 
-        const auto dumpLock = destination->lock();
+        const auto dumpLock = destination->dump_lock();
 
         destBuffer = destination->getBuffer();
         const std::size_t sizeInBytes = destination->getSizeInBytes();
@@ -324,7 +324,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 
 void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _pDataImage)
 {
-    const auto dumpLock = _pDataImage->lock();
+    const auto dumpLock = _pDataImage->dump_lock();
 
     if(_pDataImage->numDimensions() == 2)
     {

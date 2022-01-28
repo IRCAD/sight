@@ -152,7 +152,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
                 return;
             }
 
-            const auto dumpLock = image->lock();
+            const auto dumpLock = image->dump_lock();
 
             const std::string intensity = image->getPixelAsString(coords[0], coords[1], coords[2]);
             m_valueText->setText(QString::fromStdString(intensity));

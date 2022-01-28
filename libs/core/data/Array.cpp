@@ -376,16 +376,9 @@ const char* Array::getBufferPtr(const data::Array::IndexType& id) const
 
 //------------------------------------------------------------------------------
 
-core::memory::BufferObject::Lock Array::lock() const
+void Array::dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const
 {
-    return m_bufferObject->lock();
-}
-
-//------------------------------------------------------------------------------
-
-void Array::lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const
-{
-    locks.push_back(this->lock());
+    locks.push_back(m_bufferObject->lock());
 }
 
 //------------------------------------------------------------------------------

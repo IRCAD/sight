@@ -56,7 +56,7 @@ void ArrayWriter::write()
 
     data::Array::csptr array     = this->getConcreteObject();
     std::size_t arraySizeInBytes = array->getSizeInBytes();
-    const auto dumpLock          = array->lock();
+    const auto dumpLock          = array->dump_lock();
     const char* buff             = static_cast<const char*>(array->getBuffer());
 
     std::ofstream fs(file.string().c_str(), std::ios::binary | std::ios::trunc);

@@ -37,7 +37,7 @@ namespace ut
 void ImageExtruderTest::setUp()
 {
     m_image = data::Image::New();
-    const auto dumpLock = m_image->lock();
+    const auto dumpLock = m_image->dump_lock();
     m_image->setSpacing(m_spacing);
     m_image->setOrigin(m_origin);
     m_image->resize(m_size, m_type, m_format);
@@ -62,7 +62,7 @@ void ImageExtruderTest::extrudeTriangleMesh()
 {
     // Create a cube.
     const data::Mesh::sptr mesh = data::Mesh::New();
-    const auto lock             = mesh->lock();
+    const auto lock             = mesh->dump_lock();
     mesh->resize(8, 12, data::Mesh::CellType::TRIANGLE);
 
     {
@@ -123,8 +123,8 @@ void ImageExtruderTest::extrudeTriangleMesh()
 
     filter::image::ImageExtruder::extrude(image, mesh);
 
-    const auto dumpLock       = image->lock();
-    const auto dumpOriginLock = m_image->lock();
+    const auto dumpLock       = image->dump_lock();
+    const auto dumpOriginLock = m_image->dump_lock();
     for(std::size_t z = 0 ; z < m_size[2] ; ++z)
     {
         for(std::size_t y = 0 ; y < m_size[1] ; ++y)
@@ -155,7 +155,7 @@ void ImageExtruderTest::extrudeQuadMesh()
 {
     // Create a cube.
     const data::Mesh::sptr mesh = data::Mesh::New();
-    const auto lock             = mesh->lock();
+    const auto lock             = mesh->dump_lock();
 
     mesh->resize(8, 6, data::Mesh::CellType::QUAD);
 
@@ -216,8 +216,8 @@ void ImageExtruderTest::extrudeQuadMesh()
 
     filter::image::ImageExtruder::extrude(image, mesh);
 
-    const auto dumpLock       = image->lock();
-    const auto dumpOriginLock = m_image->lock();
+    const auto dumpLock       = image->dump_lock();
+    const auto dumpOriginLock = m_image->dump_lock();
     for(std::size_t z = 0 ; z < m_size[2] ; ++z)
     {
         for(std::size_t y = 0 ; y < m_size[1] ; ++y)
