@@ -191,7 +191,7 @@ void ByteSizeTest::byteSizeTest()
 void ByteSizeTest::invalidSizeTest()
 {
     CPPUNIT_ASSERT_THROW(core::memory::ByteSize a(-1.), core::memory::exception::BadCast);
-    CPPUNIT_ASSERT_THROW(core::memory::ByteSize a("-2B"), core::memory::exception::BadCast);
+    CPPUNIT_ASSERT_THROW(core::memory::ByteSize a(std::string("-2B")), core::memory::exception::BadCast);
     core::memory::ByteSize a;
     CPPUNIT_ASSERT_THROW(a = -3., core::memory::exception::BadCast);
     CPPUNIT_ASSERT_THROW(a = std::string("-4B"), core::memory::exception::BadCast);
