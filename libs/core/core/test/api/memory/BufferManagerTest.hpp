@@ -37,6 +37,7 @@ CPPUNIT_TEST(allocateTest);
 CPPUNIT_TEST(memoryInfoTest);
 CPPUNIT_TEST(swapTest);
 CPPUNIT_TEST(dumpRestoreTest);
+CPPUNIT_TEST(dumpPolicyTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,6 +50,7 @@ public:
     void memoryInfoTest();
     void swapTest();
     void dumpRestoreTest();
+    void dumpPolicyTest();
 };
 
 } // namespace ut

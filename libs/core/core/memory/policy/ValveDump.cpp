@@ -233,7 +233,7 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
 
 const core::memory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
 {
-    static const core::memory::IPolicy::ParamNamesType params = {{"min_free_mem", "hysteresis_offset"}};
+    static const core::memory::IPolicy::ParamNamesType params {"min_free_mem", "hysteresis_offset"};
     return params;
 }
 

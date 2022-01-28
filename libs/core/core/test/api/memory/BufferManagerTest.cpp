@@ -24,6 +24,11 @@
 
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/BufferObject.hpp>
+#include <core/memory/IPolicy.hpp>
+#include <core/memory/policy/AlwaysDump.hpp>
+#include <core/memory/policy/BarrierDump.hpp>
+#include <core/memory/policy/NeverDump.hpp>
+#include <core/memory/policy/ValveDump.hpp>
 
 #include <utest/wait.hpp>
 
@@ -273,6 +278,133 @@ void BufferManagerTest::dumpRestoreTest()
     stats = manager->getBufferStats().get();
     CPPUNIT_ASSERT_EQUAL(zero, stats.totalManaged);
     CPPUNIT_ASSERT_EQUAL(zero, stats.totalDumped);
+}
+
+//------------------------------------------------------------------------------
+
+void BufferManagerTest::dumpPolicyTest()
+{
+    core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
+
+    // Always Dump
+    {
+        core::memory::IPolicy::sptr always = core::memory::policy::AlwaysDump::New();
+        CPPUNIT_ASSERT(always->getParamNames().empty());
+        CPPUNIT_ASSERT(!always->setParam("", ""));
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL(std::string(""), always->getParam("", &ok));
+        CPPUNIT_ASSERT(!ok);
+
+        // The Always Dump policy isn't active yet: the buffer is still loaded
+        core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
+        bo->allocate(1);
+        core::memory::BufferInfo info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(info.loaded);
+
+        // The Always Dump policy is active: the buffer is immediately dumped
+        manager->setDumpPolicy(always);
+        info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(!info.loaded);
+
+        // Lock request to modify the buffer: temporarily restore then redump the buffer
+        *static_cast<char*>(bo->lock().getBuffer()) = '!';
+        info                                        = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(!info.loaded);
+
+        // Reallocation: the buffer should be dumped after the reallocation
+        bo->reallocate(2);
+        info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        //CPPUNIT_ASSERT(!info.loaded); // TODO: Make it work
+
+        bo->destroy();
+    }
+
+    // Barrier Dump
+    {
+        core::memory::IPolicy::sptr barrier                 = core::memory::policy::BarrierDump::New();
+        const core::memory::IPolicy::ParamNamesType& params = barrier->getParamNames();
+        CPPUNIT_ASSERT(params.size() == 1 && params[0] == "barrier");
+        CPPUNIT_ASSERT(!barrier->setParam("banner", "nope"));
+        CPPUNIT_ASSERT(!barrier->setParam("barrier", "-1B"));
+        CPPUNIT_ASSERT(barrier->setParam("barrier", "1B"));
+        manager->setDumpPolicy(barrier);
+
+        // Allocation of a buffer: The managed memory size is still acceptable
+        core::memory::BufferObject::sptr bo1 = core::memory::BufferObject::New();
+        bo1->allocate(1);
+        core::memory::BufferManager::BufferInfoMapType infos = manager->getBufferInfos().get();
+        CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded);
+
+        // Lock request to modify a buffer: Shouldn't change its loading status
+        *static_cast<char*>(bo1->lock().getBuffer()) = '!';
+        infos                                        = manager->getBufferInfos().get();
+        CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded);
+
+        // Allocation of a second buffer: The managed memory size exceed the barrier, one of the
+        // buffer is evicted from managed memory
+        core::memory::BufferObject::sptr bo2 = core::memory::BufferObject::New();
+        bo2->allocate(1);
+        infos = manager->getBufferInfos().get();
+        CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded ^ infos[bo2->getBufferPointer()].loaded);
+
+        // Reallocation of both buffer: No buffer fits the barrier, both buffers should be evicted
+        // from managed memory (TODO: Make it work)
+        /*bo1->reallocate(2);
+           bo2->reallocate(2);
+           infos = manager->getBufferInfos().get();
+           CPPUNIT_ASSERT(!infos[bo1->getBufferPointer()].loaded && !infos[bo2->getBufferPointer()].loaded);*/
+
+        bo1->destroy();
+        bo2->destroy();
+    }
+
+    // Never Dump
+    {
+        core::memory::IPolicy::sptr never = core::memory::policy::NeverDump::New();
+        CPPUNIT_ASSERT(never->getParamNames().empty());
+        CPPUNIT_ASSERT(!never->setParam("", ""));
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL(std::string(""), never->getParam("", &ok));
+        CPPUNIT_ASSERT(!ok);
+
+        // The buffer isn't dumped on allocation
+        core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
+        bo->allocate(1);
+        core::memory::BufferInfo info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(info.loaded);
+
+        // The buffer isn't dumped when activating the new policy
+        manager->setDumpPolicy(never);
+        info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(info.loaded);
+
+        // Lock request to modify the buffer: the buffer still isn't dumped
+        *static_cast<char*>(bo->lock().getBuffer()) = '!';
+        info                                        = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(info.loaded);
+
+        // Reallocation: the buffer still isn't dumped
+        bo->reallocate(2);
+        info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+        CPPUNIT_ASSERT(info.loaded);
+
+        bo->destroy();
+    }
+
+    // Valve Dump
+    {
+        core::memory::IPolicy::sptr valve = core::memory::policy::ValveDump::New();
+        CPPUNIT_ASSERT_EQUAL(size_t(2), valve->getParamNames().size());
+        CPPUNIT_ASSERT(!valve->setParam("min_free_memes", "nope"));
+        CPPUNIT_ASSERT(!valve->setParam("hysteric_offset", "nope"));
+        CPPUNIT_ASSERT(!valve->setParam("min_free_mem", "-1B"));
+        CPPUNIT_ASSERT(!valve->setParam("hysteresis_offset", "-1B"));
+        CPPUNIT_ASSERT(valve->setParam("min_free_mem", "1B"));
+        CPPUNIT_ASSERT(valve->setParam("hysteresis_offset", "1B"));
+
+        // TODO: Currently it is hard to test Valve Dump as it depends on the memory of the host
+        // system. A Mock implementation of the MemoryMonitorTools should be created.
+    }
 }
 
 } // namespace ut
