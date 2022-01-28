@@ -122,7 +122,7 @@ void SUltrasoundImage::stopping()
 void SUltrasoundImage::updating()
 {
     // HACK: Const cast to avoid a useless copy, fix this by overloading the `moveToCv` function to
-    // take a `data::Image::cpstr` and output `const cv::Mat`.
+    // take a `data::Image::csptr` and output `const cv::Mat`.
     const auto constImage        = m_ultrasoudImage.lock();
     data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
     SIGHT_ASSERT("Missing input frame.", inputImage);
@@ -876,6 +876,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
 
     // Compute the intersection between the lines and the outer circle.
     // Compute the intersection with the descending line.
+    //cspell: ignore Exter
     const std::vector<cv::Vec2d> lcExterDesc = computeLineCircleIntersection(descLine, center, outerRadius);
 
     if(lcExterDesc.size() != 2)
@@ -996,9 +997,9 @@ double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vec
         arcPointMinY[1] = arcPoint[0][1];
     }
 
-    const double opposit = center[0] - arcPointMinY[0];
-    const double side    = -center[1] + arcPointMinY[1];
-    return glm::degrees(std::atan2(opposit, side));
+    const double opposite = center[0] - arcPointMinY[0];
+    const double side     = -center[1] + arcPointMinY[1];
+    return glm::degrees(std::atan2(opposite, side));
 }
 
 // -----------------------------------------------------------------------------

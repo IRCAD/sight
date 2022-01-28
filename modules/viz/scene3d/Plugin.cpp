@@ -24,6 +24,11 @@
 
 #include <OgreLogManager.h>
 
+/**
+ * Do not mark `BOREME` as incorrect.
+ * cspell:ignore BOREME
+ */
+
 namespace sight::module::viz::scene3d
 {
 

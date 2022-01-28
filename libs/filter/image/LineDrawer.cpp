@@ -69,15 +69,15 @@ bool LineDrawer::drawEllipse(
 
     LineDrawer::CoordinatesType point = c;
 
-    int wbegin = std::max(static_cast<int>(-width), -origX);
-    int hbegin = std::max(static_cast<int>(-height), -origY);
+    int w_begin = std::max(static_cast<int>(-width), -origX);
+    int h_begin = std::max(static_cast<int>(-height), -origY);
 
-    int wend = std::min(static_cast<int>(width), static_cast<int>(size[firstDim]) - 1 - origX);
-    int hend = std::min(static_cast<int>(height), static_cast<int>(size[secondDim]) - 1 - origY);
+    int w_end = std::min(static_cast<int>(width), static_cast<int>(size[firstDim]) - 1 - origX);
+    int h_end = std::min(static_cast<int>(height), static_cast<int>(size[secondDim]) - 1 - origY);
 
-    for(int y = hbegin ; y <= hend ; y++)
+    for(int y = h_begin ; y <= h_end ; y++)
     {
-        for(int x = wbegin ; x <= wend ; x++)
+        for(int x = w_begin ; x <= w_end ; x++)
         {
             double dx = x / width;
             double dy = y / height;

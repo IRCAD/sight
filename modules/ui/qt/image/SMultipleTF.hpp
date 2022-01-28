@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -173,7 +173,7 @@ private Q_SLOTS:
     /// Changes the current selected TF pool.
     void presetChoice(int _index);
 
-    /// Deletes the current seleted TF pool.
+    /// Deletes the current selected TF pool.
     void deletePool();
 
     /// Creates a new TF pool with a GreyLevel TF.

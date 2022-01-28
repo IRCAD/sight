@@ -144,7 +144,7 @@ protected:
     /// Defines the layer ID:
     std::string m_layerID;
 
-    /// Contqins the t=render service which this adaptor is attached.
+    /// Contains the t=render service which this adaptor is attached.
     viz::scene3d::SRender::wptr m_renderService;
 
     /// Enables the adaptor visibility.

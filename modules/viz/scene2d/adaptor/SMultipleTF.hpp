@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -323,7 +323,7 @@ private:
     void midButtonClickEvent(sight::viz::scene2d::data::Event& _event);
 
     /**
-     * @brief Update the window/level of the current TF relativly to the mouse movement.
+     * @brief Update the window/level of the current TF relatively to the mouse movement.
      * @param _event the 2D scene event.
      *
      * @pre m_capturedTF must be previously sets.
@@ -412,7 +412,7 @@ private:
     /// Defines the pen used by TF points.
     QPen m_pointsPen;
 
-    /// Defines the opacity used for TF exepted the current one.
+    /// Defines the opacity used for TF except for the current one.
     float m_secondOpacity {0.0f};
 
     /// Sets if interactions are enable or not.

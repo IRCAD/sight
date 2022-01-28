@@ -40,7 +40,7 @@ namespace sight::data
 {
 
 /**
- * @brief   Provides a way to manage a view on a multidimentionnal array.
+ * @brief   Provides a way to manage a view on a multidimensional array.
  *
  * If the array owns its buffer, it will perform the allocation, reallocation,
  * destruction of the buffer. Else, this class will provide an array "view" of the buffer.
@@ -244,7 +244,7 @@ public:
      * @brief Get the size of one element of the array,
      * ie. sizeof type * nbOfComponents
      *
-     * @return One array elemet size in bytes.
+     * @return One array element size in bytes.
      */
     DATA_API std::size_t getElementSizeInBytes() const;
 

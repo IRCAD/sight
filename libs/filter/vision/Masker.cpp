@@ -204,9 +204,9 @@ cv::Mat Masker::makeResponseImage(
                     }
                 }
 
-                for(int chnInxs = 0 ; chnInxs < cn ; ++chnInxs)
+                for(int channel_idx = 0 ; channel_idx < cn ; ++channel_idx)
                 {
-                    sample.at<float>(chnInxs) = pixelPtr[i * w * cn + j * cn + chnInxs];
+                    sample.at<float>(channel_idx) = pixelPtr[i * w * cn + j * cn + channel_idx];
                 }
 
                 output.at<float>(i, j) = static_cast<float>(model->predict2(sample, cv::noArray())[0]);
@@ -308,9 +308,9 @@ cv::Mat Masker::makeTrainingSamples(const cv::Mat& t, const cv::Mat& mask, const
                 cv::Point position = nonZeroCoordinates.at<cv::Point>(r);
                 // Implicit cast from Vec3b to Vec3d avoiding static_cast<float> in next for loop
                 cv::Vec3d pixel = trainImg.at<cv::Vec3b>(position);
-                for(int chnInxs = 0 ; chnInxs < cn ; ++chnInxs)
+                for(int channel_idx = 0 ; channel_idx < cn ; ++channel_idx)
                 {
-                    samples.at<double>(r, chnInxs) = pixel[chnInxs];
+                    samples.at<double>(r, channel_idx) = pixel[channel_idx];
                 }
             }
         });
@@ -369,7 +369,7 @@ cv::Mat Masker::removeMaskHoles(const cv::Mat& m, std::size_t n, cv::InputArray 
                 cv::bitwise_and(diff, binTmp, tmp);
 
                 // If the 'and' is not empty, it means that it's an area connected to the border of the insideMask
-                // Otherwise, it's an unconnecter small area inside the mask
+                // Otherwise, it's an unconnected small area inside the mask
                 if(cv::countNonZero(tmp) != 0)
                 {
                     res.setTo(255, binTmp);

@@ -30,7 +30,7 @@ Window {
                 text: pulseProgressDialog.message
                 font.bold: true
             }
-            // the inderteminate state is to setup a progress bar
+            // the indeterminate state is to setup a progress bar
             // when we don't know how much time it will take
             ProgressBar {
                 indeterminate: true

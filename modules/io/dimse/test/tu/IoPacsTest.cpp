@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void IoPacsTest::tearDown()
 
 void IoPacsTest::pacsConfigurationInitializer()
 {
-    // Pacs Conifguration
+    // Pacs Configuration
     sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
         sight::io::dimse::data::PacsConfiguration::New();
 

@@ -169,7 +169,7 @@ private Q_SLOTS:
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
-     * @param _checkBox Dependency wigdet.
+     * @param _checkBox Dependency widget.
      * @param _widget Child widget.
      * @param _reverse Reverse the state check.
      */
@@ -178,7 +178,7 @@ private Q_SLOTS:
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
-     * @param _comboBox Dependency wigdet.
+     * @param _comboBox Dependency widget.
      * @param _widget Child widget.
      * @param _value Value of the combo box.
      * @param _reverse Reverse the state check.
@@ -392,7 +392,7 @@ private:
     template<typename T>
     static QString valueToStringLabel(T value, std::uint8_t decimals);
 
-    /// Block (or not) signal emmission for this service
+    /// Block (or not) signal emission for this service
     void blockSignals(bool block);
 
     /// if true, the signals are not emitted

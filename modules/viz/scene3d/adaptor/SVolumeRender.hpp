@@ -53,7 +53,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b updateImage(): called when the image is updated.
  * - \b toggleWidgets(bool): toggles widget visibility.
  * - \b bufferImage(): called when the image buffer is modified, copies it into the texture buffer.
- * - \b updateVisibility(bool): hhows or hides the volume.
+ * - \b updateVisibility(bool): shows or hides the volume.
  * - \b toggleVisibility(): toggle whether the volume is shown or not.
  * - \b show(): shows the volume.
  * - \b hide(): hides the volume.
@@ -333,7 +333,7 @@ private:
     void togglePreintegration(bool _preintegration);
 
     /**
-     * @brief Enables/disables the ambient occlision.
+     * @brief Enables/disables the ambient occlusion.
      * @param _ambientOcclusion state of the ambient occlusion.
      */
     void toggleAmbientOcclusion(bool _ambientOcclusion);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ protected:
     /// Does nothing.
     MODULE_UI_QT_API void updating() override;
 
-    /// Defines the connection betwwen camera and matrix and this editor
+    /// Defines the connection between camera and matrix and this editor
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:

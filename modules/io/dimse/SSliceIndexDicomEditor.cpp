@@ -109,14 +109,14 @@ void SSliceIndexDicomEditor::starting()
     SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
-    m_sliceTriggerer = m_associatedWorker->createTimer();
-    m_sliceTriggerer->setFunction(
+    m_sliceTrigger = m_associatedWorker->createTimer();
+    m_sliceTrigger->setFunction(
         [&]()
         {
             this->retrieveSlice();
         });
-    m_sliceTriggerer->setDuration(std::chrono::milliseconds(m_delay));
-    m_sliceTriggerer->setOneShot(true);
+    m_sliceTrigger->setDuration(std::chrono::milliseconds(m_delay));
+    m_sliceTrigger->setOneShot(true);
 
     // Create the slider.
     sight::ui::base::IGuiContainer::create();
@@ -204,7 +204,7 @@ void SSliceIndexDicomEditor::changeSliceIndex(int _value)
     this->setSliderInformation(static_cast<unsigned int>(_value));
 
     // Get the new slice if there is no change for m_delay milliseconds.
-    m_sliceTriggerer->start();
+    m_sliceTrigger->start();
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,7 +95,7 @@ private:
     /**
      * @brief Write a SeriesDB to a folder in DICOM format
      * @param[in] folder DICOM folder
-     * @param[in] seriesDB SeriesDB that must be writen
+     * @param[in] seriesDB SeriesDB that must be written
      */
     void saveSeriesDB(const std::filesystem::path folder, SPTR(data::SeriesDB) seriesDB);
 

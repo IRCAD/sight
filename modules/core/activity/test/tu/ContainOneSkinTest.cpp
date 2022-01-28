@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ void ContainOneSkinTest::testValidator()
     data::Reconstruction::sptr rec1     = data::Reconstruction::New();
     data::Reconstruction::sptr rec2     = data::Reconstruction::New();
     data::Reconstruction::sptr rec3     = data::Reconstruction::New();
-    data::ModelSeries::ReconstructionVectorType vecReconst;
+    data::ModelSeries::ReconstructionVectorType vec_rec;
 
     {
         validation = objValidator->validate(rec1);
@@ -84,8 +84,8 @@ void ContainOneSkinTest::testValidator()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty model series should NOT be valid", false, validation.first);
     }
     {
-        vecReconst.push_back(rec1);
-        modelSeries->setReconstructionDB(vecReconst);
+        vec_rec.push_back(rec1);
+        modelSeries->setReconstructionDB(vec_rec);
         validation = objValidator->validate(modelSeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with one non-Skin reconstruction should NOT be valid",
@@ -103,8 +103,8 @@ void ContainOneSkinTest::testValidator()
         );
     }
     {
-        vecReconst.push_back(rec2);
-        modelSeries->setReconstructionDB(vecReconst);
+        vec_rec.push_back(rec2);
+        modelSeries->setReconstructionDB(vec_rec);
         validation = objValidator->validate(modelSeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with two reconstructions (only one Skin) should be valid",
@@ -113,8 +113,8 @@ void ContainOneSkinTest::testValidator()
         );
     }
     {
-        vecReconst.push_back(rec3);
-        modelSeries->setReconstructionDB(vecReconst);
+        vec_rec.push_back(rec3);
+        modelSeries->setReconstructionDB(vec_rec);
         validation = objValidator->validate(modelSeries);
         validation = objValidator->validate(modelSeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -175,20 +175,20 @@ void ContainOneSkinTest::testValidatorWithVector()
     data::Reconstruction::sptr rec22     = data::Reconstruction::New();
     data::Reconstruction::sptr rec31     = data::Reconstruction::New();
     data::Reconstruction::sptr rec32     = data::Reconstruction::New();
-    data::ModelSeries::ReconstructionVectorType vecReconst1;
-    data::ModelSeries::ReconstructionVectorType vecReconst2;
-    data::ModelSeries::ReconstructionVectorType vecReconst3;
+    data::ModelSeries::ReconstructionVectorType vec_rec1;
+    data::ModelSeries::ReconstructionVectorType vec_rec2;
+    data::ModelSeries::ReconstructionVectorType vec_rec3;
 
-    vecReconst1.push_back(rec11);
-    vecReconst1.push_back(rec12);
-    vecReconst2.push_back(rec21);
-    vecReconst2.push_back(rec22);
-    vecReconst3.push_back(rec31);
-    vecReconst3.push_back(rec32);
+    vec_rec1.push_back(rec11);
+    vec_rec1.push_back(rec12);
+    vec_rec2.push_back(rec21);
+    vec_rec2.push_back(rec22);
+    vec_rec3.push_back(rec31);
+    vec_rec3.push_back(rec32);
 
-    modelSeries1->setReconstructionDB(vecReconst1);
-    modelSeries2->setReconstructionDB(vecReconst2);
-    modelSeries3->setReconstructionDB(vecReconst3);
+    modelSeries1->setReconstructionDB(vec_rec1);
+    modelSeries2->setReconstructionDB(vec_rec2);
+    modelSeries3->setReconstructionDB(vec_rec3);
 
     {
         validation = objValidator->validate(vector);
@@ -198,7 +198,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         vector->getContainer().push_back(modelSeries1);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with one ModelSeries (without Skin) shoud NOT be valid",
+            "Vector with one ModelSeries (without Skin) should NOT be valid",
             false,
             validation.first
         );
@@ -207,7 +207,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         rec11->setStructureType("Skin");
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with one ModelSeries (with one Skin) shoud be valid",
+            "Vector with one ModelSeries (with one Skin) should be valid",
             true,
             validation.first
         );
@@ -216,7 +216,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         rec12->setStructureType("Skin");
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with one ModelSeries (with two Skin) shoud be NOT valid",
+            "Vector with one ModelSeries (with two Skin) should be NOT valid",
             false,
             validation.first
         );
@@ -226,7 +226,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         vector->getContainer().push_back(modelSeries2);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with two ModelSeries (one without Skin) shoud be NOT valid",
+            "Vector with two ModelSeries (one without Skin) should be NOT valid",
             false,
             validation.first
         );
@@ -235,7 +235,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         rec21->setStructureType("Skin");
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with two ModelSeries (each with one Skin) shoud be valid",
+            "Vector with two ModelSeries (each with one Skin) should be valid",
             true,
             validation.first
         );
@@ -244,7 +244,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         rec22->setStructureType("Skin");
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with two ModelSeries (one with one Skin and one with two skin) shoud NOT "
+            "Vector with two ModelSeries (one with one Skin and one with two skin) should NOT "
             "be valid",
             false,
             validation.first
@@ -255,7 +255,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         vector->getContainer().push_back(modelSeries3);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with three ModelSeries (two with one Skin and one without skin) shoud NOT "
+            "Vector with three ModelSeries (two with one Skin and one without skin) should NOT "
             "be valid",
             false,
             validation.first
@@ -265,7 +265,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         rec32->setStructureType("Skin");
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with three ModelSeries (each with one Skin) shoud be valid",
+            "Vector with three ModelSeries (each with one Skin) should be valid",
             true,
             validation.first
         );
@@ -274,7 +274,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         rec21->setStructureType("Tumor");
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with three ModelSeries (two with one Skin and one without skin) shoud NOT "
+            "Vector with three ModelSeries (two with one Skin and one without skin) should NOT "
             "be valid",
             false,
             validation.first
@@ -305,20 +305,20 @@ void ContainOneSkinTest::testValidatorWithComposite()
     data::Reconstruction::sptr rec22     = data::Reconstruction::New();
     data::Reconstruction::sptr rec31     = data::Reconstruction::New();
     data::Reconstruction::sptr rec32     = data::Reconstruction::New();
-    data::ModelSeries::ReconstructionVectorType vecReconst1;
-    data::ModelSeries::ReconstructionVectorType vecReconst2;
-    data::ModelSeries::ReconstructionVectorType vecReconst3;
+    data::ModelSeries::ReconstructionVectorType vec_rec1;
+    data::ModelSeries::ReconstructionVectorType vec_rec2;
+    data::ModelSeries::ReconstructionVectorType vec_rec3;
 
-    vecReconst1.push_back(rec11);
-    vecReconst1.push_back(rec12);
-    vecReconst2.push_back(rec21);
-    vecReconst2.push_back(rec22);
-    vecReconst3.push_back(rec31);
-    vecReconst3.push_back(rec32);
+    vec_rec1.push_back(rec11);
+    vec_rec1.push_back(rec12);
+    vec_rec2.push_back(rec21);
+    vec_rec2.push_back(rec22);
+    vec_rec3.push_back(rec31);
+    vec_rec3.push_back(rec32);
 
-    modelSeries1->setReconstructionDB(vecReconst1);
-    modelSeries2->setReconstructionDB(vecReconst2);
-    modelSeries3->setReconstructionDB(vecReconst3);
+    modelSeries1->setReconstructionDB(vec_rec1);
+    modelSeries2->setReconstructionDB(vec_rec2);
+    modelSeries3->setReconstructionDB(vec_rec3);
 
     {
         validation = objValidator->validate(composite);
@@ -328,7 +328,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         (*composite)["model1"] = modelSeries1;
         validation             = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Vector with one ModelSeries (without Skin) shoud NOT be valid",
+            "Vector with one ModelSeries (without Skin) should NOT be valid",
             false,
             validation.first
         );
@@ -337,7 +337,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         rec11->setStructureType("Skin");
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with one ModelSeries (with one Skin) shoud be valid",
+            "Composite with one ModelSeries (with one Skin) should be valid",
             true,
             validation.first
         );
@@ -346,7 +346,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         rec12->setStructureType("Skin");
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with one ModelSeries (with two Skin) shoud be NOT valid",
+            "Composite with one ModelSeries (with two Skin) should be NOT valid",
             false,
             validation.first
         );
@@ -356,7 +356,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         (*composite)["model2"] = modelSeries2;
         validation             = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with two ModelSeries (one without Skin) shoud be NOT valid",
+            "Composite with two ModelSeries (one without Skin) should be NOT valid",
             false,
             validation.first
         );
@@ -365,7 +365,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         rec21->setStructureType("Skin");
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with two ModelSeries (each with one Skin) shoud be valid",
+            "Composite with two ModelSeries (each with one Skin) should be valid",
             true,
             validation.first
         );
@@ -374,7 +374,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         rec22->setStructureType("Skin");
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with two ModelSeries (one with one Skin and one with two skin) shoud "
+            "Composite with two ModelSeries (one with one Skin and one with two skin) should "
             " NOT be valid",
             false,
             validation.first
@@ -385,7 +385,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         (*composite)["model3"] = modelSeries3;
         validation             = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with three ModelSeries (two with one Skin and one without skin) shoud "
+            "Composite with three ModelSeries (two with one Skin and one without skin) should "
             "NOT be valid",
             false,
             validation.first
@@ -395,7 +395,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         rec32->setStructureType("Skin");
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with three ModelSeries (each with one Skin) shoud be valid",
+            "Composite with three ModelSeries (each with one Skin) should be valid",
             true,
             validation.first
         );
@@ -404,7 +404,7 @@ void ContainOneSkinTest::testValidatorWithComposite()
         rec21->setStructureType("Tumor");
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with three ModelSeries (two with one Skin and one without skin) shoud "
+            "Composite with three ModelSeries (two with one Skin and one without skin) should "
             "NOT be valid",
             false,
             validation.first

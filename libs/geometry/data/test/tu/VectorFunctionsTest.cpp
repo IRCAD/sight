@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ void VectorFunctionsTest::checkCross()
     const double DISTANCE = 10.25;
 
     // New version
-    const double CROOS_X = -0.03;
+    const double CROSS_X = -0.03;
     const double CROSS_Y = 0.06;
     const double CROSS_Z = -0.03;
     const fwVec3d V1     = {0.1, 0.2, 0.3};
@@ -116,7 +116,7 @@ void VectorFunctionsTest::checkCross()
     result = geometry::data::cross(V1, V2);
 #endif
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROOS_X, result[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_X, result[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Y, result[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Z, result[2], 0.00001);
 }

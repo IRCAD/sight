@@ -269,10 +269,10 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::cameraTranslate(int xmove, int ymove)
+void TrackballInteractor::cameraTranslate(int x_move, int y_move)
 {
-    float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
-    float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
+    float dx = static_cast<float>(x_move) / (m_mouseScale * 10.f);
+    float dy = static_cast<float>(-y_move) / (m_mouseScale * 10.f);
 
     const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
     Ogre::Camera* camera                         =

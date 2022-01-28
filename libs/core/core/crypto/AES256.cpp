@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace sight::core::crypto
 // en/decrypt a message using the given password.
 // Uses function pointers to minimize code duplication
 template<typename T>
-inline static T xxcrypt(
+inline static T xx_crypt(
     decltype(&::EVP_DecryptInit_ex) xxCryptInit,
     decltype(&::EVP_DecryptUpdate) xxCryptUpdate,
     decltype(&::EVP_DecryptFinal_ex) xxCryptFinal,
@@ -102,7 +102,7 @@ inline static T xxcrypt(
 
 std::string decrypt(const std::string& message, const secure_string& password)
 {
-    return xxcrypt<std::string>(
+    return xx_crypt<std::string>(
         &::EVP_DecryptInit_ex,
         &::EVP_DecryptUpdate,
         &::EVP_DecryptFinal_ex,
@@ -115,7 +115,7 @@ std::string decrypt(const std::string& message, const secure_string& password)
 
 secure_string decrypt(const secure_string& message, const secure_string& password)
 {
-    return xxcrypt<secure_string>(
+    return xx_crypt<secure_string>(
         &::EVP_DecryptInit_ex,
         &::EVP_DecryptUpdate,
         &::EVP_DecryptFinal_ex,
@@ -135,7 +135,7 @@ secure_string decrypt(const char* const message, const secure_string& password)
 
 std::string encrypt(const std::string& message, const secure_string& password)
 {
-    return xxcrypt<std::string>(
+    return xx_crypt<std::string>(
         &::EVP_EncryptInit_ex,
         &::EVP_EncryptUpdate,
         &::EVP_EncryptFinal_ex,
@@ -148,7 +148,7 @@ std::string encrypt(const std::string& message, const secure_string& password)
 
 secure_string encrypt(const secure_string& message, const secure_string& password)
 {
-    return xxcrypt<secure_string>(
+    return xx_crypt<secure_string>(
         &::EVP_EncryptInit_ex,
         &::EVP_EncryptUpdate,
         &::EVP_EncryptFinal_ex,

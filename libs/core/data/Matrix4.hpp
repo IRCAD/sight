@@ -103,14 +103,14 @@ public:
     }
 
     /**
-     * @brief Returns matrix coeficients as a 4x4 matrix (Row major).
+     * @brief Returns matrix coefficients as a 4x4 matrix (Row major).
      * @return 4x4 matrix (std::array< std::array< double, 4> 4>).
      */
     DATA_API MatrixType getMatrix4x4() const;
 
     /**
-     * @brief Sets coeficients as a 4x4 matrix (Row major).
-     * @param _matrix : matrix coeficients as std::array< std::array< double, 4 > 4 >.
+     * @brief Sets coefficients as a 4x4 matrix (Row major).
+     * @param _matrix : matrix coefficients as std::array< std::array< double, 4 > 4 >.
      */
     DATA_API void setMatrix4x4(const MatrixType& _matrix);
 

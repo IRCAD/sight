@@ -251,7 +251,7 @@ private:
     /// Defines the priority of the interactor.
     int m_priority {2};
 
-    /// Defines the current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
+    /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
     PickedData m_pickedData {nullptr, true};
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.

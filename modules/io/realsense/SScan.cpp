@@ -535,7 +535,7 @@ void SScan::startCamera()
             {
                 // Enable advanced-mode.
                 advanced_mode_dev.toggle_advanced_mode(true);
-                SIGHT_DEBUG("Enable avdanced mode on realsense device.");
+                SIGHT_DEBUG("Enable advanced mode on realsense device.");
             }
         }
         else
@@ -1009,7 +1009,7 @@ void SScan::grab()
     rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
     rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
 
-    bool needAligment = false;
+    bool needAlignment = false;
 
     rs2::align alignFrames(RS2_STREAM_COLOR);
 
@@ -1017,8 +1017,8 @@ void SScan::grab()
     // value, and default one.
     if(m_cameraSettings.streamToAlignTo != RS2_STREAM_ANY && m_cameraSettings.streamToAlignTo < RS2_STREAM_FISHEYE)
     {
-        alignFrames  = rs2::align(m_cameraSettings.streamToAlignTo);
-        needAligment = true;
+        alignFrames   = rs2::align(m_cameraSettings.streamToAlignTo);
+        needAlignment = true;
     }
 
     // We want the points object to be persistent so we can display the last cloud when a frame drops
@@ -1038,7 +1038,7 @@ void SScan::grab()
             auto frames = m_pipe->wait_for_frames();
 
             // Align each frames in the chosen coordinate frames.
-            if(needAligment)
+            if(needAlignment)
             {
                 frames = alignFrames.process(frames);
             }

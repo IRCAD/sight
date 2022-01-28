@@ -65,9 +65,9 @@ static const std::string s_QUERY_CONFIG             = "queryFlags";
 static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
 static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 
-static const std::string s_VIDEO_MATERIAL_NAME            = "Video";
-static const std::string s_VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
-static const std::string s_VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
+static const std::string s_VIDEO_MATERIAL_NAME             = "Video";
+static const std::string s_VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
+static const std::string s_VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
@@ -249,11 +249,11 @@ void SVideo::updating()
         {
             if(type == core::tools::Type::s_FLOAT || type == core::tools::Type::s_DOUBLE)
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
             else
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
         }
         else

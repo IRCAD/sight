@@ -73,7 +73,6 @@ struct Default
  */
 
 // inline mandatory to be supported in multi compilation unit and avoid conflict when linking
-// function doesn't exist code is rewritted
 /**
  * @brief       Convert the value to a string
  * @param[in]   t value

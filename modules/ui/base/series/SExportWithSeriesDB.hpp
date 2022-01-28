@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ namespace series
  * @brief   This action allows to export the current series using a temporary seriesDB.
  *
  * This service must work on a series.
- * It creates a new SeriesDB containing this series, and then launchs an module::ui::base::editor::SSelector service
+ * It creates a new SeriesDB containing this series, and then launches a module::ui::base::editor::SSelector service
  * on the created SeriesDB with the given configuration.
  *
  * @section Signal Signal

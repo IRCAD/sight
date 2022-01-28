@@ -262,12 +262,12 @@ void Text::setVisible(bool _visible)
 //------------------------------------------------------------------------------
 
 void Text::setTextAlignment(
-    const Ogre::TextAreaOverlayElement::Alignment _hAlignement,
-    const Ogre::GuiVerticalAlignment _vAlignement
+    const Ogre::TextAreaOverlayElement::Alignment _hAlignment,
+    const Ogre::GuiVerticalAlignment _vAlignment
 )
 {
-    m_overlayText->setVerticalAlignment(_vAlignement);
-    m_overlayText->setAlignment(_hAlignement);
+    m_overlayText->setVerticalAlignment(_vAlignment);
+    m_overlayText->setAlignment(_hAlignment);
 }
 
 //------------------------------------------------------------------------------

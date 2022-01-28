@@ -146,7 +146,7 @@ private:
  * @brief Factory class generating GridProxyGeometry objects.
  *
  * This is absolutely necessary for all ogre classes inheriting from Ogre::MovableObject.
- * The factory has to be registered at the Ogre root. (@see Utils::getOgreRoot)
+ * The factory has to be registered at the ogre root. (@see Utils::getOgreRoot)
  */
 class GridProxyGeometryFactory : public viz::scene3d::factory::R2VBRenderable
 {

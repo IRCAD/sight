@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/Runtime.hpp"
 #include "core/runtime/RuntimeException.hpp"
+
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -88,7 +89,7 @@ T* createExecutableInstance(
 std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(const std::string& identifier);
 
 /**
- * @brief   Retrieve the configuation element with the given identifier for the
+ * @brief   Retrieve the configuration element with the given identifier for the
  *          given extension point
  *
  * @param   identifier          a string containing the configuration element identifier

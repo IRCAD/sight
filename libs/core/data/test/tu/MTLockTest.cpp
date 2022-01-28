@@ -104,6 +104,7 @@ void MTLockTest::runLock()
 
 void MTLockTest::multipleLockTest()
 {
+    //cspell: ignore tata lili
     auto future1 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 100, "tata"));
     auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 99, "lili"));
 

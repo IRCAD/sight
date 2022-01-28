@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::core::tools
  * @brief   Helper for BinaryCartesianProduct two Set
  *
  * @param   TYPE should be a simple type
- * @param   SETOFSET should be a container of type list i.e vector< vector< singleTypes>, vector< singleTypes>, ... >.
+ * @param   SET_OF_SET should be a container of type list i.e vector< vector< singleTypes>, vector< singleTypes>, ... >.
  * If SET is empty then vector<vector<TYPE> > is created
  *
  * From a type and a set generate a new set where elements are concatenation of type and element of second set i.e
@@ -50,12 +50,12 @@ namespace sight::core::tools
  */
 struct AppendValueFirst
 {
-    template<class TYPE, class SETOFSET>
+    template<class TYPE, class SET_OF_SET>
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::eval_if<boost::mpl::empty<SETOFSET>,
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::eval_if<boost::mpl::empty<SET_OF_SET>,
                                                            boost::mpl::vector<boost::mpl::vector<TYPE> >,
-                                                           boost::mpl::transform<SETOFSET,
+                                                           boost::mpl::transform<SET_OF_SET,
                                                                                  boost::mpl::push_front<boost::mpl::
                                                                                                         _1, TYPE> >
         >::type type;
@@ -114,9 +114,9 @@ struct BinaryCartesianProductRecurser
 };
 
 /**
- * @brief   Compute Cartesian Product of two set (type list) to generate all possible combinaison.
+ * @brief   Compute Cartesian Product of two set (type list) to generate all possible combination.
  *
- * From two type list generate a new type list where all elemenent a combinaison of each set. For example :
+ * From two type list generate a new type list where all element is a combination of each set. For example :
  * @code
  *  using namespace boost::mpl;
  *

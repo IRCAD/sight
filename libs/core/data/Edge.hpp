@@ -61,10 +61,10 @@ public:
 
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)
-     * @param[in] _fromPortIndentifier identifier of port "from"
-     * @param[in] _toPortIndentifier identifier of port "to"
+     * @param[in] _fromPortIdentifier identifier of port "from"
+     * @param[in] _toPortIdentifier identifier of port "to"
      */
-    DATA_API void setIdentifiers(const std::string& _fromPortIndentifier, const std::string& _toPortIndentifier);
+    DATA_API void setIdentifiers(const std::string& _fromPortIdentifier, const std::string& _toPortIdentifier);
 
     /**
      * @brief Get the edge identifier

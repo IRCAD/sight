@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-struct RoiApplyerParam
+struct RoiApplierParam
 {
     data::Image::sptr img;
     data::Image::sptr roi;
@@ -40,12 +40,12 @@ struct RoiApplyerParam
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE>
-struct RoiApplyer
+struct RoiApplier
 {
     //------------------------------------------------------------------------------
 
     template<typename ROI_TYPE>
-    void operator()(RoiApplyerParam& p)
+    void operator()(RoiApplierParam& p)
     {
         typedef IMAGE_TYPE ImgType;
         typedef ROI_TYPE RoiType;
@@ -74,14 +74,14 @@ struct RoiApplyer
 
 //------------------------------------------------------------------------------
 
-struct RoiApplyerCaller
+struct RoiApplierCaller
 {
     //------------------------------------------------------------------------------
 
     template<typename IMAGE_TYPE>
-    void operator()(RoiApplyerParam& p)
+    void operator()(RoiApplierParam& p)
     {
-        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplyer<IMAGE_TYPE> >::invoke(
+        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplier<IMAGE_TYPE> >::invoke(
             p.roi->getType(),
             p
         );
@@ -97,12 +97,12 @@ void applyRoi(data::Image::sptr image, data::Image::sptr roi)
 
     using namespace boost;
 
-    RoiApplyerParam param;
+    RoiApplierParam param;
     param.img = image;
     param.roi = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplyerCaller>::invoke(
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplierCaller>::invoke(
         image->getType(),
         param
     );
@@ -113,7 +113,7 @@ void applyRoi(data::Image::sptr image, data::Image::sptr roi)
 struct RoiTesterParam
 {
     data::Image::sptr img;
-    data::Image::sptr imgRoiApplyed;
+    data::Image::sptr imgRoiApplied;
     data::Image::sptr roi;
     bool result;
 };
@@ -135,18 +135,18 @@ struct RoiTester
         typedef ROI_TYPE RoiType;
 
         const auto imgDumpLock           = p.img->lock();
-        const auto imgRoiAppliedDumpLock = p.imgRoiApplyed->lock();
+        const auto imgRoiAppliedDumpLock = p.imgRoiApplied->lock();
         const auto roiDumpLock           = p.roi->lock();
 
         SIGHT_ASSERT(
             "Null data buffers",
-            p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplyed->getBuffer()
+            p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplied->getBuffer()
         );
 
         auto imIt        = p.img->begin<ImgType>();
         const auto imEnd = p.img->end<ImgType>();
         auto roiIt       = p.roi->begin<RoiType>();
-        auto imRoiIt     = p.imgRoiApplyed->begin<ImgType>();
+        auto imRoiIt     = p.imgRoiApplied->begin<ImgType>();
 
         for( ; result && imIt != imEnd ; ++imIt, ++roiIt, ++imRoiIt)
         {
@@ -173,17 +173,17 @@ struct RoiTesterCaller
 
 //------------------------------------------------------------------------------
 
-bool isRoiApplyed(data::Image::sptr image, data::Image::sptr roi, data::Image::sptr imgRoiApplyed)
+bool isRoiApplied(data::Image::sptr image, data::Image::sptr roi, data::Image::sptr imgRoiApplied)
 {
-    SIGHT_ASSERT("Null image pointers", image && imgRoiApplyed && roi);
+    SIGHT_ASSERT("Null image pointers", image && imgRoiApplied && roi);
     SIGHT_ASSERT(
         "Images have different size",
-        image->getSize() == imgRoiApplyed->getSize() && image->getSize() == roi->getSize()
+        image->getSize() == imgRoiApplied->getSize() && image->getSize() == roi->getSize()
     );
 
     RoiTesterParam param;
     param.img           = image;
-    param.imgRoiApplyed = imgRoiApplyed;
+    param.imgRoiApplied = imgRoiApplied;
     param.roi           = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,7 +120,7 @@ private:
     /// Sets the display status.
     bool m_isInteracting;
 
-    /// Defiens the font used for displaying the text.
+    /// Defines the font used for displaying the text.
     QFont m_font;
 
     /// Defines  the coordinates of the current event.

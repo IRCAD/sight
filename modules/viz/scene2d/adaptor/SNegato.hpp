@@ -137,7 +137,7 @@ private:
 
     QImage* createQImage();
 
-    void updateBufferFromImage(QImage* qimg);
+    void updateBufferFromImage(QImage* _img);
 
     void changeImageMinMaxFromCoord(
         sight::viz::scene2d::data::Coord& oldCoord,
@@ -152,7 +152,7 @@ private:
         const data::TransferFunction::csptr& tf
     );
 
-    QImage* m_qimg;
+    QImage* m_qImg;
 
     QGraphicsPixmapItem* m_pixmapItem;
 

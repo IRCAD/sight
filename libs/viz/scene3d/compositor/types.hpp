@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@ namespace sight::viz::scene3d
 namespace compositor
 {
 
-/// OIT (Ordrer Independent Transparency) techniques supported
+/// OIT (Order Independent Transparency) techniques supported
 enum transparencyTechnique
 {
     DEFAULT,
@@ -36,7 +36,7 @@ enum transparencyTechnique
     DUALDEPTHPEELING,
     WEIGHTEDBLENDEDOIT,
     HYBRIDTRANSPARENCY,
-    CELSHADING_DEPTHPEELING
+    CELLSHADING_DEPTHPEELING
 };
 
 } // namespace compositor

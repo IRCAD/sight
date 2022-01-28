@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::module::ui::qt::image
 /**
  * @brief   ImageInfo service allows to display image pixel information when it receives the mouse cursor coordinates.
  *
- * @warnig The interaction must be received in pixel coordinates (for example from the the adaptor
+ * @warning The interaction must be received in pixel coordinates (for example from the the adaptor
  *         ::visuVTKAdaptor::SImagePickerInteractor)
  *
  * @section Slots Slots

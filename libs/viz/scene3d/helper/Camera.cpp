@@ -37,10 +37,10 @@ Ogre::Matrix4 Camera::computeFrustumShearTransform(const Ogre::Camera& _camera, 
     Ogre::Matrix4 shearTransform = Ogre::Matrix4::IDENTITY;
 
     const float focalLength  = _camera.getFocalLength();
-    const float xshearFactor = std::tan(_angle);
+    const float xShearFactor = std::tan(_angle);
 
-    shearTransform[0][2] = -xshearFactor;
-    shearTransform[0][3] = -focalLength * xshearFactor;
+    shearTransform[0][2] = -xShearFactor;
+    shearTransform[0][3] = -focalLength * xShearFactor;
 
     return shearTransform;
 }
@@ -187,10 +187,10 @@ Ogre::Vector3 Camera::convertNDCToViewSpace(const Ogre::Camera& _camera, const O
 
     const Ogre::Affine3& viewMat   = _camera.getViewMatrix();
     const Ogre::Matrix4& projMat   = _camera.getProjectionMatrixWithRSDepth();
-    const auto inversedCombinedMat = (projMat * viewMat).inverse();
+    const auto invertedCombinedMat = (projMat * viewMat).inverse();
 
     // We multiply by the inverse since we are performing the usual projection in the other way around.
-    const Ogre::Vector4 result = inversedCombinedMat * clippingCoordinatePixel;
+    const Ogre::Vector4 result = invertedCombinedMat * clippingCoordinatePixel;
 
     return result.xyz();
 }

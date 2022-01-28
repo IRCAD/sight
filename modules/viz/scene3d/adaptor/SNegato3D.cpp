@@ -171,7 +171,7 @@ void SNegato3D::starting()
     Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
     m_negatoSceneNode = transformNode->createChildSceneNode();
 
-    // Instanciation of the planes
+    // Instantiation of the planes
     int orientationNum {0};
     for(auto& plane : m_planes)
     {

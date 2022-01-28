@@ -92,7 +92,7 @@ protected:
     /// Configures the layer and retrieves the size of the output image.
     MODULE_VIZ_SCENE3D_API void configuring() override;
 
-    /// Intializes adaptor and connection to layer signals.
+    /// Initializes adaptor and connection to layer signals.
     MODULE_VIZ_SCENE3D_API void starting() override;
 
     /// Updates the service. Convert render target texture to data::Image.

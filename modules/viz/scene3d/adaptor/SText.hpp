@@ -68,7 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): not really used but it is needed to be bound to a render service.
  * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
- * - \b fontSize (optional, usinged int, default=16): font size in points.
+ * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b hAlign (optional, left|center|right, default="left"): horizontal alignment.
  * - \b vAlign (optional, top|center|bottom, default="bottom"): vertical alignment.
  * - \b text (optional, string, default=""): text to display, only available when no input is set.

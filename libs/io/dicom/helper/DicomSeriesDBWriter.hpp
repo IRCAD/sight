@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
-     * @brief Construtor/Destructor
+     * @brief Constructor/Destructor
      * @{ */
     IO_DICOM_API DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key);
     IO_DICOM_API virtual ~DicomSeriesDBWriter();
@@ -94,7 +94,7 @@ private:
     /// Job observer
     SPTR(core::jobs::Aggregator) m_aggregator;
 
-    /// Optionnal anonymiser
+    /// Optional anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;
 
     /// Producer

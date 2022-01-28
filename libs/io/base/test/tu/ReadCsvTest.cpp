@@ -80,6 +80,7 @@ void ReadCsvTest::test_inexistenceCsv()
 
 void ReadCsvTest::test_validCRLFCsv()
 {
+    // cspell: disable
     io::base::reader::CsvReader csvReader(m_validCRLFCsvDirectoryPath);
     io::base::reader::CsvReader::TokenContainerType tokenVec;
 
@@ -121,12 +122,15 @@ void ReadCsvTest::test_validCRLFCsv()
     CPPUNIT_ASSERT("0.56" == tokenVec[5]);
     CPPUNIT_ASSERT(tokenVec[6].empty());
     CPPUNIT_ASSERT(7 == tokenVec.size());
+
+    //cspell: enable
 }
 
 //------------------------------------------------------------------------------
 
 void ReadCsvTest::test_validLFCsv()
 {
+    // cspell: disable
     io::base::reader::CsvReader csvReader(m_validLFCsvDirectoryPath);
     io::base::reader::CsvReader::TokenContainerType tokenVec;
 
@@ -168,6 +172,8 @@ void ReadCsvTest::test_validLFCsv()
     CPPUNIT_ASSERT("0.56" == tokenVec[5]);
     CPPUNIT_ASSERT(tokenVec[6].empty());
     CPPUNIT_ASSERT(7 == tokenVec.size());
+
+    // cspell: enable
 }
 
 //------------------------------------------------------------------------------

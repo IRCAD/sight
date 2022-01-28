@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ class GenericScene;
  *
  * @subsection Configuration Configuration
  *  - \b scene (mandatory)
- *    - \b background (optionnal)
+ *    - \b background (optional)
  *      - \b color (optional, string, default=#000000): background color. Must be defined in hexadecimal format or with
  * a string name accepted by QColor
  *    - \b adaptor (optional)

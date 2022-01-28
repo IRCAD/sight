@@ -111,7 +111,7 @@ public:
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SPointList() noexcept;
 
-    /// Destoyes Ogre resource.
+    /// Destroys Ogre resource.
     MODULE_VIZ_SCENE3D_API ~SPointList() noexcept override;
 
 protected:
@@ -178,12 +178,12 @@ private:
     void updateMaterialAdaptor();
 
     /**
-     * @brief Attachs a node in the scene graph.
+     * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
     void attachNode(Ogre::MovableObject* _node);
 
-    /// Detachs and destroy @ref m_entity from the scene graph.
+    /// Detaches and destroy @ref m_entity from the scene graph.
     void detachAndDestroyEntity();
 
     /**
@@ -213,7 +213,7 @@ private:
     /// Defines the attached material's name.
     std::string m_materialTemplateName {"Billboard_Default"};
 
-    /// Definees the attached texture adaptor UID.
+    /// Defines the attached texture adaptor UID.
     std::string m_textureName;
 
     /// Contains the mesh support used to render the pointlist.

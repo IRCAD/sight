@@ -101,7 +101,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
 Ogre::SceneNode* IPicker::getCameraSceneNode() const
 {
-    SIGHT_ASSERT("The associated SceneManager is not instanciated", m_sceneManager);
+    SIGHT_ASSERT("The associated SceneManager is not instantiated", m_sceneManager);
     return m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)->getParentSceneNode();
 }
 

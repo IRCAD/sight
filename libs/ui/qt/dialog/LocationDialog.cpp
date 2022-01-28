@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,7 +176,7 @@ ui::base::dialog::ILocationDialog& LocationDialog::setOption(ui::base::dialog::I
 
 //------------------------------------------------------------------------------
 
-// exemple ( addFilter("images","*.png *.jpg");
+// example ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList)
 {
     m_filters.push_back(std::make_pair(filterName, wildcardList));

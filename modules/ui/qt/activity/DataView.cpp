@@ -890,7 +890,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
             std::string patientPosition = imageSeries->getPatientPosition();
             if(!patientPosition.empty())
             {
-                // Code string can contains leading or trailing spaces, we removed it frist.
+                // Code string can contains leading or trailing spaces, we removed it first.
                 const std::string::const_iterator forward =
                     std::remove_if(
                         patientPosition.begin(),

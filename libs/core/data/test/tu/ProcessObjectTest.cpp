@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,26 +38,26 @@ namespace ut
 
 void ProcessObjectTest::constructeur()
 {
-    const std::string IMAGEID1 = "myImage1";
-    const std::string IMAGEID2 = "myImage2";
-    const std::string FIELDID1 = "myField1";
-    const std::string FIELDID2 = "myField2";
-    data::Image::sptr image1   = data::Image::New();
-    data::Image::sptr image2   = data::Image::New();
-    data::Integer::sptr field1 = data::Integer::New(3);
-    data::Integer::sptr field2 = data::Integer::New(8);
+    const std::string IMAGEID1  = "myImage1";
+    const std::string IMAGEID2  = "myImage2";
+    const std::string FIELD_ID1 = "myField1";
+    const std::string FIELD_ID2 = "myField2";
+    data::Image::sptr image1    = data::Image::New();
+    data::Image::sptr image2    = data::Image::New();
+    data::Integer::sptr field1  = data::Integer::New(3);
+    data::Integer::sptr field2  = data::Integer::New(8);
 
     // process
     data::ProcessObject::sptr po = data::ProcessObject::New();
     po->setInputValue(IMAGEID1, image1);
-    po->setInputValue(FIELDID1, field1);
-    po->setInputValue(FIELDID2, field2);
+    po->setInputValue(FIELD_ID1, field1);
+    po->setInputValue(FIELD_ID2, field2);
     po->setOutputValue(IMAGEID2, image2);
 
     // check
     CPPUNIT_ASSERT_EQUAL(image1, po->getInput<data::Image>(IMAGEID1));
-    CPPUNIT_ASSERT_EQUAL(field1, po->getInput<data::Integer>(FIELDID1));
-    CPPUNIT_ASSERT_EQUAL(field2, po->getInput<data::Integer>(FIELDID2));
+    CPPUNIT_ASSERT_EQUAL(field1, po->getInput<data::Integer>(FIELD_ID1));
+    CPPUNIT_ASSERT_EQUAL(field2, po->getInput<data::Integer>(FIELD_ID2));
     CPPUNIT_ASSERT_EQUAL(image2, po->getOutput<data::Image>(IMAGEID2));
 }
 

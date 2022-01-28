@@ -42,7 +42,7 @@ namespace sight::module::io::realsense
 /**
  * @brief  RealSense Camera Grabber
  *
- * This service grabs the depth, the color frame, and the poincloud from a compatible device (Realsense D400 cameras).
+ * This service grabs the depth, the color frame, and the pointcloud from a compatible device (Realsense D400 cameras).
  * The frames are pushed into timelines.
  * The pointloud is pushed into a data::Mesh and updated each time.
  *
@@ -93,10 +93,10 @@ namespace sight::module::io::realsense
  *      - nearest_from_around: Use the value from the neighboring pixel closest to the sensor
  * - \b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
  *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
- *  -  key 'alignTo': used to change the frames alignement, all frames can be aligned on (None (default), Color, Depth
+ *  -  key 'alignTo': used to change the frames alignment, all frames can be aligned on (None (default), Color, Depth
  * or Infrared Streams).
  *    (see also 'alignTo is subsection \ref Configuration below).'
- * - \b setDoubleParameter(vouble value, std::string key): Slot called when a double parameter changes:
+ * - \b setDoubleParameter(double value, std::string key): Slot called when a double parameter changes:
  *   - key 'spacialSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
  *     infinite filter [0.25-1]
  *   - key 'temporalSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
@@ -131,7 +131,7 @@ namespace sight::module::io::realsense
  * - \b colorH:  desired color frame height (default: 720, max: 1080, min: 180) (optional).
  * - \b switchToIR: push infrared frame in color TL (default false) (optional)
  * - \b IREmitter: enable infrared emitter (default true) (optional)
- * - \b alignTo: align each frames to the chosen one, values can be: None (default), Color, Depth, Infrared (optionnal).
+ * - \b alignTo: align each frames to the chosen one, values can be: None (default), Color, Depth, Infrared (optional).
  * - \b preset: (advanced option): load a json preset ( overwrite previous resolution values) (optional).
  *   - Default: Default preset
  *   - HighResHighAccuracy
@@ -173,7 +173,7 @@ namespace sight::module::io::realsense
  * For more convenience we set the same fps for both color and depth streams.
  *
  *
- * - \b recordFile (optionnal): path & filename where recording will be saved.
+ * - \b recordFile (optional): path & filename where recording will be saved.
  */
 
 class MODULE_IO_REALSENSE_CLASS_API SScan : public sight::io::base::service::IRGBDGrabber
@@ -236,7 +236,7 @@ private:
         int minRange          = s_MIN_DEPTH_RANGE; ///< min depth range.
         bool needHardReset    = false;             ///< if device needs to be hard-reset before at stop.
         ///If frames needs to be aligned on in a particular STREAM.
-        /// Value can be RS2_STREAM_COUNT = No alignement, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
+        /// Value can be RS2_STREAM_COUNT = No alignment, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
         // values are ignored.
         rs2_stream streamToAlignTo = RS2_STREAM_COUNT;
 
@@ -361,7 +361,7 @@ private:
      * @brief updateAlignment changes the reference frame where all frames will be aligned.
      * @param[in] _alignTo: reference frame name in string can be None, Color, Infrared or Depth.
      * All others values are ignored.
-     * @return bool: true if new alignement is register, false if _alignTo value is ignored (avoid an unnecessary
+     * @return bool: true if new alignment is registered, false if _alignTo value is ignored (avoid an unnecessary
      * call to stop/start).
      */
     bool updateAlignment(const std::string& _alignTo);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "core/memory/policy/NeverDump.hpp"
 #include "core/memory/stream/in/Buffer.hpp"
 #include "core/memory/stream/in/Raw.hpp"
+
 #include <core/com/Signal.hxx>
 #include <core/LazyInstantiator.hpp>
 #include <core/thread/Worker.hpp>
@@ -480,8 +481,8 @@ bool BufferManager::restoreBuffer(
         SizeType size  = std::min(allocSize, info.size);
         bool notFailed = false;
         {
-            SPTR(std::istream) isptr = (*info.istreamFactory)();
-            std::istream& is    = *isptr;
+            SPTR(std::istream) stream = (*info.istreamFactory)();
+            std::istream& is    = *stream;
             const SizeType read = static_cast<SizeType>(is.read(charBuf, static_cast<std::streamsize>(size)).gcount());
 
             SIGHT_THROW_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);

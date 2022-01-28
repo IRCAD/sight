@@ -438,7 +438,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
 void SeriesDBReaderTest::readJMSSeries()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-
+    // cspell: ignore Genou
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE(

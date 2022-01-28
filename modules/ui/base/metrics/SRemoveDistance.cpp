@@ -137,7 +137,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
     {
         std::vector<std::string> selections;
         selections.push_back("ALL");
-        std::map<std::string, data::PointList::sptr> correspondance;
+        std::map<std::string, data::PointList::sptr> correspondence;
 
         for(const data::Object::sptr& obj : *vectDist)
         {
@@ -158,7 +158,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
             dist  = sqrt(dist);
 
             selections.push_back(distanceToStr(dist));
-            correspondance[selections.back()] = pl;
+            correspondence[selections.back()] = pl;
         }
 
         if(!selections.empty())
@@ -177,7 +177,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
                 else
                 {
                     _removeAll   = false;
-                    distToRemove = correspondance[selection];
+                    distToRemove = correspondence[selection];
                 }
             }
         }

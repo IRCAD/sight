@@ -99,6 +99,7 @@ void SceneTest::getNodeById()
     Ogre::SceneNode* nullNode = nullptr;
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node1_3_1", rootNode));
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1_1", rootNode));
+    // cspell: ignore AHDFVHDFD
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("AHDFVHDFD", rootNode));
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1", node1));
 

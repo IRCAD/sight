@@ -144,8 +144,8 @@ void WindowLevel::starting()
 
         m_toggleAutoButton = new QToolButton();
         QIcon icon;
-        std::string windo(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
-        icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
+        std::string win(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
+        icon.addFile(QString::fromStdString(win), QSize(), QIcon::Normal, QIcon::On);
         std::string nowindo(core::runtime::getModuleResourceFilePath(
                                 "sight::module::ui::qt",
                                 "nowindowing.svg"

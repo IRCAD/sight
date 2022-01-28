@@ -105,11 +105,11 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
         return false;
     }
 
-    // on regarde tous les triangles du maillage
+    // Check all mesh triangles
     unsigned int intersectionNbr = 0;
     for(std::size_t i = 0 ; i < ElementNbr ; ++i)
     {
-        //recuperation des trois sommets du triangle
+        // get triangle vertices.
         const fwVec3d P1 =
         {_vertex[_vertexIndex[i][0]][0], _vertex[_vertexIndex[i][0]][1], _vertex[_vertexIndex[i][0]][2]};
         const fwVec3d P2 =
@@ -117,12 +117,12 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
         const fwVec3d P3 =
         {_vertex[_vertexIndex[i][2]][0], _vertex[_vertexIndex[i][2]][1], _vertex[_vertexIndex[i][2]][2]};
 
-        //on enleve les triangles s'ils sont situes au dessus du point
+        // remove all triangles above point.
         if(!(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z])) //trianglePotentiallyWellPositionned
         {
-            //on teste la presence des vertex de part et d'autre des 3 axes.
-            //Si P1[X] > P[X] alors il faut necessairement P2[X] < P[X] ou P3[X] < P[X], idem pour les 2 autres axes
-            //En outre cela permet d'exclure les points qui sont situes sur les axes
+            // We check vertices on each side of the 3 axis.
+            // If P1[X] > P[X] So we need P2[X] < P[X] ou P3[X] < P[X], same way on the 2 other axis.
+            // By doing so we can exclude points that are localized on axis.
             bool stop = false;
             for(unsigned int axe = X ; axe <= Y && !stop ; ++axe)
             {
@@ -154,7 +154,7 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 double t, u, v;
                 if(intersect_triangle(orig, dir, vert0, vert1, vert2, t, u, v))
                 {
-                    //on ne garde que les points situes en dessous du point _p selon l'axe (Oz)
+                    // We only keep points below _p (following Oz axis).
                     if(t < 0.f)
                     {
                         ++intersectionNbr;
@@ -184,9 +184,9 @@ bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
         ++edgesHistogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]))];
     }
 
-    for(const EdgeHistogram::value_type& histo : edgesHistogram)
+    for(const EdgeHistogram::value_type& h : edgesHistogram)
     {
-        if(histo.second < 2)
+        if(h.second < 2)
         {
             isBorderless = false;
             break;

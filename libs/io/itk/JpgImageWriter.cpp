@@ -87,12 +87,6 @@ struct JpgITKSaverFunctor
 
         data::Image::csptr image = param.m_dataImage;
 
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
-        // ne permet pas de l'atteindre
-        // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
-        // reader (voir *3*)
-
         // Reader IO (*1*)
         auto imageIOWrite = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
         assert(imageIOWrite.IsNotNull());

@@ -142,8 +142,8 @@ void SMaterialSelector::updating()
 
 void SMaterialSelector::updateMaterial()
 {
-    const auto reconst            = m_reconstruction.lock();
-    data::Material::sptr material = reconst->getMaterial();
+    const auto reconstruction     = m_reconstruction.lock();
+    data::Material::sptr material = reconstruction->getMaterial();
     data::Object::sptr fieldObj   = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
     {
@@ -156,8 +156,8 @@ void SMaterialSelector::updateMaterial()
 
 void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
-    const auto reconst            = m_reconstruction.lock();
-    data::Material::sptr material = reconst->getMaterial();
+    const auto reconstruction     = m_reconstruction.lock();
+    data::Material::sptr material = reconstruction->getMaterial();
     data::String::sptr string     = data::String::New();
     string->setValue(text.toStdString());
 

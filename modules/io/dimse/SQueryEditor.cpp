@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,12 +118,12 @@ void SQueryEditor::starting()
         }
     }
 
-    QHBoxLayout* const searchLayout = new QHBoxLayout();
-    searchLayout->setObjectName("SQueryEditor_search");
+    QHBoxLayout* const search_layout = new QHBoxLayout();
+    search_layout->setObjectName("SQueryEditor_search");
 
-    searchLayout->addWidget(m_searchEdit);
-    searchLayout->addWidget(m_searchButton);
-    mainLayout->addLayout(searchLayout);
+    search_layout->addWidget(m_searchEdit);
+    search_layout->addWidget(m_searchButton);
+    mainLayout->addLayout(search_layout);
 
     QObject::connect(m_searchEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
     QObject::connect(m_searchButton, &QPushButton::clicked, this, &SQueryEditor::executeQueryAsync);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace sight::module::memory
            <policy>ValveDump</policy>
            <params>
                <min_free_mem>524288000</min_free_mem>
-               <hysteresis_offet>104857600</hysteresis_offet>
+               <hysteresis_offset>104857600</hysteresis_offset>
            </params>
        </config>
    </service>

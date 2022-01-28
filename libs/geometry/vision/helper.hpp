@@ -46,7 +46,7 @@ typedef std::pair<double, std::vector<cv::Point2f> > ErrorAndPointsType;
 
 /**
  * @brief compute the mean error of reprojection
- * @param _objectPoints : vector of 3d points (to be reporjected)
+ * @param _objectPoints : vector of 3d points (to be reprojected)
  * @param _imagePoints: vector of 2d points (reference)
  * @param _rvecs: rotation vector
  * @param _tvecs: translation vector

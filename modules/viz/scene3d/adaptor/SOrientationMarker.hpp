@@ -50,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b resource (optional, string): name of the resource to use for the marker.
- * - \b depth (optionnal, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
+ * - \b depth (optional, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
  * to zoom-out.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SOrientationMarker final :

@@ -65,7 +65,7 @@ Core::Core(Ogre::Viewport* viewport) :
     //m_currNumPass(0),
     //m_isPing(false),
     //m_isPong(false),
-    m_celShadingName(""),
+    m_cellShadingName(""),
     m_numPass(8),
     m_viewport(viewport)
 {
@@ -105,7 +105,7 @@ bool Core::setTransparencyTechnique(transparencyTechnique technique)
 
 void Core::update()
 {
-    m_celShadingName = "";
+    m_cellShadingName = "";
 
     SIGHT_ERROR_IF(
         "OIT isn't supported when stereo is enabled, falling back to mono rendering.",
@@ -120,12 +120,12 @@ void Core::update()
             this->setupDefaultTransparency();
             break;
 
-        case CELSHADING_DEPTHPEELING:
-            m_celShadingName = "CelShading";
+        case CELLSHADING_DEPTHPEELING:
+            m_cellShadingName = "CellShading";
             BOOST_FALLTHROUGH;
 
         case DEPTHPEELING:
-            m_coreCompositorName = m_celShadingName + "DepthPeeling";
+            m_coreCompositorName = m_cellShadingName + "DepthPeeling";
             this->setupTransparency();
             this->setTransparencyDepthOfDepthPeeling(m_numPass);
             break;
@@ -277,7 +277,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme(m_celShadingName + "DepthPeeling/peelP" + pingPong);
+            dpCompTargetPeel->setMaterialScheme(m_cellShadingName + "DepthPeeling/peelP" + pingPong);
 
             // No shadow
             dpCompTargetPeel->setShadowsEnabled(false);
@@ -302,9 +302,9 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName(m_celShadingName + "DepthPeeling/Blend");
+                dpCompPassRenderQuad->setMaterialName(m_cellShadingName + "DepthPeeling/Blend");
                 dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 0);
-                if(!m_celShadingName.empty())
+                if(!m_cellShadingName.empty())
                 {
                     dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer", 1);
                     dpCompPassRenderQuad->setInput(2, "p" + pingPong + "Buffer", 2);
@@ -313,7 +313,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
         }
     }
 
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_celShadingName + "DepthPeeling", true);
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_cellShadingName + "DepthPeeling", true);
 }
 
 //-----------------------------------------------------------------------------

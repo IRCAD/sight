@@ -432,7 +432,7 @@
                     <param type="int" name="Number of RANSAC Iterations" key="initializer.numRansacIterations" defaultValue="100" min="1" max="1000" />
                     <param type="int" name="Minimum number of triangulated points" key="initializer.minNumTriangulatedPts" defaultValue="50" min="10" max="200" />
                     <param type="double" name="Parallax threshold" key="initializer.parallaxDegThr" defaultValue="1.0" min="1.0" max="30.0" />
-                    <param type="double" name="Reprojection error threshold" key="initializer.reprojErrThr" defaultValue="4.0" min="0.0" max="10.0" />
+                    <param type="double" name="Reprojection error threshold" key="initializer.reprojectionErrThr" defaultValue="4.0" min="0.0" max="10.0" />
                     <param type="int" name="Number of BA Iterations" key="initializer.numBAIterations" defaultValue="20" min="1" max="100" />
                     <param type="double" name="Initial scale magnitude" key="initializer.scalingFactor" defaultValue="200.0" min="0.1" max="1000.0" />
                 </parameters>

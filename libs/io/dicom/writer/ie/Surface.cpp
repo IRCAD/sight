@@ -160,8 +160,8 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
     // Write segmentations
     //====================
     unsigned short segmentNumber = 1;
-    const auto& reconstuctionDB  = m_object->getReconstructionDB();
-    for(const auto& reconstruction : reconstuctionDB)
+    const auto& reconstructionDB = m_object->getReconstructionDB();
+    for(const auto& reconstruction : reconstructionDB)
     {
         // Add segmentation to GDCM Surface Writer
         gdcm::SmartPointer<gdcm::Segment> segment = new gdcm::Segment();

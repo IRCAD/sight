@@ -862,10 +862,10 @@ void SShapeExtruder::generateDelaunayTriangulation(
             const std::size_t previousIndex = index - 1
                                               < 0 ? oldPoints.size() - 1 : static_cast<std::size_t>(index - 1);
             const Edge edge(oldPoints[previousIndex], oldPoints[static_cast<std::size_t>(index)]);
-            std::list<Ogre::Vector2> constraintes = this->addConstraints(triangulation, edge);
+            std::list<Ogre::Vector2> constraints = this->addConstraints(triangulation, edge);
 
             newPoints.push_back(oldPoints[previousIndex]);
-            newPoints.insert(newPoints.end(), constraintes.begin(), constraintes.end());
+            newPoints.insert(newPoints.end(), constraints.begin(), constraints.end());
         }
     }
     while(count++ < maxIteration && oldPoints.size() != newPoints.size());
@@ -917,7 +917,7 @@ void SShapeExtruder::generateDelaunayTriangulation(
         }
     }
 
-    // Gets back triangle coordinates to the wolrd space.
+    // Gets back triangle coordinates to the world space.
     for(const Triangle2D& triangle : triangulation)
     {
         Ogre::Vector3 a = (viewMatrix.inverse() * Ogre::Vector4(triangle.a.x, triangle.a.y, depth, 1.f)).xyz();

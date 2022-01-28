@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,7 @@ private:
     /// Contains the AET of the SCP (server name) editor.
     QPointer<QLineEdit> m_SCPAppEntityTitleEdit;
 
-    /// Contains the SCP host name (server adress) editor.
+    /// Contains the SCP host name (server address) editor.
     QPointer<QLineEdit> m_SCPHostNameEdit;
 
     /// Contains the SCP port (server port) editor.

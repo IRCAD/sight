@@ -61,7 +61,7 @@ namespace medHelper = data::helper::MedicalImage;
 //-----------------------------------------------------------------------------
 
 SNegato::SNegato() noexcept :
-    m_qimg(nullptr),
+    m_qImg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
     m_pointIsCaptured(false),
@@ -125,9 +125,9 @@ void SNegato::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SNegato::updateBufferFromImage(QImage* qimg)
+void SNegato::updateBufferFromImage(QImage* _img)
 {
-    if(!qimg)
+    if(!_img)
     {
         return;
     }
@@ -147,7 +147,7 @@ void SNegato::updateBufferFromImage(QImage* qimg)
     const double tfMax = tf->getMinMaxTFValues().second;
     const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
-    std::uint8_t* pDest = qimg->bits();
+    std::uint8_t* pDest = _img->bits();
 
     // Fill image according to current slice type:
     if(m_orientation == orientation_t::SAGITTAL) // sagittal
@@ -210,7 +210,7 @@ void SNegato::updateBufferFromImage(QImage* qimg)
         }
     }
 
-    QPixmap m_pixmap = QPixmap::fromImage(*m_qimg);
+    QPixmap m_pixmap = QPixmap::fromImage(*m_qImg);
     m_pixmapItem->setPixmap(m_pixmap);
 }
 
@@ -295,7 +295,7 @@ QImage* SNegato::createQImage()
     }
 
     // Create empty QImage
-    QImage* qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
+    QImage* image = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
 
     // Place m_pixmapItem
     m_pixmapItem->resetTransform();
@@ -309,7 +309,7 @@ QImage* SNegato::createQImage()
     // Update image scene
     this->getScene2DRender()->updateSceneSize(0.20f);
 
-    return qimage;
+    return image;
 }
 
 //-----------------------------------------------------------------------------
@@ -353,8 +353,8 @@ void SNegato::starting()
     m_layer->setZValue(m_zValue);
     this->getScene2DRender()->getScene()->addItem(m_layer);
 
-    m_qimg = this->createQImage();
-    this->updateBufferFromImage(m_qimg);
+    m_qImg = this->createQImage();
+    this->updateBufferFromImage(m_qImg);
 
     this->getScene2DRender()->updateSceneSize(1.f);
 }
@@ -363,8 +363,8 @@ void SNegato::starting()
 
 void SNegato::updating()
 {
-    m_qimg = this->createQImage();
-    this->updateBufferFromImage(m_qimg);
+    m_qImg = this->createQImage();
+    this->updateBufferFromImage(m_qImg);
 }
 
 //------------------------------------------------------------------------------
@@ -398,7 +398,7 @@ void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
         m_axialIndex    = axial;
     }
 
-    this->updateBufferFromImage(m_qimg);
+    this->updateBufferFromImage(m_qImg);
 }
 
 //-----------------------------------------------------------------------------
@@ -448,14 +448,14 @@ void SNegato::updateVisibility(bool isVisible)
 
 void SNegato::updateBuffer()
 {
-    this->updateBufferFromImage(m_qimg);
+    this->updateBufferFromImage(m_qImg);
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato::updateTF()
 {
-    this->updateBufferFromImage(m_qimg);
+    this->updateBufferFromImage(m_qImg);
 }
 
 //-----------------------------------------------------------------------------
@@ -466,7 +466,7 @@ void SNegato::stopping()
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
-    delete m_qimg;
+    delete m_qImg;
     delete m_pixmapItem;
     delete m_layer;
 }

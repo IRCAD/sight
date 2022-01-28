@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace activity
  * @note If the inout SeriesDB already contains activities, their are parsed and the sequencer open on the last
  * activities. Be careful to store them in the right order.
  *
- * @warning If the SeriesDB contains other series (or unkonwn activities), they are removed with a simple log error.
+ * @warning If the SeriesDB contains other series (or unknown activities), they are removed with a simple log error.
  *
  * @section Signal Signal
  * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using

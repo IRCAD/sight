@@ -106,7 +106,7 @@
  *
  * A Job has one important element: a function, in which are instructions to
  * process the task and also instructions for the Job's progress. It can also
- * have an optionnal worker on which the function will be run.
+ * have an optional worker on which the function will be run.
  *
  * When the progress is complete, that is to say the number of done work units
  * has reached the number of total work units, the job is immediately marked as

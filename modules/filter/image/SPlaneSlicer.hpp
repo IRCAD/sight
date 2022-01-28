@@ -61,7 +61,7 @@ namespace sight::module::filter::image
  * @subsection Input Input
  * - \b image [sight::data::Image]: Image from which the slice is extracted.
  * - \b imageExtent [sight::data::Image]: Image used to pass the extent.
- * - \b axes [sight::data::Matrix4]: Matrix containing the axes defining the reslicing plane.
+ * - \b axes [sight::data::Matrix4]: Matrix containing axes defining the reslicing plane.
  *
  * @subsection In-Out In-Out
  * - \b slice [sight::data::Image]: Extracted slice.

@@ -93,7 +93,7 @@ public:
     ) override;
 
     /**
-     * @brief Get the configuraton root.
+     * @brief Get the configuration root.
      * @return The configuration root.
      */
     SERVICE_API data::Object::sptr getConfigRoot() const override;
@@ -128,7 +128,7 @@ public:
     /**
      * @brief Adds an existing deferred object to the deferred objects map.
      *
-     * @pre The manager musn't be started.
+     * @pre The manager mustn't be started.
      *
      * When a configuration is launched, deferred objects may already exist.
      * This loop allow to notify the app config manager that this data exist and can be used by services.

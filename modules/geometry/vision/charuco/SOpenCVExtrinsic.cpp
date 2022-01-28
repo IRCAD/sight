@@ -50,7 +50,7 @@
 namespace sight::module::geometry::vision::charuco
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCO_BOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
@@ -63,7 +63,7 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
     m_camIndex(1)
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
-    newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateCharucoBoardSize, this);
+    newSlot(s_UPDATE_CHARUCO_BOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateCharucoBoardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -149,19 +149,19 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::size_t> degeneratedImagesCam1, degeneratedImagesCam2;
 
         {
-            data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
-            data::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
+            data::CalibrationInfo::PointListContainerType pt_lists1 = calInfo1->getPointListContainer();
+            data::CalibrationInfo::PointListContainerType pt_lists2 = calInfo2->getPointListContainer();
 
-            SIGHT_ASSERT("The two calibrationInfo have not the same size", ptlists1.size() == ptlists2.size());
+            SIGHT_ASSERT("The two calibrationInfo have not the same size", pt_lists1.size() == pt_lists2.size());
 
-            data::CalibrationInfo::PointListContainerType::iterator itr1    = ptlists1.begin();
-            data::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
-            data::CalibrationInfo::PointListContainerType::iterator itr1End = ptlists1.end();
+            data::CalibrationInfo::PointListContainerType::iterator itr1    = pt_lists1.begin();
+            data::CalibrationInfo::PointListContainerType::iterator itr2    = pt_lists2.begin();
+            data::CalibrationInfo::PointListContainerType::iterator itr1End = pt_lists1.end();
 
-            imagePoints1.reserve(ptlists1.size());
-            ids1.reserve(ptlists1.size());
-            imagePoints2.reserve(ptlists2.size());
-            ids2.reserve(ptlists2.size());
+            imagePoints1.reserve(pt_lists1.size());
+            ids1.reserve(pt_lists1.size());
+            imagePoints2.reserve(pt_lists2.size());
+            ids2.reserve(pt_lists2.size());
 
             for( ; itr1 != itr1End ; ++itr1, ++itr2)
             {

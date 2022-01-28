@@ -194,7 +194,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
         cam->load();
 
 #ifdef __linux__
-        //NOTE : Work arround for the camera resolution settings on linux (maybe on OSX too)
+        //NOTE : Work around for the camera resolution settings on linux (maybe on OSX too)
         QCameraImageCapture* imageCapture          = new QCameraImageCapture(cam);
         QList<QSize> res                           = imageCapture->supportedResolutions();
         QList<QVideoFrame::PixelFormat> pixFormats = imageCapture->supportedBufferFormats();

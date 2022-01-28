@@ -234,13 +234,13 @@ ActivityInfo SLauncher::show(const ActivityInfoContainer& infos)
     QPushButton* okButton     = new QPushButton("Ok");
     QPushButton* cancelButton = new QPushButton("Cancel");
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addWidget(okButton);
-    hLayout->addWidget(cancelButton);
+    QHBoxLayout* h_layout = new QHBoxLayout();
+    h_layout->addWidget(okButton);
+    h_layout->addWidget(cancelButton);
 
     QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->addWidget(selectionList);
-    vLayout->addLayout(hLayout);
+    vLayout->addLayout(h_layout);
 
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
@@ -637,7 +637,7 @@ SLauncher::ParametersType SLauncher::translateParameters(const ParametersType& p
 
     for(ParametersType::value_type& param : transParams)
     {
-        if(param.isSeshat())
+        if(param.isObjectPath())
         {
             std::string parameterToReplace = param.by;
             if(parameterToReplace.substr(0, 1) == "!")
@@ -646,7 +646,7 @@ SLauncher::ParametersType SLauncher::translateParameters(const ParametersType& p
             }
 
             data::Object::sptr obj = data::reflection::getObject(workingObj.get_shared(), parameterToReplace);
-            SIGHT_ASSERT("Invalid seshat path : '" << param.by << "'", obj);
+            SIGHT_ASSERT("Invalid object path : '" << param.by << "'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 

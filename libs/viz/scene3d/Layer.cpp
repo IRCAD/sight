@@ -1024,7 +1024,7 @@ void Layer::setCoreCompositorEnabled(
         }
         else if(transparencyTechnique == "CelShadingDepthPeeling")
         {
-            m_transparencyTechnique = viz::scene3d::compositor::CELSHADING_DEPTHPEELING;
+            m_transparencyTechnique = viz::scene3d::compositor::CELLSHADING_DEPTHPEELING;
         }
         else if(transparencyTechnique == "DualDepthPeeling")
         {

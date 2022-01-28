@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,8 +106,8 @@ Extension::Validity Extension::validate()
     }
 
     // Retrieves the extension point.
-    detail::Runtime* rntm(detail::Runtime::getDefault());
-    std::shared_ptr<detail::ExtensionPoint> point(rntm->findExtensionPoint(m_point));
+    detail::Runtime* runtime(detail::Runtime::getDefault());
+    std::shared_ptr<detail::ExtensionPoint> point(runtime->findExtensionPoint(m_point));
 
     // Checks that the point exists.
     if(!point)

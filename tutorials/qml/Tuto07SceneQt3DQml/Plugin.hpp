@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,17 @@
 
 #include <core/runtime/Plugin.hpp>
 
+/**
+ * Do not mark `TUTO07SCENEQT3DQML` as incorrect.
+ * cspell:ignore TUTO07SCENEQT3DQML
+ */
 namespace Tuto07SceneQt3DQml
 {
 
 /**
  * @brief This class starts the software when the bundles is loaded.
  */
+
 class TUTO07SCENEQT3DQML_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
 public:

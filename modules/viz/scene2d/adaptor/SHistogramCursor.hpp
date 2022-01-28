@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,7 +96,7 @@ protected:
     /// Color used for graphic item's border color
     QPen m_borderColor;
 
-    // A graphics item that is located onto hsitogram's upper border and moves along this border
+    // A graphics item that is located onto histogram's upper border and moves along this border
     // according to the position of mouse's cursor. The goal of this graphical index is to show
     // the associated value within the histogram pointed buy this index.
     QGraphicsEllipseItem* m_index;

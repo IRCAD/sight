@@ -135,10 +135,10 @@ void SNegato2D::starting()
     m_gpuTF = std::unique_ptr<sight::viz::scene3d::TransferFunction>(new sight::viz::scene3d::TransferFunction());
     m_gpuTF->createTexture(this->getID());
 
-    // Scene node's instanciation
+    // Scene node's instantiation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
-    // Plane's instanciation
+    // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::Plane>(
         this->getID(),
         m_negatoSceneNode,

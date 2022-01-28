@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -212,7 +212,7 @@ void PreferencesTest::encryptedTest()
     ui::base::Preferences::set_enabled(true);
 
     // Set a bad password and see what happens
-    ui::base::Preferences::set_password("turlututu");
+    ui::base::Preferences::set_password("Test_password!");
     CPPUNIT_ASSERT_THROW(ui::base::Preferences(), ui::base::PreferencesDisabled);
 
     // Setting an empty password will reset to clear json save

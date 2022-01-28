@@ -76,14 +76,14 @@ void GetObjectTest::getTest()
     CPPUNIT_ASSERT_MESSAGE("Image must be equal", subObj1 == img2);
 
     // Visit 2
-    data::Float::sptr zspacing = data::reflection::getObject<data::Float>(
+    data::Float::sptr z_spacing = data::reflection::getObject<data::Float>(
         composite,
         "@values.img2.spacing.2"
     );
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
-        img2->getSpacing()[2] - 0.001 < zspacing->value()
-        && zspacing->value() < img2->getSpacing()[2] + 0.001
+        img2->getSpacing()[2] - 0.001 < z_spacing->value()
+        && z_spacing->value() < img2->getSpacing()[2] + 0.001
     );
 
     // Visit 3
@@ -146,20 +146,20 @@ void GetObjectTest::invalidPathTest()
 
     // no exception version
     obj = data::reflection::getObject(composite, "@values.vector.values.2.spacing.2");
-    data::Float::sptr zspacing = std::dynamic_pointer_cast<data::Float>(obj);
+    data::Float::sptr z_spacing = std::dynamic_pointer_cast<data::Float>(obj);
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
-        img->getSpacing()[2] - 0.001 < zspacing->value()
-        && zspacing->value() < img->getSpacing()[2] + 0.001
+        img->getSpacing()[2] - 0.001 < z_spacing->value()
+        && z_spacing->value() < img->getSpacing()[2] + 0.001
     );
 
     // with exception version
-    obj      = data::reflection::getObject(composite, "@values.vector.values.2.spacing.2", true);
-    zspacing = std::dynamic_pointer_cast<data::Float>(obj);
+    obj       = data::reflection::getObject(composite, "@values.vector.values.2.spacing.2", true);
+    z_spacing = std::dynamic_pointer_cast<data::Float>(obj);
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
-        img->getSpacing()[2] - 0.001 < zspacing->value()
-        && zspacing->value() < img->getSpacing()[2] + 0.001
+        img->getSpacing()[2] - 0.001 < z_spacing->value()
+        && z_spacing->value() < img->getSpacing()[2] + 0.001
     );
 
     // out of bounds, no exception version

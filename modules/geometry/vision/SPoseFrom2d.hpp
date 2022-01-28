@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -128,7 +128,7 @@ private:
 
     /**
      * @brief The Marker struct:
-     * to handle marker object, with 4 corners 2D, and optionnaly a centroid
+     * to handle marker object, with 4 corners 2D, and optionally a centroid
      */
     struct Marker
     {

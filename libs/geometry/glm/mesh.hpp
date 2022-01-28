@@ -184,9 +184,9 @@ bool isBorderlessSurface(
         }
     }
 
-    for(const typename EdgeHistogram::value_type& histo : edgesHistogram)
+    for(const typename EdgeHistogram::value_type& h : edgesHistogram)
     {
-        if(histo.second != 2)
+        if(h.second != 2)
         {
             isBorderless = false;
             break;

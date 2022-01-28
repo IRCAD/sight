@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,70 +41,72 @@ namespace sight::core::com
 
 //------------------------------------------------------------------------------
 
-template< typename ... A >
-inline std::function< void() > SlotRun< void (A ...) >::bindRun( A ... args  ) const
+template<typename ... A>
+inline std::function<void()> SlotRun<void(A ...)>::bindRun(A ... args) const
 {
-    return std::bind( ( void (SelfType::*)( A ... ) const ) &SelfType::run, this, args ... );
+    return std::bind((void (SelfType::*)(A ...) const) & SelfType::run, this, args ...);
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename ... A >
-inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(
-    const core::thread::Worker::sptr& worker, A ... args ) const
+template<typename ... A>
+inline SlotBase::VoidSharedFutureType SlotRun<void(A ...)>::asyncRun(
+    const core::thread::Worker::sptr& worker,
+    A ... args
+) const
 {
     if(!worker)
     {
-        SIGHT_THROW_EXCEPTION( core::com::exception::NoWorker("No valid worker.") );
+        SIGHT_THROW_EXCEPTION(core::com::exception::NoWorker("No valid worker."));
     }
 
-    return postWeakCall< void >(
+    return postWeakCall<void>(
         worker,
         core::com::util::weakcall(
-            std::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
-            this->bindRun( args ... )
-            )
-        );
+            std::dynamic_pointer_cast<const SlotBase>(this->shared_from_this()),
+            this->bindRun(args ...)
+        )
+    );
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename ... A >
-inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... args) const
+template<typename ... A>
+inline SlotBase::VoidSharedFutureType SlotRun<void(A ...)>::asyncRun(A ... args) const
 {
     core::mt::ReadLock lock(this->m_workerMutex);
 
     if(!this->m_worker)
     {
-        SIGHT_THROW_EXCEPTION( core::com::exception::NoWorker("Slot has no worker set.") );
+        SIGHT_THROW_EXCEPTION(core::com::exception::NoWorker("Slot has no worker set."));
     }
 
-    return postWeakCall< void >(
+    return postWeakCall<void>(
         m_worker,
         core::com::util::weakcall(
-            std::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
-            this->bindRun( args ... ),
+            std::dynamic_pointer_cast<const SlotBase>(this->shared_from_this()),
+            this->bindRun(args ...),
             this->m_worker
-            )
-        );
+        )
+    );
 }
 
 //-----------------------------------------------------------------------------
 
 // Copied from core::thread::Worker because of issues with gcc 4.2 and template
 // keyword
-template< typename ... A >
-template< typename R, typename WEAKCALL >
-std::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const core::thread::Worker::sptr& worker, WEAKCALL f )
+template<typename ... A>
+template<typename R, typename WEAKCALL>
+std::shared_future<R> SlotRun<void(A ...)>::postWeakCall(const core::thread::Worker::sptr& worker, WEAKCALL f)
 {
-    std::packaged_task< R() > task( f );
-    std::future< R > ufuture = task.get_future();
+    std::packaged_task<R()> task(f);
+    std::future<R> future = task.get_future();
 
-    std::function< void() > ftask = core::thread::moveTaskIntoFunction(task);
+    std::function<void()> f_task = core::thread::moveTaskIntoFunction(task);
 
-    worker->post(ftask);
+    worker->post(f_task);
 
-    return ufuture;
+    return future;
 }
 
 //-----------------------------------------------------------------------------

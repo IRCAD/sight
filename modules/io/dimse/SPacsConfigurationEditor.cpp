@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@
 namespace sight::module::io::dimse
 {
 
-static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
+static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDialog";
 
 static const service::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 

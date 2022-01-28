@@ -65,16 +65,16 @@ void ImageInfo::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
+    QHBoxLayout* h_layout = new QHBoxLayout();
 
     QLabel* staticText = new QLabel(QObject::tr("intensity:"));
-    hLayout->addWidget(staticText, 0, Qt::AlignVCenter);
+    h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
 
     m_valueText = new QLineEdit();
     m_valueText->setReadOnly(true);
-    hLayout->addWidget(m_valueText, 1, Qt::AlignVCenter);
+    h_layout->addWidget(m_valueText, 1, Qt::AlignVCenter);
 
-    qtContainer->setLayout(hLayout);
+    qtContainer->setLayout(h_layout);
 }
 
 //------------------------------------------------------------------------------

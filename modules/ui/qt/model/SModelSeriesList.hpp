@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ class ValueView;
  *      displayed in UI.
  * - \b enableDelete (optional, bool, default=false): if 'true', allows to delete models through a single button
  *      displayed in UI.
- * - \b column (optional, string, default=""): defines colums to be shown in reconstruction list. XML child element
+ * - \b column (optional, string, default=""): defines columns to be shown in reconstruction list. XML child element
  *      names follow data::Reconstruction serialization attribute names.
  *      The name of the tag will be used as the column name.
  *      The attribute 'view' is optional and has the following values:
@@ -131,7 +131,7 @@ protected:
     KeyConnectionsMap getAutoConnections() const override;
 
     /**
-     * @brief Refreshs the editor.
+     * @brief Refreshes the editor.
      * @see updateReconstructions().
      * @see refreshVisibility().
      */
@@ -151,7 +151,7 @@ private:
     /// SLOT: Shows (or hide) reconstructions.
     void showReconstructions(bool _show);
 
-    /// Refreshs reconstructions visibility on the editor.
+    /// Refreshes reconstructions visibility on the editor.
     void refreshVisibility();
 
     /**
@@ -228,7 +228,7 @@ private:
 
     /// Contains the slot to show (or hide) reconstructions.
     typedef core::com::Slot<void (bool)> ShowReconstructionsSlotType;
-    ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
+    ShowReconstructionsSlotType::sptr m_slotShowReconstructions;
 
     static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
     data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, "modelSeries", true};

@@ -118,7 +118,7 @@ public:
 
     /// Aligns the text by setting the x and y coordinates' origin.
     VIZ_SCENE3D_API void setTextAlignment(
-        const Ogre::TextAreaOverlayElement::Alignment _hAlignement,
+        const Ogre::TextAreaOverlayElement::Alignment _hAlignment,
         const Ogre::GuiVerticalAlignment _vAlignment = Ogre::GVA_TOP
     );
 
@@ -173,7 +173,7 @@ private:
     /// The text's height in pixels. Computed using the font size and screen dpi.
     float m_heightInPixels {0.f};
 
-    /// Current position not taking alignemnt into account.
+    /// Current position not taking alignment into account.
     Ogre::Vector2 m_position {0.f, 0.f};
 
     /// Listens to when the viewport dimension are changed. Resizes the text.

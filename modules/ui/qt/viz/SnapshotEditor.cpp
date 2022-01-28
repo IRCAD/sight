@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,11 +77,11 @@ void SnapshotEditor::starting()
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));
 
-    QHBoxLayout* hlayout = new QHBoxLayout();
-    hlayout->addWidget(m_snapButton);
-    hlayout->setContentsMargins(0, 0, 0, 0);
+    QHBoxLayout* h_layout = new QHBoxLayout();
+    h_layout->addWidget(m_snapButton);
+    h_layout->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout(hlayout);
+    qtContainer->setLayout(h_layout);
 
     QObject::connect(m_snapButton, SIGNAL(clicked()), this, SLOT(onSnapButton()));
 }

@@ -44,12 +44,12 @@ public:
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Equipment))
 
     /**
-     * @brief Creates the equipement.
+     * @brief Creates the equipment.
      * @param _key private construction key.
      */
     DATA_API Equipment(Object::Key _key);
 
-    /// Destroys the equipement.
+    /// Destroys the equipment.
     DATA_API virtual ~Equipment();
 
     /**

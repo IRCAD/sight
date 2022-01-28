@@ -77,7 +77,7 @@ struct line
     double green;
     double blue;
     double alpha;
-    std::string catgegory;
+    std::string category;
     std::string organClass;
     std::string attachment;
     std::string nativeExp;
@@ -96,7 +96,7 @@ BOOST_FUSION_ADAPT_STRUCT(
         (double, green)
         (double, blue)
         (double, alpha)
-        (std::string, catgegory)
+        (std::string, category)
         (std::string, organClass)
         (std::string, attachment)
         (std::string, nativeExp)
@@ -312,8 +312,8 @@ void DictionaryReader::read()
     file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
-    std::vector<io::base::line> dicolines;
-    std::pair<bool, std::string> result = parse(buf, dicolines);
+    std::vector<io::base::line> dico_lines;
+    std::pair<bool, std::string> result = parse(buf, dico_lines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
     SIGHT_THROW_IF(error, !result.first);
@@ -321,7 +321,7 @@ void DictionaryReader::read()
     // File the dictionary Structure
     data::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
-    for(io::base::line line : dicolines)
+    for(io::base::line line : dico_lines)
     {
         data::StructureTraits::sptr newOrgan = data::StructureTraits::New();
         newOrgan->setType(line.type);
@@ -345,7 +345,7 @@ void DictionaryReader::read()
             )
         );
         std::vector<std::string> categorylist;
-        boost::algorithm::split(categorylist, line.catgegory, boost::algorithm::is_any_of(","));
+        boost::algorithm::split(categorylist, line.category, boost::algorithm::is_any_of(","));
         data::StructureTraits::CategoryContainer categories;
         for(std::string category : categorylist)
         {

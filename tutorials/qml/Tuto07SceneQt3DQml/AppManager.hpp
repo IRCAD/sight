@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,11 @@
 
 #include <QObject>
 #include <QPointer>
+
+/**
+ * Do not mark `TUTO07SCENEQT3DQML` as incorrect.
+ * cspell:ignore TUTO07SCENEQT3DQML
+ */
 
 namespace Tuto07SceneQt3DQml
 {

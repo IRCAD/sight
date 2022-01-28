@@ -243,9 +243,9 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
         AttributeContainer m_attributes;
 
         /**
-         * @brief   Assignemet operator.
+         * @brief   Assignment operator.
          *
-         * @remark  Assignement is forbidden for this class.
+         * @remark  Assignment is forbidden for this class.
          */
         void operator=(const ConfigurationElement&) noexcept;
 

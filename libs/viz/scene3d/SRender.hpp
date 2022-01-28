@@ -135,7 +135,7 @@ public:
         SYNC
     };
 
-    /// Defines the type of apdators ID.
+    /// Defines the type of adaptors ID.
     typedef std::string AdaptorIdType;
 
     /// Defines the type of object ID.
@@ -179,7 +179,7 @@ public:
     /// Defines the layer ID of the background.
     VIZ_SCENE3D_API static const std::string s_OGREBACKGROUNDID;
 
-    /// Initialiazes slots.
+    /// Initializes slots.
     VIZ_SCENE3D_API SRender() noexcept;
 
     /// Destroys the service.
@@ -255,7 +255,7 @@ private:
      */
     void enableFullscreen(int _screen);
 
-    /// Switchs back to windowed rendering if fullscreen is on.
+    /// Switches back to windowed rendering if fullscreen is on.
     void disableFullscreen();
 
     /// Contains all the layers of the scene.

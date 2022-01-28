@@ -34,7 +34,7 @@ namespace sight::data
 {
 
 const core::com::Signals::SignalKeyType Landmarks::s_GROUP_ADDED_SIG      = "groupAdded";
-const core::com::Signals::SignalKeyType Landmarks::s_GROUP_REMOVED_SIG    = "groupemoved";
+const core::com::Signals::SignalKeyType Landmarks::s_GROUP_REMOVED_SIG    = "groupMoved";
 const core::com::Signals::SignalKeyType Landmarks::s_POINT_ADDED_SIG      = "pointAdded";
 const core::com::Signals::SignalKeyType Landmarks::s_POINT_REMOVED_SIG    = "pointRemoved";
 const core::com::Signals::SignalKeyType Landmarks::s_POINT_INSERTED_SIG   = "pointInserted";

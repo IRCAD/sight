@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,8 @@ class UTESTDATA_CLASS_API File
 public:
 
     UTESTDATA_API static bool contentEquals(
-        const std::filesystem::path& lfile,
-        const std::filesystem::path& rfile
+        const std::filesystem::path& l_file,
+        const std::filesystem::path& r_file
     );
 };
 

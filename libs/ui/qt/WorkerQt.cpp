@@ -265,9 +265,9 @@ core::thread::Worker::FutureType WorkerQt::getFuture()
 
         std::packaged_task<ExitReturnType()> task(std::bind(&QCoreApplication::exec));
 
-        std::future<ExitReturnType> ufuture = task.get_future();
+        std::future<ExitReturnType> future = task.get_future();
 
-        m_future = std::move(ufuture);
+        m_future = std::move(future);
 
         task();
     }

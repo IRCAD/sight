@@ -109,10 +109,9 @@ void ImagePositionPatientSplitterTest::simpleApplication()
 void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-
+    // cspell: ignore SCRAT
     const std::string filename       = "04-CT-DICOM_SCRAT_CORRUPTED/46140000";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
-
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
@@ -124,7 +123,8 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
 
-    // Horos seems also to think that there is two series in this dicom
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
+    // There is two series in this dicom
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
 
     // Retrieve DicomSeries

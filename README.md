@@ -6,9 +6,10 @@
 | Master | [![pipeline status](https://git.ircad.fr/Sight/sight/badges/master/pipeline.svg)](https://git.ircad.fr/Sight/sight/commits/master) |
 
 ## Description
-
+[//]: # (cspell: disable)
 **Sight**, the **S**urgical **I**mage **G**uidance and **H**ealthcare **T**oolkit aims to ease the creation of
 applications based on medical imaging.
+[//]: # (cspell: enable)
 
 It includes various functionalities such as 2D and 3D digital image processing, visualization, augmented reality and
 medical interaction simulation. It runs on Microsoft Windows and Linux, is written in C++, and features rapid interface

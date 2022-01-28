@@ -29,6 +29,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
+
 #include <array>
 #include <filesystem>
 #include <string>
@@ -360,7 +363,7 @@ public:
     /**
      * @brief getIndex returns index of the device as Qt give us in module::ui::qt::video::CameraDeviceDlg.
      * The index is the first character of m_description. (ex: "1. Microsoft HD Camera")
-     * @return an integer of the index, -1 if unvalid (if SourceType isn't DECVICE)
+     * @return an integer of the index, -1 if invalid (if SourceType isn't DEVICES)
      */
     int getIndex() const;
 

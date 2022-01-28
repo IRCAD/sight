@@ -156,7 +156,7 @@ public:
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
-     * @param _thetaOffset the value of the thta offset.
+     * @param _thetaOffset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     MODULE_VIZ_SCENE3D_API void setThetaOffset(float _thetaOffset) override;
@@ -169,7 +169,7 @@ public:
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
-     * @param _phiOffset the phi of the thta offset.
+     * @param _phiOffset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phiOffset) override;
@@ -211,7 +211,7 @@ protected:
 
 private:
 
-    /// Containes the Ogre light managed by this adaptor.
+    /// Contains the Ogre light managed by this adaptor.
     Ogre::Light* m_light {nullptr};
 
     /// Defines the name of the associated Ogre light.

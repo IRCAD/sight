@@ -106,21 +106,21 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
         _rvec.type() != CV_64F || _tvec.type() != CV_64F
     );
 
-    cv::Mat drvec, dtvec;
-    _rvec.convertTo(drvec, CV_64F);
-    _tvec.convertTo(dtvec, CV_64F);
+    cv::Mat d_rvec, d_tvec;
+    _rvec.convertTo(d_rvec, CV_64F);
+    _tvec.convertTo(d_tvec, CV_64F);
 
-    cv::Mat rmat;
-    cv::Rodrigues(drvec, rmat);
+    cv::Mat r_mat;
+    cv::Rodrigues(d_rvec, r_mat);
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            _dst->setCoefficient(i, j, rmat.at<double>(i, j));
+            _dst->setCoefficient(i, j, r_mat.at<double>(i, j));
         }
 
-        _dst->setCoefficient(i, 3, dtvec.at<double>(i));
+        _dst->setCoefficient(i, 3, d_tvec.at<double>(i));
     }
 }
 

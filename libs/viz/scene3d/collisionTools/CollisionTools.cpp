@@ -19,7 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
+// cspell: disable
 /******************************************************************************************
    MOC - Minimal Ogre Collision v 1.0
    The MIT License
@@ -48,7 +48,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 ******************************************************************************************/
-
+// cspell: enable
 #include "viz/scene3d/collisionTools/CollisionTools.hpp"
 
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
@@ -195,7 +195,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
         }
 
         // Get the entity to check.
-        Ogre::MovableObject* const pentity = queryResult[qrIdx].movable;
+        Ogre::MovableObject* const entity = queryResult[qrIdx].movable;
 
         const bool isEntity = queryResult[qrIdx].movable->getMovableType().compare("Entity") == 0;
         const bool isR2VB   = queryResult[qrIdx].movable->getMovableType().compare(
@@ -203,20 +203,20 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                               ) == 0;
 
         // Only check this result if its a hit against an entity.
-        if((pentity != nullptr) && (isEntity || isR2VB))
+        if((entity != nullptr) && (isEntity || isR2VB))
         {
-            if(!pentity->isVisible())
+            if(!entity->isVisible())
             {
                 continue;
             }
 
-            const Ogre::Vector3 position       = pentity->getParentNode()->_getDerivedPosition();
-            const Ogre::Quaternion orientation = pentity->getParentNode()->_getDerivedOrientation();
-            const Ogre::Vector3 scale          = pentity->getParentNode()->_getDerivedScale();
+            const Ogre::Vector3 position       = entity->getParentNode()->_getDerivedPosition();
+            const Ogre::Quaternion orientation = entity->getParentNode()->_getDerivedOrientation();
+            const Ogre::Vector3 scale          = entity->getParentNode()->_getDerivedScale();
 
             const Ogre::MeshPtr mesh = isEntity
-                                       ? static_cast<Ogre::Entity*>(pentity)->getMesh()
-                                       : static_cast<viz::scene3d::R2VBRenderable*>(pentity)->getMesh();
+                                       ? static_cast<Ogre::Entity*>(entity)->getMesh()
+                                       : static_cast<viz::scene3d::R2VBRenderable*>(entity)->getMesh();
 
             std::vector<Ogre::Vector3> vertices;
             bool addedShared = false;
@@ -241,22 +241,23 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
                     const Ogre::VertexElement* const posElem =
                         vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
-                    const Ogre::HardwareVertexBufferSharedPtr vbuf = vertexData->vertexBufferBinding->getBuffer(
-                        posElem->getSource()
-                    );
+                    const Ogre::HardwareVertexBufferSharedPtr vertex_buffer =
+                        vertexData->vertexBufferBinding->getBuffer(
+                            posElem->getSource()
+                        );
 
                     unsigned char* vertex =
-                        static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+                        static_cast<unsigned char*>(vertex_buffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
                     float* pReal;
 
-                    for(std::size_t j = 0 ; j < vertexData->vertexCount ; ++j, vertex += vbuf->getVertexSize())
+                    for(std::size_t j = 0 ; j < vertexData->vertexCount ; ++j, vertex += vertex_buffer->getVertexSize())
                     {
                         posElem->baseVertexPointerToElement(vertex, &pReal);
                         Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
                         vertices[j] = (orientation * (pt * scale)) + position;
                     }
 
-                    vbuf->unlock();
+                    vertex_buffer->unlock();
                 }
 
                 // Retrieve the index buffer to loop over vertices.
@@ -332,7 +333,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                 break;
 
                             default:
-                                SIGHT_ERROR("Unsuported culling mode");
+                                SIGHT_ERROR("Unsupported culling mode");
                                 break;
                         }
                     }
@@ -515,13 +516,13 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         break;
 
                     default:
-                        SIGHT_ERROR("Unsuported operation type");
+                        SIGHT_ERROR("Unsupported operation type");
                         break;
                 }
 
                 if(newClosestFound)
                 {
-                    target        = pentity;
+                    target        = entity;
                     closestResult = _ray.getPoint(closestDistance);
                 }
             }

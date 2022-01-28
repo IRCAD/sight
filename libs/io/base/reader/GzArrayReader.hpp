@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace reader
  *
  *
  *  Reads '.raw.gz' files and converts them into a 'sight::data::Array'.
- *  The buffer is writen in a file using zlib.
+ *  The buffer is written in a file using zlib.
  */
 class IO_BASE_CLASS_API GzArrayReader : public GenericObjectReader<data::Array>,
                                         public core::location::SingleFile

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,9 +100,9 @@ void FrameLayoutManager::createFrame()
     QPoint pos(posX, posY);
     if(!this->isOnScreen(pos))
     {
-        QRect frect(0, 0, sizeX, sizeY);
-        frect.moveCenter(QDesktopWidget().screenGeometry().center());
-        pos = frect.topLeft();
+        QRect frame_rect(0, 0, sizeX, sizeY);
+        frame_rect.moveCenter(QDesktopWidget().screenGeometry().center());
+        pos = frame_rect.topLeft();
     }
 
     m_qtWindow->setGeometry(pos.x(), pos.y(), sizeX, sizeY);

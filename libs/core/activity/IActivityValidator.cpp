@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -231,7 +231,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
     activity::extension::ActivityAppConfig appConfigInfo = info.appConfig;
     for(auto param : appConfigInfo.parameters)
     {
-        if(param.isSeshat())
+        if(param.isObjectPath())
         {
             std::string path = param.by;
             if(path.substr(0, 1) == "!")
@@ -243,7 +243,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
             if(!obj)
             {
                 validation.first   = false;
-                validation.second += "\n - invalid sesh@ path : '" + path + "'";
+                validation.second += "\n - invalid object path : '" + path + "'";
             }
         }
     }

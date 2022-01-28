@@ -169,7 +169,7 @@ void HelperTest::writeReadConfig()
     orbParam.numLevels    = 8;
 
     navigation::openvslam::InitParams initParams;
-    initParams.reprojErrThr          = 10.f;
+    initParams.reprojectionErrThr    = 10.f;
     initParams.scalingFactor         = 2.f;
     initParams.parallaxDegThr        = 3.f;
     initParams.numBAIterations       = 101;
@@ -207,7 +207,7 @@ void HelperTest::writeReadConfig()
     const auto node = config2->yaml_node_;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<double>(initParams.reprojErrThr),
+        static_cast<double>(initParams.reprojectionErrThr),
         node["Initializer.reprojection_error_threshold"].as<double>(),
         10e-7
     );

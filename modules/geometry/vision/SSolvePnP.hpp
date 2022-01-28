@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ private:
     {
         /// Size of the calibration images (width, height)
         cv::Size imageSize;
-        /// Intrisic parameters 3x3 matrix:
+        /// Intrinsic parameters 3x3 matrix:
         /**  | fx, 0,  cx |
          *   | 0,  fy, cy |
          *   | 0,  0,   1 |

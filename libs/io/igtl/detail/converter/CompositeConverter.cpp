@@ -91,12 +91,12 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 {
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
     trackingMsg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(src.GetPointer()));
-    const int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
+    const int nbTrackingElement = trackingMsg->GetNumberOfTrackingDataElements();
 
-    SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nbTrckingElement < 0);
+    SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nbTrackingElement < 0);
 
     data::Composite::sptr composite = data::Composite::New();
-    for(int i = 0 ; i < nbTrckingElement ; ++i)
+    for(int i = 0 ; i < nbTrackingElement ; ++i)
     {
         ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
         trackingMsg->GetTrackingDataElement(i, trackElement);

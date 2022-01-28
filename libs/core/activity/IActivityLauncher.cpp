@@ -104,7 +104,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         ParameterType param;
         param.replace = replace;
         param.by      = by;
-        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isSeshat());
+        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isObjectPath());
         m_parameters.push_back(param);
     }
 }
@@ -198,7 +198,7 @@ void IActivityLauncher::translateParameters(
 {
     for(const ParametersType::value_type& param : parameters)
     {
-        if(!param.isSeshat())
+        if(!param.isObjectPath())
         {
             replaceMap[param.replace] = param.by;
         }
@@ -211,7 +211,7 @@ void IActivityLauncher::translateParameters(
             }
 
             data::Object::sptr obj = data::reflection::getObject(sourceObj, parameterToReplace);
-            SIGHT_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
+            SIGHT_ASSERT("Invalid object path : '" + param.by + "'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 

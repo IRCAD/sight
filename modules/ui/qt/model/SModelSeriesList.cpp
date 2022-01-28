@@ -390,7 +390,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _
         for(auto const& cIt : m_displayedInfo)
         {
             data::Object::sptr obj = data::reflection::getObject(reconstruction, cIt.first);
-            SIGHT_ASSERT("Invalid seshat path : '" << cIt.first << "'", obj);
+            SIGHT_ASSERT("Invalid object path : '" << cIt.first << "'", obj);
             info << QString::fromStdString(cIt.second->apply(obj));
         }
 

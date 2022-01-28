@@ -65,7 +65,7 @@ public:
      * The buffer must contain a data type and must not be interleaved.
      *
      * @param _mesh used to find buffer data.
-     * @param _binding layer binfing.
+     * @param _binding layer binding.
      * @param _semantic semantic of the buffer.
      * @param _type data type in the buffer.
      */

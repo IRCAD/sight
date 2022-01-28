@@ -77,20 +77,20 @@ void GzBufferImageWriter::write()
     const char* ptr          = static_cast<char*>(image->getBuffer());
     std::size_t writtenBytes = 0;
 
-    int uncompressedbyteswrited = 0;
+    int uncompressed_bytes_written = 0;
 
     while(writtenBytes < imageSizeInBytes
-          && (uncompressedbyteswrited =
+          && (uncompressed_bytes_written =
                   gzwrite(rawFile, ptr + writtenBytes, static_cast<unsigned int>(imageSizeInBytes - writtenBytes))) > 0)
     {
-        writtenBytes += static_cast<std::size_t>(uncompressedbyteswrited);
+        writtenBytes += static_cast<std::size_t>(uncompressed_bytes_written);
     }
 
     gzclose(rawFile);
 
-    assert(uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes);
+    assert(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes);
 
-    if(uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes)
+    if(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes)
     {
         std::string str = "GzBufferImageWriter::write unable to write ";
         str += getFile().string();

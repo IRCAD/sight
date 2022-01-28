@@ -93,7 +93,7 @@ data::Image::sptr labeling(data::Image::sptr image, unsigned int numLabels)
 
 //------------------------------------------------------------------------------
 
-// Gets centroids of shapes from a labelised image and adds them as a 'landmark' field to it.
+// Gets centroids of shapes from a labelled image and adds them as a 'landmark' field to it.
 struct LabelImageFilter
 {
     struct Parameters

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,24 +31,24 @@ namespace sight::core::thread
 
 //------------------------------------------------------------------------------
 
-template< typename R, typename TASK >
-std::shared_future< R > Worker::postTask(TASK f)
+template<typename R, typename TASK>
+std::shared_future<R> Worker::postTask(TASK f)
 {
-    std::packaged_task< R() > task( f );
-    std::future< R > ufuture = task.get_future();
+    std::packaged_task<R()> task(f);
+    std::future<R> future = task.get_future();
 
-    std::function< void() > ftask = core::thread::moveTaskIntoFunction(task);
+    std::function<void()> f_task = core::thread::moveTaskIntoFunction(task);
 
-    if( core::thread::getCurrentThreadId() == this->getThreadId())
+    if(core::thread::getCurrentThreadId() == this->getThreadId())
     {
-        ftask();
+        f_task();
     }
     else
     {
-        this->post(ftask);
+        this->post(f_task);
     }
 
-    return ufuture;
+    return future;
 }
 
 } //namespace sight::core::thread

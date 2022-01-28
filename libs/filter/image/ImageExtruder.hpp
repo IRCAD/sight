@@ -37,7 +37,7 @@ namespace sight::filter::image
  * inside a mesh.
  *
  * The only way to use this class is to call @ref extrude(const data::Image::sptr&, const data::Mesh::csptr&),
- * wich sets all voxels inside of the mesh to an empty value. To compute this quickly, we loop over two dimensions out
+ * which sets all voxels inside of the mesh to an empty value. To compute this quickly, we loop over two dimensions out
  * of three, for each voxel, we launch a ray on the third dimension and get a list of intersections between this ray,
  * and triangles of the mesh. After that, we iterate over the voxel line on the third dimension and look where it's
  * located relatively to intersections, it allows to know if the voxel is inside or outside of the mesh.

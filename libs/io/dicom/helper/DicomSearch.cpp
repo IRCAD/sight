@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,10 @@
 
 #include <fstream>
 
+/**
+ * Do not mark `DICM` as incorrect.
+ * cspell:ignore DICM
+ */
 namespace sight::io::dicom
 {
 
@@ -39,10 +43,10 @@ bool isDICOM(const std::filesystem::path& filepath)
 {
     std::ifstream ifs(filepath, std::ios::binary);
     ifs.seekg(128);
-    char DICM[5] = {0};
-    ifs.read(DICM, 4);
+    char DICOM[5] = {0};
+    ifs.read(DICOM, 4);
     ifs.close();
-    return strcmp(DICM, "DICM") == 0;
+    return strcmp(DICOM, "DICM") == 0;
 }
 
 //------------------------------------------------------------------------------

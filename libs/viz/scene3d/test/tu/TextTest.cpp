@@ -85,7 +85,7 @@ void TextTest::factoryTest()
 
     Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
     const auto& factoryName          = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
-    const auto& textName1            = "COUCOU";
+    const auto& textName1            = "HelloWorld";
 
     Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
 

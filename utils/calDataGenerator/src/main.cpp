@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     std::size_t nImg;
     int pX, pY;
     std::string file, outFolder;
-    double sizeImgInmm;
+    double img_size_in_mm;
     try
     {
         po::options_description options("calDataGenerator Usage");
@@ -71,8 +71,8 @@ int main(int argc, char** argv)
             ("pixelY,y", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
             ("nImg,n", po::value<std::size_t>(&nImg)->required()->default_value(20), "set number of image to produce")
         (
-            "sizeInmm,s",
-            po::value<double>(&sizeImgInmm)->required()->default_value(320),
+            "size,s",
+            po::value<double>(&img_size_in_mm)->required()->default_value(320),
             "set total width of board in mm"
         )
         (
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
         );
 
         po::positional_options_description pos;
-        pos.add("pixelX", 1).add("pixelY", 1).add("nImg", 1).add("sizeInmm", 1).add("file", 1).add("outFolder", 1);
+        pos.add("pixelX", 1).add("pixelY", 1).add("nImg", 1).add("size", 1).add("file", 1).add("outFolder", 1);
 
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv).options(options).positional(pos).run(), vm);
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
         {
             std::cout << "usage: " << argv[0]
             <<
-            " outputImageWidth outputImageHeight numberOfImageToProduce sizeImgInmm infile.(jpg|png|tiff|...) outputFolder "
+            " outputImageWidth outputImageHeight numberOfImageToProduce img_size_in_mm infile.(jpg|png|tiff|...) outputFolder "
             << std::endl;
             std::cout << options << std::endl;
             return EXIT_SUCCESS;
@@ -155,9 +155,9 @@ int main(int argc, char** argv)
         c1 = -(centAndT[1].rowRange(0, 3).colRange(0, 3)).t() * centAndT[1].rowRange(0, 3).col(3);
         Tc = generatePositionAndOrientationOfChessboard(nImg, c0, c1, centAndT[0]);
         std::cout << std::endl << std::endl;
-        generatePhoto(K1, T0, Tc, imSize, sizeImgInmm, file, cam1folder, 1);
+        generatePhoto(K1, T0, Tc, imSize, img_size_in_mm, file, cam1folder, 1);
         std::cout << std::endl;
-        generatePhoto(K2, centAndT[1], Tc, imSize, sizeImgInmm, file, cam2folder, 2);
+        generatePhoto(K2, centAndT[1], Tc, imSize, img_size_in_mm, file, cam2folder, 2);
     }
     catch(std::exception& e)
     {
@@ -234,11 +234,11 @@ std::vector<cv::Mat> generateExtrinsicCalibration()
     // of angle randomly chosen in the range : [pi/8;pi/4].
     std::random_device generator;
     std::normal_distribution<double> normDistribution(0, 1);
-    std::uniform_real_distribution<double> unifDistribution(0, 1);
+    std::uniform_real_distribution<double> uniform_distribution(0, 1);
 
     cv::Mat R, Rt, T = cv::Mat::zeros(4, 4, CV_64F);
     cv::Mat centerOfRotation = cv::Mat::zeros(3, 1, CV_64F), c;
-    const double theta = unifDistribution(generator) * CV_PI / 8 + CV_PI / 8;
+    const double theta = uniform_distribution(generator) * CV_PI / 8 + CV_PI / 8;
     std::vector<cv::Mat> returnObj;
 
     R = rotMat(theta, 0, 0);
@@ -337,7 +337,7 @@ void generatePhoto(
     const cv::Mat& T0,
     const std::vector<cv::Mat>& T1,
     const cv::Size& imgSize,
-    const double sizeImgInmm,
+    const double img_size_in_mm,
     const std::string& boardFile,
     const fs::path& outFolder,
     const std::size_t nCam
@@ -360,7 +360,7 @@ void generatePhoto(
         cv::Mat pl    = cv::Mat::zeros(4, 1, CV_64F);
 
         cv::Mat ray, A, sol, solH, B, dampos, imgOffset;
-        double tempxg, tempxd;
+        double tmp_xg, tmp_xd;
 
         A                          = cv::Mat::zeros(4, 4, CV_64F);
         B                          = cv::Mat::zeros(4, 1, CV_64F);
@@ -403,24 +403,24 @@ void generatePhoto(
                     solH.at<double>(1, 0) = sol.at<double>(1, 0);
                     solH.at<double>(2, 0) = sol.at<double>(2, 0);
 
-                    dampos = T1[k] * solH* std::max(inImg.size[0], inImg.size[1]) / sizeImgInmm + imgOffset;
+                    dampos = T1[k] * solH* std::max(inImg.size[0], inImg.size[1]) / img_size_in_mm + imgOffset;
                     const double dampos1 = dampos.at<double>(0, 0);
                     const double dampos2 = dampos.at<double>(1, 0);
                     if((dampos1 > 0) && (dampos1 < (inImg.size[1] - 1)) && (dampos2 > 0)
                        && (dampos2 < (inImg.size[0] - 1)))
                     {
-                        const double deltav = dampos1 - static_cast<int>(dampos1);
-                        const double deltau = dampos2 - static_cast<int>(dampos2);
-                        const int v         = static_cast<int>(dampos1);
-                        const int u         = static_cast<int>(dampos2);
-                        tempxg = (1 - deltau)
-                                 * inImg.at<unsigned char>(u, v) + deltau * inImg.at<unsigned char>(u + 1, v);
-                        tempxd = (1 - deltau)
-                                 * inImg.at<unsigned char>(u, v + 1) + deltau * inImg.at<unsigned char>(u + 1, v + 1);
+                        const double delta_v = dampos1 - static_cast<int>(dampos1);
+                        const double delta_u = dampos2 - static_cast<int>(dampos2);
+                        const int v          = static_cast<int>(dampos1);
+                        const int u          = static_cast<int>(dampos2);
+                        tmp_xg = (1 - delta_u)
+                                 * inImg.at<unsigned char>(u, v) + delta_u * inImg.at<unsigned char>(u + 1, v);
+                        tmp_xd = (1 - delta_u)
+                                 * inImg.at<unsigned char>(u, v + 1) + delta_u * inImg.at<unsigned char>(u + 1, v + 1);
                         photo.at<unsigned char>(
                             i,
                             j
-                        ) = static_cast<unsigned char>((1 - deltav) * tempxg + deltav * tempxd);
+                        ) = static_cast<unsigned char>((1 - delta_v) * tmp_xg + delta_v * tmp_xd);
                     }
                 }
             }

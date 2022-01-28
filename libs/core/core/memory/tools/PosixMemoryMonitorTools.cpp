@@ -77,7 +77,7 @@ std::uint64_t PosixMemoryMonitorTools::estimateFreeMem()
 
 //  std::uint64_t systemMemoryAverageInNormalCase = 500 * 1024 * 1024; // 500 Mo
 //  std::uint64_t memoryUsedByProcess = MemoryMonitor::getDefault()->totalUsedSizeInBytes()
-//                                          + 50 * 1024 * 1024; // + 50 Mo of librairies;
+//                                          + 50 * 1024 * 1024; // + 50 Mo of libraries;
 //  freeMemory = ( getTotalSystemMemory() < systemMemoryAverageInNormalCase + memoryUsedByProcess?
 //                 0:
 //                 getTotalSystemMemory() - systemMemoryAverageInNormalCase - memoryUsedByProcess

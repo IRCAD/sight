@@ -134,7 +134,7 @@ void ImageExtruder::operator()(Parameters& _param)
     const data::Image::Size& size       = _param.m_image->getSize();
     const data::Image::Spacing& spacing = _param.m_image->getSpacing();
 
-    // Loop over the bounding box intersection of the mesh and the image to increase perfomance.
+    // Loop over the bounding box intersection of the mesh and the image to increase performance.
     std::int64_t indexXBeg = 0;
     if(origin[0] < minBound.x)
     {

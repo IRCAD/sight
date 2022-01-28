@@ -95,7 +95,7 @@ protected:
     MODULE_UI_QT_API void configuring() override;
 
     /**
-     * @brief Starts and setups the service optionnaly gets the parent container SID/WID if set.
+     * @brief Starts and setups the service optionally gets the parent container SID/WID if set.
      */
     MODULE_UI_QT_API void starting() override;
 
@@ -152,7 +152,7 @@ private:
     int m_durationInMs {3000};
 
     /// Set position once, all notifications of the app/config are displayed here.
-    sight::ui::base::dialog::NotificationDialog::Position m_notifcationsPosition
+    sight::ui::base::dialog::NotificationDialog::Position m_notificationsPosition
     {sight::ui::base::dialog::NotificationDialog::Position::TOP_RIGHT};
 
     /// Map to convert string position like "TOP_RIGHT" to NotificationDialog::Position.
@@ -167,7 +167,7 @@ private:
     /// fwContainer where notifications will be displayed in, nullptr by default.
     sight::ui::base::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};
 
-    /// Parent containner ID (SID or WID), empty by default.
+    /// Parent container ID (SID or WID), empty by default.
     std::string m_parentContainerID;
 };
 

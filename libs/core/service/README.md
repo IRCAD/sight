@@ -51,7 +51,7 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 
 ### _op_
 
-- **Add**: creats and attaches services to object
+- **Add**: creates and attaches services to object
 - **Get**: provides acces to services
 
 ### _parser_

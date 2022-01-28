@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,15 +118,15 @@ void View::initialize(core::runtime::ConfigurationElement::sptr configuration)
     const auto slideViewsIt = registryCfg.equal_range("slideView");
 
     // Extracts a ptree from an iterator
-    auto itTotreeFn = [](auto& it)
+    auto itToTreeFn = [](auto& it)
                       {
                           return it.second;
                       };
 
     // Gather views and slideViews ptrees to process them in a single loop
     std::vector<boost::property_tree::ptree> viewsVector;
-    std::transform(viewsIt.first, viewsIt.second, std::back_inserter(viewsVector), itTotreeFn);
-    std::transform(slideViewsIt.first, slideViewsIt.second, std::back_inserter(viewsVector), itTotreeFn);
+    std::transform(viewsIt.first, viewsIt.second, std::back_inserter(viewsVector), itToTreeFn);
+    std::transform(slideViewsIt.first, slideViewsIt.second, std::back_inserter(viewsVector), itToTreeFn);
 
     for(const auto& view : viewsVector)
     {

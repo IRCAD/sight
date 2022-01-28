@@ -70,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b material (optional, string, default=""): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
  *"false".
- * - \b dynamic (optional, true/false, default=false): if the modelSeries topolgy is likely to be updated frequently.
+ * - \b dynamic (optional, true/false, default=false): if the modelSeries topology is likely to be updated frequently.
  * This is
  *      a performance hint that will choose a specific GPU memory pool accordingly.
  * - \b dynamicVertices (optional, true/false, default=false): if the modelSeries geometry is likely to be updated

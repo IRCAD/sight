@@ -240,7 +240,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
                 cv::cvtColor(bgr, inImage, cv::COLOR_BGR2BGRA);
             }
             // If nbOfComponents == 1 or == 3 it's ok.
-            // It is useless to test other values since "wrong" number of components has previoulsy been discarded.
+            // It is useless to test other values since "wrong" number of components has previously been discarded.
             else
             {
                 cv::aruco::drawDetectedMarkers(inImage, detectedMarkers, detectedMarkersIds);

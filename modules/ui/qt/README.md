@@ -16,7 +16,7 @@ The main folder is reserved for other services that do not fit any of the catego
 
 ## Services
 
-Here is the list of uncategorized services:
+Here is the list of uncategorised services:
 
 - **SLaunchBrowser**: launches a browser with a url.
 - **SListView**: draws a list of string elements.

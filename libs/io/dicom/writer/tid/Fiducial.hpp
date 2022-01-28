@@ -82,7 +82,7 @@ protected:
      * @brief Create a fiducial node
      * @param[in] parent Parent node
      * @param[in] point Fiducial (landmark) point
-     * @param[in] id ID of the ficudial
+     * @param[in] id ID of the fiducial
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createFiducial(

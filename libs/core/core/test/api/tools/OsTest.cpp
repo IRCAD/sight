@@ -62,6 +62,7 @@ void Os::getSharedLibraryPath()
     {
         const auto execPath = boost::dll::program_location().remove_filename();
 
+        // cspell: disable
 #if defined(WIN32)
         const auto actualPath       = core::tools::os::getSharedLibraryPath("sight_core.dll");
         const fs::path expectedPath = fs::path(execPath.string()) / "sight_core.dll";
@@ -94,6 +95,7 @@ void Os::getSharedLibraryPath()
     CPPUNIT_ASSERT_MESSAGE("Could not load camp for testing", handle);
 
     CPPUNIT_ASSERT_EQUAL(campPath, core::tools::os::getSharedLibraryPath("camp"));
+    // cspell: enable
 }
 
 } // namespace ut

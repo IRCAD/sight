@@ -69,7 +69,7 @@ struct ACTIVITY_CLASS_API ActivityAppConfigParam
 
     //------------------------------------------------------------------------------
 
-    bool isSeshat() const
+    bool isObjectPath() const
     {
         return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
     }
@@ -158,7 +158,7 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  *   - \b parameters : parameters required by the AppConfig
  *     - \b parameter : defined an AppConfig parameter
  *       - replace : parameter name to replace in AppConfig
- *       - by : value to use for replacement (can be a string or sesh@ path)
+ *       - by : value to use for replacement (can be a string or object path)
  *
  * Example of activity configuration:
  * @code{.xml}

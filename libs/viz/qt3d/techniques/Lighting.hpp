@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -123,10 +123,10 @@ private:
     /// Contains a second render pass used for EDGE rendering.
     QPointer<Qt3DRender::QRenderPass> m_edgeRenderPass;
 
-    /// Contains a render pass used for point normals vizualisation.
+    /// Contains a render pass used for point normals visualization.
     QPointer<Qt3DRender::QRenderPass> m_normalPass;
 
-    /// Contains a render pass used for cell normals vizualisation.
+    /// Contains a render pass used for cell normals visualization.
     QPointer<Qt3DRender::QRenderPass> m_cellNormalPass;
 
     /// Contains a render state used to control raster mode.

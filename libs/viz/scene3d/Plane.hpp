@@ -197,7 +197,7 @@ private:
     /// Moves plane along its Normal.
     void moveAlongAxis();
 
-    /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
+    /// Sets the dimensions for the related members, and also creates a movable plane to instantiate the entity.
     Ogre::MovablePlane setDimensions();
 
     /// Indicates whether whe want to threshold instead of windowing.
@@ -209,7 +209,7 @@ private:
     /// Defines the orientation mode of the plane.
     OrientationMode m_orientation;
 
-    /// Contains the plane on wich we will apply a texture.
+    /// Contains the plane on which we will apply a texture.
     Ogre::MeshPtr m_slicePlane;
 
     /// Contains the manual object that represent borders.

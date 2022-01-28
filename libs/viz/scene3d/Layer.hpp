@@ -94,7 +94,7 @@ public:
     /// Defines the set of overlays enabled on a layer.
     using OverlaySetType = std::vector<Ogre::Overlay*>;
 
-    /// Definest the viewport parameters relatively to the screen: left, top, width ,height.
+    /// Defines the viewport parameters relatively to the screen: left, top, width ,height.
     using ViewportConfigType = std::tuple<float, float, float, float>;
 
     /// Contains the signal sent when the layer is initialized.
@@ -120,7 +120,7 @@ public:
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_INTERACTION_SLOT;
 
-    /// Contains the slot name taht request the reset of camera.
+    /// Contains the slot name that request the reset of camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
     /// @deprecated please used s_DEFAULT_CAMERA_NAME.

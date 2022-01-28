@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,19 +140,19 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
 
     ::itk::ImageRegion<ITKIMAGE::ImageDimension> itkRegion;
 
-    unsigned long nbpixels = 1;
+    unsigned long nb_pixels = 1;
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getOrigin()[d]) );
         itkRegion.SetSize(d, static_cast<unsigned long>(imageData->getSize()[d]));
-        nbpixels *= static_cast<unsigned long>(itkRegion.GetSize()[d]);
+        nb_pixels *= static_cast<unsigned long>(itkRegion.GetSize()[d]);
     }
 
     itkImage->SetRegions(itkRegion);
 
     itkImage->GetPixelContainer()->SetImportPointer(
         static_cast<typename ITKIMAGE::PixelType*>(imageData->getBuffer()),
-        nbpixels,
+        nb_pixels,
         false
     );
 

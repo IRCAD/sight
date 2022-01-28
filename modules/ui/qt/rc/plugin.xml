@@ -81,13 +81,13 @@
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::qt::activity::SLauncher</service>
          <object key="series">sight::data::Vector</object>
-         <desc>This action launchs an activity according to the selected data</desc>
+         <desc>This action launches an activity according to the selected data</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::qt::activity::SSelector</service>
-         <desc>This editor launchs an activity according to the given configuration</desc>
+         <desc>This editor launches an activity according to the given configuration</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">

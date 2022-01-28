@@ -102,15 +102,15 @@ void Resection::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& 
     m_planeList  = data::Object::copy(other->m_planeList, cache);
 
     this->m_vInputs.clear();
-    for(const ResectionInputs::value_type& resec : other->m_vInputs)
+    for(const ResectionInputs::value_type& r : other->m_vInputs)
     {
-        m_vInputs.push_back(data::Object::copy(resec, cache));
+        m_vInputs.push_back(data::Object::copy(r, cache));
     }
 
     this->m_vOutputs.clear();
-    for(const ResectionOutputs::value_type& resec : other->m_vOutputs)
+    for(const ResectionOutputs::value_type& r : other->m_vOutputs)
     {
-        m_vOutputs.push_back(data::Object::copy(resec, cache));
+        m_vOutputs.push_back(data::Object::copy(r, cache));
     }
 }
 

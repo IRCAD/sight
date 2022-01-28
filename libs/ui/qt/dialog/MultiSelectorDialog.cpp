@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,9 +90,9 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     QPushButton* okButton     = new QPushButton(tr("Ok"));
     QPushButton* cancelButton = new QPushButton(tr("Cancel"));
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addWidget(okButton);
-    hLayout->addWidget(cancelButton);
+    QHBoxLayout* h_layout = new QHBoxLayout();
+    h_layout->addWidget(okButton);
+    h_layout->addWidget(cancelButton);
 
     QVBoxLayout* vLayout = new QVBoxLayout();
     if(!m_message.empty())
@@ -102,7 +102,7 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     }
 
     vLayout->addWidget(selectionList);
-    vLayout->addLayout(hLayout);
+    vLayout->addLayout(h_layout);
 
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));

@@ -214,7 +214,7 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
             m_minFreeMem = core::memory::ByteSize(value).getSize();
             return true;
         }
-        else if(name == "hysteresis_offet")
+        else if(name == "hysteresis_offset")
         {
             m_hysteresisOffset = core::memory::ByteSize(value).getSize();
             return true;
@@ -233,7 +233,7 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
 
 const core::memory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
 {
-    static const core::memory::IPolicy::ParamNamesType params = {{"min_free_mem", "hysteresis_offet"}};
+    static const core::memory::IPolicy::ParamNamesType params = {{"min_free_mem", "hysteresis_offset"}};
     return params;
 }
 
@@ -248,7 +248,7 @@ std::string ValveDump::getParam(const std::string& name, bool* ok) const
         value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_minFreeMem)));
         isOk  = true;
     }
-    else if(name == "hysteresis_offet")
+    else if(name == "hysteresis_offset")
     {
         value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_hysteresisOffset)));
         isOk  = true;

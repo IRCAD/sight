@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ protected:
      */
     MODULE_UI_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
-    /// Shos or hide distances.
+    /// Shows or hides distances.
     MODULE_UI_BASE_API void updating() override;
 
     /// Stops the action.

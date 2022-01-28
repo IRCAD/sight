@@ -71,7 +71,7 @@ public:
  * @tparam T floating point type used for the computation
  * @param[in] x x coordinate of the point
  * @param[in] y y coordinate of the point
- * @param[in] z zcoordinate of the point
+ * @param[in] z z coordinate of the point
  * @param[in] cx X Pixel coordinate of the camera optical center.
  * @param[in] cy Y Pixel coordinate of the camera optical center.
  * @param[in] fx X focal length of the camera.

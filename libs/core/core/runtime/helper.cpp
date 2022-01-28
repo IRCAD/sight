@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "core/runtime/helper.hpp"
 
 #include "core/runtime/Convert.hpp"
+
 #include <core/base.hpp>
 #include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Runtime.hpp>
@@ -142,8 +143,8 @@ std::vector<std::string> getAllIdsForPoint(std::string _extension_pt)
 std::string getInfoForPoint(std::string _extension_pt)
 {
     std::string info = "";
-    auto& rntm       = core::runtime::detail::Runtime::get();
-    if(rntm.findExtensionPoint(_extension_pt))
+    auto& runtime    = core::runtime::detail::Runtime::get();
+    if(runtime.findExtensionPoint(_extension_pt))
     {
         // Collects all contributed actions
         auto elements = core::runtime::getAllConfigurationElementsForPoint(_extension_pt);
@@ -185,8 +186,8 @@ std::map<std::string,
 
 std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensionsForPoint(std::string extension_pt)
 {
-    auto& rntm                                    = core::runtime::detail::Runtime::get();
-    std::shared_ptr<detail::ExtensionPoint> point = rntm.findExtensionPoint(extension_pt);
+    auto& runtime                                 = core::runtime::detail::Runtime::get();
+    std::shared_ptr<detail::ExtensionPoint> point = runtime.findExtensionPoint(extension_pt);
 
     if(!point)
     {

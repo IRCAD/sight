@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,29 +30,29 @@ namespace sight::utestData
 
 //------------------------------------------------------------------------------
 
-bool File::contentEquals(const std::filesystem::path& lfile, const std::filesystem::path& rfile)
+bool File::contentEquals(const std::filesystem::path& l_file, const std::filesystem::path& r_file)
 {
     using namespace std;
     const streambuf::int_type eof = streambuf::traits_type::eof();
 
-    std::ifstream lstream(lfile.c_str());
-    std::ifstream rstream(rfile.c_str());
+    std::ifstream l_stream(l_file.c_str());
+    std::ifstream r_stream(r_file.c_str());
 
-    streambuf* lbuf = lstream.rdbuf();
-    streambuf* rbuf = rstream.rdbuf();
+    streambuf* l_buf = l_stream.rdbuf();
+    streambuf* r_buf = r_stream.rdbuf();
 
-    char lchar, rchar;
+    char l_char, r_char;
     while(true)
     {
-        lchar = static_cast<char>(lbuf->sbumpc());
-        rchar = static_cast<char>(rbuf->sbumpc());
+        l_char = static_cast<char>(l_buf->sbumpc());
+        r_char = static_cast<char>(r_buf->sbumpc());
 
-        if(lchar == eof && rchar == eof)
+        if(l_char == eof && r_char == eof)
         {
             return true;
         }
 
-        if(lchar != rchar || lchar == eof || rchar == eof)
+        if(l_char != r_char || l_char == eof || r_char == eof)
         {
             break;
         }

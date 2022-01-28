@@ -202,7 +202,7 @@ void SOrganTransformation::refresh()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::notitfyTransformationMatrix(data::Matrix4::sptr aTransMat)
+void SOrganTransformation::notifyTransformationMatrix(data::Matrix4::sptr aTransMat)
 {
     auto sig = aTransMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
@@ -259,7 +259,7 @@ void SOrganTransformation::onResetClick()
         if(pTmpMat)
         {
             geometry::data::identity(*pTmpMat);
-            this->notitfyTransformationMatrix(pTmpMat);
+            this->notifyTransformationMatrix(pTmpMat);
         }
     }
 }
@@ -316,7 +316,7 @@ void SOrganTransformation::onLoadClick()
                 if(pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
-                    this->notitfyTransformationMatrix(pTmpMat);
+                    this->notifyTransformationMatrix(pTmpMat);
                 }
             }
         }

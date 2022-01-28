@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 # include "core/spyLog.hpp"
 # include "core/Demangler.hpp"
 
+//cspell: disable
 # define LOG_FWEXCEPTIONS 1
 
 # define __FWCORE_EXCEPTION_CLASS sight::core::Exception
@@ -136,3 +137,4 @@
 # define FW_FORWARD_EXCEPTION_IF(excep, cond) __FWCORE_EXPR_BLOCK( \
         __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond); \
 )
+//cspell: enable

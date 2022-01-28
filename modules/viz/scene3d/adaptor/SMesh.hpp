@@ -56,7 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * This class handles the conversion of data::Mesh to Ogre3d. It can handle triangles, edges, quads or tetrahedrons.
  * For the quads and tetrahedrons, we generate the triangles in a pre-process, using the render to vertex buffer (r2vb)
- * feature to avoid the cost of geometry shaders when usign multi-pass rendering techniques.
+ * feature to avoid the cost of geometry shaders when using multi-pass rendering techniques.
  *
  * An Ogre entity is created from the mesh. A second mesh and a second entity are created as an input for the r2vb.
  * Thus, the main mesh will contains only triangles or edges, while the second entity contains only quads or tetras.
@@ -145,7 +145,7 @@ public:
     MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName);
 
     /**
-     * @brief Actives/deactives automatic reset on camera.
+     * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
     MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _autoResetCamera);
@@ -261,7 +261,7 @@ private:
     void updateXMLMaterialAdaptor();
 
     /**
-     * @brief Attachs a node in the scene graph.
+     * @brief Attaches a node in the scene graph.
      * @param _node the node to attach.
      */
     void attachNode(Ogre::MovableObject* _node);
@@ -269,7 +269,7 @@ private:
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {true};
 
-    /// Contains the node in the scene graph whwre the mesh is attached.
+    /// Contains the node in the scene graph where the mesh is attached.
     Ogre::Entity* m_entity {nullptr};
 
     /// Contains the Ogre material adaptor.

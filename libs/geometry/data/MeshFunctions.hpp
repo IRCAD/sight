@@ -45,6 +45,7 @@ GEOMETRY_DATA_API bool IsInclosedVolume(
     const fwVec3d& _p
 );
 
+//cspell: disable
 /**
  * @brief Compute the intersection between triangle(defined by three vertices vert1, vert2, vert3) and the Oz parallel
  * line and cross by the point P.
@@ -55,6 +56,7 @@ GEOMETRY_DATA_API bool IsInclosedVolume(
  * "Fast, Minimum Storage Ray/Triangle Intersection", Tomas Muller, Ben Trumbore.
  *
  */
+//cspell: enable
 GEOMETRY_DATA_API bool intersect_triangle(
     fwVec3d _orig,
     fwVec3d _dir,
@@ -145,9 +147,9 @@ bool isBorderlessSurface(
         }
     }
 
-    for(const typename EdgeHistogram::value_type& histo : edgesHistogram)
+    for(const typename EdgeHistogram::value_type& h : edgesHistogram)
     {
-        if(histo.second != 2)
+        if(h.second != 2)
         {
             isBorderless = false;
             break;

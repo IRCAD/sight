@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -191,12 +191,12 @@ public:
     ///@{
 
     /**
-     * @brief Registers action sid associted with a parent sid.
+     * @brief Registers action sid associated with a parent sid.
      */
     UI_BASE_API static void registerActionSIDToParentSID(std::string actionSid, std::string parentSid);
 
     /**
-     * @brief Unregisters action sid associted with a parent sid.
+     * @brief Unregisters action sid associated with a parent sid.
      */
     UI_BASE_API static void unregisterActionSIDToParentSID(std::string actionSid, std::string parentSid);
 

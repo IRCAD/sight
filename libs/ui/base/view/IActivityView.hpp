@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ namespace view
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
- *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
+ *          frontal) or define a camp path (ex. \@values.myImage). The root object of the object path if the
  *          composite contained in the ActivitySeries.
  */
 class UI_BASE_CLASS_API IActivityView : public ui::base::IGuiContainer,

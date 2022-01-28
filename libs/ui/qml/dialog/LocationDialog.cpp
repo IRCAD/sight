@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -143,8 +143,8 @@ void LocationDialog::resultDialog(const QVariant& msg)
             std::vector<std::filesystem::path> paths;
             for(const QUrl& filename : files)
             {
-                std::filesystem::path bpath(filename.toLocalFile().toStdString());
-                paths.push_back(bpath);
+                std::filesystem::path p(filename.toLocalFile().toStdString());
+                paths.push_back(p);
             }
 
             const auto& multipleFiles = std::make_shared<core::location::MultipleFiles>();

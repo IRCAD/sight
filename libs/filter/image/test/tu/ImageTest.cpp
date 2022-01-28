@@ -97,7 +97,7 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
 
     // apply roi and check
     filter::image::applyRoi(image, roi);
-    CPPUNIT_ASSERT_MESSAGE(message, filter::image::isRoiApplyed(imageRef, roi, image));
+    CPPUNIT_ASSERT_MESSAGE(message, filter::image::isRoiApplied(imageRef, roi, image));
 }
 
 //------------------------------------------------------------------------------

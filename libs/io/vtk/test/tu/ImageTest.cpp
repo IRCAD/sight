@@ -103,7 +103,7 @@ void compareImageAttributes(
 
 //------------------------------------------------------------------------------
 
-void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
+void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtk_types)
 {
     const data::Image::Size size       = {10, 15, 23};
     const data::Image::Spacing spacing = {0.85, 2.6, 1.87};
@@ -139,7 +139,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 
     );
 
-    std::set<int> types = vtktypes;
+    std::set<int> types = vtk_types;
     CPPUNIT_ASSERT_MESSAGE("Test failed for type " + imgtype, types.find(vtkImage->GetScalarType()) != types.end());
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
@@ -258,10 +258,10 @@ void testVtkReader(std::string imagetype)
     reader->setFile(testFile);
     reader->read();
 
-    vtkSmartPointer<vtkGenericDataObjectReader> vtkreader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
-    vtkreader->SetFileName(testFile.string().c_str());
-    vtkreader->Update();
-    vtkSmartPointer<vtkImageData> vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());
+    vtkSmartPointer<vtkGenericDataObjectReader> vtk_reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
+    vtk_reader->SetFileName(testFile.string().c_str());
+    vtk_reader->Update();
+    vtkSmartPointer<vtkImageData> vtkImage = vtkImageData::SafeDownCast(vtk_reader->GetOutput());
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
         "test on <" "sight/image/vtk/img-" + imagetype + ".vtk" "> Failed ",
         core::tools::Type(imagetype),

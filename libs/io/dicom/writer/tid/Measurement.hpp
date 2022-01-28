@@ -82,7 +82,7 @@ protected:
      * @brief Create a measurement node
      * @param[in] parent Parent node
      * @param[in] pointList Pointlist containing distance points
-     * @param[in] id ID of the ficudial
+     * @param[in] id ID of the fiducial
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createMeasurement(

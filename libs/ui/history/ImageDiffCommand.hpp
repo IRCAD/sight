@@ -56,7 +56,7 @@ private:
 
     data::Image::sptr m_img;
 
-    data::Image::BufferModifiedSignalType::sptr m_modifSig;
+    data::Image::BufferModifiedSignalType::sptr m_modifiedSig;
 
     filter::image::ImageDiff m_diff;
 };

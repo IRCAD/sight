@@ -70,10 +70,10 @@ void Study::writeGeneralStudyModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0090>(m_object->getReferringPhysicianName(), dataset);
 
     //TODO: >getConsultingPhysicianName() contains only 1 value, gdcm wants a list (VM : 1-N).
-    gdcm::String<> consultingPhysisicianName[] = {m_object->getConsultingPhysicianName()};
+    gdcm::String<> consultingPhysicianName[] = {m_object->getConsultingPhysicianName()};
 
     io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<>, 0x0008, 0x009C>(
-        consultingPhysisicianName,
+        consultingPhysicianName,
         1,
         dataset
     );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,8 +145,8 @@ OFCondition SeriesRetriever::handleSTORERequest(
             }
 
             //Find the instance UID
-            OFString iname;
-            if(dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, iname).good())
+            OFString instanceID;
+            if(dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, instanceID).good())
             {
             }
 
@@ -158,7 +158,7 @@ OFCondition SeriesRetriever::handleSTORERequest(
             }
 
             //Save the file in the specified folder
-            std::string filePath = seriesPath.string() + iname.c_str();
+            std::string filePath = seriesPath.string() + instanceID.c_str();
             dataset->saveFile(filePath.c_str());
 
             // Send a store response

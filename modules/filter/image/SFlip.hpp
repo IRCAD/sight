@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,9 +61,9 @@ public:
 
     SIGHT_DECLARE_SERVICE(SFlip, sight::service::IFilter);
 
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISZ_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_X_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_Y_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_Z_SLOT;
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SFlip();

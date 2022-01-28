@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,9 +99,9 @@ void DirTest::putFileTest()
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
 
-    const std::filesystem::path testDir  = "test";
+    const std::filesystem::path testDir = "test";
+    //cspell: ignore makao
     const std::filesystem::path testFile = utestData::Data::dir() / "sight/image/jpg/makao01.jpg";
-
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + testFile.string() + "' does not exist",
         std::filesystem::exists(testFile)

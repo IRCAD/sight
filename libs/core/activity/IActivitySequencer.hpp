@@ -47,7 +47,7 @@ public:
 
 protected:
 
-    typedef std::vector<std::string> ActivitesType;
+    typedef std::vector<std::string> ActivitiesType;
     typedef std::map<std::string, data::Object::sptr> RequirementsType;
 
     /**
@@ -76,7 +76,7 @@ protected:
      * @param index index of the activity to retrieve
      * @param slot slot to block in case the activity is created. It is usefull if the service listen notification on
      * the seriesDB
-     * @param overrides Composite that contains data to override the previouly stored data (from the other activities)
+     * @param overrides Composite that contains data to override the previously stored data (from the other activities)
      */
     ACTIVITY_API data::ActivitySeries::sptr getActivity(
         data::SeriesDB& seriesDB,
@@ -96,7 +96,7 @@ protected:
     ACTIVITY_API void removeLastActivities(data::SeriesDB& seriesDB, std::size_t index);
 
     /// List of the activity to create.
-    ActivitesType m_activityIds;
+    ActivitiesType m_activityIds;
 
     /// Index of the current activity
     int m_currentActivity {-1};

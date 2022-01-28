@@ -105,7 +105,7 @@ protected:
 private:
 
     /**
-     * @brief Attachs a node in the scene graph.
+     * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
     void attachNode(Ogre::MovableObject* _node);

@@ -117,7 +117,7 @@ public Q_SLOTS:
 
 protected:
 
-    /// Update the infromation from the image
+    /// Update the information from the image
     MODULE_UI_QML_API void starting() override;
 
     /// Do nothing

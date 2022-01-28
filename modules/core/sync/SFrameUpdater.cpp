@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                         break;
 
                     default:
-                        SIGHT_ERROR("Number of compenent not managed")
+                        SIGHT_ERROR("Number of components not managed")
                         return;
                 }
 
@@ -159,7 +159,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                 image->setWindowCenter(0);
                 m_imageInitialized = true;
 
-                //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
+                //Notify
                 auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
                 {

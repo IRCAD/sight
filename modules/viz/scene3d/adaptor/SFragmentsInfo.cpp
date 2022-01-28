@@ -262,9 +262,9 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
     const bool retrieveDepth       = m_depth.lock().operator bool();
     const bool retrievePrimitiveID = m_primitive.lock().operator bool();
 
-    Ogre::CompositorManager& cmpMngr = Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& cmpManager = Ogre::CompositorManager::getSingleton();
 
-    m_compositor = cmpMngr.create(
+    m_compositor = cmpManager.create(
         m_compositorName,
         sight::viz::scene3d::RESOURCE_GROUP
     );
@@ -353,12 +353,12 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
 
 void SFragmentsInfo::destroyCompositor()
 {
-    Ogre::CompositorManager& cmpMngr = Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& cmpManager = Ogre::CompositorManager::getSingleton();
 
     const auto layer = this->getLayer();
     layer->updateCompositorState(m_compositorName, false);
-    cmpMngr.removeCompositor(layer->getViewport(), m_compositorName);
-    cmpMngr.remove(m_compositor);
+    cmpManager.removeCompositor(layer->getViewport(), m_compositorName);
+    cmpManager.remove(m_compositor);
     m_compositor.reset();
 }
 

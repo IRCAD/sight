@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,8 +44,8 @@ namespace sight::module::data
  * @code{.xml}
         <service uid="..." type="sight::module::data::SExtractObj" >
            <inout key="source" uid="...">
-               <extract from="@values.myobject1" />
-               <extract from="@values.myobject2" />
+               <extract from="@values.myObject1" />
+               <extract from="@values.myObject2" />
            </inout>
            <out group="target">
                <key uid="..."/>

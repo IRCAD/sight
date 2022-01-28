@@ -32,6 +32,10 @@
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
 
+#include <data/Matrix4.hpp>
+#include <data/Object.hpp>
+#include <data/Series.hpp>
+
 #include <map>
 #include <vector>
 
@@ -41,7 +45,7 @@ namespace sight::data
 {
 
 /**
- * @brief  This class contains the information about cameras (container of camera and extrinsec matrix).
+ * @brief  This class contains the information about cameras (container of camera and extrinsic matrix).
  */
 
 class DATA_CLASS_API CameraSeries : public Series

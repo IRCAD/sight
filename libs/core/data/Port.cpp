@@ -33,7 +33,7 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 Port::Port(data::Object::Key) :
-    m_identifier("IDNOTdefined"),
+    m_identifier("IdNotDefined"),
     m_type("TypeNotDefined")
 {
 }

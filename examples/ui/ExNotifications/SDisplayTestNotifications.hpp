@@ -27,6 +27,11 @@
 #include <ui/base/dialog/NotificationDialog.hpp>
 #include <ui/base/IAction.hpp>
 
+/**
+ * Do not mark `EXNOTIFICATIONS` as incorrect.
+ * cspell:ignore EXNOTIFICATIONS
+ */
+
 namespace dial = sight::ui::base::dialog;
 
 namespace ExNotifications

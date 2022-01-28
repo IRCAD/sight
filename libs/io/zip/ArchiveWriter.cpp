@@ -39,6 +39,10 @@
 #include <iostream>
 #include <tuple>
 
+/**
+ * Do not mark `madeby` as incorrect.
+ * cspell:ignore madeby
+ */
 namespace sight::io::zip
 {
 

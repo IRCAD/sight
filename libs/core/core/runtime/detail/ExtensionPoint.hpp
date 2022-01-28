@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/ModuleElement.hpp"
 #include "core/runtime/Runtime.hpp"
+
 #include <core/base.hpp>
 
 #include <algorithm>
@@ -131,9 +132,9 @@ public:
     std::vector<std::shared_ptr<Extension> > getAllExtensions() const
     {
         std::vector<std::shared_ptr<Extension> > container;
-        Runtime& rntm = Runtime::get();
+        Runtime& runtime = Runtime::get();
 
-        for(auto extension : rntm.getExtensions())
+        for(auto extension : runtime.getExtensions())
         {
             if(extension->getPoint() == m_id && extension->isEnabled() == true
                && extension->validate() == Extension::Valid)

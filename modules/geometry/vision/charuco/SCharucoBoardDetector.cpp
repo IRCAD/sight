@@ -42,12 +42,13 @@
 namespace sight::module::geometry::vision::charuco
 {
 
-const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT             = "checkPoints";
-const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT            = "detectPoints";
-const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT              = "checkPoints";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT             = "detectPoints";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCO_BOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
-const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DETECTED_SIG     = "charucoBoardDetected";
-const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG =
+const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCO_BOARD_DETECTED_SIG =
+    "charucoBoardDetected";
+const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCO_BOARD_NOT_DETECTED_SIG =
     "charucoBoardNotDetected";
 
 // ----------------------------------------------------------------------------
@@ -59,12 +60,12 @@ SCharucoBoardDetector::SCharucoBoardDetector() noexcept :
     m_lastTimestamp(0),
     m_markerSizeInBits(6)
 {
-    m_sigCharucoBoardDetected    = newSignal<CharucoBoardDetectedSignalType>(s_CHARUCOBOARD_DETECTED_SIG);
-    m_sigCharucoBoardNotDetected = newSignal<CharucoBoardNotDetectedSignalType>(s_CHARUCOBOARD_NOT_DETECTED_SIG);
+    m_sigCharucoBoardDetected    = newSignal<CharucoBoardDetectedSignalType>(s_CHARUCO_BOARD_DETECTED_SIG);
+    m_sigCharucoBoardNotDetected = newSignal<CharucoBoardNotDetectedSignalType>(s_CHARUCO_BOARD_NOT_DETECTED_SIG);
 
     newSlot(s_CHECK_POINTS_SLOT, &SCharucoBoardDetector::checkPoints, this);
     newSlot(s_DETECT_POINTS_SLOT, &SCharucoBoardDetector::detectPoints, this);
-    newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SCharucoBoardDetector::updateCharucoBoardSize, this);
+    newSlot(s_UPDATE_CHARUCO_BOARD_SIZE_SLOT, &SCharucoBoardDetector::updateCharucoBoardSize, this);
 }
 
 // ----------------------------------------------------------------------------

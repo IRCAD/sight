@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ protected:
     /**
      * @brief Launch the config on the object if possible.
      *
-     * If there is a single selection : it launchs an AppConfig on the object defined in this service configuration
+     * If there is a single selection : it launches an AppConfig on the object defined in this service configuration
      * (stored in m_seriesConfigs). The selected object fwID replaces the 'objectID' parameter in the AppConfig.
      * no configuration are launched if there is no selection, a multiple selection or if there is no configuration
      * associated with the selected object.

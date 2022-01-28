@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -282,14 +282,14 @@ void SDistortion::remap()
 
         cv::cuda::GpuMat image_gpu(img);
         cv::cuda::GpuMat image_gpu_rect(undistortedImage);
-        cv::cuda::remap(image_gpu, image_gpu_rect, m_mapx, m_mapy, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        cv::cuda::remap(image_gpu, image_gpu_rect, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
         undistortedImage = cv::Mat(image_gpu_rect);
 
         io::opencv::Image::copyFromCv(outputImage.get_shared(), undistortedImage);
 #else
         FW_PROFILE_AVG("cv::remap", 5);
 
-        cv::remap(img, undistortedImage, m_mapx, m_mapy, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        cv::remap(img, undistortedImage, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
         const auto outDumpLock = outputImage->lock();
         if(outputImage.get_shared() == inputImage.get_shared())
@@ -421,11 +421,11 @@ void SDistortion::calibrate()
     else
     {
 #if OPENCV_CUDA_SUPPORT
-        m_mapx = cv::cuda::GpuMat(xyMaps[0]);
-        m_mapy = cv::cuda::GpuMat(xyMaps[1]);
+        m_map_x = cv::cuda::GpuMat(xyMaps[0]);
+        m_map_y = cv::cuda::GpuMat(xyMaps[1]);
 #else
-        m_mapx = xyMaps[0];
-        m_mapy = xyMaps[1];
+        m_map_x = xyMaps[0];
+        m_map_y = xyMaps[1];
 #endif // OPENCV_CUDA_SUPPORT
     }
 }

@@ -26,12 +26,12 @@ example of activity factory:
 
  ```xml
 <extension implements="sight::activity::extension::Activity">
-    <id>SDBVRRender</id>
+    <id>myActivity</id>
     <title>SDB</title>
     <desc>Series Selector</desc>
     <icon>sight::module::ui::icons/selector.svg</icon>
     <requirements />
-    <appConfig id="SDBVRRender">
+    <appConfig id="myActivity">
         <parameters />
     </appConfig>
 </extension>

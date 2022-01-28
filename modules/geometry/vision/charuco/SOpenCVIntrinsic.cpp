@@ -41,7 +41,7 @@
 namespace sight::module::geometry::vision::charuco
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCO_BOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
@@ -54,7 +54,7 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_markerSizeInBits(6)
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
-    newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
+    newSlot(s_UPDATE_CHARUCO_BOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -110,6 +110,7 @@ void SOpenCVIntrinsic::updating()
         {
             for(data::PointList::sptr capture : calInfo->getPointListContainer())
             {
+                // cspell: disable
                 std::vector<cv::Point2f> cdst;
                 std::vector<int> idst;
 
@@ -127,6 +128,7 @@ void SOpenCVIntrinsic::updating()
 
                 cornersPoints.push_back(cdst);
                 ids.push_back(idst);
+                //cspell: enable
             }
         }
 

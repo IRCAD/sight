@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
 
     SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, new ProgressDialog);
 
-    /// will instanciate the concrete implementation
+    /// will instantiate the concrete implementation
     UI_BASE_API ProgressDialog(const std::string& title = std::string(), const std::string& msg = std::string());
     UI_BASE_API ~ProgressDialog();
 

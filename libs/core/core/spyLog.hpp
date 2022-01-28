@@ -240,7 +240,7 @@ void SIGHT_TRACE_DEPRECATED();
 # define SIGHT_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SIGHT_DEBUG instead. */
 # define OSIGHT_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
-/** Conditionnal debug message macros.  */
+/** Conditional debug message macros.  */
 # define SIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SIGHT_DEBUG_IF instead. */
 # define OSIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()

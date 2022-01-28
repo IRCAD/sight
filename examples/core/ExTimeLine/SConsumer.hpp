@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,10 @@
 
 #include <service/IService.hpp>
 
+/**
+ * Do not mark `EXTIMELINE` as incorrect.
+ * cspell:ignore EXTIMELINE
+ */
 namespace thread
 {
 
@@ -61,6 +65,7 @@ namespace ExTimeLine
  * - \b id : id of the receiver.
  * - \b period (optional): time between two messages display, in milliseconds.
  */
+
 class EXTIMELINE_CLASS_API SConsumer : public sight::service::IService
 {
 public:

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace activity
 {
 
 /**
- * @brief This editor launchs an activity according to the given configuration
+ * @brief This editor launches an activity according to the given configuration
  *
  * This editor proposes all the available activities according to the given configuration.
  * It sends a signal with the activity identifier when a button is pushed.

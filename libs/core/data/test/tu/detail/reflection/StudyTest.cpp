@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ void StudyTest::propertiesTest()
     const std::string studyID                 = "2";
     const std::string date                    = "20130214";
     const std::string time                    = "143328";
-    const std::string referringPhysicianMame  = "John Doe";
-    const std::string consultingPhysicianMame = "John Doe 2";
+    const std::string referringPhysicianName  = "John Doe";
+    const std::string consultingPhysicianName = "John Doe 2";
     const std::string description             = "description";
     const std::string patientAge              = "42";
     const std::string patientSize             = "175";
@@ -90,8 +90,8 @@ void StudyTest::propertiesTest()
     obj->setStudyID(studyID);
     obj->setDate(date);
     obj->setTime(time);
-    obj->setReferringPhysicianName(referringPhysicianMame);
-    obj->setConsultingPhysicianName(consultingPhysicianMame);
+    obj->setReferringPhysicianName(referringPhysicianName);
+    obj->setConsultingPhysicianName(consultingPhysicianName);
     obj->setDescription(description);
     obj->setPatientAge(patientAge);
     obj->setPatientSize(patientSize);
@@ -103,8 +103,8 @@ void StudyTest::propertiesTest()
     ::DataCampHelper::compareSimplePropertyValue(obj, "@study_id", studyID);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@date", date);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@time", time);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@referring_physician_name", referringPhysicianMame);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@consulting_physician_name", consultingPhysicianMame);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@referring_physician_name", referringPhysicianName);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@consulting_physician_name", consultingPhysicianName);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@description", description);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_age", patientAge);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_size", patientSize);

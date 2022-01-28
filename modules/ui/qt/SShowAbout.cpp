@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -128,10 +128,10 @@ void SShowAbout::updating()
     htmlView->setSearchPaths(searchPaths);
 #endif
     QPushButton* okButton = new QPushButton(QObject::tr("Ok"));
-    QHBoxLayout* hLayout  = new QHBoxLayout();
-    hLayout->addStretch();
-    hLayout->addWidget(okButton);
-    hLayout->setContentsMargins(5, 5, 5, 5);
+    QHBoxLayout* h_layout = new QHBoxLayout();
+    h_layout->addStretch();
+    h_layout->addWidget(okButton);
+    h_layout->setContentsMargins(5, 5, 5, 5);
 
     QFrame* line = new QFrame(dialog);
     line->setFrameShape(QFrame::HLine);
@@ -140,7 +140,7 @@ void SShowAbout::updating()
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(htmlView, 0);
     layout->addWidget(line, 0);
-    layout->addLayout(hLayout, 0);
+    layout->addLayout(h_layout, 0);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     dialog->setLayout(layout);

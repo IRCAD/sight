@@ -19,7 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
+// cspell: disable
 /******************************************************************************************
    MOC - Minimal Ogre Collision v 1.0
    The MIT License
@@ -48,6 +48,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 ******************************************************************************************/
+// cspell: enable
 
 #include "viz/scene3d/config.hpp"
 

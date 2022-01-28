@@ -54,7 +54,7 @@ public:
 
     typedef std::map<std::string, std::string> ObjectIconMapType;
 
-    /// Defines comun header columns used in the tree widget of all created tabs.
+    /// Defines common header columns used in the tree widget of all created tabs.
     enum class ColumnCommunType : int
     {
         ID = 0
@@ -120,7 +120,7 @@ public:
      *
      * It checks if all required data are present in the widget, and create the activity data composite.
      * Then it checks if the activity parameters are accessible from the composite of data (it checks if the object are
-     * accessible from the sesh@ paths.
+     * accessible from the object paths.
      *
      * @return True if data are correct, else false and errorMsg contains detailled error.
      * @param _actSeries activitySeries to fill with the selected data.

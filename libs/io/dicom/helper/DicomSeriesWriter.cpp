@@ -133,9 +133,9 @@ void DicomSeriesWriter::processWrite()
         std::filesystem::create_directories(folder);
     }
 
-    std::size_t nbInstances = dicomSeries->numInstances();
+    std::size_t nb_instances = dicomSeries->numInstances();
 
-    m_job->setTotalWorkUnits(nbInstances);
+    m_job->setTotalWorkUnits(nb_instances);
     unsigned int count = 0;
 
     // Write binary files
@@ -182,10 +182,10 @@ void DicomSeriesWriter::processWriteArchive()
 
     data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
-    const std::size_t nbInstances = dicomSeries->numInstances();
-    unsigned int count            = 0;
+    const std::size_t nb_instances = dicomSeries->numInstances();
+    unsigned int count             = 0;
 
-    m_job->setTotalWorkUnits(nbInstances);
+    m_job->setTotalWorkUnits(nb_instances);
 
     for(const auto& value : dicomSeries->getDicomContainer())
     {

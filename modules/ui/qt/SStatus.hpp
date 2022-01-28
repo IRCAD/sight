@@ -180,8 +180,8 @@ private:
 
     bool m_isCircular; ///< label is a circle if true (else it's a square)
 
-    std::size_t m_width;  ///< width of idicator
-    std::size_t m_height; ///< height of idicator
+    std::size_t m_width;  ///< width of indicator
+    std::size_t m_height; ///< height of indicator
 };
 
 } // namespace sight::module::ui::qt

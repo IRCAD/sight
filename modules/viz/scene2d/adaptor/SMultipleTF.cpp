@@ -296,7 +296,7 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
 
-    // Computes point size in screen space and keep the smallest size (relativly to width or height).
+    // Computes point size in screen space and keep the smallest size (relatively to width or height).
     double pointSize = sceneWidth * m_pointSize;
     if(pointSize > sceneHeight * m_pointSize)
     {
@@ -392,7 +392,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     const std::pair<Point2DType, QGraphicsEllipseItem*>& firstTFPoint = _subTF->m_TFPoints.front();
     const std::pair<Point2DType, QGraphicsEllipseItem*>& lastTFPoint  = _subTF->m_TFPoints.back();
 
-    const QGraphicsEllipseItem* const firtsPoint = firstTFPoint.second;
+    const QGraphicsEllipseItem* const firstPoint = firstTFPoint.second;
 
     double xBegin = firstTFPoint.first.first;
     double xEnd   = lastTFPoint.first.first;
@@ -420,7 +420,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
         }
     }
 
-    grad.setColorAt(0, firtsPoint->brush().color());
+    grad.setColorAt(0, firstPoint->brush().color());
 
     grad.setStart(xBegin, 0);
     grad.setFinalStop(xEnd, 0);
@@ -649,7 +649,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
 
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
-    // If it's a resize event, all the scene must be recompted.
+    // If it's a resize event, all the scene must be recomputed.
     if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
     {
         this->updating();
@@ -779,7 +779,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
         return;
     }
 
-    // If midlle button is pressed, select the current TF to adjust the window/level.
+    // If middle button is pressed, select the current TF to adjust the window/level.
     if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
        && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
@@ -1375,7 +1375,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
                 -newCoord.getY()
             );
         }
-        // Gets an interpolate color since the new point is between two ohers.
+        // Gets an interpolate color since the new point is between two others.
         else
         {
             newColor   = tf->getInterpolatedColor(tfValue);

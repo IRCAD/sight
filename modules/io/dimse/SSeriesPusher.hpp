@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -165,7 +165,7 @@ protected:
     /// Push Worker
     core::thread::Worker::sptr m_pushSeriesWorker;
 
-    /// Is pushing is set to true when we are puishing series
+    /// Is pushing is set to true when we are pushing series
     bool m_isPushing;
 
     /// Total number of instances that must be uploaded

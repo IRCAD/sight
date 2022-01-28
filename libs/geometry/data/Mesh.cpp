@@ -801,9 +801,9 @@ bool Mesh::isClosed(const sight::data::Mesh::csptr& mesh)
         }
     }
 
-    for(const EdgeHistogram::value_type& histo : edgesHistogram)
+    for(const EdgeHistogram::value_type& h : edgesHistogram)
     {
-        if(histo.second != 2)
+        if(h.second != 2)
         {
             isClosed = false;
             break;

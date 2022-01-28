@@ -87,7 +87,7 @@ public:
     /// Return the parent mesh.
     VIZ_SCENE3D_API virtual const Ogre::MeshPtr& getMesh(void) const;
 
-    /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
+    /// Mark the output vertex buffer as dirty, the r2vb process will be run on next update
     VIZ_SCENE3D_API void setDirty();
 
     /// Runs the R2VB process.

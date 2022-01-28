@@ -115,8 +115,8 @@ void SeriesDBTest::generationTest()
         CPPUNIT_ASSERT_EQUAL(std::string("Say 33. "), study->getDescription());
         CPPUNIT_ASSERT_EQUAL(std::string("042Y"), study->getPatientAge());
 
-        data::Equipment::sptr equipement = series->getEquipment();
-        CPPUNIT_ASSERT_EQUAL(std::string("hospital"), equipement->getInstitutionName());
+        data::Equipment::sptr equipment = series->getEquipment();
+        CPPUNIT_ASSERT_EQUAL(std::string("hospital"), equipment->getInstitutionName());
 
         data::ImageSeries::sptr imgSeries         = data::ImageSeries::dynamicCast(series);
         data::ModelSeries::sptr modelSeries       = data::ModelSeries::dynamicCast(series);

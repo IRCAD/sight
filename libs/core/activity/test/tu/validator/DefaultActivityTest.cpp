@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -320,10 +320,10 @@ void DefaultActivityTest::objectTest()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("An empty validator implementation should be valid", true, validation.first);
     }
     {
-        // An inexisting validator implementation should NOT be valid
-        validation = activityValidator->checkObject(img1, "::inexisting::validator");
+        // A non-existent validator implementation should NOT be valid
+        validation = activityValidator->checkObject(img1, "::non-existent::validator");
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "An inexisting validator implementation should NOT be valid",
+            "A non-existent validator implementation should NOT be valid",
             false,
             validation.first
         );

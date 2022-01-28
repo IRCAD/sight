@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,7 @@
 namespace sight::utestData
 {
 
+// cspell: disable
 //------------------------------------------------------------------------------
 #define CHECK_VALUE(check, message, val1, val2) \
     { \
@@ -478,5 +479,7 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::ImageSeries::sptr& 
 
     return ok;
 }
+
+//cspell: enable
 
 } // namespace sight::utestData

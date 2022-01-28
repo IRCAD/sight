@@ -57,7 +57,7 @@ int main(int argc, char** argv)
             po::value<std::size_t>(&squareY)->required()->default_value(5),
             "set the number of square on the board's height"
         )
-            ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image witdh (in pixel)")
+            ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image width (in pixel)")
             ("pixelY,e", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
         (
             "squareLength,s",

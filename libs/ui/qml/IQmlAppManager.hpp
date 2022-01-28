@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ public Q_SLOTS:
     UI_QML_QT_API virtual void uninitialize();
 
     /**
-     * @brief Retrieves the services instanciated in Qml. It should be reimplemented to properly configure and register
+     * @brief Retrieves the services instantiated in Qml. It should be reimplemented to properly configure and register
      * the services
      *
      * @param obj variant representing a service

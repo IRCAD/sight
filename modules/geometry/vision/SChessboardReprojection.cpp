@@ -114,8 +114,8 @@ void SChessboardReprojection::updating()
     SIGHT_ASSERT("Missing 'camera'.", camera);
 
     cv::Size imgSize;
-    cv::Mat cameraMx, distortionCoefficents;
-    std::tie(cameraMx, imgSize, distortionCoefficents) = io::opencv::Camera::copyToCv(camera.get_shared());
+    cv::Mat cameraMx, distortionCoefficients;
+    std::tie(cameraMx, imgSize, distortionCoefficients) = io::opencv::Camera::copyToCv(camera.get_shared());
 
     cv::Mat rvec, tvec;
 
@@ -142,7 +142,7 @@ void SChessboardReprojection::updating()
             rvec,
             tvec,
             cameraMx,
-            distortionCoefficents
+            distortionCoefficients
         );
 
         m_errorComputedSig->asyncEmit(rmse);
@@ -157,8 +157,8 @@ void SChessboardReprojection::updating()
     if(videoImage)
     {
         // Reprojected points have a radius equal to 1/3000th of the image's height.
-        int reprojRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
-        reprojRadius = std::max(reprojRadius, 1);
+        int reprojectionRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
+        reprojectionRadius = std::max(reprojectionRadius, 1);
 
         if(!data::helper::MedicalImage::checkImageValidity(videoImage.get_shared()))
         {
@@ -178,7 +178,7 @@ void SChessboardReprojection::updating()
             std::vector<cv::Point2f> drawnDetectedPoints;
             if(!m_distortReprojection && camera->getIsCalibrated())
             {
-                cv::undistortPoints(cv::Mat(detectedPointsF), drawnDetectedPoints, cameraMx, distortionCoefficents);
+                cv::undistortPoints(cv::Mat(detectedPointsF), drawnDetectedPoints, cameraMx, distortionCoefficients);
                 for(auto& pt : drawnDetectedPoints)
                 {
                     const auto pt3d = cv::Matx33f(cameraMx) * pt;
@@ -190,10 +190,10 @@ void SChessboardReprojection::updating()
                 drawnDetectedPoints = detectedPointsF;
             }
 
-            const int detectionThickness = reprojRadius < 2 ? 1 : 2;
+            const int detectionThickness = reprojectionRadius < 2 ? 1 : 2;
             for(const auto& pt : drawnDetectedPoints)
             {
-                cv::circle(img, pt, reprojRadius + 3, cv::Scalar(0, 255, 255, 255), detectionThickness);
+                cv::circle(img, pt, reprojectionRadius + 3, cv::Scalar(0, 255, 255, 255), detectionThickness);
             }
         }
 
@@ -201,10 +201,10 @@ void SChessboardReprojection::updating()
         {
             if(m_drawReprojection)
             {
-                std::vector<cv::Point2f> drawnReprojPts;
+                std::vector<cv::Point2f> drawnReprojectedPts;
                 if(m_distortReprojection)
                 {
-                    drawnReprojPts = reprojectedPts;
+                    drawnReprojectedPts = reprojectedPts;
                 }
                 else
                 {
@@ -215,26 +215,26 @@ void SChessboardReprojection::updating()
                         tvec,
                         cameraMx,
                         cv::Mat(),
-                        drawnReprojPts
+                        drawnReprojectedPts
                     );
                 }
 
-                for(const auto& pt : drawnReprojPts)
+                for(const auto& pt : drawnReprojectedPts)
                 {
-                    cv::circle(img, pt, reprojRadius, cv::Scalar(255, 255, 0, 255), cv::FILLED);
+                    cv::circle(img, pt, reprojectionRadius, cv::Scalar(255, 255, 0, 255), cv::FILLED);
                 }
             }
 
             if(m_drawReprojectionError)
             {
-                const auto fontFace              = cv::FONT_HERSHEY_SIMPLEX;
-                const std::string reprojErrorStr = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
-                const int leftPadding            = static_cast<int>(0.05 * imgSize.width);
-                const int topPadding             = static_cast<int>(0.05 * imgSize.height);
+                const auto fontFace                    = cv::FONT_HERSHEY_SIMPLEX;
+                const std::string reprojectionErrorStr = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
+                const int leftPadding                  = static_cast<int>(0.05 * imgSize.width);
+                const int topPadding                   = static_cast<int>(0.05 * imgSize.height);
 
                 cv::putText(
                     img,
-                    reprojErrorStr,
+                    reprojectionErrorStr,
                     cv::Point(leftPadding, topPadding),
                     fontFace,
                     1.,

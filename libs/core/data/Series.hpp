@@ -230,7 +230,7 @@ protected:
     /// Defines the series number.
     DicomValueType m_number;
 
-    /// Defines the lateriality of body part examined (L, R).
+    /// Defines the laterality of body part examined (L, R).
     DicomValueType m_laterality;
 
     /// Defines the date.

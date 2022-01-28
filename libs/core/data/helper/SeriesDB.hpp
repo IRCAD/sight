@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "data/config.hpp"
+
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -43,7 +44,7 @@ public:
     /// Constructor. Initialize parameters.
     DATA_API SeriesDB(data::SeriesDB& seriesDB);
 
-    /// Destrucotr. Do nothing.
+    /// Destructor. Do nothing.
     DATA_API ~SeriesDB();
 
     /**

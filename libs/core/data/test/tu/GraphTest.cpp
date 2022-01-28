@@ -175,7 +175,7 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL(success, false);
     CPPUNIT_ASSERT_EQUAL((std::size_t) 2, g->getNbNodes());
     CPPUNIT_ASSERT_EQUAL((std::size_t) 1, g->getNbEdges());
-
+    //cspell: ignore BADID
     data::Edge::sptr e2(data::Edge::New());
     e2->setIdentifiers("sizex", "BADID");
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,11 @@
 
 #include <service/AppManager.hpp>
 
+/**
+ * Do not mark `TUTO06SCENEQT3DCPP` as incorrect.
+ * cspell:ignore TUTO06SCENEQT3DCPP
+ */
+
 namespace Tuto06SceneQt3DCpp
 {
 
@@ -39,7 +44,7 @@ public:
     /// Creates the plugin.
     TUTO06SCENEQT3DCPP_API Plugin() noexcept;
 
-    /// Destroy the plugin.
+    /// Destroys the plugin.
     TUTO06SCENEQT3DCPP_API ~Plugin() noexcept override;
 
 private:

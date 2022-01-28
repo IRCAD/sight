@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -149,7 +149,7 @@ public:
     const;
 
     /**
-     * @brief Retrieves the bunble from the config id
+     * @brief Retrieves the module from the config id
      * @param configId the config identifier
      */
     SERVICE_API std::shared_ptr<core::runtime::Module> getModule(const std::string& _configId);

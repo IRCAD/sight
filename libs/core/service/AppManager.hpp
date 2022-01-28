@@ -260,7 +260,7 @@ public:
      * This slot is connected to the OSR to listen the created object, it could also be called by the AppManager
      * inherited classes to register an object.
      *
-     * If startServices() has been called previouly, the services that require this object and have all their required
+     * If startServices() has been called previously, the services that require this object and have all their required
      * objects are started.
      *
      * @param obj the new object to register

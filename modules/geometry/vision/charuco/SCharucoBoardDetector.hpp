@@ -104,10 +104,10 @@ public:
      * @name Signals API
      * @{
      */
-    MODULE_GEOMETRY_VISION_API static const core::com::Signals::SignalKeyType s_CHARUCOBOARD_DETECTED_SIG;
+    MODULE_GEOMETRY_VISION_API static const core::com::Signals::SignalKeyType s_CHARUCO_BOARD_DETECTED_SIG;
     typedef core::com::Signal<void ()> CharucoBoardDetectedSignalType;
 
-    MODULE_GEOMETRY_VISION_API static const core::com::Signals::SignalKeyType s_CHARUCOBOARD_NOT_DETECTED_SIG;
+    MODULE_GEOMETRY_VISION_API static const core::com::Signals::SignalKeyType s_CHARUCO_BOARD_NOT_DETECTED_SIG;
     typedef core::com::Signal<void ()> CharucoBoardNotDetectedSignalType;
     /// @}
 
@@ -117,7 +117,7 @@ public:
      */
     MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_CHECK_POINTS_SLOT;
     MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_DETECT_POINTS_SLOT;
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT;
+    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCO_BOARD_SIZE_SLOT;
     ///@}
 
     /// Constructor

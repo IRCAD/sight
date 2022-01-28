@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -350,7 +350,7 @@
     ) \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_) \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
+     * with embedded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
     /* @cond */ \
     /* @endcond */ \
     static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_FACTORY_NAME() \
@@ -364,7 +364,7 @@
     ) \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_) \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
+     * with embedded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
     /* @cond */ \
     /* @endcond */ \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY(_factory_, _parameters_)
@@ -402,7 +402,7 @@
     ) \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_) \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
+     * with embedded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
     /* @cond */ \
     /* @endcond */ \
     static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_FACTORY_NAME() \
@@ -419,7 +419,7 @@
     ) \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_) \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
+     * with embedded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
     /* @cond */ \
     /* @endcond */ \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY(_factory_, _parameters_) \

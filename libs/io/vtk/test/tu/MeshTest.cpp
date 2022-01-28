@@ -238,8 +238,8 @@ void MeshTest::testExportImportSyntheticMesh()
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 
-    const bool suppr = std::filesystem::remove(testFile);
-    CPPUNIT_ASSERT(suppr);
+    const bool removed = std::filesystem::remove(testFile);
+    CPPUNIT_ASSERT(removed);
 }
 
 //------------------------------------------------------------------------------
@@ -288,12 +288,12 @@ void MeshTest::testReadVtkFile()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    io::vtk::MeshReader::sptr vtkReader = io::vtk::MeshReader::New();
+    io::vtk::MeshReader::sptr vtk_reader = io::vtk::MeshReader::New();
 
-    vtkReader->setObject(mesh);
-    vtkReader->setFile(testFile);
+    vtk_reader->setObject(mesh);
+    vtk_reader->setFile(testFile);
 
-    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+    CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
     CPPUNIT_ASSERT(mesh->numCells() == 720);
     CPPUNIT_ASSERT(mesh->numPoints() == 362);
@@ -311,12 +311,12 @@ void MeshTest::testReadVtpFile()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    io::vtk::VtpMeshReader::sptr vtkReader = io::vtk::VtpMeshReader::New();
+    io::vtk::VtpMeshReader::sptr vtk_reader = io::vtk::VtpMeshReader::New();
 
-    vtkReader->setObject(mesh);
-    vtkReader->setFile(testFile);
+    vtk_reader->setObject(mesh);
+    vtk_reader->setFile(testFile);
 
-    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+    CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
     CPPUNIT_ASSERT(mesh->numCells() == 720);
     CPPUNIT_ASSERT(mesh->numPoints() == 362);
@@ -334,12 +334,12 @@ void MeshTest::testReadObjFile()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    io::vtk::ObjMeshReader::sptr vtkReader = io::vtk::ObjMeshReader::New();
+    io::vtk::ObjMeshReader::sptr vtk_reader = io::vtk::ObjMeshReader::New();
 
-    vtkReader->setObject(mesh);
-    vtkReader->setFile(testFile);
+    vtk_reader->setObject(mesh);
+    vtk_reader->setFile(testFile);
 
-    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+    CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
     CPPUNIT_ASSERT(mesh->numCells() == 720);
     CPPUNIT_ASSERT(mesh->numPoints() == 362);
@@ -357,12 +357,12 @@ void MeshTest::testReadPlyFile()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    io::vtk::PlyMeshReader::sptr vtkReader = io::vtk::PlyMeshReader::New();
+    io::vtk::PlyMeshReader::sptr vtk_reader = io::vtk::PlyMeshReader::New();
 
-    vtkReader->setObject(mesh);
-    vtkReader->setFile(testFile);
+    vtk_reader->setObject(mesh);
+    vtk_reader->setFile(testFile);
 
-    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+    CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
     CPPUNIT_ASSERT(mesh->numCells() == 720);
     CPPUNIT_ASSERT(mesh->numPoints() == 362);
@@ -380,12 +380,12 @@ void MeshTest::testReadStlFile()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    io::vtk::StlMeshReader::sptr vtkReader = io::vtk::StlMeshReader::New();
+    io::vtk::StlMeshReader::sptr vtk_reader = io::vtk::StlMeshReader::New();
 
-    vtkReader->setObject(mesh);
-    vtkReader->setFile(testFile);
+    vtk_reader->setObject(mesh);
+    vtk_reader->setFile(testFile);
 
-    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+    CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
     CPPUNIT_ASSERT(mesh->numCells() == 720);
     CPPUNIT_ASSERT(mesh->numPoints() == 362);

@@ -764,7 +764,7 @@ void SLandmarks::hideMyLandmark(
                 break;
 
             default:
-                SIGHT_ERROR("Unhandle orientation mode");
+                SIGHT_ERROR("Unhandled orientation mode");
                 break;
         }
     }

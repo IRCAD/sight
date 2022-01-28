@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,8 +130,8 @@ protected:
     /// Check if the image contain the specified TF.
     MODULE_UI_QT_API bool hasTransferFunctionName(const std::string& _sName) const;
 
-    /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
-    /// already used, it will return blabla_1.
+    /// Create a string that represents a TF name not already present in the composite. For example, if "test" is
+    /// already used, it will return "test_1".
     MODULE_UI_QT_API std::string createTransferFunctionName(const std::string& _sBasename) const;
 
     /// Update the output transferFunction with the selected TF in the ComboBox.

@@ -88,11 +88,11 @@ void SPlaneSlicer::updating()
     const auto image = m_image.lock();
     SIGHT_ASSERT("Cannot find " << s_IMAGE_IN, image);
 
-    vtkSmartPointer<vtkImageData> vtkimg = vtkSmartPointer<vtkImageData>::New();
+    vtkSmartPointer<vtkImageData> vtk_img = vtkSmartPointer<vtkImageData>::New();
 
-    io::vtk::toVTKImage(image.get_shared(), vtkimg.Get());
+    io::vtk::toVTKImage(image.get_shared(), vtk_img.Get());
 
-    m_reslicer->SetInputData(vtkimg);
+    m_reslicer->SetInputData(vtk_img);
     m_reslicer->Update();
 
     auto slice = m_slice.lock();

@@ -123,6 +123,7 @@ void Measurement::createMeasurement(
     const std::size_t frameNumber1 = io::dicom::helper::DicomDataTools::convertPointToFrameNumber(m_object, point1);
 
     // Create Measurement Node
+    // cspell: ignore UCUM
     SPTR(io::dicom::container::sr::DicomSRNumNode) numNode =
         std::make_shared<io::dicom::container::sr::DicomSRNumNode>(
             io::dicom::container::DicomCodedAttribute("121206", "DCM", "Distance"),

@@ -90,14 +90,14 @@ void SCommandHistory::configuring()
 
 void SCommandHistory::starting()
 {
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
 
 void SCommandHistory::updating()
 {
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void SCommandHistory::stopping()
 void SCommandHistory::enqueue(sight::ui::history::ICommand::sptr command)
 {
     m_undoRedoManager.enqueue(command);
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void SCommandHistory::enqueue(sight::ui::history::ICommand::sptr command)
 void SCommandHistory::undo()
 {
     m_undoRedoManager.undo();
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +128,7 @@ void SCommandHistory::undo()
 void SCommandHistory::redo()
 {
     m_undoRedoManager.redo();
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,12 +136,12 @@ void SCommandHistory::redo()
 void SCommandHistory::clear()
 {
     m_undoRedoManager.clear();
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::emitModifSig() const
+void SCommandHistory::emitModifiedSig() const
 {
     m_canUndoSig->asyncEmit(m_undoRedoManager.canUndo());
     m_canRedoSig->asyncEmit(m_undoRedoManager.canRedo());

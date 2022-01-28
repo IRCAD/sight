@@ -681,7 +681,7 @@ IService::SharedFutureType IService::_start(bool _async)
 
         if(!_async)
         {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
         else
@@ -735,7 +735,7 @@ IService::SharedFutureType IService::_stop(bool _async)
 
         if(!_async)
         {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
         else
@@ -792,7 +792,7 @@ IService::SharedFutureType IService::_swapKey(std::string_view _key, data::Objec
 
         if(!_async)
         {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
         else
@@ -853,7 +853,7 @@ IService::SharedFutureType IService::_update(bool _async)
         m_updatingState = NOTUPDATING;
         if(!_async)
         {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
         else

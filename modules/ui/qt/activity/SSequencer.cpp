@@ -283,7 +283,7 @@ void SSequencer::goTo(int index)
     auto seriesDB = m_seriesDB.lock();
     SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
-    // Clear activites if go backward.
+    // Clear activities if go backward.
     if(m_clearActivities && m_currentActivity > index)
     {
         auto dialog = sight::ui::base::dialog::MessageDialog(

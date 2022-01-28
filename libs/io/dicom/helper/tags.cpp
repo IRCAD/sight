@@ -100,7 +100,7 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
     while(!tag.empty())
     {
         SIGHT_WARN_IF(
-            "Unxpected token count : " << tag.size() << " (3 expected : group, element, manufacturer)",
+            "Unexpected token count : " << tag.size() << " (3 expected : group, element, manufacturer)",
             tag.size() != 3
         );
         SIGHT_THROW_IF("Unable to read private tag file", tag.size() < 2);

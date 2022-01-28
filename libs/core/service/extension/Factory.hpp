@@ -152,10 +152,10 @@ private:
     void checkServicesNotDeclaredInPluginXml() const;
 
     /// Container of service information
-    SrvRegContainer m_srvImplTosrvInfo;
+    SrvRegContainer m_srvImplToSrvInfo;
     SupportMapType m_supportMap;
 
-    mutable core::mt::ReadWriteMutex m_srvImplTosrvInfoMutex;
+    mutable core::mt::ReadWriteMutex m_srvImplToSrvInfoMutex;
     mutable core::mt::ReadWriteMutex m_supportMapMutex;
 };
 

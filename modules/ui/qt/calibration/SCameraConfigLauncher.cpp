@@ -450,12 +450,12 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
             return;
         }
 
+        // cspell: ignore Extr
         // Add 2 calibration info in ActivitySeries if not exist
         std::string calibrationInfo1Key = "calibrationInfoExtr0_" + boost::lexical_cast<std::string>(cameraIdx);
         std::string calibrationInfo2Key = "calibrationInfoExtr1_" + boost::lexical_cast<std::string>(cameraIdx);
-
-        const auto activitySeries  = m_activitySeries.lock();
-        data::Composite::sptr data = activitySeries->getData();
+        const auto activitySeries       = m_activitySeries.lock();
+        data::Composite::sptr data      = activitySeries->getData();
         data::CalibrationInfo::sptr calibInfo1;
         data::CalibrationInfo::sptr calibInfo2;
         // Get the calibrationInfo from the activity series if it exists or create it.

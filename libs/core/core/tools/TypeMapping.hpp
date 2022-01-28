@@ -46,13 +46,13 @@ struct isMappingSingleMPLHelper;
 
 //
 /**
- * @brief   Create a type (T) binding/mapping with a KeyType ( std::string, ipop::PixelType etc...
+ * @brief   Create a type (T) binding/mapping with a KeyType ( std::string, PixelType etc...
  * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
  * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
  * @return  true iff the value of the KeyType can deal with the specified type T
  *
  *
- * This function should be specializated to create a Mapping with a KeyType value and a type.
+ * This function should be specialized to create a Mapping with a KeyType value and a type.
  * This function is used by Dispatcher<>::invoke(key) to know what instance to execute.
  * If isMapping function is missing for a given type then a compilation error
  * "invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>" is raised
@@ -75,8 +75,8 @@ bool isMapping(const KeyType_or_KeyTypeContainer& key)
             mpl::is_sequence<TSingle_or_TSEQ>,
             isMappingMultiMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>,
             isMappingSingleMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>
-    >::type typex;
-    return typex::evaluate(key);
+    >::type type_x;
+    return type_x::evaluate(key);
 }
 
 /**
@@ -96,7 +96,7 @@ struct isMappingSingleMPLHelper
         BOOST_STATIC_ASSERT(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
-        std::string msg("isMapping<type>(const KEYTYPE &key) not specializated for TYPE and/or KEYTYPE!!!");
+        std::string msg("isMapping<type>(const KEYTYPE &key) not specialized for TYPE and/or KEYTYPE!!!");
         throw std::invalid_argument(msg);
         return false;
     }
@@ -127,12 +127,12 @@ struct EmptyListMapping
 )
     {
         assert(begin == end); // assertion fails iff TypeList & KeyType container does not have the same size
-        return true;          // an empty typelist with an emty keyType matches
+        return true;          // an empty typelist with an empty keyType matches
     }
 };
 
 /**
- * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursivelly
+ * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursively
  * called with head element
  * removed from TSEQ
  */
@@ -158,7 +158,7 @@ isMappingMultiMPLHelper
             return false;
         }
 
-        typename KeyTypeContainer::const_iterator begin = keys.begin(); // needed to have cste ptr
+        typename KeyTypeContainer::const_iterator begin = keys.begin(); // needed to have const ptr
         typename KeyTypeContainer::const_iterator end   = keys.end();
         return isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(begin, end);
     }
@@ -181,7 +181,7 @@ bool isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(
             mpl::empty<Tail>,
             EmptyListMapping<KeyTypeContainer>,
             isMappingMultiMPLHelper<Tail, KeyTypeContainer>
-    >::type typex;
+    >::type type_x;
 
     bool firstKeyIsOK = isMapping<Head>(*begin); // call a isMapping with a single key
 
@@ -190,7 +190,7 @@ bool isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(
         return false; // the first key doesn't match : do not try to test other
     }
 
-    bool otherKeys = typex::evaluate(++begin, end);
+    bool otherKeys = type_x::evaluate(++begin, end);
     return firstKeyIsOK && otherKeys;
 }
 

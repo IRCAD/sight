@@ -178,7 +178,7 @@ void SSliceIndexDicomPullerEditor::starting()
 
     m_dicomReader = dicomReader;
 
-    // Image Indecies
+    // Image Indexes
     m_axialIndex    = data::Integer::New(0);
     m_frontalIndex  = data::Integer::New(0);
     m_sagittalIndex = data::Integer::New(0);

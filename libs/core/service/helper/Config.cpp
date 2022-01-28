@@ -416,34 +416,34 @@ service::IService::Config Config::parseService(
             std::size_t count = 0;
             for(auto groupCfg = keyCfgs.first ; groupCfg != keyCfgs.second ; ++groupCfg)
             {
-                service::IService::ObjectServiceConfig grouObjConfig = objConfig;
+                service::IService::ObjectServiceConfig groupObjConfig = objConfig;
 
                 // Identifier
-                grouObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
-                SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
+                groupObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
+                SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !groupObjConfig.m_uid.empty());
 
                 const std::string key   = group.value();
                 const std::size_t index = count++;
-                grouObjConfig.m_key = KEY_GROUP_NAME(key, index);
+                groupObjConfig.m_key = KEY_GROUP_NAME(key, index);
 
                 // AutoConnect
-                grouObjConfig.m_autoConnect = core::runtime::get_ptree_value(
+                groupObjConfig.m_autoConnect = core::runtime::get_ptree_value(
                     groupCfg->second,
                     "<xmlattr>.autoConnect",
-                    grouObjConfig.m_autoConnect
+                    groupObjConfig.m_autoConnect
                 );
 
                 // Optional
-                if(grouObjConfig.m_access != data::Access::out)
+                if(groupObjConfig.m_access != data::Access::out)
                 {
-                    grouObjConfig.m_optional = core::runtime::get_ptree_value(
+                    groupObjConfig.m_optional = core::runtime::get_ptree_value(
                         groupCfg->second,
                         "<xmlattr>.optional",
                         false
                     );
                 }
 
-                srvConfig.m_objects[{key, index}] = grouObjConfig;
+                srvConfig.m_objects[{key, index}] = groupObjConfig;
             }
         }
         else

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,11 @@
 #include "ExNotifications/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
+
+/**
+ * Do not mark `EXNOTIFICATIONS` as incorrect.
+ * cspell:ignore EXNOTIFICATIONS
+ */
 
 namespace ExNotifications
 {

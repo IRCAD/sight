@@ -165,13 +165,13 @@ void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicConstCast(series);
 
     // Compute number of instances
-    const std::size_t nbInstances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize()[2]) : (1);
+    const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize()[2]) : (1);
 
     // Create generator
     gdcm::UIDGenerator uidGenerator;
 
     // Generate UIDs
-    for(std::size_t i = 0 ; i < nbInstances ; ++i)
+    for(std::size_t i = 0 ; i < nb_instances ; ++i)
     {
         m_SOPInstanceUIDContainer.push_back(uidGenerator.Generate());
     }

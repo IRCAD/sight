@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -108,13 +108,13 @@ inline static data::Mesh::sptr deserialize(
     const std::string content {std::istreambuf_iterator<char>(*istream), std::istreambuf_iterator<char>()};
 
     // Create the vtk reader
-    const auto& vtkReader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
-    vtkReader->ReadFromInputStringOn();
-    vtkReader->SetInputString(content);
-    vtkReader->Update();
+    const auto& vtk_reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
+    vtk_reader->ReadFromInputStringOn();
+    vtk_reader->SetInputString(content);
+    vtk_reader->Update();
 
     // Convert from VTK
-    io::vtk::helper::Mesh::fromVTKMesh(vtkReader->GetOutput(), mesh);
+    io::vtk::helper::Mesh::fromVTKMesh(vtk_reader->GetOutput(), mesh);
 
     return mesh;
 }

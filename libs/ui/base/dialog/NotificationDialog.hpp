@@ -47,7 +47,7 @@ public:
      * Opens a default message box with the specified title, text and icon.
      *
      * @param _message Message of the notification box
-     * @param _type type of the notification box (SUCESS, FAILURE or INFO)
+     * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
      * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      */
     UI_BASE_API static void show(
@@ -61,7 +61,7 @@ public:
      * Opens a default message box with the specified title, text and icon.
      *
      * @param _message Message of the notification box
-     * @param _type type of the notification box (SUCESS, FAILURE or INFO)
+     * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
      * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      * @deprecated use show() instead
      */

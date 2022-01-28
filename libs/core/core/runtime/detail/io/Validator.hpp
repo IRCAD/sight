@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ namespace io
  * instance.
  * It seems that this class use a static ivar to save schemaValidationContext. If your call a instance of an visitor
  * this ivar should not be
- * directly well positionned. So the recommandation is to construct Validator-Use it-destry it and never store him
+ * directly well positionned. So the recommendation is to construct Validator-Use it-destry it and never store him
  */
 class Validator
 {
@@ -65,7 +65,7 @@ public:
     /**
      * @brief   Constructor
      *
-     * Builds a validator with a string containing a XML shema.
+     * Builds a validator with a string containing a XML schema.
      *
      * @param   schema  a string containing the XML schema
      */

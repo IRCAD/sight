@@ -53,7 +53,7 @@ public:
      * @param[in] charset Specific Character Set (if empty assuming ASCII).
      * @param[in] logger Logger used for encoding issue
      * @note charset shall be set if SpecificCharacterSet (0008,0005) is
-     * definied and tag's VR is SH, LO, ST, PN, LT or UT.
+     * defined and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT>
@@ -113,7 +113,7 @@ public:
      * @param[in] charset Specific Character Set (if empty assuming ASCII).
      * @param[in] logger Logger used for encoding issue
      * @note charset shall be set if SpecificCharacterSet (0008,0005) is
-     * definied and tag's VR is SH, LO, ST, PN, LT or UT.
+     * defined and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::core::tools
 {
 
 /**
- * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
+ * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy constructible )
  *
  * Code imported from Loki-Library and adapted for Sight
  */
@@ -82,7 +82,7 @@ public:
 
 private:
 
-    /// std::type_info are not copiable but its pointer yes and typeid always return same reference !!!
+    /// std::type_info are not copyable but its pointer yes and typeid always return same reference !!!
     const std::type_info* pInfo_;
 };
 

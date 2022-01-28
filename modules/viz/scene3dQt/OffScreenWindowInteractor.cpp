@@ -174,7 +174,7 @@ void OffScreenWindowInteractor::makeCurrent()
 
             if(renderSystem)
             {
-                // This allows to set the current OpengGL context in Ogre internal state
+                // This allows to set the current OpenGL context in Ogre internal state
                 renderSystem->_setRenderTarget(m_ogreRenderTarget);
 
                 // Use this trick to apply the current OpenGL context

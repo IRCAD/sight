@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ CORE_API std::string getEnv(const std::string& name, const std::string& defaultV
  * @param createDirectory if true, create the returned directory if it don't exist
  *
  * Return the application data directory. If company or appName is not empty, append them to
- * the path. Under unix, XDG conventions are repected.
+ * the path. Under unix, XDG conventions are respected.
  * For example, the UserDataDir under linux will be "~/.config/company/appName"
  */
 CORE_API std::string getUserDataDir(

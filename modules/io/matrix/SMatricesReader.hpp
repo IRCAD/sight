@@ -70,17 +70,17 @@ namespace sight::module::io::matrix
  * @subsection In-Out In-Out
  * - \b matrixTL [sight::data::MatrixTL]: timeline in which matrices will be pushed.
  * @subsection Configuration Configuration
- * - \b oneShot (optionnal): if true reader will read csv line per line.
+ * - \b oneShot (optional): if true reader will read csv line per line.
  * to read next/previous line you should call readNext/readPrevious. If false reader will read each line with
  *  constant framerate
  * (default: false).
- * - \b fps (optionnal): frequence at which matrices are pushed in the timeline (default 30),
+ * - \b fps (optional): frequency at which matrices are pushed in the timeline (default 30),
  *  only used if oneShot is off.
- * - \b createTimestamp(optionnal): create a new timestamp instead of using csv file (default: false).
+ * - \b createTimestamp(optional): create a new timestamp instead of using csv file (default: false).
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
- * - \b step (optionnal): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
+ * - \b step (optional): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  */
 
 class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::service::IReader

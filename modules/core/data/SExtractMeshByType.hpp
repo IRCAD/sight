@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::module::data
 /**
  * @brief This service extract meshes of a specific structure type from data::ModelSeries.
  * If the model series have some meshes with the same structure type, it will extract the first found.
- * Additionnaly, it can also match the organ name with a regular expression.
+ * Additionally, it can also match the organ name with a regular expression.
  *
  * The output objects must be marked as "deferred" in the XML configuration.
  *

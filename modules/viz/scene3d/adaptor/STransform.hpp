@@ -74,7 +74,7 @@ protected:
     /// Retrieves id sets in the configurations.
     MODULE_VIZ_SCENE3D_API void configuring() override;
 
-    /// Creates the Ogre::SceneNode corresonding to the associated transform matrix.
+    /// Creates the Ogre::SceneNode corresponding to the associated transform matrix.
     MODULE_VIZ_SCENE3D_API void starting() override;
 
     /**

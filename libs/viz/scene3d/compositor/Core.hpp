@@ -45,10 +45,8 @@ namespace compositor
  * Manages principal compositor for a layer's 3D scene
  */
 class VIZ_SCENE3D_CLASS_API Core //TODO : Manage occlusion query
-    //    The current commented ligns in this class are standing for occlusion query
+    //    The current commented lines in this class are standing for occlusion query
     // purposes
-    //    An example of working occlusion query is used in the experimental branch
-    // flavien_sg rev 76
     //public Ogre::FrameListener,
     //public Ogre::RenderTargetListener,
     //public Ogre::RenderObjectListener
@@ -139,7 +137,7 @@ private:
     Ogre::CompositorInstance* m_compositorInstance;
 
     /// Cel shading activated
-    Ogre::String m_celShadingName;
+    Ogre::String m_cellShadingName;
 
     StereoModeType m_stereoMode {StereoModeType::NONE};
 

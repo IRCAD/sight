@@ -112,8 +112,8 @@ void AppConfigTest::addConfigTest()
 
     currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId);
 
-    std::vector<std::string> allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT_EQUAL(false, allCconfigs.empty());
+    std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
+    CPPUNIT_ASSERT_EQUAL(false, allConfigs.empty());
 
     std::vector<std::string> configs = currentAppConfig->getConfigsFromGroup(group);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), configs.size());
@@ -154,9 +154,9 @@ void AppConfigTest::parametersConfigTest()
     service::FieldAdaptorType replaceFields;
     replaceFields["TEST_IMAGE"] = "objectUUID";
 
-    std::vector<std::string> allCconfigs = currentAppConfig->getAllConfigs();
-    auto it                              = std::find(allCconfigs.begin(), allCconfigs.end(), configId);
-    CPPUNIT_ASSERT(it != allCconfigs.end());
+    std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
+    auto it                             = std::find(allConfigs.begin(), allConfigs.end(), configId);
+    CPPUNIT_ASSERT(it != allConfigs.end());
 
     core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
     configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
@@ -216,16 +216,16 @@ void AppConfigTest::startStopTest()
 
     // This service has no data and is started by the config
     {
-        core::tools::Object::sptr gnsrv1 = core::tools::fwID::getObject("TestService1Uid");
-        auto srv1                        = service::ut::TestService::dynamicCast(gnsrv1);
+        core::tools::Object::sptr gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
+        auto srv1                         = service::ut::TestService::dynamicCast(gn_srv1);
         CPPUNIT_ASSERT(srv1 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
     }
 
     // This service has no data and is NOT started by the config
     {
-        core::tools::Object::sptr gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-        auto srv2                        = service::IService::dynamicCast(gnsrv2);
+        core::tools::Object::sptr gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+        auto srv2                         = service::IService::dynamicCast(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         srv2->stop().wait();
@@ -236,16 +236,16 @@ void AppConfigTest::startStopTest()
 
     // This service has a data and is NOT started by the config
     {
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        auto srv3                        = service::IService::dynamicCast(gnsrv3);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        auto srv3                         = service::IService::dynamicCast(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
     }
 
     // This service has a data that is not present yet (WID), so it is even not created
     {
-        core::tools::Object::sptr gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-        CPPUNIT_ASSERT(gnsrv4 == nullptr);
+        core::tools::Object::sptr gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+        CPPUNIT_ASSERT(gn_srv4 == nullptr);
     }
 
     // =================================================================================================================
@@ -260,8 +260,8 @@ void AppConfigTest::startStopTest()
 
         // Now the service should have been started automatically
         {
-            auto gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            auto srv4   = service::IService::dynamicCast(gnsrv4);
+            auto gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            auto srv4    = service::IService::dynamicCast(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv4->getStatus());
         }
@@ -272,8 +272,8 @@ void AppConfigTest::startStopTest()
 
         // Now the service should have been stopped and destroyed automatically
         {
-            auto gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            CPPUNIT_ASSERT(gnsrv4 == nullptr);
+            auto gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            CPPUNIT_ASSERT(gn_srv4 == nullptr);
         }
 
         // Register the data once again
@@ -282,8 +282,8 @@ void AppConfigTest::startStopTest()
 
         // Check again that the service was started automatically
         {
-            auto gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            auto srv4   = service::IService::dynamicCast(gnsrv4);
+            auto gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            auto srv4    = service::IService::dynamicCast(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv4->getStatus());
         }
@@ -296,8 +296,8 @@ void AppConfigTest::startStopTest()
     {
         // Still one data is not yet available thus the service is not created
         {
-            core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            CPPUNIT_ASSERT(gnsrv5 == nullptr);
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            CPPUNIT_ASSERT(gn_srv5 == nullptr);
         }
 
         // Create the remaining data
@@ -308,8 +308,8 @@ void AppConfigTest::startStopTest()
 
         // Now the service should have been started automatically
         {
-            auto gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            auto srv5   = service::IService::dynamicCast(gnsrv5);
+            auto gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5    = service::IService::dynamicCast(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
         }
@@ -320,13 +320,13 @@ void AppConfigTest::startStopTest()
         // Now the service should have been stopped and destroyed automatically
         {
             fwTestWaitMacro(core::tools::fwID::exist("TestService5Uid") == false);
-            auto gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            CPPUNIT_ASSERT(gnsrv5 == nullptr);
+            auto gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            CPPUNIT_ASSERT(gn_srv5 == nullptr);
 
             // Test as well service 4, just to be sure
             fwTestWaitMacro(core::tools::fwID::exist("TestService4Uid") == false);
-            auto gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            CPPUNIT_ASSERT(gnsrv4 == nullptr);
+            auto gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            CPPUNIT_ASSERT(gn_srv4 == nullptr);
         }
 
         // Put everything back
@@ -337,8 +337,8 @@ void AppConfigTest::startStopTest()
 
         // Now the service should have been started automatically, check start order as well
         {
-            auto gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            auto srv5   = service::ut::ISTest::dynamicCast(gnsrv5);
+            auto gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5    = service::ut::ISTest::dynamicCast(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
 
@@ -348,9 +348,9 @@ void AppConfigTest::startStopTest()
             CPPUNIT_ASSERT_EQUAL(1u, srv5->getUpdateOrder());
 
             // Test as well service 4, just to be sure
-            auto gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            auto srv4   = service::ut::ISTest::dynamicCast(gnsrv4);
-            CPPUNIT_ASSERT(gnsrv4 != nullptr);
+            auto gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            auto srv4    = service::ut::ISTest::dynamicCast(gn_srv4);
+            CPPUNIT_ASSERT(gn_srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(1u, srv4->getStartOrder());
             CPPUNIT_ASSERT_EQUAL(0u, srv4->getUpdateOrder());
         }
@@ -363,8 +363,8 @@ void AppConfigTest::startStopTest()
     {
         // Test initial status (started because of the previous test)
         {
-            auto gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            auto srv5   = service::IService::dynamicCast(gnsrv5);
+            auto gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5    = service::IService::dynamicCast(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
         }
@@ -378,8 +378,8 @@ void AppConfigTest::startStopTest()
         WAIT_SERVICE_STARTED("TestService5Uid");
 
         {
-            auto gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            auto srv5   = service::IService::dynamicCast(gnsrv5);
+            auto gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5    = service::IService::dynamicCast(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
         }
@@ -405,20 +405,20 @@ void AppConfigTest::autoConnectTest()
     CPPUNIT_ASSERT(data1 != nullptr);
 
     {
-        core::tools::Object::sptr gnsrv1 = core::tools::fwID::getObject("TestService1Uid");
-        auto srv1                        = service::ut::TestService::dynamicCast(gnsrv1);
+        core::tools::Object::sptr gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
+        auto srv1                         = service::ut::TestService::dynamicCast(gn_srv1);
         CPPUNIT_ASSERT(srv1 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
-        core::tools::Object::sptr gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-        auto srv2                        = service::ut::TestService::dynamicCast(gnsrv2);
+        core::tools::Object::sptr gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+        auto srv2                         = service::ut::TestService::dynamicCast(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        auto srv3                        = service::ut::ISTest::dynamicCast(gnsrv3);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        auto srv3                         = service::ut::ISTest::dynamicCast(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
@@ -458,10 +458,10 @@ void AppConfigTest::autoConnectTest()
     {
         // Check that dependent services are not created
         {
-            core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService4Uid");
-            CPPUNIT_ASSERT(gnsrv3 == nullptr);
-            core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            CPPUNIT_ASSERT(gnsrv5 == nullptr);
+            core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService4Uid");
+            CPPUNIT_ASSERT(gn_srv3 == nullptr);
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            CPPUNIT_ASSERT(gn_srv5 == nullptr);
         }
 
         // Create the data
@@ -472,14 +472,14 @@ void AppConfigTest::autoConnectTest()
         WAIT_SERVICE_STARTED("TestService4Uid");
         WAIT_SERVICE_STARTED("TestService5Uid");
         {
-            core::tools::Object::sptr gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            auto srv4                        = service::ut::TestService::dynamicCast(gnsrv4);
+            core::tools::Object::sptr gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            auto srv4                         = service::ut::TestService::dynamicCast(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv4->getStatus());
             CPPUNIT_ASSERT(!srv4->getIsUpdated());
 
-            core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            auto srv5                        = service::ut::ISTest::dynamicCast(gnsrv5);
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5                         = service::ut::ISTest::dynamicCast(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
 
@@ -503,10 +503,10 @@ void AppConfigTest::autoConnectTest()
             && core::tools::fwID::exist("TestService5Uid") == false
         );
         {
-            core::tools::Object::sptr gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            CPPUNIT_ASSERT(gnsrv4 == nullptr);
-            core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            CPPUNIT_ASSERT(gnsrv5 == nullptr);
+            core::tools::Object::sptr gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            CPPUNIT_ASSERT(gn_srv4 == nullptr);
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            CPPUNIT_ASSERT(gn_srv5 == nullptr);
         }
 
         // Emit, that should be ok
@@ -515,14 +515,14 @@ void AppConfigTest::autoConnectTest()
         WAIT_SERVICE_STARTED("TestService4Uid");
         WAIT_SERVICE_STARTED("TestService5Uid");
         {
-            core::tools::Object::sptr gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-            auto srv4                        = service::ut::TestService::dynamicCast(gnsrv4);
+            core::tools::Object::sptr gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+            auto srv4                         = service::ut::TestService::dynamicCast(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv4->getStatus());
             CPPUNIT_ASSERT(!srv4->getIsUpdated());
 
-            core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService5Uid");
-            auto srv5                        = service::ut::ISTest::dynamicCast(gnsrv5);
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5                         = service::ut::ISTest::dynamicCast(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
 
@@ -567,20 +567,20 @@ void AppConfigTest::connectionTest()
     // Test connection without data or with available data
     // =================================================================================================================
 
-    core::tools::Object::sptr gnsrv1 = core::tools::fwID::getObject("TestService1Uid");
-    auto srv1                        = service::ut::TestService::dynamicCast(gnsrv1);
+    core::tools::Object::sptr gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
+    auto srv1                         = service::ut::TestService::dynamicCast(gn_srv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
-    core::tools::Object::sptr gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-    auto srv2                        = service::ut::TestService::dynamicCast(gnsrv2);
+    core::tools::Object::sptr gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+    auto srv2                         = service::ut::TestService::dynamicCast(gn_srv2);
     CPPUNIT_ASSERT(srv2 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
     CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-    core::tools::Object::sptr gnsrv4 = core::tools::fwID::getObject("TestService4Uid");
-    auto srv4                        = service::ut::TestService::dynamicCast(gnsrv4);
+    core::tools::Object::sptr gn_srv4 = core::tools::fwID::getObject("TestService4Uid");
+    auto srv4                         = service::ut::TestService::dynamicCast(gn_srv4);
     CPPUNIT_ASSERT(srv4 != nullptr);
     fwTestWaitMacro(service::IService::STARTED == srv4->getStatus());
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv4->getStatus());
@@ -602,8 +602,8 @@ void AppConfigTest::connectionTest()
     // =================================================================================================================
 
     {
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gn_srv3 == nullptr);
     }
 
     // Emit a signal just for fun, anyway the service doesn't exist
@@ -634,8 +634,8 @@ void AppConfigTest::connectionTest()
     service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     WAIT_SERVICE_STARTED("TestService3Uid");
     {
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        auto srv3                        = service::ut::TestService::dynamicCast(gnsrv3);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        auto srv3                         = service::ut::TestService::dynamicCast(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         fwTestWaitMacro(service::IService::STARTED == srv3->getStatus());
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
@@ -698,8 +698,8 @@ void AppConfigTest::connectionTest()
 
     // Service 3 should be removed
     {
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gn_srv3 == nullptr);
     }
 
     // Check that connection is still there for the working services
@@ -737,8 +737,8 @@ void AppConfigTest::connectionTest()
     WAIT_SERVICE_STARTED("TestService3Uid");
 
     {
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        auto srv3                        = service::ut::TestService::dynamicCast(gnsrv3);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        auto srv3                         = service::ut::TestService::dynamicCast(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
         srv2->resetIsUpdated();
@@ -811,8 +811,8 @@ void AppConfigTest::optionalKeyTest()
     // Test service with two optional attributes and available data at start
     // =================================================================================================================
 
-    core::tools::Object::sptr gnsrv1 = core::tools::fwID::getObject("TestService1Uid");
-    auto srv1                        = service::ut::ISTest::dynamicCast(gnsrv1);
+    core::tools::Object::sptr gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
+    auto srv1                         = service::ut::ISTest::dynamicCast(gn_srv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
@@ -926,15 +926,15 @@ void AppConfigTest::optionalKeyTest()
     // Create data 5
     data::Boolean::sptr data5 = data::Boolean::New();
     {
-        core::tools::Object::sptr gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-        CPPUNIT_ASSERT(gnsrv2 == nullptr);
+        core::tools::Object::sptr gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+        CPPUNIT_ASSERT(gn_srv2 == nullptr);
 
         service::OSR::registerServiceOutput(data5, "out5", genDataSrv);
         WAIT_SERVICE_STARTED("TestService2Uid");
 
-        gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-        CPPUNIT_ASSERT(gnsrv2 != nullptr);
-        auto srv2 = service::ut::ISTest::dynamicCast(gnsrv2);
+        gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+        CPPUNIT_ASSERT(gn_srv2 != nullptr);
+        auto srv2 = service::ut::ISTest::dynamicCast(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
@@ -980,8 +980,8 @@ void AppConfigTest::optionalKeyTest()
 
         fwTestWaitMacro(false == core::tools::fwID::exist("TestService2Uid"));
 
-        core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService2Uid");
-        CPPUNIT_ASSERT(gnsrv5 == nullptr);
+        core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService2Uid");
+        CPPUNIT_ASSERT(gn_srv5 == nullptr);
     }
 
     {
@@ -989,8 +989,8 @@ void AppConfigTest::optionalKeyTest()
         service::OSR::registerServiceOutput(data5, "out5", genDataSrv);
         WAIT_SERVICE_STARTED("TestService2Uid");
 
-        auto gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-        auto srv2   = service::ut::ISTest::dynamicCast(gnsrv2);
+        auto gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+        auto srv2    = service::ut::ISTest::dynamicCast(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
@@ -1098,16 +1098,16 @@ void AppConfigTest::keyGroupTest()
 
     data::Image::sptr data3;
     {
-        core::tools::Object::sptr gnsrv1 = core::tools::fwID::getObject("TestService1Uid");
-        CPPUNIT_ASSERT(gnsrv1 == nullptr);
+        core::tools::Object::sptr gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
+        CPPUNIT_ASSERT(gn_srv1 == nullptr);
 
         // Create data 2b
         data::Boolean::sptr data2b = data::Boolean::New();
         service::OSR::registerServiceOutput(data2b, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService1Uid");
 
-        gnsrv1 = core::tools::fwID::getObject("TestService1Uid");
-        auto srv1 = service::ut::STest1Input1InputGroup::dynamicCast(gnsrv1);
+        gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
+        auto srv1 = service::ut::STest1Input1InputGroup::dynamicCast(gn_srv1);
         CPPUNIT_ASSERT(srv1 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
@@ -1173,14 +1173,14 @@ void AppConfigTest::keyGroupTest()
 
         fwTestWaitMacro(false == core::tools::fwID::exist("TestService1Uid"));
 
-        core::tools::Object::sptr gnsrv5 = core::tools::fwID::getObject("TestService1Uid");
-        CPPUNIT_ASSERT(gnsrv5 == nullptr);
+        core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService1Uid");
+        CPPUNIT_ASSERT(gn_srv5 == nullptr);
     }
 
     {
         WAIT_SERVICE_STARTED("TestService2Uid");
-        core::tools::Object::sptr gnsrv2 = core::tools::fwID::getObject("TestService2Uid");
-        auto srv2                        = service::ut::STest2InputGroups::dynamicCast(gnsrv2);
+        core::tools::Object::sptr gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
+        auto srv2                         = service::ut::STest2InputGroups::dynamicCast(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
@@ -1244,21 +1244,21 @@ void AppConfigTest::keyGroupTest()
 
     // Test output data group
     {
-        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+        core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gn_srv3 == nullptr);
 
         auto data6 = data::Image::New();
         genDataSrv->m_outGroup[0] = data6;
 
-        gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+        gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gn_srv3 == nullptr);
 
         auto data7 = data::Image::New();
         genDataSrv->m_outGroup[1] = data7;
 
         WAIT_SERVICE_STARTED("TestService3Uid");
-        gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        auto srv3 = service::ut::STest1Input1InputGroup::dynamicCast(gnsrv3);
+        gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        auto srv3 = service::ut::STest1Input1InputGroup::dynamicCast(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
 
@@ -1270,8 +1270,8 @@ void AppConfigTest::keyGroupTest()
     {
         fwTestWaitMacro(false == core::tools::fwID::exist("TestService3Uid"));
 
-        auto gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
-        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+        auto gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gn_srv3 == nullptr);
     }
 }
 
@@ -1294,8 +1294,8 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     }
 
     service::extension::AppConfig::getDefault()->clearRegistry();
-    std::vector<std::string> allCconfigs = service::extension::AppConfig::getDefault()->getAllConfigs();
-    CPPUNIT_ASSERT(allCconfigs.empty());
+    std::vector<std::string> allConfigs = service::extension::AppConfig::getDefault()->getAllConfigs();
+    CPPUNIT_ASSERT(allConfigs.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -1305,19 +1305,19 @@ void AppConfigTest::parameterReplaceTest()
     m_appConfigMgr = this->launchAppConfigMgr("parameterReplaceTest", true);
 
     unsigned int i = 0, j = 0;
-    core::tools::Object::sptr gnsrv1, gnsrv2;
+    core::tools::Object::sptr gn_srv1, gn_srv2;
 
     // Not really elegant, but we have to "guess" how it is replaced
-    while(gnsrv1 == nullptr && i++ < 200)
+    while(gn_srv1 == nullptr && i++ < 200)
     {
-        gnsrv1 = core::tools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService1Uid");
+        gn_srv1 = core::tools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService1Uid");
     }
 
-    auto srv1 = service::ut::TestService::dynamicCast(gnsrv1);
+    auto srv1 = service::ut::TestService::dynamicCast(gn_srv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
 
-    gnsrv2 = core::tools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
-    auto srv2          = service::IService::dynamicCast(gnsrv2);
+    gn_srv2 = core::tools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
+    auto srv2          = service::IService::dynamicCast(gn_srv2);
     auto adaptedConfig = srv2->getConfiguration();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
@@ -1338,18 +1338,18 @@ void AppConfigTest::parameterReplaceTest()
     replaceBy = paramsCfg[3]->getAttributeValue("by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
 
-    core::tools::Object::sptr gnsubsrv;
+    core::tools::Object::sptr gn_sub_srv;
 
     // Not really elegant, but we have to "guess" how it is replaced
-    while(gnsubsrv == nullptr && j++ < 200)
+    while(gn_sub_srv == nullptr && j++ < 200)
     {
-        gnsubsrv = core::tools::fwID::getObject(
+        gn_sub_srv = core::tools::fwID::getObject(
             "parameterReplaceTestSubConfig_" + std::to_string(j)
             + "_TestServiceUid"
         );
     }
 
-    auto srvInSubConfig = service::ut::TestService::dynamicCast(gnsubsrv);
+    auto srvInSubConfig = service::ut::TestService::dynamicCast(gn_sub_srv);
     CPPUNIT_ASSERT(srvInSubConfig != nullptr);
 
     CPPUNIT_ASSERT(srvInSubConfig->isStarted());

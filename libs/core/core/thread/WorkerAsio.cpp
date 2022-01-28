@@ -171,11 +171,11 @@ WorkerAsio::WorkerAsio() :
     m_work(std::make_shared<WorkType>(*m_ioService))
 {
     std::packaged_task<core::thread::Worker::ExitReturnType()> task(std::bind(&WorkerThread, m_ioService));
-    std::future<core::thread::Worker::ExitReturnType> ufuture = task.get_future();
+    std::future<core::thread::Worker::ExitReturnType> future = task.get_future();
 
     m_thread = std::make_shared<ThreadType>(std::move(task));
 
-    m_future = std::move(ufuture);
+    m_future = std::move(future);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -377,7 +377,7 @@ void LockTest::testThreadedLock()
 
     // Test that outputLock is blocking
     {
-        // Start thread immediatly
+        // Start thread immediately
         std::thread t2(&sight::service::ut::LockedService::stopping, lockedService);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 

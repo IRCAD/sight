@@ -440,8 +440,8 @@ void DataConverterTest::compositeConverterTest()
                                                         GetPointer())
         );
     CPPUNIT_ASSERT(trackingMsg);
-    const int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
-    CPPUNIT_ASSERT_EQUAL(1, nbTrckingElement);
+    const int nbTrackingElement = trackingMsg->GetNumberOfTrackingDataElements();
+    CPPUNIT_ASSERT_EQUAL(1, nbTrackingElement);
 
     ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
     trackingMsg->GetTrackingDataElement(0, trackElement);
@@ -463,11 +463,11 @@ void DataConverterTest::compositeConverterTest()
     data::Composite::iterator iter = destComposite->find("H_marker1_2_polaris");
     CPPUNIT_ASSERT(iter != destComposite->end());
 
-    data::Matrix4::sptr destMmatrix = data::Matrix4::New();
-    destMmatrix = data::Matrix4::dynamicCast(iter->second);
+    data::Matrix4::sptr destMatrix = data::Matrix4::New();
+    destMatrix = data::Matrix4::dynamicCast(iter->second);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMmatrix->getCoefficients().begin() + i * 4));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMatrix->getCoefficients().begin() + i * 4));
     }
 }
 

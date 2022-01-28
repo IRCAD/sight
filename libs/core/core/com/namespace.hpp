@@ -58,7 +58,7 @@ namespace util
  *  - direct slot calling
  *  - asynchronous slot calling
  *  - ability to work with multiple threads
- *  - auto-deconnection of slot and signals
+ *  - auto-disconnection of slot and signals
  *  - arguments loss between slots and signals
  *
  *
@@ -66,7 +66,7 @@ namespace util
  *
  * Slots are wrappers for functions and class methods that can be attached to a
  * core::thread::Worker. The purpose of this class is to provide synchronous and
- * asynchronous mecanisms for method and function calling.
+ * asynchronous mechanisms for method and function calling.
  *
  * Slots have a common base class : SlotBase. This allows to store them in the
  * same container. Slots are designed to permit calling them by knowing only the
@@ -145,7 +145,7 @@ namespace util
  *
  * Slots asynchronous execution has been made 'weak'. That does mean that when an
  * async call/run is pending in a worker queue:
- * - if the slot is detroyed before the execution of this call, the call will be canceled.
+ * - if the slot is destroyed before the execution of this call, the call will be canceled.
  * - if the slot's worker is changed before the execution of this call, the
  *   call will be canceled.
  *
@@ -196,7 +196,7 @@ namespace util
  *  - the return type of the Signal is `void`. Signal cannot return values, so
  *  their return type is always declared as `void`. Thus, it is not possible to
  *  retrieve `slot1` Slot return value if it is executed using a Signal.
- *  Therefore, both slots are run succesfully.
+ *  Therefore, both slots are run successfully.
  *  - the arguments types of `slot2` slot doesn't match exactly sig2 signature.
  *  `slot2` is nevertheless successfully connected and executed. `slot2` receive
  *  the value 21 as argument, 42 is ignored).

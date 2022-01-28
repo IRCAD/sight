@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -151,18 +151,18 @@
 /**
  * @brief This macro is used when you want to set a smart pointer into an object
  * @param object the type of the main object ex: (sight)(data)(Mesh)
- * @param attribut the type of smart pointer attribut ex: (sight)(data)(Array)
+ * @param attribute the type of smart pointer attribute ex: (sight)(data)(Array)
  */
-#define SIGHT_DECLARE_REFLECTION_ACCESSOR(object, attribut) \
+#define SIGHT_DECLARE_REFLECTION_ACCESSOR(object, attribute) \
     namespace camp { \
     namespace detail { \
  \
     template<> \
-    class Accessor1<__FWCAMP_NAMESPACE_NAME(object), SPTR(__FWCAMP_NAMESPACE_NAME(attribut))&> \
+    class Accessor1<__FWCAMP_NAMESPACE_NAME(object), SPTR(__FWCAMP_NAMESPACE_NAME(attribute))&> \
     { \
     public: \
-        typedef SPTR(__FWCAMP_NAMESPACE_NAME (attribut))& ReturnType; \
-        typedef ObjectTraits<SPTR(__FWCAMP_NAMESPACE_NAME(attribut))&> Traits; \
+        typedef SPTR(__FWCAMP_NAMESPACE_NAME (attribute))& ReturnType; \
+        typedef ObjectTraits<SPTR(__FWCAMP_NAMESPACE_NAME(attribute))&> Traits; \
         typedef Traits::DataType DataType; \
         typedef __FWCAMP_NAMESPACE_NAME(object) ClassType; \
  \
@@ -187,7 +187,7 @@
         bool set(ClassType & objectptr, const Value& value) const \
         { \
             ReturnType ptr = m_getter(objectptr); \
-            ptr = __FWCAMP_NAMESPACE_NAME(attribut) ::dynamicCast(((value.to<DataType*>()))->getSptr()); \
+            ptr = __FWCAMP_NAMESPACE_NAME(attribute) ::dynamicCast(((value.to<DataType*>()))->getSptr()); \
             return true; \
         } \
  \

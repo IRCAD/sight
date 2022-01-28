@@ -153,7 +153,7 @@ void Runtime::addModules(const std::filesystem::path& repository)
 
 void Runtime::addExecutableFactory(std::shared_ptr<ExecutableFactory> factory)
 {
-    // Ensures no registered factory has the same identifierg
+    // Ensures no registered factory has the same identifier
     const std::string type(factory->getType());
     if(this->findExecutableFactory(type) != nullptr)
     {

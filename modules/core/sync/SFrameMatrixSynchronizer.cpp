@@ -254,7 +254,7 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             SIGHT_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
 
-            // Notify each matrices in the ith TL that they are unsychronized
+            // Notify each matrices in the ith TL that they are unsynchronized
             for(const int sendStatus : m_sendMatricesStatus[i])
             {
                 if(sendStatus != -1)
@@ -265,7 +265,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    // Skip synchzonization if nothing has changed or if the synchronizer decided to go back into the past
+    // Skip synchronization if nothing has changed or if the synchronizer decided to go back into the past
     if(matrixTimestamp <= m_lastTimestamp)
     {
         // Notify that the synchronization is skipped

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ struct AutoBind<F, 9>
  *
  * @return a boost function of type F if F is a function type, of type *F if F is a function pointer,
  * or of the corresponding function type if F is a member method pointer (like R (C::*)(A1, A2, ..))
- * If F is a member method pointer, autobind takes the object on wich we desire to call the method
+ * If F is a member method pointer, autobind takes the object on which we desire to call the method
  * as second argument.
  */
 template<typename F, typename ... A>

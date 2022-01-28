@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,18 +30,18 @@
 namespace sight::module::filter::image
 {
 
-const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
-const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
-const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISZ_SLOT = "flipAxisZ";
+const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXIS_X_SLOT = "flipAxisX";
+const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXIS_Y_SLOT = "flipAxisY";
+const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXIS_Z_SLOT = "flipAxisZ";
 
 //------------------------------------------------------------------------------
 
 SFlip::SFlip()
 {
     // Initialize the slots
-    newSlot(s_FLIP_AXISX_SLOT, &SFlip::flipAxisX, this);
-    newSlot(s_FLIP_AXISY_SLOT, &SFlip::flipAxisY, this);
-    newSlot(s_FLIP_AXISZ_SLOT, &SFlip::flipAxisZ, this);
+    newSlot(s_FLIP_AXIS_X_SLOT, &SFlip::flipAxisX, this);
+    newSlot(s_FLIP_AXIS_Y_SLOT, &SFlip::flipAxisY, this);
+    newSlot(s_FLIP_AXIS_Z_SLOT, &SFlip::flipAxisZ, this);
 }
 
 //------------------------------------------------------------------------------

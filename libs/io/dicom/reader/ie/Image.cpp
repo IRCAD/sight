@@ -654,7 +654,7 @@ char* Image::correctImageOrientation(
         char* newBuffer          = new char [size];
 
         // Rotate image
-        unsigned short x, y, z, oldx, oldy, oldz;
+        unsigned short x, y, z, old_x, old_y, old_z;
         for(z = 0 ; z < newSizeZ && !(m_cancelRequestedCallback && m_cancelRequestedCallback()) ; ++z)
         {
             for(y = 0 ; y < newSizeY ; ++y)
@@ -669,21 +669,21 @@ char* Image::correctImageOrientation(
 
                     // Compute old position
                     VectorType oldPosition = boost::numeric::ublas::prod(newPosition, matrix);
-                    oldx = (oldSizeVector[0] > 0) ? static_cast<unsigned short>(oldPosition[0])
-                                                  : static_cast<unsigned short>((dimensions.at(0) - 1)
-                                                                                + oldPosition[0]);
-                    oldy = (oldSizeVector[1] > 0) ? static_cast<unsigned short>(oldPosition[1])
-                                                  : static_cast<unsigned short>((dimensions.at(1) - 1)
-                                                                                + oldPosition[1]);
-                    oldz = (oldSizeVector[2] > 0) ? static_cast<unsigned short>(oldPosition[2])
-                                                  : static_cast<unsigned short>((dimensions.at(2) - 1)
-                                                                                + oldPosition[2]);
+                    old_x = (oldSizeVector[0] > 0) ? static_cast<unsigned short>(oldPosition[0])
+                                                   : static_cast<unsigned short>((dimensions.at(0) - 1)
+                                                                                 + oldPosition[0]);
+                    old_y = (oldSizeVector[1] > 0) ? static_cast<unsigned short>(oldPosition[1])
+                                                   : static_cast<unsigned short>((dimensions.at(1) - 1)
+                                                                                 + oldPosition[1]);
+                    old_z = (oldSizeVector[2] > 0) ? static_cast<unsigned short>(oldPosition[2])
+                                                   : static_cast<unsigned short>((dimensions.at(2) - 1)
+                                                                                 + oldPosition[2]);
 
                     // Compute indices
                     unsigned int positionIndex = (x + (y * newSizeX) + z * (newSizeX * newSizeY))
                                                  * (bitsAllocated / 8);
                     unsigned int oldPositionIndex =
-                        (oldx + (oldy * dimensions.at(0)) + oldz * (dimensions.at(0) * dimensions.at(1)))
+                        (old_x + (old_y * dimensions.at(0)) + old_z * (dimensions.at(0) * dimensions.at(1)))
                         * (bitsAllocated / 8);
 
                     // Copy bytes

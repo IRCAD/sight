@@ -1,6 +1,6 @@
 # This script is used in two different ways:
 # On Linux, it is directly included in the main CMakeLists.txt
-# On Windows, it is invoked from the command with cmake -P and optionnaly with arguments: -DOUTPUT and
+# On Windows, it is invoked from the command with cmake -P and optionally with arguments: -DOUTPUT and
 # -DGET_ARCHIVE_FOLDER
 
 cmake_minimum_required(VERSION 3.18)

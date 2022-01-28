@@ -124,13 +124,13 @@ const std::filesystem::path& System::getTempPath() noexcept
 
 const std::string System::genTempFileName(std::size_t _length)
 {
-    static const char chrs[] = {"0123456789"
-                                "abcdefghijklmnopqrstuvwxyz"
-                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    static const char chars[] = {"0123456789"
+                                 "abcdefghijklmnopqrstuvwxyz"
+                                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     };
 
     thread_local static std::mt19937 rg {std::random_device {}()};
-    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(chrs) - 2);
+    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(chars) - 2);
 
     std::string s;
     s.reserve(_length);
@@ -138,7 +138,7 @@ const std::string System::genTempFileName(std::size_t _length)
 
     while(length--)
     {
-        s += chrs[pick(rg)];
+        s += chars[pick(rg)];
     }
 
     return s;

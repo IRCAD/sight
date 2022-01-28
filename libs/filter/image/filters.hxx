@@ -75,15 +75,15 @@ typename itk::Image<std::uint8_t, DIM>::Pointer threshold(
     // ITK threshold
     typedef itk::BinaryThresholdImageFilter<itk::Image<IMAGE_TYPE, DIM>,
                                             itk::Image<std::uint8_t, DIM> > BinaryThresholdImageFilter;
-    typename BinaryThresholdImageFilter::Pointer thresFilter = BinaryThresholdImageFilter::New();
-    thresFilter->SetInput(_image);
-    thresFilter->SetInsideValue(std::numeric_limits<std::uint8_t>::max());
-    thresFilter->SetOutsideValue(std::numeric_limits<std::uint8_t>::min());
-    thresFilter->SetLowerThreshold(_lowerThreshold);
-    thresFilter->SetUpperThreshold(_upperThreshold);
-    thresFilter->Update();
+    typename BinaryThresholdImageFilter::Pointer threshold_filter = BinaryThresholdImageFilter::New();
+    threshold_filter->SetInput(_image);
+    threshold_filter->SetInsideValue(std::numeric_limits<std::uint8_t>::max());
+    threshold_filter->SetOutsideValue(std::numeric_limits<std::uint8_t>::min());
+    threshold_filter->SetLowerThreshold(_lowerThreshold);
+    threshold_filter->SetUpperThreshold(_upperThreshold);
+    threshold_filter->Update();
 
-    return thresFilter->GetOutput();
+    return threshold_filter->GetOutput();
 }
 
 //------------------------------------------------------------------------------

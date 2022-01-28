@@ -65,13 +65,13 @@ void ReconstructionTraitsTest::creation()
     data::Node::sptr opMaskNode = data::Node::New();
     recTraits->setMaskOpNode(opMaskNode);
 
-    data::Node::sptr opMeskNode = data::Node::New();
-    recTraits->setMeshOpNode(opMeskNode);
+    data::Node::sptr opMeshNode = data::Node::New();
+    recTraits->setMeshOpNode(opMeshNode);
 
     CPPUNIT_ASSERT_EQUAL(ID, recTraits->getIdentifier());
     CPPUNIT_ASSERT(structure == recTraits->getStructureTraits());
     CPPUNIT_ASSERT(opMaskNode == recTraits->getMaskOpNode());
-    CPPUNIT_ASSERT(opMeskNode == recTraits->getMeshOpNode());
+    CPPUNIT_ASSERT(opMeshNode == recTraits->getMeshOpNode());
 
     auto recTraits2 = data::ReconstructionTraits::New();
     CPPUNIT_ASSERT(*recTraits != *recTraits2);
@@ -79,7 +79,7 @@ void ReconstructionTraitsTest::creation()
     recTraits2->setIdentifier(ID);
     recTraits2->setStructureTraits(structure);
     recTraits2->setMaskOpNode(opMaskNode);
-    recTraits2->setMeshOpNode(opMeskNode);
+    recTraits2->setMeshOpNode(opMeshNode);
 
     CPPUNIT_ASSERT(*recTraits == *recTraits2);
 }

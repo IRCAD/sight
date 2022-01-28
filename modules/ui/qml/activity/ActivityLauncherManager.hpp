@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace sight::module::ui::qml::activity
 {
 
 /**
- * @brief Manager to lauch activities with a sequencer
+ * @brief Manager to launch activities with a sequencer
  *
  * To simplify the use of SView and SSequencer, a Qml object ActivityLauncher can be used.
  *
@@ -79,7 +79,7 @@ public Q_SLOTS:
     /// Uninitialize the manager
     void uninitialize() override;
 
-    /// Retrieves the services instanciated in Qml
+    /// Retrieves the services instantiated in Qml
     void onServiceCreated(const QVariant& obj) override;
 
     /// Open a seriesDB

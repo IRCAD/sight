@@ -204,7 +204,7 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, floa
         }
 
         // Inverse of the sampling accounted by the TF.
-        const float samplingAdjustementFactor = 200.f;
+        const float samplingAdjustmentFactor = 200.f;
 
         #pragma omp parallel for schedule(dynamic)
         for(int sb = 0 ; sb < static_cast<int>(m_textureSize) ; ++sb)
@@ -213,7 +213,7 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, floa
             {
                 glm::vec4 res(0.f);
 
-                const float d = (_sampleDistance * samplingAdjustementFactor) / static_cast<float>(sb - sf);
+                const float d = (_sampleDistance * samplingAdjustmentFactor) / static_cast<float>(sb - sf);
 
                 if(sb != sf)
                 {
@@ -242,7 +242,7 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, floa
                             interpolatedColor.a
                         );
 
-                    res.a = 1.f - std::pow(1.f - res.a, _sampleDistance * samplingAdjustementFactor);
+                    res.a = 1.f - std::pow(1.f - res.a, _sampleDistance * samplingAdjustmentFactor);
                 }
 
                 res = glm::clamp(res, 0.f, 1.f);

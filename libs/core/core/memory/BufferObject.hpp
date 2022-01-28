@@ -64,7 +64,7 @@ class IFactory;
  * Users of buffer have to keep a lock on a BufferObject when dealing with the
  * buffers content. Keeping a lock on a BufferObject guarantees that the buffer
  * will not be changed or modified by the BufferManager mechanism. A lock *DO
- * NOT GARANTEE* that an other user of this buffer object are not
+ * NOT ENSURE* that an other user of this buffer object are not
  * changing/modifying the buffer.
  */
 class CORE_CLASS_API BufferObject : public sight::core::BaseObject

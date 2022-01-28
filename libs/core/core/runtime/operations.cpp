@@ -84,9 +84,9 @@ void init(const std::filesystem::path& directory)
     }
 
     // Load default modules
-    core::runtime::Runtime* rntm = core::runtime::Runtime::getDefault();
+    core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
-    const auto location = (rntm->getWorkingPath() / MODULE_RC_PREFIX).lexically_normal();
+    const auto location = (runtime->getWorkingPath() / MODULE_RC_PREFIX).lexically_normal();
     SIGHT_INFO("Launching Sight runtime in: " + location.string());
 
     auto profile = std::make_shared<detail::profile::Profile>();
@@ -95,8 +95,8 @@ void init(const std::filesystem::path& directory)
     SIGHT_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
 
     // Read modules
-    rntm->addModules(location);
-    SIGHT_ASSERT("Couldn't load any module from path: " + location.string(), !rntm->getModules().empty());
+    runtime->addModules(location);
+    SIGHT_ASSERT("Couldn't load any module from path: " + location.string(), !runtime->getModules().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -125,16 +125,16 @@ ConfigurationElement::sptr findConfigurationElement(
 
 std::shared_ptr<Extension> findExtension(const std::string& identifier)
 {
-    core::runtime::Runtime* rntm = core::runtime::Runtime::getDefault();
-    return rntm->findExtension(identifier);
+    core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
+    return runtime->findExtension(identifier);
 }
 
 //------------------------------------------------------------------------------
 
 std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier) noexcept
 {
-    Runtime* rntm                  = Runtime::getDefault();
-    std::shared_ptr<Module> module = rntm->findModule(moduleIdentifier);
+    Runtime* runtime               = Runtime::getDefault();
+    std::shared_ptr<Module> module = runtime->findModule(moduleIdentifier);
 
     if(module == nullptr)
     {
@@ -152,8 +152,8 @@ std::filesystem::path getModuleResourceFilePath(
     const std::filesystem::path& path
 ) noexcept
 {
-    Runtime* rntm                  = Runtime::getDefault();
-    std::shared_ptr<Module> module = rntm->findModule(moduleIdentifier);
+    Runtime* runtime               = Runtime::getDefault();
+    std::shared_ptr<Module> module = runtime->findModule(moduleIdentifier);
 
     if(module == nullptr)
     {
@@ -182,8 +182,8 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
     try
     {
-        Runtime* rntm                  = Runtime::getDefault();
-        std::shared_ptr<Module> module = rntm->findModule(moduleFolder);
+        Runtime* runtime               = Runtime::getDefault();
+        std::shared_ptr<Module> module = runtime->findModule(moduleFolder);
 
         if(module == nullptr)
         {
@@ -208,7 +208,7 @@ std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& pa
     // - viz_scene3d/media
     // - sight::viz::scene3d/media
     // The module identifier is the more robust choice since it can not be ambiguous
-    const core::runtime::Runtime& rntm = core::runtime::Runtime::get();
+    const core::runtime::Runtime& runtime = core::runtime::Runtime::get();
 
     // Extract the namespace
     std::smatch match;
@@ -226,7 +226,7 @@ std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& pa
 
     // The library resources are at the same location than modules
     // Find a repo that matches the library namespace
-    const auto repositories = rntm.getRepositoriesPath();
+    const auto repositories = runtime.getRepositoriesPath();
     for(auto repo : repositories)
     {
         std::filesystem::path lastPath = *(--repo.second.end());
@@ -237,7 +237,7 @@ std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& pa
     }
 
     // Fallback, if we did not find anything. Especially useful at start for the default module path.
-    return std::filesystem::weakly_canonical(rntm.getWorkingPath() / MODULE_RC_PREFIX / pathStr);
+    return std::filesystem::weakly_canonical(runtime.getWorkingPath() / MODULE_RC_PREFIX / pathStr);
 }
 
 //------------------------------------------------------------------------------
@@ -291,8 +291,8 @@ void addModules(const std::filesystem::path& directory)
 {
     SIGHT_INFO("Loading modules from: " + directory.string());
 
-    Runtime& rntm = Runtime::get();
-    rntm.addModules(directory);
+    Runtime& runtime = Runtime::get();
+    runtime.addModules(directory);
 }
 
 //------------------------------------------------------------------------------
@@ -325,11 +325,11 @@ bool loadLibrary(const std::string& identifier)
         return true;
     }
 
-    auto library                       = std::make_shared<detail::dl::Library>(identifier);
-    const core::runtime::Runtime& rntm = core::runtime::Runtime::get();
+    auto library                          = std::make_shared<detail::dl::Library>(identifier);
+    const core::runtime::Runtime& runtime = core::runtime::Runtime::get();
 
     // Try to load from all known paths
-    const auto repositories = rntm.getRepositoriesPath();
+    const auto repositories = runtime.getRepositoriesPath();
     for(auto repo : repositories)
     {
         library->setSearchPath(repo.first);

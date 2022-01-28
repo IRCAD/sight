@@ -111,7 +111,7 @@ private Q_SLOTS:
 private:
 
     void refresh();
-    void notitfyTransformationMatrix(data::Matrix4::sptr aTransMat);
+    void notifyTransformationMatrix(data::Matrix4::sptr aTransMat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
     void addMeshTransform();

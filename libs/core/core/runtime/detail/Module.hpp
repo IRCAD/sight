@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "core/runtime/detail/dl/Library.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Module.hpp"
+
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -73,7 +74,7 @@ public:
      *
      * @param[in]   location        a path to the directory containing the module
      * @param[in]   id              a string containing the module identifier
-     * @param[in]   version         a string containing the moduler version
+     * @param[in]   version         a string containing the module version
      * @param[in]   pluginClass     a string containing the module's pugin class name
      *
      * @todo        test parameters validity
@@ -284,7 +285,7 @@ public:
      *
      * @param[in]   identifier  a string containing the extension point identifier
      *
-     * @return      a shared pointer to the found extensoin point, may be empty if none
+     * @return      a shared pointer to the found extension point, may be empty if none
      */
     SPTR(ExtensionPoint) findExtensionPoint(const std::string& identifier) const;
 

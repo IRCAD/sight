@@ -104,7 +104,7 @@ protected:
     /// Gets the configurations and creates a timer on a worker.
     MODULE_IO_DICOMWEB_API void configuring() override;
 
-    /// Creates the wigdets, connect the signal, register the DICOM reader and starts the callback timer.
+    /// Creates the widgets, connect the signal, register the DICOM reader and starts the callback timer.
     MODULE_IO_DICOMWEB_API void starting() override;
 
     /// Stops the timer, unregister the DICOM reader and destroy the created widgets.

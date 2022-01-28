@@ -125,9 +125,9 @@ void SUltrasoundMesh::updating()
 void SUltrasoundMesh::updateMeshPosition()
 {
     // compute delta angle
-    const double thetaInit = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double thetaEnd  = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double dteta     = (thetaEnd - thetaInit) / (m_resolutionX - 1.);
+    const double thetaInit   = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
+    const double thetaEnd    = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
+    const double delta_theta = (thetaEnd - thetaInit) / (m_resolutionX - 1.);
 
     // compute delta lengths
     const double dDepth = m_depth / (m_resolutionY - 1.);
@@ -145,7 +145,7 @@ void SUltrasoundMesh::updateMeshPosition()
         fwVec3d centerLive;
         if(m_shape)
         {
-            const double angleLive = thetaInit + dteta * (m_resolutionX - widthGrid - 1);
+            const double angleLive = thetaInit + delta_theta * (m_resolutionX - widthGrid - 1);
             directionLive = std::cos(angleLive) * normal + std::sin(angleLive) * direction;
             centerLive    = centerPosition;
         }

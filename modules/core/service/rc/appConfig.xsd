@@ -120,7 +120,7 @@
     </xs:complexType>
 
     <!-- EdgeType Type -->
-    <xs:complexType name="EdgeType"> <!-- Same as NodeType, but with optionnal "weight" attribute -->
+    <xs:complexType name="EdgeType"> <!-- Same as NodeType, but with optional "weight" attribute -->
         <xs:sequence>
             <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="1" />
             <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/tools/Stringizer.hpp"
 #include "core/tools/TypeMapping.hpp"
+
 #include <core/macros.hpp>
 
 #include <boost/mpl/empty.hpp>
@@ -68,7 +69,7 @@ struct EndTypeListAction
 
     /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
     template<class BaseClass, class KeyType>
-    static BaseClass* instanciate(const KeyType& keytype)
+    static BaseClass* instantiate(const KeyType& keytype)
     {
         std::string msg = core::tools::getString(keytype)
                           + " : KeyType value incorrect : no corresponding Type in typelist";
@@ -113,8 +114,8 @@ struct Dispatcher
                     mpl::empty<Tail>,
                     EndTypeListAction,
                     Dispatcher<Tail, FUNCTOR>
-            >::type typex;
-            typex::invoke();
+            >::type type_x;
+            type_x::invoke();
         }
 
         /**
@@ -142,8 +143,8 @@ struct Dispatcher
                         mpl::empty<Tail>,
                         EndTypeListAction,
                         Dispatcher<Tail, FUNCTOR>
-                >::type typex;
-                typex::invoke(keytype);
+                >::type type_x;
+                type_x::invoke(keytype);
             }
         }
 
@@ -176,8 +177,8 @@ struct Dispatcher
                         mpl::empty<Tail>,
                         EndTypeListAction,
                         Dispatcher<Tail, FUNCTOR>
-                >::type typex;
-                typex::invoke(keytype, param);
+                >::type type_x;
+                type_x::invoke(keytype, param);
             }
         }
 };

@@ -74,7 +74,7 @@ void SNotifier::configuring()
 
     if(m_positionMap.find(position) != m_positionMap.end())
     {
-        m_notifcationsPosition = m_positionMap[position];
+        m_notificationsPosition = m_positionMap[position];
     }
     else
     {
@@ -133,7 +133,7 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
     {
         if(m_positionMap.find(_val) != m_positionMap.end())
         {
-            m_notifcationsPosition = m_positionMap[_val];
+            m_notificationsPosition = m_positionMap[_val];
         }
         else
         {
@@ -197,7 +197,7 @@ void SNotifier::showNotification(const std::string& _message, sight::ui::base::d
 
     notif->setMessage(messageToShow);
     notif->setType(_type);
-    notif->setPosition(m_notifcationsPosition);
+    notif->setPosition(m_notificationsPosition);
     notif->setIndex(static_cast<unsigned int>(m_popups.size()));
     notif->setDuration(m_durationInMs);
     notif->setClosedCallback(std::bind(&SNotifier::onNotificationClosed, this, notif));

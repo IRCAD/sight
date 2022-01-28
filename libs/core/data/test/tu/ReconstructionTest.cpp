@@ -58,30 +58,28 @@ void ReconstructionTest::tearDown()
 
 void ReconstructionTest::methode1() //test des setters et getters
 {
-    const bool ISVISIBLE                = true;
-    const std::string CREFORGANNAME     = "OrganName";
-    const std::string CREFSTRUCTURETYPE = "StructureType";
+    const bool is_visible            = true;
+    const std::string organ_name     = "OrganName";
+    const std::string structure_type = "StructureType";
 
     // process
     auto p1 = data::Reconstruction::New();
 
-    p1->setIsVisible(ISVISIBLE);
-    p1->setOrganName(CREFORGANNAME);
-    p1->setStructureType(CREFSTRUCTURETYPE);
+    p1->setIsVisible(is_visible);
+    p1->setOrganName(organ_name);
+    p1->setStructureType(structure_type);
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), is_visible);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), organ_name);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), structure_type);
 
     auto p2 = data::Reconstruction::New();
     CPPUNIT_ASSERT(*p1 != *p2);
 
-    p2->setIsVisible(ISVISIBLE);
-    p2->setOrganName(CREFORGANNAME);
-    p2->setStructureType(CREFSTRUCTURETYPE);
-
-    CPPUNIT_ASSERT(*p1 == *p2);
+    p2->setIsVisible(is_visible);
+    p2->setOrganName(organ_name);
+    p2->setStructureType(structure_type);
 }
 
 //------------------------------------------------------------------------------

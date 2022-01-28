@@ -504,7 +504,7 @@ public:
      * @{
      * @brief Set a point's color.
      *
-     * @warning The point colors must be allocated with 4 components (RBGA)
+     * @warning The point colors must be allocated with 4 components (RGBA)
      *
      * @param id point index
      * @param c color
@@ -517,7 +517,7 @@ public:
      * @{
      * @brief Set a cell's color.
      *
-     * @warning The cell colors must be allocated with 4 components (RBGA)
+     * @warning The cell colors must be allocated with 4 components (RGBA)
      *
      * @param id cell index
      * @param c color

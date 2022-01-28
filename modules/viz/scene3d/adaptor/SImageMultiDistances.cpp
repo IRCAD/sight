@@ -197,7 +197,7 @@ void SImageMultiDistances::starting()
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
     m_sphereMaterialName     = this->getID() + "_sphereMaterialName";
-    m_lineMaterialName       = this->getID() + "_lineMaterialNamel";
+    m_lineMaterialName       = this->getID() + "_lineMaterialName";
     m_dashedLineMaterialName = this->getID() + "_dashedLineMaterialName";
 
     // Create materials from our wrapper.
@@ -229,7 +229,7 @@ void SImageMultiDistances::starting()
     );
     SIGHT_ASSERT("'" + m_sphereMaterialName + "' does not exist.", ogreSphereMaterial);
     const Ogre::Technique* const sphereTech = ogreSphereMaterial->getTechnique(0);
-    SIGHT_ASSERT("No techique found", sphereTech);
+    SIGHT_ASSERT("No technique found", sphereTech);
     Ogre::Pass* const spherePass = sphereTech->getPass(0);
     SIGHT_ASSERT("No pass found", spherePass);
     spherePass->setDepthCheckEnabled(false);
@@ -240,7 +240,7 @@ void SImageMultiDistances::starting()
     );
     SIGHT_ASSERT("'" + m_dashedLineMaterialName + "' does not exist.", ogreDashedLineMaterial);
     const Ogre::Technique* const dashedTech = ogreDashedLineMaterial->getTechnique(0);
-    SIGHT_ASSERT("No techique found", dashedTech);
+    SIGHT_ASSERT("No technique found", dashedTech);
     Ogre::Pass* const dashedPass = dashedTech->getPass(0);
     SIGHT_ASSERT("No pass found", dashedPass);
     dashedPass->setDepthCheckEnabled(false);

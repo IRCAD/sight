@@ -36,6 +36,11 @@
 
 #include <regex>
 
+/**
+ * Do not mark `SAMPLER1DSHADOW`, `SAMPLER2DSHADOW` as incorrect.
+ * cspell:ignore SAMPLER1DSHADOW SAMPLER2DSHADOW
+ */
+
 namespace sight::viz::scene3d
 {
 

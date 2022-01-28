@@ -84,7 +84,7 @@ void SScaleValues::configuring()
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_pen, "white", m_opacity);
     }
 
-    // Font size configuratiion
+    // Font size configuration
     if(config.count("fontSize"))
     {
         m_fontSize = config.get<float>("fontSize");

@@ -62,7 +62,7 @@ void DicomSeriesTest::dicomTest()
     CPPUNIT_ASSERT(m_series);
 
     //Create Path
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicomtest";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicomTest";
     std::filesystem::create_directories(path);
     const std::string filename = path.string() + "/" + "file";
     std::ofstream file;
@@ -71,10 +71,10 @@ void DicomSeriesTest::dicomTest()
     file.close();
 
     //None
-    const std::size_t nbInstances = 100;
+    const std::size_t nb_instances = 100;
     CPPUNIT_ASSERT(!m_series->isInstanceAvailable(42));
-    m_series->setNumberOfInstances(nbInstances);
-    CPPUNIT_ASSERT_EQUAL(nbInstances, m_series->numInstances());
+    m_series->setNumberOfInstances(nb_instances);
+    CPPUNIT_ASSERT_EQUAL(nb_instances, m_series->numInstances());
 
     //Paths
     m_series->addDicomPath(42, filename);

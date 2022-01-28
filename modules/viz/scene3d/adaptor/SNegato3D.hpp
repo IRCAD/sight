@@ -64,7 +64,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SNegato3D">
         <inout key="image" uid="..." />
         <inout key="tf" uid="..." optional="true" />
-        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
+        <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" />
     </service>
    @endcode
  *
@@ -77,7 +77,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
- * - \b tfalpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  * - \b priority (optional, int, default=1): interaction priority of the negato.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it

@@ -111,9 +111,9 @@ void SAxis::starting()
         m_origin = sceneMgr->createManualObject(this->getID() + "_origin");
     }
 
-    m_xLine = sceneMgr->createManualObject(this->getID() + "_xline");
-    m_yLine = sceneMgr->createManualObject(this->getID() + "_yline");
-    m_zLine = sceneMgr->createManualObject(this->getID() + "_zline");
+    m_xLine = sceneMgr->createManualObject(this->getID() + "_xLine");
+    m_yLine = sceneMgr->createManualObject(this->getID() + "_yLine");
+    m_zLine = sceneMgr->createManualObject(this->getID() + "_zLine");
 
     m_xCone = sceneMgr->createManualObject(this->getID() + "_xCone");
     m_yCone = sceneMgr->createManualObject(this->getID() + "_yCone");

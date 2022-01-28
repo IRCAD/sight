@@ -71,9 +71,9 @@ void GzArrayReader::read()
         throw std::ios_base::failure(str);
     }
 
-    const int uncompressedBytesReaded = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
+    const int un_compressed_bytes_read = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
-    if(uncompressedBytesReaded != static_cast<int>(arraySizeInBytes))
+    if(un_compressed_bytes_read != static_cast<int>(arraySizeInBytes))
     {
         std::string str = "Unable to read ";
         str += file.string();

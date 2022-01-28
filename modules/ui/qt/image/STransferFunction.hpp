@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -152,7 +152,7 @@ private:
     /**
      * @brief Create a string that represents a TF name not already present in the composite.
      *
-     * For example, if blabla is already used, it will return blabla_1.
+     * For example, if "test" is already used, it will return "test_1".
      *
      * @param _basename the name of the TF to create.
      * @return The new name of the TF.
@@ -167,7 +167,7 @@ private:
 
 private Q_SLOTS:
 
-    /// Deletes the current seleted TF.
+    /// Deletes the current selected TF.
     void deleteTF();
 
     /// Creates a new TF.

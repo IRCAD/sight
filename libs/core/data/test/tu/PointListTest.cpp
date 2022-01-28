@@ -85,12 +85,6 @@ void PointListTest::getterTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0], 10e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1], 10e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2], 10e-6);
-
-    const data::PointList::PointListContainer& ccontainer = pl1->getPoints();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], ccontainer[0]->getCoord()[0], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], ccontainer[0]->getCoord()[1], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], ccontainer[0]->getCoord()[2], 10e-6);
 }
 
 //------------------------------------------------------------------------------

@@ -39,7 +39,7 @@ public:
     /// Creates an instance.
     TUTO04MESHGENERATORCPP_API AlgoMeshDeformation() noexcept;
 
-    /// Destroys the intance.
+    /// Destroys the instance.
     TUTO04MESHGENERATORCPP_API ~AlgoMeshDeformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.

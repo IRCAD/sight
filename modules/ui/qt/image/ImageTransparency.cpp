@@ -64,13 +64,13 @@ void ImageTransparency::starting()
         this->getContainer()
     );
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
+    QHBoxLayout* h_layout = new QHBoxLayout();
 
     QLabel* staticText = new QLabel(QObject::tr("Transparency: "));
-    hLayout->addWidget(staticText, 0, Qt::AlignVCenter);
+    h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
 
     m_valueSlider = new QSlider(Qt::Horizontal);
-    hLayout->addWidget(m_valueSlider, 1, Qt::AlignVCenter);
+    h_layout->addWidget(m_valueSlider, 1, Qt::AlignVCenter);
     m_valueSlider->setRange(0, 100);
     m_valueSlider->setMinimumWidth(100);
 
@@ -83,9 +83,9 @@ void ImageTransparency::starting()
     }
 
     m_valueCheckBox->addAction(m_action);
-    hLayout->addWidget(m_valueCheckBox, 0, Qt::AlignVCenter);
+    h_layout->addWidget(m_valueCheckBox, 0, Qt::AlignVCenter);
 
-    qtContainer->setLayout(hLayout);
+    qtContainer->setLayout(h_layout);
 
     QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));

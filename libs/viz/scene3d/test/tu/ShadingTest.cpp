@@ -202,7 +202,7 @@ void ShadingTest::isDepthOnlyTechnique()
 {
     Ogre::Technique* tech = m_material->getTechnique(0);
     SIGHT_ASSERT("Technique is not set", tech);
-
+    //cspell: disable
     tech->setName("");
     CPPUNIT_ASSERT_EQUAL(false, Shading::isDepthOnlyTechnique(*tech));
     tech->setName("depth");
@@ -238,6 +238,7 @@ void ShadingTest::isDepthOnlyTechnique()
     CPPUNIT_ASSERT_EQUAL(false, Shading::isDepthOnlyTechnique(*tech));
     tech->setName("HybridTransparency/peelInit");
     CPPUNIT_ASSERT_EQUAL(false, Shading::isDepthOnlyTechnique(*tech));
+    //cspell: enable
 }
 
 //------------------------------------------------------------------------------

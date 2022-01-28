@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,9 +145,9 @@ void SShowHelp::updating()
         helpPanel->insertWidget(1, helpBrowser);
         helpPanel->setStretchFactor(1, 1);
 
-        QHBoxLayout* hLayout = new QHBoxLayout();
-        hLayout->addWidget(helpPanel);
-        dialog->setLayout(hLayout);
+        QHBoxLayout* h_layout = new QHBoxLayout();
+        h_layout->addWidget(helpPanel);
+        dialog->setLayout(h_layout);
         QObject::connect(
             helpEngine->contentWidget(),
             SIGNAL(linkActivated(const QUrl&)),

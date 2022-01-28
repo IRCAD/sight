@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,7 +132,7 @@ private:
 
     Points cubicInterpolation(const Point _p0, const Point _p1, const Point _p2, const Point _p3);
 
-    // Map the absciss of the points to the corresponding length within the path.
+    // Map the abscissa of the points to the corresponding length within the path.
     std::map<double, double> m_positionsToPathLength;
 
     /// Color used for graphic histogram's border color

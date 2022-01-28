@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "navigation/openvslam/config.hpp"
 #include "navigation/openvslam/OpenvslamConfig.hpp"
 
+#include <data/Camera.hpp>
+
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
-
-#include <data/Camera.hpp>
 
 namespace sight::navigation::openvslam
 {
@@ -48,7 +48,7 @@ public:
     static ::openvslam::camera::perspective fromSight(const data::Camera& _sightCam);
 
     /**
-     * @brief converts openvslam  perpective camera to sight camera
+     * @brief converts openvslam  perspective camera to sight camera
      * @param _oVSlamCam is a pointer to an openvlsam perspective camera.
      * @return an data::Camera::sptr.
      */
@@ -56,10 +56,10 @@ public:
 
     /**
      * @brief create an openvslam monocular config file from camera, orb parameters and initializer parameters (both
-     * optionnals).
+     * optional).
      * @param _sightCam sight camera
-     * @param _orbParams orb parameters (optionnal).
-     * @param _orbParams initialize parameters (optionnal).
+     * @param _orbParams orb parameters (optional).
+     * @param _orbParams initialize parameters (optional).
      * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
     static std::shared_ptr< ::openvslam::config> createMonocularConfig(

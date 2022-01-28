@@ -111,44 +111,44 @@ void MeshTest::insertion()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->y, EPSILON);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(35.f, it->z, EPSILON);
 
-        auto cellit = mesh->cbegin<data::iterator::cell::triangle>();
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(2), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[2]);
-        ++cellit;
+        auto cell_it = mesh->cbegin<data::iterator::cell::triangle>();
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(2), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[2]);
+        ++cell_it;
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(4), cellit->pt[2]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(4), cell_it->pt[2]);
 
-        cellit += 2;
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(6), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cellit->pt[2]);
+        cell_it += 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(6), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cell_it->pt[2]);
 
-        cellit++;
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cellit->pt[2]);
+        cell_it++;
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cell_it->pt[2]);
 
-        cellit += 1;
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(7), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(2), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cellit->pt[2]);
+        cell_it += 1;
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(7), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(2), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cell_it->pt[2]);
 
-        --cellit;
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cellit->pt[2]);
+        --cell_it;
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cell_it->pt[2]);
 
-        cellit--;
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(6), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cellit->pt[2]);
-        cellit -= 2;
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cellit->pt[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cellit->pt[1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(4), cellit->pt[2]);
+        cell_it--;
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(6), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(5), cell_it->pt[2]);
+        cell_it -= 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(3), cell_it->pt[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(4), cell_it->pt[2]);
 
         mesh->setPoint(4, 45, 59, 48);
         auto itPt = mesh->begin<data::iterator::point::xyz>();

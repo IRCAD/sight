@@ -80,7 +80,7 @@ void SCoreCompositorEditor::starting()
     m_layersBox = new QComboBox();
     layout->addWidget(m_layersBox);
 
-    // Transparency depth managment
+    // Transparency depth management
     {
         QLabel* labelTransparency = new QLabel(tr("Transparency depth"));
         layout->addWidget(labelTransparency);
@@ -278,7 +278,7 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
 
-            case CELSHADING_DEPTHPEELING:
+            case CELLSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
@@ -331,7 +331,7 @@ void SCoreCompositorEditor::onEditTransparency(int index)
                 break;
 
             case 5:
-                transparencyUpdated = layer->setTransparencyTechnique(CELSHADING_DEPTHPEELING);
+                transparencyUpdated = layer->setTransparencyTechnique(CELLSHADING_DEPTHPEELING);
                 break;
         }
 

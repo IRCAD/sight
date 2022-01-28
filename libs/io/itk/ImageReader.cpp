@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,12 +78,6 @@ struct ITKLoaderFunctor
             "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "
             << core::tools::Type::create<PIXELTYPE>().string()
         );
-
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
-        // ne permet pas de l'atteindre
-        // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
-        // reader (voir *3*)
 
         // Reader IO (*1*)
         typename ::itk::ImageIOBase::Pointer imageIORead = ::itk::ImageIOFactory::CreateImageIO(

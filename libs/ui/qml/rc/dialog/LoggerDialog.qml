@@ -62,7 +62,7 @@ Window{
                 }
             }
 
-            // this checkbox show and unshow
+            // this checkbox show and hide
             CheckBox {
                 id: checkbox
                 Layout.alignment: Qt.AlignTop

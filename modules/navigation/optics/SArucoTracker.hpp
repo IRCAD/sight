@@ -84,7 +84,7 @@ namespace sight::module::navigation::optics
  *           - \b id (mandatory) : ids of the markers to detect.
 
  *  - \b debugMarkers : if value is true, markers debugging mode is activated.
- *  - \b cornerRefinement: if true, corner refinement by subpixel will be activited
+ *  - \b cornerRefinement: if true, corner refinement by subpixel will be activated
  *  not.
  */
 class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public service::ITracker

@@ -427,7 +427,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
             submatch.replace(0, 1, "@");
 
             data::Object::sptr obj = data::reflection::getObject(activitySeries->getData(), submatch);
-            SIGHT_ASSERT("Invalid seshat path : '" << submatch << "'", obj);
+            SIGHT_ASSERT("Invalid object path : '" << submatch << "'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
@@ -439,7 +439,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
             }
             else
             {
-                SIGHT_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
+                SIGHT_WARN("Object path '" << submatch << "' doesn't reference an data::String");
             }
 
             submatch.replace(0, 1, "!");

@@ -162,10 +162,10 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
 bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 {
     bool isNull;
-    const data::Image::BufferType* ucbuf = static_cast<const data::Image::BufferType*>(buf);
+    const data::Image::BufferType* buffer = static_cast<const data::Image::BufferType*>(buf);
     isNull = 0 == std::accumulate(
-        ucbuf,
-        ucbuf + len,
+        buffer,
+        buffer + len,
         0,
         std::bit_or<data::Image::BufferType>()
     );

@@ -101,7 +101,7 @@ void NotificationDialog::show()
     // Checks if we have a Parent widget.
     m_parent = qApp->activeWindow();
 
-    // If the activie window is a slide bar, we need to retrieve the native parent.
+    // If the active window is a slide bar, we need to retrieve the native parent.
     if(m_parent && m_parent->objectName() == "SlideBar")
     {
         m_parent = m_parent->nativeParentWidget();
@@ -262,7 +262,7 @@ void NotificationDialog::show()
 
     if(m_duration > 0)
     {
-        // Launchs a timer and fadeout before closing.
+        // Launches a timer and fadeout before closing.
         QTimer::singleShot(m_duration, m_msgBox, &ClickableQLabel::fadeout);
     }
 }

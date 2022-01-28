@@ -156,7 +156,7 @@ void SMesh::starting()
     m_meshGeometry->setDynamic(m_isDynamic);
     m_meshGeometry->setDynamicVertices(m_isDynamicVertices);
 
-    // We have to create a new material adaptor only if this adaptor is instanciated by a reconstruction adaptor
+    // We have to create a new material adaptor only if this adaptor is instantiated by a reconstruction adaptor
     // or if no material adaptor uid has been configured
     m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialName.empty();
 

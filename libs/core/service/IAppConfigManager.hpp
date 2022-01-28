@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
     SERVICE_API virtual ~IAppConfigManager();
 
     /// Return a new AppConfigManager implementation. Should be used for all the IAppConfigManager of the application,
-    /// bexcept the first one which must be explicitly called.
+    /// except the first one which must be explicitly called.
     SERVICE_API static SPTR(IAppConfigManager) New();
 
     /// Return state

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -121,10 +121,10 @@ private:
     /// Copies the object to the output.
     void copy();
 
-    /// Defines the sesh@ path for appXml
+    /// Defines the object path for appXml
     std::string m_path;
 
-    /// Defines if the object to copy is a sesh@ path or an object
+    /// Defines if the object to copy is a object path or an object
     bool m_hasExtractTag;
 
     /// Determines when the data is copied (start or update)

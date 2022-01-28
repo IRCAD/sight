@@ -41,12 +41,12 @@ namespace sight::filter::image
 FILTER_IMAGE_API void applyRoi(data::Image::sptr image, data::Image::sptr roi);
 
 /**
- * @brief Check if 'imgRoiApplyed' is the result of 'roi' applyed to 'image'
+ * @brief Check if 'imgRoiApplied' is the result of 'roi' Applied to 'image'
  *
  */
-FILTER_IMAGE_API bool isRoiApplyed(
+FILTER_IMAGE_API bool isRoiApplied(
     data::Image::sptr image,
-    data::Image::sptr imgRoiApplyed,
+    data::Image::sptr imgRoiApplied,
     data::Image::sptr roi
 );
 

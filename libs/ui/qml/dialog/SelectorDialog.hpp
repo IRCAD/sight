@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ public:
     /// Set the message
     UI_QML_API void setMessage(const std::string& msg) override;
 
-    /// uninplemented
+    /// unimplemented
     UI_QML_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
 Q_SIGNALS:

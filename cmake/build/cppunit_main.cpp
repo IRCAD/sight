@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2021 IRCAD France
+ * Copyright (C) 2004-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
     }
 
 #ifdef MODULE_TEST_PROFILE
-    MiniLauncher miniLaucher(options.profile);
+    MiniLauncher miniLauncher(options.profile);
 #endif
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;
 
-    // Add a listener that colllects test result
+    // Add a listener that collects test result
     CPPUNIT_NS::TestResultCollector result;
     controller.addListener(&result);
 

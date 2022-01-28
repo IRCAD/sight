@@ -271,9 +271,9 @@ void ImageReaderWriterTest::testImageReaderExtension()
 {
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "img.xxx";
 
-    std::ofstream ofile;
-    ofile.open(file.string().c_str());
-    ofile.close();
+    std::ofstream o_file;
+    o_file.open(file.string().c_str());
+    o_file.close();
 
     data::Image::sptr image = data::Image::New();
 

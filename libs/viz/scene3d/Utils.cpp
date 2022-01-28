@@ -108,12 +108,12 @@ void Utils::loadResources()
             cf.load(tmpPath.string());
             std::filesystem::remove(tmpPath);
 
-            const Ogre::ConfigFile::SettingsBySection_ secis = cf.getSettingsBySection();
+            const Ogre::ConfigFile::SettingsBySection_ settings_by_section = cf.getSettingsBySection();
 
-            for(const auto& seci : secis)
+            for(const auto& s : settings_by_section)
             {
-                resourceGroupName = seci.first;
-                Ogre::ConfigFile::SettingsMultiMap settings = seci.second;
+                resourceGroupName = s.first;
+                Ogre::ConfigFile::SettingsMultiMap settings = s.second;
                 Ogre::ConfigFile::SettingsMultiMap::iterator i;
                 for(i = settings.begin() ; i != settings.end() ; ++i)
                 {

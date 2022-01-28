@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -170,9 +170,9 @@ void PlaneFunctionsTest::checkIntersect()
     fwVec3d point;
     fwLine line;
     const fwVec3d linePos = {{1.0, 2.0, 4.0}};
-//  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> pas d'intercestion
-//  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion
-    const fwVec3d lineDirection = {{0.0, 0.0, 4.0}}; // ==> intersection en (0.0, 0.0, 0.0)
+//  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> No intersection
+//  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intersection
+    const fwVec3d lineDirection = {{0.0, 0.0, 4.0}}; // ==> intersection in (0.0, 0.0, 0.0)
 
     line = std::make_pair(linePos, lineDirection);
 

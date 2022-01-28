@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -151,7 +151,7 @@ private:
     QPointer<QLineEdit> m_lineEdit {nullptr};
 
     /// Contains the timer used to trigger the new slice retrieving.
-    core::thread::Timer::sptr m_sliceTriggerer {nullptr};
+    core::thread::Timer::sptr m_sliceTrigger {nullptr};
 
     /// Defines the delay to wait to trigger a slice retrieving.
     unsigned int m_delay {500};

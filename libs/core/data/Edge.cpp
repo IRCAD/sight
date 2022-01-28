@@ -50,10 +50,10 @@ Edge::~Edge()
 
 //------------------------------------------------------------------------------
 
-void Edge::setIdentifiers(const std::string& fromPortIndentifier, const std::string& toPortIndentifier)
+void Edge::setIdentifiers(const std::string& fromPortIdentifier, const std::string& toPortIdentifier)
 {
-    m_fromPortIdentifier = fromPortIndentifier;
-    m_toPortIdentifier   = toPortIndentifier;
+    m_fromPortIdentifier = fromPortIdentifier;
+    m_toPortIdentifier   = toPortIdentifier;
 }
 
 //------------------------------------------------------------------------------

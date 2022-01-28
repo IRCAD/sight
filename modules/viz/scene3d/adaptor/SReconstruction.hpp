@@ -88,7 +88,7 @@ public:
     MODULE_VIZ_SCENE3D_API ~SReconstruction() noexcept override;
 
     /**
-     * @brief Actives/deactives automatic reset on camera.
+     * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
     MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _autoResetCamera);

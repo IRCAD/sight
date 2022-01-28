@@ -67,7 +67,7 @@ void ProcessingTest::histogramTest()
 
     std::string implementation = "sight::module::viz::scene2d::processing::SComputeHistogram";
 
-    // Configure data hirearchy
+    // Configure data hierarchy
     data::Image::sptr image         = data::Image::New();
     data::Histogram::sptr histogram = data::Histogram::New();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,7 +115,7 @@ private:
     /// Defines the AET of the SCP (server name).
     std::string m_SCPAppEntityTitle;
 
-    /// Defines the SCP host name (server adress).
+    /// Defines the SCP host name (server address).
     std::string m_SCPHostName;
 
     /// Defines the SCP port (server port).
