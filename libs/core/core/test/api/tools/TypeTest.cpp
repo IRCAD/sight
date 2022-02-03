@@ -49,6 +49,12 @@ void TypeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+class A
+{
+};
+
+//------------------------------------------------------------------------------
+
 void TypeTest::typeTest()
 {
     core::Type INT8  = core::Type::INT8;
@@ -108,6 +114,19 @@ void TypeTest::typeTest()
 
     CPPUNIT_ASSERT_EQUAL(FLOAT, core::Type::get<float>());
     CPPUNIT_ASSERT_EQUAL(DOUBLE, core::Type::get<double>());
+}
+
+//------------------------------------------------------------------------------
+
+void TypeTest::typeToStringTest()
+{
+    using namespace std::literals::string_literals;
+
+    int integer     = 1;
+    double floating = 2.;
+
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::INT32.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("2.000000"s, core::Type::DOUBLE.toString(&floating));
 }
 
 } // namespace ut
