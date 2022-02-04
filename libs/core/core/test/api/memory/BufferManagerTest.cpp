@@ -282,6 +282,33 @@ void BufferManagerTest::dumpRestoreTest()
 
 //------------------------------------------------------------------------------
 
+class DummyMemoryMonitorTools
+{
+public:
+
+    //------------------------------------------------------------------------------
+
+    static std::uint64_t getFreeSystemMemory()
+    {
+        return s_freeSystemMemory;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void setFreeSystemMemory(std::uint64_t newMemory)
+    {
+        s_freeSystemMemory = newMemory;
+    }
+
+private:
+
+    static std::uint64_t s_freeSystemMemory;
+};
+
+std::uint64_t DummyMemoryMonitorTools::s_freeSystemMemory = 1024 * 1024;
+
+//------------------------------------------------------------------------------
+
 void BufferManagerTest::dumpPolicyTest()
 {
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
@@ -393,17 +420,108 @@ void BufferManagerTest::dumpPolicyTest()
 
     // Valve Dump
     {
-        core::memory::IPolicy::sptr valve = core::memory::policy::ValveDump::New();
+        core::memory::IPolicy::sptr valve = core::memory::policy::ValveDump<DummyMemoryMonitorTools>::New();
         CPPUNIT_ASSERT_EQUAL(size_t(2), valve->getParamNames().size());
         CPPUNIT_ASSERT(!valve->setParam("min_free_memes", "nope"));
         CPPUNIT_ASSERT(!valve->setParam("hysteric_offset", "nope"));
         CPPUNIT_ASSERT(!valve->setParam("min_free_mem", "-1B"));
         CPPUNIT_ASSERT(!valve->setParam("hysteresis_offset", "-1B"));
-        CPPUNIT_ASSERT(valve->setParam("min_free_mem", "1B"));
+        CPPUNIT_ASSERT(valve->setParam("min_free_mem", "2B"));
         CPPUNIT_ASSERT(valve->setParam("hysteresis_offset", "1B"));
+        manager->setDumpPolicy(valve);
 
-        // TODO: Currently it is hard to test Valve Dump as it depends on the memory of the host
-        // system. A Mock implementation of the MemoryMonitorTools should be created.
+        // Scenario 1: Eviction after allocation of a new buffer
+        {
+            DummyMemoryMonitorTools::setFreeSystemMemory(5);
+
+            // Allocation of a buffer: the free memory is still acceptable
+            core::memory::BufferObject::sptr bo1 = core::memory::BufferObject::New();
+            bo1->allocate(1);
+            DummyMemoryMonitorTools::setFreeSystemMemory(4);
+            core::memory::BufferManager::BufferInfoMapType infos = manager->getBufferInfos().get();
+            CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded);
+
+            // Lock request to modify the buffer: shouldn't change its loading status as the system memory didn't change
+            *static_cast<char*>(bo1->lock().getBuffer()) = '!';
+            infos                                        = manager->getBufferInfos().get();
+            CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded);
+
+            // Allocation of a second buffer: the free memory is still acceptable
+            core::memory::BufferObject::sptr bo2 = core::memory::BufferObject::New();
+            bo2->allocate(1);
+            DummyMemoryMonitorTools::setFreeSystemMemory(3);
+            infos = manager->getBufferInfos().get();
+            CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded && infos[bo2->getBufferPointer()].loaded);
+
+            // Allocation of a third buffer: minimal free memory crossed, 2 buffers should be evicted (one for the
+            // minimum memory and a second one for the hysteresis offset) (TODO: Make it work)
+            /*core::memory::BufferObject::sptr bo3 = core::memory::BufferObject::New();
+               bo3->allocate(1);
+               DummyMemoryMonitorTools::setFreeSystemMemory(2);
+               infos = manager->getBufferInfos().get();
+               CPPUNIT_ASSERT_EQUAL(
+                1,
+                infos[bo1->getBufferPointer()].loaded + infos[bo2->getBufferPointer()].loaded
+             + infos[bo3->getBufferPointer()].loaded
+               );*/
+
+            bo1->destroy();
+            bo2->destroy();
+            //bo3->destroy();
+        }
+
+        // Scenario 2: Eviction after reallocation of an existing buffer
+        {
+            DummyMemoryMonitorTools::setFreeSystemMemory(5);
+
+            // Allocation of a buffer: the free memory is still acceptable
+            core::memory::BufferObject::sptr bo1 = core::memory::BufferObject::New();
+            bo1->allocate(1);
+            DummyMemoryMonitorTools::setFreeSystemMemory(4);
+            core::memory::BufferManager::BufferInfoMapType infos = manager->getBufferInfos().get();
+            CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded);
+
+            // Allocation of a second buffer: the free memory is still acceptable
+            core::memory::BufferObject::sptr bo2 = core::memory::BufferObject::New();
+            bo2->allocate(1);
+            DummyMemoryMonitorTools::setFreeSystemMemory(3);
+            infos = manager->getBufferInfos().get();
+            CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded && infos[bo2->getBufferPointer()].loaded);
+
+            // Reallocation of a buffer: minimal free memory crossed, at least one buffer should be evicted (at least
+            // one for the minimum memory, possibly the second one for the hysteresis offset) (TODO: Make it work)
+            /*bo1->reallocate(2);
+               DummyMemoryMonitorTools::setFreeSystemMemory(2);
+               infos = manager->getBufferInfos().get();
+               CPPUNIT_ASSERT(infos[bo1->getBufferPointer()].loaded + infos[bo2->getBufferPointer()].loaded <= 1);*/
+
+            bo1->destroy();
+            bo2->destroy();
+        }
+
+        // Scenario 3: Eviction because minimal free memory crossed for external reasons
+        {
+            DummyMemoryMonitorTools::setFreeSystemMemory(1024 * 1024);
+
+            // Allocation of a buffer: the free memory is still acceptable
+            core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
+            bo->allocate(1);
+            core::memory::BufferInfo info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+            CPPUNIT_ASSERT(info.loaded);
+
+            // There is no more memory in your system because you launched <insert any application based on Electron>
+            // The buffer isn't evicted yet, because the policy doesn't listen actively to the memory changes
+            DummyMemoryMonitorTools::setFreeSystemMemory(0);
+            info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+            CPPUNIT_ASSERT(info.loaded);
+
+            // When operating on the buffer, the policy will notice the lack of memory and it will be evicted
+            bo->lock();
+            info = manager->getBufferInfos().get().at(bo->getBufferPointer());
+            CPPUNIT_ASSERT(!info.loaded);
+
+            bo->destroy();
+        }
     }
 }
 

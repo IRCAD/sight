@@ -20,18 +20,12 @@
  *
  ***********************************************************************/
 
+#pragma once
+
 #include "core/memory/ByteSize.hpp"
 #include "core/memory/exception/BadCast.hpp"
 #include "core/memory/policy/registry/macros.hpp"
 #include "core/memory/policy/ValveDump.hpp"
-
-#ifdef _WIN32
-#define MEMORYTOOLIMPL Win32MemoryMonitorTools
-#include "core/memory/tools/Win32MemoryMonitorTools.hpp"
-#else
-#define MEMORYTOOLIMPL PosixMemoryMonitorTools
-#include "core/memory/tools/PosixMemoryMonitorTools.hpp"
-#endif
 
 namespace sight::core::memory
 {
@@ -39,11 +33,12 @@ namespace sight::core::memory
 namespace policy
 {
 
-fwMemoryPolicyRegisterMacro(core::memory::policy::ValveDump);
+fwMemoryPolicyRegisterMacro(core::memory::policy::ValveDump<core::memory::tools::MemoryMonitorTools>);
 
 //------------------------------------------------------------------------------
 
-ValveDump::ValveDump() :
+template<typename TOOL>
+ValveDump<TOOL>::ValveDump() :
     m_minFreeMem(1024 * 1024 * 500LL),
     m_hysteresisOffset(0)
 {
@@ -51,7 +46,8 @@ ValveDump::ValveDump() :
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest(
+template<typename TOOL>
+void ValveDump<TOOL>::allocationRequest(
     BufferInfo& info,
     core::memory::BufferManager::ConstBufferPtrType buffer,
     BufferInfo::SizeType size
@@ -63,7 +59,8 @@ void ValveDump::allocationRequest(
 
 //------------------------------------------------------------------------------
 
-void ValveDump::setRequest(
+template<typename TOOL>
+void ValveDump<TOOL>::setRequest(
     BufferInfo& info,
     core::memory::BufferManager::ConstBufferPtrType buffer,
     BufferInfo::SizeType size
@@ -77,7 +74,8 @@ void ValveDump::setRequest(
 
 //------------------------------------------------------------------------------
 
-void ValveDump::reallocateRequest(
+template<typename TOOL>
+void ValveDump<TOOL>::reallocateRequest(
     BufferInfo& info,
     core::memory::BufferManager::ConstBufferPtrType buffer,
     BufferInfo::SizeType newSize
@@ -89,7 +87,8 @@ void ValveDump::reallocateRequest(
 
 //------------------------------------------------------------------------------
 
-void ValveDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+template<typename TOOL>
+void ValveDump<TOOL>::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -97,7 +96,8 @@ void ValveDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::Co
 
 //------------------------------------------------------------------------------
 
-void ValveDump::lockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+template<typename TOOL>
+void ValveDump<TOOL>::lockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -105,7 +105,8 @@ void ValveDump::lockRequest(BufferInfo& info, core::memory::BufferManager::Const
 
 //------------------------------------------------------------------------------
 
-void ValveDump::unlockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+template<typename TOOL>
+void ValveDump<TOOL>::unlockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -114,7 +115,8 @@ void ValveDump::unlockRequest(BufferInfo& info, core::memory::BufferManager::Con
 
 //------------------------------------------------------------------------------
 
-void ValveDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+template<typename TOOL>
+void ValveDump<TOOL>::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -122,7 +124,8 @@ void ValveDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::Const
 
 //------------------------------------------------------------------------------
 
-void ValveDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+template<typename TOOL>
+void ValveDump<TOOL>::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -130,14 +133,16 @@ void ValveDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::Co
 
 //------------------------------------------------------------------------------
 
-bool ValveDump::needDump(std::size_t supplement) const
+template<typename TOOL>
+bool ValveDump<TOOL>::needDump(std::size_t supplement) const
 {
-    return core::memory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() <= (m_minFreeMem + supplement);
+    return TOOL::getFreeSystemMemory() <= (m_minFreeMem + supplement);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t ValveDump::dump(std::size_t nbOfBytes)
+template<typename TOOL>
+std::size_t ValveDump<TOOL>::dump(std::size_t nbOfBytes)
 {
     std::size_t dumped = 0;
 
@@ -184,27 +189,30 @@ std::size_t ValveDump::dump(std::size_t nbOfBytes)
 
 //------------------------------------------------------------------------------
 
-void ValveDump::apply(std::size_t supplement)
+template<typename TOOL>
+void ValveDump<TOOL>::apply(std::size_t supplement)
 {
     if(this->needDump(supplement))
     {
         this->dump(
             (m_minFreeMem + m_hysteresisOffset + supplement)
-            - core::memory::tools::MEMORYTOOLIMPL::getFreeSystemMemory()
+            - TOOL::getFreeSystemMemory()
         );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ValveDump::refresh()
+template<typename TOOL>
+void ValveDump<TOOL>::refresh()
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-bool ValveDump::setParam(const std::string& name, const std::string& value)
+template<typename TOOL>
+bool ValveDump<TOOL>::setParam(const std::string& name, const std::string& value)
 {
     SIGHT_INFO("Set " << name << " to " << value);
     try
@@ -231,7 +239,8 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
 
 //------------------------------------------------------------------------------
 
-const core::memory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
+template<typename TOOL>
+const core::memory::IPolicy::ParamNamesType& ValveDump<TOOL>::getParamNames() const
 {
     static const core::memory::IPolicy::ParamNamesType params {"min_free_mem", "hysteresis_offset"};
     return params;
@@ -239,7 +248,8 @@ const core::memory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
 
 //------------------------------------------------------------------------------
 
-std::string ValveDump::getParam(const std::string& name, bool* ok) const
+template<typename TOOL>
+std::string ValveDump<TOOL>::getParam(const std::string& name, bool* ok) const
 {
     bool isOk = false;
     std::string value;
