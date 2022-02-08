@@ -152,43 +152,121 @@ service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
+void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
 {
     const auto layer = this->getLayer();
 
     if(IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant))
     {
-        const auto* const viewport = layer->getViewport();
-        auto* const camera         = layer->getDefaultCamera();
-        auto* const camNode        = camera->getParentNode();
+        // CTRL + wheel = Zoom in/out.
+        if(_modifier == Modifier::CONTROL)
+        {
+            const auto* const viewport = layer->getViewport();
+            auto* const camera         = layer->getDefaultCamera();
+            auto* const camNode        = camera->getParentNode();
 
-        constexpr float mouseWheelScale = 0.05f;
-        const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
+            constexpr float mouseWheelScale = 0.05f;
+            const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
-        // Compute the mouse's position in the camera's view.
-        const Ogre::Vector3 screenPos(static_cast<Ogre::Real>(_x),
-                                      static_cast<Ogre::Real>(_y),
-                                      Ogre::Real(0));
-        const auto mousePosView =
-            sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
+            // Compute the mouse's position in the camera's view.
+            const Ogre::Vector3 screenPos(static_cast<Ogre::Real>(_x),
+                                          static_cast<Ogre::Real>(_y),
+                                          Ogre::Real(0));
+            const auto mousePosView =
+                sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
-        // Zoom in.
-        const float orthoHeight    = camera->getOrthoWindowHeight();
-        const float newOrthoHeight = orthoHeight + (orthoHeight / zoomAmount);
-        const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater than 0
+            // Zoom in.
+            const float orthoHeight    = camera->getOrthoWindowHeight();
+            const float newOrthoHeight = orthoHeight + (orthoHeight / zoomAmount);
+            const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater
+                                                                          // than 0
 
-        const float vpWidth  = static_cast<float>(viewport->getActualWidth());
-        const float vpHeight = static_cast<float>(viewport->getActualHeight());
+            const float vpWidth  = static_cast<float>(viewport->getActualWidth());
+            const float vpHeight = static_cast<float>(viewport->getActualHeight());
 
-        camera->setAspectRatio(vpWidth / vpHeight);
-        camera->setOrthoWindowHeight(clampedHeight);
+            camera->setAspectRatio(vpWidth / vpHeight);
+            camera->setOrthoWindowHeight(clampedHeight);
 
-        // Compute the mouse's position in the zoomed view.
-        const auto newMousePosView =
-            sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
+            // Compute the mouse's position in the zoomed view.
+            const auto newMousePosView =
+                sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
-        // Translate the camera back to the cursor's previous position.
-        camNode->translate(mousePosView - newMousePosView);
+            // Translate the camera back to the cursor's previous position.
+            camNode->translate(mousePosView - newMousePosView);
+        }
+        // Wheel alone or other modifier -> moving along slices (SHIFT to speed-up)
+        else
+        {
+            namespace imHelper = data::helper::MedicalImage;
+
+            const auto image = m_image.lock();
+
+            // Get Index
+            const int current_index = static_cast<int>(imHelper::getSliceIndex(*image, m_currentNegatoOrientation));
+            const int max_slice     = static_cast<int>(image->getSize()[m_currentNegatoOrientation] - 1);
+
+            if(max_slice < 0)
+            {
+                // Do nothing, image doesn't have slices.
+                return;
+            }
+
+            SIGHT_ASSERT("Slice index field missing", current_index != -1);
+
+            // From: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+            // Most mouse types work in steps of 15 degrees,
+            // in which case the delta value is a multiple of 120; i.e., 120 units * 1/8 = 15 degrees.
+
+            // Here we assume that each 120 units of delta correspond to one increment of mouse wheel
+            // So we move forward/backward of 1 slice each 120 units.
+
+            int slice_move = _delta / 120;
+
+            // Speed up SHIFT+ wheel: "scrolls" 5% of total slices at each wheel move.
+            if(_modifier == Modifier::SHIFT)
+            {
+                slice_move *= std::round(static_cast<float>(max_slice) * 5.f / 100.f);
+            }
+
+            // TODO: We may test for finer-resolution wheels and wait for another event before moving.
+
+            auto new_slice_index = current_index + slice_move;
+
+            // Limit to [0: max_slice].
+            if(new_slice_index > max_slice)
+            {
+                new_slice_index = max_slice;
+            }
+            else if(new_slice_index < 0)
+            {
+                new_slice_index = 0;
+            }
+
+            imHelper::setSliceIndex(*image, m_currentNegatoOrientation, new_slice_index);
+
+            // Get up-to-date index values.
+            const int idx[3] = {
+                static_cast<int>(imHelper::getSliceIndex(
+                                     *image,
+                                     imHelper::orientation_t::SAGITTAL
+                                 )),
+                static_cast<int>(imHelper::getSliceIndex(
+                                     *image,
+                                     imHelper::orientation_t::FRONTAL
+                                 )),
+                static_cast<int>(imHelper::getSliceIndex(
+                                     *image,
+                                     imHelper::orientation_t::AXIAL
+                ))
+            };
+
+            // Send signal.
+            auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
+                data::Image::s_SLICE_INDEX_MODIFIED_SIG
+            );
+            // this->moveBack() will be automatically called due to auto-connection.
+            sig->asyncEmit(idx[2], idx[1], idx[0]);
+        }
     }
 }
 
