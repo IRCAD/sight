@@ -241,6 +241,7 @@
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
                 </layer>
                 <adaptor uid="orientationMarkerAdp" />
+                <adaptor uid="resizeOrientationMarkerViewportAdp" />
             </scene>
         </service>
 
@@ -307,6 +308,10 @@
 
         <service uid="resizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
+        </service>
+
+        <service uid="resizeOrientationMarkerViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
+            <config layer="orientationMarkerLayer" hOffset="0.5" vOffset="0.5" width="0.1" height="0.1" hAlign="right" vAlign="bottom"/>
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
@@ -535,6 +540,7 @@
             <slot>frontalBackgroundResizeViewportAdp/resize</slot>
             <slot>frontalNegatoResizeViewportAdp/resize</slot>
             <slot>resizeViewportAdp/resize</slot>
+            <slot>resizeOrientationMarkerViewportAdp/resize</slot>
             <slot>topNegatoSlicerSliderView/show</slot>
             <slot>bottomNegatoSlicerSliderView/show</slot>
         </connect>
@@ -547,6 +553,7 @@
             <slot>frontalBackgroundResizeViewportAdp/revert</slot>
             <slot>frontalNegatoResizeViewportAdp/revert</slot>
             <slot>resizeViewportAdp/revert</slot>
+            <slot>resizeOrientationMarkerViewportAdp/revert</slot>
             <slot>topNegatoSlicerSliderView/hide</slot>
             <slot>bottomNegatoSlicerSliderView/hide</slot>
         </connect>
@@ -671,6 +678,7 @@
         <start uid="pickedVoxelTextAdp" />
         <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
+        <start uid="resizeOrientationMarkerViewportAdp" />
         <start uid="snapshotAdp" />
         <start uid="orientationMarkerAdp" />
 
