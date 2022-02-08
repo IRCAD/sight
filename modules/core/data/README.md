@@ -14,6 +14,7 @@ This module contains contains several interfaces for manager, updater and wrappe
 - **SeriesSignals**: emits a signal for each added series (the signal contains the added series)
 - **SObjFromSlot**: registers/unregisters the object given by the slots.
 - **SImageSignalForwarder**: forwards signals from an image to another.
+- **SGetSeries**: extracts series from series database.
 
 ## CMake
 
