@@ -54,8 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
  * to zoom-out.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SOrientationMarker final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::IAdaptor
 {
 public:
 

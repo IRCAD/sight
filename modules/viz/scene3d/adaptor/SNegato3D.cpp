@@ -168,7 +168,7 @@ void SNegato3D::starting()
 
     // Scene node's instantiation
     Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
     m_negatoSceneNode = transformNode->createChildSceneNode();
 
     // Instantiation of the planes

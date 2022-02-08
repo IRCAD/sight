@@ -117,7 +117,7 @@ void SLight::starting()
     m_light->setVisible(m_switchedOn);
 
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
     m_lightNode = transNode->createChildSceneNode(this->getID() + "_light");
     m_lightNode->attachObject(m_light);
 

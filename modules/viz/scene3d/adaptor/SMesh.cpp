@@ -560,7 +560,7 @@ void SMesh::modifyTexCoords()
 void SMesh::attachNode(Ogre::MovableObject* _node)
 {
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
 
     Ogre::SceneNode* node = _node->getParentSceneNode();
 

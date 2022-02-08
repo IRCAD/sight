@@ -147,7 +147,7 @@ void SLine::starting()
 void SLine::updating()
 {
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
     transNode->setVisible(m_isVisible);
     this->requestRender();
 }
@@ -172,7 +172,9 @@ void SLine::stopping()
 void SLine::attachNode(Ogre::MovableObject* object)
 {
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* transNode     = this->getTransformNode();
+    SIGHT_ASSERT("Transform node shouldn't be null", transNode);
+
     transNode->setVisible(m_isVisible);
     transNode->attachObject(object);
 }

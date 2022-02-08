@@ -166,7 +166,7 @@ void SVolumeRender::starting()
         m_sceneManager = this->getSceneManager();
 
         Ogre::SceneNode* const rootSceneNode = m_sceneManager->getRootSceneNode();
-        Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+        Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
         m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
     }
 
@@ -251,11 +251,13 @@ void SVolumeRender::stopping()
 
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
-    Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    auto transformNode             = this->getTransformNode(rootSceneNode);
+    const auto transformNode = this->getTransformNode();
 
-    m_sceneManager->getRootSceneNode()->removeChild(transformNode);
-    this->getSceneManager()->destroySceneNode(static_cast<Ogre::SceneNode*>(transformNode));
+    if(transformNode)
+    {
+        m_sceneManager->getRootSceneNode()->removeChild(transformNode);
+        this->getSceneManager()->destroySceneNode(static_cast<Ogre::SceneNode*>(transformNode));
+    }
 
     this->destroyWidget();
 }

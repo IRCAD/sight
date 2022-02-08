@@ -27,6 +27,8 @@
 
 #include <service/macros.hpp>
 
+#include <viz/scene3d/helper/Scene.hpp>
+
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -79,14 +81,18 @@ void STransform::starting()
 
     if(!m_parentTransformId.empty())
     {
-        m_parentTransformNode = this->getTransformNode(m_parentTransformId, rootSceneNode);
+        m_parentTransformNode = sight::viz::scene3d::helper::Scene::getNodeById(m_parentTransformId, rootSceneNode);
+        if(m_parentTransformNode == nullptr)
+        {
+            m_parentTransformNode = rootSceneNode->createChildSceneNode(m_parentTransformId);
+        }
     }
     else
     {
         m_parentTransformNode = rootSceneNode;
     }
 
-    m_transformNode = this->getTransformNode(m_parentTransformNode);
+    m_transformNode = this->getOrCreateTransformNode(m_parentTransformNode);
 
     this->updating();
 }

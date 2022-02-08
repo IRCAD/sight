@@ -101,7 +101,7 @@ void SAxis::starting()
     this->getRenderService()->makeCurrent();
 
     Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
     m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
@@ -379,9 +379,11 @@ void SAxis::stopping()
     sceneMgr->destroyManualObject(m_yCone);
     sceneMgr->destroyManualObject(m_zCone);
 
-    Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
-    transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
+    Ogre::SceneNode* const transformNode = this->getTransformNode();
+    if(transformNode)
+    {
+        transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
+    }
 
     this->unregisterServices();
     m_material.reset();

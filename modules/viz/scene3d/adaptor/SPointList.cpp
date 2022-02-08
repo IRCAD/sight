@@ -172,7 +172,7 @@ void SPointList::starting()
     m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode = this->getTransformNode(rootSceneNode);
+    m_sceneNode = this->getOrCreateTransformNode(rootSceneNode);
 
     const auto pointList = m_pointList.lock();
     if(pointList)
@@ -555,12 +555,11 @@ void SPointList::updateMaterialAdaptor()
 
 void SPointList::attachNode(Ogre::MovableObject* _node)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
-    transNode->attachObject(_node);
+    SIGHT_ASSERT("transform Node shouldn't be null", !m_sceneNode);
+    m_sceneNode->attachObject(_node);
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
-    transNode->_update(true, false);
+    m_sceneNode->_update(true, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -571,8 +570,11 @@ void SPointList::detachAndDestroyEntity()
     {
         Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
         Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
-        Ogre::SceneNode* const transNode     = this->getTransformNode(rootSceneNode);
-        transNode->detachObject(m_entity);
+        if(m_sceneNode)
+        {
+            m_sceneNode->detachObject(m_entity);
+        }
+
         sceneMgr->destroyEntity(m_entity);
         m_entity = nullptr;
     }

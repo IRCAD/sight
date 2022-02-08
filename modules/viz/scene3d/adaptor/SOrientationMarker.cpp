@@ -58,9 +58,6 @@ void SOrientationMarker::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    // Create the transform node.
-    this->setTransformId(this->getID() + "_transform");
-
     // Set the resource this use, if it has been set via xml
     m_patientMeshRc = config.get<std::string>("resource", m_patientMeshRc);
 
@@ -76,8 +73,7 @@ void SOrientationMarker::starting()
     this->getRenderService()->makeCurrent();
 
     Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
-    m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
+    m_sceneNode = rootSceneNode->createChildSceneNode(this->getID() + "_mainNode");
 
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
@@ -135,25 +131,21 @@ void SOrientationMarker::updateCameraMatrix()
         }
     }
 
-    // Get the transformation as sceneNode.
-    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
-
     // Convert to quaterion.
     Ogre::Quaternion orientation(ogreMatrix);
 
     const Ogre::Quaternion rotateX(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
 
     // Reset the camera position & orientation, since s_MATRIX_IN is a global transform.
-    transformNode->setPosition(0, 0, 0);
+    m_sceneNode->setPosition(0, 0, 0);
     // Reverse X axis.
-    transformNode->setOrientation(rotateX);
+    m_sceneNode->setOrientation(rotateX);
 
     // Update the camera position
     // Inverse camera matrix (since we move the mesh)
-    transformNode->rotate(orientation.Inverse());
+    m_sceneNode->rotate(orientation.Inverse());
     // Place it at a fixed position
-    transformNode->translate(0.f, 0.f, m_markerDepth);
+    m_sceneNode->translate(0.f, 0.f, m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------

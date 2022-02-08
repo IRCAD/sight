@@ -163,7 +163,7 @@ void SLandmarks::starting()
     this->getRenderService()->makeCurrent();
 
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_transNode = this->getTransformNode(rootSceneNode);
+    m_transNode = this->getOrCreateTransformNode(rootSceneNode);
 
     m_material = data::Material::New();
 

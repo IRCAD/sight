@@ -92,7 +92,7 @@ void SVector::starting()
     this->getRenderService()->makeCurrent();
 
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* transformNode = this->getOrCreateTransformNode(rootSceneNode);
     m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
     // set the material
@@ -142,9 +142,11 @@ void SVector::stopping()
     this->deleteVector();
 
     Ogre::SceneManager* sceneMgr   = this->getSceneManager();
-    Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
-    Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
-    transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
+    Ogre::SceneNode* transformNode = this->getTransformNode();
+    if(transformNode)
+    {
+        transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
+    }
 
     this->unregisterServices();
     m_material.reset();

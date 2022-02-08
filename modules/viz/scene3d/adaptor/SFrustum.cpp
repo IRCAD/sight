@@ -126,7 +126,7 @@ void SFrustum::starting()
 
     // Add camera to ogre scene
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
     transNode->attachObject(m_ogreCamera);
 
     this->requestRender();

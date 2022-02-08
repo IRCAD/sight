@@ -119,7 +119,7 @@ service::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 void SFrustumList::updating()
 {
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode = this->getTransformNode(rootSceneNode);
+    m_sceneNode = this->getOrCreateTransformNode(rootSceneNode);
     m_sceneNode->attachObject(m_frustumList.front());
 
     this->requestRender();
