@@ -462,6 +462,7 @@
                 <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
+                <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <inout key="modelSeries" uid="modelSeries" />
                 <inout key="image" uid="image" />
                 <inout key="volumeTF" uid="volumeTF" />
@@ -692,6 +693,10 @@
             <!-- Manage landmarks -->
             <connect channel="PICKER_RECEIVER_CHANNEL" >
                 <slot>landmarksParameterSrv/pick</slot>
+            </connect>
+
+            <connect channel="WORLD_COORDS_LANDMARKS_CHANNEL">
+                <signal>landmarksParameterSrv/sendWorldCoord</signal>
             </connect>
 
             <!-- ******************************* Start/Stop services ***************************************** -->

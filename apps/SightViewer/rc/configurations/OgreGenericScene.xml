@@ -17,6 +17,7 @@
         <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
+        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
@@ -616,6 +617,10 @@
             <signal>frontalPickerInteractorAdp/picked</signal>
         </connect>
 
+        <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}" >
+            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
         <!-- Slide view -->
         <connect>
             <signal>mainView/started</signal>
@@ -654,6 +659,15 @@
         <connect>
             <signal>shapeExtruderAdp/failureNotified</signal>
             <slot>notifierSrv/popFailure</slot>
+        </connect>
+
+        <!-- Connects double click on landmark to slice moves. -->
+        <connect>
+            <signal>landmarksAdp/sendWorldCoord</signal>
+            <signal>axialLandmarksAdp/sendWorldCoord</signal>
+            <signal>frontalLandmarksAdp/sendWorldCoord</signal>
+            <signal>sagittalLandmarksAdp/sendWorldCoord</signal>
+            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

@@ -56,6 +56,8 @@ static const std::string s_INTERACTIVE_CONFIG     = "interactive";
 static const std::string s_PRIORITY_CONFIG        = "priority";
 static const std::string s_QUERY_MASK_CONFIG      = "queryMask";
 
+const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
+
 //------------------------------------------------------------------------------
 
 Ogre::Vector3 SLandmarks::getCamDirection(const Ogre::Camera* const _cam)
@@ -81,6 +83,8 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_INITIALIZE_IMAGE_SLOT, &SLandmarks::initializeImage, this);
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
+
+    newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
 
 //-----------------------------------------------------------------------------
@@ -979,5 +983,73 @@ void SLandmarks::buttonReleaseEvent(MouseButton, Modifier, int, int)
 }
 
 //------------------------------------------------------------------------------
+
+void SLandmarks::buttonDoublePressEvent(MouseButton, Modifier, int _x, int _y)
+{
+    const auto layer = this->getLayer();
+
+    Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+
+    const Ogre::Camera* const cam = layer->getDefaultCamera();
+    const auto* const vp          = cam->getViewport();
+
+    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+
+    const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+
+    bool found                               = false;
+    Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
+    raySceneQuery->setSortByDistance(false);
+    if(raySceneQuery->execute().size() != 0)
+    {
+        const Ogre::Real scale = 1.15f;
+
+        const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
+        for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+        {
+            const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+            for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
+            {
+                if(landmark->m_object == object)
+                {
+                    const auto landmarks = m_landmarks.lock();
+
+                    m_pickedData = landmark;
+                    landmark->m_node->setScale(scale, scale, scale);
+
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    delete raySceneQuery;
+
+    if(found)
+    {
+        this->getLayer()->cancelFurtherInteraction();
+
+        // Check if something is picked to update the position of the distance.
+        std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
+        if(pickedPos.has_value())
+        {
+            // Update the data, the autoconnection will call modifyPoint.
+            auto landmarks                   = m_landmarks.lock();
+            data::Landmarks::PointType point = landmarks->getPoint(
+                m_pickedData->m_groupName,
+                m_pickedData->m_index
+            );
+
+            // Send signal with world coordinates of the landmarks
+            this->signal<world_coordinates_signal_t>(s_SEND_WORLD_COORD)->asyncEmit(
+                point[0],
+                point[1],
+                point[2]
+            );
+        }
+    }
+}
 
 } // namespace sight::module::viz::scene3d::adaptor.

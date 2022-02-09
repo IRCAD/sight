@@ -49,6 +49,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
+ * - \b updateSlicesFromWorld(double, double, double): updates image slices indexes according to a 3d world point
+ * or landmark.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -150,6 +152,14 @@ private:
      * @param _sagittalIndex new sagittal slice index.
      */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
+
+    /**
+     * @brief SLOT: Update slices index to match x,y,z world coordinates
+     * @param _x world coordinates in double.
+     * @param _y world coordinates in double.
+     * @param _z world coordinates in double.
+     */
+    void updateSlicesFromWorld(double _x, double _y, double _z);
 
     /// Updates image slice index for the current fragment program.
     void updateShaderSliceIndexParameter();

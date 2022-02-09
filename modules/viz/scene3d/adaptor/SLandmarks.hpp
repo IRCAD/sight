@@ -57,6 +57,9 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
  *
+ * @section Signals Signals
+ * - \b sendWorldCoord(double, double, double): sends world coordinates of current selected landmarks (by double click).
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SLandmarks">
@@ -139,6 +142,19 @@ public:
      * @param _y Y screen coordinate.
      */
     MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+
+    /**
+     * @brief Listens to mouse buttons being double pressed.
+     * @param _button pressed mouse button.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     */
+    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+
+    /// Signal send when double clicked on a landmark, send its world coordinates;
+    MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
+    typedef core::com::Signal<void (double, double, double)> world_coordinates_signal_t;
 
 protected:
 

@@ -22,9 +22,14 @@
 
 #include "UtilsTest.hpp"
 
+#include <core/data/Image.hpp>
+
+#include <utestData/generator/Image.hpp>
+
 #include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreColourValue.h>
+#include <OGRE/OgrePrerequisites.h>
 
 #include <random>
 
@@ -140,6 +145,38 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void UtilsTest::worldToSliceTest()
+{
+    data::Image::sptr image = data::Image::New();
+
+    Ogre::Vector3 world_inside_im  = {20., 10., 5.};
+    Ogre::Vector3 world_outside_im = {50., -1., 5.};
+
+    // Spacing is 0, throw exception.
+    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_inside_im), core::Exception);
+
+    utestData::generator::Image::generateImage(
+        image,
+        {40, 40, 40},
+        {1., 1., 1.},
+        {0., 0., 0.},
+        core::tools::Type::s_UINT8,
+        data::Image::PixelFormat::GRAY_SCALE
+    );
+
+    Ogre::Vector3i slice_idx;
+
+    CPPUNIT_ASSERT_NO_THROW(slice_idx = Utils::worldToSlices(*image, world_inside_im));
+
+    CPPUNIT_ASSERT_EQUAL(20, slice_idx[0]);
+    CPPUNIT_ASSERT_EQUAL(10, slice_idx[1]);
+    CPPUNIT_ASSERT_EQUAL(5, slice_idx[2]);
+
+    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_outside_im), core::Exception);
 }
 
 //------------------------------------------------------------------------------

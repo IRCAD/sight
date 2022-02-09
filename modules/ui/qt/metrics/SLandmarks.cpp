@@ -69,6 +69,8 @@ static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
+const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
+
 //------------------------------------------------------------------------------
 
 SLandmarks::SLandmarks() noexcept
@@ -84,6 +86,8 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_REMOVE_GROUP_SLOT, &SLandmarks::removeGroup, this);
     newSlot(s_MODIFY_GROUP_SLOT, &SLandmarks::modifyGroup, this);
     newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
+
+    newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
 
 //------------------------------------------------------------------------------
@@ -234,6 +238,7 @@ void SLandmarks::updating()
 
     QObject::connect(m_treeWidget.data(), &QTreeWidget::itemChanged, this, &SLandmarks::onGroupNameEdited);
     QObject::connect(m_treeWidget.data(), &QTreeWidget::currentItemChanged, this, &SLandmarks::onSelectionChanged);
+    QObject::connect(m_treeWidget.data(), &QTreeWidget::itemDoubleClicked, this, &SLandmarks::onLandmarkDoubleClicked);
     QObject::connect(m_sizeSlider.data(), &QSlider::valueChanged, this, &SLandmarks::onSizeChanged);
     QObject::connect(m_opacitySlider.data(), &QSlider::valueChanged, this, &SLandmarks::onOpacityChanged);
     QObject::connect(m_visibilityCheckbox.data(), &QCheckBox::stateChanged, this, &SLandmarks::onVisibilityChanged);
@@ -464,6 +469,64 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
     }
 
     m_groupEditorWidget->setDisabled(_current == nullptr);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int) const
+{
+    if(_item)
+    {
+        // Exclude top level item
+        if(_item->childCount() != 0)
+        {
+            return;
+        }
+
+        QString index[3];
+        index[0] = _item->text(0);
+        index[1] = _item->text(1);
+        index[2] = _item->text(2);
+
+        if(index[0].isEmpty() || index[1].isEmpty() || index[2].isEmpty())
+        {
+            // Do nothing if a value is missing.
+            return;
+        }
+
+        // Convert to double
+        double world_coord[3];
+        bool check[3] = {false, false, false};
+        world_coord[0] = index[0].toDouble(&check[0]);
+        world_coord[1] = index[1].toDouble(&check[1]);
+        world_coord[2] = index[2].toDouble(&check[2]);
+
+        // Check that conversion to double performed well.
+        if(!check[0] || !check[1] || !check[2])
+        {
+            SIGHT_ERROR(
+                "Cannot convert landmark position to double ("
+                + index[0].toStdString()
+                + ", " + index[1].toStdString()
+                + ", " + index[2].toStdString() + ")"
+            );
+            return;
+        }
+
+        // Log that we double clicked on a landmark
+        SIGHT_DEBUG(
+            "Double clicked on landmark [" + index[0].toStdString()
+            + ", " + index[1].toStdString()
+            + ", " + index[2].toStdString() + "]"
+        );
+
+        // Send signal with world coordinates of the landmarks
+        this->signal<world_coordinates_signal_t>(s_SEND_WORLD_COORD)->asyncEmit(
+            world_coord[0],
+            world_coord[1],
+            world_coord[2]
+        );
+    }
 }
 
 //------------------------------------------------------------------------------

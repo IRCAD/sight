@@ -136,6 +136,10 @@ public:
      */
     KeyConnectionsMap getAutoConnections() const override;
 
+    /// Signal send when double clicked on a landmark, send its world coordinates;
+    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
+    typedef core::com::Signal<void (double, double, double)> world_coordinates_signal_t;
+
     /// Resets the interface content and create connections between widgets and this service.
     void updating() override;
 
@@ -160,6 +164,14 @@ public:
      * @param _previous the old selected item.
      */
     void onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous);
+
+    /**
+     * @brief Called when double clicked on a landmark
+     *
+     * @param _item clicked item (landmark)
+     * @param _column column num (not used)
+     */
+    void onLandmarkDoubleClicked(QTreeWidgetItem* _item, int _column) const;
 
     /**
      * @brief Called when a group's point size is modified.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,7 @@ class UtilsTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(UtilsTest);
 CPPUNIT_TEST(convertOgreColorToFwColor);
 CPPUNIT_TEST(convertOgreMatrixToTM3D);
+CPPUNIT_TEST(worldToSliceTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,7 @@ public:
 
     void convertOgreColorToFwColor();
     void convertOgreMatrixToTM3D();
+    void worldToSliceTest();
 };
 
 } //namespace ut

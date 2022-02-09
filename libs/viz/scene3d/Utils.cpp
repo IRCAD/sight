@@ -805,17 +805,63 @@ void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const data::Matrix4::sptr
 
 std::pair<Ogre::Vector3, Ogre::Vector3> Utils::convertSpacingAndOrigin(const data::Image::csptr& _img)
 {
-    const auto& imgOrigin = _img->getOrigin();
+    return Utils::convertSpacingAndOrigin(*_img);
+}
+
+//------------------------------------------------------------------------------
+
+std::pair<Ogre::Vector3, Ogre::Vector3> Utils::convertSpacingAndOrigin(const data::Image& _img)
+{
+    const auto& imgOrigin = _img.getOrigin();
     const Ogre::Vector3 origin(static_cast<float>(imgOrigin[0]),
                                static_cast<float>(imgOrigin[1]),
                                static_cast<float>(imgOrigin[2]));
 
-    const auto& imgSpacing = _img->getSpacing();
+    const auto& imgSpacing = _img.getSpacing();
     const Ogre::Vector3 spacing(static_cast<float>(imgSpacing[0]),
                                 static_cast<float>(imgSpacing[1]),
                                 static_cast<float>(imgSpacing[2]));
 
     return std::make_pair(spacing, origin);
+}
+
+//------------------------------------------------------------------------------
+
+Ogre::Vector3i Utils::worldToSlices(const data::Image& _image, const Ogre::Vector3& _world)
+{
+    const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(_image);
+
+    // avoid 0 division
+
+    SIGHT_THROW_EXCEPTION_IF(
+        core::Exception("Image spacing cannot be '0'"),
+        spacing[0] == 0.f || spacing[1] == 0.f || spacing[2] == 0.f
+    );
+
+    const auto point = (_world - origin) / spacing;
+
+    const Ogre::Vector3i slices_idx(point);
+
+    // Ensure that the point is within bounds of the image, do nothing otherwise.
+    std::array<std::pair<int, int>, 3> boundaries = {{
+        {0, static_cast<int>(_image.getSize()[1])},
+        {0, static_cast<int>(_image.getSize()[0])},
+        {0, static_cast<int>(_image.getSize()[2])}
+    }
+    };
+
+    size_t i = 0;
+    for(const auto& [min, max] : boundaries)
+    {
+        if(slices_idx[i] < min || slices_idx[i] > max)
+        {
+            SIGHT_THROW_EXCEPTION(core::Exception("Point is outside image boundaries"));
+        }
+
+        ++i;
+    }
+
+    return slices_idx;
 }
 
 //------------------------------------------------------------------------------

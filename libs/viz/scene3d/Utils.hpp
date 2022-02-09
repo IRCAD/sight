@@ -191,6 +191,15 @@ public:
         const data::Image::csptr& _img
     );
 
+    /// Copies the image's spacing and origin into Ogre vectors.
+    /// Version with const reference of image
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
+        const data::Image& _img
+    );
+
+    /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
+    VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::Image& _image, const Ogre::Vector3& _world);
+
 private:
 
     /// Parses all resources.cfg files and adds resource locations to the resource group manager.

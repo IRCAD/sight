@@ -49,10 +49,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT       = "newImage";
-static const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT      = "sliceType";
-static const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT     = "sliceIndex";
-static const core::com::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT = "updateOpacity";
+static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT            = "newImage";
+static const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT           = "sliceType";
+static const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT          = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
+static const core::com::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT      = "updateOpacity";
 
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
@@ -81,6 +82,7 @@ SNegato3D::SNegato3D() noexcept :
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
+    newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato3D::updateSlicesFromWorld, this);
 
     m_pickedVoxelSignal = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
 }
@@ -597,6 +599,30 @@ void SNegato3D::moveSlices(int _x, int _y)
                              (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
         sig->asyncEmit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::updateSlicesFromWorld(double _x, double _y, double _z)
+{
+    const auto image = m_image.lock();
+
+    Ogre::Vector3 point = {static_cast<float>(_x), static_cast<float>(_y), static_cast<float>(_z)};
+    Ogre::Vector3i slice_idx;
+    try
+    {
+        slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
+    }
+    catch(core::Exception& _e)
+    {
+        SIGHT_WARN("Cannot update slice index: " << _e.what());
+        return;
+    }
+
+    const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
+                         (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
+
+    sig->asyncEmit(slice_idx[2], slice_idx[1], slice_idx[0]);
 }
 
 //------------------------------------------------------------------------------

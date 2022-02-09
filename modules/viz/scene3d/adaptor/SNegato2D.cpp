@@ -44,6 +44,8 @@ namespace sight::module::viz::scene3d::adaptor
 const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
+
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
 static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
@@ -58,6 +60,7 @@ SNegato2D::SNegato2D() noexcept :
 {
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
+    newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato2D::updateSlicesFromWorld, this);
 
     m_sliceIndexChangedSig = this->newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
 }
@@ -298,6 +301,30 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     this->updateShaderSliceIndexParameter();
 
     m_sliceIndexChangedSig->emit();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::updateSlicesFromWorld(double _x, double _y, double _z)
+{
+    const auto image = m_image.lock();
+
+    Ogre::Vector3 point = {static_cast<float>(_x), static_cast<float>(_y), static_cast<float>(_z)};
+    Ogre::Vector3i slice_idx;
+    try
+    {
+        slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
+    }
+    catch(core::Exception& _e)
+    {
+        SIGHT_WARN("Cannot update slice index: " << _e.what());
+        return;
+    }
+
+    const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
+                         (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
+
+    sig->asyncEmit(slice_idx[2], slice_idx[1], slice_idx[0]);
 }
 
 //------------------------------------------------------------------------------
