@@ -79,6 +79,7 @@ namespace video
         <videoSupport>true</videoSupport>
         <useAbsolutePath>false</useAbsolutePath>
         <label>Video source: </label>
+        <resolution>min/max/preferences/prompt/640x480</resolution>
     </service>
    @endcode
  *
@@ -93,7 +94,16 @@ namespace video
  * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
  * - \b label (optional, default="Video source: "): label of the selector.
+ * - \b resolution (optional, default="preferences"): Camera resolution. If 'preferences' is set, the camera resolution
+ * will
+ * be extracted from the preferences, otherwise, `min`, `max` or a specific value (eg: 640x480) are computed from the
+ * camera's supported resolutions. When `prompt` option is set, the camera selection dialog will be always displayed.
+ *
+ * @section remarks remarks
+ * In order to launch directly the video after selecting and configuring the device, remember to connect the
+ *`configuredDevice()` signal with your grabber's `startCamera` slot.
  */
+
 class MODULE_UI_QT_CLASS_API SCamera final : public QObject,
                                              public sight::ui::base::IEditor
 {
@@ -107,7 +117,10 @@ public:
     MODULE_UI_QT_API SCamera();
 
     /// Destroys the service.
-    MODULE_UI_QT_API virtual ~SCamera() noexcept;
+    MODULE_UI_QT_API ~SCamera() noexcept override = default;
+
+    // Key saved in the preference file
+    static const std::string s_RESOLUTION_PREF_KEY;
 
 protected Q_SLOTS:
 
@@ -123,22 +136,25 @@ protected Q_SLOTS:
      */
     void onActivated(int _index);
 
+    /// Allows setting the camera resolution preference.
+    void setPreference();
+
 private:
 
     /// Type of the 'configured' signal.
     typedef core::com::Signal<void ()> ConfiguredSignalType;
 
     /// Configures the service.
-    virtual void configuring() final;
+    void configuring() final;
 
     /// Installs the layout.
-    virtual void starting() final;
+    void starting() final;
 
     /// Destroys the layout.
-    virtual void stopping() final;
+    void stopping() final;
 
     /// Does nothing.
-    virtual void updating() final;
+    void updating() final;
 
     /// Calls when user select a file.
     void onChooseFile();
@@ -169,6 +185,14 @@ private:
 
     /// Label of the selector.
     std::string m_label {"Video source: "};
+
+    /// Requested resolution in xml configuration of the service
+    std::string m_resolution;
+
+    /// Value extracted from the preferences
+    std::string m_cameraResolutionPreference;
+
+    bool m_preferenceMode {false};
 
     static constexpr std::string_view s_CAMERA        = "camera";
     static constexpr std::string_view s_CAMERA_SERIES = "cameraSeries";

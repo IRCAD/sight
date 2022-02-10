@@ -27,16 +27,19 @@
 #include <data/Camera.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <QCamera>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QObject>
 #include <QPushButton>
 #include <QtMultimedia>
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <regex>
 #include <sstream>
 #include <unordered_map>
 
@@ -50,7 +53,7 @@ namespace video
 
 //-----------------------------------------------------------------------------
 
-CameraDeviceDlg::CameraDeviceDlg() :
+CameraDeviceDlg::CameraDeviceDlg(std::string xmlResolutionConfig) :
     QDialog()
 {
     QVBoxLayout* mainLayout     = new QVBoxLayout();
@@ -72,7 +75,7 @@ CameraDeviceDlg::CameraDeviceDlg() :
     std::map<std::string, QCameraInfo> nameToUID;
     std::vector<std::string> nameList;
 
-    //We should keep the same order than given by Qt, and uniquely identify cameras with the same name.
+    //We should keep the same order as given by Qt, and uniquely identify cameras with the same name.
 
     // First run: collect all detected device names and UIDs
     std::size_t index = 0;
@@ -105,16 +108,33 @@ CameraDeviceDlg::CameraDeviceDlg() :
         m_devicesComboBox->addItem(QString(deviceName.c_str()), QVariant::fromValue(deviceInfo));
     }
 
-    buttonLayout->addWidget(validateButton);
-    buttonLayout->addWidget(cancelButton);
+    // Select camera on which the resolution should be applied onto
+    if(index > 1 && xmlResolutionConfig != "preferences" && xmlResolutionConfig != "prompt")
+    {
+        //No need of m_camSettings widget
+        buttonLayout->addWidget(validateButton);
+        buttonLayout->addWidget(cancelButton);
 
-    mainLayout->addLayout(selectorLayout);
-    mainLayout->addWidget(m_camSettings);
-    mainLayout->addLayout(buttonLayout);
+        mainLayout->addLayout(selectorLayout);
+        mainLayout->addLayout(buttonLayout);
 
-    this->setModal(true);
-    this->setLayout(mainLayout);
-    this->setWindowTitle("Camera device selector");
+        this->setModal(true);
+        this->setLayout(mainLayout);
+        this->setWindowTitle("Camera device selector");
+    }
+    else
+    {
+        buttonLayout->addWidget(validateButton);
+        buttonLayout->addWidget(cancelButton);
+
+        mainLayout->addLayout(selectorLayout);
+        mainLayout->addWidget(m_camSettings);
+        mainLayout->addLayout(buttonLayout);
+
+        this->setModal(true);
+        this->setLayout(mainLayout);
+        this->setWindowTitle("Camera device selector");
+    }
 
     this->onSelectDevice(m_devicesComboBox->currentIndex());
 
@@ -125,26 +145,22 @@ CameraDeviceDlg::CameraDeviceDlg() :
 
 //-----------------------------------------------------------------------------
 
-CameraDeviceDlg::~CameraDeviceDlg()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
+bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string& resolutionXMLOption)
 {
     int index = m_devicesComboBox->currentIndex();
     if(index >= 0)
     {
-        QCameraInfo camInfo = qvariant_cast<QCameraInfo>(
-            m_devicesComboBox->itemData(
-                index
-            )
-        );
+        QCameraInfo camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
+        QCamera cam(camInfo);
+        cam.load();
+
+        QCameraImageCapture imageCapture(&cam);
+        const QList<QSize> supportedResolutions = imageCapture.supportedResolutions();
+
         [[maybe_unused]] data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
         QListWidgetItem* item = m_camSettings->currentItem();
-        if(item)
+        if((item && resolutionXMLOption == "preferences") || (item && resolutionXMLOption == "prompt"))
         {
             QCameraViewfinderSettings settings = qvariant_cast<QCameraViewfinderSettings>(item->data(Qt::UserRole));
             camera->setMaximumFrameRate(static_cast<float>(settings.maximumFrameRate()));
@@ -153,6 +169,18 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
 
             PixelFormatTranslatorType::left_const_iterator iter;
             iter = pixelFormatTranslator.left.find(settings.pixelFormat());
+            try
+            {
+                sight::ui::base::Preferences resolutionPreference;
+                const auto prefValue = std::to_string(settings.resolution().width()) + "x" + std::to_string(
+                    settings.resolution().height()
+                );
+                resolutionPreference.put(SCamera::s_RESOLUTION_PREF_KEY, prefValue);
+            }
+            catch(boost::property_tree::ptree_error&)
+            {
+                SIGHT_ERROR(" Couldn't save preference");
+            }
 
             if(iter != pixelFormatTranslator.left.end())
             {
@@ -163,13 +191,25 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
                 SIGHT_ERROR("No compatible pixel format found");
             }
         }
+        else if(!resolutionXMLOption.empty())
+        {
+            const QSize xmlResolutionValue = this->getResolution(resolutionXMLOption, supportedResolutions);
+            if(xmlResolutionValue.isNull())
+            {
+                return false;
+            }
+
+            camera->setMaximumFrameRate(30.f);
+            camera->setHeight(static_cast<size_t>(xmlResolutionValue.height()));
+            camera->setWidth(static_cast<size_t>(xmlResolutionValue.width()));
+        }
         else
         {
+            SIGHT_ERROR("No camera setting selected, using default...");
             camera->setMaximumFrameRate(30.f);
             camera->setHeight(0);
             camera->setWidth(0);
-
-            SIGHT_ERROR("No camera setting selected, using default...");
+            return false;
         }
 
 //FIXME : Setting the pixel format generate an error (gstreamer)
@@ -221,7 +261,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
                     SIGHT_ERROR("No compatible pixel format found");
                 }
 
-                //Create QCameraViewfinderSettings from the informations of the QCameraImageCapture
+                //Create QCameraViewfinderSettings from the information of the QCameraImageCapture
                 QCameraViewfinderSettings settings;
                 //TODO : Can we get the maximum frameRate from an other way ?
                 settings.setMaximumFrameRate(30.0);
@@ -275,6 +315,108 @@ void CameraDeviceDlg::onSelectDevice(int index)
 }
 
 //-----------------------------------------------------------------------------
+QSize CameraDeviceDlg::getResolution(const std::string& resolutionXMLOption, const QList<QSize>& supportedResolutions)
+{
+    if(resolutionXMLOption == "min")
+    {
+        const auto criteria = [&](const QSize& a, const QSize& b)
+                              {
+                                  return (a.width() * a.height()) <= (b.width() * b.height());
+                              };
+        const QSize min = *std::min_element(supportedResolutions.begin(), supportedResolutions.end(), criteria);
+        return min;
+    }
+    else if(resolutionXMLOption == "max")
+    {
+        const auto criteria = [&](const QSize& a, const QSize& b)
+                              {
+                                  return (a.width() * a.height()) <= (b.width() * b.height());
+                              };
+        const QSize max = *std::max_element(supportedResolutions.begin(), supportedResolutions.end(), criteria);
+        return max;
+    }
+    else if(resolutionXMLOption == "preferences")
+    {
+        try
+        {
+            sight::ui::base::Preferences resolutionPreference;
+            auto resolutionPreferenceStr = resolutionPreference.get<std::string>(SCamera::s_RESOLUTION_PREF_KEY);
+            std::regex resPattern("(\\d*)[Xx](\\d*)");
+            std::smatch match;
+            std::regex_match(resolutionPreferenceStr, match, resPattern);
+            if(!match.empty())
+            {
+                int xmlWidth  = std::stoi(std::string(match[1].first, match[1].second));
+                int xmlHeight = std::stoi(std::string(match[2].first, match[2].second));
+                const QSize res {xmlWidth, xmlHeight};
+
+                // find the resolution among the supportedResolutions list
+                int i = supportedResolutions.indexOf(res);
+                if(i == -1)
+                {
+                    QMessageBox::critical(
+                        this,
+                        "Error",
+                        "The requested resolution is not supported."
+                    );
+                }
+                else
+                {
+                    return res;
+                }
+            }
+            else
+            {
+                QMessageBox::critical(
+                    this,
+                    "Error",
+                    "The requested resolution is not supported."
+                );
+            }
+        }
+        catch(boost::property_tree::ptree_error&)
+        {
+            SIGHT_ERROR("Couldn't get preference. The required key doesn't exist.");
+        }
+    }
+    else
+    {
+        std::regex resPattern("(\\d*)[Xx](\\d*)");
+        std::smatch match;
+        std::regex_match(resolutionXMLOption, match, resPattern);
+        if(!match.empty())
+        {
+            int xmlWidth  = std::stoi(std::string(match[1].first, match[1].second));
+            int xmlHeight = std::stoi(std::string(match[2].first, match[2].second));
+            const QSize res {xmlWidth, xmlHeight};
+
+            // find the resolution among the supportedResolutions list
+            int i = supportedResolutions.indexOf(res);
+            if(i == -1)
+            {
+                QMessageBox::critical(
+                    this,
+                    "Error",
+                    "The requested resolution is not supported."
+                );
+            }
+            else
+            {
+                return res;
+            }
+        }
+        else
+        {
+            QMessageBox::critical(
+                this,
+                "Error",
+                "The requested resolution is not supported."
+            );
+        }
+    }
+
+    return {0, 0};
+}
 
 } // video
 

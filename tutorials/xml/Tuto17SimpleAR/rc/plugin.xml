@@ -30,7 +30,7 @@
             <!-- Series of camera calibration -->
             <object uid="cameraSeries" type="sight::data::CameraSeries" />
             <!-- Camera calibration, deferred because it is extracted from the series -->
-            <object uid="camera" type="sight::data::Camera" src="deferred" />
+            <object uid="camera" type="sight::data::Camera" src="deferred"/>
             <!-- Frame timeline used to buffer the output of the video grabber -->
             <object uid="frameTL" type="sight::data::FrameTL" />
             <!-- Video frame that is used for the current iteration -->
@@ -339,7 +339,7 @@
 
             <!-- extract the first sight::data::Camera from the sight::data::CameraSeries -->
             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
-                <inout key="source" uid="cameraSeries" />
+                <inout key="cameraSeries" uid="cameraSeries" />
                 <out group="camera" >
                     <key index="0" uid="camera" />
                 </out>
