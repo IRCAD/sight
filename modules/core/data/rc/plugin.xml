@@ -1,13 +1,5 @@
 <plugin id="sight::module::data" library="true" >
 
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
-         <service>sight::module::data::MedicalImageSrv</service>
-         <object>sight::data::Image</object>
-         <desc>This service convert its attached image to a medical image by adding specific fields.</desc>
-    </extension>
-
     <extension implements="sight::service::extension::Factory">
          <type>sight::module::data::ICamp</type>
          <service>sight::module::data::SCopy</service>

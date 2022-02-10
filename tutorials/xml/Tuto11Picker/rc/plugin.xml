@@ -186,11 +186,6 @@
                 <type mode="reader" />
             </service>
 
-            <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="image" />
-            </service>
-
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
@@ -224,7 +219,6 @@
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="medicalImageConverterSrv" />
             <start uid="imageWriterSrv" />
             <start uid="trackballInteractorAdp" />
             <start uid="pickerInteractorAdp" />

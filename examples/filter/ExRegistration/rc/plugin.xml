@@ -304,10 +304,6 @@ Detail of the ToolBar
                 <config mode="rigid" />
             </service>
 
-            <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" >
-                <inout key="image" uid="myImage" />
-            </service>
-
             <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
@@ -354,7 +350,6 @@ Detail of the ToolBar
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="medicalImageSrv" />
             <start uid="PLRegistrationSrv" />
             <start uid="addLAndmarksInPL1Srv" />
             <start uid="addLAndmarksInPL2Srv" />

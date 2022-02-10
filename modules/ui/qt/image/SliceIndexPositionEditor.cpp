@@ -100,33 +100,6 @@ void SliceIndexPositionEditor::starting()
     layout->addWidget(m_sliceSelectorPanel);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    {
-        auto image = m_image.lock();
-        SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image.get());
-
-        m_axialIndex = imHelper::getSliceIndex(*image, orientation_t::AXIAL);
-        if(m_axialIndex == -1)
-        {
-            m_axialIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
-        }
-
-        m_frontalIndex = imHelper::getSliceIndex(*image, orientation_t::FRONTAL);
-        if(m_frontalIndex == -1)
-        {
-            m_frontalIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
-        }
-
-        m_sagittalIndex = imHelper::getSliceIndex(*image, orientation_t::SAGITTAL);
-        if(m_sagittalIndex == -1)
-        {
-            m_sagittalIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
-        }
-    }
-    this->updateSliceTypeFromImg(m_orientation);
-
     qtContainer->setLayout(layout);
 
     this->updating();
@@ -183,26 +156,9 @@ void SliceIndexPositionEditor::updating()
     const bool imageIsValid = imHelper::checkImageValidity(image.get_shared());
     m_sliceSelectorPanel->setEnable(imageIsValid);
 
-    m_axialIndex = imHelper::getSliceIndex(*image, orientation_t::AXIAL);
-    if(m_axialIndex == -1)
-    {
-        m_axialIndex = 0;
-        imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
-    }
-
-    m_frontalIndex = imHelper::getSliceIndex(*image, orientation_t::FRONTAL);
-    if(m_frontalIndex == -1)
-    {
-        m_frontalIndex = 0;
-        imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
-    }
-
-    m_sagittalIndex = imHelper::getSliceIndex(*image, orientation_t::SAGITTAL);
-    if(m_sagittalIndex == -1)
-    {
-        m_sagittalIndex = 0;
-        imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
-    }
+    m_axialIndex    = std::max(std::int64_t(0), imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL));
+    m_frontalIndex  = std::max(std::int64_t(0), imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL));
+    m_sagittalIndex = std::max(std::int64_t(0), imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL));
 
     this->updateSliceIndexFromImg(*image);
 }

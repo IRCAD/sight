@@ -246,18 +246,9 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
 
             // Get up-to-date index values.
             const int idx[3] = {
-                static_cast<int>(imHelper::getSliceIndex(
-                                     *image,
-                                     imHelper::orientation_t::SAGITTAL
-                                 )),
-                static_cast<int>(imHelper::getSliceIndex(
-                                     *image,
-                                     imHelper::orientation_t::FRONTAL
-                                 )),
-                static_cast<int>(imHelper::getSliceIndex(
-                                     *image,
-                                     imHelper::orientation_t::AXIAL
-                ))
+                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL)),
+                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL)),
+                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL))
             };
 
             // Send signal.

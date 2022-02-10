@@ -49,10 +49,6 @@
             <inout key="target" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
-            <inout key="image" uid="image" />
-        </service>
-
         <service uid="sliderIndexDicomPullerEditor" type="sight::module::io::dicomweb::SSliceIndexDicomPullerEditor">
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />
@@ -70,7 +66,6 @@
 
         <start uid="mainview" />
         <!-- Deferred start -->
-        <start uid="medicalImgConverter" />
         <start uid="imageDumpLocker" />
         <!-- 3D scene 'gs' -->
         <start uid="pNegatoAdp" />

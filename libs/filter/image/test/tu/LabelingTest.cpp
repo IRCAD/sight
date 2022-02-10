@@ -120,7 +120,6 @@ void LabelingTest::computeCentroids()
     // Call the ITK operator
     filter::image::computeCentroids(img, pointListCentroids, pointListLabels);
 
-    data::helper::MedicalImage::checkLandmarks(img);
     data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*img);
 
     // Check that we can get the landmarks

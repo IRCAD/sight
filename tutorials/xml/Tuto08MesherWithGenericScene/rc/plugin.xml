@@ -258,11 +258,6 @@
 
             </service>
 
-            <!-- This service converts a simple fwData::Image to medical Image -->
-            <service uid="medicaImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="image" />
-            </service>
-
             <service uid="updaterReconstSrv" type="sight::module::data::updater::SObjFromSlot" >
                 <out key="object" uid="reconstruction" />
             </service>
@@ -326,7 +321,6 @@
             <start uid="progressBarView" />
             <start uid="imageWriterSrv" />
             <start uid="updaterReconstSrv" />
-            <start uid="medicaImageConverterSrv" />
             <start uid="representationEditorSrv" />
             <start uid="organMaterialEditorSrv" />
             <start uid="sliderIndexEditorSrv" />

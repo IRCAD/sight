@@ -21,6 +21,7 @@
  ***********************************************************************/
 #include "io/vtk/vtk.hpp"
 
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <geometry/data/MeshFunctions.hpp>
@@ -315,6 +316,9 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
         destBuffer = destination->getBuffer();
         const std::size_t sizeInBytes = destination->getSizeInBytes();
         std::memcpy(destBuffer, input, sizeInBytes);
+
+        sight::data::helper::MedicalImage::checkTransferFunctionPool(destination);
+        sight::data::helper::MedicalImage::checkImageSliceIndex(destination);
     }
 }
 

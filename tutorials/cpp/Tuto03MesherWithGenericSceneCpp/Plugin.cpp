@@ -148,8 +148,7 @@ void Plugin::initialize()
     );
 
     // extrator/converter
-    auto extractImage         = m_appManager->addService("sight::module::data::SExtractObj", true, false);
-    auto medicaImageConverter = m_appManager->addService("sight::module::data::MedicalImageSrv", true);
+    auto extractImage = m_appManager->addService("sight::module::data::SExtractObj", true, false);
 
     //editors
     auto snapshotAdp = m_appManager->addService(
@@ -521,7 +520,6 @@ void Plugin::initialize()
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
     imageAdaptor->setObjectId("image", s_IMAGE_ID);
     extractImage->setObjectId("target", s_IMAGE_ID, 0);
-    medicaImageConverter->setObjectId("image", s_IMAGE_ID);
     listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
     representationEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);

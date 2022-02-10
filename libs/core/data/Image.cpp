@@ -20,6 +20,7 @@
  *
  ***********************************************************************/
 
+#include "data/helper/MedicalImage.hpp"
 #include "data/Image.hpp"
 
 #include "data/Exception.hpp"
@@ -82,6 +83,9 @@ Image::Image(data::Object::Key) :
     newSignal<SliceTypeModifiedSignalType>(s_SLICE_TYPE_MODIFIED_SIG);
     newSignal<VisibilityModifiedSignalType>(s_VISIBILITY_MODIFIED_SIG);
     newSignal<TransparencyModifiedSignalType>(s_TRANSPARENCY_MODIFIED_SIG);
+
+    auto pl = data::PointList::New();
+    data::helper::MedicalImage::setLandmarks(*this, pl);
 }
 
 //------------------------------------------------------------------------------

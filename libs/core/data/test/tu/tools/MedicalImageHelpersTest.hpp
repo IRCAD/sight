@@ -41,13 +41,10 @@ CPPUNIT_TEST(setPixelTest);
 CPPUNIT_TEST(isBufNull);
 CPPUNIT_TEST(testLandmarks);
 CPPUNIT_TEST(testImageValidity);
-CPPUNIT_TEST(testSliceCount);
 CPPUNIT_TEST(testSliceIndex);
 CPPUNIT_TEST(testDistances);
 CPPUNIT_TEST(testDistanceVisibility);
 CPPUNIT_TEST(testLandmarksVisibility);
-CPPUNIT_TEST(testComment);
-CPPUNIT_TEST(testLabels);
 CPPUNIT_TEST(testTransferFunction);
 CPPUNIT_TEST_SUITE_END();
 
@@ -90,12 +87,6 @@ public:
 
     /// Tests set/get methods on landmarks visibility.
     void testLandmarksVisibility();
-
-    /// Tests set/get methods on comment.
-    void testComment();
-
-    /// Tests set/get methods on labels.
-    void testLabels();
 
     /// Tests helper methods around transfer function.
     void testTransferFunction();

@@ -28,6 +28,7 @@
 
 #include <data/dicom/Image.hpp>
 #include <data/DicomSeries.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <geometry/data/VectorFunctions.hpp>
@@ -377,6 +378,12 @@ void Image::readImagePixelModule()
 
     // Last, set image buffer
     m_object->setBuffer(imageBuffer, true, imageType, {dimensions[0], dimensions[1], dimensions[2]}, format);
+
+    if(sight::data::helper::MedicalImage::checkImageValidity(m_object))
+    {
+        sight::data::helper::MedicalImage::checkTransferFunctionPool(m_object);
+        sight::data::helper::MedicalImage::checkImageSliceIndex(m_object);
+    }
 }
 
 //------------------------------------------------------------------------------

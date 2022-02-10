@@ -58,16 +58,6 @@ typedef enum
 } orientation_t;
 
 /**
- * @brief       Check if the image has a landmark field.
- *
- * If the image hasn't landmark field, it is added and the method return true.
- *
- * @param[in]   _pImg   image which must contains the field.
- * @return      true if the field is added.
- */
-DATA_API bool checkLandmarks(data::Image::sptr _pImg);
-
-/**
  * @brief       Check if the image is valid.
  *
  * The image size must be > 1 for each dimension.
@@ -136,30 +126,6 @@ void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max
 DATA_API bool checkTransferFunctionPool(const data::Image::sptr& _img);
 
 // Getter/Setter for specific image fields
-
-/**
- * @brief Helper function to get slice count of an medical image in a specific orientation (Axial, Sagittal,
- * Frontal).
- *
- * @param _image : input image reference.
- * @param _orientation : desired orientation @see orientation enum.
- * @return std::int64_t slice count.
- */
-DATA_API std::int64_t getSliceCount(const data::Image& _image, const orientation_t& _orientation);
-
-/**
- * @brief Helper function to set slice count of an medical image in a specific orientation (Axial, Sagittal,
- * Frontal).
- *
- * @param _image : input image reference.
- * @param _orientation : desired orientation @see orientation enum.
- * @param _sliceCount : the required slice cound as std::int64_t.
- */
-DATA_API void setSliceCount(
-    data::Image& _image,
-    const orientation_t& _orientation,
-    std::int64_t _sliceCount
-);
 
 /**
  * @brief Helper function to get current slice index on a medical image in a specific orientation (Axial, Sagittal,

@@ -225,33 +225,11 @@ void SNegato2D::newImage()
         m_plane->setOriginPosition(origin);
 
         // Update Slice
-        const auto imgSize = image->getSize();
-
         namespace imHelper = data::helper::MedicalImage;
 
-        auto axialIdx = imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL);
-        // -1 means that the field is missing.
-        if(axialIdx <= -1)
-        {
-            SIGHT_INFO("Axial Idx field missing");
-            axialIdx = static_cast<std::int64_t>(imgSize[2] / 2);
-        }
-
-        auto frontalIdx = imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL);
-        // -1 means that the field is missing.
-        if(frontalIdx <= -1)
-        {
-            SIGHT_INFO("Axial Idx field missing");
-            frontalIdx = static_cast<std::int64_t>(imgSize[1] / 2);
-        }
-
-        auto sagittalIdx = imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL);
-        // -1 means that the field is missing.
-        if(sagittalIdx <= -1)
-        {
-            SIGHT_INFO("Axial Idx field missing");
-            sagittalIdx = static_cast<std::int64_t>(imgSize[0] / 2);
-        }
+        axialIdx    = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL)));
+        frontalIdx  = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL)));
+        sagittalIdx = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL)));
     }
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);

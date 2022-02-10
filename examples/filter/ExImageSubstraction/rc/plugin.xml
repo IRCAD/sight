@@ -351,10 +351,6 @@
                 </config>
             </service>
 
-            <service uid="medicalImage1Srv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="image1" />
-            </service>
-
             <service uid="readerFile1Srv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="image1" />
                 <type mode="reader" />
@@ -364,10 +360,6 @@
             <service uid="sliderNegato1Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image1" />
                 <sliceIndex>axial</sliceIndex>
-            </service>
-
-            <service uid="medicalImage2Srv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="image2" />
             </service>
 
             <service uid="readerFile2Srv" type="sight::module::ui::base::io::SSelector" >
@@ -385,10 +377,6 @@
                 <in key="image1" uid="image1" />
                 <in key="image2" uid="image2" />
                 <inout key="result" uid="imageResult" />
-            </service>
-
-            <service uid="medicalImage3Srv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="imageResult" />
             </service>
 
             <!-- Editors for Negato3 -->
@@ -437,9 +425,6 @@
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="medicalImage1Srv" />
-            <start uid="medicalImage2Srv" />
-            <start uid="medicalImage3Srv" />
             <start uid="sliderNegato1Srv" />
             <start uid="sliderNegato2Srv" />
             <start uid="sliderNegato3Srv" />

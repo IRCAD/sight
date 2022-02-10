@@ -158,10 +158,6 @@
             </config>
         </service>
 
-        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-        </service>
-
         <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
@@ -216,7 +212,6 @@
         <start uid="mainView" />
         <start uid="reconstructionUpdaterSrv" />
         <start uid="imageWriterSrv" />
-        <start uid="MedicalImageSrv" />
         <start uid="materialEditorSrv" />
         <start uid="representationSrv" />
         <start uid="modelSeriesListSrv" />

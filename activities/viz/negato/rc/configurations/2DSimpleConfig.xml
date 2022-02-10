@@ -42,7 +42,7 @@
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
             <inout key="image" uid="${imageID}" />
-            <config layer="default" picker="picker" autoresetcamera="true" mode="2D" slices="1" sliceIndex="${orientation}" />
+            <config layer="default" autoresetcamera="true" sliceIndex="${orientation}" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
@@ -51,16 +51,12 @@
             <inout key="target" uid="${imageID}" />
         </service>
 
-        <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
-            <inout key="image" uid="${imageID}" />
-        </service>
         <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
             <inout key="image" uid="${imageID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
         <start uid="imageDumpLocker" />
-        <start uid="medicalImgConverter" />
         <start uid="mainview" />
 
         <!-- gs adaptors -->

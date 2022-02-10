@@ -123,10 +123,6 @@
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>
 
-        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true">
-            <inout key="image" uid="${image}" />
-        </service>
-
         <!-- <service uid="ActionSFocusLandmark" type="sight::module::ui::base::metrics::SFocusLandmark" >
             <in key="landmarks" uid="${landmarks}" autoConnect="true" />
             <inout key="image" uid="${image}" />
@@ -238,7 +234,6 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
-        <start uid="MedicalImageSrv" />
 
         <start uid="cfgNegato1" />
         <start uid="cfgNegato2" />

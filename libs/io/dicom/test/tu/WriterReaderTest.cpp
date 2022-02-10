@@ -190,7 +190,6 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     data::Image::sptr image = imgSeries->getImage();
 
     // Add landmarks
-    data::helper::MedicalImage::checkLandmarks(image);
     data::PointList::sptr landmarks    = data::helper::MedicalImage::getLandmarks(*image);
     const data::Image::Spacing spacing = image->getSpacing();
     const data::Image::Origin origin   = image->getOrigin();

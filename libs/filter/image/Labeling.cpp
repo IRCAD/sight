@@ -180,7 +180,6 @@ struct LabelImageFilter
         else
         {
             //get landmarks
-            data::helper::MedicalImage::checkLandmarks(image);
             data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
 
             SIGHT_ASSERT("landmarks not instanced", landmarks);

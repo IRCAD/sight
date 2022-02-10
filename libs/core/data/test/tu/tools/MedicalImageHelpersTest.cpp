@@ -481,14 +481,6 @@ void MedicalImageHelpersTest::testLandmarks()
 {
     data::Image::sptr image = generateImage();
 
-    // get landmarks (should be nullptr)
-    const auto landmarksNull = medImHelper::getLandmarks(*image);
-    CPPUNIT_ASSERT(!landmarksNull);
-
-    // check landmarks (should create the field and return true)
-    const bool landmarks_added = medImHelper::checkLandmarks(image);
-    CPPUNIT_ASSERT_EQUAL(true, landmarks_added);
-
     // get landrmaks (should NOT be nullptr)
     const auto landmarksNotNull = medImHelper::getLandmarks(*image);
     CPPUNIT_ASSERT(landmarksNotNull);
@@ -536,57 +528,6 @@ void MedicalImageHelpersTest::testImageValidity()
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpersTest::testSliceCount()
-{
-    const auto image = generateImage();
-    // AXIAL
-    {
-        auto orientation = medImHelper::orientation_t::AXIAL;
-
-        auto count = medImHelper::getSliceCount(*image, orientation);
-
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), count);
-
-        medImHelper::setSliceCount(*image, orientation, std::int64_t(image->getSize()[0]));
-
-        count = medImHelper::getSliceCount(*image, orientation);
-
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(256), count);
-    }
-
-    // SAGITTAL
-    {
-        auto orientation = medImHelper::orientation_t::SAGITTAL;
-
-        auto count = medImHelper::getSliceCount(*image, orientation);
-
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), count);
-
-        medImHelper::setSliceCount(*image, orientation, std::int64_t(image->getSize()[1]));
-
-        count = medImHelper::getSliceCount(*image, orientation);
-
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(150), count);
-    }
-
-    // FRONTAL
-    {
-        auto orientation = medImHelper::orientation_t::FRONTAL;
-
-        auto count = medImHelper::getSliceCount(*image, orientation);
-
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), count);
-
-        medImHelper::setSliceCount(*image, orientation, std::int64_t(image->getSize()[2]));
-
-        count = medImHelper::getSliceCount(*image, orientation);
-
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(100), count);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageHelpersTest::testSliceIndex()
 {
     const auto image = generateImage();
@@ -597,7 +538,7 @@ void MedicalImageHelpersTest::testSliceIndex()
 
         auto index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), index);
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(50), index);
 
         medImHelper::setSliceIndex(*image, orientation, std::int64_t(35));
 
@@ -612,7 +553,7 @@ void MedicalImageHelpersTest::testSliceIndex()
 
         auto index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), index);
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(128), index);
 
         medImHelper::setSliceIndex(*image, orientation, std::int64_t(0));
 
@@ -627,7 +568,7 @@ void MedicalImageHelpersTest::testSliceIndex()
 
         auto index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), index);
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(75), index);
 
         medImHelper::setSliceIndex(*image, orientation, std::int64_t(17));
 
@@ -699,55 +640,9 @@ void MedicalImageHelpersTest::testLandmarksVisibility()
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpersTest::testComment()
-{
-    const auto image = generateImage();
-
-    auto comment = medImHelper::getComment(*image);
-
-    CPPUNIT_ASSERT(comment.empty());
-
-    medImHelper::setComment(*image, "useful comment, isn't it ?");
-
-    comment = medImHelper::getComment(*image);
-
-    CPPUNIT_ASSERT(!comment.empty());
-
-    CPPUNIT_ASSERT_EQUAL(comment.compare("useful comment, isn't it ?"), 0);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageHelpersTest::testLabels()
-{
-    const auto image = generateImage();
-
-    auto label = medImHelper::getLabel(*image);
-
-    CPPUNIT_ASSERT(label.empty());
-
-    medImHelper::setComment(*image, "myLabel5");
-
-    label = medImHelper::getComment(*image);
-
-    CPPUNIT_ASSERT(!label.empty());
-
-    CPPUNIT_ASSERT_EQUAL(label.compare("myLabel5"), 0);
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageHelpersTest::testTransferFunction()
 {
     data::Image::sptr image = generateImage();
-
-    // get transfer function composite (should be nullptr)
-    const auto tfpool_null = medImHelper::getTransferFunction(*image);
-    CPPUNIT_ASSERT(!tfpool_null);
-
-    // check transfer function composite (should create the field and return true)
-    const bool tf_pool_added = medImHelper::checkTransferFunctionPool(image);
-    CPPUNIT_ASSERT_EQUAL(true, tf_pool_added);
 
     // get transfer function composite (should NOT be nullptr)
     const auto tfpool_not_null = medImHelper::getTransferFunction(*image);

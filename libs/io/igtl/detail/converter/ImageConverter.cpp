@@ -25,6 +25,7 @@
 #include "io/igtl/detail/DataConverter.hpp"
 #include "io/igtl/detail/ImageTypeConverter.hpp"
 
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -127,6 +128,12 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     auto destIter = destImg->begin();
     igtlImageBuffer = reinterpret_cast<char*>(srcImg->GetScalarPointer());
     std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), destIter);
+
+    if(sight::data::helper::MedicalImage::checkImageValidity(destImg))
+    {
+        sight::data::helper::MedicalImage::checkTransferFunctionPool(destImg);
+        sight::data::helper::MedicalImage::checkImageSliceIndex(destImg);
+    }
 
     return destImg;
 }

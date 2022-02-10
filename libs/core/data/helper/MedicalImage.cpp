@@ -49,17 +49,12 @@ namespace id
 {
 
 // Note: keeping old name to preserve compatibility, should be harmonized in the future.
-static constexpr std::string_view axial_slice_count    = "Axial Slice Count";
-static constexpr std::string_view frontal_slice_count  = "Frontal Slice Count";
-static constexpr std::string_view sagittal_slice_count = "Sagittal Slice Count";
 static constexpr std::string_view axial_slice_index    = "Axial Slice Index";
 static constexpr std::string_view frontal_slice_index  = "Frontal Slice Index";
 static constexpr std::string_view sagittal_slice_index = "Sagittal Slice Index";
 static constexpr std::string_view landmarks            = "m_imageLandmarksId";
 static constexpr std::string_view distances            = "m_imageDistancesId";
 static constexpr std::string_view distance_visibility  = "ShowDistances";
-static constexpr std::string_view comment              = "m_commentId";
-static constexpr std::string_view label                = "m_labelId";
 static constexpr std::string_view transferFunction     = "m_transferFunctionCompositeId";
 static constexpr std::string_view landmarks_visibility = "ShowLandmarks";
 
@@ -67,23 +62,6 @@ static constexpr std::string_view landmarks_visibility = "ShowLandmarks";
 
 namespace MedicalImage
 {
-
-//------------------------------------------------------------------------------
-
-bool checkLandmarks(data::Image::sptr _pImg)
-{
-    bool fieldIsModified = false;
-
-    // Manage image landmarks
-    if(!_pImg->getField(std::string(id::landmarks)))
-    {
-        data::PointList::sptr pl = data::PointList::New();
-        setLandmarks(*_pImg, pl);
-        fieldIsModified = true;
-    }
-
-    return fieldIsModified;
-}
 
 //------------------------------------------------------------------------------
 
@@ -128,19 +106,19 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
     auto sagittalIdx = getSliceIndex(*_pImg, orientation_t::SAGITTAL);
 
     // Check if values are out of bounds
-    if(axialIdx < 0 || imageSize[2] < static_cast<std::size_t>(axialIdx))
+    if((axialIdx < 0 || imageSize[2] < static_cast<std::size_t>(axialIdx)) && imageSize[2] > 0)
     {
         axialIdx        = static_cast<std::int64_t>(imageSize[2] / 2);
         fieldIsModified = true;
     }
 
-    if(frontalIdx < 0 || imageSize[1] < static_cast<std::size_t>(frontalIdx))
+    if((frontalIdx < 0 || imageSize[1] < static_cast<std::size_t>(frontalIdx)) && imageSize[1] > 0)
     {
         frontalIdx      = static_cast<std::int64_t>(imageSize[1] / 2);
         fieldIsModified = true;
     }
 
-    if(sagittalIdx < 0 || imageSize[0] < static_cast<std::size_t>(sagittalIdx))
+    if((sagittalIdx < 0 || imageSize[0] < static_cast<std::size_t>(sagittalIdx)) && imageSize[0] > 0)
     {
         sagittalIdx     = static_cast<std::int64_t>(imageSize[0] / 2);
         fieldIsModified = true;
@@ -219,81 +197,6 @@ bool checkTransferFunctionPool(const data::Image::sptr& image)
     }
 
     return fieldIsCreated;
-}
-
-//------------------------------------------------------------------------------
-
-std::int64_t getSliceCount(
-    const data::Image& _image,
-    const orientation_t& _orientation
-)
-{
-    std::int64_t count = -1;
-    std::string orientation_count;
-    switch(_orientation)
-    {
-        case orientation_t::AXIAL:
-            orientation_count = std::string(id::axial_slice_count);
-            break;
-
-        case orientation_t::SAGITTAL:
-            orientation_count = std::string(id::sagittal_slice_count);
-            break;
-
-        case orientation_t::FRONTAL:
-            orientation_count = std::string(id::frontal_slice_count);
-            break;
-
-        default:
-            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
-            break;
-    }
-
-    const auto field = _image.getField(orientation_count);
-    if(field)
-    {
-        const auto field_int = _image.getField<data::Integer>(orientation_count);
-        if(field_int)
-        {
-            count = field_int->value();
-        }
-    }
-
-    return count;
-}
-
-//------------------------------------------------------------------------------
-
-void setSliceCount(
-    data::Image& _image,
-    const orientation_t& _orientation,
-    std::int64_t _sliceCount
-)
-{
-    data::Integer::sptr value = data::Integer::New();
-    value->setValue(_sliceCount);
-
-    std::string orientation_count;
-    switch(_orientation)
-    {
-        case orientation_t::AXIAL:
-            orientation_count = std::string(id::axial_slice_count);
-            break;
-
-        case orientation_t::SAGITTAL:
-            orientation_count = std::string(id::sagittal_slice_count);
-            break;
-
-        case orientation_t::FRONTAL:
-            orientation_count = std::string(id::frontal_slice_count);
-            break;
-
-        default:
-            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
-            break;
-    }
-
-    _image.setField(orientation_count, value);
 }
 
 //------------------------------------------------------------------------------
@@ -459,48 +362,6 @@ bool getLandmarksVisibility(const data::Image& _image)
 void setLandmarksVisibility(data::Image& _image, bool _visibility)
 {
     _image.setField(std::string(id::landmarks_visibility), data::Boolean::New(_visibility));
-}
-
-//------------------------------------------------------------------------------
-
-std::string getComment(const data::Image& _image)
-{
-    const auto comment = _image.getField<data::String>(std::string(id::comment));
-
-    if(comment)
-    {
-        return comment->value();
-    }
-
-    return std::string();
-}
-
-//------------------------------------------------------------------------------
-
-void setComment(data::Image& _image, const std::string& _comment)
-{
-    _image.setField(std::string(id::comment), data::String::New(_comment));
-}
-
-//------------------------------------------------------------------------------
-
-std::string getLabel(const data::Image& _image)
-{
-    const auto label = _image.getField<data::String>(std::string(id::label));
-
-    if(label)
-    {
-        return label->value();
-    }
-
-    return std::string();
-}
-
-//------------------------------------------------------------------------------
-
-void setLabel(data::Image& _image, const std::string& _label)
-{
-    _image.setField(std::string(id::label), data::String::New(_label));
 }
 
 //------------------------------------------------------------------------------

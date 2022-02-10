@@ -397,10 +397,6 @@
             <start uid="lNegatoAdp" />
         </service>
 
-        <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-            <inout key="image" uid="localImage" />
-        </service>
-
         <service uid="configurePACSInitializerSrv" type="sight::module::io::dimse::SPacsConfigurationInitializer" >
             <inout key="config" uid="pacsConfiguration" autoConnect="true" />
             <config
@@ -646,7 +642,6 @@
         <start uid="previewNegatoStarterSrv" />
         <start uid="localNegatoStopperSrv" />
         <start uid="localNegatoStarterSrv" />
-        <start uid="medicalImageSrv" />
         <start uid="extractPreviewSrv" />
         <start uid="extractLocalSrv" />
         <start uid="seriesPullerSrv" />

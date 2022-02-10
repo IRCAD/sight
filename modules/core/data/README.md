@@ -4,7 +4,6 @@ This module contains contains several interfaces for manager, updater and wrappe
 
 ## Services
 
-- **MedicalImageSrv**: converts its attached image to a medical image by adding specific fields.
 - **SCopy**: copies an object and updates its own objects or the defined target.
 - **SExtractDeviceInfo**: extracts camera information in configuration using android device name
 - **SExtractMeshByType**: extracts meshes of a specific structure type from data::ModelSeries.

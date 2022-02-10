@@ -22,6 +22,7 @@
 
 #include "utestData/generator/Image.hpp"
 
+#include <core/data/helper/MedicalImage.hpp>
 #include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/random/Generator.hpp>
 #include <core/tools/Type.hpp>
@@ -129,6 +130,9 @@ void Image::generateImage(
 
     auto lock = image->dump_lock();
     std::fill(image->begin(), image->end(), 0);
+
+    sight::data::helper::MedicalImage::checkTransferFunctionPool(image);
+    sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }
 
 //------------------------------------------------------------------------------
@@ -161,6 +165,9 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type,
 
     image->setWindowWidth((safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
     image->setWindowCenter((safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
+
+    sight::data::helper::MedicalImage::checkTransferFunctionPool(image);
+    sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }
 
 //------------------------------------------------------------------------------

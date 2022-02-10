@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/helper/MedicalImage.hpp>
+
 #include <itkImage.h>
 #include <itkImageRegion.h>
 
@@ -83,6 +85,12 @@ void moveFromItk(
             vSize,
             data::Image::GRAY_SCALE
         );
+    }
+
+    if(sight::data::helper::MedicalImage::checkImageValidity(_dataImage))
+    {
+        sight::data::helper::MedicalImage::checkTransferFunctionPool(_dataImage);
+        sight::data::helper::MedicalImage::checkImageSliceIndex(_dataImage);
     }
 
     // Post Condition correct PixelType

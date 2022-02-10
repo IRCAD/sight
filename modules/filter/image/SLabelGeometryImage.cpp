@@ -98,15 +98,12 @@ void SLabelGeometryImage::updating()
 
     if(m_lPointListCentroids.empty())
     {
-        //get landmarks
-        data::helper::MedicalImage::checkLandmarks(image.get_shared());
         data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
 
         SIGHT_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
         {
-            // notify
             auto sig = image->signal<data::Image::LandmarkAddedSignalType>(data::Image::s_LANDMARK_ADDED_SIG);
             sig->asyncEmit(point);
         }
