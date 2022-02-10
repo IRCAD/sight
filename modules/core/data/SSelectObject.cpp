@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,82 +20,74 @@
  *
  ***********************************************************************/
 
-#include "SObjFromSlot.hpp"
+#include "SSelectObject.hpp"
 
-#include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-
-#include <service/macros.hpp>
 
 namespace sight::module::data
 {
 
-namespace updater
-{
-
-const core::com::Slots::SlotKeyType SObjFromSlot::s_ADD_SLOT    = "add";
-const core::com::Slots::SlotKeyType SObjFromSlot::s_REMOVE_SLOT = "remove";
+const core::com::Slots::SlotKeyType SSelectObject::s_ADD_SLOT    = "add";
+const core::com::Slots::SlotKeyType SSelectObject::s_REMOVE_SLOT = "remove";
 
 //-----------------------------------------------------------------------------
 
-SObjFromSlot::SObjFromSlot() noexcept
+SSelectObject::SSelectObject() noexcept
 {
-    newSlot(s_ADD_SLOT, &SObjFromSlot::add, this);
-    newSlot(s_REMOVE_SLOT, &SObjFromSlot::remove, this);
+    newSlot(s_ADD_SLOT, &SSelectObject::add, this);
+    newSlot(s_REMOVE_SLOT, &SSelectObject::remove, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SObjFromSlot::~SObjFromSlot() noexcept
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void SObjFromSlot::configuring()
+SSelectObject::~SSelectObject() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::starting()
+void SSelectObject::configuring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::stopping()
+void SSelectObject::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::updating()
+void SSelectObject::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::info(std::ostream&)
+void SSelectObject::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::add(sight::data::Object::sptr obj)
+void SSelectObject::info(std::ostream&)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void SSelectObject::add(sight::data::Object::sptr obj)
 {
     m_object = obj;
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::remove()
+void SSelectObject::remove()
 {
     m_object = nullptr;
 }
 
 //-----------------------------------------------------------------------------
-
-} // updater
 
 } // sight::module::data

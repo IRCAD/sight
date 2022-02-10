@@ -35,7 +35,7 @@ Example
             </registry>
         </service>
 
-        <service uid="updaterReconst" type="sight::module::data::updater::SObjFromSlot">
+        <service uid="reconstructionSelector" type="sight::module::data::SSelectObject">
             <out key="object" uid="reconstruction" />
         </service>
 
@@ -57,11 +57,11 @@ Example
 
         <connect>
             <signal>listOrganEditor/reconstructionSelected</signal>
-            <slot>updaterReconst/add</slot>
+            <slot>reconstructionSelector/add</slot>
         </connect>
 
         <start uid="multiViewOrgans" />
-        <start uid="updaterReconst" />
+        <start uid="reconstructionSelector" />
 
         <!-- Deferred start -->
         <start uid="representationEditor" />

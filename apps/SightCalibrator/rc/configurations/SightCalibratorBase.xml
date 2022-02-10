@@ -162,7 +162,7 @@
         </service>
 
         <!-- Service to select the current activity into the composite. -->
-        <service uid="activitySeriesUpdaterSrv" type="sight::module::data::updater::SObjFromSlot">
+        <service uid="selectActivitySeriesSrv" type="sight::module::data::SSelectObject">
             <out key="object" uid="currentActivity" />
         </service>
 
@@ -171,13 +171,13 @@
         <!-- Add the current tab activity in the root composite. -->
         <connect>
             <signal>dynamicView/activitySelected</signal>
-            <slot>activitySeriesUpdaterSrv/add</slot>
+            <slot>selectActivitySeriesSrv/add</slot>
         </connect>
 
         <!-- Remove the activity from the root composite when no tab is selected. -->
         <connect>
             <signal>dynamicView/nothingSelected</signal>
-            <slot>activitySeriesUpdaterSrv/remove</slot>
+            <slot>selectActivitySeriesSrv/remove</slot>
         </connect>
 
         <!-- When an activity is opened: it calls the creator's update activity slot. -->
@@ -202,7 +202,7 @@
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainFrame" />
-        <start uid="activitySeriesUpdaterSrv" />
+        <start uid="selectActivitySeriesSrv" />
         <start uid="saveActivityAct" />
 
     </config>

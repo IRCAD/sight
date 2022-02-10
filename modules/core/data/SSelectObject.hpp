@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,43 +22,42 @@
 
 #pragma once
 
-#include "modules/core/data/IUpdaterSrv.hpp"
 #include "modules/data/config.hpp"
+
+#include "service/IController.hpp"
 
 namespace sight::module::data
 {
 
-namespace updater
-{
-
 /**
- * @brief  Registers/unregisters the object given by the slots.
+ * @brief  Registers or unregisters an single output object using the add/remove slots.
+ * This service is mainly used to select an object.
  *
  * @section Slots Slots
- * - \b add(data::Object::sptr) : Registers the given object in the OSR
- * - \b remove(data::Object::sptr) : Unregisters the object in the OSR
+ * - \b add(data::Object::sptr) : Registers the given object.
+ * - \b remove(data::Object::sptr) : Unregisters the object.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="sight::module::data::updater::SObjFromSlot">
+     <service type="sight::module::data::SSelectObject">
          <out key="object" uid="..." />
      </service>
      @endcode
  * @subsection Output Output
  * - \b object [sight::data::Object]: Object used to register/unregister the object given by the slots.
  */
-class MODULE_DATA_CLASS_API SObjFromSlot : public module::data::IUpdaterSrv
+class MODULE_DATA_CLASS_API SSelectObject : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SObjFromSlot, sight::module::data::IUpdaterSrv);
+    SIGHT_DECLARE_SERVICE(SSelectObject, service::IController);
 
     /// Constructor.  Do nothing.
-    MODULE_DATA_API SObjFromSlot() noexcept;
+    MODULE_DATA_API SSelectObject() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API virtual ~SObjFromSlot() noexcept;
+    MODULE_DATA_API virtual ~SSelectObject() noexcept;
 
     /**
      * @name Slots
@@ -66,9 +65,7 @@ public:
      */
     static const core::com::Slots::SlotKeyType s_ADD_SLOT;
     static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
-/**
- * @}
- */
+    /// @}
 
 protected:
 
@@ -96,15 +93,11 @@ protected:
 
     /// Adds the object from the composite with the key given by config.
     void remove();
-/**
- * @}
- */
+    /// @}
 
 private:
 
     sight::data::ptr<sight::data::Object, sight::data::Access::out> m_object {this, "object"};
 };
-
-} // updater
 
 } // sight::module::data

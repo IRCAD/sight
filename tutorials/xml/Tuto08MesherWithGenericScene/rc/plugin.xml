@@ -258,7 +258,7 @@
 
             </service>
 
-            <service uid="updaterReconstSrv" type="sight::module::data::updater::SObjFromSlot" >
+            <service uid="updaterReconstSrv" type="sight::module::data::SSelectObject" >
                 <out key="object" uid="reconstruction" />
             </service>
 

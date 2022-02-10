@@ -20,10 +20,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 
 * **SModifyLayout**: modifies the layout of a configuration.
 
-* **SPushField**: adds or removes an object's Field in `sight::data::Composite` with specific key.
-
-* **SPushObject**: adds or removes an object in composite with specific key.
-
 * **SQuit**: closes the window and reset root object.
 
 * **SToolBar**: defines the default toolbar for standard application.

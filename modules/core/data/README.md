@@ -11,7 +11,7 @@ This module contains contains several interfaces for manager, updater and wrappe
 - **SManage**: manages an object (add/swap/remove) into a container object (composite, vector, seriesDB).
 - **SMergeTF**: merges all TF from a composite into one TF.
 - **SeriesSignals**: emits a signal for each added series (the signal contains the added series)
-- **SObjFromSlot**: registers/unregisters the object given by the slots.
+- **SSelectObject**: registers/unregisters the object given by the slots.
 - **SImageSignalForwarder**: forwards signals from an image to another.
 - **SGetSeries**: extracts series from series database.
 

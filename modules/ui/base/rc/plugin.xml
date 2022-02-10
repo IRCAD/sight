@@ -45,19 +45,6 @@
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
-         <service>sight::module::ui::base::SPushField</service>
-         <desc>To add or remove an object in composite with specific key.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IAction</type>
-         <service>sight::module::ui::base::SPushObject</service>
-         <object>sight::data::Composite</object>
-         <desc>To add or remove an object in composite with specific key.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SQuit</service>
          <desc>This action tries to close the window and reset root object.</desc>
     </extension>

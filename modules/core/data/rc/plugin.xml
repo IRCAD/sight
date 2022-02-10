@@ -58,8 +58,8 @@
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::module::data::IUpdaterSrv</type>
-         <service>sight::module::data::updater::SObjFromSlot</service>
+         <type>sight::service::IController</type>
+         <service>sight::module::data::SSelectObject</service>
          <object>sight::data::Composite</object>
          <desc>Registers/unregisters the object given by the slots.</desc>
     </extension>

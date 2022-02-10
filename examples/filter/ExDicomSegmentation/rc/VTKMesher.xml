@@ -170,7 +170,7 @@
             </columns>
         </service>
 
-        <service uid="reconstructionUpdaterSrv" type="sight::module::data::updater::SObjFromSlot" >
+        <service uid="selectReconstructionSrv" type="sight::module::data::SSelectObject" >
             <out key="object" uid="reconstructionUID" />
         </service>
 
@@ -194,7 +194,7 @@
 
         <connect>
             <signal>modelSeriesListSrv/reconstructionSelected</signal>
-            <slot>reconstructionUpdaterSrv/add</slot>
+            <slot>selectReconstructionSrv/add</slot>
         </connect>
 
         <connect>
@@ -210,7 +210,7 @@
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="reconstructionUpdaterSrv" />
+        <start uid="selectReconstructionSrv" />
         <start uid="imageWriterSrv" />
         <start uid="materialEditorSrv" />
         <start uid="representationSrv" />

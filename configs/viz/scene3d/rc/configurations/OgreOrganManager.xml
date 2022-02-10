@@ -38,7 +38,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="updaterReconstSrv" type="sight::module::data::updater::SObjFromSlot" >
+        <service uid="selectReconstructionSrv" type="sight::module::data::SSelectObject" >
             <out key="object" uid="reconstruction" />
         </service>
 
@@ -71,12 +71,12 @@
 
         <connect>
             <signal>listOrganEditorSrv/reconstructionSelected</signal>
-            <slot>updaterReconstSrv/add</slot>
+            <slot>selectReconstructionSrv/add</slot>
         </connect>
 
         <connect>
             <signal>listOrganEditorSrv/emptiedSelection</signal>
-            <slot>updaterReconstSrv/remove</slot>
+            <slot>selectReconstructionSrv/remove</slot>
         </connect>
 
         <connect>
@@ -87,7 +87,7 @@
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="organView" />
-        <start uid="updaterReconstSrv" />
+        <start uid="selectReconstructionSrv" />
 
         <start uid="materialSelectorSrv" />
         <start uid="representationEditorSrv" />

@@ -48,10 +48,10 @@ Example:
         </service>
 
         <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
-        <service uid="fieldMgr" type="sight::module::ui::base::SPushField">
-            <inout key="source" uid="${image}" />
-            <out key="destination" uid="TFSet" />
-            <push field="m_transferFunctionCompositeId" />
+        <service uid="fieldMgr" type="sight::module::data::SManage">
+            <inout key="object" uid="TFSet" />
+            <inout key="container" uid="${image}" />
+            <field>m_transferFunctionCompositeId</field>
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
@@ -94,7 +94,7 @@ Example:
 
         <connect>
             <signal>${image}/modified</signal>
-            <slot>fieldMgr/update</slot>
+            <slot>fieldMgr/addOrSwap</slot>
         </connect>
 
         <start uid="tfEditor" />
