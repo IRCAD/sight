@@ -226,7 +226,7 @@ endmacro()
 
 # Create an executable target
 macro(fw_exec SIGHT_TARGET)
-    set(options CONSOLE)
+    set(options CONSOLE REQUIRE_ADMIN)
     set(oneValueArgs)
     set(multiValueArgs)
     cmake_parse_arguments(FWEXEC "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -298,10 +298,22 @@ macro(fw_exec SIGHT_TARGET)
         string(TOLOWER ${SIGHT_TARGET}.bat ${SIGHT_TARGET}_SCRIPT)
         set(PROJECT_EXECUTABLE ${SIGHT_TARGET})
 
+        if(${FWEXEC_REQUIRE_ADMIN})
+            string(
+                CONCAT ADMIN_REQUEST
+                       "rem This executable was marked as requiring admin access.\n"
+                       "rem Check if we have elevated privileges\n"
+                       "whoami /all | findstr S-1-16-12288 > nul\n"
+                       "rem if we do not have those, restart the script as Admin\n"
+                       "if %errorlevel%==1 (powershell start -verb runas '%0' & exit /b)\n"
+            )
+        endif()
+
         configure_file(
             ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
+        unset(ADMIN_REQUEST)
         unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
@@ -626,7 +638,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 endmacro()
 
 # Create a module target
-macro(fw_module SIGHT_TARGET TARGET_TYPE)
+macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
         if(${${SIGHT_TARGET}_PCH_TARGET} STREQUAL ${SIGHT_TARGET})
@@ -753,10 +765,23 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE)
 
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
+            if(${TARGET_REQUIRE_ADMIN})
+                string(
+                    CONCAT ADMIN_REQUEST
+                           "rem This executable was marked as requiring admin access.\n"
+                           "rem Check if we have elevated privileges\n"
+                           "whoami /all | findstr S-1-16-12288 > nul\n"
+                           "rem if we do not have those, restart the script as Admin\n"
+                           "if %errorlevel%==1 (powershell start -verb runas '%0' & exit /b)\n"
+                )
+            endif()
+
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY
             )
             install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION bin)
+
+            unset(ADMIN_REQUEST)
         endif()
     else()
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_TARGET_TYPE "MODULE")
@@ -841,6 +866,8 @@ function(
 endfunction()
 
 # Add a "Sight" target
+# Disable too many branches error for cmake-lint
+# cmake-lint: disable=R0912
 macro(sight_add_target)
 
     set(options)
@@ -855,6 +882,7 @@ macro(sight_add_target)
         UNIQUE
         FAST_DEBUG
         REQUIRE_X
+        REQUIRE_ADMIN
     )
     set(multiValueArgs)
     cmake_parse_arguments(SIGHT_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -887,15 +915,24 @@ macro(sight_add_target)
     endif()
 
     if("${SIGHT_TARGET_TYPE}" STREQUAL "EXECUTABLE")
-        fw_exec(${SIGHT_TARGET} CONSOLE ${SIGHT_TARGET_CONSOLE})
+        # If the user asked that the executable must be executed as an admin user, we forward the request
+        if(SIGHT_TARGET_REQUIRE_ADMIN)
+            fw_exec(${SIGHT_TARGET} CONSOLE ${SIGHT_TARGET_CONSOLE} REQUIRE_ADMIN ${SIGHT_TARGET_REQUIRE_ADMIN})
+        else()
+            fw_exec(${SIGHT_TARGET} CONSOLE ${SIGHT_TARGET_CONSOLE})
+        endif()
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "LIBRARY")
         fw_lib(${SIGHT_TARGET} ${SIGHT_TARGET_OBJECT_LIBRARY})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
-        fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE})
+        fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
         fw_cppunit_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
-        fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE})
+        if(${SIGHT_TARGET_REQUIRE_ADMIN})
+            fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} ON)
+        else()
+            fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
+        endif()
     endif()
 
     if("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
