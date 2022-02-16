@@ -25,9 +25,7 @@
 #include <data/SeriesDB.hpp>
 
 #include <service/base.hpp>
-#include <service/IService.hpp>
 
-#include <boost/config.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <sstream>
@@ -141,7 +139,7 @@ void SGetSeriesTest::invalidSeriesDB()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
     getSeries->setConfiguration(config);
-    getSeries->setInput(nullptr, "series");
+    getSeries->setInput(nullptr, "seriesDB");
     getSeries->start().wait();
     CPPUNIT_ASSERT_THROW(getSeries->update().get(), sight::data::Exception);
     getSeries->stop().wait();

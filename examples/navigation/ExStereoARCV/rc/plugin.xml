@@ -424,7 +424,7 @@
             </service>
 
             <!-- GUI to display a state -->
-            <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::base::editor::SStatus" >
+            <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::qt::SStatus" >
                 <form>circle</form>
                 <labelStatus>Reprojection matrix computed</labelStatus>
                 <red>No reprojection matrix</red>

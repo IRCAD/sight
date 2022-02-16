@@ -71,7 +71,7 @@ void INetworkSender::updating()
 service::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_OBJECTS_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_OBJECTS_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

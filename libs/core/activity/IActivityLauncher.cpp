@@ -67,7 +67,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
         const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
-        const auto it       = inouts.find({key, 0});
+        const auto it       = inouts.find({key, std::nullopt});
         SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
         auto obj = it->second.lock();
         ParameterType param;

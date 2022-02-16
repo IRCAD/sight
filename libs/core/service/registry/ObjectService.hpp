@@ -109,7 +109,7 @@ public:
         data::Object::sptr object,
         std::string_view objKey,
         service::IService::sptr service,
-        std::size_t index = 0
+        std::optional<std::size_t> index = std::nullopt
     );
     //@}
 
@@ -135,7 +135,7 @@ public:
     SERVICE_API void unregisterServiceOutput(
         std::string_view objKey,
         service::IService::sptr service,
-        std::size_t index = 0
+        std::optional<std::size_t> index = std::nullopt
     );
     //@}
 
@@ -226,7 +226,7 @@ SERVICE_API void registerServiceOutput(
     data::Object::sptr obj,
     std::string_view objKey,
     service::IService::sptr service,
-    std::size_t index = 0
+    std::optional<std::size_t> index = std::nullopt
 );
 
 /**
@@ -245,7 +245,7 @@ SERVICE_API void unregisterService(service::IService::sptr service);
 SERVICE_API void unregisterServiceOutput(
     std::string_view objKey,
     service::IService::sptr service,
-    std::size_t index = 0
+    std::optional<std::size_t> index = std::nullopt
 );
 
 SERVICE_API SPTR(service::registry::ObjectService::RegisterSignalType) getRegisterSignal();

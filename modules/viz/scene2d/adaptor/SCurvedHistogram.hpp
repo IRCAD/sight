@@ -43,7 +43,7 @@ namespace adaptor
    @code{.xml}
    <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="true">
        <in key="histogram" uid="..." />
-       <inout key="point" uid="..." optional="true" />
+       <inout key="point" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" borderColor="lightGray" innerColor="gray"
                opacity="0.25" zValue="6" borderWidth="2.0" />
    </service>
@@ -168,7 +168,7 @@ private:
     static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
 
     sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
+    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point", false, true};
 };
 
 } // namespace adaptor

@@ -321,7 +321,7 @@
             <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
                <in key="seriesDB" uid="seriesDB"/>
                <out group="series" >
-                   <key index="0" uid="modelSeries" />
+                   <key index="0" uid="modelseries" />
                </out>
            </service>
 

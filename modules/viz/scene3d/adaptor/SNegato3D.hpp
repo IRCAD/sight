@@ -65,7 +65,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato3D">
         <inout key="image" uid="..." />
-        <inout key="tf" uid="..." optional="true" />
+        <inout key="tf" uid="..." />
         <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" />
     </service>
    @endcode

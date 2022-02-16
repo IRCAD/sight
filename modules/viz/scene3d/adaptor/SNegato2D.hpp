@@ -56,7 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2D">
         <inout key="image" uid="..." />
-        <inout key="tf" uid="..." optional="true" />
+        <inout key="tf" uid="..." />
         <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
    </service>
    @endcode
@@ -206,8 +206,8 @@ private:
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
 };
 
 //------------------------------------------------------------------------------

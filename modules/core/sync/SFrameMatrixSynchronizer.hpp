@@ -221,10 +221,10 @@ private:
 
     /// registers matrices with associated timeline key
     std::array<data::ptr_vector<data::Matrix4, data::Access::inout>, s_MAX_MATRICES_TL> m_matrices = {{
-        {this, s_MATRICES_INOUT[0], false, 1},
-        {this, s_MATRICES_INOUT[1], false, 1},
-        {this, s_MATRICES_INOUT[2], false, 1},
-        {this, s_MATRICES_INOUT[3], false, 1}
+        {this, s_MATRICES_INOUT[0], false, true},
+        {this, s_MATRICES_INOUT[1], false, true},
+        {this, s_MATRICES_INOUT[2], false, true},
+        {this, s_MATRICES_INOUT[3], false, true}
     }
     };
 

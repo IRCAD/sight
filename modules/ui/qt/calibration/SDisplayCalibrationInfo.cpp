@@ -86,10 +86,6 @@ void SDisplayCalibrationInfo::stopping()
 
 void SDisplayCalibrationInfo::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-
-    m_singleImageConfig = config.get<std::string>(s_SINGLE_IMAGE_CONFIG, m_singleImageConfig);
-    m_twoImageConfig    = config.get<std::string>(s_TWO_IMAGE_CONFIG, m_twoImageConfig);
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +116,7 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 
         const auto calInfo2 = m_calibrationInfo2.lock();
 
-        std::string strConfig = m_singleImageConfig;
+        std::string strConfig = std::string(s_ONE_IMAGE_CONFIG);
 
         // Prepare configuration
         service::FieldAdaptorType replaceMap;
@@ -134,7 +130,7 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
-            strConfig = m_twoImageConfig;
+            strConfig = std::string(s_TWO_IMAGES_CONFIG);
 
             data::Image::sptr img2 = calInfo2->getImage(idx);
             replaceMap["imageId2"] = img2->getID();

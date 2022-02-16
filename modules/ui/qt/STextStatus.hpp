@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ private:
     QPointer<QLabel> m_labelStaticText;
 
     static constexpr std::string_view s_STRING_INPUT = "string";
-    data::ptr<data::String, sight::data::Access::in> m_string {this, s_STRING_INPUT, true};
+    data::ptr<data::String, sight::data::Access::in> m_string {this, s_STRING_INPUT, true, true};
 };
 
 } // namespace sight::module::ui::qt

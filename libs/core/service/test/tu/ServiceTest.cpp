@@ -150,7 +150,7 @@ void ServiceTest::testServiceCreationWithMultipleData()
     // Test getting the service object
     CPPUNIT_ASSERT(srv->getInOut<data::Integer>(dataKey1).lock() == obj1);
 
-    srv->setObject(obj2, dataKey2, 0, data::Access::inout, false, false);
+    srv->setObject(obj2, dataKey2, std::nullopt, data::Access::inout, false, false);
     CPPUNIT_ASSERT(obj2 == srv->getObject(dataKey2, data::Access::inout));
 
     // Test getting the service object
@@ -595,9 +595,9 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
     service->setInput(obj[0], service::ut::TestServiceWithData::s_INPUT);
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
-    service->setInOut(obj[0], service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(0));
-    CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
-    service->setInOut(obj[1], service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(1));
+    service->setInOut(obj[0], service::ut::TestServiceWithData::s_INOUT_GROUP, true, false, 0);
+    CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
+    service->setInOut(obj[1], service::ut::TestServiceWithData::s_INOUT_GROUP, true, false, 1);
     CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
 
     service->start().wait();

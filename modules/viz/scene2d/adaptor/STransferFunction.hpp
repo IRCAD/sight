@@ -301,6 +301,7 @@ private:
     static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
 
     sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

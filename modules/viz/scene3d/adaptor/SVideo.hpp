@@ -52,7 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
         <in key="image" uid="..." />
-        <in key="tf" uid="..." optional="true" />
+        <in key="tf" uid="..." />
         <config layer="default" />
     </service>
    @endcode
@@ -231,9 +231,9 @@ private:
     static constexpr std::string_view s_TF_INPUT    = "tf";
     static constexpr std::string_view s_PL_INPUT    = "pointList";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT};
-    sight::data::ptr<sight::data::PointList, sight::data::Access::in> m_pl {this, s_PL_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT, true, true};
+    sight::data::ptr<sight::data::PointList, sight::data::Access::in> m_pl {this, s_PL_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -81,7 +81,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
         <inout key="image" uid="..." autoConnect="true" />
-        <inout key="tf" uid="..." optional="true" />
+        <inout key="tf" uid="..." />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
                 samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
@@ -456,7 +456,9 @@ private:
     std::shared_ptr<sight::viz::scene3d::interactor::ClippingBoxInteractor> m_widget;
 
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, objects::IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, objects::VOLUME_TF_INOUT};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, objects::VOLUME_TF_INOUT,
+                                                                                      false, true
+    };
     sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_clippingMatrix
     {
         this,

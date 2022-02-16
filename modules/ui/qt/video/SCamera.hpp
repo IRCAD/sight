@@ -167,8 +167,8 @@ private:
     static constexpr std::string_view s_CAMERA        = "camera";
     static constexpr std::string_view s_CAMERA_SERIES = "cameraSeries";
 
-    data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, true};
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, true};
+    data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, false, true};
+    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, false, true};
 };
 
 } // video

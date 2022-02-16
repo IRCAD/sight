@@ -454,17 +454,17 @@ void AppManagerTest::managerWithOutputCreationTest()
 
     // Fill inouts of services with dummy data, there are not considered in this test
     data::Integer::sptr dummy = data::Integer::New(0);
-    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(0));
-    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(1));
+    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
-    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(0));
-    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(1));
+    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
-    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(0));
-    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(1));
+    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
-    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(0));
-    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, std::size_t(1));
+    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
     m_appMgr->startServices();
     CPPUNIT_ASSERT_EQUAL(false, service1->isStarted());
@@ -552,14 +552,14 @@ void AppManagerTest::managerWithGroupTest()
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer2, integerId2);
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer3, integerId3);
     CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), service1->m_inoutGroup.size());
 
     m_appMgr->removeObject(integer3, integerId3);
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), service1->m_inoutGroup.size());
     m_appMgr->removeObject(integer2, integerId2);
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());

@@ -114,7 +114,8 @@ protected:
     static constexpr std::string_view s_VIEWPORT_INPUT  = "viewport";
 
     sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
+    sight::data::ptr<sight::data::Point, sight::data::Access::in> m_point {this, "point"};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

@@ -51,7 +51,7 @@ namespace sight::module::ui::qt::image
  *
  * @code{.xml}
    <service type="sight::module::ui::qt::image::TransferFunctionEditor">
-       <in key="currentTF" uid="..." optional="true" />
+       <in key="currentTF" uid="..." />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config useDefaultPath="true">
@@ -67,8 +67,7 @@ namespace sight::module::ui::qt::image
  * It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
- *      TF in another service. Don't forget to set 'optional="true"' when you use this input, otherwise the service will
- *      not start if a TF is not previously defined.
+ *      TF in another service.
  * @subsection In-Out In-Out
  * - \b tfPool [sight::data::Composite]: composite containing the transfer function.
  * @subsection Output Output
@@ -171,7 +170,7 @@ private:
     static constexpr std::string_view s_TF_POOL         = "tfPool";
     static constexpr std::string_view s_NEW_SELECTED_TF = "tf";
 
-    data::ptr<data::TransferFunction, data::Access::in> m_currentTf {this, s_CURRENT_TF};
+    data::ptr<data::TransferFunction, data::Access::in> m_currentTf {this, s_CURRENT_TF, false, true};
     data::ptr<data::Composite, data::Access::inout> m_tfPool {this, s_TF_POOL};
     data::ptr<data::TransferFunction, data::Access::out> m_newSelectedTf {this, s_NEW_SELECTED_TF};
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,6 +122,9 @@ private:
 
     /// The graphic items that refer to ticks of the axis.
     std::vector<QGraphicsLineItem*> m_ticks;
+
+    static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

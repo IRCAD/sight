@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ private:
     static constexpr std::string_view s_EXTRINSIC_INPUT = "extrinsic";
     static constexpr std::string_view s_FRAME_INOUT     = "frame";
 
-    data::ptr_vector<data::Matrix4, data::Access::in> m_matrix {this, s_MATRIX_INPUT, true, 1};
+    data::ptr_vector<data::Matrix4, data::Access::in> m_matrix {this, s_MATRIX_INPUT, true, false};
     data::ptr<data::MarkerMap, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT};
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
     data::ptr<data::Matrix4, data::Access::in> m_extrinsic {this, s_EXTRINSIC_INPUT};

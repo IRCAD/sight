@@ -48,7 +48,7 @@
 
         <service uid="WindowLevel" type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
             <inout key="image" uid="${IMAGE}" />
-            <inout key="tf" uid="${TF}" optional="true" />
+            <inout key="tf" uid="${TF}" />
         </service>
 
         <service uid="TransparencyEditor" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="true" >

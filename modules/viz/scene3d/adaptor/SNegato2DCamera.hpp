@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="true" />
-        <inout key="tf" uid="..." optional="true" />
+        <inout key="tf" uid="..." />
         <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />
    </service>
    @endcode
@@ -215,8 +215,8 @@ private:
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

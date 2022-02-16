@@ -54,7 +54,7 @@ namespace adaptor
  * @code{.xml}
    <service uid="..." type="sight::module::viz::scene2d::adaptor::SMultipleTF" >
        <in key="viewport" uid="..." />
-       <in key="currentTF" uid="..." optional="true" />
+       <in key="currentTF" uid="..." />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
@@ -457,9 +457,10 @@ private:
 
     static constexpr std::string_view s_TF_OUTPUT = "tf";
 
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_CURRENT_TF_INPUT};
-    sight::data::ptr<sight::data::Composite, sight::data::Access::inout> m_tfPool {this, s_TF_POOL_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::out> m_tfOut {this, s_TF_OUTPUT};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
+    data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_CURRENT_TF_INPUT, false, true};
+    data::ptr<sight::data::Composite, sight::data::Access::inout> m_tfPool {this, s_TF_POOL_INOUT};
+    data::ptr<sight::data::TransferFunction, sight::data::Access::out> m_tfOut {this, s_TF_OUTPUT};
 };
 
 } // namespace adaptor

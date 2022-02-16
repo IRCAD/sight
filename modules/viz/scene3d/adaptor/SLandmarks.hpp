@@ -411,8 +411,8 @@ private:
     static constexpr std::string_view s_LANDMARKS_INPUT = "landmarks";
     static constexpr std::string_view s_IMAGE_INPUT     = "image";
 
-    sight::data::ptr<sight::data::Landmarks, sight::data::Access::in> m_landmarks {this, s_LANDMARKS_INPUT};
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INPUT, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

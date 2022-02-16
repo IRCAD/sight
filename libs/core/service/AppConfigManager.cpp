@@ -416,6 +416,7 @@ void AppConfigManager::destroyCreatedServices()
         service::OSR::unregisterService(srv);
     }
     m_createdSrv.clear();
+    service::helper::Config::clearKeyProps();
 
     std::for_each(m_createdWorkers.begin(), m_createdWorkers.end(), [](auto& x){core::thread::removeWorker(x);});
     m_createdWorkers.clear();

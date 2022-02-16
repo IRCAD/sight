@@ -56,7 +56,7 @@ Example:
 
         <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="true"/>
-            <in key="currentTF" uid="${transferFunctionOutput}" optional="true"/>
+            <in key="currentTF" uid="${transferFunctionOutput}"/>
             <out key="tf" uid="${transferFunctionOutput}" />
             <config useDefaultPath="false">
                 <path>${TFPath}</path>

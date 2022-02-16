@@ -21,11 +21,7 @@
 
 #pragma once
 
-#include <data/SeriesDB.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <modules/data/config.hpp>
 
 namespace sight::module::data
 {

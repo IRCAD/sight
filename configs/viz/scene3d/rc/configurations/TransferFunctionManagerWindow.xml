@@ -154,7 +154,7 @@
 
         <service uid="TFMultipleTFAdp" type="sight::module::viz::scene2d::adaptor::SMultipleTF" autoConnect="true">
             <in key="viewport" uid="viewport" />
-            <in key="currentTF" uid="${currentTF}" optional="true" />
+            <in key="currentTF" uid="${currentTF}" />
             <inout key="tfPool" uid="${currentTFPool}" />
             <out key="tf" uid="${currentTF}" />
             <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="6" />
@@ -224,7 +224,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="transferFunctionEditorSrv" type="sight::module::ui::qt::image::SMultipleTF" >
-            <in key="currentTFPool" uid="${currentTFPool}" optional="true" />
+            <in key="currentTFPool" uid="${currentTFPool}" />
             <inout key="tfPools" uid="${tfPools}" autoConnect="true" />
             <out key="tfPool" uid="${currentTFPool}" />
             <config deleteicon="sight::module::ui::flaticons/RedDeleteFile.svg"

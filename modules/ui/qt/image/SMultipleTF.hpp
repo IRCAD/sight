@@ -45,7 +45,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::SMultipleTF">
-       <in key="currentTFPool" uid="..." optional="true" />
+       <in key="currentTFPool" uid="..." />
        <inout key="tfPools" uid="..." />
        <out key="tfPool" uid="..." />
        <config useDefaultPath="true" tfPerPath="false" >
@@ -58,10 +58,7 @@ namespace sight::module::ui::qt::image
  *
  * @subsection Input Input
  * - \b currentTFPool [sight::data::Composite](optional): current transfer function pool used to change editor
- * selection.
- *      It should be the same pool as the output.
- *      Don't forget to set 'optional="true"' when you use this input, otherwise the service will not start if a
- *      pool is not previously defined.
+ * selection. It should be the same pool as the output.
  *
  * @subsection In-Out In-Out
  * - \b tfPools [sight::data::Composite]: composite containing transfer function pool.
@@ -261,7 +258,7 @@ private:
     static constexpr std::string_view s_TF_POOLS          = "tfPools";
     static constexpr std::string_view s_NEW_SELECTED_POOL = "tfPool";
 
-    data::ptr<data::Composite, data::Access::in> m_currentTfPool {this, s_CURRENT_TF_POOL};
+    data::ptr<data::Composite, data::Access::in> m_currentTfPool {this, s_CURRENT_TF_POOL, false, true};
     data::ptr<data::Composite, data::Access::inout> m_tfPools {this, s_TF_POOLS};
     data::ptr<data::Composite, data::Access::out> m_newSelectedPool {this, s_NEW_SELECTED_POOL};
 };

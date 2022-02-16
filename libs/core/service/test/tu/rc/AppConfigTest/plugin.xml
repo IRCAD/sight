@@ -47,17 +47,17 @@
 
             <service uid="TestService1Uid" type="sight::service::ut::STestNoData" />
             <service uid="TestService2Uid" type="sight::service::ut::STestNoData" />
-            <service uid="TestService3Uid" type="sight::service::ut::STest1Input">
-                <in key="data1" uid="data2Id" optional="true" />
+            <service uid="TestService3Uid" type="sight::service::ut::STest1OptInput">
+                <in key="data1" uid="data2Id" />
             </service>
             <service uid="TestService4Uid" type="sight::service::ut::STest1Input">
                 <in key="data1" uid="data2Id" />
             </service>
             <service uid="TestService5Uid" type="sight::service::ut::STest4Inputs">
                 <in key="data1" uid="data1Id" />
-                <in key="data2" uid="data2Id" />
-                <in key="data3" uid="data3Id" />
-                <in key="data4" uid="data4Id" />
+                <in key="data2" uid="data2Id" optional="false"/>
+                <in key="data3" uid="data3Id" optional="false"/>
+                <in key="data4" uid="data4Id" optional="false"/>
             </service>
 
             <start uid="SGenerateData" />
@@ -100,7 +100,7 @@
                 <in key="data2" uid="data2Id" autoConnect="true" />
             </service>
             <service uid="TestService4Uid" type="sight::service::ut::STest1Input">
-                <in key="data3" uid="data3Id" />
+                <in key="data1" uid="data3Id" />
             </service>
             <service uid="TestService5Uid" type="sight::service::ut::STest2InputsV2" autoConnect="true">
                 <in key="data1" uid="data1Id" />
@@ -214,15 +214,15 @@
 
             <service uid="TestService1Uid" type="sight::service::ut::STest4Inputs">
                 <in key="data1" uid="data1Id" autoConnect="true" />
-                <in key="data2" uid="data2Id" autoConnect="false"  optional="true" />
-                <in key="data3" uid="data3Id" autoConnect="false"  optional="true" />
-                <in key="data4" uid="data4Id" autoConnect="true" optional="true" />
+                <in key="data2" uid="data2Id" autoConnect="false" />
+                <in key="data3" uid="data3Id" autoConnect="false" />
+                <in key="data4" uid="data4Id" autoConnect="true" />
             </service>
             <service uid="TestService2Uid" type="sight::service::ut::STest4Inputs" >
                 <in key="data1" uid="data5Id" autoConnect="true" />
-                <in key="data2" uid="data2Id" autoConnect="false"  optional="true" />
-                <in key="data3" uid="data3Id" autoConnect="false"  optional="true" />
-                <in key="data4" uid="data4Id" autoConnect="true" optional="true" />
+                <in key="data2" uid="data2Id" autoConnect="false" />
+                <in key="data3" uid="data3Id" autoConnect="false" />
+                <in key="data4" uid="data4Id" autoConnect="true" />
             </service>
 
             <connect>
@@ -275,7 +275,7 @@
             <service uid="TestService2Uid" type="sight::service::ut::STest2InputGroups" >
                 <in group="dataGroup0">
                     <key uid="data1Id" />
-                    <key uid="data2Id" autoConnect="true" optional="true" />
+                    <key uid="data2Id" autoConnect="true" optional="true"/>
                 </in>
                 <in group="dataGroup1">
                     <key uid="data3Id" />

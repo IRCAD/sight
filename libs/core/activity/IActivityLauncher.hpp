@@ -31,6 +31,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <optional>
+
 namespace sight::activity
 {
 
@@ -45,7 +47,8 @@ public:
     typedef activity::extension::ActivityAppConfigParam ParameterType;
     typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;
-    typedef std::map<std::pair<std::string, std::size_t>, data::mt::weak_ptr<data::Object> > InOutMapType;
+    typedef std::map<std::pair<std::string, std::optional<std::size_t> >,
+                     data::mt::weak_ptr<data::Object> > InOutMapType;
 
     /// Constructor. Do nothing.
     ACTIVITY_API IActivityLauncher();

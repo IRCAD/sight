@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ public:
         m_isUpdated = true;
     }
 
-    data::ptr<data::Image, data::Access::in> m_input {this, "data", true};
+    data::ptr<data::Image, data::Access::in> m_input {this, "data", true, true};
 };
 
 } //namespace ut

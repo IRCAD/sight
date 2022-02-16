@@ -12,6 +12,7 @@ add_dependencies(
     module_service
     module_ui_flaticons
     module_io_video
+    module_filter_vision
     module_sync
 )
 

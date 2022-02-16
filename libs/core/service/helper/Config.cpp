@@ -23,6 +23,7 @@
 #include "service/extension/Config.hpp"
 #include "service/helper/Config.hpp"
 
+#include "service/extension/Factory.hpp"
 #include "service/registry/Proxy.hpp"
 
 #include <core/com/HasSignals.hpp>
@@ -394,24 +395,33 @@ service::IService::Config Config::parseService(
             SIGHT_FATAL("Unreachable code");
         }
 
-        // AutoConnect
-        objConfig.m_autoConnect = core::runtime::get_ptree_value(cfg.second, "<xmlattr>.autoConnect", false);
-
-        // Optional
-        if(objConfig.m_access != data::Access::out)
-        {
-            objConfig.m_optional = core::runtime::get_ptree_value(cfg.second, "<xmlattr>.optional", false);
-        }
-        else
-        {
-            objConfig.m_optional = true;
-        }
-
         // Do we use groups ?
         const auto group = cfg.second.get_optional<std::string>("<xmlattr>.group");
         if(group)
         {
-            auto keyCfgs = cfg.second.equal_range("key");
+            auto keyCfgs          = cfg.second.equal_range("key");
+            const std::string key = group.value();
+            auto defaultCfg       = getKeyProps(srvConfig.m_type, key);
+
+            objConfig.m_autoConnect = core::runtime::get_ptree_value(
+                cfg.second,
+                "<xmlattr>.autoConnect",
+                defaultCfg != nullptr ? defaultCfg->m_autoConnect : false
+            );
+
+            // Optional is global to all keys in the group
+            if(objConfig.m_access != data::Access::out)
+            {
+                objConfig.m_optional = core::runtime::get_ptree_value(
+                    cfg.second,
+                    "<xmlattr>.optional",
+                    defaultCfg != nullptr ? defaultCfg->m_optional : false
+                );
+            }
+            else
+            {
+                objConfig.m_optional = true;
+            }
 
             std::size_t count = 0;
             for(auto groupCfg = keyCfgs.first ; groupCfg != keyCfgs.second ; ++groupCfg)
@@ -422,27 +432,31 @@ service::IService::Config Config::parseService(
                 groupObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
                 SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !groupObjConfig.m_uid.empty());
 
-                const std::string key   = group.value();
                 const std::size_t index = count++;
                 groupObjConfig.m_key = KEY_GROUP_NAME(key, index);
 
-                // AutoConnect
+                // AutoConnect can be overriden by element in the group
                 groupObjConfig.m_autoConnect = core::runtime::get_ptree_value(
                     groupCfg->second,
                     "<xmlattr>.autoConnect",
                     groupObjConfig.m_autoConnect
                 );
 
-                // Optional
+                // Optional can be overriden by element in the group
                 if(groupObjConfig.m_access != data::Access::out)
                 {
                     groupObjConfig.m_optional = core::runtime::get_ptree_value(
                         groupCfg->second,
                         "<xmlattr>.optional",
-                        false
+                        groupObjConfig.m_optional
                     );
                 }
+                else
+                {
+                    groupObjConfig.m_optional = true;
+                }
 
+                // Assign the current object config in the service config
                 srvConfig.m_objects[{key, index}] = groupObjConfig;
             }
         }
@@ -456,11 +470,69 @@ service::IService::Config Config::parseService(
             objConfig.m_key = cfg.second.get<std::string>("<xmlattr>.key", "");
             SIGHT_ASSERT(errMsgHead + "Missing object attribute 'key'" + errMsgTail, !objConfig.m_key.empty());
 
-            srvConfig.m_objects[{objConfig.m_key, 0}] = objConfig;
+            auto defaultCfg = getKeyProps(srvConfig.m_type, objConfig.m_key);
+
+            // AutoConnect
+            objConfig.m_autoConnect = core::runtime::get_ptree_value(
+                cfg.second,
+                "<xmlattr>.autoConnect",
+                defaultCfg != nullptr ? defaultCfg->m_autoConnect : false
+            );
+
+            // Optional
+            if(objConfig.m_access != data::Access::out)
+            {
+                objConfig.m_optional = core::runtime::get_ptree_value(
+                    cfg.second,
+                    "<xmlattr>.optional",
+                    defaultCfg != nullptr ? defaultCfg->m_optional : false
+                );
+            }
+            else
+            {
+                objConfig.m_optional = true;
+            }
+
+            // Assign the current object config in the service config
+            srvConfig.m_objects[{objConfig.m_key, std::nullopt}] = objConfig;
         }
     }
 
     return srvConfig;
+}
+
+// ----------------------------------------------------------------------------
+
+static std::map<std::string, service::IService::sptr> s_servicesProps;
+
+//------------------------------------------------------------------------------
+
+const service::IService::ObjectServiceConfig* Config::getKeyProps(
+    const std::string& serviceType,
+    const std::string& key
+)
+{
+    service::IService::sptr srv;
+    auto it = s_servicesProps.find(serviceType);
+    if(it == s_servicesProps.end())
+    {
+        service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
+        srv                          = srvFactory->create(serviceType);
+        s_servicesProps[serviceType] = srv;
+    }
+    else
+    {
+        srv = it->second;
+    }
+
+    return srv->_getObjInfoFromKey(key);
+}
+
+// ----------------------------------------------------------------------------
+
+void Config::clearKeyProps()
+{
+    s_servicesProps.clear();
 }
 
 // ----------------------------------------------------------------------------

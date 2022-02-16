@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "service/helper/ConfigLauncher.hpp"
 
-#include <service/macros.hpp>
-
 #include <core/runtime/helper.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <data/Composite.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
+
+#include <service/macros.hpp>
 
 namespace sight::service
 {
@@ -99,7 +99,7 @@ void ConfigLauncher::parseConfig(
         }
         else
         {
-            const auto it = inouts.find({key, 0});
+            const auto it = inouts.find({key, std::nullopt});
             SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
             auto obj = it->second.lock();
             SIGHT_ASSERT("Object key '" + key + "' with uid '" + uid + "' does not exist.", obj);

@@ -34,8 +34,6 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
-static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
-
 SAxis::SAxis() noexcept :
     m_interval(1.f),
     m_min(0.f),
