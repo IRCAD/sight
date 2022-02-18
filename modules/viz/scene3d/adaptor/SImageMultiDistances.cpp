@@ -510,23 +510,6 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _
 
         if(found)
         {
-            // Check if something is picked to update the position of the distance.
-            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-            if(pickedPos.has_value())
-            {
-                if(m_pickedData.m_first)
-                {
-                    const Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
-                    this->updateDistance(m_pickedData.m_data, pickedPos.value(), secondPos);
-                }
-                else
-                {
-                    const Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
-                    this->updateDistance(m_pickedData.m_data, firstPos, pickedPos.value());
-                }
-            }
-
-            this->requestRender();
             this->getLayer()->cancelFurtherInteraction();
         }
     }
@@ -538,20 +521,30 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y,
 {
     if(m_pickedData.m_data != nullptr)
     {
-        Ogre::Vector3 newPos;
-
         // Discard the current distance to launch the ray over the scene without picking this one.
         m_pickedData.m_data->m_sphere1->setQueryFlags(0x0);
         m_pickedData.m_data->m_sphere2->setQueryFlags(0x0);
 
-        // Check if something is picked.
-        std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-        if(pickedPos.has_value())
+        const auto layer              = this->getLayer();
+        const Ogre::Camera* const cam = layer->getDefaultCamera();
+        SIGHT_ASSERT("No camera found", cam);
+
+        bool moveInCameraPlane = true;
+
+        Ogre::Vector3 newPos;
+        if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
         {
-            newPos = pickedPos.value();
+            // If something is picked, we will snap the landmark to it
+            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
+            if(pickedPos.has_value())
+            {
+                newPos            = pickedPos.value();
+                moveInCameraPlane = false;
+            }
         }
+
         // Else we move the distance along a plane.
-        else
+        if(moveInCameraPlane)
         {
             const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 

@@ -870,35 +870,6 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
         }
 
         delete raySceneQuery;
-
-        if(found)
-        {
-            this->getLayer()->cancelFurtherInteraction();
-
-            // Check if something is picked to update the position of the distance.
-            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-            if(pickedPos.has_value())
-            {
-                // Update the data, the autoconnection will call modifyPoint.
-                auto landmarks                   = m_landmarks.lock();
-                data::Landmarks::PointType point = landmarks->getPoint(
-                    m_pickedData->m_groupName,
-                    m_pickedData->m_index
-                );
-                const Ogre::Vector3 newPos = pickedPos.value();
-                point[0] = newPos[0];
-                point[1] = newPos[1];
-                point[2] = newPos[2];
-
-                const auto& sig = landmarks->signal<data::Landmarks::PointModifiedSigType>(
-                    data::Landmarks::s_POINT_MODIFIED_SIG
-                );
-
-                sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
-            }
-
-            this->requestRender();
-        }
     }
 }
 
@@ -908,24 +879,31 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedData != nullptr)
     {
-        Ogre::Vector3 newPos;
-
-        // Discard the current distance to launch the ray over the scene without picking this one.
+        // Discard the current landmark to launch the ray over the scene without picking this one.
         m_pickedData->m_object->setQueryFlags(0x0);
 
-        // Check if something is picked.
-        std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-        if(pickedPos.has_value())
-        {
-            newPos = pickedPos.value();
-        }
-        // Else we move the distance along a plane.
-        else
-        {
-            const auto layer = this->getLayer();
+        const auto layer              = this->getLayer();
+        const Ogre::Camera* const cam = layer->getDefaultCamera();
+        SIGHT_ASSERT("No camera found", cam);
 
-            const Ogre::Camera* const cam = layer->getDefaultCamera();
-            const auto* const vp          = cam->getViewport();
+        bool moveInCameraPlane = true;
+
+        Ogre::Vector3 newPos;
+        if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
+        {
+            // If something is picked, we will snap the landmark to it
+            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
+            if(pickedPos.has_value())
+            {
+                newPos            = pickedPos.value();
+                moveInCameraPlane = false;
+            }
+        }
+
+        // Else we move the distance along a plane.
+        if(moveInCameraPlane)
+        {
+            const auto* const vp = cam->getViewport();
 
             const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
             const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
@@ -952,8 +930,8 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
         m_pickedData->m_object->setQueryFlags(m_landmarksQueryFlag);
 
         // Update the data, the autoconnection will call modifyPoint.
-        auto landmarks                   = m_landmarks.lock();
-        data::Landmarks::PointType point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
+        auto landmarks                    = m_landmarks.lock();
+        data::Landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
         point[0] = newPos[0];
         point[1] = newPos[1];
         point[2] = newPos[2];
