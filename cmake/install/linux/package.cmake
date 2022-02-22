@@ -14,7 +14,9 @@ macro(linux_package PRJ_NAME)
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" "${Sight_BINARY_DIR}/sightlog.bin"
+                             "${Sight_BINARY_DIR}/sightlog" DESTINATION "bin"
+            )
         endif()
     elseif("${TARGET_TYPE}" STREQUAL "EXECUTABLE")
 

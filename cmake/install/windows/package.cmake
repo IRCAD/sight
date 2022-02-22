@@ -9,20 +9,14 @@ macro(win_package PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
     get_target_property(TYPE ${PRJ_NAME} SIGHT_TARGET_TYPE)
+    set(CPACK_LAUNCHER_PATH "bin\\\\${PRJ_NAME}.bat")
     if("${TYPE}" STREQUAL "APP")
-        set(LAUNCHER "sightrun.exe")
-        set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
-        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${SIGHT_TARGET}\\\\profile.xml")
-
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" "${Sight_BINARY_DIR}/sightlog.exe" DESTINATION "bin")
         endif()
     elseif("${TYPE}" STREQUAL "EXECUTABLE")
-        set(CPACK_LAUNCHER_PATH "bin\\\\${PRJ_NAME}.exe")
-        set(CPACK_PROFILE_PATH "")
-    elseif()
-        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${TYPE})")
+
     endif()
 
     if(CMAKE_CL_64)

@@ -1007,7 +1007,9 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(REMOVE_DUPLICATES DEPENDS)
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun")
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun" AND NOT "${dep}" STREQUAL
+                                                                                              "sightlog"
+                )
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
@@ -1113,8 +1115,8 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
         # Determine if we need to copy Qml plugins
         foreach(DEP ${DEPENDS})
-            get_target_property(DEPENDS ${DEP} LINK_LIBRARIES)
-            if("${DEPENDS}" MATCHES "Qml")
+            get_target_property(LINKED_DEPENDS ${DEP} LINK_LIBRARIES)
+            if("${LINKED_DEPENDS}" MATCHES "Qml")
                 set(QML_SOURCE_DIR "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/qml")
                 break()
             endif()
@@ -1123,6 +1125,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Add a fixup target for every app
         if(WIN32)
             list(APPEND DEPENDS ${IMPORTED_DEPENDS})
+            list(REMOVE_DUPLICATES DEPENDS)
             add_custom_target(
                 ${APP}_install_plugins
                 ${CMAKE_COMMAND}
