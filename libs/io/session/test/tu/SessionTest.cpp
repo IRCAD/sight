@@ -2223,11 +2223,16 @@ inline data::StructureTraits::sptr _generate<data::StructureTraits>(const std::s
     object->setPropertyType(UUID::generateUUID());
 
     // Categories
-    auto& categories = object->getCategories();
+
+    // Reset categories.
+    data::StructureTraits::CategoryContainer categories;
+
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
         categories.push_back(CATEGORIES[(i + variant) % std::size(CATEGORIES)]);
     }
+
+    object->setCategories(categories);
 
     // Color
     object->setColor(_new<data::Color>(variant));

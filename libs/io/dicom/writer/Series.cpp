@@ -80,7 +80,7 @@ void Series::write()
     {
         data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
         SIGHT_ASSERT("sight::data::ImageSeries not instanced", imageSeries);
-        data::Image::sptr image = imageSeries->getImage();
+        data::Image::csptr image = imageSeries->getImage();
         SIGHT_ASSERT("sight::data::Image not instanced", image);
 
         // Write image

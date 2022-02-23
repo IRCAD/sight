@@ -309,7 +309,7 @@
 
             <!-- Cube displayed on top of the marker plane -->
             <service uid="cubeAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="cubeMesh" />
+                <in key="mesh" uid="cubeMesh" />
                 <config layer="default" autoresetcamera="false" materialName="cube" />
             </service>
 

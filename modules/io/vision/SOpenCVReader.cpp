@@ -141,12 +141,12 @@ void SOpenCVReader::updating()
 
     for(std::size_t c = 0 ; c < cams ; ++c)
     {
-        data::Camera::sptr cam = camSeries->getCamera(0);
-        camSeries->removeCamera(cam);
+        data::Camera::csptr cam = camSeries->getCamera(0);
+        camSeries->removeCamera(std::const_pointer_cast<data::Camera>(cam));
 
         auto sig = camSeries->signal<data::CameraSeries::RemovedCameraSignalType>
                        (data::CameraSeries::s_REMOVED_CAMERA_SIG);
-        sig->asyncEmit(cam);
+        sig->asyncEmit(std::const_pointer_cast<data::Camera>(cam));
     }
 
     int nbCameras;

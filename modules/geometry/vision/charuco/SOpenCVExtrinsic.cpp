@@ -149,14 +149,14 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::size_t> degeneratedImagesCam1, degeneratedImagesCam2;
 
         {
-            data::CalibrationInfo::PointListContainerType pt_lists1 = calInfo1->getPointListContainer();
-            data::CalibrationInfo::PointListContainerType pt_lists2 = calInfo2->getPointListContainer();
+            const auto pt_lists1 = calInfo1->getPointListContainer();
+            const auto pt_lists2 = calInfo2->getPointListContainer();
 
             SIGHT_ASSERT("The two calibrationInfo have not the same size", pt_lists1.size() == pt_lists2.size());
 
-            data::CalibrationInfo::PointListContainerType::iterator itr1    = pt_lists1.begin();
-            data::CalibrationInfo::PointListContainerType::iterator itr2    = pt_lists2.begin();
-            data::CalibrationInfo::PointListContainerType::iterator itr1End = pt_lists1.end();
+            auto itr1    = pt_lists1.begin();
+            auto itr2    = pt_lists2.begin();
+            auto itr1End = pt_lists1.end();
 
             imagePoints1.reserve(pt_lists1.size());
             ids1.reserve(pt_lists1.size());
@@ -165,8 +165,8 @@ void SOpenCVExtrinsic::updating()
 
             for( ; itr1 != itr1End ; ++itr1, ++itr2)
             {
-                data::PointList::sptr ptList1 = *itr1;
-                data::PointList::sptr ptList2 = *itr2;
+                data::PointList::csptr ptList1 = *itr1;
+                data::PointList::csptr ptList2 = *itr2;
                 std::vector<cv::Point2f> imgPoint1;
                 std::vector<cv::Point2f> imgPoint2;
                 std::vector<int> tempIds1;
@@ -222,13 +222,13 @@ void SOpenCVExtrinsic::updating()
         const cv::Mat essentialMatrix   = cv::Mat::zeros(3, 3, CV_64F);
         const cv::Mat fundamentalMatrix = cv::Mat::zeros(3, 3, CV_64F);
 
-        data::Image::sptr img = calInfo1->getImageContainer().front();
+        data::Image::csptr img = calInfo1->getImageContainer().front();
         cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
             const auto camSeries = m_cameraSeries.lock();
 
-            data::Camera::sptr cam1 = camSeries->getCamera(0);
-            data::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
+            data::Camera::csptr cam1 = camSeries->getCamera(0);
+            data::Camera::csptr cam2 = camSeries->getCamera(m_camIndex);
 
             cameraMatrix1.at<double>(0, 0) = cam1->getFx();
             cameraMatrix1.at<double>(1, 1) = cam1->getFy();

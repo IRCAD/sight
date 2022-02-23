@@ -79,8 +79,7 @@ public:
      * @{
      * @brief Get/Set value of the organName.
      */
-    std::string& getOrganName();
-    const std::string& getOrganName() const;
+    std::string getOrganName() const;
     void setOrganName(const std::string& _sOrganName);
     /// @}
 
@@ -88,28 +87,30 @@ public:
      * @{
      * @brief Get/Set value of the structureType.
      */
-    std::string& getStructureType();
-    const std::string& getStructureType() const;
+    std::string getStructureType() const;
     void setStructureType(const std::string& _sStructureType);
     /// @}
 
     /**
      * @brief Get/Set the image associated with the acquisition
      */
-    Image::sptr getImage() const;
+    Image::sptr getImage();
+    Image::csptr getImage() const;
     void setImage(const Image::sptr& val);
 
     /**
      * @brief Get/Set the mesh associated with the acquisition
      */
-    Mesh::sptr getMesh() const;
+    Mesh::sptr getMesh();
+    Mesh::csptr getMesh() const;
     void setMesh(const Mesh::sptr& val);
     /// @}
 
     /**
      * @brief Get/Set the material associated with the acquisition
      */
-    Material::sptr getMaterial() const;
+    Material::sptr getMaterial();
+    Material::csptr getMaterial() const;
     void setMaterial(const Material::sptr& val);
     /// @}
 
@@ -205,14 +206,7 @@ inline void Reconstruction::setIsVisible(const bool _bIsVisible)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Reconstruction::getOrganName()
-{
-    return m_sOrganName;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const std::string& Reconstruction::getOrganName() const
+inline std::string Reconstruction::getOrganName() const
 {
     return m_sOrganName;
 }
@@ -226,14 +220,7 @@ inline void Reconstruction::setOrganName(const std::string& _sOrganName)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Reconstruction::getStructureType()
-{
-    return this->m_sStructureType;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const std::string& Reconstruction::getStructureType() const
+inline std::string Reconstruction::getStructureType() const
 {
     return this->m_sStructureType;
 }
@@ -247,7 +234,14 @@ inline void Reconstruction::setStructureType(const std::string& _sStructureType)
 
 //-----------------------------------------------------------------------------
 
-inline Image::sptr Reconstruction::getImage() const
+inline Image::sptr Reconstruction::getImage()
+{
+    return m_image;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Image::csptr Reconstruction::getImage() const
 {
     return m_image;
 }
@@ -261,7 +255,14 @@ inline void Reconstruction::setImage(const Image::sptr& val)
 
 //-----------------------------------------------------------------------------
 
-inline Mesh::sptr Reconstruction::getMesh() const
+inline Mesh::sptr Reconstruction::getMesh()
+{
+    return m_mesh;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Mesh::csptr Reconstruction::getMesh() const
 {
     return m_mesh;
 }
@@ -275,7 +276,14 @@ inline void Reconstruction::setMesh(const Mesh::sptr& val)
 
 //-----------------------------------------------------------------------------
 
-inline Material::sptr Reconstruction::getMaterial() const
+inline Material::sptr Reconstruction::getMaterial()
+{
+    return m_material;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Material::csptr Reconstruction::getMaterial() const
 {
     return m_material;
 }

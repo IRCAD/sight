@@ -121,10 +121,10 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         // Prepare configuration
         service::FieldAdaptorType replaceMap;
 
-        data::Image::sptr img1 = calInfo1->getImage(idx);
+        data::Image::csptr img1 = calInfo1->getImage(idx);
         replaceMap["imageId1"]        = img1->getID();
         replaceMap["calibrationData"] = calInfo1->getID();
-        data::PointList::sptr pointList1 = calInfo1->getPointList(img1);
+        data::PointList::csptr pointList1 = calInfo1->getPointList(img1);
         replaceMap["pointListId1"] = pointList1->getID();
 
         core::runtime::ConfigurationElement::csptr config;
@@ -132,9 +132,9 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         {
             strConfig = std::string(s_TWO_IMAGES_CONFIG);
 
-            data::Image::sptr img2 = calInfo2->getImage(idx);
+            data::Image::csptr img2 = calInfo2->getImage(idx);
             replaceMap["imageId2"] = img2->getID();
-            data::PointList::sptr pointList2 = calInfo2->getPointList(img2);
+            data::PointList::csptr pointList2 = calInfo2->getPointList(img2);
             replaceMap["pointListId2"] = pointList2->getID();
         }
 

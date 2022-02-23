@@ -320,7 +320,13 @@ Ogre::Image Utils::convertToOgreImage(const data::Image::csptr imageFw)
 
     const auto dumpLock = imageFw->dump_lock();
 
-    imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageFw->getBuffer()), width, height, depth, pixelFormat);
+    imageOgre.loadDynamicImage(
+        static_cast<uint8_t*>(const_cast<void*>(imageFw->getBuffer())),
+        width,
+        height,
+        depth,
+        pixelFormat
+    );
 
     return imageOgre;
 }

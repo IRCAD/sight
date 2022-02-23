@@ -267,7 +267,7 @@ void* Image::getBuffer()
 
 //-----------------------------------------------------------------------------
 
-void* Image::getBuffer() const
+const void* Image::getBuffer() const
 {
     return m_dataArray->getBuffer();
 }
@@ -284,10 +284,10 @@ void* Image::getPixel(IndexType index)
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixel(IndexType index) const
+const void* Image::getPixel(IndexType index) const
 {
     const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    BufferType* buf                  = static_cast<BufferType*>(this->getBuffer());
+    const BufferType* buf            = static_cast<const BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }

@@ -147,7 +147,7 @@
             </service>
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="objectMeshUid" />
+                <in key="mesh" uid="objectMeshUid" />
                 <config layer="default" transform="meshMatrixTransform" autoresetcamera="false" />
             </service>
 

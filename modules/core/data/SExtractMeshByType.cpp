@@ -108,9 +108,8 @@ void SExtractMeshByType::updating()
         const std::string type  = elt.first;
         const std::string regex = elt.second;
 
-        bool found                                                    = false;
-        const sight::data::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
-        for(const sight::data::Reconstruction::csptr element : recs)
+        bool found = false;
+        for(sight::data::Reconstruction::sptr element : modelSeries->getReconstructionDB())
         {
             if(element->getStructureType() == type)
             {

@@ -121,7 +121,7 @@ void SOpenCVIntrinsic::updating()
 
         std::vector<std::vector<cv::Point2f> > imagePoints;
 
-        for(data::PointList::sptr capture : calInfo->getPointListContainer())
+        for(data::PointList::csptr capture : calInfo->getPointListContainer())
         {
             std::vector<cv::Point2f> dst;
 
@@ -140,7 +140,7 @@ void SOpenCVIntrinsic::updating()
             objectPoints.push_back(points);
         }
 
-        data::Image::sptr img = calInfo->getImageContainer().front();
+        data::Image::csptr img = calInfo->getImageContainer().front();
 
         cv::Mat cameraMatrix;
         std::vector<float> distCoeffs;

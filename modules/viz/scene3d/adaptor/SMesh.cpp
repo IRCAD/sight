@@ -192,11 +192,11 @@ void SMesh::starting()
 service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MESH_INOUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
-    connections.push(s_MESH_INOUT, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
-    connections.push(s_MESH_INOUT, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
-    connections.push(s_MESH_INOUT, data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -260,7 +260,7 @@ void module::viz::scene3d::adaptor::SMesh::setVisible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
+void SMesh::updateMesh(data::Mesh::csptr _mesh)
 {
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
@@ -384,7 +384,7 @@ void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
 //------------------------------------------------------------------------------
 
 adaptor::SMaterial::sptr SMesh::createMaterialService(
-    const data::Mesh::sptr& _mesh,
+    data::Mesh::csptr _mesh,
     const std::string& _materialSuffix
 )
 {
@@ -419,7 +419,7 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
 
 //------------------------------------------------------------------------------
 
-void SMesh::updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh)
+void SMesh::updateNewMaterialAdaptor(data::Mesh::csptr _mesh)
 {
     if(!m_materialAdaptor)
     {

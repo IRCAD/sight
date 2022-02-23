@@ -341,7 +341,7 @@
 
             <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <in key="cameraSeries" uid="cameraSeries" />
+                <inout key="cameraSeries" uid="cameraSeries" />
                 <!-- destination -->
                 <out group="camera" >
                     <key index="0" uid="cameraDepth" />

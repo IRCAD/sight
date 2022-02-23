@@ -81,8 +81,11 @@ public:
 
     /**
      * @brief returns editable diffuse texture
+     * @{
      */
-    DATA_API Image::sptr getDiffuseTexture() const;
+    DATA_API Image::sptr getDiffuseTexture();
+    DATA_API Image::csptr getDiffuseTexture() const;
+    ///@}
 
     /**
      * @brief Setter for diffuse texture

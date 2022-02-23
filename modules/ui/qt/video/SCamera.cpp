@@ -425,7 +425,7 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
 {
     std::vector<data::Camera::sptr> cameras;
 
-    const auto cameraSeries = m_cameraSeries.lock();
+    auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
         const std::size_t numCameras = cameraSeries->numCameras();

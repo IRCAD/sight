@@ -133,7 +133,16 @@ void CameraSeries::addCamera(const data::Camera::sptr& camera)
 
 //------------------------------------------------------------------------------
 
-data::Camera::sptr CameraSeries::getCamera(std::size_t index) const
+data::Camera::csptr CameraSeries::getCamera(std::size_t index) const
+{
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
+
+    return m_cameras[index];
+}
+
+//------------------------------------------------------------------------------
+
+data::Camera::sptr CameraSeries::getCamera(std::size_t index)
 {
     SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
 
@@ -163,7 +172,15 @@ void CameraSeries::setExtrinsicMatrix(std::size_t index, data::Matrix4::sptr mat
 
 //------------------------------------------------------------------------------
 
-data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(std::size_t index) const
+data::Matrix4::csptr CameraSeries::getExtrinsicMatrix(std::size_t index) const
+{
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
+    return m_extrinsicMatrices[index];
+}
+
+//------------------------------------------------------------------------------
+
+data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(std::size_t index)
 {
     SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
     return m_extrinsicMatrices[index];

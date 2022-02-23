@@ -52,7 +52,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto image = Helper::safeCast<data::Image>(object);
+    auto image = Helper::safeCast<data::Image>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Image>(tree, 1);

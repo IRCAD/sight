@@ -210,7 +210,7 @@ void Mesh::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
+void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
 {
     const auto dumpLock = _mesh->dump_lock();
 
@@ -251,7 +251,9 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
         if(computeNormals)
         {
-            geometry::data::Mesh::generatePointNormals(_mesh);
+            // /!\ DEPRECATED /!\: normals shouldn't be computed by an adaptor.
+            // We need to remove the const of the _mesh to compute normals.
+            geometry::data::Mesh::generatePointNormals(std::const_pointer_cast<data::Mesh>(_mesh));
             m_hasNormal = true;
         }
     }
@@ -513,7 +515,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
-    const data::Mesh::sptr& _mesh,
+    const data::Mesh::csptr& _mesh,
     Ogre::SceneManager& _sceneMgr,
     const std::string& _materialName
 )

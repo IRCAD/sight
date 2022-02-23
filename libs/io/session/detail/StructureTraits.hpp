@@ -111,15 +111,15 @@ inline static data::StructureTraits::sptr deserialize(
     structureTraits->setPropertyType(Helper::readString(tree, s_PropertyType));
 
     // Categories
-    auto& categories = structureTraits->getCategories();
-
     // Clearing is required in case the object is reused
-    categories.clear();
+    data::StructureTraits::CategoryContainer categories;
 
     for(const auto& categoryTree : tree.get_child(s_Categories))
     {
         categories.push_back(static_cast<data::StructureTraits::Category>(categoryTree.second.get_value<int>()));
     }
+
+    structureTraits->setCategories(categories);
 
     // Color
     structureTraits->setColor(std::dynamic_pointer_cast<data::Color>(children.at(s_Color)));

@@ -80,16 +80,14 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SMesh" >
-        <inout key="mesh" uid="..." />
+        <in key="mesh" uid="..." />
         <config layer="..." transform="..." visible="true" materialName="..." shadingMode="phong" textureName="..."
         queryFlags="0x40000000" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
- * - \b mesh [sight::data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
- * some
- * fields.
+ * @subsection Input Input
+ * - \b mesh [sight::data::Mesh]: adapted mesh.
  *
  * @subsection Configuration Configuration:
  *  - \b layer (mandatory, string): defines the mesh's layer
@@ -237,7 +235,7 @@ private:
      * @brief Updates the mesh, checks if color, number of vertices have changed, and updates them.
      * @param _mesh used for the update.
      */
-    void updateMesh(const data::Mesh::sptr& _mesh);
+    void updateMesh(data::Mesh::csptr _mesh);
 
     /**
      * @brief Instantiates a new material adaptor
@@ -245,7 +243,7 @@ private:
      * @param _mesh used to create an unique material name.
      */
     module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(
-        const data::Mesh::sptr& _mesh,
+        data::Mesh::csptr _mesh,
         const std::string& _materialSuffix = ""
     );
 
@@ -254,7 +252,7 @@ private:
      * With this method, SMesh is responsible for creating a SMaterial.
      * @param _mesh used to create the material service.
      */
-    void updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh);
+    void updateNewMaterialAdaptor(data::Mesh::csptr _mesh);
 
     /// Updates the associated material adaptor.
     /// This method is called when a material adaptor has been configured in the XML scene.
@@ -311,8 +309,8 @@ private:
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    static constexpr std::string_view s_MESH_INOUT = "mesh";
-    data::ptr<data::Mesh, data::Access::inout> m_mesh {this, s_MESH_INOUT, true};
+    static constexpr std::string_view s_MESH_IN = "mesh";
+    data::ptr<data::Mesh, data::Access::in> m_mesh {this, s_MESH_IN, true};
 };
 
 //------------------------------------------------------------------------------

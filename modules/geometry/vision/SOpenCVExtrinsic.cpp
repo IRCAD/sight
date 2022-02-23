@@ -145,20 +145,20 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector<cv::Point2f> > imagePoints1;
         std::vector<std::vector<cv::Point2f> > imagePoints2;
         {
-            data::CalibrationInfo::PointListContainerType pt_lists1 = calInfo1->getPointListContainer();
-            data::CalibrationInfo::PointListContainerType pt_lists2 = calInfo2->getPointListContainer();
+            const auto pt_lists1 = calInfo1->getPointListContainer();
+            const auto pt_lists2 = calInfo2->getPointListContainer();
 
             SIGHT_ERROR_IF("The two calibrationInfo do not have the same size", pt_lists1.size() != pt_lists2.size());
 
-            data::CalibrationInfo::PointListContainerType::iterator itr1    = pt_lists1.begin();
-            data::CalibrationInfo::PointListContainerType::iterator itr2    = pt_lists2.begin();
-            data::CalibrationInfo::PointListContainerType::iterator itrEnd1 = pt_lists1.end();
-            data::CalibrationInfo::PointListContainerType::iterator itrEnd2 = pt_lists2.end();
+            auto itr1    = pt_lists1.begin();
+            auto itr2    = pt_lists2.begin();
+            auto itrEnd1 = pt_lists1.end();
+            auto itrEnd2 = pt_lists2.end();
 
             for( ; itr1 != itrEnd1 && itr2 != itrEnd2 ; ++itr1, ++itr2)
             {
-                data::PointList::sptr ptList1 = *itr1;
-                data::PointList::sptr ptList2 = *itr2;
+                data::PointList::csptr ptList1 = *itr1;
+                data::PointList::csptr ptList2 = *itr2;
                 std::vector<cv::Point2f> imgPoint1;
                 std::vector<cv::Point2f> imgPoint2;
 
@@ -208,7 +208,7 @@ void SOpenCVExtrinsic::updating()
             m_camIndex > 0 && m_camIndex < camSeries->numCameras()
         );
 
-        data::Image::sptr img = calInfo1->getImageContainer().front();
+        data::Image::csptr img = calInfo1->getImageContainer().front();
         cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
             data::Camera::csptr cam1 = camSeries->getCamera(0);

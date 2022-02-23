@@ -125,7 +125,14 @@ Color::sptr Material::diffuse() const
 
 //------------------------------------------------------------------------------
 
-Image::sptr Material::getDiffuseTexture() const
+Image::sptr Material::getDiffuseTexture()
+{
+    return m_diffuseTexture;
+}
+
+//------------------------------------------------------------------------------
+
+Image::csptr Material::getDiffuseTexture() const
 {
     return m_diffuseTexture;
 }

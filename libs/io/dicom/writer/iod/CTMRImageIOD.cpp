@@ -78,7 +78,7 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
-    data::Image::sptr image = imageSeries->getImage();
+    data::Image::csptr image = imageSeries->getImage();
 
     // Create writer
     SPTR(gdcm::ImageWriter) writer = std::make_shared<gdcm::ImageWriter>();

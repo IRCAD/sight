@@ -44,7 +44,7 @@ const
     activity::extension::ActivityInfo info;
     info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
-    data::Composite::sptr composite = activity->getData();
+    data::Composite::csptr composite = activity->getData();
 
     for(activity::extension::ActivityRequirement req : info.requirements)
     {
@@ -52,7 +52,7 @@ const
            || (req.minOccurs == 0 && req.maxOccurs == 0)
            || req.create) // One object is required
         {
-            data::Object::sptr obj = composite->at<data::Object>(req.name);
+            data::Object::csptr obj = composite->at<data::Object>(req.name);
             if(!obj)
             {
                 validation.first   = false;
@@ -75,7 +75,7 @@ const
         }
         else if(req.container == "vector")
         {
-            data::Vector::sptr vector = composite->at<data::Vector>(req.name);
+            data::Vector::csptr vector = composite->at<data::Vector>(req.name);
             if(!vector)
             {
                 validation.first   = false;
@@ -99,7 +99,7 @@ const
                 else
                 {
                     bool isValid = true;
-                    for(data::Object::sptr obj : *vector)
+                    for(data::Object::csptr obj : *vector)
                     {
                         if(!obj)
                         {
@@ -132,7 +132,7 @@ const
         }
         else // container == composite
         {
-            data::Composite::sptr currentComposite = composite->at<data::Composite>(req.name);
+            data::Composite::csptr currentComposite = composite->at<data::Composite>(req.name);
             if(!currentComposite)
             {
                 validation.first   = false;
@@ -225,7 +225,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
     activity::extension::ActivityInfo info;
     info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
-    data::Composite::sptr composite = activity->getData();
+    data::Composite::csptr composite = activity->getData();
 
     // Check if all the activity config parameters are present
     activity::extension::ActivityAppConfig appConfigInfo = info.appConfig;
@@ -239,7 +239,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
                 path.replace(0, 1, "@");
             }
 
-            data::Object::sptr obj = data::reflection::getObject(composite, path);
+            data::Object::csptr obj = data::reflection::getObject(composite, path);
             if(!obj)
             {
                 validation.first   = false;

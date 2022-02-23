@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,8 +115,14 @@ void SurfaceSegmentation::write()
     // Complete Model Series with information from associated Image Series
     const data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
     modelSeries->shallowCopy(srcModelSeries);
-    modelSeries->setPatient(associatedDicomSeries->getPatient());
-    modelSeries->setStudy(associatedDicomSeries->getStudy());
+    // Copy Study and Patient
+    auto study = data::Study::New();
+    study->deepCopy(associatedDicomSeries->getStudy());
+    auto patient = data::Patient::New();
+    patient->deepCopy(associatedDicomSeries->getPatient());
+
+    modelSeries->setPatient(patient);
+    modelSeries->setStudy(study);
 
     SPTR(io::dicom::container::DicomInstance) associatedDicomInstance =
         std::make_shared<io::dicom::container::DicomInstance>(associatedDicomSeries, m_logger);

@@ -170,7 +170,7 @@
             <out key="outTarget" uid="newCameraSeries" />
         </service>
            <service uid="extractCamerasSrv" type="sight::module::data::SGetCamera">
-            <in key="cameraSeries" uid="newCameraSeries"/>
+            <inout key="cameraSeries" uid="newCameraSeries"/>
             <out group="camera">
                 <key index="0" uid="camera0" />
                 <key index="1" uid="camera1" />

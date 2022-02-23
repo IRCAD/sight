@@ -93,7 +93,7 @@ public:
      * @{
      * @brief Get/Set value of the structure type.
      */
-    std::string& getType();
+    std::string getType();
     const std::string& getType() const;
     void setType(const std::string& _type);
     /// @}
@@ -102,7 +102,7 @@ public:
      * @{
      * @brief Get/Set value of the categories.
      */
-    CategoryContainer& getCategories();
+    CategoryContainer getCategories();
     const CategoryContainer& getCategories() const;
     void setCategories(const CategoryContainer& _categories);
     /// @}
@@ -111,7 +111,7 @@ public:
      * @{
      * @brief Get/Set value of the class.
      */
-    StructureClass& getClass();
+    StructureClass getClass();
     const StructureClass& getClass() const;
     void setClass(const StructureClass& _class);
     /// @}
@@ -120,7 +120,7 @@ public:
      * @{
      * @brief Get/Set value of the nativeExp.
      */
-    ROIExpression& getNativeExp();
+    ROIExpression getNativeExp();
     const ROIExpression& getNativeExp() const;
     void setNativeExp(const ROIExpression& _nativeExp);
     /// @}
@@ -129,7 +129,7 @@ public:
      * @{
      * @brief Get/Set value of the nativeGeometricExp.
      */
-    ROIExpression& getNativeGeometricExp();
+    ROIExpression getNativeGeometricExp();
     const ROIExpression& getNativeGeometricExp() const;
     void setNativeGeometricExp(const ROIExpression& _nativeGeometricExp);
     /// @}
@@ -138,7 +138,7 @@ public:
      * @{
      * @brief Get/Set value of the attachmentType.
      */
-    std::string& getAttachmentType();
+    std::string getAttachmentType();
     const std::string& getAttachmentType() const;
     void setAttachmentType(const std::string& _attachmentType);
     /// @}
@@ -147,8 +147,8 @@ public:
      * @{
      * @brief Get/Set value of the color.
      */
-    Color::sptr& getColor();
-    const Color::sptr& getColor() const;
+    Color::sptr getColor();
+    Color::csptr getColor() const;
     void setColor(const Color::sptr& _color);
     /// @}
 
@@ -156,7 +156,7 @@ public:
      * @{
      * @brief Get/Set value of the anatomicRegion.
      */
-    std::string& getAnatomicRegion();
+    std::string getAnatomicRegion();
     const std::string& getAnatomicRegion() const;
     void setAnatomicRegion(const std::string& _anatomicRegion);
     /// @}
@@ -165,7 +165,7 @@ public:
      * @{
      * @brief Get/Set value of the propertyCategory.
      */
-    std::string& getPropertyCategory();
+    std::string getPropertyCategory();
     const std::string& getPropertyCategory() const;
     void setPropertyCategory(const std::string& _propertyCategory);
 
@@ -175,7 +175,7 @@ public:
      * @{
      * @brief Get/Set value of the propertyType.
      */
-    std::string& getPropertyType();
+    std::string getPropertyType();
     const std::string& getPropertyType() const;
     void setPropertyType(const std::string& _propertyType);
     /// @}
@@ -236,7 +236,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline std::string& StructureTraits::getType()
+inline std::string StructureTraits::getType()
 {
     return m_type;
 }
@@ -257,7 +257,7 @@ inline void StructureTraits::setType(const std::string& _type)
 
 //-----------------------------------------------------------------------------
 
-inline StructureTraits::CategoryContainer& StructureTraits::getCategories()
+inline StructureTraits::CategoryContainer StructureTraits::getCategories()
 {
     return m_categories;
 }
@@ -278,7 +278,7 @@ inline void StructureTraits::setCategories(const StructureTraits::CategoryContai
 
 //-----------------------------------------------------------------------------
 
-inline StructureTraits::StructureClass& StructureTraits::getClass()
+inline StructureTraits::StructureClass StructureTraits::getClass()
 {
     return m_class;
 }
@@ -299,7 +299,7 @@ inline void StructureTraits::setClass(const StructureTraits::StructureClass& _cl
 
 //-----------------------------------------------------------------------------
 
-inline StructureTraits::ROIExpression& StructureTraits::getNativeExp()
+inline StructureTraits::ROIExpression StructureTraits::getNativeExp()
 {
     return m_nativeExp;
 }
@@ -320,7 +320,7 @@ inline void StructureTraits::setNativeExp(const StructureTraits::ROIExpression& 
 
 //-----------------------------------------------------------------------------
 
-inline StructureTraits::ROIExpression& StructureTraits::getNativeGeometricExp()
+inline StructureTraits::ROIExpression StructureTraits::getNativeGeometricExp()
 {
     return m_nativeGeometricExp;
 }
@@ -341,7 +341,7 @@ inline void StructureTraits::setNativeGeometricExp(const StructureTraits::ROIExp
 
 //-----------------------------------------------------------------------------
 
-inline std::string& StructureTraits::getAttachmentType()
+inline std::string StructureTraits::getAttachmentType()
 {
     return m_attachmentType;
 }
@@ -362,14 +362,14 @@ inline void StructureTraits::setAttachmentType(const std::string& _attachmentTyp
 
 //-----------------------------------------------------------------------------
 
-inline Color::sptr& StructureTraits::getColor()
+inline Color::sptr StructureTraits::getColor()
 {
     return m_color;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Color::sptr& StructureTraits::getColor() const
+inline Color::csptr StructureTraits::getColor() const
 {
     return m_color;
 }
@@ -383,7 +383,7 @@ inline void StructureTraits::setColor(const Color::sptr& _color)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& StructureTraits::getAnatomicRegion()
+inline std::string StructureTraits::getAnatomicRegion()
 {
     return m_anatomicRegion;
 }
@@ -404,7 +404,7 @@ inline void StructureTraits::setAnatomicRegion(const std::string& _anatomicRegio
 
 //-----------------------------------------------------------------------------
 
-inline std::string& StructureTraits::getPropertyCategory()
+inline std::string StructureTraits::getPropertyCategory()
 {
     return m_propertyCategory;
 }
@@ -425,7 +425,7 @@ inline void StructureTraits::setPropertyCategory(const std::string& _propertyCat
 
 //-----------------------------------------------------------------------------
 
-inline std::string& StructureTraits::getPropertyType()
+inline std::string StructureTraits::getPropertyType()
 {
     return m_propertyType;
 }

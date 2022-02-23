@@ -167,7 +167,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
 
     // Retrieve image buffer
     const auto dumpLock     = m_object->dump_lock();
-    const char* imageBuffer = static_cast<char*>(m_object->getBuffer());
+    const char* imageBuffer = static_cast<const char*>(m_object->getBuffer());
 
     // Pixel Data - Type 1C
     gdcm::DataElement pixeldata(gdcm::Tag(0x7fe0, 0x0010));

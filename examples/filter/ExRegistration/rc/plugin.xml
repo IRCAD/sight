@@ -208,7 +208,7 @@ Detail of the ToolBar
             </service>
 
             <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato1" />
+                <in key="mesh" uid="meshOnNegato1" />
                 <config layer="default" picker="negato1default" />
             </service>
 
@@ -241,7 +241,7 @@ Detail of the ToolBar
             </service>
 
             <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato2" />
+                <in key="mesh" uid="meshOnNegato2" />
                 <config layer="default" picker="negato2default" />
             </service>
 
@@ -275,12 +275,12 @@ Detail of the ToolBar
             </service>
 
             <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato1" />
+                <in key="mesh" uid="meshOnNegato1" />
                 <config layer="default" />
             </service>
 
             <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato2" />
+                <in key="mesh" uid="meshOnNegato2" />
                 <config layer="default" transform="registrationMatrix" />
             </service>
 

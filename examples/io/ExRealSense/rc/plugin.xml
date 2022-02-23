@@ -501,7 +501,7 @@
 
             <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
              <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
-                 <in key="cameraSeries" uid="RGBDCameraSeries" autoConnect="true" />
+                 <inout key="cameraSeries" uid="RGBDCameraSeries" autoConnect="true" />
                  <out group="camera" >
                      <key index="0" uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
                      <key index="1" uid="RGBCamera" /> <!-- Color Camera -->  

@@ -61,7 +61,10 @@ public:
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the activity container.
-    Composite::sptr getData() const;
+    Composite::sptr getData();
+
+    /// Gets the activity container.
+    Composite::csptr getData() const;
 
     /// Sets the activity container.
     void setData(const Composite::sptr& _val);
@@ -96,7 +99,14 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Composite::sptr ActivitySeries::getData() const
+inline Composite::sptr ActivitySeries::getData()
+{
+    return m_data;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::csptr ActivitySeries::getData() const
 {
     return m_data;
 }

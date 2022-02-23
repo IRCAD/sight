@@ -74,7 +74,7 @@ void GzBufferImageWriter::write()
     // file is OK : process now
     const std::size_t imageSizeInBytes = image->getSizeInBytes();
 
-    const char* ptr          = static_cast<char*>(image->getBuffer());
+    const char* ptr          = static_cast<const char*>(image->getBuffer());
     std::size_t writtenBytes = 0;
 
     int uncompressed_bytes_written = 0;

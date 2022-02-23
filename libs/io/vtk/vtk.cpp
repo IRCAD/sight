@@ -381,7 +381,8 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
     _pImageImport->SetDataExtentToWholeExtent();
 
     // no copy, no buffer destruction/management
-    _pImageImport->SetImportVoidPointer(_pDataImage->getBuffer());
+    // Remove const of the pointer.
+    _pImageImport->SetImportVoidPointer(const_cast<void*>(_pDataImage->getBuffer()));
 
     // used to set correct pixeltype to VtkImage
     _pImageImport->SetDataScalarType(TypeTranslator::translate(_pDataImage->getType()));

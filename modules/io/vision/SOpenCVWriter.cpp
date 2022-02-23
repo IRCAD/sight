@@ -135,12 +135,11 @@ void SOpenCVWriter::updating()
 
     std::size_t numberOfCameras = camSeries->numCameras();
 
-    std::vector<data::Camera::sptr> cameras;
+    std::vector<data::Camera::csptr> cameras;
     std::vector<cv::Mat> cameraMatrices;
     std::vector<cv::Mat> cameraDistCoefs;
 
     // Set the cameras
-    data::Matrix4::sptr extrinsicMatrix;
     cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
     for(std::size_t i = 0 ; i < numberOfCameras ; ++i)
@@ -178,7 +177,7 @@ void SOpenCVWriter::updating()
         fs << "distortion" << cameraDistCoefs[c];
         fs << "scale" << camSeries->getCamera(c)->getScale();
 
-        extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
+        const auto extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
         if(extrinsicMatrix)
         {
             for(std::uint8_t i = 0 ; i < 4 ; ++i)

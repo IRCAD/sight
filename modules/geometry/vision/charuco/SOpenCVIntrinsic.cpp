@@ -108,7 +108,7 @@ void SOpenCVIntrinsic::updating()
         std::vector<std::vector<int> > ids;
 
         {
-            for(data::PointList::sptr capture : calInfo->getPointListContainer())
+            for(data::PointList::csptr capture : calInfo->getPointListContainer())
             {
                 // cspell: disable
                 std::vector<cv::Point2f> cdst;
@@ -132,7 +132,7 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        data::Image::sptr img = calInfo->getImageContainer().front();
+        data::Image::csptr img = calInfo->getImageContainer().front();
 
         cv::Mat cameraMatrix;
         std::vector<double> distCoeffs;

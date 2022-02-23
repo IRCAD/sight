@@ -82,10 +82,10 @@ public:
     VIZ_SCENE3D_API void setDynamic(bool _isDynamic);
 
     VIZ_SCENE3D_API void setVisible(bool _visible);
-    VIZ_SCENE3D_API void updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly = false);
+    VIZ_SCENE3D_API void updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly = false);
     VIZ_SCENE3D_API void updateMesh(const data::PointList::csptr& _pointList);
     VIZ_SCENE3D_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(
-        const data::Mesh::sptr& _mesh,
+        const data::Mesh::csptr& _mesh,
         Ogre::SceneManager& _sceneMgr,
         const std::string& _materialName
     );

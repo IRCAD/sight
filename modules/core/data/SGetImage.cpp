@@ -22,6 +22,7 @@
 #include "SGetImage.hpp"
 
 #include "data/Exception.hpp"
+
 namespace sight::module::data
 {
 
@@ -53,7 +54,7 @@ void SGetImage::updating()
         SIGHT_THROW_EXCEPTION(sight::data::Exception("Output Image is empty"));
     }
 
-    this->setOutput(s_IMAGE_OUT, outputImage);
+    this->setOutput(s_IMAGE_OUT, std::const_pointer_cast<sight::data::Image>(outputImage));
 }
 
 //-----------------------------------------------------------------------------

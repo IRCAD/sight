@@ -59,20 +59,20 @@ void SCalibrationInfoEditor::updating()
     const auto calInfo1 = m_calibrationInfo1.lock();
     SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
-    data::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
+    const auto plList1 = calInfo1->getPointListContainer();
 
     m_capturesListWidget->clear();
 
     const auto calInfo2 = m_calibrationInfo2.lock();
     if(calInfo2)
     {
-        data::CalibrationInfo::PointListContainerType plList2 = calInfo2->getPointListContainer();
+        const auto plList2 = calInfo2->getPointListContainer();
 
         std::size_t captureIdx = 0;
+        auto it1               = plList1.begin();
+        auto it2               = plList2.begin();
 
-        data::CalibrationInfo::PointListContainerType::const_iterator it1, it2;
-
-        for(it1 = plList1.begin(), it2 = plList2.begin() ; it1 != plList1.end() && it2 != plList2.end() ; ++it1, ++it2)
+        for( ; it1 != plList1.end() && it2 != plList2.end() ; ++it1, ++it2)
         {
             QString countString;
             std::size_t count1 = (*it1)->getPoints().size();
@@ -101,8 +101,7 @@ void SCalibrationInfoEditor::updating()
     else
     {
         std::size_t captureIdx = 0;
-        data::CalibrationInfo::PointListContainerType::const_iterator it1;
-        for(it1 = plList1.begin() ; it1 != plList1.end() ; ++it1)
+        for(auto it1 = plList1.begin() ; it1 != plList1.end() ; ++it1)
         {
             QString countString;
             std::size_t count = (*it1)->getPoints().size();

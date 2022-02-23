@@ -68,7 +68,10 @@ public:
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the image container.
-    Image::sptr getImage() const;
+    Image::sptr getImage();
+
+    /// Gets the image container.
+    Image::csptr getImage() const;
 
     /// Sets the image data.
     void setImage(const Image::sptr& _image);
@@ -211,7 +214,14 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Image::sptr ImageSeries::getImage() const
+inline Image::sptr ImageSeries::getImage()
+{
+    return m_image;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Image::csptr ImageSeries::getImage() const
 {
     return m_image;
 }

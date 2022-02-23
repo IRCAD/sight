@@ -313,7 +313,10 @@ public:
     DATA_API static OffsetType computeStrides(SizeType size, std::size_t sizeOfType);
 
     /// Return buffer object
-    core::memory::BufferObject::sptr getBufferObject() const;
+    ///@{
+    core::memory::BufferObject::sptr getBufferObject();
+    core::memory::BufferObject::csptr getBufferObject() const;
+    ///@}
 
     /// Set buffer object
     void setBufferObject(const core::memory::BufferObject::sptr& bufferObj);
@@ -549,7 +552,14 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline core::memory::BufferObject::sptr Array::getBufferObject() const
+inline core::memory::BufferObject::csptr Array::getBufferObject() const
+{
+    return m_bufferObject;
+}
+
+//-----------------------------------------------------------------------------
+
+inline core::memory::BufferObject::sptr Array::getBufferObject()
 {
     return m_bufferObject;
 }

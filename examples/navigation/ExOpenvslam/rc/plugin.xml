@@ -368,7 +368,7 @@
 
             <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <in key="cameraSeries" uid="cameraSeries" />
+                <inout key="cameraSeries" uid="cameraSeries" />
                 <out group="camera" >
                     <key index="0" uid="camera" /> <!-- destination -->
                 </out>

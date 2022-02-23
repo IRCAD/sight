@@ -62,19 +62,28 @@ public:
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the referring patient.
-    Patient::sptr getPatient() const;
+    /// @{
+    Patient::sptr getPatient();
+    Patient::csptr getPatient() const;
+    /// @}
 
     /// Sets the referring patient.
     void setPatient(const Patient::sptr& _val);
 
     /// Gets the referring study.
-    Study::sptr getStudy() const;
+    /// @{
+    Study::sptr getStudy();
+    Study::csptr getStudy() const;
+    /// @}
 
     /// Sets the referring study.
     void setStudy(const Study::sptr& _val);
 
     /// Gets the related equipment.
-    Equipment::sptr getEquipment() const;
+    /// @{
+    Equipment::sptr getEquipment();
+    Equipment::csptr getEquipment() const;
+    /// @}
 
     /// Sets the related equipment.
     void setEquipment(const Equipment::sptr& _val);
@@ -281,7 +290,14 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Patient::sptr Series::getPatient() const
+inline Patient::sptr Series::getPatient()
+{
+    return m_patient;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Patient::csptr Series::getPatient() const
 {
     return m_patient;
 }
@@ -295,7 +311,14 @@ inline void Series::setPatient(const Patient::sptr& _val)
 
 //-----------------------------------------------------------------------------
 
-inline Study::sptr Series::getStudy() const
+inline Study::sptr Series::getStudy()
+{
+    return m_study;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Study::csptr Series::getStudy() const
 {
     return m_study;
 }
@@ -309,7 +332,14 @@ inline void Series::setStudy(const Study::sptr& _val)
 
 //-----------------------------------------------------------------------------
 
-inline Equipment::sptr Series::getEquipment() const
+inline Equipment::sptr Series::getEquipment()
+{
+    return m_equipment;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Equipment::csptr Series::getEquipment() const
 {
     return m_equipment;
 }

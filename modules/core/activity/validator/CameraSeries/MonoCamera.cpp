@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Obj
     {
         if(cameraSeries->numCameras() == 1)
         {
-            data::Camera::sptr camera = cameraSeries->getCamera(0);
+            data::Camera::csptr camera = cameraSeries->getCamera(0);
             if(!camera->getIsCalibrated())
             {
                 validation.first  = false;

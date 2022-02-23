@@ -110,8 +110,8 @@ bool LineDrawer::drawPixel(
 
     if(m_useROI)
     {
-        data::Image::BufferType* roiVal =
-            reinterpret_cast<data::Image::BufferType*>(m_roiImage->getPixel(index));
+        const data::Image::BufferType* roiVal =
+            reinterpret_cast<const data::Image::BufferType*>(m_roiImage->getPixel(index));
         if(data::helper::MedicalImage::isBufNull(roiVal, m_roiTypeSize))
         {
             return false;

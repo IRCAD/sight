@@ -64,7 +64,7 @@ public:
      *  @brief get/set point position
      */
     Point::sptr& getPosition();
-    const Point::sptr& getPosition() const;
+    Point::csptr getPosition() const;
     void setPosition(const Point::sptr& _position);
     /// @}
 
@@ -101,7 +101,7 @@ inline Point::sptr& Line::getPosition()
 
 //-----------------------------------------------------------------------------
 
-inline const Point::sptr& Line::getPosition() const
+inline Point::csptr Line::getPosition() const
 {
     return this->m_position;
 }

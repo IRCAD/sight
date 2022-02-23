@@ -98,7 +98,13 @@ public:
      * @brief Returns the camera at the index.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API Camera::sptr getCamera(std::size_t index) const;
+    DATA_API Camera::csptr getCamera(std::size_t index) const;
+
+    /**
+     * @brief Returns the camera at the index.
+     * @throws core::Exception if the index is out of range
+     */
+    DATA_API Camera::sptr getCamera(std::size_t index);
 
     /**
      * @brief Remove the given camera from the series
@@ -135,18 +141,12 @@ public:
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
      * @throws core::Exception if the index is out of range
+     *
+     * @{
      */
-    DATA_API Matrix4::sptr getExtrinsicMatrix(std::size_t index) const;
-
-    /**
-     * @brief Gets the extrinsic matrix corresponding to the transformation from camera[0] to camera[1].
-     * @return Returns the extrinsic transformation matrix, or null if not defined.
-     * @deprecated Use getExtrinsicMatrix(1) instead of this method
-     */
-    Matrix4::sptr getExtrinsicMatrix() const
-    {
-        return this->getExtrinsicMatrix(1);
-    }
+    DATA_API Matrix4::csptr getExtrinsicMatrix(std::size_t index) const;
+    DATA_API Matrix4::sptr getExtrinsicMatrix(std::size_t index);
+    /// @}
 
     /// Equality comparison operators
     /// @{

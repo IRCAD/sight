@@ -159,7 +159,7 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
     itkImage->SetRegions(itkRegion);
 
     itkImage->GetPixelContainer()->SetImportPointer(
-        static_cast<typename ITKIMAGE::PixelType*>(imageData->getBuffer()),
+        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(imageData->getBuffer())),
         nb_pixels,
         false
     );

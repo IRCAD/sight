@@ -51,10 +51,6 @@ public:
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (CalibrationInfo));
 
-    ///typedefs
-    typedef std::list<Image::sptr> ImageContainerType;
-    typedef std::list<PointList::sptr> PointListContainerType;
-
     /**
      * @name Signals API
      * @{
@@ -103,18 +99,25 @@ public:
     DATA_API void resetRecords();
 
     ///Get all the images
-    DATA_API ImageContainerType getImageContainer() const;
+    ///@{
+    DATA_API std::list<Image::sptr> getImageContainer();
+    DATA_API std::list<Image::csptr> getImageContainer() const;
+    ///@}
 
     ///Get all the pointLists
-    DATA_API PointListContainerType getPointListContainer() const;
+    ///@{
+    DATA_API std::list<PointList::sptr> getPointListContainer();
+    DATA_API std::list<PointList::csptr> getPointListContainer() const;
+    ///@}
 
     /**
      * @brief Get the pointList corresponding to the specified image, if the specified image is not found
      * a null pointer is returned
      * @param[in] img image
      * @return pointList corresponding to the image
+     *
      */
-    DATA_API PointList::sptr getPointList(const Image::sptr& img) const;
+    DATA_API PointList::csptr getPointList(const Image::csptr& img) const;
 
     /**
      * @brief Get the image corresponding to the specified pointList, if the specified pointList is not found
@@ -122,15 +125,18 @@ public:
      * @param[in] pl the pointList
      * @return image corresponding to the pointList
      */
-    DATA_API Image::sptr getImage(const PointList::sptr& pl) const;
+    DATA_API Image::csptr getImage(const PointList::csptr& pl) const;
 
     /**
      * @brief Get the image corresponding to the specified index, if the index is not found
      *  a null pointer is returned
      * @param[in] idx index of image
      * @return image corresponding to the index
+     * @{
      */
-    DATA_API Image::sptr getImage(std::size_t idx) const;
+    DATA_API Image::sptr getImage(std::size_t idx);
+    DATA_API Image::csptr getImage(std::size_t idx) const;
+    /// @}
 
     /// Equality comparison operators
     /// @{
@@ -142,9 +148,9 @@ public:
 protected:
 
     ///List of Image
-    ImageContainerType m_imageContainer;
+    std::list<Image::sptr> m_imageContainer;
     ///List of pointList
-    PointListContainerType m_pointListContainer;
+    std::list<PointList::sptr> m_pointListContainer;
     ///added record signal
     AddedRecordSignalType::sptr m_sigAddedRecord;
     /// removed record signal

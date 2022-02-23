@@ -123,8 +123,12 @@ public:
     void setDataContainer(const std::map<std::string, SPTR(DATATYPE)>& map);
 
     /// Method to get a std::map< string, X > from data::Composite
+    ///@{
     template<class DATATYPE>
-    std::map<std::string, SPTR(DATATYPE)> getDataContainer() const;
+    std::map<std::string, SPTR(DATATYPE)> getDataContainer();
+    template<class DATATYPE>
+    std::map<std::string, CSPTR(DATATYPE)> getDataContainer() const;
+    ///@}
 
     /**
      * @brief Returns object in composite associated with the key.
@@ -312,13 +316,29 @@ inline void Composite::setDataContainer(const std::map<std::string, SPTR(DATATYP
 //-----------------------------------------------------------------------------
 
 template<class DATATYPE>
-inline std::map<std::string, SPTR(DATATYPE)> Composite::getDataContainer() const
+inline std::map<std::string, SPTR(DATATYPE)> Composite::getDataContainer()
 {
     std::map<std::string, SPTR(DATATYPE)> map;
     SPTR(DATATYPE) castData;
     for(data::Composite::value_type elem : *this)
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(elem.second);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
+        map[elem.first] = castData;
+    }
+
+    return map;
+}
+
+//-----------------------------------------------------------------------------
+
+template<class DATATYPE>
+inline std::map<std::string, CSPTR(DATATYPE)> Composite::getDataContainer() const
+{
+    std::map<std::string, CSPTR(DATATYPE)> map;
+    for(data::Composite::value_type elem : *this)
+    {
+        CSPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>(elem.second);
         SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
         map[elem.first] = castData;
     }

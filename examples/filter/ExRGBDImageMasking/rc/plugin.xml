@@ -284,7 +284,7 @@
             </service>
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" shadingMode="ambient" />
+                <in key="mesh" uid="mesh" shadingMode="ambient" />
                 <config layer="default" transform="id" autoresetcamera="false" />
             </service>
 
@@ -365,7 +365,7 @@
             <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
                 <!-- Source -->
-                <in key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <!-- Destination -->
                 <out group="camera" >
                     <key index="0" uid="Dcamera" />

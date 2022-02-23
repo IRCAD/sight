@@ -423,7 +423,7 @@ public:
     /// @{
     /// Returns image buffer
     DATA_API void* getBuffer();
-    DATA_API void* getBuffer() const;
+    DATA_API const void* getBuffer() const;
     /// @}
 
     /**
@@ -497,7 +497,7 @@ public:
      * @param index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void* getPixel(IndexType index) const;
+    DATA_API const void* getPixel(IndexType index) const;
 
     /**
      * @brief Set pixel value represented as a void* buffer
@@ -762,7 +762,7 @@ inline T& Image::at(IndexType id)
 template<typename T>
 inline T Image::at(IndexType id) const
 {
-    return *reinterpret_cast<T*>(this->getPixel(id));
+    return *reinterpret_cast<const T*>(this->getPixel(id));
 }
 
 //------------------------------------------------------------------------------
@@ -780,7 +780,7 @@ template<typename T>
 inline T Image::at(IndexType x, IndexType y, IndexType z, IndexType c) const
 {
     const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
-    return *(reinterpret_cast<T*>(this->getPixel(offset)) + c);
+    return *(reinterpret_cast<const T*>(this->getPixel(offset)) + c);
 }
 
 } // namespace sight::data

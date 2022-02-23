@@ -105,7 +105,7 @@ void SVTKMesher::updating()
     }
 
     // Protect the image...
-    data::mt::locked_ptr<data::Image> image_lock(image);
+    data::mt::locked_ptr<const data::Image> image_lock(image);
 
     auto modelSeries = data::ModelSeries::New();
 

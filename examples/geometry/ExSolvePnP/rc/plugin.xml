@@ -247,7 +247,7 @@
             </service>
 
             <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="cube" />
+                <in key="mesh" uid="cube" />
                 <config layer="default" autoresetcamera="false" />
             </service>
 
@@ -297,7 +297,7 @@
 
             <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <in key="cameraSeries" uid="cameraSeries" />
+                <inout key="cameraSeries" uid="cameraSeries" />
                 <out group="camera" >
                     <key index="0" uid="camera" />
                 </out>
