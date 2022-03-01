@@ -245,13 +245,14 @@ endif()
 # Will export COMPONENTS: list of all available components ordered by dependency (no dependency first).
 sight_generate_component_list(COMPONENTS)
 
+# Create the sightConfigVersion file
 configure_file(${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake @ONLY)
 
-# Create the sightConfigVersion file
 write_basic_package_version_file(
     "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake" VERSION ${PROJECT_VERSION} COMPATIBILITY AnyNewerVersion
 )
 
+# Install a special xvfb-run wrapper script to workaround bugs withe the system xvfb-run launcher script
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run ${CMAKE_CURRENT_BINARY_DIR}/bin/safe-xvfb-run
     COPYONLY

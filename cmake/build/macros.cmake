@@ -336,7 +336,7 @@ macro(fw_exec SIGHT_TARGET)
 endmacro()
 
 # Create a test target
-macro(fw_cppunit_test SIGHT_TARGET)
+macro(fw_test SIGHT_TARGET)
     set(options)
     set(oneValueArgs REQUIRE_X)
     set(multiValueArgs)
@@ -445,7 +445,6 @@ macro(fw_cppunit_test SIGHT_TARGET)
         add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
                  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         )
-        set_tests_properties(${SIGHT_TEST_SCRIPT} PROPERTIES TIMEOUT 240)
     else()
         add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
                  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
@@ -475,7 +474,6 @@ macro(fw_cppunit_test SIGHT_TARGET)
             target_compile_options(${SIGHT_TARGET} PRIVATE "-fPIC")
         endif()
     endif()
-
 endmacro()
 
 # Create a library target
@@ -898,6 +896,7 @@ macro(sight_add_target)
     elseif(NOT SIGHT_TARGET_PCH)
         set(${SIGHT_TARGET}_DISABLE_PCH ON)
     endif()
+
     if(NOT DEFINED SIGHT_TARGET_OBJECT_LIBRARY)
         set(SIGHT_TARGET_OBJECT_LIBRARY OFF)
     endif()
@@ -926,7 +925,7 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
-        fw_cppunit_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
+        fw_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         if(${SIGHT_TARGET_REQUIRE_ADMIN})
             fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} ON)
@@ -961,7 +960,6 @@ macro(sight_add_target)
     endif()
 
     if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-
         if(SIGHT_TARGET_FAST_DEBUG)
             if(UNIX)
                 target_compile_options(${SIGHT_TARGET} PRIVATE "-Og")
@@ -987,6 +985,11 @@ macro(sight_add_target)
     if("${SIGHT_TARGET_TYPE}" STREQUAL "EXECUTABLE" OR "${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         generic_install()
     endif()
+
+    # Add the target to a global property, so we can perform other actions on it later
+    get_property(sight_targets GLOBAL PROPERTY sight_targets)
+    list(APPEND sight_targets ${SIGHT_TARGET})
+    set_property(GLOBAL PROPERTY sight_targets "${sight_targets}")
 endmacro()
 
 # Generate "profile.xml"
@@ -1297,11 +1300,29 @@ macro(copy_ogre_plugins)
     endif()
 endmacro()
 
+# Check if something links against a module
+function(sight_forbid_module_link _targets)
+    foreach(_target ${_targets})
+        message(VERBOSE "Checking if '${_target}' is linked against a module")
+        get_target_property(_depends ${_target} LINK_LIBRARIES)
+        foreach(_depend ${_depends})
+            if(TARGET ${_depend})
+                get_target_property(_type ${_depend} SIGHT_TARGET_TYPE)
+                if("${_type}" STREQUAL "MODULE")
+                    string(APPEND _modules " ${_depend}")
+                endif()
+            endif()
+        endforeach()
+        if(_modules)
+            message(FATAL_ERROR "${_target} can not link with module(s): ${_modules}")
+        endif()
+    endforeach()
+endfunction()
+
 # Generates ordered component list of current project by order of dependency (no dependency first)
 # Print as STATUS ordered list of components.
 # Export in PARENT_SCOPE COMPONENTS variable.
 function(sight_generate_component_list COMPONENTS)
-
     get_property(UNORDERED_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
 
     # Use the ordered list of components
@@ -1309,23 +1330,7 @@ function(sight_generate_component_list COMPONENTS)
     message(STATUS "${PROJECT_NAME} component list: ${SIGHT_ORDERED_COMPONENTS}")
     set(COMPONENTS "${SIGHT_ORDERED_COMPONENTS}" PARENT_SCOPE)
 
-    # Check before leaving: a library or a module can not link with a module (a plugin is a leaf in the build tree)
-    foreach(COMPONENT ${SIGHT_ORDERED_COMPONENTS})
-        get_target_property(TYPE ${COMPONENT} SIGHT_TARGET_TYPE)
-        if("${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "LIBRARY")
-            get_target_property(DEPENDS ${COMPONENT} LINK_LIBRARIES)
-            foreach(DEP ${DEPENDS})
-                if(TARGET ${DEP})
-                    get_target_property(TYPE ${DEP} SIGHT_TARGET_TYPE)
-                    if("${TYPE}" STREQUAL "MODULE")
-                        string(APPEND MODULES_ERROR " ${DEP}")
-                    endif()
-                endif()
-            endforeach()
-            if(MODULES_ERROR)
-                message(FATAL_ERROR "${COMPONENT} can not link with module(s): ${MODULES_ERROR}")
-            endif()
-        endif()
-    endforeach(COMPONENT ${SIGHT_ORDERED_COMPONENTS})
-
+    # Check if something links with a module, which is forbidden by design
+    get_property(sight_targets GLOBAL PROPERTY sight_targets)
+    sight_forbid_module_link("${sight_targets}")
 endfunction()
