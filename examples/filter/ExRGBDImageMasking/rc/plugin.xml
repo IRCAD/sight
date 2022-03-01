@@ -363,18 +363,16 @@
             </service>
 
             <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
-            <service uid="extractCameraSrv" type="sight::module::data::SExtractObj" >
+            <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
                 <!-- Source -->
-                <inout key="source" uid="RGBDCameraSeries" >
-                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->
-                    <extract from="@cameras.1" /> <!-- Camp path of the second camera in cameraSeries (RGB) -->
-                    <extract from="@extrinsic_matrices.1" /> <!-- Camp path of the extrincis matrix in cameraSeries going from Depth to RGB coordinate system -->
-                </inout>
+                <in key="cameraSeries" uid="RGBDCameraSeries" />
                 <!-- Destination -->
-                <out group="target" >
-                    <key uid="Dcamera" />
-                    <key uid="RGBcamera" />
-                    <key uid="extrinsic" />
+                <out group="camera" >
+                    <key index="0" uid="Dcamera" />
+                    <key index="1" uid="RGBcamera" />
+                </out>
+                <out group="extrinsic" >
+                    <key index="1" uid="extrinsic" />
                 </out>
             </service>
 
