@@ -1,23 +1,21 @@
 ### Description
 
-(Include problem, use cases, benefits, and/or goals)
+_Describe the need, what would be the feature, use cases, benefits, and goals_
 
 ### Proposal
 
-(How you will do it) 
+_Optional section to give some functional or technical hints_
 
-### Links / references
+### Functional specifications
 
-(Any references)
+_Workflow, UX/UI design, screenshots, etc..._
 
-### Documentation blurb
+### Technical specifications
 
-(Write the start of the documentation of this feature here, include:
+_Details of the implementation_
 
-1. Why should someone use it; what's the underlying problem.
-2. What is the solution.
-3. How does someone use this
+### Test plan
 
-During implementation, this can then be copied and used as a starter for the documentation.)
+_Describe how you will verify that the implementation fulfils the specifications_
 
-/label ~"Type:feature"
+/label ~"Type::feature" ~"Priority::medium"

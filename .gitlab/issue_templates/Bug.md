@@ -1,27 +1,27 @@
-### Summary
+### Description
 
-(Summarize the bug encountered concisely)
+_Summarize the bug encountered concisely_
 
 ### Steps to reproduce
 
-(How one can reproduce the issue - this is very important)
+_How one can reproduce the issue - this is very important._
+_If the bug depends on a particular environment or platform, please give all relevant details._
+_Paste any relevant logs. Please use code blocks (```) to format these._
 
-### Dev environment
+### Proposal
 
-* OS: (Linux, Windows, MacOS)
-* CMake version: (cmake --version)
-* Compiler: (gcc/clang/... & version)
-* Build type: (debug/release)
-* Commit: (current commit or tag)
-  * (Any related repository commit/tag e.g ...)
+_Optional section to give some functional or technical hints_
 
-### Relevant logs and/or screenshots
+### Functional specifications
 
-(Paste any relevant logs - please use code blocks (```) to format console output,
-logs, and code as it's very hard to read otherwise.)
+_If there is any change to the workflow, UX/UI design, screenshots, etc..., please describe it here_
 
-### Possible fixes
+### Technical specifications
 
-(If you can, link to the line of code that might be responsible for the problem)
+_Details of the implementation of the fix_
 
-/label ~"Type:bugfix"
+### Test plan
+
+_Describe how you will verify that the implementation fulfils the specifications_
+
+/label ~"Type::bugfix" ~"Priority::medium"
