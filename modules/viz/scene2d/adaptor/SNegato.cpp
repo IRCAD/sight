@@ -318,9 +318,10 @@ void SNegato::starting()
 
     auto image = m_image.lock();
 
-    m_axialIndex    = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::AXIAL)));
-    m_frontalIndex  = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::FRONTAL)));
-    m_sagittalIndex = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::SAGITTAL)));
+    m_axialIndex    = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::AXIAL).value_or(0)));
+    m_frontalIndex  = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::FRONTAL).value_or(0)));
+    m_sagittalIndex =
+        std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::SAGITTAL).value_or(0)));
 
     m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 

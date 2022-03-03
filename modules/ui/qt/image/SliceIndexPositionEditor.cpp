@@ -156,9 +156,18 @@ void SliceIndexPositionEditor::updating()
     const bool imageIsValid = imHelper::checkImageValidity(image.get_shared());
     m_sliceSelectorPanel->setEnable(imageIsValid);
 
-    m_axialIndex    = std::max(std::int64_t(0), imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL));
-    m_frontalIndex  = std::max(std::int64_t(0), imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL));
-    m_sagittalIndex = std::max(std::int64_t(0), imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL));
+    m_axialIndex = std::max(
+        std::int64_t(0),
+        imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0)
+    );
+    m_frontalIndex = std::max(
+        std::int64_t(0),
+        imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)
+    );
+    m_sagittalIndex = std::max(
+        std::int64_t(0),
+        imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)
+    );
 
     this->updateSliceIndexFromImg(*image);
 }
@@ -215,9 +224,9 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg(sight::data::Image& _imag
 {
     if(imHelper::checkImageValidity(_image))
     {
-        // Get Index
-        const int index = static_cast<int>(imHelper::getSliceIndex(_image, m_orientation));
-        SIGHT_ASSERT("Slice index field missing", index != -1);
+        // Default value take the middle of the size.
+        const auto image_size = _image.getSize();
+        const auto index      = imHelper::getSliceIndex(_image, m_orientation).value_or(image_size[m_orientation] / 2);
 
         // Update QSlider
         int max = 0;
@@ -227,7 +236,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg(sight::data::Image& _imag
         }
 
         m_sliceSelectorPanel->setSliceRange(0, max);
-        m_sliceSelectorPanel->setSliceValue(index);
+        m_sliceSelectorPanel->setSliceValue(static_cast<int>(index));
     }
 }
 
@@ -256,15 +265,15 @@ void SliceIndexPositionEditor::sliceIndexNotification(unsigned int index)
         static_cast<int>(imHelper::getSliceIndex(
                              *image,
                              imHelper::orientation_t::SAGITTAL
-                         )),
+        ).value_or(0)),
         static_cast<int>(imHelper::getSliceIndex(
                              *image,
                              imHelper::orientation_t::FRONTAL
-                         )),
+        ).value_or(0)),
         static_cast<int>(imHelper::getSliceIndex(
                              *image,
                              imHelper::orientation_t::AXIAL
-        ))
+        ).value_or(0))
     };
 
     auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(

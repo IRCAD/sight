@@ -257,9 +257,9 @@ std::pair<bool, Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
 )
 {
     namespace imHelper = data::helper::MedicalImage;
-    const auto axialIdx    = imHelper::getSliceIndex(*_image, imHelper::orientation_t::AXIAL);
-    const auto frontalIdx  = imHelper::getSliceIndex(*_image, imHelper::orientation_t::FRONTAL);
-    const auto sagittalIdx = imHelper::getSliceIndex(*_image, imHelper::orientation_t::SAGITTAL);
+    const auto axialIdx    = imHelper::getSliceIndex(*_image, imHelper::orientation_t::AXIAL).value_or(0);
+    const auto frontalIdx  = imHelper::getSliceIndex(*_image, imHelper::orientation_t::FRONTAL).value_or(0);
+    const auto sagittalIdx = imHelper::getSliceIndex(*_image, imHelper::orientation_t::SAGITTAL).value_or(0);
 
     const Ogre::Real axialIndex    = static_cast<Ogre::Real>(axialIdx);
     const Ogre::Real frontalIndex  = static_cast<Ogre::Real>(frontalIdx);

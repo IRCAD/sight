@@ -202,8 +202,9 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             const auto image = m_image.lock();
 
             // Get Index
-            const int current_index = static_cast<int>(imHelper::getSliceIndex(*image, m_currentNegatoOrientation));
-            const int max_slice     = static_cast<int>(image->getSize()[m_currentNegatoOrientation] - 1);
+            const int current_index =
+                static_cast<int>(imHelper::getSliceIndex(*image, m_currentNegatoOrientation).value_or(0));
+            const int max_slice = static_cast<int>(image->getSize()[m_currentNegatoOrientation] - 1);
 
             if(max_slice < 0)
             {
@@ -246,9 +247,9 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
 
             // Get up-to-date index values.
             const int idx[3] = {
-                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL)),
-                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL)),
-                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL))
+                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)),
+                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)),
+                static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0))
             };
 
             // Send signal.

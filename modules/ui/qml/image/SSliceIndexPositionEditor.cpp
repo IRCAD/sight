@@ -61,27 +61,14 @@ void SSliceIndexPositionEditor::starting()
 {
     {
         auto image = m_image.lock();
+        m_axialIndex = imHelper::getSliceIndex(*image, orientation_t::AXIAL).value_or(0);
+        imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
 
-        m_axialIndex = imHelper::getSliceIndex(*image, orientation_t::AXIAL);
-        if(m_axialIndex == -1)
-        {
-            m_axialIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
-        }
+        m_frontalIndex = imHelper::getSliceIndex(*image, orientation_t::FRONTAL).value_or(0);
+        imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
 
-        m_frontalIndex = imHelper::getSliceIndex(*image, orientation_t::FRONTAL);
-        if(m_frontalIndex == -1)
-        {
-            m_frontalIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
-        }
-
-        m_sagittalIndex = imHelper::getSliceIndex(*image, orientation_t::SAGITTAL);
-        if(m_sagittalIndex == -1)
-        {
-            m_sagittalIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
-        }
+        m_sagittalIndex = imHelper::getSliceIndex(*image, orientation_t::SAGITTAL).value_or(0);
+        imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
     }
     this->updateSliceTypeFromImg(m_orientation);
 
@@ -107,26 +94,14 @@ void SSliceIndexPositionEditor::updating()
     {
         namespace imHelper = data::helper::MedicalImage;
         auto image = m_image.lock();
-        m_axialIndex = imHelper::getSliceIndex(*image, orientation_t::AXIAL);
-        if(m_axialIndex == -1)
-        {
-            m_axialIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
-        }
+        m_axialIndex = imHelper::getSliceIndex(*image, orientation_t::AXIAL).value_or(0);
+        imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
 
-        m_frontalIndex = imHelper::getSliceIndex(*image, orientation_t::FRONTAL);
-        if(m_frontalIndex == -1)
-        {
-            m_frontalIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
-        }
+        m_frontalIndex = imHelper::getSliceIndex(*image, orientation_t::FRONTAL).value_or(0);
+        imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
 
-        m_sagittalIndex = imHelper::getSliceIndex(*image, orientation_t::SAGITTAL);
-        if(m_sagittalIndex == -1)
-        {
-            m_sagittalIndex = 0;
-            imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
-        }
+        m_sagittalIndex = imHelper::getSliceIndex(*image, orientation_t::SAGITTAL).value_or(0);
+        imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
     }
     this->updateSliceIndexFromImg();
 }
@@ -198,7 +173,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
         }
 
         this->setSliceRange(0, max);
-        this->setSliceValue(static_cast<int>(index));
+        this->setSliceValue(static_cast<int>(index.value_or(0)));
     }
 }
 

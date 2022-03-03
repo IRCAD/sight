@@ -33,6 +33,9 @@
 #include <data/Integer.hpp>
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
+
+#include <optional>
+
 namespace sight::data
 {
 
@@ -135,7 +138,7 @@ DATA_API bool checkTransferFunctionPool(const data::Image::sptr& _img);
  * @param _orientation : desired orientation
  * @return the current index as a std::int64_t.
  */
-DATA_API std::int64_t getSliceIndex(const data::Image& _image, const orientation_t& _orientation);
+DATA_API std::optional<std::int64_t> getSliceIndex(const data::Image& _image, const orientation_t& _orientation);
 
 /**
  * @brief Helper function to set current slice index on a medical image in a specific orientation (Axial, Sagittal,

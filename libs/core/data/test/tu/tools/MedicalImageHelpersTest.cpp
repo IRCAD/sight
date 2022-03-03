@@ -538,13 +538,17 @@ void MedicalImageHelpersTest::testSliceIndex()
 
         auto index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(50), index);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(50), index.value());
 
         medImHelper::setSliceIndex(*image, orientation, std::int64_t(35));
 
         index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(35), index);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(35), index.value());
     }
 
     // SAGITTAL
@@ -553,13 +557,17 @@ void MedicalImageHelpersTest::testSliceIndex()
 
         auto index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(128), index);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(128), index.value());
 
         medImHelper::setSliceIndex(*image, orientation, std::int64_t(0));
 
         index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), index);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), index.value());
     }
 
     // FRONTAL
@@ -568,13 +576,26 @@ void MedicalImageHelpersTest::testSliceIndex()
 
         auto index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(75), index);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(75), index.value());
 
         medImHelper::setSliceIndex(*image, orientation, std::int64_t(17));
 
         index = medImHelper::getSliceIndex(*image, orientation);
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(17), index);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(17), index.value());
+    }
+
+    // No slice index
+    {
+        const auto image_no_slices = data::Image::New();
+        auto orientation           = medImHelper::orientation_t::AXIAL;
+        const auto index           = medImHelper::getSliceIndex(*image_no_slices, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(false, index.has_value());
     }
 }
 

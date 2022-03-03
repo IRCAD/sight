@@ -266,21 +266,21 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
             idx = data::helper::MedicalImage::getSliceIndex(
                 *image,
                 data::helper::MedicalImage::orientation_t::SAGITTAL
-            );
+            ).value_or(0);
             break;
 
         case data::helper::MedicalImage::orientation_t::Y_AXIS:
             idx = data::helper::MedicalImage::getSliceIndex(
                 *image,
                 data::helper::MedicalImage::orientation_t::FRONTAL
-            );
+            ).value_or(0);
             break;
 
         case data::helper::MedicalImage::orientation_t::Z_AXIS:
             idx = data::helper::MedicalImage::getSliceIndex(
                 *image,
                 data::helper::MedicalImage::orientation_t::AXIAL
-            );
+            ).value_or(0);
             break;
     }
 

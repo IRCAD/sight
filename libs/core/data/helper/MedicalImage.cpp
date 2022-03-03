@@ -101,35 +101,43 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
 
     const data::Image::Size& imageSize = _pImg->getSize();
 
-    auto axialIdx    = getSliceIndex(*_pImg, orientation_t::AXIAL);
-    auto frontalIdx  = getSliceIndex(*_pImg, orientation_t::FRONTAL);
-    auto sagittalIdx = getSliceIndex(*_pImg, orientation_t::SAGITTAL);
+    const auto axialIdx    = getSliceIndex(*_pImg, orientation_t::AXIAL);
+    const auto frontalIdx  = getSliceIndex(*_pImg, orientation_t::FRONTAL);
+    const auto sagittalIdx = getSliceIndex(*_pImg, orientation_t::SAGITTAL);
+
+    std::int64_t index_values[3] = {0, 0, 0};
 
     // Check if values are out of bounds
-    if((axialIdx < 0 || imageSize[2] < static_cast<std::size_t>(axialIdx)) && imageSize[2] > 0)
+    if(!axialIdx.has_value()
+       || (axialIdx.has_value() && imageSize[2] > 0
+           && imageSize[2] < static_cast<std::size_t>(axialIdx.value())))
     {
-        axialIdx        = static_cast<std::int64_t>(imageSize[2] / 2);
+        index_values[2] = static_cast<std::int64_t>(imageSize[2] / 2);
         fieldIsModified = true;
     }
 
-    if((frontalIdx < 0 || imageSize[1] < static_cast<std::size_t>(frontalIdx)) && imageSize[1] > 0)
+    if(!frontalIdx.has_value()
+       || (axialIdx.has_value() && imageSize[1] > 0
+           && imageSize[1] < static_cast<std::size_t>(frontalIdx.value())))
     {
-        frontalIdx      = static_cast<std::int64_t>(imageSize[1] / 2);
+        index_values[1] = static_cast<std::int64_t>(imageSize[1] / 2);
         fieldIsModified = true;
     }
 
-    if((sagittalIdx < 0 || imageSize[0] < static_cast<std::size_t>(sagittalIdx)) && imageSize[0] > 0)
+    if(!sagittalIdx.has_value()
+       || (sagittalIdx.has_value() && imageSize[0] > 0
+           && imageSize[0] < static_cast<std::size_t>(sagittalIdx.value())))
     {
-        sagittalIdx     = static_cast<std::int64_t>(imageSize[0] / 2);
+        index_values[0] = static_cast<std::int64_t>(imageSize[0] / 2);
         fieldIsModified = true;
     }
 
     // Update or create fields.
     if(fieldIsModified)
     {
-        setSliceIndex(*_pImg, orientation_t::AXIAL, axialIdx);
-        setSliceIndex(*_pImg, orientation_t::FRONTAL, frontalIdx);
-        setSliceIndex(*_pImg, orientation_t::SAGITTAL, sagittalIdx);
+        setSliceIndex(*_pImg, orientation_t::AXIAL, index_values[orientation_t::AXIAL]);
+        setSliceIndex(*_pImg, orientation_t::FRONTAL, index_values[orientation_t::FRONTAL]);
+        setSliceIndex(*_pImg, orientation_t::SAGITTAL, index_values[orientation_t::SAGITTAL]);
     }
 
     return fieldIsModified;
@@ -201,13 +209,11 @@ bool checkTransferFunctionPool(const data::Image::sptr& image)
 
 //------------------------------------------------------------------------------
 
-std::int64_t getSliceIndex(
+std::optional<std::int64_t> getSliceIndex(
     const data::Image& _image,
     const orientation_t& _orientation
 )
 {
-    // Initialize index to -1
-    std::int64_t index = -1;
     std::string orientation_index;
     switch(_orientation)
     {
@@ -237,11 +243,11 @@ std::int64_t getSliceIndex(
         if(field_int)
         {
             // Get value.
-            index = field_int->value();
+            return field_int->value();
         }
     }
 
-    return index;
+    return {};
 }
 
 //------------------------------------------------------------------------------
