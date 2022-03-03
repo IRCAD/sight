@@ -71,9 +71,6 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 
     this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
 
-    core::mt::WriteLock writeLock(m_tlMutex);
-    core::mt::WriteLock readLock(other->m_tlMutex);
-
     for(TimelineType::value_type elt : other->m_timeline)
     {
         SPTR(data::timeline::Buffer) tlObj = this->createBuffer(elt.first);

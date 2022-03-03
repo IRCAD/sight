@@ -122,9 +122,6 @@ protected:
     /// Allocate the pool buffer.
     DATA_API void allocPoolSize(std::size_t size);
 
-    /// Mutex to protect m_timeline and m_pool access
-    mutable core::mt::ReadWriteMutex m_tlMutex;
-
     ///Timeline
     TimelineType m_timeline;
 

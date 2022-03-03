@@ -66,8 +66,6 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
 
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
-    core::mt::WriteLock writeLock(m_tlMutex);
-    core::mt::WriteLock readLock(other->m_tlMutex);
 
     for(TimelineType::value_type elt : other->m_timeline)
     {

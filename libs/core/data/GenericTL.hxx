@@ -64,9 +64,6 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
-    core::mt::WriteLock writeLock(m_tlMutex);
-    core::mt::WriteLock readLock(other->m_tlMutex);
-
     for(TimelineType::value_type elt : other->m_timeline)
     {
         SPTR(BufferType) tlObj = this->createBuffer(elt.first);
