@@ -12,14 +12,14 @@ Example
     <id>ModelSeriesManagerView</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="ORGAN_MANAGER_MODELSERIES" /><!-- model series to manage -->
+        <param name="ORGAN_MANAGER_MODELSERIES" /> <!-- model series to manage -->
     </parameters>
-    <desc>Display the editors to manage the ModelSeries: show/hide reconstructions, change the color, ... </desc>
+    <desc>Display the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...</desc>
     <config>
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::ModelSeries" src="ref" />
         <object uid="reconstruction" type="sight::data::Reconstruction" src="deferred" />
 
-        <service uid="multiViewOrgans" type="sight::module::ui::base::SView" >
+        <service uid="multiViewOrgans" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::ToolboxLayoutManager">
                     <view caption="Organs" expanded="true" />
@@ -39,11 +39,11 @@ Example
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor" >
+        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="representationEditor" type="sight::module::ui::qt::reconstruction::RepresentationEditor" >
+        <service uid="representationEditor" type="sight::module::ui::qt::reconstruction::RepresentationEditor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 

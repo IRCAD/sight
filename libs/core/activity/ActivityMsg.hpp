@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,8 +37,7 @@ class ACTIVITY_CLASS_API ActivityMsg
 {
 public:
 
-    typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
-    typedef std::map<std::string, std::string> ReplaceMapType;
+    typedef activity::extension::ActivityAppConfigParamsType ParametersType;
 
     ACTIVITY_API ActivityMsg(
         const data::ActivitySeries::sptr& series,
@@ -99,22 +98,39 @@ public:
     }
 
     /// Return the map of the string association to replace in config
-    const ReplaceMapType& getReplaceMap() const
+    const std::map<std::string, std::string>& getReplacementMap() const
     {
-        return m_replaceMap;
+        return m_replacementMap;
     }
 
 private:
 
-    bool m_closable;                     /// Flag if activity is closable.
-    std::string m_title;                 ///< Activity title
-    std::string m_tabID;                 ///< Tab identifier
-    std::string m_appConfigID;           ///< AppConfig id
-    std::string m_tabInfo;               ///< tab information
-    std::string m_iconPath;              ///< icon path
-    std::string m_tooltip;               ///< tab tooltip
-    data::ActivitySeries::sptr m_series; ///< activity series
-    ReplaceMapType m_replaceMap;         ///< map containing string to replace in activity configuration.
+    /// Flag if activity is closable.
+    bool m_closable;
+
+    /// Activity title
+    std::string m_title;
+
+    /// Tab identifier
+    std::string m_tabID;
+
+    /// AppConfig id
+    std::string m_appConfigID;
+
+    /// tab information
+    std::string m_tabInfo;
+
+    /// icon path
+    std::string m_iconPath;
+
+    /// tab tooltip
+    std::string m_tooltip;
+
+    /// activity series
+    data::ActivitySeries::sptr m_series;
+
+    /// map containing string to replace in activity configuration.
+    std::map<std::string, std::string> m_replacementMap;
 };
 
 } // namespace sight::activity

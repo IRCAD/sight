@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,19 +145,17 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             m_configManager->stopAndDestroy();
         }
 
-        sight::activity::extension::ActivityInfo info;
-        info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
+            *activitySeries,
+            m_parameters
+        );
 
-        ReplaceMapType replaceMap;
-        this->translateParameters(m_parameters, replaceMap);
-        this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
-        replaceMap["AS_UID"]     = activitySeries->getID();
-        replaceMap["WID_PARENT"] = m_wid;
-        std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
-        replaceMap["GENERIC_UID"] = genericUidAdaptor;
+        replacementMap["WID_PARENT"]  = m_wid;
+        replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
+
         try
         {
-            m_configManager->setConfig(info.appConfig.id, replaceMap);
+            m_configManager->setConfig(info.appConfig.id, replacementMap);
             m_configManager->launch();
 
             m_sigActivityLaunched->asyncEmit(activitySeries);

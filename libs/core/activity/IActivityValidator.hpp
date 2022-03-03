@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,15 +74,6 @@ public:
      *         (or not valid) data.
      */
     ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::ActivitySeries)& activity) const;
-
-    /**
-     * @brief Checks if all the activity's AppConfig parameters are valid.
-     *
-     * It checks if the object described with "camp" path are present in the activity.
-     * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
-     *         (or not valid) data.
-     */
-    ACTIVITY_API ValidationType checkParameters(const CSPTR(data::ActivitySeries)& activity) const;
 
     /**
      * @brief Calls the object validator if it is defined.

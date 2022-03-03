@@ -13,11 +13,7 @@
             <requirement name="series" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExportSelection" />
     </extension>
 
     <!-- Activity used to export a model series. -->
@@ -30,11 +26,7 @@
             <requirement name="series" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExportSelection" />
     </extension>
 
     <!-- Activity used to export a model series. -->
@@ -47,24 +39,20 @@
             <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExportDicomSelection">
-            <parameters>
-                <parameter replace="model" by="@values.modelSeries" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExportDicomSelection" />
     </extension>
 
     <!-- App config used to export the selected series. -->
     <extension implements="sight::service::extension::AppConfig">
         <id>ExportSelection</id>
         <parameters>
-            <param name="selection" />
+            <param name="series" />
         </parameters>
         <config>
-            <object uid="${selection}" src="ref" />
+            <object uid="${series}" src="ref" />
 
             <service uid="export_selection" type="sight::module::ui::base::io::SSelector">
-                <inout key="data" uid="${selection}" />
+                <inout key="data" uid="${series}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::session::SWriter" />
@@ -78,13 +66,13 @@
     <extension implements="sight::service::extension::AppConfig">
         <id>ExportDicomSelection</id>
         <parameters>
-            <param name="model" />
+            <param name="modelSeries" />
         </parameters>
         <config>
-            <object uid="${model}" type="sight::data::ModelSeries" src="ref" />
+            <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
 
             <service uid="exportSelection" type="sight::module::ui::base::io::SSelector">
-                <inout key="data" uid="${model}" />
+                <inout key="data" uid="${modelSeries}" />
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::dicom::SSurfaceSegmentationWriter" />
@@ -152,8 +140,8 @@
         <id>SightDataConfig</id>
         <desc>Sight data</desc>
         <config>
-            <dialog extension=".sight" description="Sight data" policy="default"/>
-            <password policy="default" encryption="default"/>
+            <dialog extension=".sight" description="Sight data" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 
@@ -186,8 +174,8 @@
         <id>LandmarksConfig</id>
         <desc>Landmarks Reader/Writer</desc>
         <config>
-            <dialog extension=".sight" description="Sight Landmarks" policy="default"/>
-            <password policy="default" encryption="default"/>
+            <dialog extension=".sight" description="Sight Landmarks" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 
@@ -197,8 +185,8 @@
         <service>sight::module::io::session::SReader</service>
         <desc>Session reader</desc>
         <config>
-            <dialog extension=".sight" description="Sight session" policy="default"/>
-            <password policy="default" encryption="default"/>
+            <dialog extension=".sight" description="Sight session" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 
@@ -207,8 +195,8 @@
         <service>sight::module::io::session::SWriter</service>
         <desc>Session writer</desc>
         <config>
-            <dialog extension=".sight" description="Sight session" policy="default"/>
-            <password policy="default" encryption="default"/>
+            <dialog extension=".sight" description="Sight session" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 

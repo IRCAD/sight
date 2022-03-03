@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,8 +116,7 @@ protected:
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>
-                        <parameter replace="SERIESDB" by="medicalData"  />
-                        <parameter replace="IMAGE" by="@values.image"  />
+                        <parameter replace="SERIESDB" by="medicalData" />
                     </parameters>
                 </appConfig>
             </config>

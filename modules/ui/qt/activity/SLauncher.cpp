@@ -400,12 +400,10 @@ void SLauncher::buildActivity(
     const data::Vector::csptr& selection
 )
 {
-    data::Composite::sptr replaceMap = data::Composite::New();
-    auto builder                     = sight::activity::builder::factory::New(info.builderImpl);
+    auto builder = sight::activity::builder::factory::New(info.builderImpl);
     SIGHT_ASSERT(info.builderImpl << " instantiation failed", builder);
 
-    data::ActivitySeries::sptr actSeries;
-    actSeries = builder->buildData(info, selection);
+    data::ActivitySeries::sptr actSeries = builder->buildData(info, selection);
 
     if(!actSeries)
     {
@@ -448,8 +446,7 @@ void SLauncher::buildActivity(
         }
     }
 
-    ParametersType parameters = this->translateParameters(m_parameters);
-    auto msg                  = ActivityMsg(actSeries, info, parameters);
+    const ActivityMsg msg(actSeries, info, m_parameters);
 
     if(m_mode == "message")
     {
@@ -459,12 +456,12 @@ void SLauncher::buildActivity(
     {
         sight::ui::base::LockAction lock(this->getSptr());
 
-        const std::string viewConfigID         = msg.getAppConfigID();
-        ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
-        replaceMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
+        const std::string viewConfigID = msg.getAppConfigID();
+        auto replacementMap            = msg.getReplacementMap();
+        replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
         service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
-        helper->setConfig(viewConfigID, replaceMap);
+        helper->setConfig(viewConfigID, replacementMap);
         helper->launch();
         helper->stopAndDestroy();
     }
@@ -621,47 +618,7 @@ void SLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
         }
     }
 
-    ParametersType parameters = this->translateParameters(m_parameters);
-    ActivityMsg msg           = ActivityMsg(series, info, parameters);
-
-    m_sigActivityLaunched->asyncEmit(msg);
-}
-
-//------------------------------------------------------------------------------
-
-SLauncher::ParametersType SLauncher::translateParameters(const ParametersType& parameters)
-{
-    ParametersType transParams = parameters;
-    const auto workingObj      = m_series.lock();
-    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", workingObj);
-
-    for(ParametersType::value_type& param : transParams)
-    {
-        if(param.isObjectPath())
-        {
-            std::string parameterToReplace = param.by;
-            if(parameterToReplace.substr(0, 1) == "!")
-            {
-                parameterToReplace.replace(0, 1, "@");
-            }
-
-            data::Object::sptr obj = data::reflection::getObject(workingObj.get_shared(), parameterToReplace);
-            SIGHT_ASSERT("Invalid object path : '" << param.by << "'", obj);
-
-            data::String::sptr stringParameter = data::String::dynamicCast(obj);
-
-            std::string parameterValue = obj->getID();
-
-            if(stringParameter && param.by.substr(0, 1) == "!")
-            {
-                parameterValue = stringParameter->getValue();
-            }
-
-            param.by = parameterValue;
-        }
-    }
-
-    return transParams;
+    m_sigActivityLaunched->asyncEmit(ActivityMsg(series, info, m_parameters));
 }
 
 //------------------------------------------------------------------------------

@@ -40,6 +40,7 @@ namespace sight
 namespace data
 {
 
+class ActivitySeries;
 class Vector;
 
 }
@@ -78,10 +79,10 @@ struct ACTIVITY_CLASS_API ActivityAppConfigParam
     std::string by;
 };
 
+using ActivityAppConfigParamsType = std::vector<ActivityAppConfigParam>;
+
 struct ACTIVITY_CLASS_API ActivityAppConfig
 {
-    typedef std::vector<ActivityAppConfigParam> ActivityAppConfigParamsType;
-
     ActivityAppConfig()
     {
     }
@@ -191,7 +192,6 @@ struct ACTIVITY_CLASS_API ActivityRequirement
         </validators>
         <appConfig id="3DVisualization">
             <parameters>
-                <parameter replace="registeredImageUid" by="@values.param1" />
                 <parameter replace="orientation" by="frontal" />
                 <!--# ...-->
             </parameters>
@@ -301,6 +301,17 @@ public:
      * @note This method is thread safe.
      */
     ACTIVITY_API void clearRegistry();
+
+    ACTIVITY_API std::tuple<ActivityInfo, std::map<std::string, std::string> > getInfoAndReplacementMap(
+        const data::ActivitySeries& activitySeries,
+        const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
+    ) const;
+
+    ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
+        const data::ActivitySeries& activitySeries,
+        const ActivityInfo& info,
+        const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
+    ) const;
 
 protected:
 

@@ -4,7 +4,7 @@
         <param name="WID_PARENT" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
-        <param name="image" />
+        <param name="imageSeries" />
         <param name="landmarks" />
         <param name="advancedLandmarksEditor" default="true" />
         <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
@@ -15,8 +15,9 @@
     <config>
         <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
         <object uid="${AS_UID}" type="sight::data::ActivitySeries" src="ref" />
-        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
+        <object uid="image" type="sight::data::Image" src="deferred" />
 
         <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
@@ -30,11 +31,11 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="true" />
+                <toolBar sid="toolBar" />
                 <view wid="view_negato1" />
                 <view wid="view_negato2" />
                 <view wid="view_negato3" />
-                <view sid="landmarksEditor" start="true" />
+                <view sid="landmarksEditor" />
             </registry>
         </service>
 
@@ -60,25 +61,25 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="ActionPrevious" start="true" />
-                <menuItem sid="ActionNext" start="true" />
-                <menuItem sid="ActionLoadLandmark" start="true" />
-                <menuItem sid="ActionSaveLandmark" start="true" />
-                <!-- <menuItem sid="ActionSFocusLandmark" start="true" /> -->
-                <menuItem sid="ActionEditLandmark" start="true" />
-                <menuItem sid="ActionAddDistance" start="true" />
-                <menuItem sid="ActionRemoveDistance" start="true" />
-                <menuItem sid="ActionHideDistance" start="true" />
-                <menuItem sid="ActionHideCross" start="true" />
-                <menuItem sid="ActionShowNormalCross" start="true" />
-                <menuItem sid="ActionShowFullCross" start="true" />
-                <menuItem sid="ActionExportActivity" start="true" />
+                <menuItem sid="ActionPrevious" />
+                <menuItem sid="ActionNext" />
+                <menuItem sid="ActionLoadLandmark" />
+                <menuItem sid="ActionSaveLandmark" />
+                <!-- <menuItem sid="ActionSFocusLandmark"  /> -->
+                <menuItem sid="ActionEditLandmark" />
+                <menuItem sid="ActionAddDistance" />
+                <menuItem sid="ActionRemoveDistance" />
+                <menuItem sid="ActionHideDistance" />
+                <menuItem sid="ActionHideCross" />
+                <menuItem sid="ActionShowNormalCross" />
+                <menuItem sid="ActionShowFullCross" />
+                <menuItem sid="ActionExportActivity" />
             </registry>
         </service>
 
         <service uid="cfgNegato1" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${image}" />
+            <inout key="image" uid="image" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="view_negato1" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -88,7 +89,7 @@
 
         <service uid="cfgNegato2" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${image}" />
+            <inout key="image" uid="image" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="view_negato2" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -98,19 +99,12 @@
 
         <service uid="cfgNegato3" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${image}" />
+            <inout key="image" uid="image" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="view_negato3" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="sagittal" />
-        </service>
-
-        <service uid="extractLandmarks" type="sight::module::data::SCopy" >
-            <in key="source" uid="${image}">
-                <extract from="@fields.m_landmarksId" />
-            </in>
-            <inout key="target" uid="${landmarks}"/>
         </service>
 
         <service uid="ActionExportActivity" type="sight::module::ui::base::series::SExport" autoConnect="true">
@@ -125,16 +119,16 @@
 
         <!-- <service uid="ActionSFocusLandmark" type="sight::module::ui::base::metrics::SFocusLandmark" >
             <in key="landmarks" uid="${landmarks}" autoConnect="true" />
-            <inout key="image" uid="${image}" />
+            <inout key="image" uid="image" />
         </service> -->
 
-        <service uid="ActionLoadLandmark" type="sight::module::ui::base::com::SSlotCaller" >
+        <service uid="ActionLoadLandmark" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>LoadLandmark/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionSaveLandmark" type="sight::module::ui::base::com::SSlotCaller" >
+        <service uid="ActionSaveLandmark" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>SaveLandmark/update</slot>
             </slots>
@@ -145,14 +139,14 @@
                 <slot>landmarksEditor/setVisible</slot>
             </slots>
         </service>
-        <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SAddDistance" >
-            <inout key="image" uid="${image}" />
+        <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SAddDistance">
+            <inout key="image" uid="image" />
         </service>
-        <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::SRemoveDistance" >
-            <inout key="image" uid="${image}" />
+        <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::SRemoveDistance">
+            <inout key="image" uid="image" />
         </service>
-        <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+        <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true">
+            <inout key="image" uid="image" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
@@ -165,7 +159,7 @@
             <state visible="false" />
         </service>
 
-        <service uid="LoadLandmark" type="sight::module::ui::base::io::SSelector" >
+        <service uid="LoadLandmark" type="sight::module::ui::base::io::SSelector">
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
             <selection mode="include" />
@@ -173,7 +167,7 @@
             <config id="LandmarksConfig" service="sight::module::io::session::SReader" />
         </service>
 
-        <service uid="SaveLandmark" type="sight::module::ui::base::io::SSelector" >
+        <service uid="SaveLandmark" type="sight::module::ui::base::io::SSelector">
             <inout key="data" uid="${landmarks}" />
             <type mode="writer" />
             <selection mode="include" />
@@ -182,17 +176,22 @@
         </service>
 
         <service uid="ActionHideCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="${image}" />
+            <in key="image" uid="image" />
             <crossType>hide</crossType>
         </service>
         <service uid="ActionShowNormalCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="${image}" />
+            <in key="image" uid="image" />
             <crossType>half</crossType>
             <state active="true" />
         </service>
         <service uid="ActionShowFullCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="${image}" />
+            <in key="image" uid="image" />
             <crossType>full</crossType>
+        </service>
+
+        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
+            <in key="imageSeries" uid="${imageSeries}" />
+            <out key="image" uid="image" />
         </service>
 
         <connect channel="crossTypeChannel">
@@ -231,9 +230,23 @@
             <signal>ActionNext/triggered</signal>
         </connect>
 
-
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
+        <start uid="extractImageSrv" />
+        <start uid="toolBar" />
+        <start uid="landmarksEditor" />
+        <start uid="ActionPrevious" />
+        <start uid="ActionNext" />
+        <start uid="ActionLoadLandmark" />
+        <start uid="ActionSaveLandmark" />
+        <start uid="ActionEditLandmark" />
+        <start uid="ActionAddDistance" />
+        <start uid="ActionRemoveDistance" />
+        <start uid="ActionHideDistance" />
+        <start uid="ActionHideCross" />
+        <start uid="ActionShowNormalCross" />
+        <start uid="ActionShowFullCross" />
+        <start uid="ActionExportActivity" />
 
         <start uid="cfgNegato1" />
         <start uid="cfgNegato2" />
@@ -242,10 +255,8 @@
         <start uid="LoadLandmark" />
         <start uid="SaveLandmark" />
 
-        <!-- start deferred -->
-        <start uid="extractLandmarks" />
-
-        <update uid="extractLandmarks" />
+        <!-- UPDATE SERVICES -->
+        <update uid="extractImageSrv" />
 
     </config>
 </extension>

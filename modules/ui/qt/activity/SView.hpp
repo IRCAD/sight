@@ -71,9 +71,7 @@ namespace activity
  * - \b parameters (optional) : additional parameters used to launch the activities
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
- *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
- *          frontal) or define a camp path (ex. \@values.myImage). The root object of the object path if the
- *          composite contained in the ActivitySeries.
+ *        - \b by: defines the string that will replace the parameter name.
  *
  * @subsection Configuration Configuration
  * - \b border (optional, default="-1"): contents margins of the layout.

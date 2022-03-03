@@ -17,6 +17,7 @@ add_dependencies(
     config_ui_activity
     module_viz_sample
     module_viz_scene3d
+    module_data
 )
 
 # Allow dark theme via module_ui_qt

@@ -142,14 +142,13 @@ void ConfigLauncher::startConfig(
     const FieldAdaptorType& _optReplaceMap
 )
 {
-    typedef activity::extension::ActivityAppConfig AppConfig;
     FieldAdaptorType replaceMap(_optReplaceMap);
 
     // Generate generic UID
     const std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(_srv->getID());
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
-    for(const AppConfig::ActivityAppConfigParamsType::value_type& param : m_appConfig.parameters)
+    for(const auto& param : m_appConfig.parameters)
     {
         replaceMap[param.replace] = param.by;
     }

@@ -216,43 +216,6 @@ const
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkParameters(const data::ActivitySeries::csptr& activity) const
-{
-    IValidator::ValidationType validation;
-    validation.first  = true;
-    validation.second = "";
-
-    activity::extension::ActivityInfo info;
-    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
-
-    data::Composite::csptr composite = activity->getData();
-
-    // Check if all the activity config parameters are present
-    activity::extension::ActivityAppConfig appConfigInfo = info.appConfig;
-    for(auto param : appConfigInfo.parameters)
-    {
-        if(param.isObjectPath())
-        {
-            std::string path = param.by;
-            if(path.substr(0, 1) == "!")
-            {
-                path.replace(0, 1, "@");
-            }
-
-            data::Object::csptr obj = data::reflection::getObject(composite, path);
-            if(!obj)
-            {
-                validation.first   = false;
-                validation.second += "\n - invalid object path : '" + path + "'";
-            }
-        }
-    }
-
-    return validation;
-}
-
-//------------------------------------------------------------------------------
-
 IValidator::ValidationType IActivityValidator::checkObject(
     const data::Object::csptr& object,
     const std::string& validatorImpl

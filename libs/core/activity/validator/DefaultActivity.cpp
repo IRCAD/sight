@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,16 +52,7 @@ DefaultActivity::~DefaultActivity()
 
 IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries::csptr& activitySeries) const
 {
-    IValidator::ValidationType validation;
-
-    validation = IActivityValidator::checkRequirements(activitySeries);
-
-    if(validation.first)
-    {
-        validation = IActivityValidator::checkParameters(activitySeries);
-    }
-
-    return validation;
+    return IActivityValidator::checkRequirements(activitySeries);
 }
 
 //-----------------------------------------------------------------------------

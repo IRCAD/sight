@@ -1,4 +1,3 @@
-
 <extension implements="sight::service::extension::AppConfig">
     <id>SDBdicomXplorer</id>
     <parameters>
@@ -13,7 +12,7 @@
         <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
         <object uid="selections" type="sight::data::Vector" />
 
-        <service uid="mainview" type="sight::module::ui::base::SView" >
+        <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -72,7 +71,7 @@
                 <config id="2DSimpleConfig" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
-                <config id="3DSimpleConfig" type="sight::data::ModelSeries"/>
+                <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
             </configs>
         </service>
 
@@ -126,7 +125,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}"  />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="dicomXplorer" />
                 </parameters>
@@ -156,7 +155,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}"  />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
@@ -171,7 +170,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}"  />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="dicomXplorer" />
                 </parameters>
@@ -201,8 +200,7 @@
             <in key="series" uid="selections" />
             <config>
                 <mode>immediate</mode>
-                <parameters>
-                </parameters>
+                <parameters></parameters>
                 <filter>
                     <mode>include</mode>
                     <id>ImageSeriesExport</id>

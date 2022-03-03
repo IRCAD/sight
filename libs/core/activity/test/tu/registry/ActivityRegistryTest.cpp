@@ -209,13 +209,9 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), activities.size());
     const activity::extension::ActivityInfo& info = activities[0];
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry0"), info.id);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), info.appConfig.parameters.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("refImageUid"), info.appConfig.parameters.at(0).replace);
-    CPPUNIT_ASSERT_EQUAL(std::string("@values.param1"), info.appConfig.parameters.at(0).by);
-    CPPUNIT_ASSERT_EQUAL(std::string("registeredImageUid"), info.appConfig.parameters.at(1).replace);
-    CPPUNIT_ASSERT_EQUAL(std::string("@values.param2"), info.appConfig.parameters.at(1).by);
-    CPPUNIT_ASSERT_EQUAL(std::string("orientation"), info.appConfig.parameters.at(2).replace);
-    CPPUNIT_ASSERT_EQUAL(std::string("frontal"), info.appConfig.parameters.at(2).by);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), info.appConfig.parameters.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("orientation"), info.appConfig.parameters.at(0).replace);
+    CPPUNIT_ASSERT_EQUAL(std::string("frontal"), info.appConfig.parameters.at(0).by);
 }
 
 //------------------------------------------------------------------------------

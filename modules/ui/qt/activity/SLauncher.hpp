@@ -75,7 +75,6 @@ namespace activity
             <mode>immediate</mode>
             <parameters>
                 <parameter replace="SERIESDB" by="medicalData" />
-                <parameter replace="IMAGE" by="@values.ImageSeries.image" />
             </parameters>
 
             <!-- Filter mode 'include' allows all given activity id-s.
@@ -110,9 +109,7 @@ namespace activity
  *   AppConfig associated to the activity.
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
- *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
- *          frontal) or define a object path (ex. \@values.myImage). The root object of the object path if the
- *          composite contained in the ActivitySeries.
+ *        - \b by: defines the string that will replace the parameter name. It shall be a simple string (ex. frontal)
  * - \b filter (optional): it allows to filter the activity that can be proposed.
  *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
  *      (exclude).
@@ -122,13 +119,6 @@ namespace activity
  *    - \b association: allows to associate an activity to launch with a type of series
  *       - \b type: type of series (data::ImageSeries, data::ModelSeries, ....)
  *       - \b id: identifier of the activity.
- *
- *
- * @note A object path is a path used to browse an object (and sub-object) using the introspection (see fwDataCamp).
- *       The path begins with a '@' or a '!'.
- *          - '@' : the returned string is the fwID of the sub-object defined by the path.
- *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
- *            Boolean object.
  */
 class MODULE_UI_QT_CLASS_API SLauncher : public sight::ui::base::IAction
 {
@@ -191,7 +181,7 @@ protected:
      */
     void configuring() override;
 
-    typedef sight::activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef sight::activity::extension::ActivityAppConfigParamsType ParametersType;
 
     typedef std::vector<std::string> KeysType;
 
@@ -199,11 +189,6 @@ protected:
 
     //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
-
-    /**
-     * @brief Interpret configuration parameters.
-     */
-    ParametersType translateParameters(const ParametersType& parameters);
 
 private:
 

@@ -45,92 +45,21 @@ ActivityMsg::ActivityMsg(
 {
     SIGHT_ASSERT("ActivitySeries instantiation failed", series);
 
-    const std::string asUID = "AS_UID";
+    m_replacementMap = sight::activity::extension::Activity::getDefault()->getReplacementMap(
+        *series,
+        info,
+        parameters
+    );
 
+    //cspell: ignore TABID
     m_title       = info.title;
     m_appConfigID = info.appConfig.id;
     m_closable    = true;
-    //cspell: ignore TABID
-    m_tabID = "TABID_" + core::tools::UUID::generateUUID();
-
-    if(info.tabInfo.empty())
-    {
-        m_tabInfo = info.title;
-    }
-    else
-    {
-        std::string newTabInfo = info.tabInfo;
-        std::regex e("(!(([\\w]+\\.?)+[\\w]))");
-        std::smatch what;
-        if(std::regex_search(newTabInfo, what, e))
-        {
-            std::string submatch(what[1].first, what[1].second);
-
-            submatch.replace(0, 1, "@");
-
-            data::Object::sptr obj = data::reflection::getObject(series->getData(), submatch);
-            SIGHT_ASSERT("Invalid object path : '" << submatch << "'", obj);
-
-            data::String::sptr stringParameter = data::String::dynamicCast(obj);
-
-            std::string tabInfoObjectPath;
-
-            if(stringParameter)
-            {
-                tabInfoObjectPath = stringParameter->getValue();
-            }
-            else
-            {
-                SIGHT_WARN("Object path '" << submatch << "' doesn't reference an data::String");
-            }
-
-            submatch.replace(0, 1, "!");
-            boost::algorithm::replace_all(newTabInfo, submatch, tabInfoObjectPath);
-        }
-
-        m_tabInfo = newTabInfo;
-    }
-
+    m_tabID       = "TABID_" + core::tools::UUID::generateUUID();
+    m_tabInfo     = info.tabInfo.empty() ? info.title : info.tabInfo;
     m_iconPath    = info.icon;
     m_tooltip     = m_tabInfo;
     m_series      = series;
-    namespace Act = activity::extension;
-    Act::ActivityAppConfig::ActivityAppConfigParamsType params = info.appConfig.parameters;
-    params.reserve(params.size() + parameters.size() + 1);
-    params.insert(params.end(), parameters.begin(), parameters.end());
-    Act::ActivityAppConfigParam asConfigParam;
-    asConfigParam.replace = asUID;
-    asConfigParam.by      = series->getID();
-    params.push_back(asConfigParam);
-    for(const Act::ActivityAppConfigParam& param : params)
-    {
-        if(!param.isObjectPath())
-        {
-            m_replaceMap[param.replace] = param.by;
-        }
-        else
-        {
-            std::string parameterToReplace = param.by;
-            if(parameterToReplace.substr(0, 1) == "!")
-            {
-                parameterToReplace.replace(0, 1, "@");
-            }
-
-            data::Object::sptr obj = data::reflection::getObject(series->getData(), parameterToReplace);
-            SIGHT_ASSERT("Invalid object path : '" << param.by << "'", obj);
-
-            data::String::sptr stringParameter = data::String::dynamicCast(obj);
-
-            std::string parameterValue = obj->getID();
-
-            if(stringParameter && param.by.substr(0, 1) == "!")
-            {
-                parameterValue = stringParameter->getValue();
-            }
-
-            m_replaceMap[param.replace] = parameterValue;
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
