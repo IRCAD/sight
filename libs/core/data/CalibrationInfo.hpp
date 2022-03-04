@@ -33,8 +33,6 @@
 
 #include <list>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (CalibrationInfo));
-
 namespace sight::data
 {
 
@@ -49,7 +47,9 @@ public:
 
     SIGHT_DECLARE_CLASS(CalibrationInfo, Object, factory::New<CalibrationInfo>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (CalibrationInfo));
+    ///typedefs
+    typedef std::list<Image::sptr> ImageContainerType;
+    typedef std::list<PointList::sptr> PointListContainerType;
 
     /**
      * @name Signals API

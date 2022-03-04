@@ -38,7 +38,6 @@
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 

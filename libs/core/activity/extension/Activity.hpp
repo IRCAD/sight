@@ -102,7 +102,6 @@ struct ACTIVITY_CLASS_API ActivityRequirementKey
     ACTIVITY_API ActivityRequirementKey(const ConfigType& config);
 
     std::string key;
-    std::string path;
 };
 
 struct ACTIVITY_CLASS_API ActivityRequirement

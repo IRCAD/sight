@@ -27,8 +27,6 @@
 #include "data/factory/new.hpp"
 #include "data/Series.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ActivitySeries))
-
 namespace sight::data
 {
 
@@ -40,8 +38,6 @@ class DATA_CLASS_API ActivitySeries : public Series
 public:
 
     SIGHT_DECLARE_CLASS(ActivitySeries, Series, factory::New<ActivitySeries>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ActivitySeries))
 
     typedef std::string ConfigIdType;
 

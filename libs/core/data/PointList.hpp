@@ -32,8 +32,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (PointList));
-
 namespace sight::data
 {
 
@@ -46,8 +44,6 @@ class DATA_CLASS_API PointList : public Object
 public:
 
     SIGHT_DECLARE_CLASS(PointList, Object, factory::New<PointList>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (PointList));
 
     typedef std::vector<Point::sptr> PointListContainer;
 

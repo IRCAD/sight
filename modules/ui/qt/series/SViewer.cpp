@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <core/base.hpp>
 
-#include <data/reflection/getObject.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
 
@@ -102,13 +101,6 @@ void SViewer::updating()
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
 
-            for(const ReplaceValuesMapType::value_type& elt : info.extractValues)
-            {
-                data::Object::sptr object = data::reflection::getObject(obj, elt.second);
-                SIGHT_ASSERT("Object from name " << elt.second << " not found", object);
-                replaceMap[elt.first] = object->getID();
-            }
-
             for(const ReplaceValuesMapType::value_type& elt : info.parameters)
             {
                 SIGHT_ASSERT(
@@ -155,15 +147,6 @@ void SViewer::configuring()
             "Type " << seriesType << " is already defined.",
             m_seriesConfigs.find(seriesType) == m_seriesConfigs.end()
         );
-
-        for(const core::runtime::ConfigurationElement::sptr& extractElt : elt->find("extract"))
-        {
-            std::string path = extractElt->getAttributeValue("path");
-            SIGHT_ASSERT("'path' attribute must not be empty", !path.empty());
-            std::string pattern = extractElt->getAttributeValue("pattern");
-            SIGHT_ASSERT("'pattern' attribute must not be empty", !pattern.empty());
-            info.extractValues[pattern] = path;
-        }
 
         for(const core::runtime::ConfigurationElement::sptr& param : elt->find("parameter"))
         {

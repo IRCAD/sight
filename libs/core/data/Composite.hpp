@@ -38,8 +38,6 @@ class Composite;
 
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Composite));
-
 namespace sight::data
 {
 
@@ -54,7 +52,6 @@ class DATA_CLASS_API Composite : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Composite, Object, factory::New<Composite>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Composite));
 
     typedef std::map<std::string, Object::sptr> ContainerType;
 

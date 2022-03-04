@@ -1,7 +1,7 @@
 <plugin id="sight::module::data" library="true">
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::module::data::ICamp</type>
+          <type>sight::service::IController</type>
           <service>sight::module::data::SCopy</service>
           <object>sight::data::Object</object>
           <desc>This service copies an object and updates its own object or the defined target.</desc>
@@ -14,17 +14,6 @@
           <desc>This service extract camera informations in configuration using android device name.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::module::data::ICamp</type>
-          <service>sight::module::data::SExtractMeshByType</service>
-          <desc>This service extract meshes of a specific structure type from data::ModelSeries.</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::module::data::ICamp</type>
-          <service>sight::module::data::SExtractObj</service>
-          <desc>This service get objects from a source object and expose them as new objects.</desc>
-     </extension>
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>
           <service>sight::module::data::SManage</service>
@@ -40,7 +29,6 @@
           <object key="tf">sight::data::TransferFunction</object>
           <desc>Controller that merge all TF from a composite into one TF.</desc>
      </extension>
-
 
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>
@@ -91,7 +79,15 @@
           <service>sight::module::data::SGetSeries</service>
           <object key="seriesDB">sight::data::SeriesDB</object>
           <object key="series">sight::data::Series</object>
-          <desc>This service extract series from database of series</desc>
+          <desc>This service extracts series from database of series</desc>
+     </extension>
+
+     <extension implements="sight::service::extension::Factory">
+          <type>sight::service::IController</type>
+          <service>sight::module::data::SGetVector</service>
+          <object key="vector">sight::data::Vector</object>
+          <object key="objects">sight::data::Object</object>
+          <desc>This service extracts objects from a vector</desc>
      </extension>
 
 </plugin>

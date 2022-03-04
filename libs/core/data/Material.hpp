@@ -27,8 +27,6 @@
 #include "data/Image.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Material));
-
 namespace sight::data
 {
 
@@ -41,7 +39,6 @@ class DATA_CLASS_API Material : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Material, Object, factory::New<Material>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Material));
 
     /**
      * @brief Constructor

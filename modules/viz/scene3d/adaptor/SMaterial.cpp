@@ -229,8 +229,6 @@ void SMaterial::stopping()
     m_textureConnection.disconnect();
     this->unregisterServices();
 
-    Ogre::MaterialManager::getSingleton().remove(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
-
     const auto material = m_materialData.lock();
 
     if(material->getField("shaderParameters"))

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (io) (dimse) (data) (PacsConfiguration), IO_DIMSE_API);
-
 namespace sight::io::dimse
 {
 
@@ -43,7 +41,6 @@ class IO_DIMSE_CLASS_API PacsConfiguration : public sight::data::Object
 public:
 
     SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::Object, sight::data::factory::New<PacsConfiguration>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (io) (dimse) (data) (PacsConfiguration));
 
     /**
      * @brief Constructor

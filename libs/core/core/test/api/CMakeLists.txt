@@ -1,10 +1,10 @@
 sight_add_target(coreTest TYPE TEST)
 
 if(UNIX)
-    target_compile_definitions(coreTest PRIVATE CAMP_LIB_DIR="/lib/x86_64-linux-gnu")
+    target_compile_definitions(coreTest PRIVATE BOOST_LIB_DIR="/lib/x86_64-linux-gnu")
     target_link_libraries(coreTest PUBLIC "dl")
 elseif(WIN32)
-    target_compile_definitions(coreTest PRIVATE CAMP_LIB_DIR="${SIGHT_VCPKG_ROOT_DIR}/bin")
+    target_compile_definitions(coreTest PRIVATE BOOST_LIB_DIR="${SIGHT_VCPKG_ROOT_DIR}/bin")
 endif()
 
 target_compile_definitions(coreTest PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")

@@ -5,10 +5,6 @@ find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC std::filesystem)
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC Boost::date_time Boost::log Boost::log_setup Boost::iostreams)
 
-target_include_directories(${TARGET_OBJECT_LIB} SYSTEM PUBLIC ${CAMP_INCLUDE_DIR})
-
-target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC ${CAMP_LIBRARIES})
-# We should be able to remove this when camp is removed
 target_compile_definitions(${TARGET_OBJECT_LIB} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")

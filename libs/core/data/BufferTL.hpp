@@ -29,8 +29,6 @@
 #include <boost/array.hpp>
 #include <boost/pool/poolfwd.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (BufferTL));
-
 namespace sight::data
 {
 

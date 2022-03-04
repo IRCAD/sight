@@ -45,9 +45,7 @@ namespace sight::module::ui::qt::series
         <in key="series" uid="..." autoConnect="true" />
         <parentView>preview</parentView>
         <configs>
-            <config id="2DSimpleConfig" type="data::ImageSeries">
-                <extract path="@image" pattern="imageID" />
-            </config>
+            <config id="2DSimpleConfig" type="data::ImageSeries" />
             <config id="2DPacsPreviewConfig" type="data::DicomSeries" >
                 <parameter replace="PACS_CONFIGURATION" by="None" />
             </config>
@@ -66,7 +64,6 @@ namespace sight::module::ui::qt::series
  *   - \b parameter: allow to pass specific value to the associated config
  *     - \b replace: name of the parameter to be replaced
  *     - \b by: specific value to replace for the parameter
- * - \b extract: extracts the object from the path and replaces pattern with its fwID
  */
 class MODULE_UI_QT_CLASS_API SViewer : public service::IController
 {
@@ -121,9 +118,6 @@ private:
     {
         /// Id of the configuration to launch.
         std::string configId;
-
-        /// Stores the pattern to replace in the config by the fwID of the object given by a path.
-        ReplaceValuesMapType extractValues;
 
         /// Stores the parameters to pass to config.
         ReplaceValuesMapType parameters;

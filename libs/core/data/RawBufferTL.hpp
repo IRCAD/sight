@@ -28,8 +28,6 @@
 
 #include <data/factory/new.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (RawBufferTL));
-
 namespace sight::data
 {
 
@@ -42,7 +40,6 @@ class DATA_CLASS_API RawBufferTL : public BufferTL
 public:
 
     SIGHT_DECLARE_CLASS(RawBufferTL, TimeLine, factory::New<RawBufferTL>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (RawBufferTL));
 
     /**
      * @brief Constructor

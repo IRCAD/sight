@@ -32,7 +32,6 @@
 
 #include <data/Composite.hpp>
 #include <data/mt/locked_ptr.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 namespace sight::activity

@@ -30,8 +30,6 @@
 #include <map>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Landmarks));
-
 namespace sight::data
 {
 
@@ -78,8 +76,6 @@ public:
     };
 
     SIGHT_DECLARE_CLASS(Landmarks, Object, factory::New<Landmarks>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Landmarks));
 
     /**
      * @brief Constructor

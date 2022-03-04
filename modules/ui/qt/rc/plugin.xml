@@ -282,6 +282,13 @@
     </extension>
 
     <extension implements="sight::service::extension::Factory">
+          <type>sight::service::IController</type>
+          <service>sight::module::ui::qt::series::SSelectDialog</service>
+          <object>sight::data::SeriesDB</object>
+          <desc>This editor shows information about the medical data. It allows to manipulate (select, erase, ...)</desc>
+     </extension>
+
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::ui::qt::series::SViewer</service>
          <object>sight::data::Vector</object>

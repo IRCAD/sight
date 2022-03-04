@@ -169,7 +169,7 @@
         <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true">
             <inout key="modelSeries" uid="modelSeries" />
             <columns>
-                <organ_name>@organ_name</organ_name>
+                <organ_name/>
             </columns>
         </service>
 

@@ -34,8 +34,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ModelSeries))
-
 namespace sight::data
 {
 
@@ -49,8 +47,6 @@ public:
     using ReconstructionVectorType = std::vector<Reconstruction::sptr>;
 
     SIGHT_DECLARE_CLASS(ModelSeries, Object, factory::New<ModelSeries>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ModelSeries))
 
     /**
      * @brief Creates the models series.

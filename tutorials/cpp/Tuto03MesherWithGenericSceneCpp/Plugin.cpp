@@ -148,7 +148,7 @@ void Plugin::initialize()
     );
 
     // extrator/converter
-    auto extractImage = m_appManager->addService("sight::module::data::SExtractObj", true, false);
+    auto extractImage = m_appManager->addService("sight::module::data::SGetImage", true, false);
 
     //editors
     auto snapshotAdp = m_appManager->addService(
@@ -431,9 +431,7 @@ void Plugin::initialize()
     *              extractor configuration
     ****************************************************************************************/
 
-    service::IService::ConfigType extractImageConfig;
-    extractImageConfig.put("inout.extract.<xmlattr>.from", "@image");
-    extractImage->configure(extractImageConfig);
+    extractImage->configure();
 
     /* **************************************************************************************
     *              editors configuration
@@ -512,14 +510,14 @@ void Plugin::initialize()
 
     imageSeriesReader->setInOut(imageSeries, "data");
     snapshotAdp->setInOut(snapshot, "image", true);
-    extractImage->setInOut(imageSeries, "source");
+    extractImage->setInput(imageSeries, "imageSeries");
     mesher50->setInput(imageSeries, "imageSeries");
     mesher80->setInput(imageSeries, "imageSeries");
 
     modelSeriesWriter->setObjectId("data", s_MODEL_SERIES_ID);
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
     imageAdaptor->setObjectId("image", s_IMAGE_ID);
-    extractImage->setObjectId("target", s_IMAGE_ID, 0);
+    extractImage->setObjectId("image", s_IMAGE_ID);
     listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
     representationEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);

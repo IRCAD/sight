@@ -27,8 +27,6 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Float));
-
 namespace sight::data
 {
 
@@ -49,8 +47,6 @@ public:
     {
         return GenericFieldFactory<Float>(val);
     }
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Float));
 
     /**
      * @brief Constructor

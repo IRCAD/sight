@@ -370,13 +370,12 @@ void SSliceIndexDicomEditor::readSlice(
 
     // Read the image.
     m_dicomReader->setFolder(tmpPath);
-    m_dicomReader->update();
+    m_dicomReader->update().wait();
 
     if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
     {
-        // Copy the read serie to the image.
-        const data::ImageSeries::sptr imageSeries =
-            data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
+        // Copy the read series to the image.
+        const auto imageSeries           = data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
         const data::Image::sptr newImage = imageSeries->getImage();
 
         const auto image = m_image.lock();

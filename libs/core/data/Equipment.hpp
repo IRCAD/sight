@@ -27,8 +27,6 @@
 #include "data/Object.hpp"
 #include "data/types.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Equipment))
-
 namespace sight::data
 {
 
@@ -40,8 +38,6 @@ class DATA_CLASS_API Equipment : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Equipment, Object, factory::New<Equipment>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Equipment))
 
     /**
      * @brief Creates the equipment.

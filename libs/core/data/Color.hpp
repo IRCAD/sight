@@ -28,8 +28,6 @@
 
 #include <array>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Color));
-
 namespace sight::data
 {
 
@@ -45,8 +43,6 @@ public:
     typedef std::array<ColorType, 4> ColorArray;
 
     SIGHT_DECLARE_CLASS(Color, Object, factory::New<Color>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Color));
 
     DATA_API static sptr New(ColorType red, ColorType green = 1.f, ColorType blue = 1.f, ColorType alpha = 1.f);
 

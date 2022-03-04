@@ -27,8 +27,6 @@
 #include "data/Object.hpp"
 #include "data/types.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Study))
-
 namespace sight::data
 {
 
@@ -40,8 +38,6 @@ class DATA_CLASS_API Study : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Study, Object, factory::New<Study>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Study))
 
     /**
      * @brief Creates the study.

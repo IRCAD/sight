@@ -23,8 +23,6 @@
 
 #include "modules/data/config.hpp"
 
-#include <core/base.hpp>
-
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 

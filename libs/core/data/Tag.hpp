@@ -29,8 +29,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Tag), DATA_API);
-
 namespace sight::data
 {
 
@@ -52,8 +50,6 @@ public:
 
     /// Destructor
     DATA_API virtual ~Tag();
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Tag));
 
     /**
      * @{

@@ -30,8 +30,6 @@
 #include <utility>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Line));
-
 namespace sight::data
 {
 
@@ -52,8 +50,6 @@ public:
 
     /// Destructor
     DATA_API virtual ~Line();
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Line));
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

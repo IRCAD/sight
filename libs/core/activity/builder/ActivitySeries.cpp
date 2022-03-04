@@ -30,7 +30,6 @@
 #include <data/Composite.hpp>
 #include <data/Equipment.hpp>
 #include <data/Patient.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/Study.hpp>
 #include <data/Vector.hpp>
 
@@ -73,14 +72,7 @@ data::Composite::sptr vectorToComposite(
     for(const data::Object::sptr& obj : *vector)
     {
         const ActReg::ActivityRequirementKey& keyTag = (*iter++);
-        if(keyTag.path.empty())
-        {
-            (*composite)[keyTag.key] = obj;
-        }
-        else
-        {
-            (*composite)[keyTag.key] = data::reflection::getObject(obj, keyTag.path);
-        }
+        (*composite)[keyTag.key] = obj;
     }
 
     return composite;

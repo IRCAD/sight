@@ -26,8 +26,6 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (StructureTraits));
-
 namespace sight::data
 {
 
@@ -48,7 +46,6 @@ class DATA_CLASS_API StructureTraits : public Object
 public:
 
     SIGHT_DECLARE_CLASS(StructureTraits, Object, factory::New<StructureTraits>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (StructureTraits));
 
     /// Defines structure categories
     typedef enum

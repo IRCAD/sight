@@ -28,8 +28,6 @@
 
 #include <list>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (List));
-
 namespace sight::data
 {
 
@@ -43,8 +41,6 @@ class DATA_CLASS_API List : public Object
 public:
 
     SIGHT_DECLARE_CLASS(List, Object, factory::New<List>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (List));
 
     typedef std::list<Object::sptr> ContainerType;
 

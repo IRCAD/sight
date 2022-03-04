@@ -30,8 +30,6 @@
 #include <array>
 #include <iostream>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Matrix4));
-
 namespace sight::data
 {
 
@@ -43,8 +41,6 @@ class DATA_CLASS_API Matrix4 : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Matrix4, Object, factory::New<Matrix4>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Matrix4));
 
     typedef double TM3DType;
     typedef std::array<TM3DType, 16> TMCoefArray;

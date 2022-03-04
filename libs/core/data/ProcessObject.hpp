@@ -35,8 +35,6 @@ class Field;
 
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ProcessObject));
-
 namespace sight::data
 {
 
@@ -48,8 +46,6 @@ class DATA_CLASS_API ProcessObject : public Object
 public:
 
     SIGHT_DECLARE_CLASS(ProcessObject, Object, factory::New<ProcessObject>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ProcessObject));
 
     typedef std::string ParamNameType;
     typedef std::vector<std::string> ParamNameVectorType;

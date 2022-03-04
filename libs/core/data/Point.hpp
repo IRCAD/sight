@@ -28,8 +28,6 @@
 
 #include <array>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Point));
-
 namespace sight::data
 {
 
@@ -50,8 +48,6 @@ public:
     DATA_API static Point::sptr New(double x, double y = 0., double z = 0.);
     DATA_API static Point::sptr New(const PointCoordArrayType& coord);
     DATA_API static Point::sptr New(const Point::sptr& p);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Point));
 
     /**
      * @brief Constructor

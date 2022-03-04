@@ -45,8 +45,8 @@
         <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true" >
             <inout key="modelSeries" uid="${organManagerModelSeries}" />
             <columns>
-                <organ_name>@organ_name</organ_name>
-                <volume_cc view="positive" >@volume</volume_cc>
+                <organ_name/>
+                <volume/>
             </columns>
             <config enableDelete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
         </service>

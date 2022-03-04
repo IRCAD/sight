@@ -26,30 +26,15 @@
 #include "data/factory/new.hpp"
 #include "data/registry/detail.hpp"
 
-#include <core/reflection/macros.hpp>
-#ifdef CAMP_COMPILATION
-#include <core/reflection/Mapper/ArrayMapper.hpp>
-#include <core/reflection/camp/ExtendedClassVisitor.hpp>
-#include <core/reflection/camp/MapMapper.hpp>
-#include <core/reflection/camp/MapProperty.hpp>
-#include <core/reflection/camp/MapValueMapper.hpp>
-#include <core/reflection/camp/customtype.hpp>
-#include <core/reflection/camp/detail/MapPropertyImpl.hpp>
-#endif
-
+#include <core/base.hpp>
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
-
-#include <core/base.hpp>
 #include <core/mt/types.hpp>
-
-#include <core/tools/Object.hpp>
 #include <core/tools/compare.hpp>
+#include <core/tools/Object.hpp>
 
 #include <string>
 #include <unordered_map>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Object));
 
 namespace sight::data
 {
@@ -70,7 +55,6 @@ public:
 
     SIGHT_DECLARE_CLASS(Object, core::tools::Object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Object));
 
     /**
      * @brief Class used to register a class factory in factory registry.

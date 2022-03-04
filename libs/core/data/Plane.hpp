@@ -31,7 +31,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Plane));
 namespace sight::data
 {
 
@@ -44,8 +43,6 @@ class DATA_CLASS_API Plane : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Plane, Object, factory::New<Plane>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Plane));
 
     typedef std::array<Point::sptr, 3> PointContainer;
 

@@ -26,8 +26,6 @@
 #include "data/Node.hpp"
 #include "data/StructureTraits.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ROITraits));
-
 namespace sight::data
 {
 
@@ -49,7 +47,6 @@ class DATA_CLASS_API ROITraits : public Object
 public:
 
     SIGHT_DECLARE_CLASS(ROITraits, Object, factory::New<ROITraits>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ROITraits));
 
     /**
      * @brief Constructor

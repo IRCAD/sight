@@ -38,7 +38,6 @@
 
 #include <filesystem>
 #include <vector>
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Image));
 
 namespace sight::data
 {
@@ -176,7 +175,6 @@ public:
 
     SIGHT_DECLARE_CLASS(Image, Object, factory::New<Image>);
     SIGHT_ALLOW_SHARED_FROM_THIS()
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Image))
 
     /// Image size
     typedef std::array<std::size_t, 3> Size;

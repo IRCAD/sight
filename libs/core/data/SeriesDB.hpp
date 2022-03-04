@@ -30,8 +30,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (SeriesDB))
-
 namespace sight::data
 {
 
@@ -45,8 +43,6 @@ class DATA_CLASS_API SeriesDB : public Object
 public:
 
     SIGHT_DECLARE_CLASS(SeriesDB, Object, factory::New<SeriesDB>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (SeriesDB))
 
     typedef std::vector<Series::sptr> ContainerType;
 

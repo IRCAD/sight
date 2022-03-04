@@ -31,8 +31,6 @@
 #include <map>
 #include <set>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Graph));
-
 namespace sight::data
 {
 
@@ -48,8 +46,6 @@ class DATA_CLASS_API Graph : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Graph, Object, data::factory::New<Graph>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Graph));
 
     DATA_API static const bool UP_STREAM;
     DATA_API static const bool DOWN_STREAM;

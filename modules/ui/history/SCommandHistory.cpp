@@ -30,9 +30,6 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/reflection/exception/ObjectNotFound.hpp>
-#include <data/reflection/getObject.hpp>
-
 #include <numeric>
 
 namespace sight::module::ui::history

@@ -33,8 +33,6 @@
 
 #include <filesystem>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (DicomSeries))
-
 namespace sight::data
 {
 
@@ -46,8 +44,6 @@ class DATA_CLASS_API DicomSeries : public Series
 public:
 
     SIGHT_DECLARE_CLASS(DicomSeries, Object, factory::New<DicomSeries>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (DicomSeries))
 
     typedef std::map<std::size_t, core::memory::BufferObject::sptr> DicomContainerType;
 

@@ -32,8 +32,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (PlaneList));
-
 namespace sight::data
 {
 
@@ -46,8 +44,6 @@ class DATA_CLASS_API PlaneList : public Object
 public:
 
     SIGHT_DECLARE_CLASS(PlaneList, Object, factory::New<PlaneList>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (PlaneList));
 
     typedef std::vector<Plane::sptr> PlaneListContainer;
 

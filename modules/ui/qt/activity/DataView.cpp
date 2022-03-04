@@ -35,7 +35,6 @@
 #include <data/Integer.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Patient.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
@@ -528,16 +527,8 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if(obj && obj->isA(req.type))
                     {
-                        std::string key  = req.keys[i].key;
-                        std::string path = req.keys[i].path;
-                        if(path.empty())
-                        {
-                            (*composite)[key] = obj;
-                        }
-                        else
-                        {
-                            (*composite)[key] = data::reflection::getObject(obj, path);
-                        }
+                        std::string key = req.keys[i].key;
+                        (*composite)[key] = obj;
                     }
                     else
                     {

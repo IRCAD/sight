@@ -555,7 +555,7 @@ void SPointList::updateMaterialAdaptor()
 
 void SPointList::attachNode(Ogre::MovableObject* _node)
 {
-    SIGHT_ASSERT("transform Node shouldn't be null", !m_sceneNode);
+    SIGHT_ASSERT("transform Node shouldn't be null", m_sceneNode);
     m_sceneNode->attachObject(_node);
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds

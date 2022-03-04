@@ -50,8 +50,6 @@ namespace sight::module::ui::qt
 namespace model
 {
 
-class ValueView;
-
 /**
  * @brief Editor displaying the list of the organs in a ModelSeries.
  *
@@ -75,8 +73,9 @@ class ValueView;
        <inout key="modelSeries" uid="..." autoConnect="true" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
-         <organ_name>@organ_name</organ_name>
-         <volume_cc view="positive" >@volume</volume_cc>
+         <organ_name/>
+         <structure_type/>
+         <volume/>
        </columns>
    </service>
    @endcode
@@ -110,15 +109,15 @@ public:
     MODULE_UI_QT_API SModelSeriesList() noexcept;
 
     /// Cleans ressources.
-    MODULE_UI_QT_API ~SModelSeriesList() noexcept override;
+    MODULE_UI_QT_API ~SModelSeriesList() noexcept final = default;
 
 protected:
 
     /// Configures the editor.
-    void configuring() override;
+    void configuring() final;
 
     /// Creates layouts.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -128,17 +127,17 @@ protected:
      * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
      * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const final;
 
     /**
      * @brief Refreshes the editor.
      * @see updateReconstructions().
      * @see refreshVisibility().
      */
-    void updating() override;
+    void updating() final;
 
     /// Disconnects connections.
-    void stopping() override;
+    void stopping() final;
 
 private:
 
@@ -204,10 +203,6 @@ private:
 
     /// Contains the reconstructions tree:
     QPointer<QTreeWidget> m_tree;
-
-    /// Defines informations.
-    typedef std::map<std::string, ValueView*> DisplayedInformation;
-    DisplayedInformation m_displayedInfo;
 
     /// Enables m_showCheckBox.
     bool m_enableHideAll {true};

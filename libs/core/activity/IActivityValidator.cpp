@@ -26,7 +26,6 @@
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::activity
@@ -187,8 +186,7 @@ const
                                                  + "' must contain valid objects of type '" + req.type + "'.";
                             isValid = false;
                         }
-                        // FIXME We can not validate the type of object extracted with 'camp' path.
-                        else if(reqKey.path.empty() && obj->getClassname() != req.type)
+                        else if(obj->getClassname() != req.type)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name

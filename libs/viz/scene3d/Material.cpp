@@ -67,7 +67,9 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
 
 Material::~Material()
 {
+    auto materialName = m_material->getName();
     m_material.reset();
+    Ogre::MaterialManager::getSingleton().remove(materialName, sight::viz::scene3d::RESOURCE_GROUP);
 }
 
 //------------------------------------------------------------------------------

@@ -26,13 +26,9 @@
 #include "core/memory/BufferAllocationPolicy.hpp"
 #include "core/memory/BufferManager.hpp"
 
-#include <core/reflection/macros.hpp>
-
 #include <filesystem>
 #include <istream>
 #include <type_traits>
-
-SIGHT_DECLARE_REFLECTION((sight) (core) (memory) (BufferObject), CORE_API);
 
 namespace sight::core::memory
 {

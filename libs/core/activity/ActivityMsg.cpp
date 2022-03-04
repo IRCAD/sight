@@ -25,7 +25,6 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 #include <boost/algorithm/string/replace.hpp>

@@ -68,9 +68,7 @@
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
-                    <extract path="@image" pattern="imageID" />
-                </config>
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
                 <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
             </configs>
         </service>

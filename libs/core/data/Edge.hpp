@@ -28,8 +28,6 @@
 
 #include <utility>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Edge));
-
 namespace sight::data
 {
 
@@ -43,7 +41,6 @@ class DATA_CLASS_API Edge : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Edge, Object, factory::New<Edge>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Edge));
 
     DATA_API static std::string NATURE_FLOW;
     DATA_API static std::string NATURE_DATA;

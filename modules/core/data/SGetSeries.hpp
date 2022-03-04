@@ -44,8 +44,8 @@ namespace sight::module::data
         <service uid="..." type="sight::module::data::SGetSeries" >
            <in key="seriesDB" uid="..."/>
            <out group="series">
-               <key index = "0" uid="..."/>
-               <key index = "3" uid="..."/>
+               <key index="0" uid="..."/>
+               <key index="3" uid="..."/>
            </out>
         </service>
        @endcode

@@ -134,7 +134,7 @@ void SMeshList::starting()
 
         {
             const auto mesh = m_mesh.lock();
-            meshAdaptor->setInOut(mesh.get_shared(), "mesh", true);
+            meshAdaptor->setInput(mesh.get_shared(), "mesh", true);
         }
 
         meshAdaptor->configure(meshConfig);

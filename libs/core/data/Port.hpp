@@ -26,8 +26,6 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Port));
-
 namespace sight::data
 {
 
@@ -72,7 +70,6 @@ public:
      * @{
      * @brief Retrieve the input data.
      */
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Port));
     /// @}
 
     /// Defines shallow copy

@@ -37,8 +37,6 @@
 #include <string>
 #include <utility>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Camera));
-
 namespace sight::data
 {
 
@@ -49,7 +47,6 @@ class DATA_CLASS_API Camera : public Object
 {
 public:
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Camera));
     SIGHT_DECLARE_CLASS(Camera, Object, factory::New<Camera>);
 
     typedef std::array<double, 5> DistArrayType;

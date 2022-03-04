@@ -28,8 +28,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
+        <object uid="${image}" type="sight::data::Image" src="deferred" />
         <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
@@ -126,7 +126,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="axialNegatoSlicerSrv" start="true" />
+                <view sid="axialNegatoSlicerSrv" start="false" />
             </registry>
         </service>
 
@@ -139,7 +139,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="bottomNegatoSlicerView" start="true" />
+                <view sid="bottomNegatoSlicerView" start="false" />
             </registry>
         </service>
 
@@ -152,8 +152,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sagittalNegatoSlicerSrv" start="true" />
-                <view sid="frontalNegatoSlicerSrv" start="true" />
+                <view sid="sagittalNegatoSlicerSrv" start="false" />
+                <view sid="frontalNegatoSlicerSrv" start="false" />
             </registry>
         </service>
 
@@ -723,8 +723,14 @@
         <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
+        
+        <start uid="axialNegatoSlicerSrv" />
+        <start uid="frontalNegatoSlicerSrv" />
+        <start uid="sagittalNegatoSlicerSrv" />
+        <start uid="bottomNegatoSlicerView" />
 
         <update uid="backgroundReaderSrv" />
+        <update uid="imageExtruderSrv" />
         <update uid="shapeExtruderAdp" />
 
     </config>

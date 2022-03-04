@@ -34,8 +34,6 @@
 
 #include <data/iterator.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Array));
-
 namespace sight::data
 {
 
@@ -156,8 +154,6 @@ class DATA_CLASS_API Array : public Object,
 public:
 
     SIGHT_DECLARE_CLASS(Array, Object, factory::New<Array>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Array))
 
     /**
      * @brief Array size type

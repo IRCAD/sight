@@ -32,8 +32,6 @@
 
 #include <data/factory/new.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (FrameTL));
-
 namespace sight::data
 {
 
@@ -45,7 +43,6 @@ class DATA_CLASS_API FrameTL : public GenericTL<uint8_t>
 public:
 
     SIGHT_DECLARE_CLASS(FrameTL, TimeLine, factory::New<FrameTL>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (FrameTL))
 
     /// Frame format
     enum class PixelFormat

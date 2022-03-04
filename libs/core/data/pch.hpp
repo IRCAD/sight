@@ -29,7 +29,5 @@
 #include <core/tools/compare.hpp>
 #include <core/tools/Object.hpp>
 
-#include <camp/userobject.hpp>
-
 #include <string>
 #include <unordered_map>

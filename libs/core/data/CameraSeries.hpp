@@ -39,8 +39,6 @@
 #include <map>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (CameraSeries));
-
 namespace sight::data
 {
 
@@ -53,8 +51,6 @@ class DATA_CLASS_API CameraSeries : public Series
 public:
 
     SIGHT_DECLARE_CLASS(CameraSeries, Object, factory::New<CameraSeries>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (CameraSeries));
 
     typedef std::vector<Camera::sptr> CameraContainerType;
 

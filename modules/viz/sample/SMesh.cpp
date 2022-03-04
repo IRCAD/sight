@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,7 @@ void SMesh::starting()
     meshConfig.put("config.<xmlattr>.layer", "default");
     m_meshSrv = service::add("sight::module::viz::scene3d::adaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
-    m_meshSrv->setInOut(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
+    m_meshSrv->setInput(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
 

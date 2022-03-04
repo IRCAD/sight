@@ -25,8 +25,6 @@
 #include "data/config.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (TransferFunction))
-
 namespace sight::data
 {
 
@@ -42,7 +40,6 @@ public:
     SIGHT_DECLARE_CLASS(TransferFunction, Object, factory::New<TransferFunction>);
 
     /// Defines the deep and shallow copies.
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (TransferFunction))
 
     /// Defines color structure for TF.
     struct DATA_CLASS_API TFColor

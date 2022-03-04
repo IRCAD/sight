@@ -29,8 +29,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ResectionDB));
-
 namespace sight::data
 {
 
@@ -44,7 +42,6 @@ class DATA_CLASS_API ResectionDB : public Object
 public:
 
     SIGHT_DECLARE_CLASS(ResectionDB, Object, factory::New<ResectionDB>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ResectionDB));
 
     /**
      * @brief Constructor

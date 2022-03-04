@@ -26,7 +26,6 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 #include <service/macros.hpp>

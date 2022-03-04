@@ -38,8 +38,6 @@ class Vector;
 
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Vector));
-
 namespace sight::data
 {
 
@@ -53,7 +51,6 @@ class DATA_CLASS_API Vector : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Vector, Object, factory::New<Vector>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Vector));
 
     typedef std::vector<Object::sptr> ContainerType;
 

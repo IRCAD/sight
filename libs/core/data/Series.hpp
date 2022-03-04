@@ -30,8 +30,6 @@
 #include "data/Study.hpp"
 #include "data/types.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Series))
-
 namespace sight::data
 {
 
@@ -43,8 +41,6 @@ class DATA_CLASS_API Series : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Series, Object, factory::New<Series>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Series))
 
     /**
      * @brief Creates the series.

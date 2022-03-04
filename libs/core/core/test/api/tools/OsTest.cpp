@@ -83,18 +83,20 @@ void Os::getSharedLibraryPath()
 
     // Now load that library and check that we find it
 #if defined(WIN32)
+    const auto lib = "zstd";
     #if defined(_DEBUG)
-    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "campd.dll");
+    const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstdd.dll");
     #else
-    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "camp.dll");
+    const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstd.dll");
     #endif
 #else
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";
+    const auto lib     = "boost_date_time";
+    const auto libPath = fs::path(BOOST_LIB_DIR) / "libboost_date_time.so.1.74.0";
 #endif
-    auto handle = boost::dll::shared_library(campPath.string());
-    CPPUNIT_ASSERT_MESSAGE("Could not load camp for testing", handle);
+    auto handle = boost::dll::shared_library(libPath.string());
+    CPPUNIT_ASSERT_MESSAGE("Could not load library for testing", handle);
 
-    CPPUNIT_ASSERT_EQUAL(campPath, core::tools::os::getSharedLibraryPath("camp"));
+    CPPUNIT_ASSERT_EQUAL(libPath, core::tools::os::getSharedLibraryPath(lib));
     // cspell: enable
 }
 

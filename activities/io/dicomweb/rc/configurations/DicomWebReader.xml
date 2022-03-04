@@ -140,12 +140,9 @@
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
-                    <extract path="@image" pattern="imageID" />
-                </config>
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
             </configs>
         </service>
-
 
         <service uid="seriesDBReader" type="sight::module::io::dicom::SSeriesDBReader" >
             <inout key="data" uid="localSeriesDB" />

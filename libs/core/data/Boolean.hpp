@@ -27,7 +27,6 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Boolean));
 namespace sight::data
 {
 
@@ -48,8 +47,6 @@ public:
     {
         return GenericFieldFactory<Boolean>(val);
     }
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Boolean));
 
     /**
      * @brief Constructor

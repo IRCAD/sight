@@ -11,7 +11,6 @@ add_dependencies(
     module_service
     data
     viz_scene2d
-    io_dimse
     module_ui_base
     module_ui_viz
     module_ui_flaticons
@@ -21,8 +20,8 @@ add_dependencies(
     module_viz_scene2d
     module_data
     module_filter_image
-    module_io_dimse
     config_viz_scene3d
+    config_io_dimse
 )
 
 # Allow dark theme via module_ui_qt

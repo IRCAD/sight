@@ -20,18 +20,9 @@
  *
  ***********************************************************************/
 
-#define CAMP_COMPILATION
-
 #include "core/memory/BufferObject.hpp"
 
 namespace scm = sight::core::memory;
-
-SIGHT_IMPLEMENT_REFLECTION((sight) (core) (memory) (BufferObject))
-{
-    builder.tag("buffer")
-    .function("classname", &scm::BufferObject::className)
-    .function("is_a", (bool (scm::BufferObject::*)(const std::string&) const) & scm::BufferObject::isA);
-}
 
 namespace sight::core::memory
 {

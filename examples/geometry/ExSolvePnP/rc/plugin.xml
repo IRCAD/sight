@@ -284,7 +284,7 @@
             </service>
 
             <service uid="VRMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="cube" />
+                <in key="mesh" uid="cube" />
                 <config layer="default"/>
             </service>
 

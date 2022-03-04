@@ -22,29 +22,11 @@
 
 #include "SCopy.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <data/reflection/exception/NullPointer.hpp>
-#include <data/reflection/exception/ObjectNotFound.hpp>
-#include <data/reflection/getObject.hpp>
-
 namespace sight::module::data
 {
-
-//-----------------------------------------------------------------------------
-
-SCopy::SCopy() :
-    m_mode(ModeType::UPDATE)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-SCopy::~SCopy()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -52,23 +34,12 @@ void SCopy::configuring()
 {
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
-    m_hasExtractTag = false;
     const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
     SIGHT_ASSERT("One 'in' tag is required.", inCfg);
 
     const std::vector<ConfigurationType> inoutCfg = m_configuration->find("inout");
     const std::vector<ConfigurationType> outCfg   = m_configuration->find("out");
     SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() + outCfg.size() == 1);
-
-    const std::vector<ConfigurationType> extractCfg = inCfg->find("extract");
-    SIGHT_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
-    if(extractCfg.size() == 1)
-    {
-        ConfigurationType cfg = extractCfg[0];
-        SIGHT_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
-        m_path          = cfg->getAttributeValue("from");
-        m_hasExtractTag = true;
-    }
 
     const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
     if(modeConfig)
@@ -138,37 +109,7 @@ void SCopy::copy()
     // Extract the object.
     const auto sourceObject = m_source.lock();
 
-    sight::data::Object::csptr source;
-    if(m_hasExtractTag)
-    {
-        sight::data::Object::sptr object;
-        try
-        {
-            object = sight::data::reflection::getObject(sourceObject.get_shared(), m_path, true);
-        }
-        catch(const sight::data::reflection::exception::ObjectNotFound&)
-        {
-            SIGHT_WARN("Object from '" + m_path + "' not found");
-        }
-        catch(const sight::data::reflection::exception::NullPointer&)
-        {
-            SIGHT_WARN("Can't get object from '" + m_path + "'");
-        }
-        catch(std::exception& _e)
-        {
-            SIGHT_FATAL("Unhandled exception: " << _e.what());
-        }
-
-        SIGHT_WARN_IF("Object from '" + m_path + "' not found", !object);
-        if(object)
-        {
-            source = object;
-        }
-    }
-    else
-    {
-        source = sourceObject.get_shared();
-    }
+    sight::data::Object::csptr source = sourceObject.get_shared();
 
     if(source)
     {

@@ -326,16 +326,14 @@
             </service>
 
             <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
-            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
-                <inout key="source" uid="cameraSeries" >
-                    <extract from="@cameras.0" />
-                    <extract from="@cameras.1" />
-                    <extract from="@extrinsic_matrices.1" />
-                </inout>
-                <out group="target" >
-                    <key uid="camera1" />
-                    <key uid="camera2" />
-                    <key uid="extrinsic" />
+            <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
+                <inout key="source" uid="cameraSeries" />
+                <out group="camera" >
+                    <key index="0" uid="camera1" />
+                    <key index="1" uid="camera2" />
+                </out>
+                <out group="extrinsic" >
+                    <key index="1" uid="extrinsic" />
                 </out>
             </service>
 

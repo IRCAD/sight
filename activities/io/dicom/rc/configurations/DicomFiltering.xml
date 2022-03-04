@@ -163,9 +163,7 @@
             <in key="series" uid="loadedSelection" />
             <parentView wid="loadedPreview" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
-                    <extract path="@image" pattern="imageID" />
-                </config>
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
             </configs>
         </service>
 

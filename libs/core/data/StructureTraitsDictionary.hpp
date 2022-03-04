@@ -26,8 +26,6 @@
 #include "data/Object.hpp"
 #include "data/StructureTraits.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (StructureTraitsDictionary));
-
 namespace sight::data
 {
 
@@ -42,7 +40,6 @@ class DATA_CLASS_API StructureTraitsDictionary : public Object
 public:
 
     SIGHT_DECLARE_CLASS(StructureTraitsDictionary, Object, factory::New<StructureTraitsDictionary>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (StructureTraitsDictionary));
 
     typedef std::vector<std::string> StructureTypeNameContainer;
     typedef std::map<std::string, StructureTraits::sptr> StructureTraitsMapType;

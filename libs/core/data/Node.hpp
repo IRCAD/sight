@@ -29,8 +29,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Node));
-
 namespace sight::data
 {
 
@@ -43,7 +41,6 @@ class DATA_CLASS_API Node : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Node, Object, factory::New<Node>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Node));
 
     /// Port container
     typedef std::vector<Port::sptr> PortContainer;

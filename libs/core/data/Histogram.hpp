@@ -26,8 +26,6 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Histogram));
-
 namespace sight::data
 {
 
@@ -39,8 +37,6 @@ class DATA_CLASS_API Histogram : public Object
 public:
 
     SIGHT_DECLARE_CLASS(Histogram, Object, factory::New<Histogram>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Histogram));
 
     typedef std::vector<long> fwHistogramValues;
 

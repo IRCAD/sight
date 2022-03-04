@@ -34,8 +34,6 @@
 #include <boost/range/combine.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Mesh));
-
 namespace sight::data
 {
 
@@ -251,8 +249,6 @@ class DATA_CLASS_API Mesh : public Object,
 public:
 
     SIGHT_DECLARE_CLASS(Mesh, Object, factory::New<Mesh>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Mesh))
 
     /// Stores a cell type.
     enum class CellType : std::uint8_t

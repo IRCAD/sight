@@ -76,8 +76,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
 //-----------------------------------------------------------------------------
 
 ActivityRequirementKey::ActivityRequirementKey(const ConfigType& config) :
-    key(config.get_value<std::string>()),
-    path(config.get_optional<std::string>("<xmlattr>.path").get_value_or(""))
+    key(config.get_value<std::string>())
 {
 }
 

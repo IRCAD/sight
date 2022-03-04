@@ -26,8 +26,6 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (String));
-
 namespace sight::data
 {
 
@@ -48,8 +46,6 @@ public:
     {
         return GenericFieldFactory<String>(val);
     }
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (String));
 
     /**
      * @brief Constructor

@@ -32,8 +32,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Reconstruction));
-
 namespace sight::data
 {
 
@@ -58,8 +56,6 @@ public:
 
     /// Destructor
     DATA_API virtual ~Reconstruction();
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Reconstruction));
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
