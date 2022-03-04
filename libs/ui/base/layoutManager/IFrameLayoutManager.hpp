@@ -68,13 +68,13 @@ public:
     static const std::string FRAME_POSITION_X_UI;
     static const std::string FRAME_POSITION_Y_UI;
 
-    typedef enum
+    enum class FrameState : std::uint8_t
     {
-        UNKNOWN,    ///< the unknown state
-        ICONIZED,   ///< the minimized state
-        MAXIMIZED,  ///< the maximied state
-        FULL_SCREEN ///< the full screen state
-    } FrameState;
+        UNKNOWN     = 0, ///< the unknown state
+        ICONIZED    = 1, ///< the minimized state
+        MAXIMIZED   = 2, ///< the maximied state
+        FULL_SCREEN = 3  ///< the full screen state
+    };
 
     class FrameInfo
     {
@@ -86,7 +86,7 @@ public:
             m_style(DEFAULT),
             m_size(std::make_pair(-1, -1)),
             m_position(std::make_pair(-1, -1)),
-            m_state(UNKNOWN),
+            m_state(FrameState::UNKNOWN),
             m_visibility(true)
         {
         }
@@ -180,8 +180,6 @@ protected:
     UI_BASE_API void readConfig();
 
     UI_BASE_API void writeConfig();
-
-    UI_BASE_API data::Composite::sptr getPreferenceUI();
 
 private:
 

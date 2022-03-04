@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ bool isPointedValueConst(T)
 
 void BufferObjectTest::allocateTest()
 {
-    const size_t SIZE                   = 100000;
+    const std::size_t SIZE              = 100000;
     core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
 
     CPPUNIT_ASSERT(bo->isEmpty());
@@ -94,7 +94,7 @@ void BufferObjectTest::allocateTest()
         CPPUNIT_ASSERT_EQUAL(static_cast<long>(1), bo->lockCount());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for(size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < SIZE ; ++i)
         {
             buf[i] = static_cast<char>(i % 256);
         }
@@ -104,7 +104,7 @@ void BufferObjectTest::allocateTest()
         core::memory::BufferObject::Lock lock(bo->lock());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for(size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < SIZE ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i % 256), buf[i]);
         }
@@ -150,7 +150,7 @@ void BufferObjectTest::allocateTest()
         core::memory::BufferObject::Lock lock(bo->lock());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for(size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < SIZE ; ++i)
         {
             buf[i] = static_cast<char>(i % 256);
         }
@@ -160,7 +160,7 @@ void BufferObjectTest::allocateTest()
         core::memory::BufferObject::Lock lock(bo->lock());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for(size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < SIZE ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i % 256), buf[i]);
         }
@@ -170,21 +170,21 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT(bo->isEmpty());
     CPPUNIT_ASSERT(bo->lock().getBuffer() == NULL);
 
-    CPPUNIT_ASSERT_THROW(bo->allocate(std::numeric_limits<size_t>::max() / 2), core::memory::exception::Memory);
+    CPPUNIT_ASSERT_THROW(bo->allocate(std::numeric_limits<std::size_t>::max() / 2), core::memory::exception::Memory);
 
     bo->allocate(SIZE);
     CPPUNIT_ASSERT(!bo->isEmpty());
     CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::BufferObject::SizeType>(SIZE), bo->getSize());
     CPPUNIT_ASSERT(bo->lock().getBuffer() != NULL);
 
-    CPPUNIT_ASSERT_THROW(bo->reallocate(std::numeric_limits<size_t>::max() / 2), core::memory::exception::Memory);
+    CPPUNIT_ASSERT_THROW(bo->reallocate(std::numeric_limits<std::size_t>::max() / 2), core::memory::exception::Memory);
 
     CPPUNIT_ASSERT(!bo->isEmpty());
     CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::BufferObject::SizeType>(SIZE), bo->getSize());
     CPPUNIT_ASSERT(bo->lock().getBuffer() != NULL);
 
-    const size_t SMALLER_REALLOC_SIZE = 1024;
-    const size_t BIGGER_REALLOC_SIZE  = SIZE + 1024;
+    const std::size_t SMALLER_REALLOC_SIZE = 1024;
+    const std::size_t BIGGER_REALLOC_SIZE  = SIZE + 1024;
 
     bo->reallocate(SMALLER_REALLOC_SIZE);
     CPPUNIT_ASSERT(!bo->isEmpty());
@@ -209,7 +209,7 @@ void BufferObjectTest::allocateTest()
 
 void BufferObjectTest::allocateZeroTest()
 {
-    const size_t SIZE                   = 100000;
+    const std::size_t SIZE              = 100000;
     core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
 
     CPPUNIT_ASSERT(bo->isEmpty());
@@ -255,7 +255,7 @@ void BufferObjectTest::lockThreadedStressTest()
 {
     core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
 
-    ::boost::thread_group group;
+    boost::thread_group group;
 
     group.create_thread(std::bind(&stressLock, bo, 800, 600));
     group.create_thread(std::bind(&stressLock, bo, 600, 800));

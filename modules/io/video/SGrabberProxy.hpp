@@ -75,8 +75,8 @@ namespace sight::module::io::video
             <config>
                 <camera type="RGBD" />
                 <selection mode="include" />
-                <addSelection service="::sight::module::io::video::SFrameGrabber" />
-                <config id="cvGrabberConfig" service="::sight::module::io::video::SFrameGrabber" />
+                <addSelection service="sight::module::io::video::SFrameGrabber" />
+                <config id="cvGrabberConfig" service="sight::module::io::video::SFrameGrabber" />
                 <gui title="Please select the camera to use" />
             </config>
         </service>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,13 +87,13 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
         if(view->hasAttribute("minWidth"))
         {
             const std::string width = view->getExistingAttributeValue("minWidth");
-            vi.m_minSize.first = ::boost::lexical_cast<int>(width);
+            vi.m_minSize.first = boost::lexical_cast<int>(width);
         }
 
         if(view->hasAttribute("minHeight"))
         {
             const std::string height = view->getExistingAttributeValue("minHeight");
-            vi.m_minSize.second = ::boost::lexical_cast<int>(height);
+            vi.m_minSize.second = boost::lexical_cast<int>(height);
         }
 
         if(view->hasAttribute("resizable"))
@@ -109,19 +109,19 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
         if(view->hasAttribute("position"))
         {
             const std::string position = view->getExistingAttributeValue("position");
-            vi.m_position = ::boost::lexical_cast<int>(position);
+            vi.m_position = boost::lexical_cast<int>(position);
         }
 
         if(view->hasAttribute("layer"))
         {
             const std::string layer = view->getExistingAttributeValue("layer");
-            vi.m_layer = ::boost::lexical_cast<int>(layer);
+            vi.m_layer = boost::lexical_cast<int>(layer);
         }
 
         if(view->hasAttribute("row"))
         {
             const std::string row = view->getExistingAttributeValue("row");
-            vi.m_row = ::boost::lexical_cast<int>(row);
+            vi.m_row = boost::lexical_cast<int>(row);
         }
 
         if(view->hasAttribute("visible"))

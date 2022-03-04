@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,12 +53,15 @@ void StringTest::methode1()
 {
     const std::string VALUES[] = {"", "chaine_caractere"};
 
-    for(std::string VALUE : VALUES)
+    for(const std::string& VALUE : VALUES)
     {
         data::String::sptr s0 = data::String::New();
         s0->value() = VALUE;
         data::String::sptr s1 = data::String::New(VALUE);
+        data::String::sptr s2 = data::String::New(VALUE + "other");
 
+        CPPUNIT_ASSERT(*s0 == *s1);
+        CPPUNIT_ASSERT(*s0 != *s2);
         CPPUNIT_ASSERT_EQUAL(VALUE, s0->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, s1->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, data::String::New(VALUE)->value());

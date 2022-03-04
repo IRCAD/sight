@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class PostWindowRenderListener : public ::Ogre::RenderTargetListener
+class PostWindowRenderListener : public Ogre::RenderTargetListener
 {
 public:
 
@@ -101,10 +101,10 @@ void SRenderStats::configuring()
     data::Color::sptr sightColor = data::Color::New();
     sightColor->setRGBA(color);
 
-    m_textColor = ::Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
+    m_textColor = Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
 
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ void SRenderStats::starting()
 
     const float dpi = renderSrv->getInteractorManager()->getLogicalDotsPerInch();
 
-    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
+    Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
 
     m_statsText = sight::viz::scene3d::Text::New(
         this->getID() + "_fpsText",
@@ -157,7 +157,7 @@ void SRenderStats::stopping()
 
     m_listener.reset();
 
-    ::Ogre::SceneManager* sm = this->getLayer()->getSceneManager();
+    Ogre::SceneManager* sm = this->getLayer()->getSceneManager();
     m_statsText->detachFromParent();
     sm->destroyMovableObject(m_statsText);
     m_statsText = nullptr;

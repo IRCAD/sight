@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
      * @param[in] object Sight data object
      */
     IO_DICOM_API TemplateID(
-        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const CSPTR(DATATYPE)& object
     );
@@ -64,7 +64,7 @@ public:
 protected:
 
     /// GDCM Writer
-    SPTR(::gdcm::Writer) m_writer;
+    SPTR(gdcm::Writer) m_writer;
 
     /// DICOM Instance
     SPTR(io::dicom::container::DicomInstance) m_instance;
@@ -77,7 +77,7 @@ protected:
 
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const CSPTR(DATATYPE)& object
 ) :

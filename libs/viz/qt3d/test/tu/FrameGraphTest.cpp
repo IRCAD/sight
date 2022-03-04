@@ -36,7 +36,7 @@
 #include <QViewport>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::qt3dTest::ut::FrameGraphTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::FrameGraphTest);
 
 namespace sight::viz::qt3dTest
 {

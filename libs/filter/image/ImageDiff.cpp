@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@ namespace sight::filter::image
 
 //-----------------------------------------------------------------------------
 
-ImageDiff::ImageDiff(const size_t imageElementSize, const size_t reservedElements) :
+ImageDiff::ImageDiff(const std::size_t imageElementSize, const std::size_t reservedElements) :
     m_imgEltSize(imageElementSize),
     m_eltSize(imageElementSize * 2 + sizeof(data::Image::IndexType)),
     m_nbElts(0),
@@ -100,8 +100,8 @@ void ImageDiff::addDiff(const ImageDiff& diff)
 {
     SIGHT_ASSERT("Diff elements must be the same size.", m_eltSize == diff.m_eltSize);
 
-    const size_t oldSize = this->getSize();
-    const size_t newSize = oldSize + diff.getSize();
+    const std::size_t oldSize = this->getSize();
+    const std::size_t newSize = oldSize + diff.getSize();
 
     if(m_reservedSize < newSize || m_buffer == nullptr)
     {
@@ -126,8 +126,8 @@ void ImageDiff::addDiff(
     const data::Image::BufferType* newValue
 )
 {
-    const size_t oldSize = this->getSize();
-    const size_t newSize = oldSize + m_eltSize;
+    const std::size_t oldSize = this->getSize();
+    const std::size_t newSize = oldSize + m_eltSize;
 
     if(m_reservedSize < newSize || m_buffer == nullptr)
     {
@@ -141,7 +141,7 @@ void ImageDiff::addDiff(
     std::uint8_t* eltPtr = (m_buffer + oldSize);
 
     std::memcpy(eltPtr, &index, sizeof(index));
-    size_t offset = sizeof(index);
+    std::size_t offset = sizeof(index);
     std::memcpy(eltPtr + offset, oldValue, m_imgEltSize);
     offset += m_imgEltSize;
     std::memcpy(eltPtr + offset, newValue, m_imgEltSize);
@@ -153,9 +153,9 @@ void ImageDiff::addDiff(
 
 void ImageDiff::applyDiff(const data::Image::sptr& img) const
 {
-    const auto dumpLock = img->lock();
+    const auto dumpLock = img->dump_lock();
 
-    for(size_t i = 0 ; i < m_nbElts ; ++i)
+    for(std::size_t i = 0 ; i < m_nbElts ; ++i)
     {
         applyDiffElt(img, i);
     }
@@ -165,9 +165,9 @@ void ImageDiff::applyDiff(const data::Image::sptr& img) const
 
 void ImageDiff::revertDiff(const data::Image::sptr& img) const
 {
-    const auto dumpLock = img->lock();
+    const auto dumpLock = img->dump_lock();
 
-    for(size_t i = 0 ; i < m_nbElts ; ++i)
+    for(std::size_t i = 0 ; i < m_nbElts ; ++i)
     {
         revertDiffElt(img, i);
     }
@@ -175,14 +175,14 @@ void ImageDiff::revertDiff(const data::Image::sptr& img) const
 
 //------------------------------------------------------------------------------
 
-size_t ImageDiff::getSize() const
+std::size_t ImageDiff::getSize() const
 {
     return m_nbElts * m_eltSize;
 }
 
 //------------------------------------------------------------------------------
 
-size_t ImageDiff::getNumberOfElements() const
+std::size_t ImageDiff::numElements() const
 {
     return m_nbElts;
 }
@@ -206,13 +206,13 @@ void ImageDiff::shrink()
 
 //------------------------------------------------------------------------------
 
-ImageDiff::ElementType ImageDiff::getElement(size_t index) const
+ImageDiff::ElementType ImageDiff::getElement(std::size_t index) const
 {
     std::uint8_t* eltPtr = m_buffer + index * m_eltSize;
     ElementType elt;
     elt.m_index = *reinterpret_cast<data::Image::IndexType*>(eltPtr);
 
-    size_t offset = sizeof(data::Image::IndexType);
+    std::size_t offset = sizeof(data::Image::IndexType);
 
     elt.m_oldValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
 
@@ -225,30 +225,30 @@ ImageDiff::ElementType ImageDiff::getElement(size_t index) const
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::applyDiffElt(const data::Image::sptr& img, size_t eltIndex) const
+void ImageDiff::applyDiffElt(const data::Image::sptr& img, std::size_t eltIndex) const
 {
     std::uint8_t* eltPtr               = m_buffer + eltIndex * m_eltSize;
     const data::Image::IndexType index = *reinterpret_cast<data::Image::IndexType*>(eltPtr);
 
-    const size_t offset = sizeof(index) + m_imgEltSize;
+    const std::size_t offset = sizeof(index) + m_imgEltSize;
 
     data::Image::BufferType* newValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
 
-    img->setPixelBuffer(index, newValue);
+    img->setPixel(index, newValue);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::revertDiffElt(const data::Image::sptr& img, size_t eltIndex) const
+void ImageDiff::revertDiffElt(const data::Image::sptr& img, std::size_t eltIndex) const
 {
     std::uint8_t* eltPtr               = m_buffer + eltIndex * m_eltSize;
     const data::Image::IndexType index = *reinterpret_cast<data::Image::IndexType*>(eltPtr);
 
-    const size_t offset = sizeof(index);
+    const std::size_t offset = sizeof(index);
 
     data::Image::BufferType* oldValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
 
-    img->setPixelBuffer(index, oldValue);
+    img->setPixel(index, oldValue);
 }
 
 } // namespace sight::filter::image

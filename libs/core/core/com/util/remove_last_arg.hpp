@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace util
  * Removes the last argument type from a function type. If the given function type has no argument,
  * remove_last_arg is the identity.
  *
- * @tparam F Funtion type whereof to remove last argument
+ * @tparam F Function type whereof to remove last argument
  */
 template<typename F>
 struct remove_last_arg;

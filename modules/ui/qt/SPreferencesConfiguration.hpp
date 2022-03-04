@@ -116,14 +116,14 @@ namespace sight::module::ui::qt
  * - \b max (optional, int/double, default=999999/1000000.0): maximum value allowed in the field.
  */
 class MODULE_UI_QT_CLASS_API SPreferencesConfiguration final : public QObject,
-                                                               public ::sight::ui::base::IAction
+                                                               public sight::ui::base::IAction
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, sight::ui::base::IAction);
 
     /// Initializes the signal.
     MODULE_UI_QT_API SPreferencesConfiguration() noexcept;
@@ -168,7 +168,7 @@ private:
         QPointer<QLineEdit> m_lineEdit;
         QPointer<QCheckBox> m_checkBox;
         QPointer<QComboBox> m_comboBox;
-        data::String::sptr m_dataPreference;
+        std::string m_preferenceValue;
         std::string m_preferenceKey;
         std::string m_name;
         std::string m_defaultValue;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 
 #include <cppunit/Exception.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::SeriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::SeriesTest);
 
 namespace sight::io::http
 {
@@ -117,8 +117,8 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getDescription(), seriesDescription.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getModality(), modality.toStdString());
     CPPUNIT_ASSERT_EQUAL(
-        dicomSeries->getNumberOfInstances(),
-        static_cast<size_t>(numberOfSeriesRelatedInstances.toULong())
+        dicomSeries->numInstances(),
+        static_cast<std::size_t>(numberOfSeriesRelatedInstances.toULong())
     );
 
     data::Patient::sptr patient = series->getPatient();

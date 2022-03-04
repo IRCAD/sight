@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Edge.hpp>
 
@@ -43,7 +43,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto edge = Helper::safeCast<sight::data::Edge>(object);
@@ -51,9 +51,9 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<sight::data::Edge>(tree, 1);
 
-    Helper::writeString(tree, s_FromPortID, edge->getFromPortID(), password);
-    Helper::writeString(tree, s_ToPortID, edge->getToPortID(), password);
-    Helper::writeString(tree, s_Nature, edge->getNature(), password);
+    Helper::writeString(tree, s_FromPortID, edge->getFromPortID());
+    Helper::writeString(tree, s_ToPortID, edge->getToPortID());
+    Helper::writeString(tree, s_Nature, edge->getNature());
 }
 
 //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ inline static data::Edge::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -73,11 +73,11 @@ inline static data::Edge::sptr deserialize(
     Helper::readVersion<sight::data::Edge>(tree, 0, 1);
 
     edge->setIdentifiers(
-        Helper::readString(tree, s_FromPortID, password),
-        Helper::readString(tree, s_ToPortID, password)
+        Helper::readString(tree, s_FromPortID),
+        Helper::readString(tree, s_ToPortID)
     );
 
-    edge->setNature(Helper::readString(tree, s_Nature, password));
+    edge->setNature(Helper::readString(tree, s_Nature));
 
     return edge;
 }

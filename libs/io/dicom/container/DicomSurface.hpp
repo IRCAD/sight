@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,11 +71,11 @@ public:
      * @param[in] normalBuffer Normals buffer
      */
     IO_DICOM_API DicomSurface(
-        const data::Mesh::PointValueType* pointBuffer,
-        const data::Mesh::Size pointBufferSize,
+        const data::Mesh::position_t* pointBuffer,
+        const data::Mesh::size_t pointBufferSize,
         const DicomCellValueType* cellBuffer,
-        const data::Mesh::Size cellBufferSize,
-        const data::Mesh::NormalValueType* normalBuffer
+        const data::Mesh::size_t cellBufferSize,
+        const data::Mesh::normal_t* normalBuffer
     );
 
     /// Destructor

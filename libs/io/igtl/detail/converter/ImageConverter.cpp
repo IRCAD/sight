@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "io/igtl/detail/DataConverter.hpp"
 #include "io/igtl/detail/ImageTypeConverter.hpp"
 
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -61,7 +62,7 @@ ImageConverter::~ImageConverter()
     data::Image::csptr srcImg = data::Image::dynamicCast(src);
     ::igtl::Matrix4x4 matrix;
 
-    const auto dumpLock = srcImg->lock();
+    const auto dumpLock = srcImg->dump_lock();
     auto itr            = srcImg->begin();
     auto itrEnd         = srcImg->end();
 
@@ -70,13 +71,13 @@ ImageConverter::~ImageConverter()
     dest->SetMatrix(matrix);
     dest->SetScalarType(ImageTypeConverter::getIgtlType(srcImg->getType()));
     dest->SetCoordinateSystem(::igtl::ImageMessage::COORDINATE_LPS);
-    dest->SetOrigin(srcImg->getOrigin2()[0], srcImg->getOrigin2()[1], srcImg->getOrigin2()[2]);
-    dest->SetSpacing(srcImg->getSpacing2()[0], srcImg->getSpacing2()[1], srcImg->getSpacing2()[2]);
-    dest->SetNumComponents(static_cast<int>(srcImg->getNumberOfComponents()));
+    dest->SetOrigin(srcImg->getOrigin()[0], srcImg->getOrigin()[1], srcImg->getOrigin()[2]);
+    dest->SetSpacing(srcImg->getSpacing()[0], srcImg->getSpacing()[1], srcImg->getSpacing()[2]);
+    dest->SetNumComponents(static_cast<int>(srcImg->numComponents()));
     dest->SetDimensions(
-        static_cast<int>(srcImg->getSize2()[0]),
-        static_cast<int>(srcImg->getSize2()[1]),
-        static_cast<int>(srcImg->getSize2()[2])
+        static_cast<int>(srcImg->getSize()[0]),
+        static_cast<int>(srcImg->getSize()[1]),
+        static_cast<int>(srcImg->getSize()[2])
     );
     dest->AllocateScalars();
     char* igtlImgBuffer = reinterpret_cast<char*>(dest->GetScalarPointer());
@@ -91,7 +92,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     ::igtl::ImageMessage::Pointer srcImg;
     char* igtlImageBuffer;
     data::Image::sptr destImg = data::Image::New();
-    const auto dumpLock       = destImg->lock();
+    const auto dumpLock       = destImg->dump_lock();
     float igtlSpacing[3];
     float igtlOrigins[3];
     int igtlDimensions[3];
@@ -103,31 +104,36 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     srcImg->GetSpacing(igtlSpacing);
     srcImg->GetOrigin(igtlOrigins);
     srcImg->GetDimensions(igtlDimensions);
-    std::transform(igtlSpacing, igtlSpacing + 3, spacing.begin(), ::boost::numeric_cast<double, float>);
+    std::transform(igtlSpacing, igtlSpacing + 3, spacing.begin(), boost::numeric_cast<double, float>);
     std::copy(igtlDimensions, igtlDimensions + 3, size.begin());
-    std::transform(igtlOrigins, igtlOrigins + 3, origins.begin(), ::boost::numeric_cast<double, float>);
-    destImg->setOrigin2(origins);
-    destImg->setSpacing2(spacing);
-    destImg->setSize2(size);
-    destImg->setType(ImageTypeConverter::getFwToolsType(srcImg->GetScalarType()));
-    destImg->setNumberOfComponents(srcImg->GetNumComponents());
+    std::transform(igtlOrigins, igtlOrigins + 3, origins.begin(), boost::numeric_cast<double, float>);
+    destImg->setOrigin(origins);
+    destImg->setSpacing(spacing);
+
+    sight::data::Image::PixelFormat format;
     if(srcImg->GetNumComponents() == 1)
     {
-        destImg->setPixelFormat(data::Image::GRAY_SCALE);
+        format = data::Image::PixelFormat::GRAY_SCALE;
     }
     else if(srcImg->GetNumComponents() == 3)
     {
-        destImg->setPixelFormat(data::Image::RGB);
+        format = data::Image::PixelFormat::RGB;
     }
     else if(srcImg->GetNumComponents() == 4)
     {
-        destImg->setPixelFormat(data::Image::RGBA);
+        format = data::Image::PixelFormat::RGBA;
     }
 
-    destImg->resize();
+    destImg->resize(size, ImageTypeConverter::getFwToolsType(srcImg->GetScalarType()), format);
     auto destIter = destImg->begin();
     igtlImageBuffer = reinterpret_cast<char*>(srcImg->GetScalarPointer());
     std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), destIter);
+
+    if(sight::data::helper::MedicalImage::checkImageValidity(destImg))
+    {
+        sight::data::helper::MedicalImage::checkTransferFunctionPool(destImg);
+        sight::data::helper::MedicalImage::checkImageSliceIndex(destImg);
+    }
 
     return destImg;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/ImageDiff.hpp>
@@ -126,13 +125,13 @@ void SPropagator::starting()
     const auto imgOutLock = m_imageOut.lock();
     SIGHT_ASSERT("No " << s_IMAGE_INOUT << " found.", imgOutLock);
 
-    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgInLock.get_shared())
-                   && data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOutLock.get_shared());
+    bool isValid = data::helper::MedicalImage::checkImageValidity(imgInLock.get_shared())
+                   && data::helper::MedicalImage::checkImageValidity(imgOutLock.get_shared());
 
-    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize2() != imgOutLock->getSize2());
+    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize() != imgOutLock->getSize());
     SIGHT_WARN_IF(
         "Input and output image must have the same spacing.",
-        imgInLock->getSpacing2() != imgOutLock->getSpacing2()
+        imgInLock->getSpacing() != imgOutLock->getSpacing()
     );
 
     if(isValid)
@@ -253,9 +252,9 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOutLock);
 
     SPTR(data::Image::BufferType) val =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imgOutLock.get_shared(), m_value);
+        data::helper::MedicalImage::getPixelInImageSpace(imgOutLock.get_shared(), m_value);
 
-    const data::Image::Spacing imgSpacing = imgOutLock->getSpacing2();
+    const data::Image::Spacing imgSpacing = imgOutLock->getSpacing();
     // Draw lines as thick as a single voxel.
     const double thickness = *std::min_element(imgSpacing.begin(), imgSpacing.end());
 
@@ -273,7 +272,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
         m_diff = m_lineDrawer->draw(m_orientation, m_oldPoint, m_oldPoint, val.get(), thickness, m_overwrite);
 
-        imgBufferModified = m_diff.getNumberOfElements() > 0;
+        imgBufferModified = m_diff.numElements() > 0;
     }
     else if(m_drawing && pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
@@ -310,7 +309,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
         imgBufferModified |= this->appendDiff(propagDiff);
 
-        if(m_diff.getNumberOfElements() > 0)
+        if(m_diff.numElements() > 0)
         {
             ui::history::ImageDiffCommand::sptr diffCommand(new ui::history::ImageDiffCommand(
                                                                 imgOutLock.get_shared(),
@@ -337,7 +336,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
 bool SPropagator::appendDiff(const sight::filter::image::ImageDiff& diff)
 {
-    const bool append = (diff.getNumberOfElements() > 0);
+    const bool append = (diff.numElements() > 0);
 
     if(append)
     {
@@ -354,12 +353,12 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
     const auto imgOut = m_imageOut.lock();
     SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOut);
 
-    const data::Image::Size& imgSize = imgOut->getSize2();
+    const data::Image::Size& imgSize = imgOut->getSize();
 
     sight::filter::image::MinMaxPropagation::SeedsType seeds;
 
-    const size_t nbElts = m_diff.getNumberOfElements();
-    for(size_t i = 0 ; i < nbElts ; ++i)
+    const std::size_t nbElts = m_diff.numElements();
+    for(std::size_t i = 0 ; i < nbElts ; ++i)
     {
         data::Image::IndexType index = m_diff.getElementDiffIndex(i);
         sight::filter::image::MinMaxPropagation::CoordinatesType coords;

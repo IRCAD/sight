@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/jobs/IJob.hpp"
+
 #include <core/macros.hpp>
 
 #include <boost/multi_index/hashed_index.hpp>
@@ -54,13 +55,13 @@ public:
     typedef WPTR(core::jobs::Aggregator) wptr;
 
     /// Aggregator container type
-    typedef ::boost::multi_index_container<core::jobs::IJob::sptr,
-                                           ::boost::multi_index::indexed_by<
-                                               ::boost::multi_index::random_access<>,
-                                               ::boost::multi_index::hashed_unique<
-                                                   ::boost::multi_index::identity<core::jobs::IJob::sptr>
-                                               >
-                                           >
+    typedef boost::multi_index_container<core::jobs::IJob::sptr,
+                                         boost::multi_index::indexed_by<
+                                             boost::multi_index::random_access<>,
+                                             boost::multi_index::hashed_unique<
+                                                 boost::multi_index::identity<core::jobs::IJob::sptr>
+                                             >
+                                         >
     > IJobSeq;
     /**  @} */
 

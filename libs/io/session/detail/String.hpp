@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/String.hpp>
 
@@ -41,7 +41,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto string = Helper::safeCast<data::String>(object);
@@ -49,7 +49,7 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::String>(tree, 1);
 
-    Helper::writeString(tree, s_Value, string->getValue(), password);
+    Helper::writeString(tree, s_Value, string->getValue());
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ inline static data::String::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -69,7 +69,7 @@ inline static data::String::sptr deserialize(
     Helper::readVersion<data::String>(tree, 0, 1);
 
     // Assign the value
-    string->setValue(Helper::readString(tree, s_Value, password));
+    string->setValue(Helper::readString(tree, s_Value));
 
     return string;
 }

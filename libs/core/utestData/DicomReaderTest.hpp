@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,12 +33,13 @@ class UTESTDATA_CLASS_API DicomReaderTest
 {
 public:
 
+    // cspell: ignore Genou
     /**
-     * @brief Method used to verify if a specific dicom file (stored on the
+     * @brief Method used to verify if a specific dicom file (stored in the
      * test database) is well read
      *
-     * This file is located here on test database : "sight/Patient/Dicom/JMSGenou",
-     * its represents a CT image of a knee ( 400 slices ).
+     * This file is located here in the test database : "sight/Patient/Dicom/JMSGenou",
+     * it represents a CT image of a knee ( 400 slices ).
      */
     UTESTDATA_API static bool checkSeriesJMSGenou(const SPTR(data::ImageSeries)& series);
 

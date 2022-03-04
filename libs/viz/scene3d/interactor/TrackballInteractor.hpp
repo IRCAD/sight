@@ -37,7 +37,7 @@ namespace sight::viz::scene3d::interactor
  *
  * @todo make the class final once VRWidgetInteractor is deleted.
  */
-class VIZ_SCENE3D_CLASS_API TrackballInteractor final : public ::sight::viz::scene3d::interactor::IInteractor
+class VIZ_SCENE3D_CLASS_API TrackballInteractor final : public sight::viz::scene3d::interactor::IInteractor
 {
 public:
 

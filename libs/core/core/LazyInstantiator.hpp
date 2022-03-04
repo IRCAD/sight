@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ struct LazyInstantiatorDefaultTag {};
  * @tparam TAG Tag used to allow several LazyInstantiator for one INSTANCE_TYPE.
  */
 template<typename INSTANCE_TYPE, typename TAG = LazyInstantiatorDefaultTag>
-class LazyInstantiator : ::boost::noncopyable
+class LazyInstantiator : boost::noncopyable
 {
 public:
 
@@ -49,8 +49,8 @@ public:
     /// Returns the singleton instance. This method is thread safe.
     static InstanceSptrType getInstance()
     {
-        static ::boost::once_flag flag = BOOST_ONCE_INIT;
-        ::boost::call_once(&initInstance, flag);
+        static boost::once_flag flag = BOOST_ONCE_INIT;
+        boost::call_once(&initInstance, flag);
         return instance();
     }
 

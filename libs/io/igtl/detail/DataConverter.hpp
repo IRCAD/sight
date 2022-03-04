@@ -108,9 +108,6 @@ private:
 
     /// a vector of IConverter smart pointer
     std::vector<converter::IConverter::sptr> m_converters;
-
-    /// default converter used when no converter to OpenIGTLink standard message is found
-    converter::IConverter::sptr m_defaultConverter;
 };
 
 } //namespace sight::io::igtl::detail

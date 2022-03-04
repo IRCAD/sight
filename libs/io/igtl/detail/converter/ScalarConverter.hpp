@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,13 +52,13 @@ public:
     /// Constructor
     ScalarConverter()
     {
-        BOOST_STATIC_ASSERT(::boost::is_base_of<data::Object, FwDataObjectType>::value);
+        BOOST_STATIC_ASSERT(boost::is_base_of<data::Object, FwDataObjectType>::value);
     }
 
     ScalarConverter(const std::string& a) :
         m_igtlType(a)
     {
-        BOOST_STATIC_ASSERT(::boost::is_base_of<data::Object, FwDataObjectType>::value);
+        BOOST_STATIC_ASSERT(boost::is_base_of<data::Object, FwDataObjectType>::value);
     }
 
     /// Destructor

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ void MemoryInfo::updating()
     stream << "Total system memory = " << totalSystemMemory / mo << " Mo" << std::endl;
     stream << "Free system memory  = " << freeSystemMemory / mo << " Mo" << std::endl;
     stream << "Used process memory = " << usedProcessMemory / mo << " Mo" << std::endl;
-    stream << "Estimed Free memory = " << estimateFreeMem / mo << " Mo" << std::endl;
+    stream << "Estimated Free memory = " << estimateFreeMem / mo << " Mo" << std::endl;
     stream << "ManagedBuffer size  = " << managedBufferSize / mo << " Mo" << std::endl;
     stream << "DumpedBuffer size   = " << dumpedBufferSize / mo << " Mo" << std::endl;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLine final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SLine() noexcept;
@@ -105,10 +105,10 @@ protected:
 private:
 
     /**
-     * @brief Attachs a node in the scene graph.
+     * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(::Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* _node);
 
     /**
      * @brief Draws a line.
@@ -129,13 +129,13 @@ private:
     data::Material::sptr m_material {nullptr};
 
     /// Contains the manual object of the line.
-    ::Ogre::ManualObject* m_line {nullptr};
+    Ogre::ManualObject* m_line {nullptr};
 
     /// Defines the length of the line (in mm).
     float m_length {50.f};
 
     /// Defines the color of the line.
-    ::Ogre::ColourValue m_color;
+    Ogre::ColourValue m_color;
 
     /// Enables if the line is dashed or not.
     bool m_dashed {false};

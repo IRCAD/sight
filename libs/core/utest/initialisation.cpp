@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ struct LogInitialization
 {
     LogInitialization()
     {
-        core::log::SpyLogger& logger = core::log::SpyLogger::getSpyLogger();
+        core::log::SpyLogger& logger = core::log::SpyLogger::get();
 
         std::string logFile = "fwTest.log";
 
@@ -45,21 +45,21 @@ struct LogInitialization
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
-                logger.addStreamAppender();
+                logger.add_console_log();
             }
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
                 sysTmp  = sysTmp / logFile;
                 logFile = sysTmp.string();
-                logger.addFileAppender(logFile);
+                logger.add_file_log(logFile);
             }
         }
         else
         {
             // creates SLM.log in default logFile directory
             fclose(pFile);
-            logger.addFileAppender(logFile);
+            logger.add_file_log(logFile);
         }
     }
 };

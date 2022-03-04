@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,9 +30,9 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-#include <glm/glm.hpp>
-
 #include <service/macros.hpp>
+
+#include <glm/glm.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -98,12 +98,12 @@ void SPointCloudFromDepthMap::updating()
     }
 
     // Initialize mesh points memory one time in order to increase performances
-    if(pointCloud->getNumberOfPoints() == 0)
+    if(pointCloud->numPoints() == 0)
     {
-        const auto size       = depthMap->getSize2();
-        const size_t width    = size[0];
-        const size_t height   = size[1];
-        const size_t nbPoints = width * height;
+        const auto size            = depthMap->getSize();
+        const std::size_t width    = size[0];
+        const std::size_t height   = size[1];
+        const std::size_t nbPoints = width * height;
 
         // allocate mesh
         data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
@@ -114,17 +114,14 @@ void SPointCloudFromDepthMap::updating()
 
         pointCloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, attribute);
 
-        const auto dumpLock = pointCloud->lock();
+        const auto dumpLock = pointCloud->dump_lock();
 
-        auto itr = pointCloud->begin<data::iterator::CellIterator>();
+        auto itr = pointCloud->begin<data::iterator::cell::point>();
 
         // to display the mesh, we need to create cells with one point.
-        for(size_t i = 0 ; i < nbPoints ; ++i, ++itr)
+        for(std::size_t i = 0 ; i < nbPoints ; ++i, ++itr)
         {
-            *itr->type         = data::Mesh::CellType::POINT;
-            *itr->offset       = i;
-            *(itr + 1)->offset = i + 1; // to be able to iterate through point indices
-            itr->pointIdx[0]   = i;
+            itr->pt = i;
         }
 
         auto sig = pointCloud->signal<data::Mesh::ModifiedSignalType>(data::Mesh::s_MODIFIED_SIG);
@@ -143,19 +140,17 @@ void SPointCloudFromDepthMap::updating()
         );
 
         auto sig =
-            pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
 
-        auto sig2 = pointCloud->signal<data::Mesh::PointColorsModifiedSignalType>(
-            data::Mesh::s_POINT_COLORS_MODIFIED_SIG
-        );
+        auto sig2 = pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sig2->asyncEmit();
     }
     else
     {
         this->depthMapToPointCloud(depthCalibration, depthMap.get_shared(), pointCloud.get_shared());
         auto sig =
-            pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
@@ -211,11 +206,11 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
         return;
     }
 
-    const auto size     = depthMap->getSize2();
-    const size_t width  = size[0];
-    const size_t height = size[1];
+    const auto size          = depthMap->getSize();
+    const std::size_t width  = size[0];
+    const std::size_t height = size[1];
 
-    const auto depthDumpLock = depthMap->lock();
+    const auto depthDumpLock = depthMap->dump_lock();
 
     auto depthItr = depthMap->begin<std::uint16_t>();
 
@@ -224,23 +219,23 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
                  fx = depthCamera->getFx(),
                  fy = depthCamera->getFy();
 
-    const auto meshDumpLock = pointCloud->lock();
+    const auto meshDumpLock = pointCloud->dump_lock();
 
-    auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
+    auto pointsItr = pointCloud->begin<data::iterator::point::xyz>();
 
-    size_t nbRealPoints = 0;
-    for(size_t y = 0 ; y != height ; ++y)
+    std::size_t nbRealPoints = 0;
+    for(std::size_t y = 0 ; y != height ; ++y)
     {
-        for(size_t x = 0 ; x != width ; ++x)
+        for(std::size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
                 double px, py, pz;
                 sight::filter::vision::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                pointsItr->point->x = static_cast<float>(px);
-                pointsItr->point->y = static_cast<float>(py);
-                pointsItr->point->z = static_cast<float>(pz);
+                pointsItr->x = static_cast<float>(px);
+                pointsItr->y = static_cast<float>(py);
+                pointsItr->z = static_cast<float>(pz);
                 ++pointsItr;
                 ++nbRealPoints;
             }
@@ -248,10 +243,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
             ++depthItr;
         }
     }
-
-    pointCloud->setNumberOfPoints(nbRealPoints);
-    pointCloud->setNumberOfCells(nbRealPoints);
-    pointCloud->setCellDataSize(nbRealPoints);
 }
 
 //------------------------------------------------------------------------------
@@ -275,9 +266,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     }
 
     // Make sure RGB and depth maps are the same size
-    const auto size     = depthMap->getSize2();
-    const size_t width  = size[0];
-    const size_t height = size[1];
+    const auto size          = depthMap->getSize();
+    const std::size_t width  = size[0];
+    const std::size_t height = size[1];
 
     const auto rgbType = colorMap->getType();
     if(rgbType != core::tools::Type::s_UINT8)
@@ -286,15 +277,15 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    if(4 != colorMap->getNumberOfComponents())
+    if(4 != colorMap->numComponents())
     {
-        SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
+        SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->numComponents() << ", 4 is expected.");
         return;
     }
 
-    const auto rgbSize     = colorMap->getSize2();
-    const size_t rgbWidth  = rgbSize[0];
-    const size_t rgbHeight = rgbSize[1];
+    const auto rgbSize          = colorMap->getSize();
+    const std::size_t rgbWidth  = rgbSize[0];
+    const std::size_t rgbHeight = rgbSize[1];
 
     if(rgbWidth != width || rgbHeight != height)
     {
@@ -302,11 +293,11 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    const auto depthDumpLock = depthMap->lock();
+    const auto depthDumpLock = depthMap->dump_lock();
     auto depthItr            = depthMap->begin<std::uint16_t>();
 
-    const auto rgbDumpLock = colorMap->lock();
-    const auto rgbBegin    = colorMap->begin<data::iterator::RGBA>();
+    const auto rgbDumpLock = colorMap->dump_lock();
+    const auto rgbBegin    = colorMap->begin<data::iterator::rgba>();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -318,36 +309,38 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                  rgbFx = colorCamera->getFx(),
                  rgbFy = colorCamera->getFy();
 
-    const auto meshDumpLock = pointCloud->lock();
+    const auto meshDumpLock = pointCloud->dump_lock();
 
-    auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
+    auto pointsItr = pointCloud->zip_range<data::iterator::point::xyz, data::iterator::point::rgba>().begin();
 
-    const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
+    const data::iterator::rgba defaultColor = {255, 255, 255, 255};
 
     unsigned int nbRealPoints = 0;
     auto glmExtrinsicMatrix   = geometry::data::getMatrixFromTF3D(*extrinsic);
 
     const auto imageSize = height * width;
-    for(size_t y = 0 ; y != height ; ++y)
+    for(std::size_t y = 0 ; y != height ; ++y)
     {
-        for(size_t x = 0 ; x != width ; ++x)
+        for(std::size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
+                auto&& [p, c] = *pointsItr;
+
                 // get the 3D coordinates in the depth world
                 double px, py, pz;
                 sight::filter::vision::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                pointsItr->point->x = static_cast<float>(px);
-                pointsItr->point->y = static_cast<float>(py);
-                pointsItr->point->z = static_cast<float>(pz);
+                p.x = static_cast<float>(px);
+                p.y = static_cast<float>(py);
+                p.z = static_cast<float>(pz);
 
                 // Transform point to the rgb sensor world
-                const ::glm::dvec4 point(px, py, pz, 1.0);
-                const ::glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
+                const glm::dvec4 point(px, py, pz, 1.0);
+                const glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
 
                 // project point to the rgb image
-                size_t rgbPx, rgbPy;
+                std::size_t rgbPx, rgbPy;
                 const bool isProjected = sight::filter::vision::Projection::projectPoint(
                     rgbPoint.x,
                     rgbPoint.y,
@@ -364,20 +357,20 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
                 if(isProjected)
                 {
-                    const size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
+                    const std::size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
                     if(rgbIdx < imageSize)
                     {
                         const auto color = rgbBegin + rgbIdx;
-                        *pointsItr->rgba = *color;
+                        c = *color;
                     }
                     else
                     {
-                        *pointsItr->rgba = defaultColor;
+                        c = defaultColor;
                     }
                 }
                 else
                 {
-                    *pointsItr->rgba = defaultColor;
+                    c = defaultColor;
                 }
 
                 ++pointsItr;
@@ -389,9 +382,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     }
 
     // Since we discard points for which the depth map is zero, the mesh buffers are not full
-    pointCloud->setNumberOfPoints(nbRealPoints);
-    pointCloud->setNumberOfCells(nbRealPoints);
-    pointCloud->setCellDataSize(nbRealPoints);
+    pointCloud->truncate(nbRealPoints, nbRealPoints);
 }
 
 //-----------------------------------------------------------------------------

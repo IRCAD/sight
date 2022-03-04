@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,25 +26,23 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Port));
-
 namespace sight::data
 {
 
 /**
  * @brief A port is defined by an identifier and a type.
  */
-class DATA_CLASS_API Port : public data::Object
+class DATA_CLASS_API Port : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Port, data::Object, data::factory::New<Port>);
+    SIGHT_DECLARE_CLASS(Port, Object, factory::New<Port>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Port(data::Object::Key key);
+    DATA_API Port(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Port();
@@ -72,16 +70,21 @@ public:
      * @{
      * @brief Retrieve the input data.
      */
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Port));
     /// @}
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Port& other) const noexcept;
+    DATA_API bool operator!=(const Port& other) const noexcept;
+    /// @}
 
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! port identifier
     std::string m_identifier; // example "ID_SIZEX", "THRESHOLD_LOW"

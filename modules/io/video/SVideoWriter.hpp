@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,7 +103,7 @@ private:
     void record(bool);
 
     /// opencv video writer
-    UPTR(::cv::VideoWriter) m_writer;
+    UPTR(cv::VideoWriter) m_writer;
 
     /// opencv image type ( CV_8UC3, CV_8UC4, ...)
     int m_imageType {0};

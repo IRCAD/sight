@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/com/Signal.hpp>
 #include <core/mt/types.hpp>
 
@@ -178,7 +179,7 @@ public:
 
     /**
      * @brief Returns a callback on job canceling status.
-     * This callback can only be used if the job is still instanciated.
+     * This callback can only be used if the job is still instantiated.
      * @return A callback to check if the job have been requested.
      */
     CORE_API CancelRequestCallback cancelRequestedCallback() const;
@@ -254,7 +255,7 @@ protected:
     IJob& operator=(IJob&&);
     /**  @} */
 
-    /// Run an instanciated job
+    /// Run an instantiated job
     CORE_API virtual SharedFuture runImpl() = 0;
 
     /// Finish the job: set state to finished or canceled.

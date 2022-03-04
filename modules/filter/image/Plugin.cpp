@@ -27,7 +27,7 @@ namespace sight::module::filter::image
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::filter::image::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::filter::image::Plugin");
 
 //-----------------------------------------------------------------------------
 

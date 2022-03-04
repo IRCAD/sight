@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -178,13 +178,13 @@ void SAutomaticRegistration::updating()
                                   (data::Matrix4::s_MODIFIED_SIG);
 
     std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
-    size_t i = 0;
+    std::size_t i = 0;
 
     AutomaticRegistration::IterationCallbackType iterationCallback =
         [&]()
         {
-            const ::itk::SizeValueType currentIteration = registrator.getCurrentIteration();
-            const ::itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
+            const itk::SizeValueType currentIteration = registrator.getCurrentIteration();
+            const itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
 
             const float progress = float(i++) / float(m_maxIterations * multiResolutionParameters.size());
 
@@ -251,7 +251,7 @@ void SAutomaticRegistration::updating()
             iterationCallback
         );
     }
-    catch(::itk::ExceptionObject& e)
+    catch(itk::ExceptionObject& e)
     {
         SIGHT_ERROR("[ITK EXCEPTION]" << e.GetDescription());
     }
@@ -329,7 +329,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
     else if(key.find("shrink_") != std::string::npos)
     {
         const unsigned long level = this->extractLevelFromParameterName(key);
-        m_multiResolutionParameters[level].first = ::itk::SizeValueType(val);
+        m_multiResolutionParameters[level].first = itk::SizeValueType(val);
     }
     else
     {

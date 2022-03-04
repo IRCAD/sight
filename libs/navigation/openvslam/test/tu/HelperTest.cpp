@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 
 #include <spdlog/spdlog.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::navigation::openvslam::ut::HelperTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::navigation::openvslam::ut::HelperTest);
 
 namespace sight::navigation::openvslam
 {
@@ -169,7 +169,7 @@ void HelperTest::writeReadConfig()
     orbParam.numLevels    = 8;
 
     navigation::openvslam::InitParams initParams;
-    initParams.reprojErrThr          = 10.f;
+    initParams.reprojectionErrThr    = 10.f;
     initParams.scalingFactor         = 2.f;
     initParams.parallaxDegThr        = 3.f;
     initParams.numBAIterations       = 101;
@@ -207,7 +207,7 @@ void HelperTest::writeReadConfig()
     const auto node = config2->yaml_node_;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<double>(initParams.reprojErrThr),
+        static_cast<double>(initParams.reprojectionErrThr),
         node["Initializer.reprojection_error_threshold"].as<double>(),
         10e-7
     );
@@ -240,8 +240,8 @@ void HelperTest::compareCam(
     if(_sightExpected)
     {
         CPPUNIT_ASSERT_EQUAL(_sightCam.getCameraID(), _ovsCam.name_);
-        CPPUNIT_ASSERT_EQUAL(_sightCam.getWidth(), static_cast<size_t>(_ovsCam.cols_));
-        CPPUNIT_ASSERT_EQUAL(_sightCam.getHeight(), static_cast<size_t>(_ovsCam.rows_));
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getWidth(), static_cast<std::size_t>(_ovsCam.cols_));
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getHeight(), static_cast<std::size_t>(_ovsCam.rows_));
         CPPUNIT_ASSERT_EQUAL(_sightCam.getFx(), _ovsCam.fx_);
         CPPUNIT_ASSERT_EQUAL(_sightCam.getFy(), _ovsCam.fy_);
         CPPUNIT_ASSERT_EQUAL(_sightCam.getCx(), _ovsCam.cx_);
@@ -258,8 +258,8 @@ void HelperTest::compareCam(
     else
     {
         CPPUNIT_ASSERT_EQUAL(_ovsCam.name_, _sightCam.getCameraID());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.cols_), _sightCam.getWidth());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.rows_), _sightCam.getHeight());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(_ovsCam.cols_), _sightCam.getWidth());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(_ovsCam.rows_), _sightCam.getHeight());
         CPPUNIT_ASSERT_EQUAL(_ovsCam.fx_, _sightCam.getFx());
         CPPUNIT_ASSERT_EQUAL(_ovsCam.fy_, _sightCam.getFy());
         CPPUNIT_ASSERT_EQUAL(_ovsCam.cx_, _sightCam.getCx());

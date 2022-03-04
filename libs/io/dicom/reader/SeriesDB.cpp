@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,6 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/helper/SeriesDB.hpp>
 
@@ -46,7 +45,7 @@
 #include <gdcmMediaStorage.h>
 #include <gdcmUIDs.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::dicom::reader::SeriesDB);
+SIGHT_REGISTER_IO_READER(sight::io::dicom::reader::SeriesDB);
 
 namespace sight::io::dicom
 {
@@ -432,22 +431,22 @@ bool SeriesDB::dicomSeriesComparator(
 
     // a > b if a contains a SR and not b
     const bool aIsAnImage =
-        (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
-         || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
+        (gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::EnhancedSR
+         || gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::ComprehensiveSR
          || aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
-         ||                                                 // "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
-         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage
-         || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
+         ||                                                 // "gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
+                                                            // gdcm::MediaStorage::Comprehensive3DSR"
+         gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage
+         || gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::SurfaceSegmentationStorage);
 
     const bool bIsAnImage =
-        (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
-         || ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
+        (gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == gdcm::MediaStorage::EnhancedSR
+         || gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == gdcm::MediaStorage::ComprehensiveSR
          || bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
-         ||                                                 // "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
-                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
-         ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage
-         || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
+         ||                                                 // "gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
+                                                            // gdcm::MediaStorage::Comprehensive3DSR"
+         gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage
+         || gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::SurfaceSegmentationStorage);
 
     return bIsAnImage && !aIsAnImage;
 }

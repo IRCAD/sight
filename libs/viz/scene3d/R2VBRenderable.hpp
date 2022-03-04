@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,59 +44,50 @@ namespace sight::viz::scene3d
  * This objects holds a reference to the object used as input for the render-to-vertex-buffer process.
  * It also contains the output vertex buffer, that is used to be displayed like a "regular" object.
  */
-class VIZ_SCENE3D_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
+class VIZ_SCENE3D_CLASS_API R2VBRenderable : public Ogre::SimpleRenderable
 {
 public:
-
-    [[deprecated("Will be removed in sight 22.0")]]
-    VIZ_SCENE3D_API static R2VBRenderable* New(
-        const std::string& _name,
-        ::Ogre::SubEntity* _sourceObject,
-        ::Ogre::SceneManager* _sceneManager,
-        data::Mesh::CellTypesEnum _primitiveType,
-        const std::string& _mtlName
-    );
 
     /// Create a new instance of R2VBRenderable
     VIZ_SCENE3D_API static R2VBRenderable* New(
         const std::string& _name,
-        ::Ogre::SubEntity* _sourceObject,
-        ::Ogre::SceneManager* _sceneManager,
+        Ogre::SubEntity* _sourceObject,
+        Ogre::SceneManager* _sceneManager,
         data::Mesh::CellType _primitiveType,
         const std::string& _mtlName
     );
 
-    VIZ_SCENE3D_API R2VBRenderable(const ::Ogre::String& name);
+    VIZ_SCENE3D_API R2VBRenderable(const Ogre::String& name);
     virtual VIZ_SCENE3D_API ~R2VBRenderable();
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
     VIZ_SCENE3D_API void setOutputSettings(
-        size_t _vertexCount,
+        std::size_t _vertexCount,
         bool _hasColor,
         bool _hasTexCoord,
         bool _hasNormals = true
     );
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
-    VIZ_SCENE3D_API void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
+    VIZ_SCENE3D_API void _updateRenderQueue(Ogre::RenderQueue* _queue) override;
 
     /** @copydoc SimpleRenderable::getMovableType. */
-    VIZ_SCENE3D_API const ::Ogre::String& getMovableType(void) const override;
+    VIZ_SCENE3D_API const Ogre::String& getMovableType(void) const override;
 
     /** @copydoc SimpleRenderable::getRenderOperation. */
-    VIZ_SCENE3D_API void getRenderOperation(::Ogre::RenderOperation& _op) override;
+    VIZ_SCENE3D_API void getRenderOperation(Ogre::RenderOperation& _op) override;
 
     /// Delegate to the subentity.
-    VIZ_SCENE3D_API ::Ogre::Real getBoundingRadius(void) const override;
+    VIZ_SCENE3D_API Ogre::Real getBoundingRadius(void) const override;
 
     /// @copydoc Renderable::getSquaredViewDepth
-    VIZ_SCENE3D_API ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
+    VIZ_SCENE3D_API Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Return the parent mesh.
-    VIZ_SCENE3D_API virtual const ::Ogre::MeshPtr& getMesh(void) const;
+    VIZ_SCENE3D_API virtual const Ogre::MeshPtr& getMesh(void) const;
 
-    /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
+    /// Mark the output vertex buffer as dirty, the r2vb process will be run on next update
     VIZ_SCENE3D_API void setDirty();
 
     /// Runs the R2VB process.
@@ -107,18 +98,15 @@ public:
 
     viz::scene3d::IAdaptor::wptr m_materialAdaptor;
 
-    [[deprecated("Will be removed in sight 22.0")]]
-    data::Mesh::CellTypesEnum getInputPrimitiveType() const;
-
-    data::Mesh::CellType getInputPrimitiveType2() const;
+    data::Mesh::CellType getInputPrimitiveType() const;
 
 protected:
 
     /// Source object of the r2vb process
-    ::Ogre::SubEntity* m_srcObject;
+    Ogre::SubEntity* m_srcObject;
 
     /// Buffer used as output
-    ::Ogre::RenderToVertexBufferSharedPtr m_r2vbBuffer;
+    Ogre::RenderToVertexBufferSharedPtr m_r2vbBuffer;
 
     /// Tells if the r2vb must be run on next update - typically we want this to be done, at worst, only once per frame.
     /// Thus we use this flag, depending on the technique to enable the r2vb only on the first rendering pass.
@@ -128,7 +116,7 @@ protected:
     data::Mesh::CellType m_inputPrimitiveType;
 
     /// Maximum number of vertices in output buffer
-    size_t m_maxOutputVertexCount;
+    std::size_t m_maxOutputVertexCount;
 };
 
 //-----------------------------------------------------------------------------
@@ -178,14 +166,7 @@ inline void R2VBRenderable::setRenderToBufferMaterial(const std::string& _mtlNam
 
 //------------------------------------------------------------------------------
 
-inline data::Mesh::CellTypesEnum R2VBRenderable::getInputPrimitiveType() const
-{
-    return static_cast<data::Mesh::CellTypesEnum>(m_inputPrimitiveType);
-}
-
-//------------------------------------------------------------------------------
-
-inline data::Mesh::CellType R2VBRenderable::getInputPrimitiveType2() const
+inline data::Mesh::CellType R2VBRenderable::getInputPrimitiveType() const
 {
     return m_inputPrimitiveType;
 }

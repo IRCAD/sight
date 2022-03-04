@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,10 +79,10 @@ void ComprehensiveSRIOD::write(const data::Series::csptr& series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
-    data::Image::sptr image = imageSeries->getImage();
+    data::Image::csptr image = imageSeries->getImage();
 
     // Create writer
-    SPTR(::gdcm::Writer) writer = std::make_shared< ::gdcm::Writer>();
+    SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());

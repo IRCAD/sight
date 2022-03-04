@@ -27,7 +27,7 @@
 namespace sight::module::navigation::calibration
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::navigation::calibration::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::navigation::calibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {

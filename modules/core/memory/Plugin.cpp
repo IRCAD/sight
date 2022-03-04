@@ -30,7 +30,7 @@ namespace sight::module::memory
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::memory::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::memory::Plugin");
 
 //-----------------------------------------------------------------------------
 

@@ -74,7 +74,7 @@ Q_PROPERTY(OrganListModel * listModel MEMBER m_listModel)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SModelSeriesList, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SModelSeriesList() noexcept;

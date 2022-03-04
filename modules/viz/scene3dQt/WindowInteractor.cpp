@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -195,7 +195,7 @@ int WindowInteractor::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-::Ogre::RenderTarget* WindowInteractor::getRenderTarget()
+Ogre::RenderTarget* WindowInteractor::getRenderTarget()
 {
     return m_qOgreWidget->getOgreRenderWindow();
 }

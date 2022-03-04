@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "data/CalibrationInfo.hpp"
 
-#include <data/registry/macros.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+
+#include <data/registry/macros.hpp>
 
 #include <algorithm>
 #include <iterator>
@@ -40,6 +40,11 @@ const core::com::Signals::SignalKeyType CalibrationInfo::s_ADDED_RECORD_SIG   = 
 const core::com::Signals::SignalKeyType CalibrationInfo::s_REMOVED_RECORD_SIG = "removedRecord";
 const core::com::Signals::SignalKeyType CalibrationInfo::s_RESET_RECORD_SIG   = "resetRecord";
 const core::com::Signals::SignalKeyType CalibrationInfo::s_GET_RECORD_SIG     = "getRecord";
+
+using ImageContainerType          = std::list<Image::sptr>;
+using PointListContainerType      = std::list<PointList::sptr>;
+using constImageContainerType     = std::list<Image::csptr>;
+using constPointListContainerType = std::list<PointList::csptr>;
 
 //------------------------------------------------------------------------------
 
@@ -120,7 +125,7 @@ void CalibrationInfo::addRecord(const data::Image::sptr& img, const data::PointL
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::removeRecord(size_t idx)
+void CalibrationInfo::removeRecord(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_pointListContainer.size());
 
@@ -144,26 +149,54 @@ void CalibrationInfo::resetRecords()
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::ImageContainerType CalibrationInfo::getImageContainer() const
+ImageContainerType CalibrationInfo::getImageContainer()
 {
     return m_imageContainer;
 }
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer() const
+constImageContainerType CalibrationInfo::getImageContainer() const
+{
+    // Transform to csptr
+    constImageContainerType constImageList;
+    for(const auto& image : m_imageContainer)
+    {
+        constImageList.push_back(image);
+    }
+
+    return constImageList;
+}
+
+//------------------------------------------------------------------------------
+
+PointListContainerType CalibrationInfo::getPointListContainer()
 {
     return m_pointListContainer;
 }
 
 //------------------------------------------------------------------------------
 
-data::PointList::sptr CalibrationInfo::getPointList(const data::Image::sptr& img) const
+constPointListContainerType CalibrationInfo::getPointListContainer() const
+{
+    // Transform to csptr
+    constPointListContainerType constPointList;
+    for(const auto& pl : m_pointListContainer)
+    {
+        constPointList.push_back(pl);
+    }
+
+    return constPointList;
+}
+
+//------------------------------------------------------------------------------
+
+data::PointList::csptr CalibrationInfo::getPointList(const data::Image::csptr& img) const
 {
     data::PointList::sptr pl;
 
     SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size());
-    size_t dist = 0;
+    std::size_t dist = 0;
     ImageContainerType::const_iterator it;
     for(it = m_imageContainer.begin() ; it != m_imageContainer.end() && *(it) != img ; ++it, ++dist)
     {
@@ -182,13 +215,13 @@ data::PointList::sptr CalibrationInfo::getPointList(const data::Image::sptr& img
 
 //------------------------------------------------------------------------------
 
-data::Image::sptr CalibrationInfo::getImage(const data::PointList::sptr& pl) const
+data::Image::csptr CalibrationInfo::getImage(const data::PointList::csptr& pl) const
 {
     data::Image::sptr img;
 
     SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size());
 
-    size_t dist = 0;
+    std::size_t dist = 0;
     PointListContainerType::const_iterator it;
     for(it = m_pointListContainer.begin() ; it != m_pointListContainer.end() && *(it) != pl ; ++it, ++dist)
     {
@@ -207,7 +240,7 @@ data::Image::sptr CalibrationInfo::getImage(const data::PointList::sptr& pl) con
 
 //------------------------------------------------------------------------------
 
-data::Image::sptr CalibrationInfo::getImage(size_t idx) const
+data::Image::sptr CalibrationInfo::getImage(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
 
@@ -216,6 +249,40 @@ data::Image::sptr CalibrationInfo::getImage(size_t idx) const
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
 
     return *(imgIt);
+}
+
+//------------------------------------------------------------------------------
+
+data::Image::csptr CalibrationInfo::getImage(std::size_t idx) const
+{
+    SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
+
+    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+
+    std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
+
+    return *(imgIt);
+}
+
+//------------------------------------------------------------------------------
+
+bool CalibrationInfo::operator==(const CalibrationInfo& other) const noexcept
+{
+    if(!core::tools::is_equal(m_imageContainer, other.m_imageContainer)
+       || !core::tools::is_equal(m_pointListContainer, other.m_pointListContainer))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool CalibrationInfo::operator!=(const CalibrationInfo& other) const noexcept
+{
+    return !(*this == other);
 }
 
 //------------------------------------------------------------------------------

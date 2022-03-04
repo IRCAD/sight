@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ CameraDeviceDlg::CameraDeviceDlg() :
     //We should keep the same order than given by Qt, and uniquely identify cameras with the same name.
 
     // First run: collect all detected device names and UIDs
-    size_t index = 0;
+    std::size_t index = 0;
     for(const QCameraInfo& camInfo : devices)
     {
         //MacOs appends random number when cameras has same names, remove it to do it ourself.
@@ -144,8 +144,8 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
         {
             QCameraViewfinderSettings settings = qvariant_cast<QCameraViewfinderSettings>(item->data(Qt::UserRole));
             camera->setMaximumFrameRate(static_cast<float>(settings.maximumFrameRate()));
-            camera->setHeight(static_cast<size_t>(settings.resolution().height()));
-            camera->setWidth(static_cast<size_t>(settings.resolution().width()));
+            camera->setHeight(static_cast<std::size_t>(settings.resolution().height()));
+            camera->setWidth(static_cast<std::size_t>(settings.resolution().width()));
 
             PixelFormatTranslatorType::left_const_iterator iter;
             iter = pixelFormatTranslator.left.find(settings.pixelFormat());
@@ -194,7 +194,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
         cam->load();
 
 #ifdef __linux__
-        //NOTE : Work arround for the camera resolution settings on linux (maybe on OSX too)
+        //NOTE : Work around for the camera resolution settings on linux (maybe on OSX too)
         QCameraImageCapture* imageCapture          = new QCameraImageCapture(cam);
         QList<QSize> res                           = imageCapture->supportedResolutions();
         QList<QVideoFrame::PixelFormat> pixFormats = imageCapture->supportedBufferFormats();

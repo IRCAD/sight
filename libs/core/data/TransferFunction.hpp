@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include "data/config.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (TransferFunction))
-
 namespace sight::data
 {
 
@@ -39,13 +37,12 @@ class DATA_CLASS_API TransferFunction : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(TransferFunction, data::Object, data::factory::New<TransferFunction>);
+    SIGHT_DECLARE_CLASS(TransferFunction, Object, factory::New<TransferFunction>);
 
     /// Defines the deep and shallow copies.
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (TransferFunction))
 
     /// Defines color structure for TF.
-    struct TFColor
+    struct DATA_CLASS_API TFColor
     {
         typedef double ColorType;
 
@@ -86,10 +83,8 @@ public:
          * @param _color the color to compare.
          * @return True if this color have the same rgba value than the compared one.
          */
-        inline bool operator==(const TFColor& _color) const
-        {
-            return r == _color.r && g == _color.g && b == _color.b && a == _color.a;
-        }
+        DATA_API bool operator==(const TFColor& _color) const noexcept;
+        DATA_API bool operator!=(const TFColor& other) const noexcept;
     };
 
     /// Defines the available modes {LINEAR, NEAREST} to interpolate color between two TF color points.
@@ -120,7 +115,7 @@ public:
     DATA_API static TransferFunction::sptr createDefaultTF();
 
     /// Initializes signals.
-    DATA_API TransferFunction(data::Object::Key);
+    DATA_API TransferFunction(Object::Key);
 
     /// Destroys the TF.
     DATA_API virtual ~TransferFunction();
@@ -133,13 +128,6 @@ public:
      * @param _source the source object to copy into this one.
      */
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets all point values of the TF (keys of the map m_tfData).
     DATA_API TFValueVectorType getTFValues() const;
@@ -236,9 +224,24 @@ public:
     /// Defines the type of signal sent when window-level is modified (window, level).
     typedef core::com::Signal<void (double, double)> WindowingModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
-/**
- * @}
- */
+    /**
+     * @}
+     */
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const TransferFunction& other) const noexcept;
+    DATA_API bool operator!=(const TransferFunction& other) const noexcept;
+    /// @}
+
+protected:
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 

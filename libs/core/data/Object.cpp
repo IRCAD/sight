@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -205,5 +205,22 @@ data::Object::sptr Object::copy(const data::Object::csptr& source, Object::DeepC
 }
 
 //-----------------------------------------------------------------------------
+
+bool Object::operator==(const Object& other) const noexcept
+{
+    if(!core::tools::is_equal(m_fields, other.m_fields))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool Object::operator!=(const Object& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

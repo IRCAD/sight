@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,6 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 #include <service/macros.hpp>

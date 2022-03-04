@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 
 #include <core/tools/Stringizer.hpp>
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
@@ -57,7 +57,7 @@ namespace tid
 //------------------------------------------------------------------------------
 
 Measurement::Measurement(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image
 ) :
@@ -78,8 +78,7 @@ void Measurement::createNodes(
     bool useSCoord3D
 )
 {
-    data::Vector::sptr distanceVector =
-        m_object->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*m_object);
     if(distanceVector)
     {
         unsigned int id = 1;
@@ -124,6 +123,7 @@ void Measurement::createMeasurement(
     const std::size_t frameNumber1 = io::dicom::helper::DicomDataTools::convertPointToFrameNumber(m_object, point1);
 
     // Create Measurement Node
+    // cspell: ignore UCUM
     SPTR(io::dicom::container::sr::DicomSRNumNode) numNode =
         std::make_shared<io::dicom::container::sr::DicomSRNumNode>(
             io::dicom::container::DicomCodedAttribute("121206", "DCM", "Distance"),

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,7 +115,7 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="myMenu" type="ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
+       <service uid="myMenu" type="ui::base::IMenu" impl="sight::module::ui::base::SMenu"
      * autoConnect="false" >
             <gui>
                 <layout>
@@ -133,7 +133,7 @@ public:
                 <menuItem sid="item1" start="true" />
                 <menuItem sid="item2" start="false" />
                 <menuItem sid="item3" start="false" />
-                <menu sid="mymenu" start="true" />
+                <menu sid="myMenu" start="true" />
                 <menuItem sid="actionQuit" start="false" />
             </registry>
        </service>

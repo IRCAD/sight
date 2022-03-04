@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
@@ -47,7 +47,7 @@ namespace tid
 
 Measurement::Measurement(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
     const core::log::Logger::sptr& logger
@@ -137,13 +137,12 @@ void Measurement::addDistance(
     const SPTR(data::Point)& point2
 )
 {
-    data::Vector::sptr distanceVector =
-        m_object->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*m_object);
 
     if(!distanceVector)
     {
         distanceVector = data::Vector::New();
-        m_object->setField(data::fieldHelper::Image::m_imageDistancesId, distanceVector);
+        data::helper::MedicalImage::setDistances(*m_object, distanceVector);
     }
 
     data::PointList::sptr pointList = data::PointList::New();
@@ -151,7 +150,7 @@ void Measurement::addDistance(
     pointList->getPoints().push_back(point2);
 
     distanceVector->getContainer().push_back(pointList);
-    m_object->setField("ShowDistances", data::Boolean::New(true));
+    data::helper::MedicalImage::setDistanceVisibility(*m_object, true);
 }
 
 //------------------------------------------------------------------------------

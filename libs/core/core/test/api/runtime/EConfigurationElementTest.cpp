@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ void EConfigurationElementTest::testConfiguration()
     const std::string NAME3      = "config_name3";
     const std::string VALUE1     = "value1";
     const std::string VALUE2     = "value2";
-    const std::string ATTRIBUTE1 = "attibute1";
+    const std::string ATTRIBUTE1 = "attribute1";
 
     std::shared_ptr<core::runtime::EConfigurationElement> config1(new core::runtime::EConfigurationElement(NAME1));
     std::shared_ptr<core::runtime::EConfigurationElement> config2(new core::runtime::EConfigurationElement(NAME2));

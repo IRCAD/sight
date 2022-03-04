@@ -45,7 +45,7 @@ Contains classes to deal with Ogre3d compositors.
 - **Core**: manages principal compositor for a layer's 3D scene.
 - **MaterialMgrListener**: generates transparency techniques at runtime.
 - **SaoListener**: subclass of `Ogre::CompositorInstance::Listener`. Reimplements its functions for compatibility.
-- **types**: defines `enum transparencyTechnique`, holding OIT (Ordrer Independent Transparency) techniques supported.
+- **types**: defines `enum transparencyTechnique`, holding OIT (Order Independent Transparency) techniques supported.
 
 #### listener
 

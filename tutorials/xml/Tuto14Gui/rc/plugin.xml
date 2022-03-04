@@ -4,7 +4,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
     <id>Tuto14Gui_AppCfg</id>
         <config>
 
@@ -300,6 +300,7 @@
         </service>
 
         <service uid="startAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <confirmation value="true" message="Are you sure you want to Start ?"/>
             <slots>
                 <slot>startAct/hide</slot>
                 <slot>stopAct/setExecutable</slot>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,12 @@
 
 #include "data/helper/TransferFunction.hpp"
 
-#include "data/fieldHelper/Image.hpp"
-#include "data/fieldHelper/MedicalImageHelpers.hpp"
 #include "data/helper/Composite.hpp"
-#include <data/Image.hpp>
+#include "data/helper/MedicalImage.hpp"
+#include "data/Image.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::data
 {
@@ -42,7 +40,7 @@ namespace helper
 TransferFunction::TransferFunction(const std::function<void()>& _function) :
     m_updateTFPoints(_function)
 {
-    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::getDefaultWorker();
     m_slotUpdateTFPoints = core::com::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = core::com::newSlot(&TransferFunction::updateTFWindowing, this);
@@ -57,7 +55,7 @@ TransferFunction::TransferFunction(
     m_updateTFPoints(_functionPoints),
     m_updateTFWindowing(_functionWindow)
 {
-    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::getDefaultWorker();
     m_slotUpdateTFPoints = core::com::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = core::com::newSlot(&TransferFunction::updateTFWindowing, this);
@@ -74,11 +72,15 @@ TransferFunction::~TransferFunction()
 
 void TransferFunction::createTransferFunction(data::Image::sptr image)
 {
-    data::Composite::sptr tfPool =
-        image->setDefaultField(
-            data::fieldHelper::Image::m_transferFunctionCompositeId,
-            data::Composite::New()
-        );
+    namespace medImHelper = data::helper::MedicalImage;
+
+    data::Composite::sptr tfPool = medImHelper::getTransferFunction(*image);
+
+    if(!tfPool)
+    {
+        tfPool = data::Composite::New();
+        medImHelper::setTransferFunction(*image, tfPool);
+    }
 
     // create the default transfer function in the image tf field if it does not exist
     if(tfPool->find(data::TransferFunction::s_DEFAULT_TF_NAME) == tfPool->end())
@@ -89,10 +91,10 @@ void TransferFunction::createTransferFunction(data::Image::sptr image)
             tfGreyLevel->setWindow(image->getWindowWidth());
             tfGreyLevel->setLevel(image->getWindowCenter());
         }
-        else if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        else if(data::helper::MedicalImage::checkImageValidity(image))
         {
             double min, max;
-            data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::helper::MedicalImage::getMinMax(image, min, max);
             data::TransferFunction::TFValuePairType wlMinMax(min, max);
             tfGreyLevel->setWLMinMax(wlMinMax);
         }
@@ -140,7 +142,7 @@ void TransferFunction::setOrCreateTF(const data::TransferFunction::sptr& _tf, co
 data::TransferFunction::sptr TransferFunction::getTransferFunction() const
 {
     SIGHT_ASSERT(
-        "Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
+        "Transfer function is not defined, you must call setTransferFunction() or createTransferFunction() first."
         ,
         !m_transferFunction.expired()
     );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,8 @@
 
 #include <geometry/data/MeshFunctions.hpp>
 
+#include <boost/multi_array/multi_array_ref.hpp>
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -39,12 +41,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <functional>
-#include <map>
 
 namespace sight::geometry::data
 {
 
 using core::tools::random::safeRand;
+using namespace sight::data::iterator;
 
 struct RandFloat
 {
@@ -55,27 +57,6 @@ struct RandFloat
         return ((static_cast<float>(safeRand() % 101) - 50.f)) / 500.f;
     }
 };
-
-//------------------------------------------------------------------------------
-
-bool Mesh::hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellType cell)
-{
-    bool res            = true;
-    const auto dumpLock = mesh->lock();
-
-    auto itr          = mesh->begin<sight::data::iterator::ConstCellIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::ConstCellIterator>();
-
-    for( ; itr != itrEnd ; ++itr)
-    {
-        if(*itr->type != cell)
-        {
-            return false;
-        }
-    }
-
-    return res;
-}
 
 //------------------------------------------------------------------------------
 
@@ -92,77 +73,97 @@ Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Poin
 
 void generateRegionCellNormals(
     const sight::data::Mesh::sptr& mesh,
-    const sight::data::Mesh::CellId regionMin,
-    const sight::data::Mesh::CellId regionMax
+    const sight::data::Mesh::cell_t regionMin,
+    const sight::data::Mesh::cell_t regionMax
 )
 {
-    const auto pointBegin = mesh->begin<sight::data::iterator::ConstPointIterator>();
-
-    auto cellItr          = mesh->begin<sight::data::iterator::CellIterator>() + regionMin;
-    const auto cellItrEnd = mesh->begin<sight::data::iterator::CellIterator>() + regionMax;
-
-    const Vector<float> vZero;
-
-    for( ; cellItr != cellItrEnd ; ++cellItr)
+    switch(mesh->getCellType())
     {
-        Vector<float> n;
-
-        const sight::data::Mesh::CellType type = *cellItr->type;
-        switch(type)
+        case sight::data::Mesh::CellType::POINT:
+        case sight::data::Mesh::CellType::LINE:
         {
-            case sight::data::Mesh::CellType::NO_CELL:
-            case sight::data::Mesh::CellType::POINT:
-            case sight::data::Mesh::CellType::EDGE:
-                n = vZero;
-                break;
-
-            case sight::data::Mesh::CellType::TRIANGLE:
-            {
-                auto pItr = pointBegin + cellItr->pointIdx[0];
-                const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
-                pItr = pointBegin + cellItr->pointIdx[1];
-                const Point p2(pItr->point->x, pItr->point->y, pItr->point->z);
-                pItr = pointBegin + cellItr->pointIdx[2];
-                const Point p3(pItr->point->x, pItr->point->y, pItr->point->z);
-                n = computeTriangleNormal(p1, p2, p3);
-                break;
-            }
-
-            case sight::data::Mesh::CellType::QUAD:
-            case sight::data::Mesh::CellType::POLY:
-            case sight::data::Mesh::CellType::TETRA:
-            {
-                const auto nbPoints = cellItr->nbPoints;
-                for(size_t i = 0 ; i < nbPoints ; ++i)
-                {
-                    Vector<float> v;
-                    auto pItr = pointBegin + cellItr->pointIdx[i];
-                    const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
-                    pItr = pointBegin + cellItr->pointIdx[(i + 1) % nbPoints];
-                    const Point p2(pItr->point->x, pItr->point->y, pItr->point->z);
-                    pItr = pointBegin + cellItr->pointIdx[(i + 2) % nbPoints];
-                    const Point p3(pItr->point->x, pItr->point->y, pItr->point->z);
-
-                    v = computeTriangleNormal(p1, p2, p3);
-
-                    n += v;
-                }
-
-                n /= core::tools::numericRoundCast<float>(nbPoints);
-                n.normalize();
-            }
+            auto cellRange = mesh->range<cell::nxyz>();
+            std::fill(cellRange.begin(), cellRange.end(), cell::nxyz({0.f, 0.f, 0.f}));
+            break;
         }
 
-        cellItr->normal->nx = n.x;
-        cellItr->normal->ny = n.y;
-        cellItr->normal->nz = n.z;
+        case sight::data::Mesh::CellType::TRIANGLE:
+        {
+            const auto pointBegin = mesh->cbegin<point::xyz>();
+
+            auto cellRange     = mesh->zip_range<cell::triangle, cell::nxyz>();
+            auto cellBegin     = cellRange.begin() + regionMin;
+            const auto cellEnd = cellRange.begin() + regionMax;
+
+            int i = 0;
+            std::for_each(
+                cellBegin,
+                cellEnd,
+                [&](auto&& it)
+                {
+                    i++;
+                    auto&& [cell, normal] = it;
+                    auto pItr             = pointBegin + cell.pt[0];
+                    const Point p1(pItr->x, pItr->y, pItr->z);
+                    pItr = pointBegin + cell.pt[1];
+                    const Point p2(pItr->x, pItr->y, pItr->z);
+                    pItr = pointBegin + cell.pt[2];
+                    const Point p3(pItr->x, pItr->y, pItr->z);
+                    auto n = computeTriangleNormal(p1, p2, p3);
+
+                    normal.nx = n.x;
+                    normal.ny = n.y;
+                    normal.nz = n.z;
+                });
+            break;
+        }
+
+        case sight::data::Mesh::CellType::QUAD:
+        case sight::data::Mesh::CellType::TETRA:
+        {
+            const auto pointBegin = mesh->cbegin<point::xyz>();
+
+            auto cellRange     = mesh->zip_range<cell::quad, cell::nxyz>();
+            auto cellBegin     = cellRange.begin() + regionMin;
+            const auto cellEnd = cellRange.begin() + regionMax;
+
+            std::for_each(
+                cellBegin,
+                cellEnd,
+                [&](auto&& it)
+                {
+                    Vector<float> n;
+                    auto&& [cell, normal] = it;
+
+                    for(std::size_t i = 0 ; i < 4 ; ++i)
+                    {
+                        Vector<float> v;
+                        auto pItr = pointBegin + cell.pt[i];
+                        const Point p1(pItr->x, pItr->y, pItr->z);
+                        pItr = pointBegin + cell.pt[(i + 1) % 4];
+                        const Point p2(pItr->x, pItr->y, pItr->z);
+                        pItr = pointBegin + cell.pt[(i + 2) % 4];
+                        const Point p3(pItr->x, pItr->y, pItr->z);
+
+                        v = computeTriangleNormal(p1, p2, p3);
+
+                        n += v;
+                    }
+
+                    n /= core::tools::numericRoundCast<float>(4);
+                    n.normalize();
+                    normal.nx = n.x;
+                    normal.ny = n.y;
+                    normal.nz = n.z;
+                });
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void vectorSum(std::vector<std::vector<T> >& vectors, size_t regionMin, size_t regionMax)
+void vectorSum(std::vector<std::vector<T> >& vectors, std::size_t regionMin, std::size_t regionMax)
 {
     if(vectors.empty())
     {
@@ -175,7 +176,7 @@ void vectorSum(std::vector<std::vector<T> >& vectors, size_t regionMin, size_t r
 
     for(++vIter ; vIter != vectors.end() ; ++vIter)
     {
-        for(size_t i = regionMin ; i < regionMax ; ++i)
+        for(std::size_t i = regionMin ; i < regionMax ; ++i)
         {
             res[i] += (*vIter)[i];
         }
@@ -186,20 +187,20 @@ void vectorSum(std::vector<std::vector<T> >& vectors, size_t regionMin, size_t r
 
 void Mesh::generateCellNormals(sight::data::Mesh::sptr mesh)
 {
-    const sight::data::Mesh::Size numberOfCells = mesh->getNumberOfCells();
+    const sight::data::Mesh::size_t numberOfCells = mesh->numCells();
     if(numberOfCells > 0)
     {
-        if(!mesh->hasCellNormals())
+        if(!mesh->has<sight::data::Mesh::Attributes::CELL_NORMALS>())
         {
             mesh->resize(
-                mesh->getNumberOfPoints(),
-                mesh->getNumberOfCells(),
-                mesh->getCellDataSize(),
+                mesh->numPoints(),
+                mesh->numCells(),
+                mesh->getCellType(),
                 sight::data::Mesh::Attributes::CELL_NORMALS
             );
         }
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         sight::data::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
         rt(
@@ -217,30 +218,79 @@ typedef std::vector<std::vector<float> > FloatVectors;
 
 void generateRegionCellNormalsByPoints(
     FloatVectors& normalsData,
-    size_t dataId,
+    std::size_t dataId,
     const sight::data::Mesh::sptr& mesh,
-    const sight::data::Mesh::CellId regionMin,
-    const sight::data::Mesh::CellId regionMax
+    const sight::data::Mesh::cell_t regionMin,
+    const sight::data::Mesh::cell_t regionMax
 )
 {
     FloatVectors::value_type& normalsResults = normalsData[dataId];
 
-    const sight::data::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
+    const sight::data::Mesh::size_t nbOfPoints = mesh->numPoints();
     normalsResults.resize(3 * nbOfPoints, 0.f);
 
-    auto cellItr          = mesh->begin<sight::data::iterator::ConstCellIterator>() + regionMin;
-    const auto cellItrEnd = mesh->begin<sight::data::iterator::ConstCellIterator>() + regionMax;
+    auto accumNormal = [&](const auto& cell, const auto& normal)
+                       {
+                           normalsData[dataId][3 * cell]     += normal.nx;
+                           normalsData[dataId][3 * cell + 1] += normal.ny;
+                           normalsData[dataId][3 * cell + 2] += normal.nz;
+                       };
 
-    const Vector<float> vZero;
-
-    for( ; cellItr != cellItrEnd ; ++cellItr)
+    switch(mesh->getCellType())
     {
-        const auto normal = cellItr->normal;
-        for(size_t i = 0 ; i < cellItr->nbPoints ; ++i)
+        case sight::data::Mesh::CellType::LINE:
         {
-            normalsData[dataId][3 * cellItr->pointIdx[i]]     += normal->nx;
-            normalsData[dataId][3 * cellItr->pointIdx[i] + 1] += normal->ny;
-            normalsData[dataId][3 * cellItr->pointIdx[i] + 2] += normal->nz;
+            const auto range = mesh->czip_range<cell::line, cell::nxyz>();
+            auto begin       = range.begin() + regionMin;
+            const auto end   = range.begin() + regionMax;
+            std::for_each(
+                begin,
+                end,
+                [&](const auto& it)
+                {
+                    const auto& [line, n] = it;
+                    accumNormal(line.pt[0], n);
+                    accumNormal(line.pt[1], n);
+                });
+            break;
+        }
+
+        case sight::data::Mesh::CellType::TRIANGLE:
+        {
+            const auto range = mesh->czip_range<cell::triangle, cell::nxyz>();
+            auto begin       = range.begin() + regionMin;
+            const auto end   = range.begin() + regionMax;
+            std::for_each(
+                begin,
+                end,
+                [&](const auto& it)
+                {
+                    const auto& [cell, n] = it;
+                    accumNormal(cell.pt[0], n);
+                    accumNormal(cell.pt[1], n);
+                    accumNormal(cell.pt[2], n);
+                });
+            break;
+        }
+
+        case sight::data::Mesh::CellType::QUAD:
+        case sight::data::Mesh::CellType::TETRA:
+        {
+            const auto range = mesh->czip_range<cell::quad, cell::nxyz>();
+            auto begin       = range.begin() + regionMin;
+            const auto end   = range.begin() + regionMax;
+            std::for_each(
+                begin,
+                end,
+                [&](const auto& it)
+                {
+                    const auto& [cell, n] = it;
+                    accumNormal(cell.pt[0], n);
+                    accumNormal(cell.pt[1], n);
+                    accumNormal(cell.pt[2], n);
+                    accumNormal(cell.pt[3], n);
+                });
+            break;
         }
     }
 }
@@ -250,24 +300,23 @@ void generateRegionCellNormalsByPoints(
 void normalizeRegionCellNormalsByPoints(
     FloatVectors::value_type& normalsData,
     sight::data::Mesh::sptr mesh,
-    const sight::data::Mesh::CellId regionMin,
-    const sight::data::Mesh::CellId regionMax
+    const sight::data::Mesh::cell_t regionMin,
+    const sight::data::Mesh::cell_t regionMax
 )
 {
-    Vector<sight::data::Mesh::NormalValueType>* normalSum =
-        reinterpret_cast<Vector<sight::data::Mesh::NormalValueType>*>(&(*normalsData.begin()));
+    Vector<sight::data::Mesh::normal_t>* normalSum =
+        reinterpret_cast<Vector<sight::data::Mesh::normal_t>*>(&(*normalsData.begin()));
 
-    auto pointItr          = mesh->begin<sight::data::iterator::PointIterator>() + regionMin;
-    const auto pointItrEnd = mesh->begin<sight::data::iterator::PointIterator>() + regionMax;
+    auto pointItr = mesh->begin<point::nxyz>() + regionMin;
 
-    for(sight::data::Mesh::CellId i = regionMin ; i < regionMax ; ++i, ++pointItr)
+    for(sight::data::Mesh::cell_t i = regionMin ; i < regionMax ; ++i, ++pointItr)
     {
-        Vector<sight::data::Mesh::NormalValueType> normal = normalSum[i];
+        Vector<sight::data::Mesh::normal_t> normal = normalSum[i];
 
         normal.normalize();
-        pointItr->normal->nx = normal.x;
-        pointItr->normal->ny = normal.y;
-        pointItr->normal->nz = normal.z;
+        pointItr->nx = normal.x;
+        pointItr->ny = normal.y;
+        pointItr->nz = normal.z;
     }
 }
 
@@ -275,28 +324,28 @@ void normalizeRegionCellNormalsByPoints(
 
 void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
 {
-    const sight::data::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
+    const sight::data::Mesh::size_t nbOfPoints = mesh->numPoints();
     if(nbOfPoints > 0)
     {
-        const sight::data::Mesh::Size numberOfCells = mesh->getNumberOfCells();
+        const sight::data::Mesh::size_t numberOfCells = mesh->numCells();
 
         // To generate point normals, we need to use the cell normals
-        if(!mesh->hasCellNormals())
+        if(!mesh->has<sight::data::Mesh::Attributes::CELL_NORMALS>())
         {
             generateCellNormals(mesh);
         }
 
-        if(!mesh->hasPointNormals())
+        if(!mesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
         {
             mesh->resize(
-                mesh->getNumberOfPoints(),
-                mesh->getNumberOfCells(),
-                mesh->getCellDataSize(),
+                mesh->numPoints(),
+                mesh->numCells(),
+                mesh->getCellType(),
                 sight::data::Mesh::Attributes::POINT_NORMALS
             );
         }
 
-        const auto dumpLock = mesh->lock();
+        const auto dumpLock = mesh->dump_lock();
 
         sight::data::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
@@ -340,10 +389,10 @@ void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 template<typename T>
-void regionShakeNormals(T normals, const sight::data::Mesh::CellId regionMin, const sight::data::Mesh::CellId regionMax)
+void regionShakeNormals(T normals, const sight::data::Mesh::cell_t regionMin, const sight::data::Mesh::cell_t regionMax)
 {
     RandFloat randFloat;
-    for(sight::data::Mesh::CellId i = regionMin ; i < regionMax ; ++i)
+    for(sight::data::Mesh::cell_t i = regionMin ; i < regionMax ; ++i)
     {
         Vector<float> v(randFloat(), randFloat(), randFloat());
         normals[i] += v;
@@ -358,17 +407,16 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
     if(array
        && array->getType() == core::tools::Type::create<float>()
        && !array->empty()
-       && array->getNumberOfComponents() == 3
-       && array->getNumberOfDimensions() == 1)
+       && array->numDimensions() == 2)
     {
-        const auto dumpLock = array->lock();
+        const auto dumpLock = array->dump_lock();
         void* buf;
         buf = array->getBuffer();
         const auto nbOfNormals = array->getSize().at(0);
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
             static_cast<NormalsMultiArrayType::element*>(buf),
-            ::boost::extents[nbOfNormals]
+            boost::extents[nbOfNormals]
         );
 
         sight::data::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);
@@ -388,22 +436,19 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
 
 void Mesh::shakePointNormals(sight::data::Mesh::sptr mesh)
 {
-    const auto dumpLock = mesh->lock();
-
-    auto pointIter          = mesh->begin<sight::data::iterator::PointIterator>();
-    const auto pointIterEnd = mesh->begin<sight::data::iterator::PointIterator>();
+    const auto dumpLock = mesh->dump_lock();
 
     RandFloat randFloat;
 
-    for( ; pointIter != pointIterEnd ; ++pointIter)
+    for(auto& n : mesh->range<point::nxyz>())
     {
         Vector<float> v(randFloat(), randFloat(), randFloat());
-        Vector<float> normal(pointIter->normal->nx, pointIter->normal->ny, pointIter->normal->nz);
+        Vector<float> normal(n.nx, n.ny, n.nz);
         normal += v;
         normal.normalize();
-        pointIter->normal->nx = normal.x;
-        pointIter->normal->ny = normal.y;
-        pointIter->normal->nz = normal.z;
+        n.nx = normal.x;
+        n.ny = normal.y;
+        n.nz = normal.z;
     }
 }
 
@@ -411,22 +456,19 @@ void Mesh::shakePointNormals(sight::data::Mesh::sptr mesh)
 
 void Mesh::shakeCellNormals(sight::data::Mesh::sptr mesh)
 {
-    const auto dumpLock = mesh->lock();
-
-    auto cellIter          = mesh->begin<sight::data::iterator::CellIterator>();
-    const auto cellIterEnd = mesh->begin<sight::data::iterator::CellIterator>();
+    const auto dumpLock = mesh->dump_lock();
 
     RandFloat randFloat;
 
-    for( ; cellIter != cellIterEnd ; ++cellIter)
+    for(auto& n : mesh->range<cell::nxyz>())
     {
         Vector<float> v(randFloat(), randFloat(), randFloat());
-        Vector<float> normal(cellIter->normal->nx, cellIter->normal->ny, cellIter->normal->nz);
+        Vector<float> normal(n.nx, n.ny, n.nz);
         normal += v;
         normal.normalize();
-        cellIter->normal->nx = normal.x;
-        cellIter->normal->ny = normal.y;
-        cellIter->normal->nz = normal.z;
+        n.nx = normal.x;
+        n.ny = normal.y;
+        n.nz = normal.z;
     }
 }
 
@@ -434,27 +476,24 @@ void Mesh::shakeCellNormals(sight::data::Mesh::sptr mesh)
 
 void Mesh::colorizeMeshPoints(sight::data::Mesh::sptr mesh)
 {
-    if(!mesh->hasPointColors())
+    if(!mesh->has<sight::data::Mesh::Attributes::POINT_COLORS>())
     {
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
-            mesh->getCellDataSize(),
+            mesh->numPoints(),
+            mesh->numCells(),
+            mesh->getCellType(),
             sight::data::Mesh::Attributes::POINT_COLORS
         );
     }
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    auto itr          = mesh->begin<sight::data::iterator::PointIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::PointIterator>();
-
-    for( ; itr != itrEnd ; ++itr)
+    for(auto& c : mesh->range<point::rgba>())
     {
-        itr->rgba->r = static_cast<std::uint8_t>(safeRand() % 256);
-        itr->rgba->g = static_cast<std::uint8_t>(safeRand() % 256);
-        itr->rgba->b = static_cast<std::uint8_t>(safeRand() % 256);
-        itr->rgba->a = static_cast<std::uint8_t>(safeRand() % 256);
+        c.r = static_cast<std::uint8_t>(safeRand() % 256);
+        c.g = static_cast<std::uint8_t>(safeRand() % 256);
+        c.b = static_cast<std::uint8_t>(safeRand() % 256);
+        c.a = static_cast<std::uint8_t>(safeRand() % 256);
     }
 }
 
@@ -462,27 +501,24 @@ void Mesh::colorizeMeshPoints(sight::data::Mesh::sptr mesh)
 
 void Mesh::colorizeMeshCells(sight::data::Mesh::sptr mesh)
 {
-    if(!mesh->hasCellColors())
+    if(!mesh->has<sight::data::Mesh::Attributes::CELL_COLORS>())
     {
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
-            mesh->getCellDataSize(),
+            mesh->numPoints(),
+            mesh->numCells(),
+            mesh->getCellType(),
             sight::data::Mesh::Attributes::CELL_COLORS
         );
     }
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    auto itr          = mesh->begin<sight::data::iterator::CellIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::CellIterator>();
-
-    for( ; itr != itrEnd ; ++itr)
+    for(auto& c : mesh->range<cell::rgba>())
     {
-        itr->rgba->r = static_cast<std::uint8_t>(safeRand() % 256);
-        itr->rgba->g = static_cast<std::uint8_t>(safeRand() % 256);
-        itr->rgba->b = static_cast<std::uint8_t>(safeRand() % 256);
-        itr->rgba->a = static_cast<std::uint8_t>(safeRand() % 256);
+        c.r = static_cast<std::uint8_t>(safeRand() % 256);
+        c.g = static_cast<std::uint8_t>(safeRand() % 256);
+        c.b = static_cast<std::uint8_t>(safeRand() % 256);
+        c.a = static_cast<std::uint8_t>(safeRand() % 256);
     }
 }
 
@@ -492,16 +528,13 @@ void Mesh::shakePoint(sight::data::Mesh::sptr mesh)
 {
     RandFloat randFloat;
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    auto itr          = mesh->begin<sight::data::iterator::PointIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::PointIterator>();
-
-    for( ; itr != itrEnd ; ++itr)
+    for(auto& p : mesh->range<point::xyz>())
     {
-        itr->point->x += randFloat() * 5;
-        itr->point->y += randFloat() * 5;
-        itr->point->z += randFloat() * 5;
+        p.x += randFloat() * 5;
+        p.y += randFloat() * 5;
+        p.z += randFloat() * 5;
     }
 }
 
@@ -513,62 +546,56 @@ void Mesh::transform(
     const sight::data::Matrix4& t
 )
 {
-    const auto inDumpLock  = inMesh->lock();
-    const auto outDumpLock = outMesh->lock();
-
-    auto inItr = inMesh->begin<sight::data::iterator::ConstPointIterator>();
-
-    auto itr          = outMesh->begin<sight::data::iterator::PointIterator>();
-    const auto itrEnd = outMesh->end<sight::data::iterator::PointIterator>();
+    const auto inDumpLock  = inMesh->dump_lock();
+    const auto outDumpLock = outMesh->dump_lock();
 
     const glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
 
-    [[maybe_unused]] const size_t numPts = inMesh->getNumberOfPoints();
-    SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
+    [[maybe_unused]] const std::size_t numPts = inMesh->numPoints();
+    SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->numPoints());
 
     SIGHT_ASSERT(
         "in and out meshes must have the same point normals attribute",
-        (inMesh->hasPointNormals() && outMesh->hasPointNormals())
-        || (!inMesh->hasPointNormals() && !outMesh->hasPointNormals())
+        (inMesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>()
+         && outMesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
+        || (!inMesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>()
+            && !outMesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
     );
 
-    for( ; itr != itrEnd ; ++itr, ++inItr)
+    for(auto&& [in, out] : boost::combine(inMesh->crange<point::xyz>(), outMesh->range<point::xyz>()))
     {
-        const ::glm::vec4 pt(inItr->point->x, inItr->point->y, inItr->point->z, 1.);
-        const ::glm::vec4 transformedPt = matrix * pt;
+        const glm::vec4 pt(in.x, in.y, in.z, 1.);
+        const glm::vec4 transformedPt = matrix * pt;
 
-        itr->point->x = transformedPt.x;
-        itr->point->y = transformedPt.y;
-        itr->point->z = transformedPt.z;
+        out.x = transformedPt.x;
+        out.y = transformedPt.y;
+        out.z = transformedPt.z;
+    }
 
-        if(inMesh->hasPointNormals())
+    if(inMesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
+    {
+        for(auto&& [in, out] : boost::combine(inMesh->crange<point::nxyz>(), outMesh->range<point::nxyz>()))
         {
-            const ::glm::vec4 normal(inItr->normal->nx, inItr->normal->ny, inItr->normal->nz, 0.);
-            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
+            const glm::vec4 normal(in.nx, in.ny, in.nz, 0.);
+            const glm::vec4 transformedNormal = glm::normalize(matrix * normal);
 
-            itr->normal->nx = transformedNormal.x;
-            itr->normal->ny = transformedNormal.y;
-            itr->normal->nz = transformedNormal.z;
+            out.nx = transformedNormal.x;
+            out.ny = transformedNormal.y;
+            out.nz = transformedNormal.z;
         }
     }
 
-    if(inMesh->hasCellNormals())
+    if(inMesh->has<sight::data::Mesh::Attributes::CELL_NORMALS>())
     {
-        SIGHT_ASSERT("out mesh must have normals", outMesh->hasCellNormals());
-
-        auto inCellItr = inMesh->begin<sight::data::iterator::ConstCellIterator>();
-
-        auto itrCell          = outMesh->begin<sight::data::iterator::CellIterator>();
-        const auto itrCellEnd = outMesh->end<sight::data::iterator::CellIterator>();
-
-        for( ; itrCell != itrCellEnd ; ++itrCell, ++inCellItr)
+        SIGHT_ASSERT("out mesh must have normals", outMesh->has<sight::data::Mesh::Attributes::CELL_NORMALS>());
+        for(auto&& [in, out] : boost::combine(inMesh->crange<cell::nxyz>(), outMesh->range<cell::nxyz>()))
         {
-            const ::glm::vec4 normal(inCellItr->normal->nx, inCellItr->normal->ny, inCellItr->normal->nz, 0.);
-            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
+            const glm::vec4 normal(in.nx, in.ny, in.nz, 0.);
+            const glm::vec4 transformedNormal = glm::normalize(matrix * normal);
 
-            itrCell->normal->nx = transformedNormal.x;
-            itrCell->normal->ny = transformedNormal.y;
-            itrCell->normal->nz = transformedNormal.z;
+            out.nx = transformedNormal.x;
+            out.ny = transformedNormal.y;
+            out.nz = transformedNormal.z;
         }
     }
 }
@@ -590,24 +617,19 @@ void Mesh::colorizeMeshPoints(
     const std::uint8_t colorA
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    SIGHT_ASSERT("color array must be allocated", mesh->hasPointColors());
+    SIGHT_ASSERT("color array must be allocated", mesh->has<sight::data::Mesh::Attributes::POINT_COLORS>());
 
-    auto itr          = mesh->begin<sight::data::iterator::PointIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::PointIterator>();
-
-    for( ; itr != itrEnd ; ++itr)
+    for(auto& c : mesh->range<point::rgba>())
     {
-        itr->rgba->r = colorR;
-        itr->rgba->g = colorG;
-        itr->rgba->b = colorB;
-        itr->rgba->a = colorA;
+        c.r = colorR;
+        c.g = colorG;
+        c.b = colorB;
+        c.a = colorA;
     }
 
-    auto sig = mesh->signal<sight::data::Mesh::PointColorsModifiedSignalType>(
-        sight::data::Mesh::s_POINT_COLORS_MODIFIED_SIG
-    );
+    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -615,51 +637,47 @@ void Mesh::colorizeMeshPoints(
 
 void Mesh::colorizeMeshPoints(
     const sight::data::Mesh::sptr& _mesh,
-    const std::vector<size_t>& _vectorNumTriangle,
+    const std::vector<std::size_t>& _vectorNumTriangle,
     const std::uint8_t _colorR,
     const std::uint8_t _colorG,
     const std::uint8_t _colorB,
     const std::uint8_t _colorA
 )
 {
-    const auto dumpLock = _mesh->lock();
+    const auto dumpLock = _mesh->dump_lock();
 
-    auto itrCell          = _mesh->begin<sight::data::iterator::ConstCellIterator>();
-    const auto itrCellEnd = _mesh->end<sight::data::iterator::ConstCellIterator>();
+    auto itrCell = _mesh->begin<cell::triangle>();
 
-    auto itrPoint = _mesh->begin<sight::data::iterator::PointIterator>();
+    auto itrPoint = _mesh->begin<point::rgba>();
 
-    for(size_t index : _vectorNumTriangle)
+    for(std::size_t index : _vectorNumTriangle)
     {
         auto cell                        = itrCell + static_cast<std::ptrdiff_t>(index);
-        const std::ptrdiff_t indexPoint0 = static_cast<std::ptrdiff_t>(cell->pointIdx[0]);
-        const std::ptrdiff_t indexPoint1 = static_cast<std::ptrdiff_t>(cell->pointIdx[1]);
-        const std::ptrdiff_t indexPoint2 = static_cast<std::ptrdiff_t>(cell->pointIdx[2]);
+        const std::ptrdiff_t indexPoint0 = static_cast<std::ptrdiff_t>(cell->pt[0]);
+        const std::ptrdiff_t indexPoint1 = static_cast<std::ptrdiff_t>(cell->pt[1]);
+        const std::ptrdiff_t indexPoint2 = static_cast<std::ptrdiff_t>(cell->pt[2]);
 
         auto point1 = itrPoint + indexPoint0;
         auto point2 = itrPoint + indexPoint1;
         auto point3 = itrPoint + indexPoint2;
 
-        point1->rgba->r = _colorR;
-        point1->rgba->g = _colorG;
-        point1->rgba->b = _colorB;
-        point1->rgba->a = _colorA;
+        point1->r = _colorR;
+        point1->g = _colorG;
+        point1->b = _colorB;
+        point1->a = _colorA;
 
-        point2->rgba->r = _colorR;
-        point2->rgba->g = _colorG;
-        point2->rgba->b = _colorB;
-        point2->rgba->a = _colorA;
+        point2->r = _colorR;
+        point2->g = _colorG;
+        point2->b = _colorB;
+        point2->a = _colorA;
 
-        point3->rgba->r = _colorR;
-        point3->rgba->g = _colorG;
-        point3->rgba->b = _colorB;
-        point3->rgba->a = _colorA;
+        point3->r = _colorR;
+        point3->g = _colorG;
+        point3->b = _colorB;
+        point3->a = _colorA;
     }
 
-    sight::data::Mesh::PointColorsModifiedSignalType::sptr sig;
-    sig = _mesh->signal<sight::data::Mesh::PointColorsModifiedSignalType>(
-        sight::data::Mesh::s_POINT_COLORS_MODIFIED_SIG
-    );
+    auto sig = _mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -673,24 +691,19 @@ void Mesh::colorizeMeshCells(
     const std::uint8_t colorA
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    SIGHT_ASSERT("color array must be allocated", mesh->hasCellColors());
+    SIGHT_ASSERT("color array must be allocated", mesh->has<sight::data::Mesh::Attributes::CELL_COLORS>());
 
-    auto itr          = mesh->begin<sight::data::iterator::CellIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::CellIterator>();
-
-    for( ; itr != itrEnd ; ++itr)
+    for(auto& c : mesh->range<cell::rgba>())
     {
-        itr->rgba->r = colorR;
-        itr->rgba->g = colorG;
-        itr->rgba->b = colorB;
-        itr->rgba->a = colorA;
+        c.r = colorR;
+        c.g = colorG;
+        c.b = colorB;
+        c.a = colorA;
     }
 
-    auto sig = mesh->signal<sight::data::Mesh::CellColorsModifiedSignalType>(
-        sight::data::Mesh::s_CELL_COLORS_MODIFIED_SIG
-    );
+    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -698,31 +711,28 @@ void Mesh::colorizeMeshCells(
 
 void Mesh::colorizeMeshCells(
     const sight::data::Mesh::sptr& mesh,
-    const std::vector<size_t>& triangleIndexVector,
+    const std::vector<std::size_t>& triangleIndexVector,
     const std::uint8_t colorR,
     const std::uint8_t colorG,
     const std::uint8_t colorB,
     const std::uint8_t colorA
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    auto itrCell          = mesh->begin<sight::data::iterator::CellIterator>();
-    const auto itrCellEnd = mesh->end<sight::data::iterator::CellIterator>();
+    auto itrCell = mesh->begin<cell::rgba>();
 
-    for(size_t index : triangleIndexVector)
+    for(std::size_t index : triangleIndexVector)
     {
         auto cell = itrCell + static_cast<std::ptrdiff_t>(index);
 
-        cell->rgba->r = colorR;
-        cell->rgba->g = colorG;
-        cell->rgba->b = colorB;
-        cell->rgba->a = colorA;
+        cell->r = colorR;
+        cell->g = colorG;
+        cell->b = colorB;
+        cell->a = colorA;
     }
 
-    auto sig = mesh->signal<sight::data::Mesh::CellColorsModifiedSignalType>(
-        sight::data::Mesh::s_CELL_COLORS_MODIFIED_SIG
-    );
+    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -732,52 +742,68 @@ bool Mesh::isClosed(const sight::data::Mesh::csptr& mesh)
 {
     bool isClosed = true;
 
-    typedef std::pair<sight::data::Mesh::CellId, sight::data::Mesh::CellId> Edge;
+    typedef std::pair<sight::data::Mesh::cell_t, sight::data::Mesh::cell_t> Edge;
     typedef std::map<Edge, int> EdgeHistogram;
     EdgeHistogram edgesHistogram;
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    auto itr          = mesh->begin<sight::data::iterator::ConstCellIterator>();
-    const auto itrEnd = mesh->end<sight::data::iterator::ConstCellIterator>();
+    auto addEdge = [&edgesHistogram](const sight::data::Mesh::point_t& p1, const sight::data::Mesh::point_t& p2)
+                   {
+                       const auto edge = geometry::data::makeOrderedPair(p1, p2);
 
-    size_t count = 0;
-    for( ; itr != itrEnd ; ++itr)
+                       if(edgesHistogram.find(edge) == edgesHistogram.end())
+                       {
+                           edgesHistogram[edge] = 1;
+                       }
+                       else
+                       {
+                           ++edgesHistogram[edge];
+                       }
+                   };
+
+    switch(mesh->getCellType())
     {
-        ++count;
-        const auto nbPoints = itr->nbPoints;
-        for(size_t i = 0 ; i < nbPoints - 1 ; ++i)
+        case sight::data::Mesh::CellType::LINE:
         {
-            const auto edge1 = geometry::data::makeOrderedPair(itr->pointIdx[i], itr->pointIdx[i + 1]);
+            for(auto& line : mesh->crange<cell::line>())
+            {
+                addEdge(line.pt[0], line.pt[1]);
+            }
 
-            if(edgesHistogram.find(edge1) == edgesHistogram.end())
-            {
-                edgesHistogram[edge1] = 1;
-            }
-            else
-            {
-                ++edgesHistogram[edge1];
-            }
+            break;
         }
 
-        if(nbPoints > 2)
+        case sight::data::Mesh::CellType::TRIANGLE:
         {
-            const auto edge2 = geometry::data::makeOrderedPair(itr->pointIdx[0], itr->pointIdx[nbPoints - 1]);
+            for(auto& cell : mesh->crange<cell::triangle>())
+            {
+                addEdge(cell.pt[0], cell.pt[1]);
+                addEdge(cell.pt[1], cell.pt[2]);
+                addEdge(cell.pt[2], cell.pt[0]);
+            }
 
-            if(edgesHistogram.find(edge2) == edgesHistogram.end())
+            break;
+        }
+
+        case sight::data::Mesh::CellType::QUAD:
+        case sight::data::Mesh::CellType::TETRA:
+        {
+            for(auto& cell : mesh->crange<cell::quad>())
             {
-                edgesHistogram[edge2] = 1;
+                addEdge(cell.pt[0], cell.pt[1]);
+                addEdge(cell.pt[1], cell.pt[2]);
+                addEdge(cell.pt[2], cell.pt[3]);
+                addEdge(cell.pt[3], cell.pt[0]);
             }
-            else
-            {
-                ++edgesHistogram[edge2];
-            }
+
+            break;
         }
     }
 
-    for(const EdgeHistogram::value_type& histo : edgesHistogram)
+    for(const EdgeHistogram::value_type& h : edgesHistogram)
     {
-        if(histo.second != 2)
+        if(h.second != 2)
         {
             isClosed = false;
             break;

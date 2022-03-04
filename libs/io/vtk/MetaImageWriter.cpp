@@ -35,7 +35,7 @@
 #include <vtkMetaImageWriter.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::MetaImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::MetaImageWriter);
 
 namespace sight::io::vtk
 {
@@ -92,7 +92,7 @@ void MetaImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string MetaImageWriter::extension()
+std::string MetaImageWriter::extension() const
 {
     return ".mhd";
 }

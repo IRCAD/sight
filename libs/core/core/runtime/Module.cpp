@@ -24,6 +24,6 @@
 
 //------------------------------------------------------------------------------
 
-::sight::core::runtime::Module::~Module()
+sight::core::runtime::Module::~Module()
 {
 }

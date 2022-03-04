@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API FrameOfReference(
-        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::Series::csptr& series,
         const core::log::Logger::sptr& logger = nullptr,

@@ -1,74 +1,83 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig">
     <id>ExActivities_ImageReading_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="image" />
+        <param name="imageSeries" />
         <param name="validationChannel" default="validationChannel" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
+        <object uid="image" type="sight::data::Image" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager" >
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
                 <toolBar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="imageScene" start="true" />
-                <toolBar sid="toolBarView" start="true" />
+                <view sid="imageScene" />
+                <toolBar sid="toolBarView" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="importAct" start="true" />
+                <menuItem sid="importAct" />
             </registry>
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="sight::module::ui::base::io::SSelector" >
-            <inout key="data" uid="${image}" />
+        <service uid="importAct" type="sight::module::ui::base::io::SSelector">
+            <inout key="data" uid="image" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::vtk::SImageReader" />
+            <addSelection service="sight::module::io::vtk::SImageReader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="true" >
-            <in key="image" uid="${image}" />
+        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="true">
+            <in key="image" uid="image" />
+        </service>
+
+        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
+            <in key="imageSeries" uid="${imageSeries}" />
+            <out key="image" uid="image" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
         <!-- The channel is used to call "SSequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
-        <connect channel="${validationChannel}" >
-            <signal>${image}/modified</signal>
+        <connect channel="${validationChannel}">
+            <signal>${imageSeries}/modified</signal>
         </connect>
 
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
+        <start uid="extractImageSrv" />
+        <start uid="toolBarView" />
+        <start uid="imageScene" />
+        <start uid="importAct" />
 
         <!-- ******************************* Update services ***************************************** -->
 
-        <!-- imageScene is started by the mainview, it should be updated to display the image when it exists on start. -->
-        <update uid="imageScene" />
+        <update uid="extractImageSrv" />
 
     </config>
 </extension>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SViewportRangeSelector : public sight::viz::s
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewportRangeSelector, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SViewportRangeSelector, sight::viz::scene2d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API SViewportRangeSelector() noexcept;
@@ -165,8 +165,7 @@ private:
     QPen m_color;
 
     static constexpr std::string_view s_VIEWPORT_INOUT = "viewport";
-    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT
-    };
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT};
 };
 
 } // namespace adaptor

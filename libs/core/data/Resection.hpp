@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,29 +32,26 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Resection));
 namespace sight::data
 {
 
 /**
  * @brief This class defines a resection.
  */
-class DATA_CLASS_API Resection : public data::Object
+class DATA_CLASS_API Resection : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Resection, data::Object, data::factory::New<Resection>);
+    SIGHT_DECLARE_CLASS(Resection, Object, factory::New<Resection>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Resection));
-
-    typedef std::vector<data::Reconstruction::sptr> ResectionInputs;
-    typedef std::vector<data::Reconstruction::sptr> ResectionOutputs;
+    typedef std::vector<Reconstruction::sptr> ResectionInputs;
+    typedef std::vector<Reconstruction::sptr> ResectionOutputs;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Resection(data::Object::Key key);
+    DATA_API Resection(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Resection();
@@ -62,16 +59,13 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /**
      * @{
      * @brief Get/Set value of the planeList.
      */
-    data::PlaneList::sptr& getPlaneList();
-    const data::PlaneList::sptr& getPlaneList() const;
-    void setPlaneList(const data::PlaneList::sptr& _planeList);
+    PlaneList::sptr& getPlaneList();
+    const PlaneList::sptr& getPlaneList() const;
+    void setPlaneList(const PlaneList::sptr& _planeList);
     /// @}
 
     /**
@@ -107,7 +101,6 @@ public:
     std::string& getName();
     const std::string& getName() const;
     void setName(const std::string& _name);
-
     /// @}
 
     /**
@@ -116,7 +109,6 @@ public:
      */
     bool getIsVisible() const;
     void setIsVisible(const bool _isVisible);
-
     /// @}
 
     /**
@@ -125,7 +117,6 @@ public:
      */
     bool getIsValid() const;
     void setIsValid(const bool _isValid);
-
     /// @}
 
     /***
@@ -144,18 +135,26 @@ public:
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    /**
+     * @}
+     */
 
-/**
- * @}
- */
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Resection& other) const noexcept;
+    DATA_API bool operator!=(const Resection& other) const noexcept;
+    /// @}
 
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! Resection name
     std::string m_name;
 
     //! Planes list
-    data::PlaneList::sptr m_planeList;
+    PlaneList::sptr m_planeList;
 
     //! Inputs (reconstructions)
     ResectionInputs m_vInputs;
@@ -190,21 +189,21 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline data::PlaneList::sptr& Resection::getPlaneList()
+inline PlaneList::sptr& Resection::getPlaneList()
 {
     return m_planeList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const data::PlaneList::sptr& Resection::getPlaneList() const
+inline const PlaneList::sptr& Resection::getPlaneList() const
 {
     return m_planeList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setPlaneList(const data::PlaneList::sptr& _planeList)
+inline void Resection::setPlaneList(const PlaneList::sptr& _planeList)
 {
     m_planeList = _planeList;
 }

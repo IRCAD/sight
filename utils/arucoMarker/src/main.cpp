@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,15 +64,15 @@ int main(int argc, char** argv)
 
         po::notify(vm);
 
-        ::cv::Mat marker;
+        cv::Mat marker;
 
-        ::cv::Ptr< ::cv::aruco::Dictionary> dictionary;
+        cv::Ptr<cv::aruco::Dictionary> dictionary;
         //Use the aruco original dictionary
-        dictionary = ::cv::aruco::Dictionary::get(::cv::aruco::DICT_ARUCO_ORIGINAL);
+        dictionary = cv::aruco::Dictionary::get(cv::aruco::DICT_ARUCO_ORIGINAL);
 
-        ::cv::aruco::drawMarker(dictionary, id, size, marker, borderBits);
+        cv::aruco::drawMarker(dictionary, id, size, marker, borderBits);
 
-        ::cv::imwrite(file, marker);
+        cv::imwrite(file, marker);
     }
     catch(std::exception& e)
     {

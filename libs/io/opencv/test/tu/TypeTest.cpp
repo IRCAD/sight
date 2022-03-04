@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <opencv2/core.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::TypeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::TypeTest);
 
 namespace sight::io::opencv
 {
@@ -49,7 +49,7 @@ void TypeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-template<typename _T, size_t _NUM_COMPONENTS>
+template<typename _T, std::size_t _NUM_COMPONENTS>
 void testToCv(std::int32_t _expectedType)
 {
     core::tools::Type type = core::tools::Type::create<_T>();

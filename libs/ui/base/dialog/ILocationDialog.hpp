@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ public:
     /// save the specified default location for the dialog in preferences (if available)
     UI_BASE_API virtual void saveDefaultLocation(core::location::ILocation::sptr loc);
 
-    /// set the type of location for the dialog (SINGLE_FILE, FORLDER, MULTI_FILES)
+    /// set the type of location for the dialog (SINGLE_FILE, FOLDER, MULTI_FILES)
     UI_BASE_API virtual void setType(Types type) = 0;
 
     /// allow to set option to the file dialog mode=READ/WRITE , check=FILE_MUST_EXIST
@@ -118,8 +118,6 @@ protected:
     UI_BASE_API void readConfig();
 
     UI_BASE_API void writeConfig();
-
-    UI_BASE_API data::Composite::sptr getPreferenceUI();
 
 private:
 

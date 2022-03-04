@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,6 +68,8 @@ void IntegerTest::methode1()
         CPPUNIT_ASSERT_EQUAL(VALUE, i0->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, i1->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, data::Integer::New(VALUE)->value());
+
+        CPPUNIT_ASSERT(*i0 == *i1);
     }
 }
 

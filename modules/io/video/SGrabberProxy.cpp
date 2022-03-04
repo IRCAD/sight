@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -186,7 +186,7 @@ void SGrabberProxy::startCamera()
 
             data::Camera::SourceType sourceType = data::Camera::UNKNOWN;
 
-            size_t numCamerasInSeries = 1;
+            std::size_t numCamerasInSeries = 1;
 
             {
                 auto cameraInput = m_camera.lock();
@@ -200,7 +200,7 @@ void SGrabberProxy::startCamera()
                     auto cameraSeries = std::dynamic_pointer_cast<const data::CameraSeries>(cameraInput.get_shared());
                     if(cameraSeries)
                     {
-                        numCamerasInSeries = cameraSeries->getNumberOfCameras();
+                        numCamerasInSeries = cameraSeries->numCameras();
                         SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
 
                         // Assume same source on all cameras
@@ -210,7 +210,7 @@ void SGrabberProxy::startCamera()
             }
 
             std::vector<std::string> availableExtensionsSelector;
-            std::map<std::string, size_t> implToNumTL;
+            std::map<std::string, std::size_t> implToNumTL;
 
             for(const auto& srvImpl : grabbersImpl)
             {
@@ -232,8 +232,8 @@ void SGrabberProxy::startCamera()
                         objectsType.end()
                     );
 
-                    size_t numTL   = 0;
-                    auto inoutsCfg = config.equal_range("inout");
+                    std::size_t numTL = 0;
+                    auto inoutsCfg    = config.equal_range("inout");
                     for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                     {
                         service::IService::ConfigType parameterCfg;
@@ -271,13 +271,13 @@ void SGrabberProxy::startCamera()
                     {
                         const auto tags = srvFactory->getServiceTags(srvImpl);
 
-                        const ::boost::char_separator<char> sep(",");
-                        const ::boost::tokenizer< ::boost::char_separator<char> > tokens(tags, sep);
+                        const boost::char_separator<char> sep(",");
+                        const boost::tokenizer<boost::char_separator<char> > tokens(tags, sep);
                         bool capsMatch = false;
                         for(const auto& token : tokens)
                         {
                             // Remove trailing and leading spaces.
-                            const auto trimedToken = ::boost::algorithm::trim_copy(token);
+                            const auto trimedToken = boost::algorithm::trim_copy(token);
 
                             data::Camera::SourceType handledSourceType = data::Camera::UNKNOWN;
                             if(trimedToken == "FILE")
@@ -412,7 +412,7 @@ void SGrabberProxy::startCamera()
 
             m_services.resize(implToNumTL[m_grabberImpl]);
 
-            size_t srvCount = 0;
+            std::size_t srvCount = 0;
             for(auto& srv : m_services)
             {
                 srv = this->registerService<IGrabber>(m_grabberImpl);
@@ -428,19 +428,21 @@ void SGrabberProxy::startCamera()
                     auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
                     if(cameraSeries)
                     {
-                        const size_t numCamerasInSeries = cameraSeries->getNumberOfCameras();
+                        #ifdef DEBUG
+                        const std::size_t numCameras = cameraSeries->numCameras();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
-                            srvCount < numCamerasInSeries
+                            srvCount < numCameras
                         );
+                        #endif
 
                         srv->setInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
                     }
                 }
 
-                size_t inputTLCount    = 0;
-                const auto proxyConfig = this->getConfigTree();
-                auto inoutsCfg         = proxyConfig.equal_range("inout");
+                std::size_t inputTLCount = 0;
+                const auto proxyConfig   = this->getConfigTree();
+                auto inoutsCfg           = proxyConfig.equal_range("inout");
                 for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");

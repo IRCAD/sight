@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include <opencv2/core.hpp>
 
 #include <random>
+#include <type_traits>
 
 namespace sight::io::opencv
 {
@@ -57,11 +58,11 @@ declareCvFormat(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
 //------------------------------------------------------------------------------
 
 template<typename T>
-::cv::Mat genCvImage(
+cv::Mat genCvImage(
     const std::vector<T>& _imageBuffer,
-    size_t _w,
-    size_t _h,
-    size_t _d,
+    std::size_t _w,
+    std::size_t _h,
+    std::size_t _d,
     std::uint8_t _numChannels
 )
 {
@@ -85,44 +86,54 @@ template<typename T>
     cvSize.push_back(static_cast<int>(_w));
 
     const auto cvType = getCvFormat<T>::type[_numChannels - 1];
-    ::cv::Mat cvImage = ::cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
+    cv::Mat cvImage   = cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
 
     return cvImage;
 }
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
+template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
+static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
-    const size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
+    const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
     buffer.resize(imageSize);
 
     std::random_device rd;
     std::mt19937 engine(rd());
 
-    if(std::is_integral<T>::value)
-    {
-        std::uniform_int_distribution<> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+    std::uniform_int_distribution<> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
-        for(size_t i = 0 ; i < imageSize ; ++i)
-        {
-            auto value   = dist(engine);
-            T boundValue = static_cast<T>(value);
-            buffer[i] = boundValue;
-        }
+    for(std::size_t i = 0 ; i < imageSize ; ++i)
+    {
+        auto value   = dist(engine);
+        T boundValue = static_cast<T>(value);
+        buffer[i] = boundValue;
     }
-    else
-    {
-        std::uniform_real_distribution<> dist(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 
-        for(size_t i = 0 ; i < imageSize ; ++i)
-        {
-            auto value   = dist(engine);
-            T boundValue = static_cast<T>(value);
-            buffer[i] = boundValue;
-        }
+    return buffer;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+{
+    const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
+    std::vector<T> buffer;
+    buffer.resize(imageSize);
+
+    std::random_device rd;
+    std::mt19937 engine(rd());
+
+    std::uniform_real_distribution<> dist(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
+
+    for(std::size_t i = 0 ; i < imageSize ; ++i)
+    {
+        auto value   = dist(engine);
+        T boundValue = static_cast<T>(value);
+        buffer[i] = boundValue;
     }
 
     return buffer;

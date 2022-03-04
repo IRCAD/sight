@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = service::OSR::getServices("::sight::viz::scene3d::SRender");
+        auto servicesVector = service::OSR::getServices("sight::viz::scene3d::SRender");
 
         auto& registry       = viz::scene3d::registry::getAdaptorRegistry();
         auto renderServiceId = registry[this->getID()];
@@ -140,7 +140,7 @@ Layer::sptr IAdaptor::getLayer() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneManager* IAdaptor::getSceneManager()
+Ogre::SceneManager* IAdaptor::getSceneManager()
 {
     return m_renderService.lock()->getSceneManager(m_layerID);
 }
@@ -154,7 +154,6 @@ void IAdaptor::requestRender()
         || renderService->getStatus() == service::IService::SWAPPING)
        && renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO)
     {
-        auto renderService = m_renderService.lock();
         renderService->slot(sight::viz::scene3d::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
         renderService->requestRender();
     }

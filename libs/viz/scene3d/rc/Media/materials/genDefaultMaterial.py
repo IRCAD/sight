@@ -42,11 +42,8 @@ def generatePermutations(baseConfig, *configs):
                 if currentConfig[1]:
                     currentPermutation += [currentConfig[1]]
 
-            # Concatenate attached shaders
-            currentPermutation += [config[2] + currentConfig[2]]
-
             # Concatenate params
-            paramsDict = appendDict(config[3], currentConfig[3])
+            paramsDict = appendDict(config[2], currentConfig[2])
 
             currentPermutation.append(paramsDict)
 
@@ -65,7 +62,6 @@ def generatePermutations(baseConfig, *configs):
 lightingParams = [ '// Lighting',
                    'param_named_auto u_f3CameraPos camera_position',
                    'param_named u_fNumLights float 1.0',
-                   'param_named_auto u_f4LightPos light_position_array 10',
                    'param_named_auto u_f4LightAmbientCol ambient_light_colour',
                    'param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10',
                    'param_named_auto u_f3LightSpecularCol light_specular_colour_array 10',
@@ -73,6 +69,10 @@ lightingParams = [ '// Lighting',
                    'param_named_auto u_f4DiffuseCol surface_diffuse_colour',
                    'param_named_auto u_f4SpecularCol surface_specular_colour',
                    'param_named_auto u_fShininess surface_shininess']
+
+lightingParamsFlat = lightingParams + [ 'param_named_auto u_f4LightPosVs light_position_view_space_array 10' ]
+
+lightingParams += [ 'param_named_auto u_f4LightPos light_position_array 10' ]
 
 ## Common parameters used for ambient lighting
 ambientParams = [ '// Ambient',
@@ -99,33 +99,31 @@ diffuseColorParams = ['// Diffuse color',
 ppColorParams = ['param_named u_colorPrimitiveTexture int 0']
 
 ## 'Name', '#Define', 'Attached vp', {parameters dict}
-cfgAmbient = ['Ambient', 'AMBIENT=1', '', { 'renderSceneVP' : ambientParams } ]
+cfgAmbient = ['Ambient', '', { 'renderSceneVP' : ambientParams } ]
 
-cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', {  'renderSceneVP' : lightingParams } ]
+cfgFlat = ['Flat', 'FLAT=1', { 'defaultFP' : lightingParamsFlat } ]
 
-cfgGouraud = ['Gouraud', '', 'Lighting_VP', { 'renderSceneVP' : lightingParams } ]
-
-cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', { 'defaultFP' : lightingParams,
+cfgPixelLit = ['PixelLit', 'PHONG=1', { 'defaultFP' : lightingParams,
                                                                    'depthPeelingFP' : lightingParams,
                                                                    'dualDepthPeelingFP' : lightingParams,
                                                                    'HT_weight_blendFP' : lightingParams,
                                                                    'weighted_blendFP' : lightingParams } ]
 
-cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', { } ]
+cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', { } ]
 
-cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', { } ]
+cfgVertexColor = ['VT', 'VERTEX_COLOR=1', { } ]
 
-cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', { 'defaultFP' : texParams + texAlphaParams,
+cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', { 'defaultFP' : texParams + texAlphaParams,
                                                           'depthPeelingFP' : texParams + texAlphaParams,
                                                           'dualDepthPeelingFP' : texParams + texAlphaParams,
                                                           'HT_weight_blendFP' : texParams + texAlphaParams,
                                                           'weighted_blendFP' : texParams + texAlphaParams } ]
 
-cfgTriangles = ['Triangles', 'TRIANGLES=1', '', { 'renderSceneGP' : [], } ]
-cfgQuad = ['Quad', 'QUAD=1', '', { } ]
-cfgTetra = ['Tetra', 'TETRA=1', '', { } ]
+cfgTriangles = ['Triangles', 'TRIANGLES=1', { 'renderSceneGP' : [], } ]
+cfgQuad = ['Quad', 'QUAD=1', { } ]
+cfgTetra = ['Tetra', 'TETRA=1', { } ]
 
-cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', '', { 'renderSceneGP' : ppColorParams} ]
+cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', { 'renderSceneGP' : ppColorParams} ]
 
 ## Configurations for vertex programs
 ## Basis are the different lighting techniques, and optional are vertex color and diffuse texture
@@ -133,7 +131,6 @@ configsListVP = []
 
 configsListVP += generatePermutations(cfgAmbient, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgFlat, cfgVertexColor, cfgDiffuseTex)
-configsListVP += generatePermutations(cfgGouraud, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex)
 
 ## Configurations for fragment programs
@@ -142,7 +139,6 @@ configsListFP = []
 
 configsListFP += generatePermutations(cfgAmbient, cfgVertexColor, cfgDiffuseTex)
 configsListFP += generatePermutations(cfgFlat, cfgVertexColor, cfgDiffuseTex)
-configsListFP += generatePermutations(cfgGouraud, cfgVertexColor, cfgDiffuseTex)
 configsListFP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex)
 
 configsListFP += [cfgEdgeNormal]

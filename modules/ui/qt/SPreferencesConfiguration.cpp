@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <service/registry/ObjectService.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -171,9 +171,9 @@ void SPreferencesConfiguration::configuring()
             ConfigurationType valuesCfg = elt->findConfigurationElement("values");
             SIGHT_ASSERT("element 'values' is missing.", valuesCfg);
 
-            const ::boost::char_separator<char> sep(", ;");
+            const boost::char_separator<char> sep(", ;");
             const std::string s = valuesCfg->getValue();
-            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {s, sep};
+            const boost::tokenizer<boost::char_separator<char> > tokens {s, sep};
 
             pref.m_comboBox = new QComboBox();
             for(const std::string& value : tokens)
@@ -192,23 +192,26 @@ void SPreferencesConfiguration::starting()
 {
     this->actionServiceStarting();
 
-    // Check preferences
-    data::Composite::sptr prefs = sight::ui::base::preferences::getPreferences();
-    if(prefs)
+    try
     {
-        for(PreferenceElt& pref : m_preferences)
+        sight::ui::base::Preferences preferences;
+
+        for(auto& preference : m_preferences)
         {
-            data::Composite::IteratorType iterPref = prefs->find(pref.m_preferenceKey);
-            if(iterPref != prefs->end())
+            if(const auto& found = preferences.get_optional<std::string>(preference.m_preferenceKey); found)
             {
-                pref.m_dataPreference = data::String::dynamicCast(iterPref->second);
+                preference.m_preferenceValue = *found;
             }
             else
             {
-                pref.m_dataPreference          = data::String::New(pref.m_defaultValue);
-                (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
+                preference.m_preferenceValue = preference.m_defaultValue;
+                preferences.put(preference.m_preferenceKey, preference.m_defaultValue);
             }
         }
+    }
+    catch(const sight::ui::base::PreferencesDisabled& e)
+    {
+        // Nothing to do..
     }
 }
 
@@ -227,17 +230,17 @@ void SPreferencesConfiguration::updating()
 
         if(pref.m_type == PreferenceType::TEXT)
         {
-            pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
+            pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
         }
         else if(pref.m_type == PreferenceType::CHECKBOX)
         {
-            pref.m_checkBox->setChecked(pref.m_dataPreference->value() == "true");
+            pref.m_checkBox->setChecked(pref.m_preferenceValue == "true");
             layout->addWidget(pref.m_checkBox, index, 1);
         }
         else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
         {
-            pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
+            pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
             QObject::connect(
                 pref.m_lineEdit,
@@ -268,7 +271,7 @@ void SPreferencesConfiguration::updating()
         }
         else if(pref.m_type == PreferenceType::PATH)
         {
-            pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
+            pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
             QPointer<QPushButton> directorySelector = new QPushButton("...");
             layout->addWidget(directorySelector, index, 2);
@@ -282,7 +285,7 @@ void SPreferencesConfiguration::updating()
         }
         else if(pref.m_type == PreferenceType::FILE)
         {
-            pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
+            pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
             QPointer<QPushButton> directorySelector = new QPushButton("...");
             layout->addWidget(directorySelector, index, 2);
@@ -296,11 +299,11 @@ void SPreferencesConfiguration::updating()
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
-            const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_dataPreference->value()));
+            const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_preferenceValue));
             if(currentIndex < 0)
             {
                 SIGHT_WARN(
-                    "Preference '" + pref.m_dataPreference->value()
+                    "Preference '" + pref.m_preferenceValue
                     + "' can't be find in combobox. The first one is selected."
                 );
                 pref.m_comboBox->setCurrentIndex(0);
@@ -333,16 +336,18 @@ void SPreferencesConfiguration::updating()
 
     if(dialog->exec() == QDialog::Accepted)
     {
+        sight::ui::base::Preferences preferences;
+
         for(PreferenceElt& pref : m_preferences)
         {
             if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
                 || pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
-                pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+                pref.m_preferenceValue = pref.m_lineEdit->text().toStdString();
             }
             else if(pref.m_type == PreferenceType::CHECKBOX)
             {
-                pref.m_dataPreference->value() = pref.m_checkBox->isChecked() ? "true" : "false";
+                pref.m_preferenceValue = pref.m_checkBox->isChecked() ? "true" : "false";
             }
             else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
             {
@@ -353,7 +358,7 @@ void SPreferencesConfiguration::updating()
 
                 if(isValid)
                 {
-                    pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+                    pref.m_preferenceValue = pref.m_lineEdit->text().toStdString();
                 }
 
                 if(qApp->styleSheet().isEmpty())
@@ -372,12 +377,13 @@ void SPreferencesConfiguration::updating()
             }
             else if(pref.m_type == PreferenceType::COMBOBOX)
             {
-                pref.m_dataPreference->value() = pref.m_comboBox->currentText().toStdString();
+                pref.m_preferenceValue = pref.m_comboBox->currentText().toStdString();
             }
+
+            preferences.put(pref.m_preferenceKey, pref.m_preferenceValue);
         }
 
         m_sigParametersModified->asyncEmit();
-        sight::ui::base::preferences::savePreferences();
     }
 }
 

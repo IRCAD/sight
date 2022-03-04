@@ -27,7 +27,7 @@ namespace std
 
 //------------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& os, const ::sight::core::tools::Type& type)
+std::ostream& operator<<(std::ostream& os, const sight::core::tools::Type& type)
 {
     os << type.string();
     return os;

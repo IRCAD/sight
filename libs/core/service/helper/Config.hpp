@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,6 +145,13 @@ public:
         const boost::property_tree::ptree& srvElem,
         const std::string& errMsgHead
     );
+
+    SERVICE_API static const service::IService::ObjectServiceConfig* getKeyProps(
+        const std::string& serviceType,
+        const std::string& key
+    );
+
+    SERVICE_API static void clearKeyProps();
 };
 
 } // namespace helper

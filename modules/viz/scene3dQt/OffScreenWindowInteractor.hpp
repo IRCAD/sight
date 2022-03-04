@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,10 +81,10 @@ public:
     MODULE_VIZ_SCENE3DQT_API void makeCurrent() override;
 
     /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3DQT_API ::Ogre::RenderTarget* getRenderTarget() override;
+    MODULE_VIZ_SCENE3DQT_API Ogre::RenderTarget* getRenderTarget() override;
 
     /// Gets the Ogre render texture attached to the render target.
-    MODULE_VIZ_SCENE3DQT_API ::Ogre::TexturePtr getRenderTexture() override;
+    MODULE_VIZ_SCENE3DQT_API Ogre::TexturePtr getRenderTexture() override;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
     MODULE_VIZ_SCENE3DQT_API sight::viz::scene3d::IGraphicsWorker* createGraphicsWorker() override;
@@ -113,16 +113,16 @@ private:
     int m_frameId {0};
 
     /// Contains the Ogre root.
-    ::Ogre::Root* m_ogreRoot {nullptr};
+    Ogre::Root* m_ogreRoot {nullptr};
 
     /// Contains the Ogre render window.
-    ::Ogre::RenderWindow* m_ogreRenderWindow {nullptr};
+    Ogre::RenderWindow* m_ogreRenderWindow {nullptr};
 
     /// Contains the Ogre render target.
-    ::Ogre::RenderTarget* m_ogreRenderTarget {nullptr};
+    Ogre::RenderTarget* m_ogreRenderTarget {nullptr};
 
     /// Contains the Ogre render texture attached to the render target
-    ::Ogre::TexturePtr m_ogreTexture;
+    Ogre::TexturePtr m_ogreTexture;
 
     /// Contains the OpenGL context used for offscreen rendering.
     std::shared_ptr<QOpenGLContext> m_glContext;
@@ -153,14 +153,14 @@ inline int OffScreenWindowInteractor::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-inline ::Ogre::RenderTarget* OffScreenWindowInteractor::getRenderTarget()
+inline Ogre::RenderTarget* OffScreenWindowInteractor::getRenderTarget()
 {
     return m_ogreRenderTarget;
 }
 
 //-----------------------------------------------------------------------------
 
-inline ::Ogre::TexturePtr OffScreenWindowInteractor::getRenderTexture()
+inline Ogre::TexturePtr OffScreenWindowInteractor::getRenderTexture()
 {
     return m_ogreTexture;
 }

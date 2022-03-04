@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
 
 #include "core/runtime/detail/dl/Native.hpp"
 
@@ -93,4 +93,4 @@ struct Posix : public Native
 
 } // namespace sight::core::runtime
 
-#endif // #ifdef linux
+#endif // #ifdef __unix__

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,11 +114,11 @@ void SReconstruction::updating()
         module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = meshAdaptor->getInOut<sight::data::Mesh>("mesh").lock();
+        auto mesh = meshAdaptor->getInput<sight::data::Mesh>("mesh").lock();
         if(mesh.get_shared() != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction
-            meshAdaptor->setMaterial(reconstruction->getMaterial());
+            meshAdaptor->setMaterial(std::const_pointer_cast<data::Material>(reconstruction->getMaterial()));
             meshAdaptor->setVisible(reconstruction->getIsVisible());
         }
     }
@@ -142,21 +142,22 @@ void SReconstruction::createMeshService()
 {
     // Retrieves the associated Reconstruction object
     const auto reconstruction = m_reconstruction.lock();
-    data::Mesh::sptr mesh     = reconstruction->getMesh();
+    data::Mesh::csptr mesh    = reconstruction->getMesh();
     if(mesh)
     {
         // Creates an Ogre adaptor and associates it with the Sight mesh object
         auto meshAdaptor = this->registerService<module::viz::scene3d::adaptor::SMesh>(
-            "::sight::module::viz::scene3d::adaptor::SMesh"
+            "sight::module::viz::scene3d::adaptor::SMesh"
         );
-        meshAdaptor->setInOut(mesh, "mesh", true);
+        meshAdaptor->setInput(mesh, "mesh", true);
 
         meshAdaptor->setID(this->getID() + meshAdaptor->getID());
         meshAdaptor->setLayerID(m_layerID);
         meshAdaptor->setRenderService(this->getRenderService());
 
         meshAdaptor->setIsReconstructionManaged(true);
-        meshAdaptor->setMaterial(reconstruction->getMaterial());
+        // Here Material cannot be const since SMaterial created by SMesh can modify it.
+        meshAdaptor->setMaterial(std::const_pointer_cast<data::Material>(reconstruction->getMaterial()));
         meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
         meshAdaptor->setAutoResetCamera(m_autoResetCamera);
         meshAdaptor->setTransformId(this->getTransformId());

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include "filter/image/config.hpp"
 #include "filter/image/ImageDiff.hpp"
 
-#include <data/helper/Image.hpp>
-#include <data/helper/ImageGetter.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
@@ -51,7 +49,7 @@ public:
 
     typedef filter::image::BresenhamLine::CoordinatesType CoordinatesType;
 
-    typedef data::helper::MedicalImage::Orientation OrientationType;
+    typedef filter::image::BresenhamLine::Orientation OrientationType;
 
     typedef std::vector<CoordinatesType> SeedsType;
 

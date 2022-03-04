@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ void SMeshList::starting()
     const auto imageInput     = m_texture.lock();
 
     // initialise N meshes adaptor
-    for(size_t i = 0 ; i < m_capacity ; ++i)
+    for(std::size_t i = 0 ; i < m_capacity ; ++i)
     {
         // Matrix and Image are copied because the input ones will change. Mesh is not copied because we want to use
         // the same mesh of all the adaptors
@@ -116,7 +116,7 @@ void SMeshList::starting()
         textureAdaptor->setLayerID(m_layerID);
         textureAdaptor->setRenderService(this->getRenderService());
 
-        textureAdaptor->setInput(image, "image", true);
+        textureAdaptor->setInput(image, "image", false);
 
         textureAdaptor->configure(textureConfig);
         textureAdaptor->start();
@@ -134,7 +134,7 @@ void SMeshList::starting()
 
         {
             const auto mesh = m_mesh.lock();
-            meshAdaptor->setInOut(mesh.get_shared(), "mesh", true);
+            meshAdaptor->setInput(mesh.get_shared(), "mesh", true);
         }
 
         meshAdaptor->configure(meshConfig);
@@ -211,31 +211,29 @@ void SMeshList::add()
 
         instance.m_isEnabled = true;
 
-        // update the transform
         const sight::viz::scene3d::IAdaptor::sptr textureAdp = instance.m_texture;
         {
-            // set current image
-            const auto image = textureAdp->getInput<data::Image>("image").lock();
-
+            const auto image        = textureAdp->getInput<data::Image>("image").lock();
             const auto textureInput = m_texture.lock();
 
             if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
                && (textureInput->getPixelFormat() == data::Image::PixelFormat::GRAY_SCALE
-                   || textureInput->getNumberOfComponents() == 1))
+                   || textureInput->numComponents() == 1))
             {
                 // transform the image into RGBA with a transparent texture
-
                 if(textureInput->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
-                    instance.m_image->setPixelFormat(data::Image::PixelFormat::RGBA);
-                    instance.m_image->setNumberOfComponents(4);
-                    instance.m_image->resize();
+                    instance.m_image->resize(
+                        instance.m_image->getSize(),
+                        instance.m_image->getType(),
+                        data::Image::PixelFormat::RGBA
+                    );
                 }
 
                 auto inItr = textureInput->begin<std::uint8_t>();
                 auto inEnd = textureInput->end<std::uint8_t>();
-                auto itr   = instance.m_image->begin<data::iterator::RGBA>();
+                auto itr   = instance.m_image->begin<data::iterator::rgba>();
 
                 for( ; inItr != inEnd ; ++inItr, ++itr)
                 {
@@ -247,21 +245,23 @@ void SMeshList::add()
             }
             else if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
                     && (textureInput->getPixelFormat() == data::Image::PixelFormat::RGB
-                        || textureInput->getNumberOfComponents() == 3))
+                        || textureInput->numComponents() == 3))
             {
                 // transform the image into RGBA with a transparent texture
 
                 if(textureInput->getAllocatedSizeInBytes() * 4 / 3 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
-                    instance.m_image->setPixelFormat(data::Image::PixelFormat::RGBA);
-                    instance.m_image->setNumberOfComponents(4);
-                    instance.m_image->resize();
+                    instance.m_image->resize(
+                        instance.m_image->getSize(),
+                        instance.m_image->getType(),
+                        data::Image::PixelFormat::RGBA
+                    );
                 }
 
-                auto inItr = textureInput->begin<data::iterator::RGB>();
-                auto inEnd = textureInput->end<data::iterator::RGB>();
-                auto itr   = instance.m_image->begin<data::iterator::RGBA>();
+                auto inItr = textureInput->begin<data::iterator::rgb>();
+                auto inEnd = textureInput->end<data::iterator::rgb>();
+                auto itr   = instance.m_image->begin<data::iterator::rgba>();
 
                 for( ; inItr != inEnd ; ++inItr, ++itr)
                 {

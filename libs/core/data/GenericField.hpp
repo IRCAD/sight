@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::data
  *
  * A generic object contains a value.
  *
- * @see     data::Float, data::Boolean, data::Integer
+ * @see     data::Double data::Float, data::Boolean, data::Integer
  */
 template<typename T>
 class DATA_CLASS_API GenericField : public GenericFieldBase
@@ -82,136 +82,137 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool operator==(const GenericFieldBase& lf) override
+    inline bool operator==(const GenericFieldBase& other) const noexcept override
     {
-        bool result = false;
         try
         {
-            const data::GenericField<T>& gField = dynamic_cast<const data::GenericField<T>&>(lf);
-            result = (this->m_value == gField.value());
+            // Try to cast in the same type
+            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+
+            // If the type is a floating point type
+            if constexpr(std::is_floating_point_v<T>)
+            {
+                // Use our handcrafted comparison (which manage scaled epsilon and NaN / Inf)
+                if(!core::tools::is_equal(this->m_value, other_field.m_value))
+                {
+                    return false;
+                }
+            }
+            else if(!(this->m_value == other_field.m_value))
+            {
+                return false;
+            }
+
+            // Do not forget to call superclass == operator
+            return Object::operator==(other);
         }
-        catch(const std::bad_cast& exp)
+        catch([[maybe_unused]] const std::bad_cast& exp)
         {
-#ifndef _DEBUG
-            SIGHT_NOT_USED(exp);
-#endif
             SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false);
         }
-        return result;
+
+        return false;
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator!=(const GenericFieldBase& lf) override
+    inline bool operator<(const GenericFieldBase& other) const noexcept override
     {
-        bool result = false;
         try
         {
-            const data::GenericField<T>& gField = dynamic_cast<const data::GenericField<T>&>(lf);
-            result = (this->m_value != gField.value());
+            // Try to cast in the same type
+            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+
+            // If the type is a floating point type
+            if constexpr(std::is_floating_point_v<T>)
+            {
+                // Use our handcrafted comparison (which manage scaled epsilon and NaN / Inf)
+                if(!core::tools::is_less(this->m_value, other_field.m_value))
+                {
+                    return false;
+                }
+            }
+            else if(!(this->m_value < other_field.m_value))
+            {
+                return false;
+            }
+
+            return true;
         }
-        catch(const std::bad_cast& exp)
+        catch([[maybe_unused]] const std::bad_cast& exp)
         {
-#ifndef _DEBUG
-            SIGHT_NOT_USED(exp);
-#endif
             SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false);
         }
-        return result;
+
+        return false;
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator<(const GenericFieldBase& lf) override
+    inline bool operator>(const GenericFieldBase& other) const noexcept override
     {
-        bool result = false;
         try
         {
-            const data::GenericField<T>& gField = dynamic_cast<const data::GenericField<T>&>(lf);
-            result = (this->m_value < gField.value());
+            // Try to cast in the same type
+            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+
+            // If the type is a floating point type
+            if constexpr(std::is_floating_point_v<T>)
+            {
+                // Use our handcrafted comparison (which manage scaled epsilon and NaN / Inf)
+                if(!core::tools::is_greater(this->m_value, other_field.m_value))
+                {
+                    return false;
+                }
+            }
+            else if(!(this->m_value > other_field.m_value))
+            {
+                return false;
+            }
+
+            return true;
         }
-        catch(const std::bad_cast& exp)
+        catch([[maybe_unused]] const std::bad_cast& exp)
         {
-#ifndef _DEBUG
-            SIGHT_NOT_USED(exp);
-#endif
             SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false);
         }
-        return result;
+
+        return false;
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator>(const GenericFieldBase& lf) override
+    inline bool operator!=(const GenericFieldBase& other) const noexcept override
     {
-        bool result = false;
-        try
-        {
-            const data::GenericField<T>& gField = dynamic_cast<const data::GenericField<T>&>(lf);
-            result = (this->m_value > gField.value());
-        }
-        catch(const std::bad_cast& exp)
-        {
-#ifndef _DEBUG
-            SIGHT_NOT_USED(exp);
-#endif
-            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false);
-        }
-        return result;
+        return !(*this == other);
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator<=(const GenericFieldBase& lf) override
+    inline bool operator<=(const GenericFieldBase& other) const noexcept override
     {
-        bool result = false;
-        try
-        {
-            const data::GenericField<T>& gField = dynamic_cast<const data::GenericField<T>&>(lf);
-            result = (this->m_value <= gField.value());
-        }
-        catch(const std::bad_cast& exp)
-        {
-#ifndef _DEBUG
-            SIGHT_NOT_USED(exp);
-#endif
-            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false);
-        }
-        return result;
+        return !(*this > other);
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator>=(const GenericFieldBase& lf) override
+    inline bool operator>=(const GenericFieldBase& other) const noexcept override
     {
-        bool result = false;
-        try
-        {
-            const data::GenericField<T>& gField = dynamic_cast<const data::GenericField<T>&>(lf);
-            result = (this->m_value >= gField.value());
-        }
-        catch(const std::bad_cast& exp)
-        {
-#ifndef _DEBUG
-            SIGHT_NOT_USED(exp);
-#endif
-            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false);
-        }
-        return result;
+        return !(*this < other);
     }
 
     //------------------------------------------------------------------------------
 
-    ::std::string toString() const override
+    std::string toString() const override
     {
-        return ::boost::lexical_cast< ::std::string>(this->m_value);
+        return boost::lexical_cast<std::string>(this->m_value);
     }
 
     //------------------------------------------------------------------------------
 
-    void fromString(const ::std::string& _value) override
+    void fromString(const std::string& _value) override
     {
-        this->m_value = ::boost::lexical_cast<T>(_value);
+        this->m_value = boost::lexical_cast<T>(_value);
     }
 
 protected:

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,11 +30,8 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <service/macros.hpp>
@@ -57,12 +54,12 @@ static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSl
 static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
-typedef data::helper::MedicalImage MedicalImage;
+namespace medHelper = data::helper::MedicalImage;
 
 //-----------------------------------------------------------------------------
 
 SNegato::SNegato() noexcept :
-    m_qimg(nullptr),
+    m_qImg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
     m_pointIsCaptured(false),
@@ -73,7 +70,8 @@ SNegato::SNegato() noexcept :
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
     newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
-    m_helperImg.setOrientation(MedicalImage::Z_AXIS);
+
+    m_orientation = orientation_t::Z_AXIS;
 }
 
 //-----------------------------------------------------------------------------
@@ -96,15 +94,15 @@ void SNegato::configuring()
 
         if(orientationValue == "axial")
         {
-            m_helperImg.setOrientation(MedicalImage::Z_AXIS);
+            m_orientation = orientation_t::AXIAL;
         }
         else if(orientationValue == "sagittal")
         {
-            m_helperImg.setOrientation(MedicalImage::X_AXIS);
+            m_orientation = orientation_t::SAGITTAL;
         }
         else if(orientationValue == "frontal")
         {
-            m_helperImg.setOrientation(MedicalImage::Y_AXIS);
+            m_orientation = orientation_t::FRONTAL;
         }
     }
 
@@ -125,43 +123,41 @@ void SNegato::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SNegato::updateBufferFromImage(QImage* qimg)
+void SNegato::updateBufferFromImage(QImage* _img)
 {
-    if(!qimg)
+    if(!_img)
     {
         return;
     }
 
     // Window min/max
     const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    const data::mt::ObjectReadLock tfLock(tf);
+    const data::mt::locked_ptr tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    auto image                   = m_image.lock();
-    const data::Image::Size size = image->getSize2();
-    const short* imgBuff         = static_cast<const short*>(image->getBuffer());
-    const size_t imageZOffset    = size[0] * size[1];
+    auto image                     = m_image.lock();
+    const data::Image::Size size   = image->getSize();
+    const short* imgBuff           = static_cast<const short*>(image->getBuffer());
+    const std::size_t imageZOffset = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
     const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
-    std::uint8_t* pDest = qimg->bits();
+    std::uint8_t* pDest = _img->bits();
 
-    data::Integer::sptr indexes[3];
-    m_helperImg.getSliceIndex(indexes);
     // Fill image according to current slice type:
-    if(m_helperImg.getOrientation() == MedicalImage::X_AXIS) // sagittal
+    if(m_orientation == orientation_t::SAGITTAL) // sagittal
     {
-        const size_t sagitalIndex = static_cast<size_t>(indexes[0]->value());
+        const std::size_t sagitalIndex = static_cast<std::size_t>(m_sagittalIndex);
 
-        for(size_t z = 0 ; z < size[2] ; ++z)
+        for(std::size_t z = 0 ; z < size[2] ; ++z)
         {
-            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
-            const size_t zxOffset = zOffset + sagitalIndex;
+            const std::size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const std::size_t zxOffset = zOffset + sagitalIndex;
 
-            for(size_t y = 0 ; y < size[1] ; ++y)
+            for(std::size_t y = 0 ; y < size[1] ; ++y)
             {
                 const QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, tfWin, tf);
 
@@ -171,17 +167,17 @@ void SNegato::updateBufferFromImage(QImage* qimg)
             }
         }
     }
-    else if(m_helperImg.getOrientation() == MedicalImage::Y_AXIS) // frontal
+    else if(m_orientation == orientation_t::FRONTAL) // frontal
     {
-        const size_t frontalIndex = static_cast<size_t>(indexes[1]->value());
-        const size_t yOffset      = frontalIndex * size[0];
+        const std::size_t frontalIndex = static_cast<std::size_t>(m_frontalIndex);
+        const std::size_t yOffset      = frontalIndex * size[0];
 
-        for(size_t z = 0 ; z < size[2] ; ++z)
+        for(std::size_t z = 0 ; z < size[2] ; ++z)
         {
-            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
-            const size_t zyOffset = zOffset + yOffset;
+            const std::size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const std::size_t zyOffset = zOffset + yOffset;
 
-            for(size_t x = 0 ; x < size[0] ; ++x)
+            for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
                 const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
 
@@ -191,17 +187,17 @@ void SNegato::updateBufferFromImage(QImage* qimg)
             }
         }
     }
-    else if(m_helperImg.getOrientation() == MedicalImage::Z_AXIS) // axial
+    else if(m_orientation == orientation_t::AXIAL) // axial
     {
-        const size_t axialIndex = static_cast<size_t>(indexes[2]->value());
-        const size_t zOffset    = axialIndex * imageZOffset;
+        const std::size_t axialIndex = static_cast<std::size_t>(m_axialIndex);
+        const std::size_t zOffset    = axialIndex * imageZOffset;
 
-        for(size_t y = 0 ; y < size[1] ; ++y)
+        for(std::size_t y = 0 ; y < size[1] ; ++y)
         {
-            const size_t yOffset  = y * size[0];
-            const size_t zyOffset = zOffset + yOffset;
+            const std::size_t yOffset  = y * size[0];
+            const std::size_t zyOffset = zOffset + yOffset;
 
-            for(size_t x = 0 ; x < size[0] ; ++x)
+            for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
                 const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
 
@@ -212,14 +208,14 @@ void SNegato::updateBufferFromImage(QImage* qimg)
         }
     }
 
-    QPixmap m_pixmap = QPixmap::fromImage(*m_qimg);
+    QPixmap m_pixmap = QPixmap::fromImage(*m_qImg);
     m_pixmapItem->setPixmap(m_pixmap);
 }
 
 //-----------------------------------------------------------------------------
 
 QRgb SNegato::getQImageVal(
-    const size_t index,
+    const std::size_t index,
     const short* buffer,
     double wlMin,
     double tfWin,
@@ -247,23 +243,23 @@ QImage* SNegato::createQImage()
     {
         auto img = m_image.lock();
 
-        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared()))
+        if(!data::helper::MedicalImage::checkImageValidity(img.get_shared()))
         {
             return nullptr;
         }
 
-        size    = img->getSize2();
-        spacing = img->getSpacing2();
-        origin  = img->getOrigin2();
+        size    = img->getSize();
+        spacing = img->getSpacing();
+        origin  = img->getOrigin();
     }
 
     double qImageSpacing[2];
     double qImageOrigin[2];
     int qImageSize[2];
 
-    switch(m_helperImg.getOrientation())
+    switch(m_orientation)
     {
-        case MedicalImage::X_AXIS: // sagittal
+        case orientation_t::X_AXIS: // sagittal
             this->m_yAxis->setScale(-1);
             qImageSize[0]    = static_cast<int>(size[1]);
             qImageSize[1]    = static_cast<int>(size[2]);
@@ -273,7 +269,7 @@ QImage* SNegato::createQImage()
             qImageOrigin[1]  = -(origin[2] + size[2] * spacing[2] - 0.5f * spacing[2]);
             break;
 
-        case MedicalImage::Y_AXIS: // frontal
+        case orientation_t::Y_AXIS: // frontal
             qImageSize[0]    = static_cast<int>(size[0]);
             qImageSize[1]    = static_cast<int>(size[2]);
             qImageSpacing[0] = spacing[0];
@@ -282,7 +278,7 @@ QImage* SNegato::createQImage()
             qImageOrigin[1]  = -(origin[2] + size[2] * spacing[2] - 0.5f * spacing[2]);
             break;
 
-        case MedicalImage::Z_AXIS: // axial
+        case orientation_t::Z_AXIS: // axial
             qImageSize[0]    = static_cast<int>(size[0]);
             qImageSize[1]    = static_cast<int>(size[1]);
             qImageSpacing[0] = spacing[0];
@@ -297,7 +293,7 @@ QImage* SNegato::createQImage()
     }
 
     // Create empty QImage
-    QImage* qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
+    QImage* image = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
 
     // Place m_pixmapItem
     m_pixmapItem->resetTransform();
@@ -311,7 +307,7 @@ QImage* SNegato::createQImage()
     // Update image scene
     this->getScene2DRender()->updateSceneSize(0.20f);
 
-    return qimage;
+    return image;
 }
 
 //-----------------------------------------------------------------------------
@@ -321,7 +317,11 @@ void SNegato::starting()
     auto tf = m_tf.lock();
 
     auto image = m_image.lock();
-    m_helperImg.updateImageInfos(image.get_shared());
+
+    m_axialIndex    = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::AXIAL).value_or(0)));
+    m_frontalIndex  = std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::FRONTAL).value_or(0)));
+    m_sagittalIndex =
+        std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::SAGITTAL).value_or(0)));
 
     m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -335,8 +335,8 @@ void SNegato::starting()
     m_layer->setZValue(m_zValue);
     this->getScene2DRender()->getScene()->addItem(m_layer);
 
-    m_qimg = this->createQImage();
-    this->updateBufferFromImage(m_qimg);
+    m_qImg = this->createQImage();
+    this->updateBufferFromImage(m_qImg);
 
     this->getScene2DRender()->updateSceneSize(1.f);
 }
@@ -345,8 +345,8 @@ void SNegato::starting()
 
 void SNegato::updating()
 {
-    m_qimg = this->createQImage();
-    this->updateBufferFromImage(m_qimg);
+    m_qImg = this->createQImage();
+    this->updateBufferFromImage(m_qImg);
 }
 
 //------------------------------------------------------------------------------
@@ -371,14 +371,16 @@ void SNegato::swapping(std::string_view key)
 
 void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    const int indexes[] = {sagittal, frontal, axial};
-    m_helperImg.setSliceIndex(indexes);
-
+    if(sagittal != m_sagittalIndex
+       || frontal != m_frontalIndex
+       || axial != m_axialIndex)
     {
-        auto image = m_image.lock();
-        m_helperImg.updateImageInfos(image.get_shared());
+        m_sagittalIndex = sagittal;
+        m_frontalIndex  = frontal;
+        m_axialIndex    = axial;
     }
-    this->updateBufferFromImage(m_qimg);
+
+    this->updateBufferFromImage(m_qImg);
 }
 
 //-----------------------------------------------------------------------------
@@ -387,17 +389,17 @@ void SNegato::updateSliceType(int from, int to)
 {
     if(m_changeSliceTypeAllowed)
     {
-        if(to == static_cast<int>(m_helperImg.getOrientation()))
+        if(to == static_cast<int>(m_orientation))
         {
-            m_helperImg.setOrientation(from);
+            m_orientation = static_cast<orientation_t>(from);
         }
-        else if(from == static_cast<int>(m_helperImg.getOrientation()))
+        else if(from == static_cast<int>(m_orientation))
         {
-            m_helperImg.setOrientation(to);
+            m_orientation = static_cast<orientation_t>(to);
         }
 
         // manages the modification of axes
-        if(m_helperImg.getOrientation() == MedicalImage::Z_AXIS)
+        if(m_orientation == orientation_t::Z_AXIS)
         {
             this->m_yAxis->setScale(1);
         }
@@ -428,14 +430,14 @@ void SNegato::updateVisibility(bool isVisible)
 
 void SNegato::updateBuffer()
 {
-    this->updateBufferFromImage(m_qimg);
+    this->updateBufferFromImage(m_qImg);
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato::updateTF()
 {
-    this->updateBufferFromImage(m_qimg);
+    this->updateBufferFromImage(m_qImg);
 }
 
 //-----------------------------------------------------------------------------
@@ -446,7 +448,7 @@ void SNegato::stopping()
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
-    delete m_qimg;
+    delete m_qImg;
     delete m_pixmapItem;
     delete m_layer;
 }
@@ -555,7 +557,7 @@ void SNegato::changeImageMinMaxFromCoord(
 )
 {
     data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    data::mt::ObjectWriteLock tfLock(tf);
+    data::mt::locked_ptr tfLock(tf);
 
     const double min = tf->getWLMinMax().first;
     const double max = tf->getWLMinMax().second;

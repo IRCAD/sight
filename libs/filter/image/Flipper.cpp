@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -50,15 +50,15 @@ struct Flipping
 
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PixelType, dimension> ImageType;
-        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(params.i_image);
+        typedef typename itk::Image<PixelType, dimension> ImageType;
+        const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
-        typename ::itk::FlipImageFilter<ImageType>::Pointer flipFilter =
-            ::itk::FlipImageFilter<ImageType>::New();
+        typename itk::FlipImageFilter<ImageType>::Pointer flipFilter =
+            itk::FlipImageFilter<ImageType>::New();
 
         flipFilter->SetInput(itkImage);
-        typename ::itk::FlipImageFilter<ImageType>::FlipAxesArrayType axes;
-        for(size_t i = 0 ; i < axes.Size() && i < params.i_flipAxes.size() ; i++)
+        typename itk::FlipImageFilter<ImageType>::FlipAxesArrayType axes;
+        for(std::size_t i = 0 ; i < axes.Size() && i < params.i_flipAxes.size() ; i++)
         {
             axes[i] = params.i_flipAxes[i];
         }
@@ -67,7 +67,7 @@ struct Flipping
         flipFilter->Update();
 
         typename ImageType::Pointer outputImage = flipFilter->GetOutput();
-        io::itk::itkImageToFwDataImage(outputImage, params.o_image);
+        io::itk::moveFromItk(outputImage, params.o_image);
     }
 };
 
@@ -78,7 +78,7 @@ struct FlippingDimensionExtractor
     template<class PixelType>
     void operator()(Parameters& params)
     {
-        const data::Image::Size size = params.i_image->getSize2();
+        const data::Image::Size size = params.i_image->getSize();
         switch(size.size())
         {
             case 1:
@@ -117,7 +117,7 @@ void Flipper::flip(
 )
 {
     // If the image is valid, process it, otherwise copy it in the output image
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(_inImage))
+    if(data::helper::MedicalImage::checkImageValidity(_inImage))
     {
         Parameters params;
         params.i_image    = _inImage;

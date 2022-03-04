@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,13 +58,15 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
+ * - \b updateSlicesFromWorld(double, double, double): updates image slices indexes according to a 3d world point
+ * or landmark.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato3D">
         <inout key="image" uid="..." />
-        <inout key="tf" uid="..." optional="true" />
-        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
+        <inout key="tf" uid="..." />
+        <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" />
     </service>
    @endcode
  *
@@ -77,7 +79,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
- * - \b tfalpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  * - \b priority (optional, int, default=1): interaction priority of the negato.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
@@ -93,10 +95,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato3D final :
 {
 public:
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato3D, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato3D, sight::viz::scene3d::IAdaptor);
 
     /// Creates slots.
     MODULE_VIZ_SCENE3D_API SNegato3D() noexcept;
@@ -191,6 +193,14 @@ private:
     void pickIntensity(int _x, int _y);
 
     /**
+     * @brief Update slices index to match x,y,z world coordinates
+     * @param _x world coordinates in double.
+     * @param _y world coordinates in double.
+     * @param _z world coordinates in double.
+     */
+    void updateSlicesFromWorld(double _x, double _y, double _z);
+
+    /**
      * @brief Updates the transfer function window and level by adding the input values.
      * @param _dw window delta.
      * @param _dl level delta.
@@ -216,7 +226,7 @@ private:
      * @param _spacing spacing of the input image.
      * @param _origin origin of the input image.
      */
-    void createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin);
+    void createPlanes(const Ogre::Vector3& _spacing, const Ogre::Vector3& _origin);
 
     /// SLOT: sets the planes's opacity.
     void setPlanesOpacity();
@@ -225,10 +235,10 @@ private:
     void setPlanesQueryFlags(std::uint32_t _flags);
 
     /// Attemps to pick the negato planes, returns the world space position of the intersection if successful.
-    std::optional< ::Ogre::Vector3> getPickedSlices(int _x, int _y);
+    std::optional<Ogre::Vector3> getPickedSlices(int _x, int _y);
 
     /// Updates the intensity picking widget's position.
-    void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
+    void updatePickingCross(const Ogre::Vector3& _pickedPos, const Ogre::Vector3& _imgOrigin);
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {true};
@@ -243,7 +253,7 @@ private:
     int m_priority {1};
 
     /// Contains the ogre texture which will be displayed on the negato.
-    ::Ogre::TexturePtr m_3DOgreTexture {nullptr};
+    Ogre::TexturePtr m_3DOgreTexture {nullptr};
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF {nullptr};
@@ -255,10 +265,10 @@ private:
     sight::viz::scene3d::Plane::sptr m_pickedPlane {nullptr};
 
     /// Contains the widget displayed to pick intensities.
-    ::Ogre::ManualObject* m_pickingCross {nullptr};
+    Ogre::ManualObject* m_pickingCross {nullptr};
 
     /// Contains the scene node allowing to move the entire negato.
-    ::Ogre::SceneNode* m_negatoSceneNode {nullptr};
+    Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
@@ -273,10 +283,10 @@ private:
     double m_initialLevel {0.f};
 
     /// Defines the mouse position at the time the windowing interaction started.
-    ::Ogre::Vector2i m_initialPos {-1, -1};
+    Ogre::Vector2i m_initialPos {-1, -1};
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines if the plane border is used or not.
     bool m_border {true};

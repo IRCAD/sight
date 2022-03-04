@@ -29,7 +29,7 @@
 using sight::io::vtk::helper::TransferFunction;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::vtk::ut::TransferFunctionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::TransferFunctionTest);
 
 namespace sight::io::vtk
 {

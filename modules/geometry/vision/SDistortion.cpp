@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,12 +110,15 @@ void SDistortion::stopping()
 
 void SDistortion::updating()
 {
+    // Store bufferObject of output (if used).
+    core::memory::BufferObject::sptr hack = nullptr;
+
     const auto inputImage = m_image.lock();
     SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
 
     if(inputImage && m_calibrationMismatch)
     {
-        const auto inputSize = inputImage->getSize2();
+        const auto inputSize = inputImage->getSize();
         if(inputSize != m_prevImageSize)
         {
             // Reset the error detection boolean
@@ -141,7 +144,9 @@ void SDistortion::updating()
     else
     {
         // Simple copy of the input image
+
         auto outputImage = m_output.lock();
+
         SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", outputImage);
 
         if(inputImage && outputImage)
@@ -153,6 +158,10 @@ void SDistortion::updating()
                 reallocated = inputImage->getBuffer() != outputImage->getBuffer();
             }
 
+            // TODO: Get BufferObject of outputImage, to avoid assert when deleting internal data array of outputImage.
+            // This happens because m_output & m_input are locked during shallowCopy, and thus original bufferObject of
+            // m_output is still locked after shallowCopy.
+            hack = outputImage->getBufferObject();
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
             outputImage->shallowCopy(inputImage.get_shared());
@@ -198,9 +207,9 @@ void SDistortion::remap()
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
-    const auto inputSize = inputImage->getSize2();
+    const auto inputSize = inputImage->getSize();
 
-    if(inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
+    if(inputImage->getSizeInBytes() == 0 || inputImage->numDimensions() < 2)
     {
         SIGHT_WARN("Can not remap this image, it is empty.");
         return;
@@ -227,7 +236,7 @@ void SDistortion::remap()
         return;
     }
 
-    const auto prevSize = outputImage->getSize2();
+    const auto prevSize = outputImage->getSize();
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
@@ -245,21 +254,15 @@ void SDistortion::remap()
         outputImage->resize(size, inputImage->getType(), inputImage->getPixelFormat());
 
         const data::Image::Origin origin = {0., 0., 0.};
-        outputImage->setOrigin2(origin);
+        outputImage->setOrigin(origin);
 
         const data::Image::Spacing spacing = {1., 1., 1.};
-        outputImage->setSpacing2(spacing);
+        outputImage->setSpacing(spacing);
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
-        if(inputImage->getNumberOfComponents() != outputImage->getNumberOfComponents())
-        {
-            FW_DEPRECATED_MSG("Number of components should be defined by pixel format", "sight 22.0");
-            outputImage->setNumberOfComponents(inputImage->getNumberOfComponents());
-            outputImage->resize();
-        }
     }
 
-    const auto newSize = outputImage->getSize2();
+    const auto newSize = outputImage->getSize();
 
     // Get cv::Mat from data::Image
     cv::Mat img = io::opencv::Image::moveToCv(inputImage.get_shared());
@@ -279,16 +282,16 @@ void SDistortion::remap()
 
         cv::cuda::GpuMat image_gpu(img);
         cv::cuda::GpuMat image_gpu_rect(undistortedImage);
-        cv::cuda::remap(image_gpu, image_gpu_rect, m_mapx, m_mapy, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        cv::cuda::remap(image_gpu, image_gpu_rect, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
         undistortedImage = cv::Mat(image_gpu_rect);
 
         io::opencv::Image::copyFromCv(outputImage.get_shared(), undistortedImage);
 #else
         FW_PROFILE_AVG("cv::remap", 5);
 
-        cv::remap(img, undistortedImage, m_mapx, m_mapy, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        cv::remap(img, undistortedImage, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
-        const auto outDumpLock = outputImage->lock();
+        const auto outDumpLock = outputImage->dump_lock();
         if(outputImage.get_shared() == inputImage.get_shared())
         {
             // Copy new image.
@@ -418,11 +421,11 @@ void SDistortion::calibrate()
     else
     {
 #if OPENCV_CUDA_SUPPORT
-        m_mapx = cv::cuda::GpuMat(xyMaps[0]);
-        m_mapy = cv::cuda::GpuMat(xyMaps[1]);
+        m_map_x = cv::cuda::GpuMat(xyMaps[0]);
+        m_map_y = cv::cuda::GpuMat(xyMaps[1]);
 #else
-        m_mapx = xyMaps[0];
-        m_mapy = xyMaps[1];
+        m_map_x = xyMaps[0];
+        m_map_y = xyMaps[1];
 #endif // OPENCV_CUDA_SUPPORT
     }
 }

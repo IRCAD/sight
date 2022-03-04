@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/jobs/exception/Waiting.hpp"
 #include "core/jobs/Job.hpp"
+
 #include <core/spyLog.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
@@ -73,7 +74,7 @@ IJob::SharedFuture Aggregator::runImpl()
     auto future = std::async(
         [ = ]() mutable
         {
-            std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+            std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
             this->finish();
 
@@ -84,7 +85,7 @@ IJob::SharedFuture Aggregator::runImpl()
             }
         });
 
-    return std::move(future);
+    return future;
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +117,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
         // doneWork call after setTotalWorkUnitsUpgradeLock, because
         // doneWork value can be thresholded by setTotalWorkUnitsUpgradeLock
         // call
-        jobInfo.lastValue = std::uint64_t(jobInfo.progress() * normValue);
+        jobInfo.lastValue = std::uint64_t(jobInfo.progress() * double(normValue));
         {
             core::mt::UpgradeToWriteLock writeLock(lock);
             m_jobs.push_back(iJob);
@@ -126,14 +127,14 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
         // TODO : add a way to disconnect on aggregator destruction
         iJob->addDoneWorkHook(
-            [ =, &jobInfo](IJob& subJob, std::uint64_t oldDoneWork)
+            [ =, &jobInfo](IJob& subJob, std::uint64_t)
             {
                 core::mt::ReadToWriteLock sublock(m_mutex);
 
                 auto oldInfo = jobInfo;
                 jobInfo      = Aggregator::JobInfo(subJob);
 
-                jobInfo.lastValue = std::uint64_t(normValue * jobInfo.progress());
+                jobInfo.lastValue = std::uint64_t(jobInfo.progress() * double(normValue));
 
                 auto doneWork = m_doneWorkUnits + jobInfo.lastValue;
                 // minimize numerical uncertainty by substracting in a second time :

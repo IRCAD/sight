@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <utility>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Edge));
-
 namespace sight::data
 {
 
@@ -38,12 +36,11 @@ namespace sight::data
  *
  * An edge is represented by a to identifier ("from" and "to") and a nature.
  */
-class DATA_CLASS_API Edge : public data::Object
+class DATA_CLASS_API Edge : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Edge, data::Object, data::factory::New<Edge>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Edge));
+    SIGHT_DECLARE_CLASS(Edge, Object, factory::New<Edge>);
 
     DATA_API static std::string NATURE_FLOW;
     DATA_API static std::string NATURE_DATA;
@@ -52,22 +49,19 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Edge(data::Object::Key key);
+    DATA_API Edge(Object::Key key);
     /// Destructor
     DATA_API virtual ~Edge();
 
     /// @brief do a shallow copy of edge
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// @brief do a deep copy of edge
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)
-     * @param[in] _fromPortIndentifier identifier of port "from"
-     * @param[in] _toPortIndentifier identifier of port "to"
+     * @param[in] _fromPortIdentifier identifier of port "from"
+     * @param[in] _toPortIdentifier identifier of port "to"
      */
-    DATA_API void setIdentifiers(const std::string& _fromPortIndentifier, const std::string& _toPortIndentifier);
+    DATA_API void setIdentifiers(const std::string& _fromPortIdentifier, const std::string& _toPortIdentifier);
 
     /**
      * @brief Get the edge identifier
@@ -91,7 +85,16 @@ public:
     /// @brief Get edge nature ("FLOW" , "FWDATA")
     DATA_API const std::string& getNature() const;
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Edge& other) const noexcept;
+    DATA_API bool operator!=(const Edge& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// @brief do a deep copy of edge
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     std::string m_fromPortIdentifier; // "ID_SIZEX" , ...
     std::string m_toPortIdentifier;   // "ID_SIZEX" , ...

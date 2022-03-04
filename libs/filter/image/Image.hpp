@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 
 #include <data/Image.hpp>
 
-#include <geometry/data/Compare.hpp>
-
 // Contains helper to generate and compare images.
 namespace sight::filter::image
 {
@@ -43,12 +41,12 @@ namespace sight::filter::image
 FILTER_IMAGE_API void applyRoi(data::Image::sptr image, data::Image::sptr roi);
 
 /**
- * @brief Check if 'imgRoiApplyed' is the result of 'roi' applyed to 'image'
+ * @brief Check if 'imgRoiApplied' is the result of 'roi' Applied to 'image'
  *
  */
-FILTER_IMAGE_API bool isRoiApplyed(
+FILTER_IMAGE_API bool isRoiApplied(
     data::Image::sptr image,
-    data::Image::sptr imgRoiApplyed,
+    data::Image::sptr imgRoiApplied,
     data::Image::sptr roi
 );
 
@@ -63,18 +61,18 @@ void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask,
     SIGHT_ASSERT("Image dest has not correct type", imgDest->getType().isOfType<ImgDestType>());
     SIGHT_ASSERT("Image mask has not correct type", mask->getType().isOfType<MaskType>());
 
-    SIGHT_ASSERT("Images have not the same size", imgDest->getSize2() == mask->getSize2());
+    SIGHT_ASSERT("Images have not the same size", imgDest->getSize() == mask->getSize());
     SIGHT_ASSERT(
         "Images have not the same spacing",
-        geometry::data::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2())
+        core::tools::is_equal(imgDest->getSpacing(), mask->getSpacing())
     );
     SIGHT_ASSERT(
         "Images have not the same origin",
-        geometry::data::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2())
+        core::tools::is_equal(imgDest->getOrigin(), mask->getOrigin())
     );
 
-    const auto imgDumpLock  = imgDest->lock();
-    const auto maskDumpLock = mask->lock();
+    const auto imgDumpLock  = imgDest->dump_lock();
+    const auto maskDumpLock = mask->dump_lock();
 
     auto imgItr          = imgDest->begin<ImgDestType>();
     const auto imgItrEnd = imgDest->end<ImgDestType>();

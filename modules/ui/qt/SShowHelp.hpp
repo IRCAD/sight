@@ -34,7 +34,7 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action show the help contents.
  */
-class MODULE_UI_QT_CLASS_API SShowHelp : public ::sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SShowHelp : public sight::ui::base::IAction
 {
 public:
 
@@ -50,7 +50,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="::sight::module::ui::qt::ui::action::SShowHelp" type="ui::base::IAction">
+       <service impl="sight::module::ui::qt::ui::action::SShowHelp" type="ui::base::IAction">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

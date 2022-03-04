@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,11 +36,11 @@ namespace sight::activity
 namespace validator
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::activity::validator::RelatedStudy);
+fwActivitiesValidatorRegisterMacro(sight::activity::validator::RelatedStudy);
 
 //-----------------------------------------------------------------------------
 
-RelatedStudy::RelatedStudy(activity::IValidator::Key key)
+RelatedStudy::RelatedStudy(activity::IValidator::Key)
 {
 }
 
@@ -53,7 +53,7 @@ RelatedStudy::~RelatedStudy()
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType RelatedStudy::validate(
-    const activity::extension::ActivityInfo& activityInfo,
+    const activity::extension::ActivityInfo&,
     const data::Vector::csptr& currentSelection
 ) const
 {
@@ -68,7 +68,7 @@ IValidator::ValidationType RelatedStudy::validate(
         data::Study::sptr studyRef   = seriesRef->getStudy();
 
         std::string instanceUIDRef = studyRef->getInstanceUID();
-        ::boost::algorithm::trim(instanceUIDRef);
+        boost::algorithm::trim(instanceUIDRef);
 
         data::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
@@ -77,7 +77,7 @@ IValidator::ValidationType RelatedStudy::validate(
             data::Study::sptr study   = series->getStudy();
 
             std::string instanceUID = study->getInstanceUID();
-            ::boost::algorithm::trim(instanceUID);
+            boost::algorithm::trim(instanceUID);
 
             if(instanceUIDRef != instanceUID)
             {

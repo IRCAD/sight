@@ -28,7 +28,7 @@
 #include <data/tools/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::tools::ut::ModelSeriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::ModelSeriesTest);
 
 namespace sight::data::tools
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,13 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Image.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -89,7 +89,7 @@ void SChessBoardDetector::starting()
 {
     this->updateChessboardSize();
 
-    const size_t imageGroupSize = m_image.size();
+    const std::size_t imageGroupSize = m_image.size();
 
     m_images.resize(imageGroupSize);
     m_pointLists.resize(imageGroupSize);
@@ -99,11 +99,11 @@ void SChessBoardDetector::starting()
 
 void SChessBoardDetector::updating()
 {
-    const size_t imageGroupSize = m_image.size();
+    const std::size_t imageGroupSize = m_image.size();
 
     // Run parallel detections in separate threads.
     std::vector<std::thread> detectionJobs;
-    for(size_t i = 1 ; i < imageGroupSize ; ++i)
+    for(std::size_t i = 1 ; i < imageGroupSize ; ++i)
     {
         detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
     }
@@ -149,13 +149,13 @@ service::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() c
 
 void SChessBoardDetector::recordPoints()
 {
-    const size_t calibGroupSize = m_calInfo.size();
+    const std::size_t calibGroupSize = m_calInfo.size();
 
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
     if(allDetected)
     {
-        for(size_t i = 0 ; i < calibGroupSize ; ++i)
+        for(std::size_t i = 0 ; i < calibGroupSize ; ++i)
         {
             auto calInfo = m_calInfo[i].lock();
             SIGHT_ASSERT("Missing 'calibInfo' in-out.", calInfo);
@@ -183,22 +183,12 @@ void SChessBoardDetector::recordPoints()
 
 void SChessBoardDetector::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
-    }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string scaleStr = ui::base::preferences::getPreference(m_scaleKey);
-    if(!scaleStr.empty())
-    {
-        m_scale = std::stof(scaleStr);
+        ui::base::Preferences preferences;
+        m_width  = preferences.get(m_widthKey, m_width);
+        m_height = preferences.get(m_heightKey, m_height);
+        m_scale  = preferences.get(m_scaleKey, m_scale);
 
         if(m_scale > 1.f)
         {
@@ -206,20 +196,24 @@ void SChessBoardDetector::updateChessboardSize()
             SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
     }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
+    }
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::doDetection(size_t _imageIndex)
+void SChessBoardDetector::doDetection(std::size_t _imageIndex)
 {
     const auto img = m_image[_imageIndex].lock();
     SIGHT_ASSERT("Missing 'image' input.", img);
 
-    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared());
+    const bool isValid = data::helper::MedicalImage::checkImageValidity(img.get_shared());
 
     if(isValid)
     {
-        const ::cv::Mat cvImg = io::opencv::Image::moveToCv(img.get_shared());
+        const cv::Mat cvImg = io::opencv::Image::moveToCv(img.get_shared());
 
         m_pointLists[_imageIndex] =
             sight::geometry::vision::helper::detectChessboard(cvImg, m_width, m_height, m_scale);

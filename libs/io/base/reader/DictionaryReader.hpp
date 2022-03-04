@@ -72,7 +72,7 @@ public:
     /// Read the file with standard iostream API.
     IO_BASE_API void read() override;
 
-    IO_BASE_API std::string extension() override;
+    IO_BASE_API std::string extension() const override;
 
     /// Returns the default dictionary path ( file in rc directory path of fwDataIO library )
     IO_BASE_API static std::filesystem::path getDefaultDictionaryPath();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/MessageDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <functional>
 
@@ -60,7 +60,7 @@ IMessageDialog::Buttons MessageDialog::showMessageDialog(
 
 MessageDialog::MessageDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -78,7 +78,7 @@ MessageDialog::MessageDialog(
     ui::base::dialog::IMessageDialog::Icons icon
 )
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -105,7 +105,7 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle(const std::string& title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -121,7 +121,7 @@ void MessageDialog::setTitle(const std::string& title)
 
 void MessageDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -137,7 +137,7 @@ void MessageDialog::setMessage(const std::string& msg)
 
 void MessageDialog::setIcon(ui::base::dialog::IMessageDialog::Icons icon)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -153,7 +153,7 @@ void MessageDialog::setIcon(ui::base::dialog::IMessageDialog::Icons icon)
 
 void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -169,7 +169,7 @@ void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 
 void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -185,7 +185,7 @@ void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons b
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -206,7 +206,7 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
         typedef ui::base::dialog::IMessageDialog::Buttons R;
 
         std::function<R()> func = std::bind(&IMessageDialog::show, m_implementation);
-        std::shared_future<R> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
+        std::shared_future<R> f = core::thread::getDefaultWorker()->postTask<R>(func);
         f.wait();
 
         return f.get();

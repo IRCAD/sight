@@ -43,7 +43,7 @@ namespace com
  * This action can be :
  *   - Start a service :
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <start uid="Uid_of_the_service" />
            </service>
@@ -53,7 +53,7 @@ namespace com
  *
  *   - Only start a service :
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <start_only uid="Uid_of_the_service" />
            </service>
@@ -62,7 +62,7 @@ namespace com
  *
  *   - Start a service if exists :
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <start_if_exists uid="Uid_of_the_service" />
            </service>
@@ -71,7 +71,7 @@ namespace com
  *
  *   - Stop a service :
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <stop uid="Uid_of_the_service" />
            </service>
@@ -80,7 +80,7 @@ namespace com
  *
  *   - Stop a service if exists :  Test if the service exist before stopping it
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <stop_if_exists uid="Uid_of_the_service" />
            </service>
@@ -89,7 +89,7 @@ namespace com
  *
  *   - Start and update or stop the service:
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
@@ -99,7 +99,7 @@ namespace com
  *
  *   - Only start or stop the service:
  * @code{.xml}
-           <service uid="actionUid" type="ui::base::IAction" impl="::sight::module::ui::base::com::SStarter"
+           <service uid="actionUid" type="ui::base::IAction" impl="sight::module::ui::base::com::SStarter"
  * autoConnect="false">
               <start_only_or_stop uid="Uid_of_the_service" />
            </service>
@@ -110,11 +110,11 @@ namespace com
  * itself.
  */
 
-class MODULE_UI_BASE_CLASS_API SStarter : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SStarter : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SStarter, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SStarter, sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**

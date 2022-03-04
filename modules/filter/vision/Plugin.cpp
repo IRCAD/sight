@@ -27,7 +27,7 @@
 namespace sight::module::filter::vision
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::filter::vision::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::filter::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {

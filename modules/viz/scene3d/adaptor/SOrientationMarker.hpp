@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,12 +50,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b resource (optional, string): name of the resource to use for the marker.
- * - \b depth (optionnal, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
+ * - \b depth (optional, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
  * to zoom-out.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SOrientationMarker final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::IAdaptor
 {
 public:
 
@@ -97,10 +96,10 @@ private:
     void updateCameraMatrix();
 
     /// Contains the scene node where all of manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores the entity associated to the marker mesh
-    ::Ogre::Entity* m_patientMesh {nullptr};
+    Ogre::Entity* m_patientMesh {nullptr};
 
     /// Resource used for the marker
     std::string m_patientMeshRc {"human.mesh"};

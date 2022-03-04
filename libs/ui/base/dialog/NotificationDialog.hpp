@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ public:
      * Opens a default message box with the specified title, text and icon.
      *
      * @param _message Message of the notification box
-     * @param _type type of the notification box (SUCESS, FAILURE or INFO)
+     * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
      * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      */
     UI_BASE_API static void show(
@@ -61,7 +61,7 @@ public:
      * Opens a default message box with the specified title, text and icon.
      *
      * @param _message Message of the notification box
-     * @param _type type of the notification box (SUCESS, FAILURE or INFO)
+     * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
      * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      * @deprecated use show() instead
      */
@@ -123,11 +123,17 @@ public:
     /// Closes the notification.
     UI_BASE_API void close() const override;
 
+    /// Move the notification to the lower index
+    UI_BASE_API void moveDown() override;
+
     /**
      * @brief Sets the parent container.
      * @param _container const pointer to a ui::base::container::fwContainer.
      */
     UI_BASE_API void setContainer(ui::base::container::fwContainer::csptr _container) override;
+
+    /// Define the callback called when the dialog is closed
+    UI_BASE_API void setClosedCallback(std::function<void()> f) override;
 
 protected:
 

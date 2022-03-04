@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ void Server::start(std::uint16_t port)
 
     if(result != Server::s_SUCCESS)
     {
-        throw Exception("Cannot create server on port : " + ::boost::lexical_cast<std::string>(port));
+        throw Exception("Cannot create server on port : " + boost::lexical_cast<std::string>(port));
     }
 
     m_isStarted = true;
@@ -185,7 +185,7 @@ void Server::stop()
 
 //------------------------------------------------------------------------------
 
-size_t Server::getNumberOfClients() const
+std::size_t Server::numClients() const
 {
     if(this->isStarted())
     {
@@ -293,7 +293,7 @@ std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>&
 {
     std::vector<data::Object::sptr> objVect;
     std::vector< ::igtl::MessageHeader::Pointer> headerMsgVect = this->receiveHeaders();
-    size_t client                                              = 0;
+    std::size_t client                                         = 0;
     for(const auto& headerMsg : headerMsgVect)
     {
         if(headerMsg.IsNotNull())

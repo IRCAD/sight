@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,19 +45,19 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotFound(
+Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotFound(
     unsigned short /*_schemeIndex*/,
-    const ::Ogre::String& _schemeName,
-    ::Ogre::Material* _originalMaterial,
+    const Ogre::String& _schemeName,
+    Ogre::Material* _originalMaterial,
     unsigned short /*_lodIndex*/,
-    const ::Ogre::Renderable*
+    const Ogre::Renderable*
     /*_renderable*/
 )
 {
     const auto mtlName = _originalMaterial->getName();
 
     // Volume rendering techniques don't handle OIT. Ignore them.
-    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") || ::Ogre::StringUtil::endsWith(mtlName, "RayEntryPoints"))
+    if(Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") || Ogre::StringUtil::endsWith(mtlName, "RayEntryPoints"))
     {
         return nullptr;
     }
@@ -68,7 +68,7 @@ MaterialMgrListener::~MaterialMgrListener()
         return nullptr;
     }
 
-    auto tokens = ::Ogre::StringUtil::split(_schemeName, "/");
+    auto tokens = Ogre::StringUtil::split(_schemeName, "/");
 
     if(tokens.size() < 2)
     {
@@ -80,9 +80,9 @@ MaterialMgrListener::~MaterialMgrListener()
     // peel, depthMap, transmittanceBlend, etc...
     const auto algoPassName = tokens[1];
 
-    ::Ogre::Technique* newTech     = nullptr;
-    ::Ogre::Technique* defaultTech = _originalMaterial->getTechnique(0);
-    ::Ogre::Technique* depthTech   = _originalMaterial->getTechnique("depth");
+    Ogre::Technique* newTech     = nullptr;
+    Ogre::Technique* defaultTech = _originalMaterial->getTechnique(0);
+    Ogre::Technique* depthTech   = _originalMaterial->getTechnique("depth");
     if(depthTech == nullptr)
     {
         SIGHT_ERROR(
@@ -94,10 +94,10 @@ MaterialMgrListener::~MaterialMgrListener()
 
     // The R2VB material does not need to fill the OIT schemes, though Ogre get us here to know what to do
     // We simply return the main technique in this case
-    const ::Ogre::Technique::Passes& defaultTechPasses = defaultTech->getPasses();
+    const Ogre::Technique::Passes& defaultTechPasses = defaultTech->getPasses();
     for(const auto pass : defaultTechPasses)
     {
-        if(::Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/"))
+        if(Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/"))
         {
             return defaultTech;
         }
@@ -108,33 +108,33 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBT_REPLACE);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBT_REPLACE);
             pass->setFragmentProgram("DepthPeeling/depthMap_FP");
 
             if(algoName == "HybridTransparency")
             {
-                pass->setDepthFunction(::Ogre::CMPF_GREATER_EQUAL);
+                pass->setDepthFunction(Ogre::CMPF_GREATER_EQUAL);
             }
         }
     }
-    else if(::Ogre::StringUtil::startsWith(_schemeName, "DepthPeeling/peel", false)
-            || ::Ogre::StringUtil::startsWith(_schemeName, "CelShadingDepthPeeling/peel", false)
-            || ::Ogre::StringUtil::startsWith(_schemeName, "HybridTransparency/peel", false))
+    else if(Ogre::StringUtil::startsWith(_schemeName, "DepthPeeling/peel", false)
+            || Ogre::StringUtil::startsWith(_schemeName, "CelShadingDepthPeeling/peel", false)
+            || Ogre::StringUtil::startsWith(_schemeName, "HybridTransparency/peel", false))
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
             pass->setDepthCheckEnabled(true);
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBT_REPLACE);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBT_REPLACE);
 
             if(algoName == "CelShadingDepthPeeling" && pass->getName() != "NormalsPass"
                && pass->getName() != "EdgePass")
@@ -154,11 +154,11 @@ MaterialMgrListener::~MaterialMgrListener()
             this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
-            auto numTexUnit                    = pass->getNumTextureUnitStates();
-            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
-            texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-            texState->setTextureFiltering(::Ogre::TFO_NONE);
-            texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            auto numTexUnit                  = pass->getNumTextureUnitStates();
+            Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+            texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+            texState->setTextureFiltering(Ogre::TFO_NONE);
+            texState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
 
             // Modify texture input according to the requested pass
             if(algoPassName == "peelInit")
@@ -180,10 +180,10 @@ MaterialMgrListener::~MaterialMgrListener()
 
             auto params = pass->getFragmentProgramParameters();
             params->setNamedConstant("u_nearestDepthBuffer", numTexUnit);
-            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+            params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
             {
-                params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+                params->setNamedAutoConstant("u_diffuse", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
             }
         }
     }
@@ -192,7 +192,7 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
             // replace fragment program and build it if needed
@@ -203,9 +203,9 @@ MaterialMgrListener::~MaterialMgrListener()
             this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBT_REPLACE);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBT_REPLACE);
         }
     }
     else if(_schemeName == "WeightedBlended/weightBlend"
@@ -213,7 +213,7 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
             // replace fragment program and build it if needed
@@ -227,34 +227,34 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBT_ADD);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBT_ADD);
 
             auto numTexUnit = pass->getNumTextureUnitStates();
             auto params     = pass->getFragmentProgramParameters();
 
             if(algoName == "HybridTransparency")
             {
-                ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
-                texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-                texState->setTextureFiltering(::Ogre::TFO_NONE);
-                texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+                Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+                texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+                texState->setTextureFiltering(Ogre::TFO_NONE);
+                texState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 texState->setCompositorReference(algoName, "pingBuffer", 1);
 
                 params->setNamedConstant("u_frontDepthBuffer", numTexUnit++);
             }
 
-            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
-            texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-            texState->setTextureFiltering(::Ogre::TFO_NONE);
-            texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+            texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+            texState->setTextureFiltering(Ogre::TFO_NONE);
+            texState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             texState->setCompositorReference(algoName, "occlusion", 0);
 
             params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
-            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
-            params->setNamedAutoConstant("u_near", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
-            params->setNamedAutoConstant("u_far", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+            params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+            params->setNamedAutoConstant("u_near", Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+            params->setNamedAutoConstant("u_far", Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
         }
     }
     else if(_schemeName == "WeightedBlended/transmittanceBlend"
@@ -262,7 +262,7 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
             // replace fragment program and build it if needed
@@ -276,66 +276,66 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBF_ZERO, ::Ogre::SBF_ONE_MINUS_SOURCE_COLOUR);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBF_ZERO, Ogre::SBF_ONE_MINUS_SOURCE_COLOUR);
 
             auto numTexUnit = pass->getNumTextureUnitStates();
             auto params     = pass->getFragmentProgramParameters();
 
             if(algoName == "HybridTransparency")
             {
-                ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
-                texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-                texState->setTextureFiltering(::Ogre::TFO_NONE);
-                texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+                Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+                texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+                texState->setTextureFiltering(Ogre::TFO_NONE);
+                texState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 texState->setCompositorReference(algoName, "pingBuffer", 1);
                 params->setNamedConstant("u_frontDepthBuffer", numTexUnit++);
             }
 
-            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
-            texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-            texState->setTextureFiltering(::Ogre::TFO_NONE);
-            texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+            texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+            texState->setTextureFiltering(Ogre::TFO_NONE);
+            texState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             texState->setCompositorReference(algoName, "occlusion", 0);
 
             params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
-            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+            params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
             if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
             {
-                params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+                params->setNamedAutoConstant("u_diffuse", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
             }
         }
     }
-    else if(::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false))
+    else if(Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false))
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
             pass->setDepthCheckEnabled(false);
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBT_ADD);
-            pass->setSceneBlendingOperation(::Ogre::SBO_MAX);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBT_ADD);
+            pass->setSceneBlendingOperation(Ogre::SBO_MAX);
 
             pass->setFragmentProgram("DualDepthPeeling/peelInit_FP");
         }
     }
-    else if(::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peel", false))
+    else if(Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peel", false))
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
-        const ::Ogre::Technique::Passes& passes = newTech->getPasses();
+        const Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
             pass->setDepthCheckEnabled(false);
-            pass->setCullingMode(::Ogre::CULL_NONE);
-            pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(::Ogre::SBT_ADD);
-            pass->setSceneBlendingOperation(::Ogre::SBO_MAX);
+            pass->setCullingMode(Ogre::CULL_NONE);
+            pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+            pass->setSceneBlending(Ogre::SBT_ADD);
+            pass->setSceneBlendingOperation(Ogre::SBO_MAX);
 
             // replace fragment program and build it if needed
             const auto fpName       = pass->getFragmentProgramName();
@@ -364,12 +364,12 @@ MaterialMgrListener::~MaterialMgrListener()
             auto numTexUnit = pass->getNumTextureUnitStates();
 
             // Modify texture input according to the requested pass
-            for(size_t i = 0 ; i < 4 ; ++i)
+            for(std::size_t i = 0 ; i < 4 ; ++i)
             {
-                ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
-                texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-                texState->setTextureFiltering(::Ogre::TFO_NONE);
-                texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+                Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+                texState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+                texState->setTextureFiltering(Ogre::TFO_NONE);
+                texState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 texState->setCompositorReference(algoName, inputBuffer, i == 3 ? 4 : i);
             }
 
@@ -378,11 +378,11 @@ MaterialMgrListener::~MaterialMgrListener()
             params->setNamedConstant("u_farthestDepthBuffer", numTexUnit + 1);
             params->setNamedConstant("u_forwardColorBuffer", numTexUnit + 2);
             params->setNamedConstant("u_forwardAlphasBuffer", numTexUnit + 3);
-            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+            params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
             if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
             {
-                params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+                params->setNamedAutoConstant("u_diffuse", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
             }
         }
     }
@@ -396,7 +396,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
+Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
     const std::string& _name,
     const std::string& _algoName,
     const std::string& _algoPassName,
@@ -466,7 +466,7 @@ MaterialMgrListener::~MaterialMgrListener()
         _name,
         _sourceName,
         parameters,
-        ::Ogre::GPT_FRAGMENT_PROGRAM,
+        Ogre::GPT_FRAGMENT_PROGRAM,
         _baseName
     );
 }

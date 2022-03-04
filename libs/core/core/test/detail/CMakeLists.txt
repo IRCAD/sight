@@ -1,9 +1,10 @@
 # Beware, at least for windows we need to use the same PCH than our obj library
-sight_add_target( coreDetailTest TYPE TEST PCH core_obj WARNINGS_AS_ERRORS ON )
+sight_add_target(coreDetailTest TYPE TEST PCH core_obj)
 
 # We need this one to test the location
 target_compile_definitions(coreDetailTest PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 target_compile_definitions(coreDetailTest PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
+target_compile_definitions(coreDetailTest PRIVATE VERSION="${PROJECT_VERSION}")
 
 if(WIN32)
     # Avoid to import symbols from core

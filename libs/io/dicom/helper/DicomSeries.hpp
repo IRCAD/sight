@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,7 +131,7 @@ protected:
      */
     void createSeries(
         DicomSeriesContainerType& seriesDB,
-        const ::gdcm::Scanner& scanner,
+        const gdcm::Scanner& scanner,
         const std::filesystem::path& filename
     );
 
@@ -139,19 +139,19 @@ protected:
      * @brief Create a patient from the dataset and store it in the patient map
      * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(data::Patient) createPatient(const ::gdcm::DataSet& dataset);
+    SPTR(data::Patient) createPatient(const gdcm::DataSet& dataset);
 
     /**
      * @brief Create a study from the dataset and store it in the study map
      * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(data::Study) createStudy(const ::gdcm::DataSet& dataset);
+    SPTR(data::Study) createStudy(const gdcm::DataSet& dataset);
 
     /**
      * @brief Create an equipment from the dataset and store it in the equipment map
      * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(data::Equipment) createEquipment(const ::gdcm::DataSet& dataset);
+    SPTR(data::Equipment) createEquipment(const gdcm::DataSet& dataset);
 
     typedef std::map<std::string, SPTR(data::Patient)> PatientMapType;
     typedef std::map<std::string, SPTR(data::Study)> StudyMapType;

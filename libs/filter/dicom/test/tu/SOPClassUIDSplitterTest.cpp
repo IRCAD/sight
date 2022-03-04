@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::SOPClassUIDSplitterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::SOPClassUIDSplitterTest);
 
 namespace sight::filter::dicom
 {
@@ -74,7 +74,7 @@ void SOPClassUIDSplitterTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -88,7 +88,7 @@ void SOPClassUIDSplitterTest::simpleApplication()
     );
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesContainer.size());
     data::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
     data::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
 

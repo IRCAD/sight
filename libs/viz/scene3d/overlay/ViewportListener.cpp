@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ ViewportListener::~ViewportListener()
 
 //-----------------------------------------------------------------------------
 
-void ViewportListener::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
+void ViewportListener::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt)
 {
     const bool overlaysEnabled = evt.source->getOverlaysEnabled();
 
@@ -52,13 +52,13 @@ void ViewportListener::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent
     {
         const auto& enabledOverlays = m_viewportLayerMap.at(evt.source).get();
 
-        for(::Ogre::Overlay* const overlay : enabledOverlays)
+        for(Ogre::Overlay* const overlay : enabledOverlays)
         {
             overlay->show();
         }
     }
 
-    this->::Ogre::RenderTargetListener::preViewportUpdate(evt);
+    this->Ogre::RenderTargetListener::preViewportUpdate(evt);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,13 +71,13 @@ void ViewportListener::postViewportUpdate(const Ogre::RenderTargetViewportEvent&
     {
         const auto& enabledOverlays = m_viewportLayerMap.at(evt.source).get();
 
-        for(::Ogre::Overlay* const o : enabledOverlays)
+        for(Ogre::Overlay* const o : enabledOverlays)
         {
             o->hide();
         }
     }
 
-    this->::Ogre::RenderTargetListener::postViewportUpdate(evt);
+    this->Ogre::RenderTargetListener::postViewportUpdate(evt);
 }
 
 //-----------------------------------------------------------------------------

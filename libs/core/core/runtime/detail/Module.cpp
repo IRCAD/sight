@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/utils/GenericExecutableFactory.hpp"
+
 #include <core/base.hpp>
 
 #include <algorithm>
@@ -349,11 +350,11 @@ void Module::loadRequirements()
 {
     try
     {
-        Runtime& rntm = Runtime::get();
+        Runtime& runtime = Runtime::get();
         RequirementContainer::const_iterator iter;
         for(const RequirementContainer::value_type& requirement : m_requirements)
         {
-            auto module = rntm.findModule(requirement);
+            auto module = runtime.findModule(requirement);
 
             // Ensure that a module has been retrieved.
             if(module == nullptr)
@@ -437,8 +438,8 @@ void Module::startPlugin()
     }
     else
     {
-        Runtime* rntm(Runtime::getDefault());
-        SPTR(IExecutable) executable(rntm->createExecutableInstance(pluginType));
+        Runtime* runtime(Runtime::getDefault());
+        SPTR(IExecutable) executable(runtime->createExecutableInstance(pluginType));
 
         plugin = std::dynamic_pointer_cast<IPlugin>(executable);
     }
@@ -476,7 +477,7 @@ void Module::startPlugin()
 void Module::stop()
 {
     SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not started.", m_started);
-    SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an intance.", m_plugin != nullptr);
+    SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
     SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not uninitialized.", !m_initialized);
 
     try

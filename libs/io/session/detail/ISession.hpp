@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,11 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/PasswordKeeper.hpp"
 
-#include <core/crypto/secure_string.hpp>
+#include <core/crypto/obfuscated_string.hpp>
+#include <core/crypto/PasswordKeeper.hpp>
+#include <core/crypto/SHA256.hpp>
+#include <core/exceptionmacros.hpp>
 #include <core/location/ILocation.hpp>
 
 #include <filesystem>
@@ -56,7 +58,8 @@ public:
     /// "PASSWORD" means encrypt if a password is provided, using the same key.
     /// "SALTED" means encrypt if a password is provided, but use a deterministically salted key, which will make hard
     ///   to open the archive session outside sight
-    /// "FORCED" means always encrypt and use a salted key. The password will be deterministically guessed
+    /// "FORCED" means always encrypt and use a salted key. The password will be deterministically generated if none are
+    ///   provided
     /// @param password original password
     /// @param salt salt used to change a bit the password
     /// @param level the way the password is changed
@@ -64,7 +67,7 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& password,
         const core::crypto::secure_string& salt,
-        const PasswordKeeper::EncryptionPolicy policy = PasswordKeeper::EncryptionPolicy::DEFAULT
+        const core::crypto::PasswordKeeper::EncryptionPolicy policy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
     );
 
 protected:
@@ -87,7 +90,7 @@ inline std::string ISession::toString() const
 
 inline std::filesystem::path ISession::getIndexFilePath() const
 {
-    return "/index.json";
+    return "index.json";
 }
 
 //------------------------------------------------------------------------------
@@ -95,22 +98,32 @@ inline std::filesystem::path ISession::getIndexFilePath() const
 inline core::crypto::secure_string ISession::pickle(
     const core::crypto::secure_string& password,
     const core::crypto::secure_string& salt,
-    const PasswordKeeper::EncryptionPolicy policy
+    const core::crypto::PasswordKeeper::EncryptionPolicy policy
 )
 {
-    switch(policy)
+    if(password.empty() && policy == core::crypto::PasswordKeeper::EncryptionPolicy::FORCED)
     {
-        case PasswordKeeper::EncryptionPolicy::SALTED:
-            return password.empty() ? password : password + core::crypto::secure_string(salt);
-
-        case PasswordKeeper::EncryptionPolicy::FORCED:
-            return password + core::crypto::secure_string(salt);
-
-        default:
-            return password;
+        if constexpr(core::crypto::PasswordKeeper::has_default_password())
+        {
+            return core::crypto::PasswordKeeper::get_default_password();
+        }
+        else if(!salt.empty())
+        {
+            return core::crypto::hash(salt);
+        }
+        else
+        {
+            SIGHT_THROW("No password provided and no default password available");
+        }
     }
-
-    return password;
+    else if(policy == core::crypto::PasswordKeeper::EncryptionPolicy::SALTED)
+    {
+        return core::crypto::hash(password + salt);
+    }
+    else
+    {
+        return password;
+    }
 }
 
 } // namespace detail

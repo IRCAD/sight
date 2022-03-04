@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,20 +73,20 @@ void SResampler::updating()
         inImg.get_shared(),
         outImg.get_shared(),
         transform.get_shared(),
-        target.get_shared()
+        std::make_tuple(target->getSize(), target->getOrigin(), target->getSpacing())
     );
 
     m_sigComputed->asyncEmit();
 
-    auto imgBufModifSig = outImg->signal<data::Image::BufferModifiedSignalType>
-                              (data::Image::s_BUFFER_MODIFIED_SIG);
+    auto imgBufModifiedSig = outImg->signal<data::Image::BufferModifiedSignalType>
+                                 (data::Image::s_BUFFER_MODIFIED_SIG);
 
-    imgBufModifSig->asyncEmit();
+    imgBufModifiedSig->asyncEmit();
 
-    auto imgModifSig = outImg->signal<data::Image::ModifiedSignalType>
-                           (data::Image::s_MODIFIED_SIG);
+    auto imgModifiedSig = outImg->signal<data::Image::ModifiedSignalType>
+                              (data::Image::s_MODIFIED_SIG);
 
-    imgModifSig->asyncEmit();
+    imgModifiedSig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

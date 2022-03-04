@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,15 +22,29 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/PasswordKeeper.hpp"
 
+#include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/SingleFile.hpp>
 
+#include <data/Object.hpp>
+
 #include <io/base/writer/IObjectWriter.hpp>
+#include <io/zip/ArchiveWriter.hpp>
+
+#include <boost/property_tree/ptree.hpp>
 
 namespace sight::io::session
 {
+
+/// The serializer function signature. This is used to register an object serialization function.
+using serializer_t = std::function<void (
+                                       zip::ArchiveWriter&,
+                                       boost::property_tree::ptree&,
+                                       data::Object::csptr,
+                                       std::map<std::string, data::Object::csptr>&,
+                                       const core::crypto::secure_string&
+                                   )>;
 
 /**
  * @brief Session writer.
@@ -70,15 +84,29 @@ public:
     IO_SESSION_API void write() override;
 
     /// Defines extension supported by this writer ".zip"
-    IO_SESSION_API std::string extension() override;
+    IO_SESSION_API std::string extension() const override;
 
     /// Sets the password
     /// @param password the new password
-    IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
+    IO_SESSION_API void set_password(const core::crypto::secure_string& password);
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
-    IO_SESSION_API void setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy);
+    IO_SESSION_API void setEncryptionPolicy(const core::crypto::PasswordKeeper::EncryptionPolicy policy);
+
+    /// Set archive format
+    /// @param archiveFormat how files are stored in the archive: @see sight::io::zip::Archive::ArchiveFormat
+    IO_SESSION_API void setArchiveFormat(const zip::Archive::ArchiveFormat archiveFormat);
+
+    /// Set a serialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param serializer the function pointer to the serialization function
+    IO_SESSION_API void setSerializer(const std::string& className, serializer_t serializer = nullptr);
+
+    /// Set a default serialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param serializer the function pointer to the serialization function
+    IO_SESSION_API static void setDefaultSerializer(const std::string& className, serializer_t serializer = nullptr);
 
 private:
 

@@ -11,7 +11,7 @@ Example:
     <inout key="transferFunction" uid="..." />
 </service>
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>ImageManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -53,11 +53,6 @@ Example:
             </registry>
         </service>
 
-        <!-- Service to add field used to properly display and manage image: Slice index, TransferFunction, ... -->
-        <service uid="medicalImageConverterImage" type="sight::module::data::MedicalImageSrv">
-            <inout key="image" uid="${image}" />
-        </service>
-
         <!-- Editor to manage slice index and image orientation (axial, frontal, sagittal) -->
         <service uid="selectorSliderNegatoImage" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
             <inout key="image" uid="${image}" />
@@ -69,9 +64,8 @@ Example:
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>
-        
+
         <start uid="imageManagerView" />
-        <start uid="medicalImageConverterImage" />
-        
+
     </config>
 </extension>

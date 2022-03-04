@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "ui/base/IAction.hpp"
 #include "ui/base/IMenuItemCallback.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
@@ -100,7 +99,7 @@ void IToolBar::create()
     SIGHT_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -119,7 +118,7 @@ void IToolBar::destroy()
 {
     m_registry->unmanage();
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -139,7 +138,7 @@ void IToolBar::actionServiceStopping(std::string actionSrvSID)
 
     if(m_hideActions)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -149,7 +148,7 @@ void IToolBar::actionServiceStopping(std::string actionSrvSID)
     }
     else
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -171,7 +170,7 @@ void IToolBar::actionServiceStarting(std::string actionSrvSID)
     const service::IService::csptr service   = service::get(actionSrvSID);
     const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -196,7 +195,7 @@ void IToolBar::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     const service::IService::csptr service   = service::get(actionSrvSID);
     const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -215,7 +214,7 @@ void IToolBar::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
         m_layoutManager->getMenuItems()
     );
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -233,7 +232,7 @@ void IToolBar::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
         m_layoutManager->getMenuItems()
     );
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {

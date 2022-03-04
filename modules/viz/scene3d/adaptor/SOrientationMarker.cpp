@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include <data/Matrix4.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <viz/scene3d/Layer.hpp>
 #include <viz/scene3d/Material.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <OGRE/OgreCamera.h>
 
@@ -58,9 +58,6 @@ void SOrientationMarker::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    // Create the transform node.
-    this->setTransformId(this->getID() + "_transform");
-
     // Set the resource this use, if it has been set via xml
     m_patientMeshRc = config.get<std::string>("resource", m_patientMeshRc);
 
@@ -75,11 +72,10 @@ void SOrientationMarker::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
-    m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode = rootSceneNode->createChildSceneNode(this->getID() + "_mainNode");
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     // Sets the material
     m_material = data::Material::New();
@@ -87,7 +83,7 @@ void SOrientationMarker::starting()
     // Creates the material for the marker
     const sight::module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
         this->registerService<sight::module::viz::scene3d::adaptor::SMaterial>(
-            "::sight::module::viz::scene3d::adaptor::SMaterial"
+            "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
@@ -121,39 +117,35 @@ void SOrientationMarker::updating()
 void SOrientationMarker::updateCameraMatrix()
 {
     // Copy orientation matrix to Ogre.
-    ::Ogre::Matrix3 ogreMatrix;
+    Ogre::Matrix3 ogreMatrix;
     {
         const auto transform = m_matrix.lock();
 
         // Fill the ogreMatrix.
-        for(size_t lt = 0 ; lt < 3 ; lt++)
+        for(std::size_t lt = 0 ; lt < 3 ; lt++)
         {
-            for(size_t ct = 0 ; ct < 3 ; ct++)
+            for(std::size_t ct = 0 ; ct < 3 ; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast< ::Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
             }
         }
     }
 
-    // Get the transformation as sceneNode.
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
-
     // Convert to quaterion.
-    ::Ogre::Quaternion orientation(ogreMatrix);
+    Ogre::Quaternion orientation(ogreMatrix);
 
-    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotateX(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
 
     // Reset the camera position & orientation, since s_MATRIX_IN is a global transform.
-    transformNode->setPosition(0, 0, 0);
+    m_sceneNode->setPosition(0, 0, 0);
     // Reverse X axis.
-    transformNode->setOrientation(rotateX);
+    m_sceneNode->setOrientation(rotateX);
 
     // Update the camera position
     // Inverse camera matrix (since we move the mesh)
-    transformNode->rotate(orientation.Inverse());
+    m_sceneNode->rotate(orientation.Inverse());
     // Place it at a fixed position
-    transformNode->translate(0.f, 0.f, m_markerDepth);
+    m_sceneNode->translate(0.f, 0.f, m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------

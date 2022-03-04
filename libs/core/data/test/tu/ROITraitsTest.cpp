@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,20 +52,28 @@ void ROITraitsTest::tearDown()
 
 void ROITraitsTest::creation()
 {
-    const std::string ID            = "roiID";
-    const std::string EXP           = "skin_0";
-    data::ROITraits::sptr roiTraits = data::ROITraits::New();
+    const std::string ID  = "roiID";
+    const std::string EXP = "skin_0";
+    auto roiTraits        = data::ROITraits::New();
     roiTraits->setIdentifier(ID);
-    data::StructureTraits::sptr structure = data::StructureTraits::New();
+    auto structure = data::StructureTraits::New();
     roiTraits->setStructureTraits(structure);
     roiTraits->setEvaluatedExp(EXP);
-    data::Node::sptr opNode = data::Node::New();
+    auto opNode = data::Node::New();
     roiTraits->setMaskOpNode(opNode);
 
     CPPUNIT_ASSERT_EQUAL(ID, roiTraits->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(EXP, roiTraits->getEvaluatedExp());
     CPPUNIT_ASSERT(structure == roiTraits->getStructureTraits());
     CPPUNIT_ASSERT(opNode == roiTraits->getMaskOpNode());
+
+    auto roiTraits2 = data::ROITraits::New();
+    CPPUNIT_ASSERT(*roiTraits != *roiTraits2);
+
+    roiTraits2->setIdentifier(ID);
+    roiTraits2->setStructureTraits(structure);
+    roiTraits2->setEvaluatedExp(EXP);
+    roiTraits2->setMaskOpNode(opNode);
 }
 
 } //namespace ut

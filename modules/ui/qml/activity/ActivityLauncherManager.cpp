@@ -135,12 +135,12 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 void ActivityLauncherManager::open()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto reader          = service::add("::sight::module::ui::base::io::SSelector");
+    auto reader          = service::add("sight::module::ui::base::io::SSelector");
     reader->setInOut(seriesDB, "data");
     const auto srvCfgFactory = service::extension::Config::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig(
         "ActivityReaderConfig",
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
     reader->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     reader->configure();
@@ -159,12 +159,12 @@ void ActivityLauncherManager::open()
 void ActivityLauncherManager::save()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto writer          = service::add("::sight::module::ui::base::io::SSelector");
+    auto writer          = service::add("sight::module::ui::base::io::SSelector");
     writer->setInOut(seriesDB, "data");
     const auto srvCfgFactory = service::extension::Config::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig(
         "ActivityWriterConfig",
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
     writer->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     writer->configure();

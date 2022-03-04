@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::ui::history::ut::UndoRedoManagerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::UndoRedoManagerTest);
 
 namespace sight::ui::history
 {
@@ -56,7 +56,7 @@ class BogusCommand : public ICommand
 {
 public:
 
-    BogusCommand(const std::string& description, CommandLog& cmdLog, size_t size = 0) :
+    BogusCommand(const std::string& description, CommandLog& cmdLog, std::size_t size = 0) :
         m_description(description),
         m_cmdLog(cmdLog),
         m_size(size)
@@ -65,7 +65,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual size_t getSize() const
+    virtual std::size_t getSize() const
     {
         return m_size;
     }
@@ -92,7 +92,7 @@ public:
 
     CommandLog& m_cmdLog;
 
-    size_t m_size;
+    std::size_t m_size;
 };
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
     ui::history::UndoRedoManager undoRedoManager;
     CommandLog log;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(0), undoRedoManager.getCommandCount());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), undoRedoManager.getCommandCount());
 
     // Check that undo and redo fail on an empty history.
     CPPUNIT_ASSERT_EQUAL(false, undoRedoManager.undo());
@@ -125,7 +125,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
     undoRedoManager.enqueue(testCmd0);
 
     // Ensure the element was added.
-    CPPUNIT_ASSERT_EQUAL(size_t(1), undoRedoManager.getCommandCount());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), undoRedoManager.getCommandCount());
 
     // Add 99 commands to the command history.
     for(int i = 1 ; i < 100 ; ++i)
@@ -135,7 +135,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
         undoRedoManager.enqueue(testCmdX);
 
         // Ensure the element was added.
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), undoRedoManager.getCommandCount());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undoRedoManager.getCommandCount());
     }
 
     // Undo 50 commands in the history.
@@ -144,7 +144,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
         CPPUNIT_ASSERT_EQUAL(true, undoRedoManager.undo());
 
         // The history size should not change.
-        CPPUNIT_ASSERT_EQUAL(size_t(100), undoRedoManager.getCommandCount());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(100), undoRedoManager.getCommandCount());
 
         CommandInfo& lastLog = log.back();
 
@@ -159,7 +159,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
 
     undoRedoManager.enqueue(enqueueCmd);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(51), undoRedoManager.getCommandCount());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(51), undoRedoManager.getCommandCount());
 
     // Redo the last command, this should fail.
     CPPUNIT_ASSERT_EQUAL(false, undoRedoManager.redo());
@@ -185,8 +185,8 @@ void UndoRedoManagerTest::managerEnqueueTest()
 
 void UndoRedoManagerTest::managerMemorySizeTest()
 {
-    const size_t MAXMEMORY = 10;
-    const size_t CMDSIZE   = 2;
+    const std::size_t MAXMEMORY = 10;
+    const std::size_t CMDSIZE   = 2;
 
     ui::history::UndoRedoManager undoRedoManager(MAXMEMORY);
     CommandLog log;
@@ -199,7 +199,7 @@ void UndoRedoManagerTest::managerMemorySizeTest()
         undoRedoManager.enqueue(testCmdI);
 
         // Ensure all the commands where added.
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), undoRedoManager.getCommandCount());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undoRedoManager.getCommandCount());
     }
 
     BogusCommand::sptr testCmdI =
@@ -230,9 +230,9 @@ void UndoRedoManagerTest::managerMemorySizeTest()
 
 void UndoRedoManagerTest::managerCommandCountTest()
 {
-    const size_t MAXMEMORY = 10000;
-    const size_t MAXELT    = 5;
-    const size_t CMDSIZE   = 2;
+    const std::size_t MAXMEMORY = 10000;
+    const std::size_t MAXELT    = 5;
+    const std::size_t CMDSIZE   = 2;
 
     ui::history::UndoRedoManager undoRedoManager(MAXMEMORY, MAXELT);
     CommandLog log;
@@ -245,7 +245,7 @@ void UndoRedoManagerTest::managerCommandCountTest()
         undoRedoManager.enqueue(testCmdI);
 
         // Ensure all the commands where added.
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), undoRedoManager.getCommandCount());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undoRedoManager.getCommandCount());
     }
 
     BogusCommand::sptr testCmdI =
@@ -286,12 +286,12 @@ void UndoRedoManagerTest::managerClearQueueTest()
         undoRedoManager.enqueue(testCmdI);
 
         // Ensure all the commands where added.
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), undoRedoManager.getCommandCount());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undoRedoManager.getCommandCount());
     }
 
     undoRedoManager.clear();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(0), undoRedoManager.getCommandCount());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), undoRedoManager.getCommandCount());
 
     CPPUNIT_ASSERT_EQUAL(false, undoRedoManager.undo());
 }

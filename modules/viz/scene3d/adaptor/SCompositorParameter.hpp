@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,12 +69,12 @@ class CompositorListener;
  * - \b shaderType (optional, string, default=""): the type of the shader (vertex, geometry, fragment). Default to
  *      fragment.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SCompositorParameter final : public ::sight::viz::scene3d::IParameter
+class MODULE_VIZ_SCENE3D_CLASS_API SCompositorParameter final : public sight::viz::scene3d::IParameter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCompositorParameter, ::sight::viz::scene3d::IParameter);
+    SIGHT_DECLARE_SERVICE(SCompositorParameter, sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept;
@@ -105,7 +105,7 @@ protected:
 private:
 
     /// Updates parameter according to the attached data::Object.
-    void updateValue(::Ogre::MaterialPtr& _mat);
+    void updateValue(Ogre::MaterialPtr& _mat);
 
     /// Defines the material name.
     std::string m_compositorName;
@@ -114,7 +114,7 @@ private:
     CompositorListener* m_listener;
 
     /// Contains the compositor we work on.
-    ::Ogre::CompositorInstance* m_compositor;
+    Ogre::CompositorInstance* m_compositor;
 
     friend class CompositorListener;
 };

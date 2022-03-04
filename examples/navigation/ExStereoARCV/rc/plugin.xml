@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExStereoARCV_AppCfg</id>
         <config>
 
@@ -291,7 +291,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <!-- Scene in which the video and the 3D will be rendered -->           
+            <!-- Scene in which the video and the 3D will be rendered -->
             <service uid="rightGenericSceneSrv" type="sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
@@ -325,17 +325,15 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
-            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
-                <inout key="source" uid="cameraSeries" >
-                    <extract from="@cameras.0" />
-                    <extract from="@cameras.1" />
-                    <extract from="@extrinsic_matrices.1" />
-                </inout>
-                <out group="target" >
-                    <key uid="camera1" />
-                    <key uid="camera2" />
-                    <key uid="extrinsic" />
+            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
+            <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
+                <inout key="source" uid="cameraSeries" />
+                <out group="camera" >
+                    <key index="0" uid="camera1" />
+                    <key index="1" uid="camera2" />
+                </out>
+                <out group="extrinsic" >
+                    <key index="1" uid="extrinsic" />
                 </out>
             </service>
 
@@ -424,7 +422,7 @@
             </service>
 
             <!-- GUI to display a state -->
-            <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::base::editor::SStatus" >
+            <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::qt::SStatus" >
                 <form>circle</form>
                 <labelStatus>Reprojection matrix computed</labelStatus>
                 <red>No reprojection matrix</red>

@@ -25,7 +25,7 @@
 namespace sight::module::io::dimse
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::dimse::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::dimse::Plugin");
 
 //------------------------------------------------------------------------------
 

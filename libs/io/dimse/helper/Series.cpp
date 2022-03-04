@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
 {
     DicomSeriesContainer seriesContainer;
 
-    OFIterator<QRResponse*> it;
+    OFListIterator(QRResponse*) it;
     OFCondition result;
 
     // Every while loop run will get all image for a specific study
@@ -187,9 +187,9 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
             equipment->setInstitutionName(data.c_str());
 
             // Number of instances
-            long int nbinstances;
-            (*it)->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nbinstances);
-            series->setNumberOfInstances(nbinstances);
+            long int nb_instances;
+            (*it)->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances);
+            series->setNumberOfInstances(nb_instances);
 
             // Add series to container
             seriesContainer.push_back(series);
@@ -219,7 +219,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
 {
     InstanceUIDContainer instanceUIDContainer;
 
-    OFIterator<QRResponse*> it;
+    OFListIterator(QRResponse*) it;
     DcmDataset dataset;
     OFCondition result;
     // Every while loop run will get all image for a specific study

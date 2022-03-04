@@ -36,7 +36,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::VtiImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::VtiImageReader);
 
 namespace sight::io::vtk
 {
@@ -102,7 +102,7 @@ void VtiImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string VtiImageReader::extension()
+std::string VtiImageReader::extension() const
 {
     return ".vti";
 }

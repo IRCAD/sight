@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,11 +59,11 @@ class MODULE_FILTER_IMAGE_CLASS_API SFlip : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFlip, ::sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SFlip, sight::service::IFilter);
 
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISZ_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_X_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_Y_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_Z_SLOT;
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SFlip();
@@ -110,7 +110,7 @@ private:
     static constexpr std::string_view s_IMAGE_IN  = "source";
     static constexpr std::string_view s_IMAGE_OUT = "target";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_source {this, s_IMAGE_IN, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_source {this, s_IMAGE_IN, true};
     sight::data::ptr<sight::data::Image, sight::data::Access::out> m_target {this, s_IMAGE_OUT, false};
 };
 

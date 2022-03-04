@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,6 @@
 #ifdef _WIN32
 #define MEMORYTOOLIMPL Win32MemoryMonitorTools
 #include "core/memory/tools/Win32MemoryMonitorTools.hpp"
-#elif defined(__APPLE__)
-#define MEMORYTOOLIMPL DarwinMemoryMonitorTools
-#include "core/memory/tools/DarwinMemoryMonitorTools.hpp"
 #else
 #define MEMORYTOOLIMPL PosixMemoryMonitorTools
 #include "core/memory/tools/PosixMemoryMonitorTools.hpp"
@@ -133,16 +130,16 @@ void ValveDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::Co
 
 //------------------------------------------------------------------------------
 
-bool ValveDump::needDump(size_t supplement) const
+bool ValveDump::needDump(std::size_t supplement) const
 {
     return core::memory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() <= (m_minFreeMem + supplement);
 }
 
 //------------------------------------------------------------------------------
 
-size_t ValveDump::dump(size_t nbOfBytes)
+std::size_t ValveDump::dump(std::size_t nbOfBytes)
 {
-    size_t dumped = 0;
+    std::size_t dumped = 0;
 
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     if(manager)
@@ -166,7 +163,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
             }
         }
 
-        for(const BufferVectorType::value_type& pair : bufferInfos)
+        for(const auto& pair : bufferInfos)
         {
             if(dumped < nbOfBytes)
             {
@@ -187,7 +184,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
 
 //------------------------------------------------------------------------------
 
-void ValveDump::apply(size_t supplement)
+void ValveDump::apply(std::size_t supplement)
 {
     if(this->needDump(supplement))
     {
@@ -217,7 +214,7 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
             m_minFreeMem = core::memory::ByteSize(value).getSize();
             return true;
         }
-        else if(name == "hysteresis_offet")
+        else if(name == "hysteresis_offset")
         {
             m_hysteresisOffset = core::memory::ByteSize(value).getSize();
             return true;
@@ -236,7 +233,7 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
 
 const core::memory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
 {
-    static const core::memory::IPolicy::ParamNamesType params = {{"min_free_mem", "hysteresis_offet"}};
+    static const core::memory::IPolicy::ParamNamesType params = {{"min_free_mem", "hysteresis_offset"}};
     return params;
 }
 
@@ -251,7 +248,7 @@ std::string ValveDump::getParam(const std::string& name, bool* ok) const
         value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_minFreeMem)));
         isOk  = true;
     }
-    else if(name == "hysteresis_offet")
+    else if(name == "hysteresis_offset")
     {
         value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_hysteresisOffset)));
         isOk  = true;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,11 +56,11 @@ namespace sight::module::filter::vision
  * @subsection Input Input:
  * - \b timeline [sight::data::FrameTL]: timeline on which optical flow will be computed.
  * @subsection Configuration Configuration:
- * - \b latency (optionnal): There is no need to process every frames coming in.
+ * - \b latency (optional): There is no need to process every frames coming in.
  * Use `latency` to wait between two consecutive frame. Ex: if set to 333 (in ms), it will compute ~1/10 frames at 30fps
  * (Default: 333 ms).
  * Usually you don't need to change the value.
- * - \b scaleFactor (optionnal): if image is > 640 x 480 the scaleFactor is applied to downscale image
+ * - \b scaleFactor (optional): if image is > 640 x 480 the scaleFactor is applied to downscale image
  * to keep a good balance between computation time and feature tracking quality (default 3,6),
  *  usually you don't need to change the value.
  */
@@ -108,10 +108,10 @@ private:
     NoMotionSignalType::sptr m_noMotionSignal;
 
     /// Stores last image.
-    ::cv::Mat m_lastGrayImg;
+    cv::Mat m_lastGrayImg;
 
     /// Stores last corners.
-    ::cv::Mat m_lastCorners;
+    cv::Mat m_lastCorners;
 
     /// Waiting time between to frames.
     unsigned int m_latency;

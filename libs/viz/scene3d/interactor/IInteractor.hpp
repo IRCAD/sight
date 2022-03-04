@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -181,7 +181,7 @@ protected:
 private:
 
     /// Checks if the cursor is on top of the given viewport.
-    static bool isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp);
+    static bool isInViewport(int _mouseX, int _mouseY, const Ogre::Viewport* const _vp);
 };
 
 //------------------------------------------------------------------------------

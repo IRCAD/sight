@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,6 @@
 
 #include <data/Composite.hpp>
 #include <data/mt/locked_ptr.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 namespace sight::activity
@@ -67,7 +66,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
         const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
-        const auto it       = inouts.find({key, 0});
+        const auto it       = inouts.find({key, std::nullopt});
         SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
         auto obj = it->second.lock();
         ParameterType param;
@@ -104,7 +103,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         ParameterType param;
         param.replace = replace;
         param.by      = by;
-        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isSeshat());
+        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isObjectPath());
         m_parameters.push_back(param);
     }
 }
@@ -180,61 +179,12 @@ data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
     actSeries->setModality("OT");
     actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID());
 
-    const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     actSeries->setDate(core::tools::getDate(now));
     actSeries->setTime(core::tools::getTime(now));
     actSeries->setActivityConfigId(info.id);
 
     return actSeries;
-}
-
-//------------------------------------------------------------------------------
-
-void IActivityLauncher::translateParameters(
-    const data::Object::csptr& sourceObj,
-    const ParametersType& parameters,
-    ReplaceMapType& replaceMap
-)
-{
-    for(const ParametersType::value_type& param : parameters)
-    {
-        if(!param.isSeshat())
-        {
-            replaceMap[param.replace] = param.by;
-        }
-        else
-        {
-            std::string parameterToReplace = param.by;
-            if(parameterToReplace.substr(0, 1) == "!")
-            {
-                parameterToReplace.replace(0, 1, "@");
-            }
-
-            data::Object::sptr obj = data::reflection::getObject(sourceObj, parameterToReplace);
-            SIGHT_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
-
-            data::String::sptr stringParameter = data::String::dynamicCast(obj);
-
-            std::string parameterValue = obj->getID();
-
-            if(stringParameter && param.by.substr(0, 1) == "!")
-            {
-                parameterValue = stringParameter->getValue();
-            }
-
-            replaceMap[param.replace] = parameterValue;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void IActivityLauncher::translateParameters(const ParametersType& parameters, ReplaceMapType& replaceMap)
-{
-    for(const ParametersType::value_type& param : parameters)
-    {
-        replaceMap[param.replace] = param.by;
-    }
 }
 
 } // namespace sight::activity

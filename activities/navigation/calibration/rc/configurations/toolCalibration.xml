@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>toolCalibration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -168,7 +168,7 @@
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::matrix::Matrix4WriterService" />
+            <addSelection service="sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
         <service uid="concatenateMatrices" type="sight::module::geometry::base::SConcatenateMatrices">
@@ -184,12 +184,13 @@
         <!-- *************************** Begin resultView *************************** -->
 
         <service uid="resultView" type="sight::viz::scene3d::SRender" >
-            <scene renderMode="sync">
-                <background topColor="#000000" bottomColor="#000000" />
+            <scene >
+                <background topColor="#323245" bottomColor="#323245" />
                 <layer id="default" order="1" />
+                <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="trackedMatrixAdp" />
                 <adaptor uid="calibMatAdp" />
-                <adaptor uid="calibAxisMatAdp" /> 
+                <adaptor uid="calibAxisMatAdp" />
                 <adaptor uid="systemCenterAxisAdp" />
                 <adaptor uid="trackerAxis0Adp" />
                 <adaptor uid="pointlistAdp" />
@@ -197,6 +198,10 @@
                 <adaptor uid="toolAxisAdp" />
                 <adaptor uid="calibrationAxisAdp" />
             </scene>
+        </service>
+
+        <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <config layer="default" priority="0" />
         </service>
 
         <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
@@ -278,10 +283,11 @@
         <start uid="concatenateMatrices" />
 
         <!-- Ogre scene 'resultView' -->
-
+        
+        <start uid="trackballInteractorAdp" />
         <start uid="trackedMatrixAdp" />
         <start uid="calibMatAdp" />
-        <start uid="calibAxisMatAdp" /> 
+        <start uid="calibAxisMatAdp" />
         <start uid="systemCenterAxisAdp" />
         <start uid="trackerAxis0Adp" />
         <start uid="pointlistAdp" />

@@ -81,19 +81,19 @@ public:
     VIZ_QT3D_QT_API ~GenericScene() override;
 
     /// @returns the scene's camera.
-    VIZ_QT3D_QT_API Qt3DRender::QCamera* const getCamera() const;
+    VIZ_QT3D_QT_API Qt3DRender::QCamera* getCamera();
 
     /// @returns the scene's camera controller.
-    VIZ_QT3D_QT_API Qt3DExtras::QAbstractCameraController* const getCameraController() const;
+    VIZ_QT3D_QT_API Qt3DExtras::QAbstractCameraController* getCameraController();
 
     /// @returns the scene's QInputSettings object (only used in QML applications).
-    VIZ_QT3D_QT_API Qt3DInput::QInputSettings* const getInputSettings() const;
+    VIZ_QT3D_QT_API Qt3DInput::QInputSettings* getInputSettings();
 
     /// @returns the scene's render settings object (only used in QML applications).
-    VIZ_QT3D_QT_API Qt3DRender::QRenderSettings* const getRenderSettings() const;
+    VIZ_QT3D_QT_API Qt3DRender::QRenderSettings* getRenderSettings();
 
     /// @returns the scene's framegraph.
-    VIZ_QT3D_QT_API FrameGraph* getFrameGraph() const;
+    VIZ_QT3D_QT_API FrameGraph* getFrameGraph();
 
     /// Updates the scene's camera.
     VIZ_QT3D_QT_API void setCamera(Qt3DRender::QCamera* _camera);

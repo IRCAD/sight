@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/preferences.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -140,7 +140,7 @@ void SFrameGrabber::startCamera()
         // For compatibility with old calibration with absolute path
         if(!file.is_absolute())
         {
-            const std::filesystem::path videoDir(ui::base::preferences::getVideoDir());
+            const std::filesystem::path videoDir(ui::base::Preferences().get("VIDEO_DIR_PREF", std::string()));
             file = videoDir / file;
         }
 
@@ -246,8 +246,8 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
     {
         m_timer = m_worker->createTimer();
 
-        const size_t fps = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FPS));
-        m_videoFramesNb = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_COUNT));
+        const std::size_t fps = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FPS));
+        m_videoFramesNb = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_COUNT));
 
         if(fps == 0)
         {
@@ -315,7 +315,7 @@ void SFrameGrabber::readDevice(const data::Camera& _camera)
     }
 
     // Only way to capture 1080p with v4l.
-    m_videoCapture.set(::cv::CAP_PROP_FOURCC, ::cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+    m_videoCapture.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
 #else
     //On other platforms (at least on MacOS, we should use the index given by Qt)
     if(index >= 0)
@@ -336,14 +336,15 @@ void SFrameGrabber::readDevice(const data::Camera& _camera)
         m_timer = m_worker->createTimer();
         float fps = _camera.getMaximumFrameRate();
         fps = fps <= 0.f ? 30.f : fps;
-        const size_t height = _camera.getHeight();
-        const size_t width  = _camera.getWidth();
+        const std::size_t height = _camera.getHeight();
+        const std::size_t width  = _camera.getWidth();
 
-        m_videoCapture.set(::cv::CAP_PROP_FPS, static_cast<int>(fps));
-        m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
-        m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+        m_videoCapture.set(cv::CAP_PROP_FPS, static_cast<int>(fps));
+        m_videoCapture.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+        m_videoCapture.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
-        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+        core::thread::Timer::TimeDurationType duration =
+            std::chrono::milliseconds(1000 / static_cast<std::size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -377,15 +378,15 @@ void SFrameGrabber::readStream(const data::Camera& _camera)
         m_timer = m_worker->createTimer();
         float fps = _camera.getMaximumFrameRate();
         fps = fps <= 0.f ? 30.f : fps;
-        const size_t height = _camera.getHeight();
-        const size_t width  = _camera.getWidth();
+        const std::size_t height = _camera.getHeight();
+        const std::size_t width  = _camera.getWidth();
 
-        m_videoCapture.set(::cv::CAP_PROP_FPS, static_cast<int>(fps));
-        m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
-        m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+        m_videoCapture.set(cv::CAP_PROP_FPS, static_cast<int>(fps));
+        m_videoCapture.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+        m_videoCapture.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
         const core::thread::Timer::TimeDurationType duration =
-            std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+            std::chrono::milliseconds(1000 / static_cast<std::size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -454,7 +455,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         }
 
         const std::string file = m_imageToRead.front().string();
-        const ::cv::Mat image  = ::cv::imread(file, ::cv::IMREAD_UNCHANGED);
+        const cv::Mat image    = cv::imread(file, cv::IMREAD_UNCHANGED);
 
         const int width  = image.size().width;
         const int height = image.size().height;
@@ -462,8 +463,8 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if(width > 0 && height > 0)
         {
-            const size_t w = static_cast<size_t>(width);
-            const size_t h = static_cast<size_t>(height);
+            const std::size_t w = static_cast<std::size_t>(width);
+            const std::size_t h = static_cast<std::size_t>(height);
 
             auto frameTL = m_frame.lock();
 
@@ -592,16 +593,16 @@ void SFrameGrabber::grabVideo()
         {
             auto frameTL = m_frame.lock();
 
-            ::cv::Mat image;
+            cv::Mat image;
             m_videoCapture.retrieve(image);
 
             if(!m_isInitialized)
             {
-                const size_t width  = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_WIDTH));
-                const size_t height = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_HEIGHT));
+                const std::size_t width  = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
+                const std::size_t height = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_HEIGHT));
 
-                const size_t w = static_cast<size_t>(image.size().width);
-                const size_t h = static_cast<size_t>(image.size().height);
+                const std::size_t w = static_cast<std::size_t>(image.size().width);
+                const std::size_t h = static_cast<std::size_t>(image.size().height);
 
                 if(width != w || height != h)
                 {
@@ -662,7 +663,7 @@ void SFrameGrabber::grabVideo()
             }
 
             // Get time slider position.
-            const size_t ms        = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_MSEC));
+            const std::size_t ms   = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
             const auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
 
@@ -671,17 +672,17 @@ void SFrameGrabber::grabVideo()
             std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an OpenCV mat that aliases the buffer created from the output timeline.
-            ::cv::Mat imgOut(image.size(), image.type(), (void*) frameBuffOut, ::cv::Mat::AUTO_STEP);
+            cv::Mat imgOut(image.size(), image.type(), (void*) frameBuffOut, cv::Mat::AUTO_STEP);
 
             if(image.type() == CV_8UC3)
             {
                 // Convert the read image from BGR to RGB.
-                ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGR2RGB);
+                cv::cvtColor(image, imgOut, cv::COLOR_BGR2RGB);
             }
             else if(image.type() == CV_8UC4)
             {
                 // Convert the read image from BGRA to RGBA.
-                ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGRA2RGBA);
+                cv::cvtColor(image, imgOut, cv::COLOR_BGRA2RGBA);
             }
             else
             {
@@ -698,11 +699,11 @@ void SFrameGrabber::grabVideo()
         if(m_loopVideo)
         {
             // Loop the video.
-            const size_t currentF = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_FRAMES));
+            const std::size_t currentF = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
 
             if(currentF == m_videoFramesNb)
             {
-                m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, 0.);
+                m_videoCapture.set(cv::CAP_PROP_POS_MSEC, 0.);
             }
         }
     }
@@ -724,7 +725,7 @@ void SFrameGrabber::grabImage()
 
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
-        const ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
+        const cv::Mat image = cv::imread(imagePath.string(), cv::IMREAD_UNCHANGED);
         core::HiResClock::HiResClockType timestamp;
 
         //create a new timestamp
@@ -740,8 +741,8 @@ void SFrameGrabber::grabImage()
 
         SIGHT_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
 
-        const size_t width  = static_cast<size_t>(image.size().width);
-        const size_t height = static_cast<size_t>(image.size().height);
+        const std::size_t width  = static_cast<std::size_t>(image.size().width);
+        const std::size_t height = static_cast<std::size_t>(image.size().height);
 
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
         {
@@ -753,17 +754,17 @@ void SFrameGrabber::grabImage()
             std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
-            ::cv::Mat imgOut(image.size(), image.type(), (void*) frameBuffOut, ::cv::Mat::AUTO_STEP);
+            cv::Mat imgOut(image.size(), image.type(), (void*) frameBuffOut, cv::Mat::AUTO_STEP);
 
             if(image.type() == CV_8UC3)
             {
                 // convert the readded image from BGR to RGB
-                ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGR2RGB);
+                cv::cvtColor(image, imgOut, cv::COLOR_BGR2RGB);
             }
             else if(image.type() == CV_8UC4)
             {
                 // convert the readded image from BGRA to RGBA
-                ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGRA2RGBA);
+                cv::cvtColor(image, imgOut, cv::COLOR_BGRA2RGBA);
             }
             else
             {
@@ -845,11 +846,11 @@ void SFrameGrabber::setPosition(int64_t position)
 
     if(m_videoCapture.isOpened())
     {
-        m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, static_cast<double>(position));
+        m_videoCapture.set(cv::CAP_PROP_POS_MSEC, static_cast<double>(position));
     }
     else if(!m_imageToRead.empty())
     {
-        const size_t newPos = static_cast<size_t>(position / 30);
+        const std::size_t newPos = static_cast<std::size_t>(position / 30);
         if(newPos < m_imageToRead.size())
         {
             m_imageCount = newPos;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 const StructureTraitsHelper::CategoryTranslatorType StructureTraitsHelper::s_CATEGORYTRANSLATOR =
-    ::boost::assign::list_of<StructureTraitsHelper::CategoryTranslatorType::relation>
+    boost::assign::list_of<StructureTraitsHelper::CategoryTranslatorType::relation>
         (data::StructureTraits::BODY, std::string("Body"))
         (data::StructureTraits::HEAD, std::string("Head"))
         (data::StructureTraits::NECK, std::string("Neck"))
@@ -45,7 +45,7 @@ const StructureTraitsHelper::CategoryTranslatorType StructureTraitsHelper::s_CAT
 //------------------------------------------------------------------------------
 
 const StructureTraitsHelper::ClassTranslatorType StructureTraitsHelper::s_CLASSTRANSLATOR =
-    ::boost::assign::list_of<StructureTraitsHelper::ClassTranslatorType::relation>
+    boost::assign::list_of<StructureTraitsHelper::ClassTranslatorType::relation>
         (data::StructureTraits::TOOL, std::string("Tool"))
         (data::StructureTraits::ENVIRONMENT, std::string("Environment"))
         (data::StructureTraits::VESSEL, std::string("Vessel"))

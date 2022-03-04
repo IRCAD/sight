@@ -35,7 +35,7 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::PlyMeshWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::PlyMeshWriter);
 
 namespace sight::io::vtk
 {
@@ -94,7 +94,7 @@ void PlyMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string PlyMeshWriter::extension()
+std::string PlyMeshWriter::extension() const
 {
     return ".ply";
 }

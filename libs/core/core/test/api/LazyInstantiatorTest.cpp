@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,7 +134,7 @@ void LazyInstantiatorTest::threadSafetyTest()
     CounterThread::CounterType::s_counter = 0;
 
     std::vector<std::thread> tg;
-    for(size_t i = 0 ; i <= NB_THREAD ; i++)
+    for(std::size_t i = 0 ; i <= NB_THREAD ; i++)
     {
         CounterThread::sptr ct = std::make_shared<CounterThread>();
         tg.push_back(std::thread(std::bind(&CounterThread::run, ct)));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/tools/Failed.hpp"
 #include "core/tools/Object.hpp"
+
 #include <core/Demangler.hpp>
 
 #include <boost/lexical_cast.hpp>
@@ -82,7 +83,7 @@ void fwID::addIDInDictionary(IDType newID)
 
     core::mt::WriteLock lock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);
-    // note we use a static cast for a down cast because we do not use the classical polyvi morphic approach
+    // note we use a static cast for a down cast because we do not use the classical polymorphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
     m_dictionary[newID] = ((Object*) (this))->getSptr();
     m_id                = newID;

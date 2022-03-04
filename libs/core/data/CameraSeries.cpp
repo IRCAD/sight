@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "data/CameraSeries.hpp"
 
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+
 #include <data/Exception.hpp>
 #include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/registry/macros.hpp>
-
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
 
 namespace sight::data
 {
@@ -133,7 +133,16 @@ void CameraSeries::addCamera(const data::Camera::sptr& camera)
 
 //------------------------------------------------------------------------------
 
-data::Camera::sptr CameraSeries::getCamera(size_t index) const
+data::Camera::csptr CameraSeries::getCamera(std::size_t index) const
+{
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
+
+    return m_cameras[index];
+}
+
+//------------------------------------------------------------------------------
+
+data::Camera::sptr CameraSeries::getCamera(std::size_t index)
 {
     SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
 
@@ -155,7 +164,7 @@ void CameraSeries::removeCamera(const data::Camera::sptr& camera)
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix)
+void CameraSeries::setExtrinsicMatrix(std::size_t index, data::Matrix4::sptr matrix)
 {
     SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
     m_extrinsicMatrices[index] = matrix;
@@ -163,12 +172,39 @@ void CameraSeries::setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix)
 
 //------------------------------------------------------------------------------
 
-data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
+data::Matrix4::csptr CameraSeries::getExtrinsicMatrix(std::size_t index) const
 {
     SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
     return m_extrinsicMatrices[index];
 }
 
 //------------------------------------------------------------------------------
+
+data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(std::size_t index)
+{
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size());
+    return m_extrinsicMatrices[index];
+}
+
+//------------------------------------------------------------------------------
+
+bool CameraSeries::operator==(const CameraSeries& other) const noexcept
+{
+    if(!core::tools::is_equal(m_cameras, other.m_cameras)
+       || !core::tools::is_equal(m_extrinsicMatrices, other.m_extrinsicMatrices))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Series::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool CameraSeries::operator!=(const CameraSeries& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } //namespace sight::data

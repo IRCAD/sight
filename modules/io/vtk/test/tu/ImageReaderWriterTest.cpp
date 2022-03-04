@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,25 +23,22 @@
 #include "ImageReaderWriterTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <service/base.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 #include <fstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::vtk::ut::ImageReaderWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ImageReaderWriterTest);
 
 static const double epsilon = 0.00001;
 
@@ -84,17 +81,12 @@ void runImageSrv(
 
 void ImageReaderWriterTest::setUp()
 {
-    // Set up context before running a test.
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
-    core::thread::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::tearDown()
 {
-    // Clean up after the test run.
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -141,9 +133,9 @@ void ImageReaderWriterTest::testVtkImageReader()
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data read.
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -195,9 +187,9 @@ void ImageReaderWriterTest::testVtiImageReader()
     core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -250,9 +242,9 @@ void ImageReaderWriterTest::testMhdImageReader()
     core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -279,9 +271,9 @@ void ImageReaderWriterTest::testImageReaderExtension()
 {
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "img.xxx";
 
-    std::ofstream ofile;
-    ofile.open(file.string().c_str());
-    ofile.close();
+    std::ofstream o_file;
+    o_file.open(file.string().c_str());
+    o_file.close();
 
     data::Image::sptr image = data::Image::New();
 
@@ -351,9 +343,9 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         std::filesystem::remove(file);
 
         // Data read
-        data::Image::Spacing spacingRead = image->getSpacing2();
-        data::Image::Origin originRead   = image->getOrigin2();
-        data::Image::Size sizeRead       = image->getSize2();
+        data::Image::Spacing spacingRead = image->getSpacing();
+        data::Image::Origin originRead   = image->getOrigin();
+        data::Image::Size sizeRead       = image->getSize();
 
         CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
         CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -368,8 +360,8 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
 
-        const auto imageDumpLock         = image->lock();
-        const auto imageFromDiskDumpLock = imageFromDisk->lock();
+        const auto imageDumpLock         = image->dump_lock();
+        const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
         const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
         const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -420,9 +412,9 @@ void ImageReaderWriterTest::testVtkImageWriter()
     std::filesystem::remove(file);
 
     // Data read
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -440,8 +432,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    const auto imageDumpLock         = image->lock();
-    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+    const auto imageDumpLock         = image->dump_lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
     const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -467,14 +459,13 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
-    data::Image::sptr newImage = data::Image::New();
-    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), newImage);
+    data::Image::sptr image2 = data::Image::New();
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, newImage, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
@@ -511,9 +502,9 @@ void ImageReaderWriterTest::testVtiImageWriter()
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -531,8 +522,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    const auto imageDumpLock         = image->lock();
-    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+    const auto imageDumpLock         = image->dump_lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
     const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -575,9 +566,9 @@ void ImageReaderWriterTest::testMhdImageWriter()
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -595,8 +586,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    const auto imageDumpLock         = image->lock();
-    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+    const auto imageDumpLock         = image->dump_lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
     const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
@@ -633,7 +624,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.xxx";
 
     {
-        const std::string srvname("::sight::module::io::vtk::SImageWriter");
+        const std::string srvname("sight::module::io::vtk::SImageWriter");
 
         service::IService::sptr srv = service::add(srvname);
 

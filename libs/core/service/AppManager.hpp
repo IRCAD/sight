@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,8 +49,8 @@ namespace sight::service
     // Create and register a service
     // - readerService will be automatically started and updated
     // - mesherService will be automatically started but not updated
-    auto readerService = m_appMgr->addService("::sight::module::ui::base::io::SSelector", true, true);
-    auto mesherService = m_appMgr->addService("::sight::module::filter::mesh::SVTKMesher", true, false);
+    auto readerService = m_appMgr->addService("sight::module::ui::base::io::SSelector", true, true);
+    auto mesherService = m_appMgr->addService("sight::module::filter::mesh::SVTKMesher", true, false);
 
     // configure the services ...
 
@@ -104,7 +104,7 @@ namespace sight::service
 
         if (this->checkInputs())
         {
-            auto mesher = this->addService("::sight::module::filter::mesh::SVTKMesher", true, true);
+            auto mesher = this->addService("sight::module::filter::mesh::SVTKMesher", true, true);
             mesher->setObjectId("imageSeries", this->getInputID(s_IMAGE_ID));
             mesher->setObjectId("modelSeries", this->getInputID(s_MODEL_ID));
 
@@ -260,7 +260,7 @@ public:
      * This slot is connected to the OSR to listen the created object, it could also be called by the AppManager
      * inherited classes to register an object.
      *
-     * If startServices() has been called previouly, the services that require this object and have all their required
+     * If startServices() has been called previously, the services that require this object and have all their required
      * objects are started.
      *
      * @param obj the new object to register
@@ -417,7 +417,7 @@ private:
     mutable std::string m_uid;
 
     /// Number of instantiated AppManager, it allows to create unique identifier for object and channels
-    static size_t s_counter;
+    static std::size_t s_counter;
 };
 
 //------------------------------------------------------------------------------

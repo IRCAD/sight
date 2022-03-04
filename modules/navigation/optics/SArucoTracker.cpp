@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ void SArucoTracker::configuring()
         MarkerIDType markersID;
         for(const auto& it : tok)
         {
-            const int id = ::boost::lexical_cast<int>(it);
+            const int id = boost::lexical_cast<int>(it);
             markersID.push_back(id);
         }
 
@@ -240,14 +240,14 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
                 cv::cvtColor(bgr, inImage, cv::COLOR_BGR2BGRA);
             }
             // If nbOfComponents == 1 or == 3 it's ok.
-            // It is useless to test other values since "wrong" number of components has previoulsy been discarded.
+            // It is useless to test other values since "wrong" number of components has previously been discarded.
             else
             {
                 cv::aruco::drawDetectedMarkers(inImage, detectedMarkers, detectedMarkersIds);
             }
         }
 
-        size_t tagTLIndex = 0;
+        std::size_t tagTLIndex = 0;
         for(const auto& markersID : m_markers)
         {
             unsigned int markerPosition = 0;
@@ -265,7 +265,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 
                         data::MarkerMap::MarkerType marker;
                         marker.resize(4);
-                        for(size_t j = 0 ; j < 4 ; ++j)
+                        for(std::size_t j = 0 ; j < 4 ; ++j)
                         {
                             marker[j][0] = detectedMarkers[i][j].x;
                             marker[j][1] = detectedMarkers[i][j].y;

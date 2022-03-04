@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ public:
     /// Defines directional type light.
     VIZ_SCENE3D_API static const std::string s_DIRECTIONAL_LIGHT;
 
-    /// Defines spto type light.
+    /// Defines spot type light.
     VIZ_SCENE3D_API static const std::string s_SPOT_LIGHT;
 
     /// Defines the range of the phi and theta value of directional lights.
@@ -91,7 +91,7 @@ public:
      * @brief Creates a light adaptor.
      * @param _diffuse diffuse color of the light.
      * @param _specular specular color of the light.
-     * @return A new ligh adaptor with registered inputs.
+     * @return A new light adaptor with registered inputs.
      */
     VIZ_SCENE3D_API static ILight::sptr createLightAdaptor(
         data::Color::sptr _diffuse,
@@ -123,40 +123,40 @@ public:
     VIZ_SCENE3D_API virtual void setName(const std::string& _name) = 0;
 
     /**
-     * @brief Gets the Orge light type .
+     * @brief Gets the Ogre light type .
      * @return The type of the light.
      */
-    VIZ_SCENE3D_API virtual ::Ogre::Light::LightTypes getType() const = 0;
+    VIZ_SCENE3D_API virtual Ogre::Light::LightTypes getType() const = 0;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the type of light.
      */
-    VIZ_SCENE3D_API virtual void setType(::Ogre::Light::LightTypes _type) = 0;
+    VIZ_SCENE3D_API virtual void setType(Ogre::Light::LightTypes _type) = 0;
 
     /**
      * @brief Gets the Ogre diffuse color of the light.
      * @return The diffuse color of the light.
      */
-    VIZ_SCENE3D_API virtual ::Ogre::ColourValue getDiffuseColor() const = 0;
+    VIZ_SCENE3D_API virtual Ogre::ColourValue getDiffuseColor() const = 0;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the Ogre diffuse color of the light.
      */
-    VIZ_SCENE3D_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) = 0;
+    VIZ_SCENE3D_API virtual void setDiffuseColor(Ogre::ColourValue _diffuseColor) = 0;
 
     /**
      * @brief Gets the Ogre specular color of the light.
      * @return The specular color of the light.
      */
-    VIZ_SCENE3D_API virtual ::Ogre::ColourValue getSpecularColor() const = 0;
+    VIZ_SCENE3D_API virtual Ogre::ColourValue getSpecularColor() const = 0;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _diffuseColor the Ogre specular color of the light.
      */
-    VIZ_SCENE3D_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) = 0;
+    VIZ_SCENE3D_API virtual void setSpecularColor(Ogre::ColourValue _specularColor) = 0;
 
     /**
      * @brief Indicates if the light is activated.
@@ -178,8 +178,8 @@ public:
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
-     * @param _thetaOffset the value of the thta offset.
-     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
+     * @param _thetaOffset the value of the theta offset.
+     * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VIZ_SCENE3D_API virtual void setThetaOffset(float _thetaOffset) = 0;
 
@@ -191,8 +191,8 @@ public:
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
-     * @param _phiOffset the phi of the thta offset.
-     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
+     * @param _phiOffset the phi of the theta offset.
+     * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VIZ_SCENE3D_API virtual void setPhiOffset(float _phiOffset) = 0;
 

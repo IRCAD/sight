@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,6 @@
 #include <data/helper/Field.hpp>
 #include <data/Integer.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 #include <service/IService.hpp>
@@ -65,84 +64,6 @@ namespace sight::module::ui::qt
 namespace model
 {
 
-class ValueView
-{
-public:
-
-    ValueView()          = default;
-    virtual ~ValueView() = default;
-
-    //------------------------------------------------------------------------------
-
-    virtual std::string apply(data::Object::sptr _obj)
-    {
-        if(_obj->isA("sight::data::String"))
-        {
-            data::String::sptr fwValue = data::String::dynamicCast(_obj);
-            return fwValue->getValue();
-        }
-        else if(_obj->isA("sight::data::Integer"))
-        {
-            data::Integer::sptr fwValue = data::Integer::dynamicCast(_obj);
-            return ::boost::lexical_cast<std::string>(fwValue->getValue());
-        }
-        else if(_obj->isA("sight::data::Float"))
-        {
-            data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
-            return ::boost::lexical_cast<std::string>(fwValue->getValue());
-        }
-        else
-        {
-            SIGHT_WARN(_obj->getClassname() + " is not a printable object  : ");
-            return "";
-        }
-    }
-};
-
-//------------------------------------------------------------------------------
-
-class PositiveView : public ValueView
-{
-public:
-
-    //------------------------------------------------------------------------------
-
-    virtual std::string apply(data::Object::sptr _obj)
-    {
-        if(_obj->isA("sight::data::Integer"))
-        {
-            data::Integer::sptr fwIntValue = data::Integer::dynamicCast(_obj);
-
-            if(fwIntValue->getValue() > 0)
-            {
-                std::stringstream ss;
-                data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
-                ss << ::boost::format("%11.2f") % (fwValue->getValue());
-                return ss.str();
-            }
-
-            return "Unknown";
-        }
-        else if(_obj->isA("sight::data::Float"))
-        {
-            data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
-            if(fwValue->getValue() > 0)
-            {
-                std::stringstream ss;
-                ss << ::boost::format("%11.2f") % (fwValue->getValue());
-                return ss.str();
-            }
-
-            return "Unknown";
-        }
-        else
-        {
-            SIGHT_WARN(_obj->getClassname() + " is not a printable object  : ");
-            return "";
-        }
-    }
-};
-
 //------------------------------------------------------------------------------
 
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
@@ -161,16 +82,6 @@ SModelSeriesList::SModelSeriesList() noexcept
 
 //------------------------------------------------------------------------------
 
-SModelSeriesList::~SModelSeriesList() noexcept
-{
-    for(auto cIt : m_displayedInfo)
-    {
-        delete cIt.second;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SModelSeriesList::configuring()
 {
     this->initialize();
@@ -184,27 +95,10 @@ void SModelSeriesList::configuring()
         m_enableDelete  = config->get<bool>("enableDelete", m_enableDelete);
     }
 
-    const core::runtime::ConfigurationElement::sptr& columns = m_configuration->findConfigurationElement("columns");
-    if(columns)
+    auto columns = configType.get_child("columns");
+    for(auto itCol = columns.begin() ; itCol != columns.end() ; ++itCol)
     {
-        core::runtime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
-        m_headers.clear();
-        for( ; cIt != columns->end() ; cIt++)
-        {
-            ValueView* view;
-            core::runtime::ConfigurationElement::AttributePair configView = (*cIt)->getSafeAttributeValue("view");
-            if(!configView.first)
-            {
-                view = new ValueView();
-            }
-            else if(configView.second == ("positive"))
-            {
-                view = new PositiveView();
-            }
-
-            m_displayedInfo.insert(DisplayedInformation::value_type((*cIt)->getValue(), view));
-            m_headers << QString::fromStdString((*cIt)->getName());
-        }
+        m_headers << QString::fromStdString(itCol->first);
     }
 }
 
@@ -387,11 +281,21 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _
     for(auto const& reconstruction : reconstructions)
     {
         QStringList info;
-        for(auto const& cIt : m_displayedInfo)
+        for(auto const& column : m_headers)
         {
-            data::Object::sptr obj = data::reflection::getObject(reconstruction, cIt.first);
-            SIGHT_ASSERT("Invalid seshat path : '" << cIt.first << "'", obj);
-            info << QString::fromStdString(cIt.second->apply(obj));
+            if(column == "organ_name")
+            {
+                info << QString::fromStdString(reconstruction->getOrganName());
+            }
+            else if(column == "structure_type")
+            {
+                info << QString::fromStdString(reconstruction->getStructureType());
+            }
+            else if(column == "volume")
+            {
+                auto volume = reconstruction->getComputedMaskVolume();
+                info << (volume < 0 ? "unknown" : QString::fromStdString(std::to_string(volume)));
+            }
         }
 
         QTreeWidgetItem* item = new QTreeWidgetItem(info);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,10 +56,10 @@ void SceneTest::tearDown()
 
 void SceneTest::getNodeById()
 {
-    auto ogreRoot                      = Utils::getOgreRoot();
-    ::Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
+    auto ogreRoot                    = Utils::getOgreRoot();
+    Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
 
-    ::Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
+    Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
     CPPUNIT_ASSERT(nullptr != rootNode);
 
     auto node1 = rootNode->createChildSceneNode("Node1");
@@ -96,9 +96,10 @@ void SceneTest::getNodeById()
     CPPUNIT_ASSERT_EQUAL(node1_2_2, viz::scene3d::helper::Scene::getNodeById("Node1_2_2", rootNode));
     CPPUNIT_ASSERT_EQUAL(node2_2_1, viz::scene3d::helper::Scene::getNodeById("Node2_2_1", rootNode));
 
-    ::Ogre::SceneNode* nullNode = nullptr;
+    Ogre::SceneNode* nullNode = nullptr;
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node1_3_1", rootNode));
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1_1", rootNode));
+    // cspell: ignore AHDFVHDFD
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("AHDFVHDFD", rootNode));
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1", node1));
 

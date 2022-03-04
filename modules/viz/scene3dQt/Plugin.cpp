@@ -27,7 +27,7 @@ namespace sight::module::viz::scene3dQt
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::viz::scene3dQt::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3dQt::Plugin");
 
 //-----------------------------------------------------------------------------
 

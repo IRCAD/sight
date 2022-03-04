@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "io/dicom/writer/iod/SpatialFiducialsIOD.hpp"
 #include "io/dicom/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
@@ -37,7 +37,7 @@
 
 #include <io/base/writer/registry/macros.hpp>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::Series);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::Series);
 
 namespace sight::io::dicom
 {
@@ -63,7 +63,7 @@ Series::~Series()
 void Series::write()
 {
     data::Series::csptr series = this->getConcreteObject();
-    SIGHT_ASSERT("::sight::data::Series not instanced", series);
+    SIGHT_ASSERT("sight::data::Series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
     bool multiFiles = true;
@@ -75,22 +75,21 @@ void Series::write()
     // Retrieve series SOPClassUID
     const std::string& sopClassUID = instance->getSOPClassUID();
 
-    if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage)
-       || sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
+    if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage)
+       || sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
         data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-        SIGHT_ASSERT("::sight::data::ImageSeries not instanced", imageSeries);
-        data::Image::sptr image = imageSeries->getImage();
-        SIGHT_ASSERT("::sight::data::Image not instanced", image);
+        SIGHT_ASSERT("sight::data::ImageSeries not instanced", imageSeries);
+        data::Image::csptr image = imageSeries->getImage();
+        SIGHT_ASSERT("sight::data::Image not instanced", image);
 
         // Write image
         io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");
         imageIOD.write(series);
 
-        data::PointList::sptr landmarks =
-            image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
-        data::Vector::sptr distances =
-            image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+        data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
+        data::Vector::sptr distances    = data::helper::MedicalImage::getDistances(*image);
+
         if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
@@ -107,7 +106,7 @@ void Series::write()
             }
         }
     }
-    else if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
+    else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         SPTR(io::dicom::container::DicomInstance) imageInstance = this->getImageInstance();
         io::dicom::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->getFolder() / "imSeg");
@@ -129,12 +128,11 @@ bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
     data::Image::csptr image = imageSeries->getImage();
     SIGHT_ASSERT("Image not instanced", image);
 
-    data::PointList::sptr pl;
-    pl = image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pl = data::helper::MedicalImage::getLandmarks(*image);
+    const auto distances     = data::helper::MedicalImage::getDistances(*image);
 
     // Check if image has landmark and distance
-    return (pl && pl->getPoints().size() > 0)
-           || image->getField(data::fieldHelper::Image::m_imageDistancesId);
+    return (pl && pl->getPoints().size() > 0) || distances;
 }
 
 //------------------------------------------------------------------------------
@@ -147,7 +145,7 @@ SPTR(io::dicom::container::DicomInstance) Series::getImageInstance()
 
 //------------------------------------------------------------------------------
 
-std::string Series::extension()
+std::string Series::extension() const
 {
     return std::string("");
 }

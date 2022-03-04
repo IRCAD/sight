@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <functional>
 #include <string>
@@ -102,8 +102,9 @@ void SClientListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port   = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = ui::base::preferences::getValue(m_hostnameConfig);
+        ui::base::Preferences preferences;
+        const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
+        const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
@@ -141,12 +142,12 @@ void SClientListener::runClient()
                 if(iter != m_deviceNames.end())
                 {
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    const auto obj                = m_objects[indexReceiveObject].lock();
+                    const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
 
                     const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
                     if(isATimeline)
                     {
-                        this->manageTimeline(receiveObject, indexReceiveObject);
+                        this->manageTimeline(receiveObject, static_cast<std::size_t>(indexReceiveObject));
                     }
                     else
                     {
@@ -209,7 +210,7 @@ void SClientListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
+void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 
@@ -251,10 +252,36 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
     else if(frameTL)
     {
         data::Image::sptr im = data::Image::dynamicCast(obj);
+
         if(!m_tlInitialized)
         {
+            const auto frame_pixel_format =
+                [](data::Image::PixelFormat image_pixel_format) -> data::FrameTL::PixelFormat
+                {
+                    switch(image_pixel_format)
+                    {
+                        case data::Image::PixelFormat::BGR:
+                            return data::FrameTL::PixelFormat::BGR;
+
+                        case data::Image::PixelFormat::RGB:
+                            return data::FrameTL::PixelFormat::RGB;
+
+                        case data::Image::PixelFormat::RGBA:
+                            return data::FrameTL::PixelFormat::RGBA;
+
+                        case data::Image::PixelFormat::BGRA:
+                            return data::FrameTL::PixelFormat::BGRA;
+
+                        case data::Image::PixelFormat::GRAY_SCALE:
+                            return data::FrameTL::PixelFormat::GRAY_SCALE;
+
+                        default:
+                            return data::FrameTL::PixelFormat::UNDEFINED;
+                    }
+                }(im->getPixelFormat());
+
             frameTL->setMaximumSize(10);
-            frameTL->initPoolSize(im->getSize2()[0], im->getSize2()[1], im->getType(), im->getNumberOfComponents());
+            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), frame_pixel_format);
             m_tlInitialized = true;
         }
 
@@ -262,7 +289,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 
         std::uint8_t* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        const auto dumpLock = im->lock();
+        const auto dumpLock = im->dump_lock();
         auto itr            = im->begin<std::uint8_t>();
         const auto end      = im->end<std::uint8_t>();
 

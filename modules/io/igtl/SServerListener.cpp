@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <functional>
 
@@ -74,7 +74,9 @@ void SServerListener::starting()
 {
     try
     {
-        const std::uint16_t port = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
+        ui::base::Preferences preferences;
+        const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
+
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));
@@ -131,7 +133,7 @@ void SServerListener::receiveObject()
             std::vector<std::string> deviceNamesReceive;
             std::vector<data::Object::sptr> receiveObjects = m_server->receiveObjects(deviceNamesReceive);
 
-            size_t client = 0;
+            std::size_t client = 0;
             for(const auto& receiveObject : receiveObjects)
             {
                 if(receiveObject)
@@ -142,7 +144,7 @@ void SServerListener::receiveObject()
                     if(iter != m_deviceNames.end())
                     {
                         const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                        const auto obj                = m_objects[indexReceiveObject].lock();
+                        const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
 
                         obj->shallowCopy(receiveObject);
 

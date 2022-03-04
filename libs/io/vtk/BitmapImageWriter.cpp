@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ void BitmapImageWriter::write()
     vtkSmartPointer<vtkImageWriter> writer;
 
     std::string ext = this->getFile().extension().string();
-    ::boost::algorithm::to_lower(ext);
+    boost::algorithm::to_lower(ext);
 
     if(ext == ".bmp")
     {
@@ -115,7 +115,7 @@ void BitmapImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string BitmapImageWriter::extension()
+std::string BitmapImageWriter::extension() const
 {
     return ".bmp .jpg .jpeg .png .pnm .tiff";
 }

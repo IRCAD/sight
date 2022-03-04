@@ -27,7 +27,7 @@ namespace sight::module::filter::point
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::filter::point::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::filter::point::Plugin");
 
 //-----------------------------------------------------------------------------
 

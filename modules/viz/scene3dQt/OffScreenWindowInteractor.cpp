@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,16 +117,16 @@ void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwCo
     m_ogreRenderWindow->setHidden(true);
     m_ogreRenderWindow->setAutoUpdated(false);
 
-    auto& texMgr = ::Ogre::TextureManager::getSingleton();
+    auto& texMgr = Ogre::TextureManager::getSingleton();
     m_ogreTexture = texMgr.createManual(
         "OffscreenRT" + std::to_string(m_id),
         sight::viz::scene3d::RESOURCE_GROUP,
-        ::Ogre::TEX_TYPE_2D,
+        Ogre::TEX_TYPE_2D,
         m_width,
         m_height,
         0,
-        ::Ogre::PF_BYTE_RGBA,
-        ::Ogre::TU_RENDERTARGET
+        Ogre::PF_BYTE_RGBA,
+        Ogre::TU_RENDERTARGET
     );
     m_ogreRenderTarget = m_ogreTexture->getBuffer()->getRenderTarget();
 }
@@ -152,7 +152,7 @@ void OffScreenWindowInteractor::disconnectInteractor()
 
     if(m_ogreTexture)
     {
-        auto& texMgr = ::Ogre::TextureManager::getSingleton();
+        auto& texMgr = Ogre::TextureManager::getSingleton();
         texMgr.remove(m_ogreTexture);
         m_ogreTexture.reset();
     }
@@ -170,11 +170,11 @@ void OffScreenWindowInteractor::makeCurrent()
 
         if(m_ogreRenderWindow)
         {
-            ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
+            Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
 
             if(renderSystem)
             {
-                // This allows to set the current OpengGL context in Ogre internal state
+                // This allows to set the current OpenGL context in Ogre internal state
                 renderSystem->_setRenderTarget(m_ogreRenderTarget);
 
                 // Use this trick to apply the current OpenGL context

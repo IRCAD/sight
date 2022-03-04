@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,6 +84,27 @@ void Line::setValue(const data::Point::sptr& _position, const data::Point::sptr&
 {
     m_position  = _position;
     m_direction = _direction;
+}
+
+//------------------------------------------------------------------------------
+
+bool Line::operator==(const Line& other) const noexcept
+{
+    if(!core::tools::is_equal(m_position, other.m_position)
+       || !core::tools::is_equal(m_direction, other.m_direction))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Line::operator!=(const Line& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

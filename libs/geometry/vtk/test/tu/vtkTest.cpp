@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <geometry/vtk/mesh.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::vtk::ut::vtkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vtk::ut::vtkTest);
 
 namespace sight::geometry::vtk
 {
@@ -53,7 +53,7 @@ void vtkTest::tearDown()
 void vtkTest::computeCenterOfMass()
 {
     sight::data::Mesh::sptr mesh             = sight::data::Mesh::New();
-    const auto dumpLock                      = mesh->lock();
+    const auto dumpLock                      = mesh->dump_lock();
     const std::array<double, 3> centerOfMass = {0.5, 1.5, 2.5};
 
     mesh->pushPoint(0.f, 0.f, 0.f);

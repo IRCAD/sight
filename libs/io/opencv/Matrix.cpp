@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@ namespace sight::io::opencv
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::Matrix4::sptr& _dst)
+void Matrix::copyFromCv(const cv::Matx44d& _src, data::Matrix4::sptr& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -44,9 +44,9 @@ void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::Matrix4::sptr& _dst)
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44d& _dst)
+void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Matx44d& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -59,9 +59,9 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44d& _dst)
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::Matrix4::sptr& _dst)
+void Matrix::copyFromCv(const cv::Matx44f& _src, data::Matrix4::sptr& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -74,9 +74,9 @@ void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::Matrix4::sptr& _dst)
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44f& _dst)
+void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Matx44f& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -99,28 +99,28 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
         _rvec.channels() == 1 && _tvec.channels() == 1
     );
     // Check that _dst has correctly been initialized.
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     SIGHT_WARN_IF(
         "OpenCV matrices has non-double type but will be cast in 'double'.",
         _rvec.type() != CV_64F || _tvec.type() != CV_64F
     );
 
-    ::cv::Mat drvec, dtvec;
-    _rvec.convertTo(drvec, CV_64F);
-    _tvec.convertTo(dtvec, CV_64F);
+    cv::Mat d_rvec, d_tvec;
+    _rvec.convertTo(d_rvec, CV_64F);
+    _tvec.convertTo(d_tvec, CV_64F);
 
-    ::cv::Mat rmat;
-    ::cv::Rodrigues(drvec, rmat);
+    cv::Mat r_mat;
+    cv::Rodrigues(d_rvec, r_mat);
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            _dst->setCoefficient(i, j, rmat.at<double>(i, j));
+            _dst->setCoefficient(i, j, r_mat.at<double>(i, j));
         }
 
-        _dst->setCoefficient(i, 3, dtvec.at<double>(i));
+        _dst->setCoefficient(i, 3, d_tvec.at<double>(i));
     }
 }
 
@@ -129,21 +129,21 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
 void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat& _tvec)
 {
     // Check that _src is not null.
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
-    ::cv::Mat mat4x4;
+    cv::Mat mat4x4;
     // reinitialize _R & _T.
-    _rvec = ::cv::Mat(1, 3, CV_64F);
-    _tvec = ::cv::Mat(1, 3, CV_64F);
+    _rvec = cv::Mat(1, 3, CV_64F);
+    _tvec = cv::Mat(1, 3, CV_64F);
 
     // First convert Sight to OpenCV 4x4 matrix.
     copyToCv(_src, mat4x4);
 
     // Extract translation (_tvec) from mat4x4.
-    _tvec = mat4x4(::cv::Rect(3, 0, 1, 3));
+    _tvec = mat4x4(cv::Rect(3, 0, 1, 3));
 
     // Convert to rotation vector.
-    ::cv::Rodrigues(mat4x4(::cv::Rect(0, 0, 3, 3)), _rvec);
+    cv::Rodrigues(mat4x4(cv::Rect(0, 0, 3, 3)), _rvec);
 }
 
 //-----------------------------------------------------------------------------
@@ -152,14 +152,14 @@ void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("Size of OpenCV matrix should be 4x4", _src.cols == 4 && _src.rows == 4);
     SIGHT_ASSERT("Could not convert opencv matrix with multi-channels", _src.channels() == 1);
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     SIGHT_WARN_IF(
         "OpenCV matrix has non-double type but will be cast in 'double'.",
         _src.type() != CV_64F
     );
 
-    ::cv::Mat dmat;
+    cv::Mat dmat;
     _src.convertTo(dmat, CV_64F);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
@@ -175,10 +175,10 @@ void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
 
 void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     // Reinitialize _dst.
-    _dst = ::cv::Mat(4, 4, CV_64F);
+    _dst = cv::Mat(4, 4, CV_64F);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {

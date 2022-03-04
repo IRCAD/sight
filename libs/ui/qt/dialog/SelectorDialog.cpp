@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,13 +89,13 @@ std::string SelectorDialog::show()
     QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
     QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addWidget(okButton);
-    hLayout->addWidget(cancelButton);
+    QHBoxLayout* h_layout = new QHBoxLayout();
+    h_layout->addWidget(okButton);
+    h_layout->addWidget(cancelButton);
 
     for(auto customButton : m_customButtons)
     {
-        hLayout->addWidget(customButton);
+        h_layout->addWidget(customButton);
         QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     }
 
@@ -107,7 +107,7 @@ std::string SelectorDialog::show()
     }
 
     vLayout->addWidget(selectionList);
-    vLayout->addLayout(hLayout);
+    vLayout->addLayout(h_layout);
 
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));

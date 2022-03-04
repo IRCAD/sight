@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,11 +139,11 @@ private:
     data::Image::Size m_prevImageSize {0, 0, 0};
 
 #if OPENCV_CUDA_SUPPORT
-    cv::cuda::GpuMat m_mapx;
-    cv::cuda::GpuMat m_mapy;
+    cv::cuda::GpuMat m_map_x;
+    cv::cuda::GpuMat m_map_y;
 #else
-    cv::Mat m_mapx;
-    cv::Mat m_mapy;
+    cv::Mat m_map_x;
+    cv::Mat m_map_y;
 #endif // OPENCV_CUDA_SUPPORT
 
     static constexpr std::string_view s_CAMERA_INPUT = "camera";

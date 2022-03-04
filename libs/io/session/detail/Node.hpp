@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Node.hpp>
 
@@ -53,7 +53,7 @@ inline static void serialize(
 
     children[s_Object] = node->getObject();
 
-    size_t index = 0;
+    std::size_t index = 0;
     for(const auto& input : node->getInputPorts())
     {
         children[s_Input + std::to_string(index++)] = input;
@@ -88,7 +88,7 @@ inline static data::Node::sptr deserialize(
     node->getInputPorts().clear();
     node->getOutputPorts().clear();
 
-    for(size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
     {
         const auto& inputIt  = children.find(s_Input + std::to_string(index));
         const auto& outputIt = children.find(s_Output + std::to_string(index));

@@ -23,7 +23,6 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **DicomSurface**: defines one surface mesh item in order to transform into DICOM/Sight form.
 
 ### helper
-- **CsvIO**:  reads CSV file and returns parsed tokens.
 - **DicomAnonymizer**: contains helpers to anonymize dicom files on filesystem.
 - **DicomCodedAttribute**: manages DICOM coded attributes.
 - **DicomDataReader**: handles GDCM data reading.
@@ -44,7 +43,7 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **SegmentedPropertyRegistry**: defines a registry which links a structure type to an entry.
 - **SOPClass**: contains tools (functions) to manage SOPClass.
 - **StructuredReport**: contains helpers for DICOM Structured Reporting (SR).
-- **tags**: parses group and element strings and return a ::gdcm::Tag instance
+- **tags**: parses group and element strings and return a gdcm::Tag instance
 
 ## How to use it
 

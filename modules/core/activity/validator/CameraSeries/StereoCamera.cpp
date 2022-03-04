@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,11 +34,11 @@ namespace sight::module::activity::validator
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraSeries::StereoCamera);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::CameraSeries::StereoCamera);
 
 //-----------------------------------------------------------------------------
 
-StereoCamera::StereoCamera(::sight::activity::IValidator::Key key)
+StereoCamera::StereoCamera(sight::activity::IValidator::Key)
 {
 }
 
@@ -50,7 +50,7 @@ StereoCamera::~StereoCamera()
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData) const
+sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -66,23 +66,23 @@ StereoCamera::~StereoCamera()
     }
     else
     {
-        if(cameraSeries->getNumberOfCameras() == 2)
+        if(cameraSeries->numCameras() == 2)
         {
-            data::Camera::sptr camera0 = cameraSeries->getCamera(0);
+            data::Camera::csptr camera0 = cameraSeries->getCamera(0);
             if(!camera0->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The first CameraSeries should be calibrated.";
             }
 
-            data::Camera::sptr camera1 = cameraSeries->getCamera(1);
+            data::Camera::csptr camera1 = cameraSeries->getCamera(1);
             if(!camera1->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The second CameraSeries should be calibrated.";
             }
 
-            data::Matrix4::sptr matrix = cameraSeries->getExtrinsicMatrix(1);
+            data::Matrix4::csptr matrix = cameraSeries->getExtrinsicMatrix(1);
             if(!matrix)
             {
                 validation.first  = false;

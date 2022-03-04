@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ DicomSRImageNode::~DicomSRImageNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::write(::gdcm::DataSet& dataset) const
+void DicomSRImageNode::write(gdcm::DataSet& dataset) const
 {
     io::dicom::container::sr::DicomSRNode::write(dataset);
 
@@ -67,12 +67,12 @@ void DicomSRImageNode::write(::gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::writeReferencedSOPSequence(::gdcm::DataSet& dataset) const
+void DicomSRImageNode::writeReferencedSOPSequence(gdcm::DataSet& dataset) const
 {
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
-    ::gdcm::Item item;
+    gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
+    gdcm::Item item;
     item.SetVLToUndefined();
-    ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+    gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Referenced SOP Class UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(m_sopClassUID, itemDataset);

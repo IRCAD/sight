@@ -50,7 +50,7 @@ namespace sight::module::io::dicom
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="..." impl="::sight::module::io::dicom::SDicomSeriesConverter">
+   <service uid="..." impl="sight::module::io::dicom::SDicomSeriesConverter">
      <in key="source" uid="..." />
      <inout key="target" uid="..." />
    </service>
@@ -60,7 +60,7 @@ namespace sight::module::io::dicom
  * @subsection In-Out In-Out:
  * - \b target [sight::data::SeriesDB]: Destination SeriesDB.
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base::IAction
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public sight::ui::base::IAction
 {
 public:
 

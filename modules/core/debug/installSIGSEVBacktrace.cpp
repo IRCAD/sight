@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #include <core/base.hpp>
-#ifdef __APPLE__
-#define _XOPEN_SOURCE
-#endif
 
 #include "installSIGSEVBacktrace.hpp"
 
@@ -43,11 +40,8 @@
 
 /* get REG_EIP from ucontext.h */
 //#define __USE_GNU // already defined
-#if !defined(__APPLE__) || (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ - 1060) <= 0
 #include <ucontext.h>
-#else
-#include <sys/ucontext.h>
-#endif
+
 //VAG hack :
 #define REG_EIP 14
 //VAG : ucontext.h define REG_EIP but compiler doesn't see it ... I simulate its value
@@ -124,18 +118,14 @@ void bt_sighandler(
     if(sig == SIGSEGV)
     {
         ss << " faulty address is " << info->si_addr;
-#ifndef __APPLE__
         ss << " from " << uc->uc_mcontext.gregs[REG_EIP];
-#endif
     }
 
     ss << std::endl;
 
     trace_size = backtrace(trace, 16);
     /* overwrite sigaction with caller's address */
-#ifndef __APPLE__
     trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[REG_EIP]);
-#endif
 
     char** messages = backtrace_symbols(trace, trace_size);
     /* skip first stack frame (points here) */
@@ -170,19 +160,19 @@ void installSIGSEVBacktrace()
     sigaction(SIGUSR1, &sa, nullptr);
 }
 #else // if  win32
-const size_t nbChar = 100;
+const std::size_t nbChar = 100;
 #if _MSC_VER > 1499 // Visual C++ 2008 only
 //------------------------------------------------------------------------------
 
-BOOL CALLBACK EnumerateLoadedModules(LPCSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
+BOOL CALLBACK EnumerateLoadedModules(LPCSTR ModuleName, DWORD64 ModuleBase, ULONG, PVOID UserContext)
 #else
 //------------------------------------------------------------------------------
 
-BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
+BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG, PVOID UserContext)
 #endif
 {
     std::list<std::string>* pLoadedModules = reinterpret_cast<std::list<std::string>*>(UserContext);
-    pLoadedModules->push_back(std::string((char*) ModuleName) + "\t" + ::boost::lexical_cast<std::string>(ModuleBase));
+    pLoadedModules->push_back(std::string((char*) ModuleName) + "\t" + boost::lexical_cast<std::string>(ModuleBase));
     return true;
 }
 
@@ -300,14 +290,14 @@ void LoadCallStack(
             UnDecorateSymbolName(pSymbol->Name, undecoratedName, MAX_SYM_NAME, UNDNAME_COMPLETE);
             callStack.push_back(
                 std::string((char*) undecoratedName) + "+"
-                + ::boost::lexical_cast<std::string>(symDisplacement)
+                + boost::lexical_cast<std::string>(symDisplacement)
             );
 
             if(SymGetLineFromAddr64(hProcess, tempStackFrame.AddrPC.Offset, &lineDisplacement, &lineInfo))
             {
                 fileStack.push_back(
                     std::string(lineInfo.FileName) + "\tl:"
-                    + ::boost::lexical_cast<std::string>(lineInfo.LineNumber)
+                    + boost::lexical_cast<std::string>(lineInfo.LineNumber)
                 );
             }
             else

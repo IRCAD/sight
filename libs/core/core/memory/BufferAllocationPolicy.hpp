@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/memory/exception/Memory.hpp"
+
 #include <core/base.hpp>
 
 namespace sight::core::memory
@@ -34,7 +35,7 @@ class CORE_CLASS_API BufferAllocationPolicy
 public:
 
     typedef SPTR(BufferAllocationPolicy) sptr;
-    typedef size_t SizeType;
+    typedef std::size_t SizeType;
     typedef void* BufferType;
 
     CORE_API virtual void allocate(BufferType& buffer, SizeType size)   = 0;

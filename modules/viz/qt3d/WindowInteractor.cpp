@@ -35,8 +35,8 @@
 //-----------------------------------------------------------------------------
 
 fwRenderQt3DRegisterMacro(
-    ::sight::module::viz::qt3d::WindowInteractor,
-    ::sight::viz::qt3d::IWindowInteractor::REGISTRY_KEY
+    sight::module::viz::qt3d::WindowInteractor,
+    sight::viz::qt3d::IWindowInteractor::REGISTRY_KEY
 );
 
 //-----------------------------------------------------------------------------

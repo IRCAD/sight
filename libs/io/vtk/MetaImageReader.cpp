@@ -35,7 +35,7 @@
 #include <vtkMetaImageReader.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::MetaImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::MetaImageReader);
 
 namespace sight::io::vtk
 {
@@ -101,7 +101,7 @@ void MetaImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string MetaImageReader::extension()
+std::string MetaImageReader::extension() const
 {
     return ".mhd";
 }

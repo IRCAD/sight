@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRGBDManualAR_AppCfg</id>
         <config>
 
@@ -25,7 +25,7 @@
             <object uid="inverseMat" type="sight::data::Matrix4" />
             <object uid="extrinsic" type="sight::data::Matrix4" src="deferred" />
             <object uid="skinMesh" type="sight::data::Mesh" src="deferred" />
-            <object uid="modelseries" type="sight::data::ModelSeries" src="deferred" />
+            <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -213,7 +213,7 @@
 
             <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="ModelSeriesManagerWindow" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR/app.ico" />
             </service>
 
@@ -259,7 +259,7 @@
                     <adaptor uid="videoAdp" />
 
                     <layer id="default" order="2" />
-                    <adaptor uid="modelseriesAdp" />
+                    <adaptor uid="modelSeriesAdp" />
                     <adaptor uid="cameraAdp" />
 
                     <layer id="foreground" order="3" />
@@ -277,8 +277,8 @@
                 <config layer="foreground" />
             </service>
 
-            <service uid="modelseriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
-                <in key="model" uid="modelseries" />
+            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
+                <in key="model" uid="modelSeries" />
                 <config layer="default" autoresetcamera="false" />
             </service>
 
@@ -318,15 +318,12 @@
                 <inout key="data" uid="seriesDB" />
                 <type mode="reader" />
             </service>
-
-            <service uid="extractModelSeriesSrv" type="sight::module::data::SExtractObj" >
-                <inout key="source" uid="seriesDB" >
-                    <extract from="@values.0" />
-                </inout>
-                <out group="target" >
-                    <key uid="modelseries" />
-                </out>
-            </service>
+            <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
+               <in key="seriesDB" uid="seriesDB"/>
+               <out group="series" >
+                   <key index="0" uid="modelSeries" />
+               </out>
+           </service>
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
@@ -339,21 +336,19 @@
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::module::io::matrix::Matrix4ReaderService" />
+                <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
-            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
-            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
-                <inout key="source" uid="cameraSeries" >
-                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->
-                    <extract from="@cameras.1" /> <!-- Camp path of the second camera in cameraSeries (RGB) -->
-                    <extract from="@extrinsic_matrices.1" /> <!-- Camp path of the extrincis matrix in cameraSeries going from Depth to RGB coordinate system -->
-                </inout>
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
+            <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
+                <inout key="cameraSeries" uid="cameraSeries" />
                 <!-- destination -->
-                <out group="target" >
-                    <key uid="cameraDepth" />
-                    <key uid="cameraRGB" />
-                    <key uid="extrinsic" />
+                <out group="camera" >
+                    <key index="0" uid="cameraDepth" />
+                    <key index="1" uid="cameraRGB" />
+                </out>
+                <out group="extrinsic" >
+                    <key index="1" uid="extrinsic" />
                 </out>
             </service>
 
@@ -417,12 +412,10 @@
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
-            <service uid="extractSkinSrv" type="sight::module::data::SExtractMeshByType" >
-               <inout key="source" uid="modelseries" >
-                   <extract type="Skin" />
-               </inout>
-               <out group="target" >
-                   <key uid="skinMesh" />
+            <service uid="extractSkinSrv" type="sight::module::data::SGetMesh" >
+               <in key="modelSeries" uid="modelSeries" />
+               <out group="mesh" >
+                   <key type="Skin" uid="skinMesh"/>
                </out>
             </service>
 
@@ -517,7 +510,7 @@
             <start uid="extractSkinSrv" />
             <start uid="extractForegroundSrv" />
             <start uid="videoAdp" />
-            <start uid="modelseriesAdp" />
+            <start uid="modelSeriesAdp" />
             <start uid="cameraAdp" />
             <start uid="foregroundAdp" />
             <start uid="meshOffscreenAdp" />

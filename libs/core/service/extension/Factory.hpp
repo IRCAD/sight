@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
     typedef std::pair<std::string, std::string> StringPair;
 
     /// We keep boost here because std implementation does not support a pair of std::string as key
-    typedef ::boost::unordered_map<StringPair, bool> SupportMapType;
+    typedef boost::unordered_map<StringPair, bool> SupportMapType;
     typedef std::function<SPTR(service::IService)()> FactoryType;
 
     SIGHT_DECLARE_CLASS(Factory, core::BaseObject, new Factory);
@@ -152,10 +152,10 @@ private:
     void checkServicesNotDeclaredInPluginXml() const;
 
     /// Container of service information
-    SrvRegContainer m_srvImplTosrvInfo;
+    SrvRegContainer m_srvImplToSrvInfo;
     SupportMapType m_supportMap;
 
-    mutable core::mt::ReadWriteMutex m_srvImplTosrvInfoMutex;
+    mutable core::mt::ReadWriteMutex m_srvImplToSrvInfoMutex;
     mutable core::mt::ReadWriteMutex m_supportMapMutex;
 };
 

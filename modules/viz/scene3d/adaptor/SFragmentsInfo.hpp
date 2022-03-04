@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFragmentsInfo final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFragmentsInfo, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFragmentsInfo, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;
@@ -82,17 +82,17 @@ public:
      *
      * @param _viewport related layer's viewport.
      */
-    MODULE_VIZ_SCENE3D_API void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
+    MODULE_VIZ_SCENE3D_API void viewportDimensionsChanged(Ogre::Viewport* _viewport) override;
 
     /// Calls updating(). This is called right after the layer render target has been rendered.
-    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&) override;
+    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent&) override;
 
 protected:
 
     /// Configures the layer and retrieves the size of the output image.
     MODULE_VIZ_SCENE3D_API void configuring() override;
 
-    /// Intializes adaptor and connection to layer signals.
+    /// Initializes adaptor and connection to layer signals.
     MODULE_VIZ_SCENE3D_API void starting() override;
 
     /// Updates the service. Convert render target texture to data::Image.
@@ -114,7 +114,7 @@ private:
     void destroyCompositor();
 
     /// Contains the created compositor.
-    ::Ogre::CompositorPtr m_compositor {nullptr};
+    Ogre::CompositorPtr m_compositor {nullptr};
 
     /// Defines the compositor name.
     std::string m_compositorName;

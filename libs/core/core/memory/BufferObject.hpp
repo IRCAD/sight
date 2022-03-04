@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,10 @@
 #include "core/config.hpp"
 #include "core/memory/BufferAllocationPolicy.hpp"
 #include "core/memory/BufferManager.hpp"
-#include <core/reflection/macros.hpp>
 
 #include <filesystem>
 #include <istream>
 #include <type_traits>
-
-SIGHT_DECLARE_REFLECTION((sight) (core) (memory) (BufferObject), CORE_API);
 
 namespace sight::core::memory
 {
@@ -63,7 +60,7 @@ class IFactory;
  * Users of buffer have to keep a lock on a BufferObject when dealing with the
  * buffers content. Keeping a lock on a BufferObject guarantees that the buffer
  * will not be changed or modified by the BufferManager mechanism. A lock *DO
- * NOT GARANTEE* that an other user of this buffer object are not
+ * NOT ENSURE* that an other user of this buffer object are not
  * changing/modifying the buffer.
  */
 class CORE_CLASS_API BufferObject : public sight::core::BaseObject
@@ -73,7 +70,7 @@ public:
     typedef std::shared_ptr<void> CounterType;
     typedef std::weak_ptr<void> WeakCounterType;
 
-    typedef size_t SizeType;
+    typedef std::size_t SizeType;
 
     SIGHT_DECLARE_CLASS(BufferObject, core::BaseObject, new BufferObject);
     SIGHT_ALLOW_SHARED_FROM_THIS();
@@ -106,19 +103,10 @@ public:
     {
     public:
 
-        typedef typename ::boost::conditional<std::is_const<T>::value, const void*, void*>::type BufferType;
+        typedef typename std::conditional_t<std::is_const_v<T>, const void*, void*> BufferType;
 
-        /// Build an empty lock.
-        LockBase()
-        {
-        }
-
-        /// Ensure the unlock is done before the release of the shared ptr
-        ~LockBase()
-        {
-            m_count.reset();
-            m_bufferObject.reset();
-        }
+        LockBase()  = default;
+        ~LockBase() = default;
 
         /**
          * @brief Build a lock on object 'bo'
@@ -293,7 +281,7 @@ public:
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    const core::memory::BufferManager::ConstBufferPtrType getBufferPointer() const
+    core::memory::BufferManager::ConstBufferPtrType getBufferPointer() const
     {
         return &m_buffer;
     }
@@ -327,6 +315,13 @@ public:
         core::memory::FileFormatType format                      = core::memory::OTHER,
         const core::memory::BufferAllocationPolicy::sptr& policy = core::memory::BufferMallocPolicy::New()
     );
+
+    /// Equality comparison operators
+    /// @{
+    CORE_API bool operator==(const BufferObject& other) const noexcept;
+    CORE_API bool operator!=(const BufferObject& other) const noexcept;
+
+    /// @}
 
 protected:
 

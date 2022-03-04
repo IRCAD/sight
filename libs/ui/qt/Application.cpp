@@ -28,7 +28,7 @@
 
 #include <QCoreApplication>
 
-fwGuiRegisterMacro(::sight::ui::qt::Application, ::sight::ui::base::IApplication::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::Application, sight::ui::base::IApplication::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {

@@ -27,7 +27,7 @@ namespace sight::module::filter::mesh
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::filter::mesh::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::filter::mesh::Plugin");
 
 //-----------------------------------------------------------------------------
 

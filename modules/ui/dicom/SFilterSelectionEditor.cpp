@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
-#include <QSignalMapper>
 #include <QVBoxLayout>
 
 namespace sight::module::ui::dicom
@@ -214,7 +213,7 @@ void SFilterSelectionEditor::onForceChecked(int state)
 
 void SFilterSelectionEditor::fillAvailableFilters()
 {
-    unsigned int index = 0;
+    int index = 0;
 
     std::vector<filter::dicom::IFilter::sptr> sortedFilters;
     for(const std::string& key : filter::dicom::registry::get()->getFactoryKeys())
@@ -522,24 +521,17 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint& pos)
     // Add menu
     QMenu* addMenu = contextMenu.addMenu("Add");
 
-    // Use a mapper to retrieve index of the selected filter type
-    QPointer<QSignalMapper> mapper = new QSignalMapper();
-
     // Fill the menu with the available filters
     for(int i = 0 ; i < m_availableFilterListWidget->count() ; ++i)
     {
-        QString text             = m_availableFilterListWidget->itemText(i);
-        QIcon icon               = m_availableFilterListWidget->itemIcon(i);
-        QPointer<QAction> action = new QAction(icon, text, m_selectedFilterListWidget);
+        QString text    = m_availableFilterListWidget->itemText(i);
+        QIcon icon      = m_availableFilterListWidget->itemIcon(i);
+        QAction* action = new QAction(icon, text, m_selectedFilterListWidget);
         action->setIconVisibleInMenu(true);
         addMenu->addAction(action);
 
-        mapper->setMapping(action, i);
-        QObject::connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+        QObject::connect(action, &QAction::triggered, [this, i]{addFilter(i);});
     }
-
-    // Connect mapper
-    QObject::connect(mapper, SIGNAL(mapped(int)), this, SLOT(addFilter(int)));
 
     // Check id the menu is requested from a filter
     QListWidgetItem* filterItem = m_selectedFilterListWidget->itemAt(pos);
@@ -550,20 +542,20 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint& pos)
         filter::dicom::IFilter::sptr filter = m_filtersMap[id];
 
         // Remove action
-        QPointer<QAction> removeAction = new QAction("Remove", m_selectedFilterListWidget);
-        QObject::connect(removeAction, SIGNAL(triggered()), this, SLOT(removeFilter()));
+        QAction* removeAction = new QAction("Remove", m_selectedFilterListWidget);
+        QObject::connect(removeAction, &QAction::triggered, this, &SFilterSelectionEditor::removeFilter);
         contextMenu.addAction(removeAction);
 
         // Configure action
-        QPointer<QAction> configureAction = new QAction("Configure", m_selectedFilterListWidget);
+        QAction* configureAction = new QAction("Configure", m_selectedFilterListWidget);
         configureAction->setEnabled(filter->isConfigurableWithGUI());
-        QObject::connect(configureAction, SIGNAL(triggered()), this, SLOT(configureFilter()));
+        QObject::connect(configureAction, &QAction::triggered, this, &SFilterSelectionEditor::removeFilter);
         contextMenu.addAction(configureAction);
 
         // Split action
-        QPointer<QAction> splitAction = new QAction("Split", m_selectedFilterListWidget);
+        QAction* splitAction = new QAction("Split", m_selectedFilterListWidget);
         splitAction->setEnabled(filter->getFilterType() == filter::dicom::IFilter::COMPOSITE);
-        QObject::connect(splitAction, SIGNAL(triggered()), this, SLOT(splitFilter()));
+        QObject::connect(splitAction, &QAction::triggered, this, &SFilterSelectionEditor::removeFilter);
         contextMenu.addAction(splitAction);
     }
 

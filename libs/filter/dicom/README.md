@@ -4,7 +4,7 @@ Contains filters used to pre-process DICOM files before reading
 
 ## Filter classes
 
-The interface filter class is `::sight::filter::IFilter`. All filters need to implement the abstract methods defined in it, notably `apply()`, `getName()`, `getDescription()` and `getFilterType()`
+The interface filter class is `sight::filter::IFilter`. All filters need to implement the abstract methods defined in it, notably `apply()`, `getName()`, `getDescription()` and `getFilterType()`
 
 ### Composite
 - **CTImageStorageDefaultComposite**: reads CTImageStorage SOP class.

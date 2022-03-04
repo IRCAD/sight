@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include <data/Object.hpp>
 
 #include <charconv>
+#include <optional>
 #include <string_view>
 #include <system_error>
 
@@ -118,7 +119,10 @@ public:
     virtual ~base_ptr() = default;
 
     /// Assignment operator
-    DATA_API virtual void set(const sight::data::Object::sptr& _obj, size_t _index = 0) = 0;
+    DATA_API virtual void set(
+        const sight::data::Object::sptr& _obj,
+        std::optional<std::size_t> index = std::nullopt
+    )                                    = 0;
 
 protected:
 
@@ -152,7 +156,7 @@ public:
     DATA_API virtual void _registerObject(
         std::string_view _key,
         const Access _access,
-        size_t index,
+        std::optional<std::size_t> index,
         const bool _autoConnect = false,
         const bool _optional    = false
     )                           = 0;
@@ -165,10 +169,8 @@ public:
      *
      * @param[in] _key key of the object
      * @param[in] _access access to the object (in or inout)
-     * @param[in] _minNbObject number of object to register (it is the minimum number of objects required by the
-     * service)
      * @param[in] _autoConnect if true, the service will be connected to the object's signals
-     * @param[in] _maxNbObject maximum number of object to register (they are defined as optional
+     * @param[in] _optional if true, the service can be started even if the objet is not present
      *
      * @note This method will register maxNbObject in the group named (<key>#0, <key>#1, ... <key>#<maxNbObject>). The
      * first Nth objects (minNbObject) are required, the _other are optional.
@@ -176,24 +178,31 @@ public:
     DATA_API virtual void _registerObjectGroup(
         std::string_view _key,
         const data::Access _access,
-        const std::uint8_t _minNbObject,
-        const bool _autoConnect         = false,
-        const std::uint8_t _maxNbObject = 10
-    )                                   = 0;
+        const bool _autoConnect,
+        const bool _optional
+    ) = 0;
 
     /// Registers a pointer
-    void _registerPtr(std::string_view _key, base_ptr* _data, size_t = 0)
+    void _registerPtr(std::string_view _key, base_ptr* _data, std::size_t = 0)
     {
         m_dataContainer[_key] = _data;
     }
 
-    DATA_API virtual void _setOutput(std::string_view key, data::Object::sptr object, size_t index = 0) = 0;
+    DATA_API virtual void _setOutput(
+        std::string_view key,
+        data::Object::sptr object,
+        std::optional<std::size_t> index = std::nullopt
+    )                                    = 0;
 
 protected:
 
     /// Set the actual content of the pointer
     template<Access A>
-    void setPtrObject(std::string_view _key, const typename access_traits<A>::value& _obj, size_t index = 0);
+    void setPtrObject(
+        std::string_view _key,
+        const typename access_traits<A>::value& _obj,
+        std::optional<std::size_t> index = std::nullopt
+    );
 
 private:
 
@@ -223,7 +232,7 @@ public:
     ) noexcept :
         base_ptr(_holder, _key)
     {
-        _holder->_registerObject(_key, ACCESS, 0, _autoConnect, _optional);
+        _holder->_registerObject(_key, ACCESS, std::nullopt, _autoConnect, _optional);
         _holder->_registerPtr(_key, this);
     }
 
@@ -235,20 +244,20 @@ public:
     ptr& operator=(ptr&&)      = delete;
 
     /// This method is only available if it is an output
-    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
     ptr& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
     {
-        m_holder->_setOutput(m_key, _obj, 0);
+        m_holder->_setOutput(m_key, _obj, std::nullopt);
         using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
         data::mt::weak_ptr<target_t>::operator=(_obj);
         return *this;
     }
 
     /// This method is only available if it is an output
-    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
     void reset()
     {
-        m_holder->_setOutput(m_key, nullptr, 0);
+        m_holder->_setOutput(m_key, nullptr, std::nullopt);
         using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
         data::mt::weak_ptr<target_t>::reset();
     }
@@ -259,7 +268,7 @@ private:
     friend class IHasData;
 
     /// Assign the content of the pointer
-    void set(const sight::data::Object::sptr& _obj, size_t = 0) override
+    void set(const sight::data::Object::sptr& _obj, std::optional<std::size_t> = std::nullopt) override
     {
         if(_obj == nullptr)
         {
@@ -300,7 +309,7 @@ public:
         ptr_t(
             IHasData* _holder,
             std::string_view _key,
-            size_t _index
+            std::size_t _index
         ) noexcept :
             m_holder(_holder),
             m_key(_key),
@@ -360,21 +369,21 @@ public:
 
         IHasData* m_holder;
         std::string_view m_key;
-        size_t m_index;
+        std::size_t m_index;
     };
 
-    using container_ptr_t = std::map<size_t, ptr_t>;
+    using container_ptr_t = std::map<std::size_t, ptr_t>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
     ptr_vector(
         IHasData* _holder,
         std::string_view _key,
-        bool _autoConnect               = false,
-        const std::uint8_t _minNbObject = 0
+        bool _autoConnect = false,
+        bool _optional    = access_typed_traits<DATATYPE, ACCESS>::optional
     ) noexcept :
         base_ptr(_holder, _key)
     {
-        _holder->_registerObjectGroup(_key, ACCESS, _minNbObject, _autoConnect);
+        _holder->_registerObjectGroup(_key, ACCESS, _autoConnect, _optional);
         _holder->_registerPtr(_key, this);
     }
 
@@ -387,7 +396,7 @@ public:
 
     /// Accessor for individual weak pointers
     /// This method is only available if it is an output
-    ptr_t& operator[](const size_t _index)
+    ptr_t& operator[](const std::size_t _index)
     {
         if(m_ptrs.find(_index) == m_ptrs.end())
         {
@@ -399,13 +408,13 @@ public:
     }
 
     /// Accessor for individual weak pointers
-    const ptr_t& operator[](const size_t _index) const
+    const ptr_t& operator[](const std::size_t _index) const
     {
         return m_ptrs[_index];
     }
 
     /// Return the number of registered pointers
-    size_t size() const
+    std::size_t size() const
     {
         return m_ptrs.size();
     }
@@ -444,11 +453,12 @@ private:
     friend class IHasData;
 
     /// Pointer assignment
-    void set(const sight::data::Object::sptr& _obj, size_t _index = 0) override
+    void set(const sight::data::Object::sptr& _obj, std::optional<std::size_t> _index = std::nullopt) override
     {
+        auto index = _index.value();
         if(_obj == nullptr)
         {
-            m_ptrs.erase(_index);
+            m_ptrs.erase(index);
         }
         else
         {
@@ -460,12 +470,12 @@ private:
                 typedObj
             );
 
-            if(m_ptrs.find(_index) == m_ptrs.end())
+            if(m_ptrs.find(index) == m_ptrs.end())
             {
-                m_ptrs.emplace(std::make_pair(_index, ptr_t(m_holder, m_key, _index)));
+                m_ptrs.emplace(std::make_pair(index, ptr_t(m_holder, m_key, index)));
             }
 
-            m_ptrs[_index].set(typedObj);
+            m_ptrs[index].set(typedObj);
         }
     }
 
@@ -479,7 +489,7 @@ template<Access A>
 inline void IHasData::setPtrObject(
     std::string_view _key,
     const typename access_traits<A>::value& _obj,
-    size_t index
+    std::optional<std::size_t> index
 )
 {
     auto itData = m_dataContainer.find(_key);

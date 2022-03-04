@@ -87,7 +87,7 @@ void SProducer::updating()
     const std::string message = m_message + " #" + std::to_string(m_msgCount++);
 
     data->uidSender = m_senderId;
-    strncpy(data->szMsg, message.c_str(), ::ExTimeLine::MsgData::MAX_MSG_SIZE);
+    std::strcpy(data->szMsg, message.c_str());
 
     timeline->pushObject(buffer);
 

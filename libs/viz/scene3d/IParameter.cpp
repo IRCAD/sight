@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,6 @@
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
@@ -62,7 +61,7 @@ const core::com::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "
 //------------------------------------------------------------------------------
 
 IParameter::IParameter() noexcept :
-    m_shaderType(::Ogre::GPT_FRAGMENT_PROGRAM),
+    m_shaderType(Ogre::GPT_FRAGMENT_PROGRAM),
     m_dirty(true)
 {
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &IParameter::setBoolParameter, this);
@@ -83,7 +82,7 @@ IParameter::~IParameter() noexcept
 
 //------------------------------------------------------------------------------
 
-void IParameter::setShaderType(::Ogre::GpuProgramType shaderType)
+void IParameter::setShaderType(Ogre::GpuProgramType shaderType)
 {
     m_shaderType = shaderType;
 }
@@ -130,15 +129,15 @@ void IParameter::configuring()
         const std::string shaderType = config.get<std::string>("shaderType");
         if(shaderType == "vertex")
         {
-            m_shaderType = ::Ogre::GPT_VERTEX_PROGRAM;
+            m_shaderType = Ogre::GPT_VERTEX_PROGRAM;
         }
         else if(shaderType == "fragment")
         {
-            m_shaderType = ::Ogre::GPT_FRAGMENT_PROGRAM;
+            m_shaderType = Ogre::GPT_FRAGMENT_PROGRAM;
         }
         else if(shaderType == "geometry")
         {
-            m_shaderType = ::Ogre::GPT_GEOMETRY_PROGRAM;
+            m_shaderType = Ogre::GPT_GEOMETRY_PROGRAM;
         }
         else
         {
@@ -159,8 +158,8 @@ void IParameter::updating()
     this->getRenderService()->makeCurrent();
     if(m_techniqueName.empty())
     {
-        bool bSet                                      = false;
-        const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
+        bool bSet                                    = false;
+        const Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
         for(const auto tech : techniques)
         {
@@ -183,7 +182,7 @@ void IParameter::updating()
     }
     else
     {
-        ::Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
+        Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
         SIGHT_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
         if(this->setParameter(*tech))
@@ -211,29 +210,29 @@ void IParameter::stopping()
 
     if(m_texture)
     {
-        ::Ogre::TextureManager::getSingleton().remove(m_texture);
+        Ogre::TextureManager::getSingleton().remove(m_texture);
         m_texture.reset();
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool IParameter::setParameter(::Ogre::Technique& technique)
+bool IParameter::setParameter(Ogre::Technique& technique)
 {
     /// Contains the different parameters for the shader
-    ::Ogre::GpuProgramParametersSharedPtr params;
+    Ogre::GpuProgramParametersSharedPtr params;
 
     // Get the parameters
     auto pass = technique.getPass(0);
-    if(m_shaderType == ::Ogre::GPT_VERTEX_PROGRAM)
+    if(m_shaderType == Ogre::GPT_VERTEX_PROGRAM)
     {
         params = pass->getVertexProgramParameters();
     }
-    else if(m_shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM && pass->hasFragmentProgram())
+    else if(m_shaderType == Ogre::GPT_FRAGMENT_PROGRAM && pass->hasFragmentProgram())
     {
         params = pass->getFragmentProgramParameters();
     }
-    else if(m_shaderType == ::Ogre::GPT_GEOMETRY_PROGRAM)
+    else if(m_shaderType == Ogre::GPT_GEOMETRY_PROGRAM)
     {
         params = pass->getGeometryProgramParameters();
     }
@@ -284,7 +283,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         paramValues[2] = colorValue->blue();
         paramValues[3] = colorValue->alpha();
 
-        ::Ogre::ColourValue color(paramValues[0], paramValues[1], paramValues[2], paramValues[3]);
+        Ogre::ColourValue color(paramValues[0], paramValues[1], paramValues[2], paramValues[3]);
 
         params->setNamedConstant(m_paramName, color);
     }
@@ -300,17 +299,17 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         for(int i = 0 ; i < nbPoints * 3 ; )
         {
-            paramValues[i] = static_cast<float>(points[static_cast<size_t>(i)]->getCoord()[0]);
+            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
             i++;
 
-            paramValues[i] = static_cast<float>(points[static_cast<size_t>(i)]->getCoord()[1]);
+            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
             i++;
 
-            paramValues[i] = static_cast<float>(points[static_cast<size_t>(i)]->getCoord()[2]);
+            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
             i++;
         }
 
-        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<size_t>(3));
+        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<std::size_t>(3));
 
         delete[] paramValues;
     }
@@ -323,20 +322,20 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         for(int i = 0 ; i < 16 ; i++)
         {
-            paramValues[i] = static_cast<float>(transValue->getCoefficients()[static_cast<size_t>(i)]);
+            paramValues[i] = static_cast<float>(transValue->getCoefficients()[static_cast<std::size_t>(i)]);
         }
 
-        params->setNamedConstant(m_paramName, paramValues, static_cast<size_t>(16), static_cast<size_t>(1));
+        params->setNamedConstant(m_paramName, paramValues, static_cast<std::size_t>(16), static_cast<std::size_t>(1));
     }
     else if(objClass == "sight::data::Array")
     {
         data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
         SIGHT_ASSERT("The object is nullptr", arrayObject);
 
-        const size_t numComponents = arrayObject->getSize()[0];
+        const std::size_t numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             if(arrayObject->getType() == core::tools::Type::s_FLOAT)
             {
@@ -370,7 +369,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         if(!m_texture)
         {
-            m_texture = ::Ogre::TextureManager::getSingleton().create(
+            m_texture = Ogre::TextureManager::getSingleton().create(
                 this->getID() + "_TextureParam",
                 viz::scene3d::RESOURCE_GROUP,
                 true
@@ -381,9 +380,9 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         // is resized. However I don't know how to discriminate the two cases so for now we always copy the image. :/
         if(image->getSizeInBytes())
         {
-            viz::scene3d::Utils::loadOgreTexture(image, m_texture, ::Ogre::TEX_TYPE_2D, true);
+            viz::scene3d::Utils::loadOgreTexture(image, m_texture, Ogre::TEX_TYPE_2D, true);
 
-            ::Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
+            Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
             texState->setTexture(m_texture);
 
             auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
@@ -401,7 +400,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
 //------------------------------------------------------------------------------
 
-void IParameter::setMaterial(const ::Ogre::MaterialPtr& material)
+void IParameter::setMaterial(const Ogre::MaterialPtr& material)
 {
     m_material = material;
 }
@@ -477,7 +476,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
                 arrayObject->resize({2}, core::tools::Type::s_INT32);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
         }
@@ -503,7 +502,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
                 arrayObject->resize({3}, core::tools::Type::s_INT32);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
             arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
             arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
             arrayObject->at<std::uint32_t>(2) = static_cast<std::uint32_t>(value3);
@@ -550,7 +549,7 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
                 arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             if(arrayObject->getType() == core::tools::Type::s_FLOAT)
             {
@@ -587,7 +586,7 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
                 arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
             }
 
-            const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->dump_lock();
 
             if(arrayObject->getType() == core::tools::Type::s_FLOAT)
             {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,11 +27,17 @@ namespace sight::data
 
 namespace timeline
 {
+
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
-GenericObject<TYPE>::GenericObject( unsigned int m_maxElementNum, core::HiResClock::HiResClockType timestamp,
-                                    BufferDataType buffer, size_t size, DeleterType d) :
+template<typename TYPE>
+GenericObject<TYPE>::GenericObject(
+    unsigned int m_maxElementNum,
+    core::HiResClock::HiResClockType timestamp,
+    BufferDataType buffer,
+    std::size_t size,
+    DeleterType d
+) :
     GenericObjectBase(m_maxElementNum, timestamp, buffer, size, d)
 {
     // init all floating point values to 0
@@ -40,14 +46,14 @@ GenericObject<TYPE>::GenericObject( unsigned int m_maxElementNum, core::HiResClo
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 GenericObject<TYPE>::~GenericObject()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 const TYPE& GenericObject<TYPE>::getElement(unsigned int index) const
 {
     SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
@@ -57,7 +63,7 @@ const TYPE& GenericObject<TYPE>::getElement(unsigned int index) const
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int index)
 {
     SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
@@ -70,7 +76,7 @@ void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int in
     uint64_t oldMask = m_presenceMask;
     m_presenceMask |= (uint64_t(1) << index);
 
-    if( oldMask != m_presenceMask)
+    if(oldMask != m_presenceMask)
     {
         ++m_numPresent;
     }
@@ -78,7 +84,7 @@ void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int in
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 TYPE* GenericObject<TYPE>::addElement(unsigned int index)
 {
     SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
@@ -87,7 +93,7 @@ TYPE* GenericObject<TYPE>::addElement(unsigned int index)
     uint64_t oldMask = m_presenceMask;
     m_presenceMask |= (uint64_t(1) << index);
 
-    if( oldMask != m_presenceMask)
+    if(oldMask != m_presenceMask)
     {
         ++m_numPresent;
     }
@@ -100,7 +106,7 @@ TYPE* GenericObject<TYPE>::addElement(unsigned int index)
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 typename GenericObject<TYPE>::iterator GenericObject<TYPE>::getPresenceIterator() const
 {
     return iterator(*this);
@@ -108,7 +114,7 @@ typename GenericObject<TYPE>::iterator GenericObject<TYPE>::getPresenceIterator(
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 GenericObject<TYPE>::iterator::iterator(const GenericObjectBase& object) :
     m_object(&object),
     m_currentIndex(0)
@@ -123,7 +129,7 @@ GenericObject<TYPE>::iterator::iterator(const GenericObjectBase& object) :
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 void GenericObject<TYPE>::iterator::operator++()
 {
     SIGHT_ASSERT("Iterator out of bounds", m_currentIndex < m_maxElement);
@@ -134,10 +140,10 @@ void GenericObject<TYPE>::iterator::operator++()
 
 //-----------------------------------------------------------------------------
 
-template< typename TYPE >
+template<typename TYPE>
 const TYPE& GenericObject<TYPE>::iterator::operator*() const
 {
-    const GenericObject<ElementType>* object = static_cast< const GenericObject<ElementType>* >(m_object);
+    const GenericObject<ElementType>* object = static_cast<const GenericObject<ElementType>*>(m_object);
     return object->getElement(m_currentIndex);
 }
 

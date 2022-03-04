@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 
 #include <io/opencv/Matrix.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -102,15 +102,15 @@ void SOpenCVIntrinsic::updating()
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point3f> > objectPoints;
+        std::vector<std::vector<cv::Point3f> > objectPoints;
 
-        std::vector< ::cv::Point3f> points;
+        std::vector<cv::Point3f> points;
         for(unsigned int y = 0 ; y < m_height - 1 ; ++y)
         {
             for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
                 points.push_back(
-                    ::cv::Point3f(
+                    cv::Point3f(
                         static_cast<float>(x) * m_squareSize,
                         static_cast<float>(y) * m_squareSize,
                         0
@@ -119,17 +119,17 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        std::vector<std::vector< ::cv::Point2f> > imagePoints;
+        std::vector<std::vector<cv::Point2f> > imagePoints;
 
-        for(data::PointList::sptr capture : calInfo->getPointListContainer())
+        for(data::PointList::csptr capture : calInfo->getPointListContainer())
         {
-            std::vector< ::cv::Point2f> dst;
+            std::vector<cv::Point2f> dst;
 
             for(data::Point::csptr point : capture->getPoints())
             {
                 SIGHT_ASSERT("point is null", point);
                 dst.push_back(
-                    ::cv::Point2f(
+                    cv::Point2f(
                         static_cast<float>(point->getCoord()[0]),
                         static_cast<float>(point->getCoord()[1])
                     )
@@ -140,15 +140,15 @@ void SOpenCVIntrinsic::updating()
             objectPoints.push_back(points);
         }
 
-        data::Image::sptr img = calInfo->getImageContainer().front();
+        data::Image::csptr img = calInfo->getImageContainer().front();
 
-        ::cv::Mat cameraMatrix;
+        cv::Mat cameraMatrix;
         std::vector<float> distCoeffs;
         std::vector<cv::Mat> rvecs;
         std::vector<cv::Mat> tvecs;
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
+        cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
-        double err = ::cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
+        double err = cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
@@ -157,7 +157,7 @@ void SOpenCVIntrinsic::updating()
         {
             poseCamera->getContainer().clear();
 
-            for(size_t index = 0 ; index < rvecs.size() ; ++index)
+            for(std::size_t index = 0 ; index < rvecs.size() ; ++index)
             {
                 data::Matrix4::sptr mat3D = data::Matrix4::New();
 
@@ -179,8 +179,8 @@ void SOpenCVIntrinsic::updating()
         cam->setCy(cameraMatrix.at<double>(1, 2));
         cam->setFx(cameraMatrix.at<double>(0, 0));
         cam->setFy(cameraMatrix.at<double>(1, 1));
-        cam->setWidth(img->getSize2()[0]);
-        cam->setHeight(img->getSize2()[1]);
+        cam->setWidth(img->getSize()[0]);
+        cam->setHeight(img->getSize()[1]);
         cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
 
         cam->setIsCalibrated(true);
@@ -198,22 +198,28 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoi(widthStr);
-    }
+        ui::base::Preferences preferences;
 
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoi(heightStr);
-    }
+        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
+        {
+            m_width = *saved;
+        }
 
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
+        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_heightKey); saved)
+        {
+            m_height = *saved;
+        }
+
+        if(const auto& saved = preferences.get_optional<decltype(m_squareSize)>(m_squareSizeKey); saved)
+        {
+            m_squareSize = *saved;
+        }
+    }
+    catch(const ui::base::PreferencesDisabled&)
     {
-        m_squareSize = std::stof(squareSizeStr);
+        // Nothing to do..
     }
 }
 

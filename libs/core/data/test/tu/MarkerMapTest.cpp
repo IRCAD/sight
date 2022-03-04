@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <data/MarkerMap.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::MarkerMapTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::MarkerMapTest);
 
 namespace sight::data
 {
@@ -66,13 +66,13 @@ void MarkerMapTest::tearDown()
 void MarkerMapTest::getterSetter()
 {
     data::MarkerMap::sptr markerMap = data::MarkerMap::New();
-    CPPUNIT_ASSERT_EQUAL(size_t(0), markerMap->count());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), markerMap->count());
 
     markerMap->setMarker("101", marker101);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), markerMap->count());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), markerMap->count());
 
     markerMap->setMarker("102", marker102);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), markerMap->count());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), markerMap->count());
 
     // Not-const getters
     {
@@ -128,7 +128,7 @@ void MarkerMapTest::getterSetter()
         CPPUNIT_ASSERT(nullptr == marker);
     }
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), markerMap->count());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), markerMap->count());
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +140,9 @@ void MarkerMapTest::shallowCopyTest()
     markerMap1->setMarker("102", marker102);
 
     data::MarkerMap::sptr markerMap2 = data::MarkerMap::New();
+    CPPUNIT_ASSERT(*markerMap1 != *markerMap2);
     markerMap2->shallowCopy(markerMap1);
+    CPPUNIT_ASSERT(*markerMap1 == *markerMap2);
 
     CPPUNIT_ASSERT(markerMap1->getMarker("101") != markerMap2->getMarker("101"));
     CPPUNIT_ASSERT(*markerMap1->getMarker("101") == *markerMap2->getMarker("101"));
@@ -156,7 +158,9 @@ void MarkerMapTest::deepCopyTest()
     markerMap1->setMarker("102", marker102);
 
     data::MarkerMap::sptr markerMap2 = data::MarkerMap::New();
+    CPPUNIT_ASSERT(*markerMap1 != *markerMap2);
     markerMap2->deepCopy(markerMap1);
+    CPPUNIT_ASSERT(*markerMap1 == *markerMap2);
 
     CPPUNIT_ASSERT(markerMap1->getMarker("101") != markerMap2->getMarker("101"));
     CPPUNIT_ASSERT(*markerMap1->getMarker("101") == *markerMap2->getMarker("101"));

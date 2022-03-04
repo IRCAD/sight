@@ -86,7 +86,7 @@ void SConfigLauncher::configuring()
 
 void SConfigLauncher::setIsActive(bool isActive)
 {
-    this->::sight::ui::base::IAction::setIsActive(isActive);
+    this->sight::ui::base::IAction::setIsActive(isActive);
     if(isActive)
     {
         // Check if the config is already running, this avoids to start a running config.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ DicomInstance::DicomInstance(
     this->generateSOPInstanceUIDs(series);
 
     // Generate Frame of Reference UID
-    ::gdcm::UIDGenerator uidGenerator;
+    gdcm::UIDGenerator uidGenerator;
     m_frameOfReferenceUID = uidGenerator.Generate();
 }
 
@@ -131,26 +131,26 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
 
         // Compute instance dimension
         unsigned int dimension =
-            (this->getIsMultiFiles()) ? 2 : static_cast<unsigned int>(image->getNumberOfDimensions());
+            (this->getIsMultiFiles()) ? 2 : static_cast<unsigned int>(image->numDimensions());
 
         // Define SOP Class UID from the modality
-        ::gdcm::MediaStorage mediaStorage;
+        gdcm::MediaStorage mediaStorage;
         mediaStorage.GuessFromModality(series->getModality().c_str(), dimension);
 
         // Identify the SOPClassUID from a guess
-        if(mediaStorage != ::gdcm::MediaStorage::MS_END && mediaStorage.GetString() != 0)
+        if(mediaStorage != gdcm::MediaStorage::MS_END && mediaStorage.GetString() != 0)
         {
             sopClassUID = mediaStorage.GetString();
         }
         // Force SOPClassUID to be CTImageStorage
         else
         {
-            sopClassUID = ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage);
+            sopClassUID = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage);
         }
     }
     else if(modelSeries)
     {
-        sopClassUID = ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage);
+        sopClassUID = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage);
     }
 
     // Update instance information
@@ -165,13 +165,13 @@ void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicConstCast(series);
 
     // Compute number of instances
-    const std::size_t nbInstances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize2()[2]) : (1);
+    const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize()[2]) : (1);
 
     // Create generator
-    ::gdcm::UIDGenerator uidGenerator;
+    gdcm::UIDGenerator uidGenerator;
 
     // Generate UIDs
-    for(std::size_t i = 0 ; i < nbInstances ; ++i)
+    for(std::size_t i = 0 ; i < nb_instances ; ++i)
     {
         m_SOPInstanceUIDContainer.push_back(uidGenerator.Generate());
     }
@@ -181,9 +181,9 @@ void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
 
 void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicomSeries)
 {
-    const ::gdcm::Tag SOPInstanceUIDTag      = ::gdcm::Tag(0x0008, 0x0018); // SOP Instance UID
-    const ::gdcm::Tag frameOfReferenceUIDTag = ::gdcm::Tag(0x0020, 0x0052); // Frame of Reference UID
-    std::set< ::gdcm::Tag> selectedtags;
+    const gdcm::Tag SOPInstanceUIDTag      = gdcm::Tag(0x0008, 0x0018); // SOP Instance UID
+    const gdcm::Tag frameOfReferenceUIDTag = gdcm::Tag(0x0020, 0x0052); // Frame of Reference UID
+    std::set<gdcm::Tag> selectedtags;
     selectedtags.insert(SOPInstanceUIDTag);
     selectedtags.insert(frameOfReferenceUIDTag);
 
@@ -194,7 +194,7 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
         const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
         SPTR(std::istream) is = streamInfo.stream;
 
-        ::gdcm::Reader reader;
+        gdcm::Reader reader;
         reader.SetStream(*is);
         if(!reader.ReadSelectedTags(selectedtags))
         {
@@ -204,7 +204,7 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
             );
         }
 
-        const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
+        const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
         // SOP Instance UID
         m_SOPInstanceUIDContainer.push_back(io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(dataset));
         // Retrieve frame of reference UID

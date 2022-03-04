@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "SMaterialSelector.hpp"
 
-#include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
-
 #include <core/com/Signal.hxx>
 
 #include <data/helper/Field.hpp>
@@ -34,6 +31,9 @@
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -81,10 +81,10 @@ void SMaterialSelector::starting()
     m_materialBox = new QComboBox();
 
     std::pair<std::string, std::string> elt;
-    ::Ogre::ResourceManager::ResourceMapIterator iter = ::Ogre::MaterialManager::getSingleton().getResourceIterator();
+    Ogre::ResourceManager::ResourceMapIterator iter = Ogre::MaterialManager::getSingleton().getResourceIterator();
     while(iter.hasMoreElements())
     {
-        ::Ogre::ResourcePtr mat = iter.getNext();
+        Ogre::ResourcePtr mat = iter.getNext();
         if(mat->getGroup() == s_MATERIAL_RESOURCEGROUP_NAME)
         {
             m_materialBox->addItem(QString::fromStdString(mat->getName()));
@@ -142,8 +142,8 @@ void SMaterialSelector::updating()
 
 void SMaterialSelector::updateMaterial()
 {
-    const auto reconst            = m_reconstruction.lock();
-    data::Material::sptr material = reconst->getMaterial();
+    const auto reconstruction     = m_reconstruction.lock();
+    data::Material::sptr material = reconstruction->getMaterial();
     data::Object::sptr fieldObj   = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
     {
@@ -156,8 +156,8 @@ void SMaterialSelector::updateMaterial()
 
 void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
-    const auto reconst            = m_reconstruction.lock();
-    data::Material::sptr material = reconst->getMaterial();
+    const auto reconstruction     = m_reconstruction.lock();
+    data::Material::sptr material = reconstruction->getMaterial();
     data::String::sptr string     = data::String::New();
     string->setValue(text.toStdString());
 
@@ -173,8 +173,8 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
 
 void SMaterialSelector::onReloadMaterial()
 {
-    auto materialName            = m_materialBox->currentText().toStdString();
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
+    auto materialName          = m_materialBox->currentText().toStdString();
+    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
         materialName,
         sight::viz::scene3d::RESOURCE_GROUP
     );
@@ -186,13 +186,13 @@ void SMaterialSelector::onReloadMaterial()
 
     material->reload();
 
-    const ::Ogre::Material::Techniques& techniques = material->getTechniques();
+    const Ogre::Material::Techniques& techniques = material->getTechniques();
 
     for(const auto tech : techniques)
     {
         SIGHT_ASSERT("Technique is not set", tech);
 
-        const ::Ogre::Technique::Passes& passes = tech->getPasses();
+        const Ogre::Technique::Passes& passes = tech->getPasses();
 
         for(const auto pass : passes)
         {

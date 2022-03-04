@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,38 +51,38 @@ namespace helper
 {
 
 // Series
-static const ::gdcm::Tag s_MediaStorageSOPClassUID(0x0002, 0x0002);
-static const ::gdcm::Tag s_SpecificCharacterSetTag(0x0008, 0x0005);
-static const ::gdcm::Tag s_SeriesInstanceUIDTag(0x0020, 0x000e);
-static const ::gdcm::Tag s_SeriesDateTag(0x0008, 0x0021);
-static const ::gdcm::Tag s_SeriesTimeTag(0x0008, 0x0031);
-static const ::gdcm::Tag s_ModalityTag(0x0008, 0x0060);
-static const ::gdcm::Tag s_SeriesDescriptionTag(0x0008, 0x103e);
-static const ::gdcm::Tag s_PerformingPhysicianNameTag(0x0008, 0x1050);
-static const ::gdcm::Tag s_SOPClassUIDTag(0x0008, 0x0016);
-static const ::gdcm::Tag s_SOPInstanceUIDTag(0x0008, 0x0018);
+static const gdcm::Tag s_MediaStorageSOPClassUID(0x0002, 0x0002);
+static const gdcm::Tag s_SpecificCharacterSetTag(0x0008, 0x0005);
+static const gdcm::Tag s_SeriesInstanceUIDTag(0x0020, 0x000e);
+static const gdcm::Tag s_SeriesDateTag(0x0008, 0x0021);
+static const gdcm::Tag s_SeriesTimeTag(0x0008, 0x0031);
+static const gdcm::Tag s_ModalityTag(0x0008, 0x0060);
+static const gdcm::Tag s_SeriesDescriptionTag(0x0008, 0x103e);
+static const gdcm::Tag s_PerformingPhysicianNameTag(0x0008, 0x1050);
+static const gdcm::Tag s_SOPClassUIDTag(0x0008, 0x0016);
+static const gdcm::Tag s_SOPInstanceUIDTag(0x0008, 0x0018);
 
 // Equipment
-static const ::gdcm::Tag s_InstitutionNameTag(0x0008, 0x0080);
+static const gdcm::Tag s_InstitutionNameTag(0x0008, 0x0080);
 
 // Patient
-static const ::gdcm::Tag s_PatientNameTag(0x0010, 0x0010);
-static const ::gdcm::Tag s_PatientIDTag(0x0010, 0x0020);
-static const ::gdcm::Tag s_PatientBirthDateTag(0x0010, 0x0030);
-static const ::gdcm::Tag s_PatientSexTag(0x0010, 0x0040);
+static const gdcm::Tag s_PatientNameTag(0x0010, 0x0010);
+static const gdcm::Tag s_PatientIDTag(0x0010, 0x0020);
+static const gdcm::Tag s_PatientBirthDateTag(0x0010, 0x0030);
+static const gdcm::Tag s_PatientSexTag(0x0010, 0x0040);
 
 // Study
-static const ::gdcm::Tag s_StudyInstanceUIDTag(0x0020, 0x000d);
-static const ::gdcm::Tag s_StudyDateTag(0x0008, 0x0020);
-static const ::gdcm::Tag s_StudyTimeTag(0x0008, 0x0030);
-static const ::gdcm::Tag s_ReferringPhysicianNameTag(0x0008, 0x0090);
-static const ::gdcm::Tag s_StudyDescriptionTag(0x0008, 0x1030);
-static const ::gdcm::Tag s_PatientAgeTag(0x0010, 0x1010);
+static const gdcm::Tag s_StudyInstanceUIDTag(0x0020, 0x000d);
+static const gdcm::Tag s_StudyDateTag(0x0008, 0x0020);
+static const gdcm::Tag s_StudyTimeTag(0x0008, 0x0030);
+static const gdcm::Tag s_ReferringPhysicianNameTag(0x0008, 0x0090);
+static const gdcm::Tag s_StudyDescriptionTag(0x0008, 0x1030);
+static const gdcm::Tag s_PatientAgeTag(0x0010, 0x1010);
 
 //------------------------------------------------------------------------------
 
 std::string getStringValue(
-    const ::gdcm::Scanner& scanner,
+    const gdcm::Scanner& scanner,
     const std::string& filename,
     const gdcm::Tag& tag
 )
@@ -92,7 +92,7 @@ std::string getStringValue(
     if(value)
     {
         // Trim buffer
-        result = ::gdcm::LOComp::Trim(value);
+        result = gdcm::LOComp::Trim(value);
     }
 
     return result;
@@ -101,25 +101,25 @@ std::string getStringValue(
 //------------------------------------------------------------------------------
 
 std::string getStringValue(
-    const ::gdcm::DataSet& dataset,
+    const gdcm::DataSet& dataset,
     const gdcm::Tag& tag
 )
 {
     std::string result = "";
     if(dataset.FindDataElement(tag))
     {
-        const ::gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
+        const gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
 
         if(!dataElement.IsEmpty())
         {
             // Retrieve buffer
-            const ::gdcm::ByteValue* bv = dataElement.GetByteValue();
+            const gdcm::ByteValue* bv = dataElement.GetByteValue();
             if(bv)
             {
                 std::string buffer(bv->GetPointer(), bv->GetLength());
 
                 // Trim buffer
-                result = ::gdcm::LOComp::Trim(buffer.c_str());
+                result = gdcm::LOComp::Trim(buffer.c_str());
             }
         }
     }
@@ -156,7 +156,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::read(
 
 void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::jobs::Observer)& completeSeriesObserver)
 {
-    std::set< ::gdcm::Tag> selectedtags;
+    std::set<gdcm::Tag> selectedtags;
     selectedtags.insert(s_SpecificCharacterSetTag);
     selectedtags.insert(s_SeriesInstanceUIDTag);
     selectedtags.insert(s_ModalityTag);
@@ -180,7 +180,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
         const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
         SPTR(std::istream) is = streamInfo.stream;
 
-        ::gdcm::Reader reader;
+        gdcm::Reader reader;
         reader.SetStream(*is);
 
         if(!reader.ReadSelectedTags(selectedtags))
@@ -191,7 +191,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
             );
         }
 
-        const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
+        const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
         //Modality
         std::string modality = getStringValue(dataset, s_ModalityTag);
@@ -215,7 +215,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
         if(!performingPhysicianNamesStr.empty())
         {
             data::DicomValuesType performingPhysicianNames;
-            ::boost::split(performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
+            boost::split(performingPhysicianNames, performingPhysicianNamesStr, boost::is_any_of("\\"));
             series->setPerformingPhysiciansName(performingPhysicianNames);
         }
 
@@ -234,7 +234,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     const core::jobs::Observer::sptr& readerObserver
 )
 {
-    ::gdcm::Scanner seriesScanner;
+    gdcm::Scanner seriesScanner;
     seriesScanner.AddTag(s_SpecificCharacterSetTag);
     seriesScanner.AddTag(s_SeriesInstanceUIDTag);
     seriesScanner.AddTag(s_ModalityTag);
@@ -257,7 +257,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     bool status = seriesScanner.Scan(fileVec);
     SIGHT_THROW_IF("Unable to read the files.", !status);
 
-    ::gdcm::Directory::FilenamesType keys = seriesScanner.GetKeys();
+    gdcm::Directory::FilenamesType keys = seriesScanner.GetKeys();
 
     unsigned int progress = 0;
 
@@ -297,9 +297,9 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
         const std::string& sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
         const std::string& mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
 
-        if(sopClassUID != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage)
+        if(sopClassUID != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage)
            && mediaStorageSopClassUID
-           != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
+           != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
         {
             this->createSeries(seriesDB, seriesScanner, dicomFile.second);
             previousSOPInstanceUIDs.insert(sopInstanceUID);
@@ -327,7 +327,7 @@ void DicomSeries::fillSeries(
     m_studyMap.clear();
     m_equipmentMap.clear();
 
-    std::set< ::gdcm::Tag> selectedtags;
+    std::set<gdcm::Tag> selectedtags;
     selectedtags.insert(s_SpecificCharacterSetTag);
     selectedtags.insert(s_PatientIDTag);
     selectedtags.insert(s_PatientNameTag);
@@ -348,7 +348,7 @@ void DicomSeries::fillSeries(
     for(const data::DicomSeries::sptr& series : seriesDB)
     {
         // Compute number of instances
-        const size_t size = series->getDicomContainer().size();
+        const std::size_t size = series->getDicomContainer().size();
         series->setNumberOfInstances(size);
 
         if(!size)
@@ -363,7 +363,7 @@ void DicomSeries::fillSeries(
         const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
         SPTR(std::istream) is = streamInfo.stream;
 
-        ::gdcm::Reader reader;
+        gdcm::Reader reader;
         reader.SetStream(*is);
 
         if(!reader.ReadSelectedTags(selectedtags))
@@ -374,7 +374,7 @@ void DicomSeries::fillSeries(
             );
         }
 
-        const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
+        const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
         // Create data objects from first instance
         data::Patient::sptr patient     = this->createPatient(dataset);
@@ -402,7 +402,7 @@ void DicomSeries::fillSeries(
 
 void DicomSeries::createSeries(
     DicomSeriesContainerType& seriesDB,
-    const ::gdcm::Scanner& scanner,
+    const gdcm::Scanner& scanner,
     const std::filesystem::path& filename
 )
 {
@@ -455,7 +455,7 @@ void DicomSeries::createSeries(
         if(!performingPhysicianNamesStr.empty())
         {
             data::DicomValuesType performingPhysicianNames;
-            ::boost::split(performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
+            boost::split(performingPhysicianNames, performingPhysicianNamesStr, boost::is_any_of("\\"));
             series->setPerformingPhysiciansName(performingPhysicianNames);
         }
     }
@@ -473,7 +473,7 @@ void DicomSeries::createSeries(
 
 //------------------------------------------------------------------------------
 
-data::Patient::sptr DicomSeries::createPatient(const ::gdcm::DataSet& dataset)
+data::Patient::sptr DicomSeries::createPatient(const gdcm::DataSet& dataset)
 {
     data::Patient::sptr result;
 
@@ -512,7 +512,7 @@ data::Patient::sptr DicomSeries::createPatient(const ::gdcm::DataSet& dataset)
 
 //------------------------------------------------------------------------------
 
-data::Study::sptr DicomSeries::createStudy(const ::gdcm::DataSet& dataset)
+data::Study::sptr DicomSeries::createStudy(const gdcm::DataSet& dataset)
 {
     data::Study::sptr result;
 
@@ -559,7 +559,7 @@ data::Study::sptr DicomSeries::createStudy(const ::gdcm::DataSet& dataset)
 
 //------------------------------------------------------------------------------
 
-data::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::DataSet& dataset)
+data::Equipment::sptr DicomSeries::createEquipment(const gdcm::DataSet& dataset)
 {
     data::Equipment::sptr result;
 

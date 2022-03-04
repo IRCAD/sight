@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,6 @@ class DefaultActivityTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(DefaultActivityTest);
 
 CPPUNIT_TEST(requirementsTest);
-CPPUNIT_TEST(parametersTest);
 CPPUNIT_TEST(objectTest);
 CPPUNIT_TEST(validatorTest);
 CPPUNIT_TEST(bigActivityTest);
@@ -53,7 +52,6 @@ public:
     void setUp();
     void tearDown();
 
-    void parametersTest();
     void requirementsTest();
     void objectTest();
     void validatorTest();

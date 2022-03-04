@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
 
 //------------------------------------------------------------------------------
 
-ResectionDB::ResectionContainerType::size_type ResectionDB::getNumberOfResections() const
+ResectionDB::ResectionContainerType::size_type ResectionDB::numResections() const
 {
     return m_resections.size();
 }
@@ -110,5 +110,24 @@ void ResectionDB::addResection(const data::Resection::sptr& resection)
 }
 
 //------------------------------------------------------------------------------
+
+bool ResectionDB::operator==(const ResectionDB& other) const noexcept
+{
+    if(!core::tools::is_equal(m_safeResection, other.m_safeResection)
+       || !core::tools::is_equal(m_resections, other.m_resections))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ResectionDB::operator!=(const ResectionDB& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // end namespace sight::data

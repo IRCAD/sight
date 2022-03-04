@@ -7,22 +7,20 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene2d" />
-    <requirement id="sight::module::io::atoms" />
-    <requirement id="sight::module::io::dimse" />
+    <requirement id="sight::module::io::session" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::service::extension::Config" >
-        <id>SightViewer_jsonReader_SrvCfg</id>
-        <desc>JSON</desc>
+    <extension implements="sight::service::extension::Config">
+        <id>SightViewer_SightData_SrvCfg</id>
+        <desc>Sight data</desc>
         <config>
-            <patcher />
-            <windowTitle>Open JSON file</windowTitle>
+            <dialog extension=".sight" description="Sight data" policy="default"/>
+            <password policy="default" encryption="default"/>
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config" >
+    <extension implements="sight::service::extension::Config" >
         <id>SightViewer_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -30,7 +28,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config" >
+    <extension implements="sight::service::extension::Config" >
         <id>SightViewer_gdcm_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
@@ -39,7 +37,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>SightViewerDicomReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -47,15 +45,16 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>SightViewer_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="seriesDB" type="sight::data::SeriesDB" />
-            <object uid="modelSeries" type="sight::data::ModelSeries" />
-            <object uid="image" type="sight::data::Image" />
+            <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
+            <object uid="pacsSeriesDB" type="sight::data::SeriesDB" />
+            <object uid="image" type="sight::data::Image" src="deferred"/>
             <object uid="histogram" type="sight::data::Histogram" />
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
             <object uid="landmarks" type="sight::data::Landmarks" />
@@ -66,9 +65,6 @@
             <object uid="volumeTF" type="sight::data::TransferFunction" >
                 <colors default="true" />
             </object>
-
-            <object uid="previewSeriesDB" type="sight::data::SeriesDB" />
-            <object uid="localSeriesDB" type="sight::data::SeriesDB" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -269,7 +265,7 @@
                     <menuItem sid="pacsAct" start="true" />
                     <menuItem sid="negatoViewAct" start="true" />
                     <menuItem sid="volumeViewAct" start="true" />
-                    <menuItem sid="volumeTFAct" start="true" />
+                    <menuItem sid="volumeTFAct" start="false" />
                     <menuItem sid="meshVisibilityAct" start="true" />
                     <menuItem sid="volumeVisibilityAct" start="true" />
                     <menuItem sid="negato3DVisibilityAct" start="true" />
@@ -277,9 +273,9 @@
                     <menuItem sid="boxWidgetResetAct" start="true" />
                     <menuItem sid="shapeExtruderAct" start="true" />
                     <menuItem sid="shapeExtruderRevertAct" start="true" />
-                    <menuItem sid="addDistanceAct" start="true" />
-                    <menuItem sid="removeDistanceAct" start="true" />
-                    <menuItem sid="hideDistanceAct" start="true" />
+                    <menuItem sid="addDistanceAct" start="false" />
+                    <menuItem sid="removeDistanceAct" start="false" />
+                    <menuItem sid="hideDistanceAct" start="false" />
                     <menuItem sid="axisVisibilityAct" start="true" />
                 </registry>
             </service>
@@ -291,7 +287,7 @@
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
-                <config id="SightViewer_jsonReader_SrvCfg" service="sight::module::io::atoms::SReader" />
+                <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
                 <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
                 <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
             </service>
@@ -382,17 +378,14 @@
                 <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
                 <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
                 <inout key="mergedTF" uid="volumeTF" />
-                <state executable="false" />
             </service>
 
             <!-- PACS manager -->
             <service uid="pacsAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="SightViewer_PACSSelector_AppCfg" />
+                <appConfig id="PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
-                <inout key="previewSeriesDB" uid="previewSeriesDB" />
-                <inout key="localSeriesDB" uid="localSeriesDB" />
-                <inout key="image" uid="image" />
+                <inout key="outputSeriesDB" uid="pacsSeriesDB" />
             </service>
 
             <!-- Adaptors visibility -->
@@ -429,17 +422,14 @@
             <!-- Manage distance -->
             <service uid="addDistanceAct" type="sight::module::ui::base::metrics::SAddDistance">
                 <inout key="image" uid="image" />
-                <state executable="false" />
             </service>
 
             <service uid="removeDistanceAct" type="sight::module::ui::base::metrics::SRemoveDistance">
                 <inout key="image" uid="image" />
-                <state executable="false" />
             </service>
 
             <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
                 <inout key="image" uid="image" />
-                <state executable="false" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
@@ -462,8 +452,9 @@
                 <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
-                <inout key="modelSeries" uid="modelSeries" />
-                <inout key="image" uid="image" />
+                <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
+                <inout key="modelSeries" uid="modelSeries" optional="true"/>
+                <inout key="image" uid="image" optional="true"/>
                 <inout key="volumeTF" uid="volumeTF" />
                 <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
                 <inout key="landmarks" uid="landmarks" />
@@ -486,18 +477,15 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Extract the model or the image from the series -->
-            <service uid="extractImageSrv" type="sight::module::data::SCopy" >
-                <in key="source" uid="seriesDB" >
-                    <extract from="@values.0.image" />
-                </in>
-                <inout key="target" uid="image" />
+            <service uid="extractImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
+                <in key="seriesDB" uid="seriesDB"/>
+                <out key="modelSeries" uid="modelSeries" />
+                <out key="image" uid="image" />
             </service>
 
-            <service uid="extractMeshSrv" type="sight::module::data::SCopy" >
-                <in key="source" uid="seriesDB" >
-                    <extract from="@values.0" />
-                </in>
-                <inout key="target" uid="modelSeries" />
+            <service uid="extractPacsImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
+                <in key="seriesDB" uid="pacsSeriesDB"/>
+                <out key="image" uid="image" />
             </service>
 
             <!-- Compute the image histogram -->
@@ -513,13 +501,16 @@
                     <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
                     <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" reset="false" />
+                    <param type="bool" name="Soft shadows" key = "shadows" defaultValue="false" reset="false"/>
                     <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" reset="false" />
                     <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" reset="false" />
-                    <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" reset="false" />
-                    <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="ambientOcclusion" />
-                    <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" />
-                    <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" />
                     <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="colorBleeding" />
+                    <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" reset="false" emitOnRelease="true"/>
+                    <param type="double" name="SAT cone angle" key="satConeAngle" defaultValue="0.1" min="0.01" max="360.0" reset="false" depends="ambientOcclusion" />
+                    <param type="int" name="SAT cone samples" key="satConeSamples" defaultValue="50" min="1" max="1024" reset="false" depends="ambientOcclusion" emitOnRelease="true"/>
+                    <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="ambientOcclusion" />
+                    <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true"/>
+                    <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true"/>
                 </parameters>
             </service>
 
@@ -592,13 +583,16 @@
             <connect>
                 <signal>seriesDB/modified</signal>
                 <slot>extractImageSrv/update</slot>
-                <slot>extractMeshSrv/update</slot>
             </connect>
 
             <connect>
                 <signal>seriesDB/addedSeries</signal>
                 <slot>extractImageSrv/update</slot>
-                <slot>extractMeshSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>pacsSeriesDB/addedSeries</signal>
+                <slot>extractPacsImageSrv/update</slot>
             </connect>
 
             <connect>
@@ -608,12 +602,12 @@
             </connect>
 
             <connect>
-                <signal>image/modified</signal>
+                <signal>extractImageSrv/updated</signal>
+                <signal>extractPacsImageSrv/updated</signal>
                 <slot>volumeVisibilityAct/setExecutable</slot>
                 <slot>volumeVisibilityAct/activate</slot>
                 <slot>negato3DVisibilityAct/setExecutable</slot>
                 <slot>negato3DVisibilityAct/activate</slot>
-                <slot>negato3DVisibilityAct/update</slot>
                 <slot>boxWidgetVisibilityAct/setExecutable</slot>
                 <slot>shapeExtruderAct/setExecutable</slot>
                 <slot>boxWidgetResetAct/setExecutable</slot>
@@ -691,6 +685,10 @@
                 <slot>landmarksParameterSrv/pick</slot>
             </connect>
 
+            <connect channel="WORLD_COORDS_LANDMARKS_CHANNEL">
+                <signal>landmarksParameterSrv/sendWorldCoord</signal>
+            </connect>
+
             <!-- ******************************* Start/Stop services ***************************************** -->
 
             <start uid="mainView" />
@@ -698,10 +696,14 @@
             <start uid="organManagerCfg" />
             <start uid="extrudedMeshesManagerCfg" />
             <start uid="extractImageSrv" />
-            <start uid="extractMeshSrv" />
+            <start uid="extractPacsImageSrv" />
             <start uid="computeHistogramSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
+            <start uid="addDistanceAct" />
+            <start uid="removeDistanceAct" />
+            <start uid="hideDistanceAct" />
+            <start uid="volumeTFAct" />
 
             <update uid="volumeManagerAct" />
             <update uid="volumeParameterSrv" />

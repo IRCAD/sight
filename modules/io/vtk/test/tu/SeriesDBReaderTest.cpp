@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,6 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -43,7 +42,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::vtk::ut::SeriesDBReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::SeriesDBReaderTest);
 
 static const double epsilon = 0.00001;
 
@@ -52,21 +51,6 @@ namespace sight::module::io::vtk
 
 namespace ut
 {
-
-//-----------------------------------------------------------------------------
-
-void compare(data::Object::sptr objRef, data::Object::sptr objComp)
-{
-    data::reflection::visitor::CompareObjects visitor;
-    visitor.compare(objRef, objComp);
-    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
-    {
-        SIGHT_ERROR("new object difference found : " << prop.first << " '" << prop.second << "'");
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0);
-}
 
 //------------------------------------------------------------------------------
 
@@ -117,9 +101,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
     srv->setInOut(seriesDB, "data");
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
+    srv->start().wait();
+    srv->update().wait();
+    srv->stop().wait();
     service::remove(srv);
 
     // Data expected
@@ -127,7 +111,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     const data::Image::Origin originExpected   = {34.64, 86.6, 56};
     const data::Image::Size sizeExpected       = {230, 170, 58};
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
 
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(seriesDB->getContainer()[0]);
     data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(seriesDB->getContainer()[1]);
@@ -136,9 +120,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     // Data read.
     data::Image::sptr image                = imageSeries->getImage();
-    const data::Image::Spacing spacingRead = image->getSpacing2();
-    const data::Image::Spacing originRead  = image->getOrigin2();
-    const data::Image::Size sizeRead       = image->getSize2();
+    const data::Image::Spacing spacingRead = image->getSpacing();
+    const data::Image::Spacing originRead  = image->getOrigin();
+    const data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -152,21 +136,21 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", originExpected[1], originRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", originExpected[2], originRead[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), modelSeries->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), modelSeries->getReconstructionDB().size());
 
     data::Reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
     data::Reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
     data::Mesh::sptr mesh1          = rec1->getMesh();
     data::Mesh::sptr mesh2          = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL((data::Mesh::Size) 720, mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL((data::Mesh::Size) 362, mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 720, mesh1->numCells());
+    CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 362, mesh1->numPoints());
 
-    compare(mesh1, mesh2);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +185,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     srv->stop().wait();
     service::remove(srv);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 }
 
 //------------------------------------------------------------------------------

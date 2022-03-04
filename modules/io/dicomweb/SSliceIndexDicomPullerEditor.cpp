@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,13 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/helper/Composite.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -44,7 +43,7 @@
 #include <service/base.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QApplication>
@@ -105,7 +104,7 @@ void SSliceIndexDicomPullerEditor::configuring()
     std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
     if(success)
     {
-        m_delay = ::boost::lexical_cast<unsigned int>(delayStr);
+        m_delay = boost::lexical_cast<unsigned int>(delayStr);
     }
 
     if(m_delayTimer && m_delayTimer->isRunning())
@@ -135,7 +134,7 @@ void SSliceIndexDicomPullerEditor::starting()
 
     const auto dicomSeries = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
-    m_numberOfSlices = dicomSeries->getNumberOfInstances();
+    m_numberOfSlices = dicomSeries->numInstances();
 
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);
@@ -179,7 +178,7 @@ void SSliceIndexDicomPullerEditor::starting()
 
     m_dicomReader = dicomReader;
 
-    // Image Indecies
+    // Image Indexes
     m_axialIndex    = data::Integer::New(0);
     m_frontalIndex  = data::Integer::New(0);
     m_sagittalIndex = data::Integer::New(0);
@@ -260,8 +259,8 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    const size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value())
-                                      + dicomSeries->getFirstInstanceNumber();
+    const std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value())
+                                           + dicomSeries->getFirstInstanceNumber();
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
         this->pullInstance(*dicomSeries);
@@ -274,7 +273,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeries, size_t selectedSliceIndex)
+void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeries, std::size_t selectedSliceIndex)
 {
     // DicomSeries
     if(dicomSeries.getModality() != "CT" && dicomSeries.getModality() != "MR" && dicomSeries.getModality() != "XA")
@@ -295,8 +294,8 @@ void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeri
 
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
-    const char* buffer = static_cast<char*>(lockerDest.getBuffer());
-    const size_t size  = bufferObj->getSize();
+    const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
+    const std::size_t size = bufferObj->getSize();
 
     std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);
@@ -332,13 +331,26 @@ void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeri
     if(imageSeries)
     {
         data::Image::sptr newImage      = imageSeries->getImage();
-        const data::Image::Size newSize = newImage->getSize2();
+        const data::Image::Size newSize = newImage->getSize();
 
-        newImage->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
-        newImage->setField(data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
-        newImage->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            m_axialIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            m_frontalIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            m_sagittalIndex->value()
+        );
 
         this->setOutput("image", newImage);
     }
@@ -368,24 +380,32 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
         throw core::tools::Failed("'server' element not found");
     }
 
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    ui::base::Preferences preferences;
+
+    try
     {
-        m_serverHostname = hostname;
+        m_serverPort = preferences.delimited_get(m_serverPortKey, m_serverPort);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    try
     {
-        m_serverPort = std::stoi(port);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
     // Catch any errors
     try
     {
         // Get selected slice
-        size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value())
-                                    + dicomSeries.getFirstInstanceNumber();
+        std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value())
+                                         + dicomSeries.getFirstInstanceNumber();
 
         std::string seriesInstanceUID = dicomSeries.getInstanceUID();
 

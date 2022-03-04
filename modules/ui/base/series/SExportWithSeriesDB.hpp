@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ namespace series
  * @brief   This action allows to export the current series using a temporary seriesDB.
  *
  * This service must work on a series.
- * It creates a new SeriesDB containing this series, and then launchs an module::ui::base::editor::SSelector service
+ * It creates a new SeriesDB containing this series, and then launches a module::ui::base::editor::SSelector service
  * on the created SeriesDB with the given configuration.
  *
  * @section Signal Signal
@@ -63,7 +63,7 @@ namespace series
  *
  * The available reader can be configured
  * @code{.xml}
-    <service uid="action_seriesExporter" impl="::sight::module::ui::base::series::SExportWithSeriesDB">
+    <service uid="action_seriesExporter" impl="sight::module::ui::base::series::SExportWithSeriesDB">
         <inout key="series" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
     </service>
@@ -77,19 +77,19 @@ namespace series
  *  - \b IOSelectorSrvConfig : the id of a configuration for SSelector
  *  for example
  *  @code{.xml}
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>seriesDBExporterConfig</id>
         <service>module::ui::base::editor::SSelector</service>
         <desc>IOSelector config to export SeriesDB</desc>
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
         </config>
     </extension>
     @endcode
  */
-class MODULE_UI_BASE_CLASS_API SExportWithSeriesDB : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SExportWithSeriesDB : public sight::ui::base::IAction
 {
 public:
 

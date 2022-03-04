@@ -27,7 +27,7 @@ namespace sight::module::viz::scene2d
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::viz::scene2d::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::viz::scene2d::Plugin");
 
 //-----------------------------------------------------------------------------
 

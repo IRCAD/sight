@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -178,7 +178,7 @@ void SSeriesPuller::pullSeries()
             m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
 
             pullSeriesVector.push_back(series);
-            m_instanceCount += series->getNumberOfInstances();
+            m_instanceCount += series->numInstances();
         }
 
         selectedSeriesVector.push_back(series);
@@ -368,7 +368,7 @@ void SSeriesPuller::removeSeries(data::SeriesDB::ContainerType _removedSeries)
     // Find which series to delete
     if(!m_localSeries.empty())
     {
-        for(const auto series : _removedSeries)
+        for(const auto& series : _removedSeries)
         {
             const auto it = std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID());
             if(it != m_localSeries.end())
@@ -384,9 +384,9 @@ void SSeriesPuller::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::storeInstanceCallback(
-    const ::std::string& _seriesInstanceUID,
+    const std::string& _seriesInstanceUID,
     unsigned int _instanceNumber,
-    const ::std::string& _filePath
+    const std::string& _filePath
 )
 {
     // Add path in the DICOM series.
@@ -401,7 +401,7 @@ void SSeriesPuller::storeInstanceCallback(
     }
 
     // Notify progress dialog.
-    ::std::stringstream ss;
+    std::stringstream ss;
     ss << "Downloading file " << _instanceNumber << "/" << m_instanceCount;
     float percentage = static_cast<float>(_instanceNumber) / static_cast<float>(m_instanceCount);
     m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());

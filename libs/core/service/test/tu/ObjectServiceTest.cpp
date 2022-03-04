@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,21 +98,21 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
     CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), core::Exception);
 
-    service1->setObject(obj1, "key1", 0, data::Access::inout, false, false);
-    service1->setObject(obj2, "key2", 0, data::Access::inout, false, false);
-    service1->setObject(obj3, "key3", 0, data::Access::inout, false, false);
+    service1->setObject(obj1, "key1", std::nullopt, data::Access::inout, false, false);
+    service1->setObject(obj2, "key2", std::nullopt, data::Access::inout, false, false);
+    service1->setObject(obj3, "key3", std::nullopt, data::Access::inout, false, false);
 
     CPPUNIT_ASSERT(obj1 == service1->getObject("key1", data::Access::inout));
     CPPUNIT_ASSERT(obj2 == service1->getObject("key2", data::Access::inout));
     CPPUNIT_ASSERT(obj3 == service1->getObject("key3", data::Access::inout));
 
-    service2->setObject(obj1, "key1", 0, data::Access::inout, false, false);
-    service2->setObject(obj2, "key2", 0, data::Access::inout, false, false);
+    service2->setObject(obj1, "key1", std::nullopt, data::Access::inout, false, false);
+    service2->setObject(obj2, "key2", std::nullopt, data::Access::inout, false, false);
 
     CPPUNIT_ASSERT(obj1 == service2->getObject("key1", data::Access::inout));
     CPPUNIT_ASSERT(obj2 == service2->getObject("key2", data::Access::inout));
 
-    service3->setObject(obj3, "key3", 0, data::Access::inout, false, false);
+    service3->setObject(obj3, "key3", std::nullopt, data::Access::inout, false, false);
     CPPUNIT_ASSERT(obj3 == service3->getObject("key3", data::Access::inout));
 
     // 3 services in total
@@ -120,7 +120,7 @@ void ObjectServiceTest::registerKeyTest()
         auto servicesByType         = osr.getServices(srvType);
         auto servicesByTemplateType = osr.getServices<service::ut::ISTest>();
 
-        CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
@@ -129,7 +129,7 @@ void ObjectServiceTest::registerKeyTest()
         auto servicesByType         = osr.getServices(srvImplementation1);
         auto servicesByTemplateType = osr.getServices<service::ut::STestNoData>();
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
@@ -138,51 +138,51 @@ void ObjectServiceTest::registerKeyTest()
         auto servicesByType         = osr.getServices(srvImplementation2);
         auto servicesByTemplateType = osr.getServices<service::ut::STestNoData2>();
 
-        CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
     auto servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
 
     CPPUNIT_ASSERT(servicesByType.find(service1) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service2) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service3) != servicesByType.end());
 
     // Remove key 1 from service 1 and check consistency
-    service1->resetObject("key1", 0, data::Access::inout);
+    service1->resetObject("key1", std::nullopt, data::Access::inout);
     CPPUNIT_ASSERT(nullptr == service1->getObject("key1", data::Access::inout));
     servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
 
     osr.unregisterService(service1);
     servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
 
     // Remove key 2 from service 2 and check consistency
-    service2->resetObject("key2", 0, data::Access::inout);
+    service2->resetObject("key2", std::nullopt, data::Access::inout);
     CPPUNIT_ASSERT(nullptr == service2->getObject("key2", data::Access::inout));
 
     servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
 
     // Register key 2 to service 1 just for fun
-    service1->setObject(obj2, "key2", 0, data::Access::inout, false, false);
+    service1->setObject(obj2, "key2", std::nullopt, data::Access::inout, false, false);
     CPPUNIT_ASSERT(obj2 == service1->getObject("key2", data::Access::inout));
 
     osr.registerService(service1);
     servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
 
     // Remove service 3 and check consistency
     osr.unregisterService(service3);
     servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
 
     osr.unregisterService(service2);
 
     servicesByType = osr.getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), servicesByType.size());
 
     osr.unregisterService(service1);
     servicesByType = osr.getServices(srvType);

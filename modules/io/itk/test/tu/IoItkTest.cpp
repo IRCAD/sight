@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "IoItkTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
@@ -38,12 +37,11 @@
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::itk::ut::IoItkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::itk::ut::IoItkTest);
 
 namespace sight::module::io::itk
 {
@@ -57,17 +55,12 @@ static const double EPSILON = 0.00001;
 
 void IoItkTest::setUp()
 {
-    // Set up context before running a test.
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
-    core::thread::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
 
 void IoItkTest::tearDown()
 {
-    // Clean up after the test run.
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +116,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     // Create and execute service
     executeService(
         imageSeries,
-        "::sight::module::io::itk::SJpgImageSeriesWriter",
+        "sight::module::io::itk::SJpgImageSeriesWriter",
         srvCfg,
         data::Access::in
     );
@@ -150,7 +143,7 @@ void IoItkTest::testImageWriterJPG()
     // Create and execute service
     executeService(
         image,
-        "::sight::module::io::itk::JpgImageWriterService",
+        "sight::module::io::itk::JpgImageWriterService",
         srvCfg,
         data::Access::in
     );
@@ -172,7 +165,7 @@ void IoItkTest::testSaveLoadInr()
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
@@ -187,7 +180,7 @@ void IoItkTest::testSaveLoadInr()
     // Create and execute service
     executeService(
         image,
-        "::sight::module::io::itk::InrImageWriterService",
+        "sight::module::io::itk::InrImageWriterService",
         srvCfg,
         data::Access::in
     );
@@ -196,21 +189,20 @@ void IoItkTest::testSaveLoadInr()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "::sight::module::io::itk::InrImageReaderService",
+        "sight::module::io::itk::InrImageReaderService",
         srvCfg,
         data::Access::inout
     );
 
-    data::Image::Spacing spacing = image2->getSpacing2();
+    data::Image::Spacing spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing2(spacing);
+    image2->setSpacing(spacing);
 
     // check Image
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
@@ -225,7 +217,7 @@ void IoItkTest::ImageSeriesInrTest()
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
@@ -240,7 +232,7 @@ void IoItkTest::ImageSeriesInrTest()
     // Create and execute service
     executeService(
         imageSeries,
-        "::sight::module::io::itk::SImageSeriesWriter",
+        "sight::module::io::itk::SImageSeriesWriter",
         srvCfg,
         data::Access::in
     );
@@ -249,21 +241,20 @@ void IoItkTest::ImageSeriesInrTest()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "::sight::module::io::itk::InrImageReaderService",
+        "sight::module::io::itk::InrImageReaderService",
         srvCfg,
         data::Access::inout
     );
 
-    data::Image::Spacing spacing = image2->getSpacing2();
+    data::Image::Spacing spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing2(spacing);
+    image2->setSpacing(spacing);
 
     // check Image
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
@@ -301,7 +292,7 @@ void IoItkTest::SeriesDBInrTest()
     data::SeriesDB::sptr sdb = data::SeriesDB::New();
     executeService(
         sdb,
-        "::sight::module::io::itk::SInrSeriesDBReader",
+        "sight::module::io::itk::SInrSeriesDBReader",
         srvCfg,
         data::Access::inout
     );
@@ -309,7 +300,7 @@ void IoItkTest::SeriesDBInrTest()
     const data::Image::Spacing spacing = {0.781, 0.781, 1.6};
     const data::Image::Size size       = {512, 512, 134};
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), sdb->getContainer().size());
     data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[0]);
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
@@ -317,10 +308,10 @@ void IoItkTest::SeriesDBInrTest()
     data::Image::sptr image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().string());
-    CPPUNIT_ASSERT(size == image->getSize2());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing2()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
+    CPPUNIT_ASSERT(size == image->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
 
     imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[1]);
     CPPUNIT_ASSERT(imgSeries);
@@ -330,10 +321,10 @@ void IoItkTest::SeriesDBInrTest()
     image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().string());
-    CPPUNIT_ASSERT(size == image->getSize2());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing2()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
+    CPPUNIT_ASSERT(size == image->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -290,13 +290,13 @@ QRangeSlider::QRangeSlider(QWidget* parent) :
 
     m_current = NULL;
 
-    Handle* minh = new Handle(this);
-    Handle* maxh = new Handle(this);
-    minh->setHandleSize(m_handleSize);
-    maxh->setHandleSize(m_handleSize);
+    Handle* min_h = new Handle(this);
+    Handle* max_h = new Handle(this);
+    min_h->setHandleSize(m_handleSize);
+    max_h->setHandleSize(m_handleSize);
 
-    m_minHandle = minh;
-    m_maxHandle = maxh;
+    m_minHandle = min_h;
+    m_maxHandle = max_h;
     m_window    = new Window(this);
 
     this->setPos(m_minValue, m_maxValue);

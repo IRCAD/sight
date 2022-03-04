@@ -41,12 +41,12 @@ private:
     CPPUNIT_TEST(testSetGetPixel);
     CPPUNIT_TEST(testSetGetPixelRGBA);
     CPPUNIT_TEST(testIterator);
-    CPPUNIT_TEST(testRGBAIterator);
     CPPUNIT_TEST(testRGBIterator);
-    CPPUNIT_TEST(testBGRAIterator);
     CPPUNIT_TEST(testBGRIterator);
+    CPPUNIT_TEST(testRGBAIterator);
+    CPPUNIT_TEST(testBGRAIterator);
+    CPPUNIT_TEST(benchmarkIterator);
     CPPUNIT_TEST(imageDeepCopy);
-    CPPUNIT_TEST(setISStreamTest);
     CPPUNIT_TEST(emptyIteratorTest);
     CPPUNIT_TEST_SUITE_END();
 
@@ -62,12 +62,12 @@ public:
     void testSetGetPixel();
     void testSetGetPixelRGBA();
     void testIterator();
-    void testRGBAIterator();
     void testRGBIterator();
     void testBGRIterator();
+    void testRGBAIterator();
     void testBGRAIterator();
+    void benchmarkIterator();
     void imageDeepCopy();
-    void setISStreamTest();
     void emptyIteratorTest();
 };
 

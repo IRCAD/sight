@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Patient.hpp>
 
@@ -44,7 +44,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto patient = Helper::safeCast<data::Patient>(object);
@@ -53,10 +53,10 @@ inline static void serialize(
     Helper::writeVersion<data::Patient>(tree, 1);
 
     // Serialize patient data
-    Helper::writeString(tree, s_Name, patient->getName(), password);
-    Helper::writeString(tree, s_PatientId, patient->getPatientId(), password);
-    Helper::writeString(tree, s_Birthdate, patient->getBirthdate(), password);
-    Helper::writeString(tree, s_Sex, patient->getSex(), password);
+    Helper::writeString(tree, s_Name, patient->getName());
+    Helper::writeString(tree, s_PatientId, patient->getPatientId());
+    Helper::writeString(tree, s_Birthdate, patient->getBirthdate());
+    Helper::writeString(tree, s_Sex, patient->getSex());
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ inline static data::Patient::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -76,10 +76,10 @@ inline static data::Patient::sptr deserialize(
     Helper::readVersion<data::Patient>(tree, 0, 1);
 
     // Deserialize patient data
-    patient->setName(Helper::readString(tree, s_Name, password));
-    patient->setPatientId(Helper::readString(tree, s_PatientId, password));
-    patient->setBirthdate(Helper::readString(tree, s_Birthdate, password));
-    patient->setSex(Helper::readString(tree, s_Sex, password));
+    patient->setName(Helper::readString(tree, s_Name));
+    patient->setPatientId(Helper::readString(tree, s_PatientId));
+    patient->setBirthdate(Helper::readString(tree, s_Birthdate));
+    patient->setSex(Helper::readString(tree, s_Sex));
 
     return patient;
 }

@@ -37,8 +37,8 @@
 #include <QQuickWindow>
 
 fwGuiRegisterMacro(
-    ::sight::ui::qml::dialog::ProgressDialog,
-    ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY
+    sight::ui::qml::dialog::ProgressDialog,
+    sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY
 );
 
 namespace sight::ui::qml

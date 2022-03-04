@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,10 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setEmptyTagValue(::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setEmptyTagValue(gdcm::DataSet& dataset)
     {
-        ::gdcm::Attribute< GROUP, ELEMENT > attribute;
+        gdcm::Attribute<GROUP, ELEMENT> attribute;
         dataset.Insert(attribute.GetAsDataElement());
     }
 
@@ -64,10 +64,10 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< typename T, std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setTagValue(const T& value, ::gdcm::DataSet& dataset)
+    template<typename T, std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setTagValue(const T& value, gdcm::DataSet& dataset)
     {
-        ::gdcm::Attribute< GROUP, ELEMENT > attribute;
+        gdcm::Attribute<GROUP, ELEMENT> attribute;
         attribute.SetValue(value);
         dataset.Insert(attribute.GetAsDataElement());
     }
@@ -79,8 +79,8 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setTagValue(const std::string& value, ::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setTagValue(const std::string& value, gdcm::DataSet& dataset)
     {
         setTagValue<std::string, GROUP, ELEMENT>(value, dataset);
     }
@@ -94,14 +94,15 @@ public:
      * @tparam GROUP Group of the tag.
      * @tparam ELEMENT Element of the tag.
      */
-    template< typename T, std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setTagValues(const T* array, const size_t size, ::gdcm::DataSet& dataset)
+    template<typename T, std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setTagValues(const T* array, const std::size_t size, gdcm::DataSet& dataset)
     {
-        ::gdcm::Attribute< GROUP, ELEMENT > attribute;
+        gdcm::Attribute<GROUP, ELEMENT> attribute;
         if(array)
         {
             attribute.SetValues(array, static_cast<unsigned int>(size));
         }
+
         dataset.Insert(attribute.GetAsDataElement());
     }
 
@@ -112,13 +113,15 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setSequenceTagValue(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-                                    ::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setSequenceTagValue(
+        gdcm::SmartPointer<gdcm::SequenceOfItems> sequence,
+        gdcm::DataSet& dataset
+)
     {
         // Create the sequence of items
-        ::gdcm::DataElement dataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
-        dataElement.SetVR(::gdcm::VR::SQ);
+        gdcm::DataElement dataElement(gdcm::Attribute<GROUP, ELEMENT>::GetTag());
+        dataElement.SetVR(gdcm::VR::SQ);
         dataElement.SetValue(*sequence);
         dataElement.SetVL(sequence->GetLength());
 
@@ -132,12 +135,12 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createAndSetSequenceTagValue(::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static gdcm::SmartPointer<gdcm::SequenceOfItems> createAndSetSequenceTagValue(gdcm::DataSet& dataset)
     {
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
+        gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
         sequence->SetLengthToUndefined();
-        setSequenceTagValue< GROUP, ELEMENT >(sequence, dataset);
+        setSequenceTagValue<GROUP, ELEMENT>(sequence, dataset);
         return sequence;
     }
 
@@ -150,25 +153,27 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setAndMergeSequenceTagValue(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-                                            ::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setAndMergeSequenceTagValue(
+        gdcm::SmartPointer<gdcm::SequenceOfItems> sequence,
+        gdcm::DataSet& dataset
+)
     {
         // Set or add the SQ
-        if (!dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))
+        if(!dataset.FindDataElement(gdcm::Attribute<GROUP, ELEMENT>::GetTag()))
         {
-            setSequenceTagValue< GROUP, ELEMENT >(sequence, dataset);
+            setSequenceTagValue<GROUP, ELEMENT>(sequence, dataset);
         }
         else
         {
             // Get old SQ
-            const ::gdcm::DataElement& dataElement =
-                dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > oldSequence = dataElement.GetValueAsSQ();
+            const gdcm::DataElement& dataElement =
+                dataset.GetDataElement(gdcm::Attribute<GROUP, ELEMENT>::GetTag());
+            gdcm::SmartPointer<gdcm::SequenceOfItems> oldSequence = dataElement.GetValueAsSQ();
 
             // Add items of the new SQ to the old SQ
             auto nbItem = sequence->GetNumberOfItems();
-            for (decltype(nbItem)i = 1; i <= nbItem; ++i)  // WARN : item start at 1
+            for(decltype(nbItem) i = 1 ; i <= nbItem ; ++i) // WARN : item start at 1
             {
                 oldSequence->AddItem(sequence->GetItem(i));
             }
@@ -183,35 +188,37 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setCodeSequenceTagValue(io::dicom::container::DicomCodedAttribute attribute,
-                                        ::gdcm::DataSet& dataset)
+    template<std::uint16_t GROUP, std::uint16_t ELEMENT>
+    static void setCodeSequenceTagValue(
+        io::dicom::container::DicomCodedAttribute attribute,
+        gdcm::DataSet& dataset
+)
     {
-        auto sequence = createAndSetSequenceTagValue< GROUP, ELEMENT >(dataset);
+        auto sequence = createAndSetSequenceTagValue<GROUP, ELEMENT>(dataset);
 
-        ::gdcm::Item item;
+        gdcm::Item item;
         item.SetVLToUndefined();
-        ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+        gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
         // Code Value - Type 1C
-        setTagValue< 0x0008, 0x0100 >(attribute.getCodeValue(), itemDataset);
+        setTagValue<0x0008, 0x0100>(attribute.getCodeValue(), itemDataset);
 
         // Coding Scheme Designator - Type 1C
-        setTagValue< 0x0008, 0x0102 >(attribute.getCodingSchemeDesignator(), itemDataset);
+        setTagValue<0x0008, 0x0102>(attribute.getCodingSchemeDesignator(), itemDataset);
 
         // Coding Scheme Version - Type 1C
         if(!attribute.getCodingSchemeVersion().empty())
         {
-            setTagValue< 0x0008, 0x0103 >(attribute.getCodingSchemeVersion(), itemDataset);
+            setTagValue<0x0008, 0x0103>(attribute.getCodingSchemeVersion(), itemDataset);
         }
 
         // Code Meaning - Type 1
-        setTagValue< 0x0008, 0x0104>(attribute.getCodeMeaning(), itemDataset);
+        setTagValue<0x0008, 0x0104>(attribute.getCodeMeaning(), itemDataset);
 
         sequence->AddItem(item);
     }
-
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

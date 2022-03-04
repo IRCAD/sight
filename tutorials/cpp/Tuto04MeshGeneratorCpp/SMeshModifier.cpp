@@ -91,36 +91,32 @@ void SMeshModifier::updating()
         {
             geometry::data::Mesh::shakePoint(mesh.get_shared());
 
-            data::Mesh::VertexModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ColorizeMeshCells")
         {
             geometry::data::Mesh::colorizeMeshCells(mesh.get_shared());
 
-            data::Mesh::CellColorsModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::CellColorsModifiedSignalType>(
-                data::Mesh::s_CELL_COLORS_MODIFIED_SIG
-            );
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
             geometry::data::Mesh::colorizeMeshPoints(mesh.get_shared());
 
-            data::Mesh::PointColorsModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::PointColorsModifiedSignalType>(
-                data::Mesh::s_POINT_COLORS_MODIFIED_SIG
-            );
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ComputeCellNormals")
         {
             geometry::data::Mesh::generateCellNormals(mesh.get_shared());
 
-            data::Mesh::CellNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::CellNormalsModifiedSignalType>(
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(
                 data::Mesh::s_CELL_NORMALS_MODIFIED_SIG
             );
             sig->asyncEmit();
@@ -129,8 +125,8 @@ void SMeshModifier::updating()
         {
             geometry::data::Mesh::generatePointNormals(mesh.get_shared());
 
-            data::Mesh::PointNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::PointNormalsModifiedSignalType>(
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(
                 data::Mesh::s_POINT_NORMALS_MODIFIED_SIG
             );
             sig->asyncEmit();
@@ -139,18 +135,16 @@ void SMeshModifier::updating()
         {
             geometry::data::Mesh::shakeCellNormals(mesh.get_shared());
 
-            data::Mesh::CellNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::CellNormalsModifiedSignalType>(
-                data::Mesh::s_CELL_NORMALS_MODIFIED_SIG
-            );
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ShakePointNormals")
         {
             geometry::data::Mesh::shakePointNormals(mesh.get_shared());
 
-            data::Mesh::PointNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal<data::Mesh::PointNormalsModifiedSignalType>(
+            data::Mesh::signal_t::sptr sig;
+            sig = mesh->signal<data::Mesh::signal_t>(
                 data::Mesh::s_POINT_NORMALS_MODIFIED_SIG
             );
             sig->asyncEmit();

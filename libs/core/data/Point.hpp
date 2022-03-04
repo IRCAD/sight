@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <array>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Point));
-
 namespace sight::data
 {
 
@@ -43,7 +41,7 @@ public:
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    SIGHT_DECLARE_CLASS(Point, data::Object, data::factory::New<Point>);
+    SIGHT_DECLARE_CLASS(Point, Object, factory::New<Point>);
 
     /// Point factory
     DATA_API static Point::sptr New(float x, float y   = 0.f, float z = 0.f);
@@ -51,22 +49,17 @@ public:
     DATA_API static Point::sptr New(const PointCoordArrayType& coord);
     DATA_API static Point::sptr New(const Point::sptr& p);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Point));
-
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Point(data::Object::Key key);
+    DATA_API Point(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Point();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get/set point coordinates
     /// @{
@@ -75,7 +68,20 @@ public:
     void setCoord(const PointCoordArrayType& _vCoord);
     /// @}
 
+    DATA_API std::string getLabel() const;
+
+    DATA_API void setLabel(const std::string& _label);
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Point& other) const noexcept;
+    DATA_API bool operator!=(const Point& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// point coordinates
     PointCoordArrayType m_vCoord;

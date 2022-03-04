@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ std::string getDateInXsdFormat(const boost::posix_time::ptime& dateAndTime)
 
 //------------------------------------------------------------------------------
 
-::boost::posix_time::ptime fromIsoExtendedString(const std::string& time_string)
+boost::posix_time::ptime fromIsoExtendedString(const std::string& time_string)
 {
     std::string tmp(time_string);
     std::string::size_type i = 0;
@@ -46,18 +46,18 @@ std::string getDateInXsdFormat(const boost::posix_time::ptime& dateAndTime)
         tmp.replace(i++, 1, " ");
     }
 
-    ::boost::posix_time::ptime t = boost::posix_time::time_from_string(tmp);
+    boost::posix_time::ptime t = boost::posix_time::time_from_string(tmp);
     return t;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::posix_time::ptime fromDateInXsdFormat(const std::string& date_string)
+boost::posix_time::ptime fromDateInXsdFormat(const std::string& date_string)
 {
     std::stringstream ss;
     ss << date_string << " 00:00:00";
 
-    ::boost::posix_time::ptime t = boost::posix_time::time_from_string(ss.str());
+    boost::posix_time::ptime t = boost::posix_time::time_from_string(ss.str());
     return t;
 }
 

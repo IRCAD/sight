@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,17 +42,17 @@ namespace dialog
 
 PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key key)
 {
-    m_pdialog = new QProgressDialog(qApp->activeWindow());
+    m_dialog = new QProgressDialog(qApp->activeWindow());
 }
 
 //------------------------------------------------------------------------------
 
 PulseProgressDialog::~PulseProgressDialog()
 {
-    if(m_pdialog)
+    if(m_dialog)
     {
-        m_pdialog->hide();
-        delete m_pdialog;
+        m_dialog->hide();
+        delete m_dialog;
     }
 }
 
@@ -60,14 +60,14 @@ PulseProgressDialog::~PulseProgressDialog()
 
 void PulseProgressDialog::setTitle(const std::string& title)
 {
-    m_pdialog->setWindowTitle(QString::fromStdString(title));
+    m_dialog->setWindowTitle(QString::fromStdString(title));
 }
 
 //------------------------------------------------------------------------------
 
 void PulseProgressDialog::setMessage(const std::string& msg)
 {
-    m_pdialog->setLabelText(QString::fromStdString(msg));
+    m_dialog->setLabelText(QString::fromStdString(msg));
 }
 
 //------------------------------------------------------------------------------
@@ -76,15 +76,15 @@ void PulseProgressDialog::show()
 {
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
-    QObject::connect(&futureWatcher, SIGNAL(finished()), m_pdialog, SLOT(reset()));
-    QObject::connect(m_pdialog, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
-    QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int,int)), m_pdialog, SLOT(setRange(int,int)));
-    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), m_pdialog, SLOT(setValue(int)));
+    QObject::connect(&futureWatcher, SIGNAL(finished()), m_dialog, SLOT(reset()));
+    QObject::connect(m_dialog, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
+    QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int,int)), m_dialog, SLOT(setRange(int,int)));
+    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), m_dialog, SLOT(setValue(int)));
 
     // Start the computation.
     futureWatcher.setFuture(QtConcurrent::run(m_stuff));
 
-    m_pdialog->exec();
+    m_dialog->exec();
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Patient::Patient(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Patient::csptr& patient,
     const core::log::Logger::sptr& logger,
@@ -61,7 +61,7 @@ Patient::~Patient()
 void Patient::writePatientModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Patient's name - Type 2
     io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x0010>(m_object->getName(), dataset);

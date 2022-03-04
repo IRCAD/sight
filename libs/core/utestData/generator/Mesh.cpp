@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ void Mesh::generateMesh(const data::Mesh::sptr& mesh)
 
     utestData::generator::Mesh::generateTriangleMesh(mesh, attributes);
     utestData::generator::Mesh::shakePoints(mesh);
-    mesh->adjustAllocatedMemory();
+    mesh->shrinkToFit();
 }
 
 //------------------------------------------------------------------------------
@@ -67,18 +67,16 @@ void Mesh::generateTriangleQuadMesh(
     data::Mesh::Attributes attributes
 )
 {
-    data::Mesh::Size nbPointsByEdge = 10;
-    float edgeDim                   = 100.;
+    data::Mesh::size_t nbPointsByEdge = 10;
+    float edgeDim                     = 100.;
     Mesh::PointsMapType points;
 
-    const data::Mesh::Size nbPoints        = nbPointsByEdge * nbPointsByEdge * 2 * 4 * 2;
-    const data::Mesh::Size nbTriangleCells = nbPointsByEdge * nbPointsByEdge * 2 * 2;
-    const data::Mesh::Size nbQuadCells     = nbPointsByEdge * nbPointsByEdge * 2;
+    const data::Mesh::size_t nbPoints        = nbPointsByEdge * nbPointsByEdge * 2 * 4 * 2;
+    const data::Mesh::size_t nbTriangleCells = nbPointsByEdge * nbPointsByEdge * 2 * 2;
 
     mesh->clear();
-    mesh->reserve(nbPoints, nbTriangleCells + nbQuadCells, nbTriangleCells * 3 + nbQuadCells * 4, attributes);
+    mesh->reserve(nbPoints, nbTriangleCells, data::Mesh::CellType::TRIANGLE, attributes);
     Mesh::addTriangleMesh(mesh, points, nbPointsByEdge, edgeDim);
-    Mesh::addQuadMesh(mesh, points, nbPointsByEdge, edgeDim);
 }
 
 //------------------------------------------------------------------------------
@@ -88,16 +86,16 @@ void Mesh::generateTriangleMesh(
     data::Mesh::Attributes attributes
 )
 {
-    data::Mesh::Size nbPointsByEdge = 10;
-    float edgeDim                   = 100.;
+    data::Mesh::size_t nbPointsByEdge = 10;
+    float edgeDim                     = 100.;
     Mesh::PointsMapType points;
-    const data::Mesh::Size nbPoints = nbPointsByEdge * nbPointsByEdge * 2 * 4;
-    const data::Mesh::Size nbCells  = nbPointsByEdge * nbPointsByEdge * 2 * 2;
+    const data::Mesh::size_t nbPoints = nbPointsByEdge * nbPointsByEdge * 2 * 4;
+    const data::Mesh::size_t nbCells  = nbPointsByEdge * nbPointsByEdge * 2 * 2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, data::Mesh::CellType::TRIANGLE, attributes);
     Mesh::addTriangleMesh(mesh, points, nbPointsByEdge, edgeDim);
-    mesh->adjustAllocatedMemory();
+    mesh->shrinkToFit();
 }
 
 //------------------------------------------------------------------------------
@@ -107,31 +105,31 @@ void Mesh::generateQuadMesh(
     data::Mesh::Attributes attributes
 )
 {
-    data::Mesh::Size nbPointsByEdge = 10;
-    float edgeDim                   = 100.;
+    data::Mesh::size_t nbPointsByEdge = 10;
+    float edgeDim                     = 100.;
     Mesh::PointsMapType points;
-    const data::Mesh::Size nbPoints = nbPointsByEdge * nbPointsByEdge * 2 * 4;
-    const data::Mesh::Size nbCells  = nbPointsByEdge * nbPointsByEdge * 2;
+    const data::Mesh::size_t nbPoints = nbPointsByEdge * nbPointsByEdge * 2 * 4;
+    const data::Mesh::size_t nbCells  = nbPointsByEdge * nbPointsByEdge * 2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, data::Mesh::CellType::QUAD, attributes);
     Mesh::addQuadMesh(mesh, points, nbPointsByEdge, edgeDim);
-    mesh->adjustAllocatedMemory();
+    mesh->shrinkToFit();
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
+void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, std::size_t nbPointsByEdge, float edgeDim)
 {
-    const auto dumpLock = mesh->lock();
-    data::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
-    data::Mesh::Size idx1, idx2, idx3, idx4;
+    const auto dumpLock = mesh->dump_lock();
+    data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
+    data::Mesh::size_t idx1, idx2, idx3, idx4;
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Y = edgeDim
-    for(size_t x = 0 ; x < nbPointsByEdge ; x++)
+    for(std::size_t x = 0 ; x < nbPointsByEdge ; x++)
     {
-        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
+        for(std::size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = static_cast<float>(x) * step;
             pt1[1] = edgeDim;
@@ -156,7 +154,7 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
 
             const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
 
-            if(mesh->hasCellColors())
+            if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
                 const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
                 const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
@@ -165,7 +163,7 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
                 mesh->setCellColor(cellId, R, G, B, A);
             }
 
-            if(mesh->hasCellNormals())
+            if(mesh->has<data::Mesh::Attributes::CELL_NORMALS>())
             {
                 const float NX = 0;
                 const float NY = 1;
@@ -177,9 +175,9 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
     }
 
     //Face X = edgeDim
-    for(size_t y = 0 ; y < nbPointsByEdge ; y++)
+    for(std::size_t y = 0 ; y < nbPointsByEdge ; y++)
     {
-        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
+        for(std::size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = edgeDim;
             pt1[1] = static_cast<float>(y) * step;
@@ -203,7 +201,7 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
             idx4 = Mesh::addPoint(pt4, mesh, points);
 
             const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
-            if(mesh->hasCellColors())
+            if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
                 const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
                 const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
@@ -212,7 +210,7 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
                 mesh->setCellColor(cellId, R, G, B, A);
             }
 
-            if(mesh->hasCellNormals())
+            if(mesh->has<data::Mesh::Attributes::CELL_NORMALS>())
             {
                 const float NX = 1;
                 const float NY = 0;
@@ -229,20 +227,20 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
 void Mesh::addTriangleMesh(
     const data::Mesh::sptr& mesh,
     PointsMapType& points,
-    size_t nbPointsByEdge,
+    std::size_t nbPointsByEdge,
     float edgeDim
 )
 {
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    data::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
-    data::Mesh::Size idx1, idx2, idx3, idx4;
+    data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
+    data::Mesh::size_t idx1, idx2, idx3, idx4;
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Z = 0
-    for(size_t x = 0 ; x < nbPointsByEdge ; x++)
+    for(std::size_t x = 0 ; x < nbPointsByEdge ; x++)
     {
-        for(size_t y = 0 ; y < nbPointsByEdge ; y++)
+        for(std::size_t y = 0 ; y < nbPointsByEdge ; y++)
         {
             pt1[0] = static_cast<float>(x) * step;
             pt1[1] = static_cast<float>(y) * step;
@@ -268,7 +266,7 @@ void Mesh::addTriangleMesh(
             const auto cellId1 = mesh->pushCell(idx1, idx4, idx2);
             const auto cellId2 = mesh->pushCell(idx1, idx3, idx4);
 
-            if(mesh->hasCellColors())
+            if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
                 const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
                 const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
@@ -278,7 +276,7 @@ void Mesh::addTriangleMesh(
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
 
-            if(mesh->hasCellNormals())
+            if(mesh->has<data::Mesh::Attributes::CELL_NORMALS>())
             {
                 const float NX = 0;
                 const float NY = 1;
@@ -291,9 +289,9 @@ void Mesh::addTriangleMesh(
     }
 
     //Face X = 0
-    for(size_t y = 0 ; y < nbPointsByEdge ; y++)
+    for(std::size_t y = 0 ; y < nbPointsByEdge ; y++)
     {
-        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
+        for(std::size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = 0;
             pt1[1] = static_cast<float>(y) * step;
@@ -319,7 +317,7 @@ void Mesh::addTriangleMesh(
             const auto cellId1 = mesh->pushCell(idx2, idx4, idx3);
             const auto cellId2 = mesh->pushCell(idx1, idx2, idx3);
 
-            if(mesh->hasCellColors())
+            if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
                 const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
                 const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
@@ -329,7 +327,7 @@ void Mesh::addTriangleMesh(
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
 
-            if(mesh->hasCellNormals())
+            if(mesh->has<data::Mesh::Attributes::CELL_NORMALS>())
             {
                 const float NX = 1;
                 const float NY = 0;
@@ -344,8 +342,8 @@ void Mesh::addTriangleMesh(
 
 //------------------------------------------------------------------------------
 
-data::Mesh::Size Mesh::addPoint(
-    const data::Mesh::PointValueType* pt,
+data::Mesh::size_t Mesh::addPoint(
+    const data::Mesh::position_t* pt,
     const data::Mesh::sptr& mesh,
     PointsMapType& points
 )
@@ -359,8 +357,8 @@ data::Mesh::Size Mesh::addPoint(
         return it->second;
     }
 
-    const data::Mesh::PointId idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
-    if(mesh->hasPointColors())
+    const data::Mesh::point_t idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
+    if(mesh->has<data::Mesh::Attributes::POINT_COLORS>())
     {
         const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
         const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
@@ -369,7 +367,7 @@ data::Mesh::Size Mesh::addPoint(
         mesh->setPointColor(idx, R, G, B, A);
     }
 
-    if(mesh->hasPointNormals())
+    if(mesh->has<data::Mesh::Attributes::POINT_NORMALS>())
     {
         const float NX = randFloat();
         const float NY = randFloat();
@@ -388,16 +386,16 @@ data::Mesh::Size Mesh::addPoint(
 void Mesh::shakePoints(const data::Mesh::sptr& mesh)
 {
     RandFloat randFloat;
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
-    auto itr          = mesh->begin<data::iterator::PointIterator>();
-    const auto itrEnd = mesh->end<data::iterator::PointIterator>();
+    auto itr          = mesh->begin<data::iterator::point::xyz>();
+    const auto itrEnd = mesh->end<data::iterator::point::xyz>();
 
     for( ; itr != itrEnd ; ++itr)
     {
-        itr->point->x += randFloat() * 5;
-        itr->point->y += randFloat() * 5;
-        itr->point->z += randFloat() * 5;
+        itr->x += randFloat() * 5;
+        itr->y += randFloat() * 5;
+        itr->z += randFloat() * 5;
     }
 }
 

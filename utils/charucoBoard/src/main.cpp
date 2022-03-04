@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,17 +30,17 @@
 
 #include <iostream>
 
-namespace po = ::boost::program_options;
+namespace po = boost::program_options;
 
 //------------------------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
-    size_t squareX, squareY;
+    std::size_t squareX, squareY;
     int markerBits;
     int pX, pY;
     float squareLength, markerLength;
-    ::cv::Size outSize;
+    cv::Size outSize;
     std::string file;
     try
     {
@@ -49,15 +49,15 @@ int main(int argc, char** argv)
             ("help,h", "produce help message")
         (
             "squareX,x",
-            po::value<size_t>(&squareX)->required()->default_value(7),
+            po::value<std::size_t>(&squareX)->required()->default_value(7),
             "set the number of square on the board's width"
         )
         (
             "squareY,y",
-            po::value<size_t>(&squareY)->required()->default_value(5),
+            po::value<std::size_t>(&squareY)->required()->default_value(5),
             "set the number of square on the board's height"
         )
-            ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image witdh (in pixel)")
+            ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image width (in pixel)")
             ("pixelY,e", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
         (
             "squareLength,s",
@@ -97,15 +97,15 @@ int main(int argc, char** argv)
 
         po::notify(vm);
 
-        outSize = ::cv::Size(pX, pY);
+        outSize = cv::Size(pX, pY);
 
-        ::cv::Mat boardImg;
+        cv::Mat boardImg;
 
-        ::cv::Ptr< ::cv::aruco::Dictionary> dictionary =
+        cv::Ptr<cv::aruco::Dictionary> dictionary =
             sight::geometry::vision::helper::generateArucoDictionary(squareX, squareY, markerBits);
 
-        ::cv::Ptr< ::cv::aruco::CharucoBoard> board =
-            ::cv::aruco::CharucoBoard::create(
+        cv::Ptr<cv::aruco::CharucoBoard> board =
+            cv::aruco::CharucoBoard::create(
                 static_cast<int>(squareX),
                 static_cast<int>(squareY),
                 squareLength,
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 
         board->draw(outSize, boardImg);
 
-        ::cv::imwrite(file, boardImg);
+        cv::imwrite(file, boardImg);
     }
     catch(std::exception& e)
     {

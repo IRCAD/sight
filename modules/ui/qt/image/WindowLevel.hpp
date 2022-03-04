@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,6 @@ class QLineEdit;
 class QMenu;
 class QSlider;
 class QToolButton;
-class QSignalMapper;
 
 namespace sight::ui::qt
 {
@@ -69,7 +68,7 @@ namespace sight::module::ui::qt::image
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
         <inout key="image" uid="..."/>
-        <inout key="tf" uid="..." optional="true" />
+        <inout key="tf" uid="..." />
         <config autoWindowing="true" enableSquareTF="false" />
     </service>
    @endcode
@@ -178,7 +177,6 @@ private:
     QPointer<QToolButton> m_toggleAutoButton;
     QPointer<QToolButton> m_dynamicRangeSelection;
     QPointer<QMenu> m_dynamicRangeMenu;
-    QPointer<QSignalMapper> m_dynamicRangeSignalMapper;
 
     QPointer<sight::ui::qt::widget::QRangeSlider> m_rangeSlider;
 
@@ -192,11 +190,11 @@ private:
 
     data::helper::TransferFunction m_helperTF;
 
-    static constexpr std::string_view s_TF    = "tf";
     static constexpr std::string_view s_IMAGE = "image";
+    static constexpr std::string_view s_TF    = "tf";
 
-    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF};
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE};
+    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF, false, true};
 };
 
 } // uiImageQt

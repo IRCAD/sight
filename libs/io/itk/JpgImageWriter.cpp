@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/TransferFunction.hpp>
@@ -45,7 +44,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::itk::JpgImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::itk::JpgImageWriter);
 
 namespace sight::io::itk
 {
@@ -88,12 +87,6 @@ struct JpgITKSaverFunctor
 
         data::Image::csptr image = param.m_dataImage;
 
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
-        // ne permet pas de l'atteindre
-        // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
-        // reader (voir *3*)
-
         // Reader IO (*1*)
         auto imageIOWrite = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
         assert(imageIOWrite.IsNotNull());
@@ -110,15 +103,15 @@ struct JpgITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_directoryPath);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::itkImageFactory<itkImageType>(image);
+        typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(image);
 
         typedef ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType> RescaleFilterType;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
         double min, max;
         data::Composite::sptr poolTF;
-        poolTF =
-            image->getField<data::Composite>(data::fieldHelper::Image::m_transferFunctionCompositeId);
+        poolTF = data::helper::MedicalImage::getTransferFunction(*image);
+
         if(poolTF)
         {
             data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
@@ -132,7 +125,7 @@ struct JpgITKSaverFunctor
         }
         else
         {
-            data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::helper::MedicalImage::getMinMax(image, min, max);
         }
 
         rescaleFilter->SetWindowMinimum(min);
@@ -153,7 +146,7 @@ struct JpgITKSaverFunctor
         format += "/%04d.jpg";
         nameGenerator->SetSeriesFormat(format.c_str());
         nameGenerator->SetStartIndex(1);
-        nameGenerator->SetEndIndex(image->getSize2()[2]);
+        nameGenerator->SetEndIndex(image->getSize()[2]);
         nameGenerator->SetIncrementIndex(1);
 
         writer->SetFileNames(nameGenerator->GetFileNames());
@@ -186,7 +179,7 @@ void JpgImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string JpgImageWriter::extension()
+std::string JpgImageWriter::extension() const
 {
     return ".jpg";
 }

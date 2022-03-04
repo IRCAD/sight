@@ -97,7 +97,7 @@ void SOrganMaterialEditor::onOpacitySlider(int value)
     SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha() = value / 100.0f;
+    material->diffuse()->alpha() = static_cast<float>(value) / 100.0f;
     this->materialNotification();
 }
 

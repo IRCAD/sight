@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_READER(::sight::io::itk::ImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::itk::ImageReader);
 
 namespace sight::io::itk
 {
@@ -79,12 +79,6 @@ struct ITKLoaderFunctor
             << core::tools::Type::create<PIXELTYPE>().string()
         );
 
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
-        // ne permet pas de l'atteindre
-        // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
-        // reader (voir *3*)
-
         // Reader IO (*1*)
         typename ::itk::ImageIOBase::Pointer imageIORead = ::itk::ImageIOFactory::CreateImageIO(
             param.m_filename.c_str(),
@@ -105,7 +99,7 @@ struct ITKLoaderFunctor
 
         reader->Update();
         typename ImageType::Pointer itkimage = reader->GetOutput();
-        io::itk::dataImageFactory<ImageType>(itkimage, param.m_dataImage);
+        io::itk::moveFromItk<ImageType>(itkimage, param.m_dataImage);
     }
 
     //// get pixel type from Header
@@ -149,7 +143,7 @@ void ImageReader::read()
 
     core::tools::Dispatcher<core::tools::IntrinsicTypes, ITKLoaderFunctor>::invoke(ti, param);
 
-    SIGHT_ASSERT("::sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
+    SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(

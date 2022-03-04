@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,9 +99,7 @@ namespace activity
  * - \b parameters (optional) : additional parameters used to launch the activities
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
- *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
- *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
- *          composite contained in the ActivitySeries.
+ *        - \b by: defines the string that will replace the parameter name.
  *
  * @subsection Configuration Configuration:
  *  - \b document (optional, default="true") : sets the document mode of the tab bar.
@@ -159,7 +157,7 @@ private:
 
     struct SDynamicViewInfo
     {
-        ::sight::ui::qt::container::QtContainer::sptr container;
+        sight::ui::qt::container::QtContainer::sptr container;
         service::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;
@@ -168,7 +166,7 @@ private:
         std::string tooltip;
         std::string tabID;
         std::string viewConfigID;
-        ReplaceMapType replaceMap;
+        std::map<std::string, std::string> replacementMap;
         data::ActivitySeries::sptr activitySeries;
     };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,10 +98,10 @@ public:
     MODULE_VIZ_SCENE3DQT_API void makeCurrent() final;
 
     /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3DQT_API ::Ogre::RenderTarget* getRenderTarget() final;
+    MODULE_VIZ_SCENE3DQT_API Ogre::RenderTarget* getRenderTarget() final;
 
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
-    MODULE_VIZ_SCENE3DQT_API ::Ogre::TexturePtr getRenderTexture() final;
+    MODULE_VIZ_SCENE3DQT_API Ogre::TexturePtr getRenderTexture() final;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
     MODULE_VIZ_SCENE3DQT_API sight::viz::scene3d::IGraphicsWorker* createGraphicsWorker() final;
@@ -142,10 +142,10 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline ::Ogre::TexturePtr WindowInteractor::getRenderTexture()
+inline Ogre::TexturePtr WindowInteractor::getRenderTexture()
 {
     SIGHT_ERROR("'WindowInteractor' doesn't render in a texture.");
-    return ::Ogre::TexturePtr();
+    return Ogre::TexturePtr();
 }
 
 } // namespace sight::module::viz::scene3dQt.

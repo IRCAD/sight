@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@
 
 #include <io/base/writer/registry/macros.hpp>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::SurfaceSegmentation);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SurfaceSegmentation);
 
 namespace sight::io::dicom
 {
@@ -69,7 +69,7 @@ void SurfaceSegmentation::write()
     const data::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
     const data::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
 
-    SIGHT_ASSERT("::sight::data::ModelSeries not instanced", srcModelSeries);
+    SIGHT_ASSERT("sight::data::ModelSeries not instanced", srcModelSeries);
 
     if(!associatedDicomSeries)
     {
@@ -115,8 +115,14 @@ void SurfaceSegmentation::write()
     // Complete Model Series with information from associated Image Series
     const data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
     modelSeries->shallowCopy(srcModelSeries);
-    modelSeries->setPatient(associatedDicomSeries->getPatient());
-    modelSeries->setStudy(associatedDicomSeries->getStudy());
+    // Copy Study and Patient
+    auto study = data::Study::New();
+    study->deepCopy(associatedDicomSeries->getStudy());
+    auto patient = data::Patient::New();
+    patient->deepCopy(associatedDicomSeries->getPatient());
+
+    modelSeries->setPatient(patient);
+    modelSeries->setStudy(study);
 
     SPTR(io::dicom::container::DicomInstance) associatedDicomInstance =
         std::make_shared<io::dicom::container::DicomInstance>(associatedDicomSeries, m_logger);
@@ -148,7 +154,7 @@ void SurfaceSegmentation::write()
 
 //------------------------------------------------------------------------------
 
-std::string SurfaceSegmentation::extension()
+std::string SurfaceSegmentation::extension() const
 {
     return std::string("");
 }

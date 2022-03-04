@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,9 +114,9 @@ void SelectorModel::clear()
 data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
 {
     data::Image::Spacing roundSpacing;
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        data::Image::Spacing::value_type roundVal = ::boost::math::round(_spacing[i] * 100.) / 100.;
+        data::Image::Spacing::value_type roundVal = boost::math::round(_spacing[i] * 100.) / 100.;
         roundSpacing[i] = roundVal;
     }
 
@@ -128,7 +128,7 @@ data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
 std::string formatTime(const std::string& _time)
 {
     std::string formatTime = _time;
-    ::boost::algorithm::trim(formatTime);
+    boost::algorithm::trim(formatTime);
 
     const std::string regexHour = "[0-9]{2}";
     const std::string regexMin  = "[0-9]{2}";
@@ -512,7 +512,11 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
 void SelectorModel::removeSeries(data::Series::sptr _series)
 {
     QStandardItem* seriesItem = this->findSeriesItem(_series);
-    this->removeSeriesItem(seriesItem);
+
+    if(seriesItem)
+    {
+        this->removeSeriesItem(seriesItem);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -606,15 +610,18 @@ QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
     data::Study::sptr study   = _series->getStudy();
     QStandardItem* studyItem  = this->findStudyItem(study);
 
-    int nbRow = studyItem->rowCount();
-    for(int row = 0 ; row < nbRow ; ++row)
+    if(studyItem)
     {
-        QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::NAME));
-        std::string seriesId = child->data(Role::UID).toString().toStdString();
-        if(seriesId == _series->getID())
+        int nbRow = studyItem->rowCount();
+        for(int row = 0 ; row < nbRow ; ++row)
         {
-            seriesItem = child;
-            break;
+            QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::NAME));
+            std::string seriesId = child->data(Role::UID).toString().toStdString();
+            if(seriesId == _series->getID())
+            {
+                seriesItem = child;
+                break;
+            }
         }
     }
 

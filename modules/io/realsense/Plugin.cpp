@@ -25,7 +25,7 @@
 namespace sight::module::io::realsense
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::realsense::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::realsense::Plugin");
 
 //-----------------------------------------------------------------------------
 

@@ -29,7 +29,7 @@ namespace sight::module::io::dicomweb
 
 using namespace core::runtime::utils;
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::dicomweb::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::dicomweb::Plugin");
 
 //------------------------------------------------------------------------------
 

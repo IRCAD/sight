@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/preferences.hpp>
+#include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QByteArray>
@@ -64,6 +64,7 @@ static const core::com::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureF
 static const core::com::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
 
 static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
+static const std::string s_USE_ABSOLUTE_PATH           = "useAbsolutePath";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string s_LABEL_CONFIG                = "label";
 
@@ -94,7 +95,8 @@ void SCamera::configuring()
     const service::IService::ConfigType config = this->getConfigTree();
 
     m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
-    m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
+    m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);
+    m_numCreateCameras = config.get<std::size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
     m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
 
     this->initialize();
@@ -138,15 +140,15 @@ void SCamera::starting()
     auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const size_t numCameras = cameraSeries->getNumberOfCameras();
+        const std::size_t numCameras = cameraSeries->numCameras();
         if(numCameras == 0)
         {
             SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
 
-            for(size_t i = 0 ; i < m_numCreateCameras ; ++i)
+            for(std::size_t i = 0 ; i < m_numCreateCameras ; ++i)
             {
                 data::Camera::sptr camera = data::Camera::New();
-                const size_t index        = cameraSeries->getNumberOfCameras();
+                const std::size_t index   = cameraSeries->numCameras();
                 cameraSeries->addCamera(camera);
                 cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
                 const auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
@@ -208,7 +210,10 @@ void SCamera::onChooseFile()
     std::vector<data::Camera::sptr> cameras = this->getCameras();
 
     // Check preferences
-    const std::filesystem::path videoDirPreferencePath(sight::ui::base::preferences::getVideoDir());
+    const std::filesystem::path videoDirPreferencePath(sight::ui::base::Preferences().get(
+                                                           "VIDEO_DIR_PREF",
+                                                           std::string()
+    ));
 
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
@@ -221,7 +226,7 @@ void SCamera::onChooseFile()
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(auto& camera : cameras)
     {
         std::filesystem::path videoPath;
@@ -303,21 +308,24 @@ void SCamera::onChooseFile()
         {
             if(std::filesystem::is_directory(videoDirPreferencePath))
             {
-                const auto videoRelativePath = std::filesystem::relative(
-                    videoPath,
-                    videoDirPreferencePath
-                );
-                const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
-                if(std::filesystem::exists(concatenatedPath))
+                if(!m_useAbsolutePath)
                 {
-                    videoPath = videoRelativePath;
-                }
-                else
-                {
-                    SIGHT_WARN(
-                        "Relative path '" + videoRelativePath.string()
-                        + "' genrerated with preference is not valid."
+                    const auto videoRelativePath = std::filesystem::relative(
+                        videoPath,
+                        videoDirPreferencePath
                     );
+                    const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+                    if(std::filesystem::exists(concatenatedPath))
+                    {
+                        videoPath = videoRelativePath;
+                    }
+                    else
+                    {
+                        SIGHT_WARN(
+                            "Relative path '" + videoRelativePath.string()
+                            + "' generated from preferences is not valid."
+                        );
+                    }
                 }
             }
             else
@@ -350,7 +358,7 @@ void SCamera::onChooseStream()
 {
     std::vector<data::Camera::sptr> cameras = this->getCameras();
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(auto& camera : cameras)
     {
         sight::ui::base::dialog::InputDialog inputDialog;
@@ -381,7 +389,7 @@ void SCamera::onChooseDevice()
 {
     std::vector<data::Camera::sptr> cameras = this->getCameras();
 
-    size_t count = 0;
+    std::size_t count = 0;
     for(auto& camera : cameras)
     {
         module::ui::qt::video::CameraDeviceDlg camDialog;
@@ -417,11 +425,11 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
 {
     std::vector<data::Camera::sptr> cameras;
 
-    const auto cameraSeries = m_cameraSeries.lock();
+    auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const size_t numCameras = cameraSeries->getNumberOfCameras();
-        for(size_t i = 0 ; i < numCameras ; ++i)
+        const std::size_t numCameras = cameraSeries->numCameras();
+        for(std::size_t i = 0 ; i < numCameras ; ++i)
         {
             cameras.push_back(cameraSeries->getCamera(i));
         }

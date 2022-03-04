@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,8 +79,8 @@ void SUltrasoundMesh::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_resolutionX = config.get<size_t>(s_RESOLUTION_X_CONFIG, m_resolutionX);
-    m_resolutionY = config.get<size_t>(s_RESOLUTION_Y_CONFIG, m_resolutionY);
+    m_resolutionX = config.get<std::size_t>(s_RESOLUTION_X_CONFIG, m_resolutionX);
+    m_resolutionY = config.get<std::size_t>(s_RESOLUTION_Y_CONFIG, m_resolutionY);
     m_depth       = config.get<int>(s_DEPTH_CONFIG, m_depth);
     m_width       = config.get<int>(s_WIDTH_CONFIG, m_width);
     m_angle       = config.get<int>(s_ANGLE_CONFIG, m_angle);
@@ -95,7 +95,7 @@ void SUltrasoundMesh::starting()
     // Allocate position array
     const long x = static_cast<long>(m_resolutionX);
     const long y = static_cast<long>(m_resolutionY);
-    m_meshPositionArray.resize(::boost::extents[x][y][3]);
+    m_meshPositionArray.resize(boost::extents[x][y][3]);
 
     const auto mesh = m_mesh.lock();
 
@@ -125,9 +125,9 @@ void SUltrasoundMesh::updating()
 void SUltrasoundMesh::updateMeshPosition()
 {
     // compute delta angle
-    const double thetaInit = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double thetaEnd  = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double dteta     = (thetaEnd - thetaInit) / (m_resolutionX - 1.);
+    const double thetaInit   = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
+    const double thetaEnd    = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
+    const double delta_theta = (thetaEnd - thetaInit) / (m_resolutionX - 1.);
 
     // compute delta lengths
     const double dDepth = m_depth / (m_resolutionY - 1.);
@@ -145,7 +145,7 @@ void SUltrasoundMesh::updateMeshPosition()
         fwVec3d centerLive;
         if(m_shape)
         {
-            const double angleLive = thetaInit + dteta * (m_resolutionX - widthGrid - 1);
+            const double angleLive = thetaInit + delta_theta * (m_resolutionX - widthGrid - 1);
             directionLive = std::cos(angleLive) * normal + std::sin(angleLive) * direction;
             centerLive    = centerPosition;
         }
@@ -172,11 +172,11 @@ void SUltrasoundMesh::updateMeshPosition()
 
 void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
 {
-    const size_t width  = m_meshPositionArray.shape()[0];
-    const size_t height = m_meshPositionArray.shape()[1];
+    const std::size_t width  = m_meshPositionArray.shape()[0];
+    const std::size_t height = m_meshPositionArray.shape()[1];
 
-    const size_t numPointsTotal = width * height;
-    const size_t numQuads       = (width - 1) * (height - 1);
+    const std::size_t numPointsTotal = width * height;
+    const std::size_t numQuads       = (width - 1) * (height - 1);
 
     _mesh->resize(
         numPointsTotal,
@@ -190,59 +190,40 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     const float* pointsIn = static_cast<const float*>(m_meshPositionArray.data());
 
     // points position
-    auto pointsItr = _mesh->begin<data::iterator::PointIterator>();
+    auto pointsItr = _mesh->zip_range<data::iterator::point::xyz, data::iterator::point::uv>().begin();
 
     // cells index (4 in a row)
-    auto cellsItr       = _mesh->begin<data::iterator::CellIterator>();
-    const auto cellsEnd = _mesh->end<data::iterator::CellIterator>() - 1;
+    auto cellsItr = _mesh->begin<data::iterator::cell::quad>();
 
-    for(size_t i = 0 ;
-        i < width ;
-        ++i)
+    for(std::size_t i = 0 ; i < width ; ++i)
     {
-        for(size_t j = 0 ;
-            j < height ;
-            ++j)
+        for(std::size_t j = 0 ; j < height ; ++j)
         {
-            pointsItr->point->x = *pointsIn++;
-            pointsItr->point->y = *pointsIn++;
-            pointsItr->point->z = *pointsIn++;
+            auto&& [p, tex] = *pointsItr;
+            p.x             = *pointsIn++;
+            p.y             = *pointsIn++;
+            p.z             = *pointsIn++;
 
-            pointsItr->tex->u = i / static_cast<data::Mesh::TexCoordValueType>(width - 1);
-            pointsItr->tex->v = j / static_cast<data::Mesh::TexCoordValueType>(height - 1);
+            tex.u = i / static_cast<data::Mesh::texcoord_t>(width - 1);
+            tex.v = j / static_cast<data::Mesh::texcoord_t>(height - 1);
             ++pointsItr;
         }
     }
 
     // index for each cell
-    data::Mesh::CellId idCell = 0;
-
-    for(size_t i = 0 ;
-        i < width - 1 ;
-        ++i)
+    for(std::size_t i = 0 ; i < width - 1 ; ++i)
     {
-        for(size_t j = 0 ;
-            j < height - 1 ;
-            ++j)
+        for(std::size_t j = 0 ; j < height - 1 ; ++j)
         {
-            const data::Mesh::CellId idx1 = j + i * height;
-            const data::Mesh::CellId idx2 = idx1 + 1;
-            const data::Mesh::CellId idx4 = idx1 + height;
-            const data::Mesh::CellId idx3 = idx4 + 1;
+            const data::Mesh::cell_t idx1 = j + i * height;
+            const data::Mesh::cell_t idx2 = idx1 + 1;
+            const data::Mesh::cell_t idx4 = idx1 + height;
+            const data::Mesh::cell_t idx3 = idx4 + 1;
 
-            *cellsItr->type   = data::Mesh::CellType::QUAD;
-            *cellsItr->offset = idCell; // offset 0, 4, 8, etc... for triangles
-            if(cellsItr != cellsEnd)
-            {
-                *(cellsItr + 1)->offset = idCell + 4;
-            }
-
-            idCell += 4;
-
-            cellsItr->pointIdx[0] = idx1;
-            cellsItr->pointIdx[1] = idx2;
-            cellsItr->pointIdx[2] = idx3;
-            cellsItr->pointIdx[3] = idx4;
+            cellsItr->pt[0] = idx1;
+            cellsItr->pt[1] = idx2;
+            cellsItr->pt[2] = idx3;
+            cellsItr->pt[3] = idx4;
 
             ++cellsItr;
         }
@@ -266,24 +247,20 @@ void SUltrasoundMesh::updateQuadMesh(const data::Mesh::sptr& _mesh)
     SIGHT_ASSERT("At least 2*2 points are needed", width > 1 && height > 2);
 
     // Copy new positions inside the mesh
-    auto pointsItr = _mesh->begin<data::iterator::PointIterator>();
+    auto pointsItr = _mesh->begin<data::iterator::point::xyz>();
 
-    for(int i = 0 ;
-        i < width ;
-        ++i)
+    for(int i = 0 ; i < width ; ++i)
     {
-        for(int j = 0 ;
-            j < height ;
-            ++j)
+        for(int j = 0 ; j < height ; ++j)
         {
-            pointsItr->point->x = m_meshPositionArray[i][j][0];
-            pointsItr->point->y = m_meshPositionArray[i][j][1];
-            pointsItr->point->z = m_meshPositionArray[i][j][2];
+            pointsItr->x = m_meshPositionArray[i][j][0];
+            pointsItr->y = m_meshPositionArray[i][j][1];
+            pointsItr->z = m_meshPositionArray[i][j][2];
             ++pointsItr;
         }
     }
 
-    const auto sig = _mesh->signal<data::Mesh::VertexModifiedSignalType>(
+    const auto sig = _mesh->signal<data::Mesh::signal_t>(
         data::Mesh::s_VERTEX_MODIFIED_SIG
     );
     sig->asyncEmit();

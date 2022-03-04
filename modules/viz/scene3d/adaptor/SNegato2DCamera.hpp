@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="true" />
-        <inout key="tf" uid="..." optional="true" />
+        <inout key="tf" uid="..." />
         <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />
    </service>
    @endcode
@@ -79,7 +79,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato2DCamera final : public sight::viz::sc
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato2DCamera, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato2DCamera, sight::viz::scene3d::IAdaptor);
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_SCENE3D_API SNegato2DCamera() noexcept;
@@ -173,7 +173,7 @@ protected:
 
 private:
 
-    using Orientation = data::helper::MedicalImage::Orientation;
+    using Orientation = data::helper::MedicalImage::orientation_t;
 
     /// SLOT: resets the camera's zoom.
     void resetCamera();
@@ -195,7 +195,7 @@ private:
     bool m_isInteracting {false};
 
     /// Defines the image current orientation.
-    Orientation m_currentNegatoOrientation {data::helper::MedicalImage::Orientation::Z_AXIS};
+    Orientation m_currentNegatoOrientation {data::helper::MedicalImage::orientation_t::Z_AXIS};
 
     /// Defines the interaction priority.
     int m_priority {0};
@@ -210,13 +210,13 @@ private:
     double m_initialLevel {0.f};
 
     /// Defines the mouse position at the time the windowing interaction started.
-    ::Ogre::Vector2i m_initialPos {-1, -1};
+    Ogre::Vector2i m_initialPos {-1, -1};
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

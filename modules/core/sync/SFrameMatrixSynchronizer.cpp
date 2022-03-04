@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,27 +88,28 @@ void SFrameMatrixSynchronizer::configuring()
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
 
-    m_updateMask = framerate != 0 ? OBJECT_RECEIVED : m_updateMask;
+    if(framerate != 0)
+    {
+        m_updateMask = OBJECT_RECEIVED;
+    }
 }
 
 // ----------------------------------------------------------------------------
 
 void SFrameMatrixSynchronizer::starting()
 {
-    const size_t numFrameTLs = m_frameTLs.size();
-    const size_t numImages   = m_images.size();
-    SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
+    SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", m_frameTLs.size() == m_images.size());
 
-    const size_t numMatrixTLs = m_matrixTLs.size();
+    const std::size_t numMatrixTLs = m_matrixTLs.size();
     SIGHT_ASSERT(
         "Maximum number of matrix timelines is exceeded: " << numMatrixTLs << ">= " << s_MAX_MATRICES_TL,
         numMatrixTLs < s_MAX_MATRICES_TL
     );
 
     m_totalOutputMatrices = 0;
-    for(size_t i = 0 ; i < numMatrixTLs ; ++i)
+    for(std::size_t i = 0 ; i < numMatrixTLs ; ++i)
     {
-        const size_t numMatrices = m_matrices[i].size();
+        const std::size_t numMatrices = m_matrices[i].size();
         m_totalOutputMatrices += numMatrices;
     }
 
@@ -180,13 +181,13 @@ void SFrameMatrixSynchronizer::synchronize()
     core::HiResClock::HiResClockType frameTimestamp = 0;
 
     // Get timestamp for synchronization
-    std::vector<size_t> availableFramesTL;
+    std::vector<std::size_t> availableFramesTL;
 
     // If multiple TLs are set, we want to synchronize their frames together.
     // If TLs are updated, we get the one with the oldest timestamp to synchronize them.
     // In particular case, we could have only one TL updated, we still need to get frames from it.
     // Then we get the one with the newest timestamp and the other ones are not considered.
-    for(size_t i = 0 ; i != m_frameTLs.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
         core::HiResClock::HiResClockType tlTimestamp;
         {
@@ -216,7 +217,7 @@ void SFrameMatrixSynchronizer::synchronize()
                     std::remove_if(
                         availableFramesTL.begin(),
                         availableFramesTL.end(),
-                        [ = ](size_t const& idx)
+                        [ = ](std::size_t const& idx)
                     {
                         const auto frametl = m_frameTLs[idx].lock();
                         SIGHT_ASSERT("Frame TL does not exist", frametl);
@@ -236,9 +237,9 @@ void SFrameMatrixSynchronizer::synchronize()
     // Now we compute the time stamp available in the matrix timelines starting from the frame timestamp
     core::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
 
-    std::vector<size_t> availableMatricesTL;
+    std::vector<std::size_t> availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
-    for(size_t i = 0 ; i != m_matrixTLs.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_matrixTLs.size() ; ++i)
     {
         const auto tl = m_matrixTLs[i].lock();
         SIGHT_ASSERT("Matrix TL does not exist", tl);
@@ -253,7 +254,7 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             SIGHT_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
 
-            // Notify each matrices in the ith TL that they are unsychronized
+            // Notify each matrices in the ith TL that they are unsynchronized
             for(const int sendStatus : m_sendMatricesStatus[i])
             {
                 if(sendStatus != -1)
@@ -264,7 +265,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    // Skip synchzonization if nothing has changed or if the synchronizer decided to go back into the past
+    // Skip synchronization if nothing has changed or if the synchronizer decided to go back into the past
     if(matrixTimestamp <= m_lastTimestamp)
     {
         // Notify that the synchronization is skipped
@@ -274,7 +275,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
     m_lastTimestamp = matrixTimestamp;
 
-    for(size_t i = 0 ; i != m_frameTLs.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
         const auto image = m_images[i].lock();
         CSPTR(data::FrameTL::BufferType) buffer;
@@ -284,7 +285,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
             const data::Image::Size size = {frameTL->getWidth(), frameTL->getHeight(), 0};
             // Check if image dimensions have changed
-            if(size != image->getSize2() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
+            if(size != image->getSize() || frameTL->numComponents() != image->numComponents())
             {
                 m_imagesInitialized = false;
             }
@@ -322,7 +323,7 @@ void SFrameMatrixSynchronizer::synchronize()
                             "22.0"
                         );
                         // FIXME Support old FrameTL API (sight 22.0)
-                        switch(frameTL->getNumberOfComponents())
+                        switch(frameTL->numComponents())
                         {
                             case 1:
                                 format = data::Image::GRAY_SCALE;
@@ -344,9 +345,9 @@ void SFrameMatrixSynchronizer::synchronize()
 
                 image->resize(size, frameTL->getType(), format);
                 const data::Image::Origin origin = {0., 0., 0.};
-                image->setOrigin2(origin);
+                image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 1.};
-                image->setSpacing2(spacing);
+                image->setSpacing(spacing);
                 image->setWindowWidth(1);
                 image->setWindowCenter(0);
 
@@ -364,7 +365,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
         auto iter                     = image->begin<std::uint8_t>();
-        std::copy(frameBuff, frameBuff + buffer->getSize(), iter);
+        std::memcpy(&*iter, frameBuff, buffer->getSize());
 
         // Notify
         auto sig = image->signal<data::Image::BufferModifiedSignalType>(
@@ -373,8 +374,8 @@ void SFrameMatrixSynchronizer::synchronize()
         sig->asyncEmit();
     }
 
-    bool matrixFound       = false;
-    size_t syncMatricesNbr = 0;
+    bool matrixFound            = false;
+    std::size_t syncMatricesNbr = 0;
     for(const auto& tlIdx : availableMatricesTL)
     {
         CSPTR(data::MatrixTL::BufferType) buffer;
@@ -387,16 +388,16 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             auto& matrixVector = m_matrices[tlIdx];
 
-            for(size_t k = 0 ; k < matrixVector.size() ; ++k)
+            for(std::size_t k = 0 ; k < matrixVector.size() ; ++k)
             {
                 const auto matrix = matrixVector[k].lock();
                 SIGHT_ASSERT("Matrix with indices '" << tlIdx << ", " << k << "' does not exist", matrix);
 
                 const int sendStatus = m_sendMatricesStatus[tlIdx][k];
 
-                if(buffer->isPresent(k))
+                if(buffer->isPresent(static_cast<unsigned int>(k)))
                 {
-                    const auto& values = buffer->getElement(k);
+                    const auto& values = buffer->getElement(static_cast<unsigned int>(k));
                     for(std::uint8_t i = 0 ; i < 4 ; ++i)
                     {
                         for(std::uint8_t j = 0 ; j < 4 ; ++j)

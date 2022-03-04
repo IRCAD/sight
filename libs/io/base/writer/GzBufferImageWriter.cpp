@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::GzBufferImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::GzBufferImageWriter);
 
 namespace sight::io::base
 {
@@ -69,28 +69,28 @@ void GzBufferImageWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     // file is OK : process now
-    const size_t imageSizeInBytes = image->getSizeInBytes();
+    const std::size_t imageSizeInBytes = image->getSizeInBytes();
 
-    const char* ptr     = static_cast<char*>(image->getBuffer());
-    size_t writtenBytes = 0;
+    const char* ptr          = static_cast<const char*>(image->getBuffer());
+    std::size_t writtenBytes = 0;
 
-    int uncompressedbyteswrited = 0;
+    int uncompressed_bytes_written = 0;
 
     while(writtenBytes < imageSizeInBytes
-          && (uncompressedbyteswrited =
+          && (uncompressed_bytes_written =
                   gzwrite(rawFile, ptr + writtenBytes, static_cast<unsigned int>(imageSizeInBytes - writtenBytes))) > 0)
     {
-        writtenBytes += static_cast<size_t>(uncompressedbyteswrited);
+        writtenBytes += static_cast<std::size_t>(uncompressed_bytes_written);
     }
 
     gzclose(rawFile);
 
-    assert(uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes);
+    assert(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes);
 
-    if(uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes)
+    if(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes)
     {
         std::string str = "GzBufferImageWriter::write unable to write ";
         str += getFile().string();
@@ -100,7 +100,7 @@ void GzBufferImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string GzBufferImageWriter::extension()
+std::string GzBufferImageWriter::extension() const
 {
     return ".raw.gz";
 }

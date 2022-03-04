@@ -33,7 +33,7 @@ namespace action
 {
 
 /// Implements an action for show metrics about Sight factories (number of data, message and service in factories).
-class MODULE_DEBUG_CLASS_API fwMetrics : public ::sight::ui::base::IAction
+class MODULE_DEBUG_CLASS_API fwMetrics : public sight::ui::base::IAction
 {
 public:
 

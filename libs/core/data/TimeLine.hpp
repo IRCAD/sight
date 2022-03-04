@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/Object.hpp"
 #include "data/timeline/Object.hpp"
-#include <data/Object.hpp>
 
 namespace sight::data
 {
@@ -34,11 +34,11 @@ namespace sight::data
  *          associated with a timestamp. It is intended to store lightweight objects.
  */
 
-class DATA_CLASS_API TimeLine : public data::Object
+class DATA_CLASS_API TimeLine : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(TimeLine, data::Object);
+    SIGHT_DECLARE_CLASS(TimeLine, Object);
 
     typedef enum
     {
@@ -59,16 +59,16 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API TimeLine(data::Object::Key key);
+    DATA_API TimeLine(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~TimeLine();
 
     /// Push an object to the timeline
-    DATA_API virtual void pushObject(const SPTR(data::timeline::Object)& obj) = 0;
+    DATA_API virtual void pushObject(const SPTR(timeline::Object)& obj) = 0;
 
     /// Removes an object from the timeline
-    DATA_API virtual SPTR(data::timeline::Object) popObject(core::HiResClock::HiResClockType timestamp) = 0;
+    DATA_API virtual SPTR(timeline::Object) popObject(core::HiResClock::HiResClockType timestamp) = 0;
 
     /// modify an object timestamp
     DATA_API virtual void modifyTime(
@@ -79,30 +79,34 @@ public:
     /// Change an object to the specified timestamp
     DATA_API virtual void setObject(
         core::HiResClock::HiResClockType timestamp,
-        const SPTR(data::timeline::Object)& obj
+        const SPTR(timeline::Object)& obj
     ) = 0;
 
     /**
-     * @brief Return a new data::timeline::Object with the given timestamp.
+     * @brief Return a new timeline::Object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API virtual SPTR(data::timeline::Object) createObject(core::HiResClock::HiResClockType timestamp)
-    = 0;
+    DATA_API virtual SPTR(timeline::Object) createObject(core::HiResClock::HiResClockType timestamp) = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param timestamp timestamp used to find the closest object
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API virtual CSPTR(data::timeline::Object) getClosestObject(
+    DATA_API virtual CSPTR(timeline::Object) getClosestObject(
         core::HiResClock::HiResClockType timestamp,
         DirectionType direction = BOTH
     ) const = 0;
 
     /// Return the object with the specified timestamp
-    DATA_API virtual CSPTR(data::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
-    const = 0;
+    DATA_API virtual CSPTR(timeline::Object) getObject(core::HiResClock::HiResClockType timestamp) const = 0;
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const TimeLine& other) const noexcept;
+    DATA_API bool operator!=(const TimeLine& other) const noexcept;
+    /// @}
 
 protected:
 

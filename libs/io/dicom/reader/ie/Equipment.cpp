@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace ie
 
 Equipment::Equipment(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Equipment::sptr& equipment,
     const core::log::Logger::sptr& logger,
@@ -62,7 +62,7 @@ Equipment::~Equipment()
 void Equipment::readGeneralEquipmentModule()
 {
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Institution Name - Type 3
     const std::string& institutName =

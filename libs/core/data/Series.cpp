@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,20 +23,20 @@
 #include "data/Series.hpp"
 
 #include "data/Equipment.hpp"
+#include "data/Exception.hpp"
 #include "data/Patient.hpp"
+#include "data/registry/macros.hpp"
 #include "data/Study.hpp"
-#include <data/Exception.hpp>
-#include <data/registry/macros.hpp>
 
 SIGHT_REGISTER_DATA(sight::data::Series)
 
 namespace sight::data
 {
 
-Series::Series(data::Object::Key) :
-    m_patient(data::Patient::New()),
-    m_study(data::Study::New()),
-    m_equipment(data::Equipment::New())
+Series::Series(Object::Key) :
+    m_patient(Patient::New()),
+    m_study(Study::New()),
+    m_equipment(Equipment::New())
 {
 }
 
@@ -48,11 +48,22 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::shallowCopy(const data::Object::csptr& _source)
+void Series::from_series(const Series& source)
+{
+    DeepCopyCacheType cache;
+
+    // Use aliasing to convert the const reference to a shared_ptr without having it to try to delete the reference.
+    // This is a trick, the right solution would be to use const reference for shallowCopy and cachedDeepCopy
+    Series::cachedDeepCopy(std::shared_ptr<const Series>(std::shared_ptr<const Series> {}, &source), cache);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::shallowCopy(const Object::csptr& _source)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
+        Exception(
             "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
@@ -88,11 +99,11 @@ void Series::shallowCopy(const data::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void Series::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void Series::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
+        Exception(
             "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
@@ -101,9 +112,9 @@ void Series::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheTyp
 
     this->fieldDeepCopy(other, cache);
 
-    m_patient   = data::Object::copy(other->m_patient, cache);
-    m_study     = data::Object::copy(other->m_study, cache);
-    m_equipment = data::Object::copy(other->m_equipment, cache);
+    m_patient   = Object::copy(other->m_patient, cache);
+    m_study     = Object::copy(other->m_study, cache);
+    m_equipment = Object::copy(other->m_equipment, cache);
 
     m_instanceUID                       = other->m_instanceUID;
     m_modality                          = other->m_modality;
@@ -124,6 +135,47 @@ void Series::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheTyp
     m_performedProcedureStepEndTime     = other->m_performedProcedureStepEndTime;
     m_performedProcedureStepDescription = other->m_performedProcedureStepDescription;
     m_performedProcedureComments        = other->m_performedProcedureComments;
+}
+
+//------------------------------------------------------------------------------
+
+bool Series::operator==(const Series& other) const noexcept
+{
+    if(m_modality != other.m_modality
+       || m_instanceUID != other.m_instanceUID
+       || m_number != other.m_number
+       || m_laterality != other.m_laterality
+       || m_date != other.m_date
+       || m_time != other.m_time
+       || m_performingPhysiciansName != other.m_performingPhysiciansName
+       || m_protocolName != other.m_protocolName
+       || m_description != other.m_description
+       || m_bodyPartExamined != other.m_bodyPartExamined
+       || m_patientPosition != other.m_patientPosition
+       || m_anatomicalOrientationType != other.m_anatomicalOrientationType
+       || m_performdedProcedureStepID != other.m_performdedProcedureStepID
+       || m_performedProcedureStepStartDate != other.m_performedProcedureStepStartDate
+       || m_performedProcedureStepStartTime != other.m_performedProcedureStepStartTime
+       || m_performedProcedureStepEndDate != other.m_performedProcedureStepEndDate
+       || m_performedProcedureStepEndTime != other.m_performedProcedureStepEndTime
+       || m_performedProcedureStepDescription != other.m_performedProcedureStepDescription
+       || m_performedProcedureComments != other.m_performedProcedureComments
+       || !core::tools::is_equal(m_patient, other.m_patient)
+       || !core::tools::is_equal(m_study, other.m_study)
+       || !core::tools::is_equal(m_equipment, other.m_equipment))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Series::operator!=(const Series& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

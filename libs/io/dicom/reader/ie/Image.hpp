@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
      */
     IO_DICOM_API Image(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::Image::sptr& image,
         const core::log::Logger::sptr& logger = nullptr,
@@ -94,9 +94,9 @@ public:
 
 protected:
 
-    typedef ::boost::numeric::ublas::matrix<double, ::boost::numeric::ublas::row_major,
-                                            std::vector<double> > MatrixType;
-    typedef ::boost::numeric::ublas::vector<double> VectorType;
+    typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::row_major,
+                                          std::vector<double> > MatrixType;
+    typedef boost::numeric::ublas::vector<double> VectorType;
 
     /**
      * @brief Read image buffer
@@ -109,6 +109,7 @@ protected:
      */
     char* readImageBuffer(
         const std::vector<unsigned int>& dimensions,
+        const core::tools::Type imageType,
         const unsigned short bitsAllocated,
         const unsigned short newBitsAllocated,
         const bool performRescale
@@ -122,7 +123,7 @@ protected:
      */
     char* correctImageOrientation(
         char* buffer,
-        const std::vector<unsigned int>& dimensions,
+        std::vector<unsigned int>& dimensions,
         unsigned short bitsAllocated
     );
 

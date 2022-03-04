@@ -9,7 +9,7 @@
       - how to synchronize efficiently a video process pipeline with the video playback using SSignalGate
 
     To use this application, you must open a calibration and a video. Samples are provided in the module folder
-    of the application, `share/sight/Tuto17SimpleAR-0.4` on Linux/MacOs and `share\Tuto17SimpleAR-0.4` on Windows:
+    of the application, `share/sight/Tuto17SimpleAR` on Linux and `share\Tuto17SimpleAR` on Windows:
       - calibration.xml
       - aruco_tag.m4v
 -->
@@ -21,7 +21,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto17SimpleAR_AppCfg</id>
         <config>
 
@@ -309,7 +309,7 @@
 
             <!-- Cube displayed on top of the marker plane -->
             <service uid="cubeAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="cubeMesh" />
+                <in key="mesh" uid="cubeMesh" />
                 <config layer="default" autoresetcamera="false" materialName="cube" />
             </service>
 
@@ -337,13 +337,11 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract the first ::sight::data::Camera from the ::sight::data::CameraSeries -->
-            <service uid="extractCameraSrv" type="sight::module::data::SExtractObj" >
-                <inout key="source" uid="cameraSeries" >
-                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
-                </inout>
-                <out group="target" >
-                    <key uid="camera" /> <!-- destination -->
+            <!-- extract the first sight::data::Camera from the sight::data::CameraSeries -->
+            <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
+                <inout key="source" uid="cameraSeries" />
+                <out group="camera" >
+                    <key index="0" uid="camera" />
                 </out>
             </service>
 

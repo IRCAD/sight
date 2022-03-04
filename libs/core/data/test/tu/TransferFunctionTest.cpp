@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ void TransferFunctionTest::constructorTest()
     const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
     const bool expectedIsClamped                                        = true;
     const TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
-    const size_t expectedSize                                           = 0;
+    const std::size_t expectedSize                                      = 0;
 
     data::TransferFunction::csptr tf = data::TransferFunction::New();
 
@@ -85,7 +85,7 @@ void TransferFunctionTest::defaultTfTest()
     const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
     const bool expectedIsClamped                                        = false;
     const TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
-    const size_t expectedSize                                           = 2;
+    const std::size_t expectedSize                                      = 2;
 
     data::TransferFunction::csptr tf = data::TransferFunction::createDefaultTF();
 
@@ -144,12 +144,12 @@ void TransferFunctionTest::classicGetSetTest()
 
     // Test erase
     tf->eraseTFValue(1.0);
-    CPPUNIT_ASSERT_EQUAL((size_t) 1, tf->getTFData().size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 1, tf->getTFData().size());
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey1, tf->getTFValues()[0], 0.0);
 
     // Test clear()
     tf->clear();
-    const size_t expectedClearedSize = 0;
+    const std::size_t expectedClearedSize = 0;
     CPPUNIT_ASSERT_EQUAL(expectedClearedSize, tf->getTFData().size());
 }
 
@@ -223,7 +223,7 @@ void TransferFunctionTest::checkTFColor(data::TransferFunction::sptr tf)
     CPPUNIT_ASSERT_EQUAL(std::string("TFColor"), tf->getName());
     CPPUNIT_ASSERT_EQUAL(-200.02, tf->getWindow());
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), tf->getTFData().size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), tf->getTFData().size());
     CPPUNIT_ASSERT_EQUAL(-40.33, tf->getMinMaxTFValues().first);
     CPPUNIT_ASSERT_EQUAL(150.0, tf->getMinMaxTFValues().second);
 

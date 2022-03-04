@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -65,16 +65,16 @@ void ImageInfo::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
+    QHBoxLayout* h_layout = new QHBoxLayout();
 
     QLabel* staticText = new QLabel(QObject::tr("intensity:"));
-    hLayout->addWidget(staticText, 0, Qt::AlignVCenter);
+    h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
 
     m_valueText = new QLineEdit();
     m_valueText->setReadOnly(true);
-    hLayout->addWidget(m_valueText, 1, Qt::AlignVCenter);
+    h_layout->addWidget(m_valueText, 1, Qt::AlignVCenter);
 
-    qtContainer->setLayout(hLayout);
+    qtContainer->setLayout(h_layout);
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ void ImageInfo::updating()
 {
     const auto image = m_image.lock();
     SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
-    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+    const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
     m_valueText->setEnabled(imageIsValid);
 }
 
@@ -110,12 +110,12 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
         const auto image = m_image.lock();
         SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
 
-        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
         m_valueText->setEnabled(imageIsValid);
         if(imageIsValid)
         {
             const double* point          = info.m_worldPos;
-            const data::Image::Size size = image->getSize2();
+            const data::Image::Size size = image->getSize();
 
             if(point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
@@ -134,7 +134,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
             };
 
             bool isInside = (coords[0] < size[0] && coords[1] < size[1]);
-            if(image->getNumberOfDimensions() < 3)
+            if(image->numDimensions() < 3)
             {
                 isInside = (isInside && coords[2] == 0);
             }
@@ -152,7 +152,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
                 return;
             }
 
-            const auto dumpLock = image->lock();
+            const auto dumpLock = image->dump_lock();
 
             const std::string intensity = image->getPixelAsString(coords[0], coords[1], coords[2]);
             m_valueText->setText(QString::fromStdString(intensity));

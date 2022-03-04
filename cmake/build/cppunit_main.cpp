@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2021 IRCAD France
+ * Copyright (C) 2004-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,8 +44,8 @@ public:
 
     MiniLauncher(std::filesystem::path profilePath)
     {
-        ::sight::core::runtime::init();
-        const auto& runtime = ::sight::core::runtime::Runtime::get();
+        sight::core::runtime::init();
+        const auto& runtime = sight::core::runtime::Runtime::get();
 
         const std::filesystem::path cwd = runtime.getWorkingPath();
 
@@ -59,7 +59,7 @@ public:
             throw(std::invalid_argument("<" + profilePath.string() + "> not found."));
         }
 
-        m_profile = ::sight::core::runtime::io::ProfileReader::createProfile(profilePath);
+        m_profile = sight::core::runtime::io::ProfileReader::createProfile(profilePath);
 
         m_profile->setParams(0, nullptr);
         m_profile->start();
@@ -75,7 +75,7 @@ public:
 
 private:
 
-    ::sight::core::runtime::Profile::sptr m_profile;
+    sight::core::runtime::Profile::sptr m_profile;
 };
 
 #endif
@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
     }
 
 #ifdef MODULE_TEST_PROFILE
-    MiniLauncher miniLaucher(options.profile);
+    MiniLauncher miniLauncher(options.profile);
 #endif
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;
 
-    // Add a listener that colllects test result
+    // Add a listener that collects test result
     CPPUNIT_NS::TestResultCollector result;
     controller.addListener(&result);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -300,7 +300,7 @@ void Plugin::initialize()
 
     auto meshAdp = m_appManager->addService("sight::module::viz::scene3d::adaptor::SMesh", "meshAdp", true, false);
     {
-        meshAdp->setInOut(mesh, "mesh", true);
+        meshAdp->setInput(mesh, "mesh", true);
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", "default");
         config.add("config.<xmlattr>.textureName", "textureID");
@@ -468,7 +468,7 @@ void Plugin::initialize()
         service::IService::ConfigType config;
         config.put("type.<xmlattr>.mode", "writer");
         config.put("selection.<xmlattr>.mode", "exclude");
-        config.put("addSelection.<xmlattr>.service", "sight::module::io::atoms::SWriter");
+        config.put("addSelection.<xmlattr>.service", "sight::module::io::session::SWriter");
         imageWriterSrv->configure(config);
     }
 

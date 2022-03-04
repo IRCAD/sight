@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,7 +126,7 @@ void SParameters::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QGridLayout* layout = new QGridLayout();
 
@@ -234,14 +234,14 @@ void SParameters::starting()
             std::vector<std::string> values;
             std::vector<std::string> data;
 
-            const ::boost::char_separator<char> sep(", ;");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {options, sep};
+            const boost::char_separator<char> sep(", ;");
+            const boost::tokenizer<boost::char_separator<char> > tokens {options, sep};
 
             for(const auto& token : tokens)
             {
                 //split again values separated by '='
-                const ::boost::char_separator<char> subsep("=");
-                const ::boost::tokenizer< ::boost::char_separator<char> > subtokens {token, subsep};
+                const boost::char_separator<char> subsep("=");
+                const boost::tokenizer<boost::char_separator<char> > subtokens {token, subsep};
                 auto it = subtokens.begin();
 
                 if(it != subtokens.end())
@@ -350,7 +350,7 @@ void SParameters::starting()
 
 void SParameters::updating()
 {
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* widget  = qtContainer->getQtContainer();
 
     service::IService::ConfigType config               = this->getConfigTree();
@@ -536,7 +536,7 @@ void SParameters::onColorButton()
     QObject* sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -798,7 +798,7 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
     if(checkbox)
     {
         int value = checkbox->property("defaultValue").toInt();
-        checkbox->setCheckState(::Qt::CheckState(value));
+        checkbox->setCheckState(Qt::CheckState(value));
 
         const QString key = checkbox->property("key").toString();
         if(!m_blockSignals)
@@ -1020,7 +1020,7 @@ void SParameters::createColorWidget(
 
     layout.addWidget(colourButton, row, 2);
 
-    QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
+    QObject::connect(colourButton, &QPushButton::clicked, this, &SParameters::onColorButton);
 
     // Reset button
     if(resetButton)
@@ -1804,7 +1804,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
     }
 
     const double valueRange = max - min;
-    maxSliderValue *= valueRange;
+    maxSliderValue = int(maxSliderValue * valueRange);
 
     // The slider's maximum internal range is [0; 2 147 483 647]
     // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
@@ -1847,7 +1847,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 
 QWidget* SParameters::getParamWidget(const std::string& key)
 {
-    auto qtContainer      = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer      = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     const QWidget* widget = qtContainer->getQtContainer();
 
     QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));

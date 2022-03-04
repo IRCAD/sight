@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,21 +119,21 @@ void SOpticalFlow::updating()
             cv::resize(tempImg, tempImg, s);
         }
 
-        if(frameTL->getNumberOfComponents() == 1)
+        if(frameTL->numComponents() == 1)
         {
             grayImg = tempImg;
         }
-        else if(frameTL->getNumberOfComponents() == 3)
+        else if(frameTL->numComponents() == 3)
         {
             cv::cvtColor(tempImg, grayImg, cv::COLOR_RGB2GRAY);
         }
-        else if(frameTL->getNumberOfComponents() == 4)
+        else if(frameTL->numComponents() == 4)
         {
             cv::cvtColor(tempImg, grayImg, cv::COLOR_RGBA2GRAY);
         }
         else
         {
-            SIGHT_FATAL("Wrong type of image (nb of components = " << frameTL->getNumberOfComponents() << ").");
+            SIGHT_FATAL("Wrong type of image (nb of components = " << frameTL->numComponents() << ").");
         }
     }
 
@@ -177,7 +177,7 @@ void SOpticalFlow::updating()
             // Check if flow for feature 'index' has been found.
             // Opencv doc for 'status' vector: Each element of the vector is set to 1 if
             // the flow for the corresponding features has been found, otherwise, it is set to 0.
-            if(status[static_cast<size_t>(index)])
+            if(status[static_cast<std::size_t>(index)])
             {
                 cornersDiff = m_lastCorners.at<cv::Vec2f>(index) - currentCorners.at<cv::Vec2f>(index);
                 RMS        +=

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,18 +108,15 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(data::Matrix4);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Vector);
 
-//Not implemented !?
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::Edge);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::Node);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::Object);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::Port);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::ProcessObject);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::ReconstructionTraits);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::ROITraits);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraits);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraitsDictionary);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::Tag);
-//    __FWDATA_UT_FIELD_COPY_MACRO(data::location::MultiFiles);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::Edge);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::Node);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::Port);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::ProcessObject);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::ReconstructionTraits);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::ROITraits);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraits);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraitsDictionary);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::Tag);
 }
 
 //-----------------------------------------------------------------------------

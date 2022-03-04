@@ -1,13 +1,13 @@
 <plugin id="ExDump" >
 
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::session" />
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::memory" />
     <requirement id="sight::module::ui::qt" />
 
     <!-- This example allows to test the different dump policy. -->
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExDump_AppCfg</id>
         <config>
 
@@ -165,7 +165,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="SDBWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
+            <service uid="SDBWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
                 <inout key="data" uid="seriesDB" />
             </service>
 
@@ -182,10 +182,8 @@
                 <in key="series" uid="selections" />
                 <parentView wid="previewView" />
                 <configs>
-                    <config id="2DSimpleConfig" type="sight::data::ImageSeries" >
-                        <extract path="@image" pattern="imageID" />
-                    </config>
-                    <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />
+                    <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
+                    <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
                 </configs>
             </service>
 

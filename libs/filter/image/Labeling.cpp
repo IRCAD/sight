@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,8 +32,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/String.hpp>
 
@@ -61,12 +60,12 @@ struct LabelingFilter
         typedef itk::Image<PIXELTYPE, 3> ImageType;
         typedef itk::Image<std::uint8_t, 3> BinaryImageType;
         typename ImageType::Pointer itkImage;
-        itkImage = io::itk::itkImageFactory<ImageType>(params.m_inputImage);
+        itkImage = io::itk::moveToItk<ImageType>(params.m_inputImage);
 
         BinaryImageType::Pointer out;
         out = filter::image::labeling<PIXELTYPE, 3>(itkImage, params.m_numLabels);
 
-        io::itk::dataImageFactory<BinaryImageType>(out, params.m_outputImage);
+        io::itk::moveFromItk<BinaryImageType>(out, params.m_outputImage);
     }
 };
 
@@ -94,14 +93,14 @@ data::Image::sptr labeling(data::Image::sptr image, unsigned int numLabels)
 
 //------------------------------------------------------------------------------
 
-// Gets centroids of shapes from a labelised image and adds them as a 'landmark' field to it.
+// Gets centroids of shapes from a labelled image and adds them as a 'landmark' field to it.
 struct LabelImageFilter
 {
     struct Parameters
     {
         data::Image::sptr i_image;
         std::vector<data::PointList::sptr> i_lPointListCentroids;
-        std::vector<std::vector<size_t> > i_lPointListLabels;
+        std::vector<std::vector<std::size_t> > i_lPointListLabels;
     };
     //------------------------------------------------------------------------------
 
@@ -110,17 +109,17 @@ struct LabelImageFilter
     {
         data::Image::sptr image      = params.i_image;
         const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", image->getNumberOfDimensions() == dimension);
-        typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
-        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>(image);
+        SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
+        typedef typename itk::Image<PIXELTYPE, dimension> InputImageType;
+        typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(image);
 
         typedef PIXELTYPE LabelType;
-        typedef ::itk::Image<LabelType, dimension> OutputImageType;
-        typedef ::itk::ShapeLabelObject<LabelType, dimension> ShapeLabelObjectType;
-        typedef ::itk::LabelMap<ShapeLabelObjectType> LabelMapType;
+        typedef itk::Image<LabelType, dimension> OutputImageType;
+        typedef itk::ShapeLabelObject<LabelType, dimension> ShapeLabelObjectType;
+        typedef itk::LabelMap<ShapeLabelObjectType> LabelMapType;
 
         // Extract shapes
-        typedef typename ::itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType> I2LType;
+        typedef typename itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType> I2LType;
 
         typename I2LType::Pointer i2l = I2LType::New();
         i2l->SetInput(itkInputImage);
@@ -136,13 +135,13 @@ struct LabelImageFilter
 
             for(unsigned int n = 1 ; n <= labelMap->GetNumberOfLabelObjects() ; ++n)
             {
-                std::vector<size_t> findPlanes;
-                size_t plane;
+                std::vector<std::size_t> findPlanes;
+                std::size_t plane;
                 for(plane = 0 ; plane < params.i_lPointListLabels.size() ; ++plane)
                 {
-                    std::vector<size_t> currentPlane = params.i_lPointListLabels.at(plane);
+                    std::vector<std::size_t> currentPlane = params.i_lPointListLabels.at(plane);
 
-                    for(size_t labelInPlane = 0 ; labelInPlane < currentPlane.size() ; ++labelInPlane)
+                    for(std::size_t labelInPlane = 0 ; labelInPlane < currentPlane.size() ; ++labelInPlane)
                     {
                         if(currentPlane.at(labelInPlane) == n)
                         {
@@ -162,7 +161,7 @@ struct LabelImageFilter
 
                     newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
 
-                    for(size_t idFindPlanes = 0 ; idFindPlanes < findPlanes.size() ; ++idFindPlanes)
+                    for(std::size_t idFindPlanes = 0 ; idFindPlanes < findPlanes.size() ; ++idFindPlanes)
                     {
                         data::PointList::sptr planePointList =
                             params.i_lPointListCentroids.at(findPlanes.at(idFindPlanes));
@@ -171,7 +170,6 @@ struct LabelImageFilter
                         std::stringstream labelName;
                         labelName << n;
                         data::String::sptr label = data::String::New(labelName.str());
-                        //newPoint->setField( data::fieldHelper::Image::m_labelId, label );
 
                         planePointList->getPoints().push_back(newPoint);
                     }
@@ -182,9 +180,7 @@ struct LabelImageFilter
         else
         {
             //get landmarks
-            data::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
-            data::PointList::sptr landmarks =
-                image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+            data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
 
             SIGHT_ASSERT("landmarks not instanced", landmarks);
             landmarks->getPoints().clear();
@@ -204,11 +200,10 @@ struct LabelImageFilter
                 // append to point the label
                 std::stringstream labelName;
                 labelName << n;
-                data::String::sptr label = data::String::New(labelName.str());
-                newPoint->setField(data::fieldHelper::Image::m_labelId, label);
+                newPoint->setLabel(labelName.str());
             }
 
-            image->setField("ShowLandmarks", data::Boolean::New(true));
+            data::helper::MedicalImage::setLandmarksVisibility(*image, true);
         }
     }
 };
@@ -218,7 +213,7 @@ struct LabelImageFilter
 void computeCentroids(
     data::Image::sptr image,
     std::vector<data::PointList::sptr> pointListCentroids,
-    std::vector<std::vector<size_t> > pointListLabels
+    std::vector<std::vector<std::size_t> > pointListLabels
 )
 {
     // Preparing the parameters for ITK

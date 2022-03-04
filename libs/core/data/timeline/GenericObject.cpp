@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ GenericObjectBase::GenericObjectBase(
     unsigned int maxElementNum,
     core::HiResClock::HiResClockType timestamp,
     BufferDataType buffer,
-    size_t size,
+    std::size_t size,
     DeleterType d
 ) :
     Buffer(timestamp, buffer, size, d),
@@ -84,7 +84,7 @@ unsigned int GenericObjectBase::getMaxElementNum() const
 
 //-----------------------------------------------------------------------------
 
-size_t GenericObjectBase::getElementSize() const
+std::size_t GenericObjectBase::getElementSize() const
 {
     return m_size / m_maxElementNum;
 }

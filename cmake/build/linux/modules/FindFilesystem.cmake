@@ -96,6 +96,8 @@ Using `find_package(Filesystem)` with no component arguments:
 
 #]=======================================================================]
 
+# cmake-lint: disable=C0103
+
 cmake_policy(SET CMP0057 NEW)
 
 if(TARGET std::filesystem)
@@ -179,17 +181,22 @@ mark_as_advanced(CXX_FILESYSTEM_NAMESPACE)
 
 set(_found FALSE)
 
-if( ${_have_fs} )
+if(${_have_fs})
 
     # We have some filesystem library available. Do link checks
-    string(CONFIGURE [[
+    string(
+        CONFIGURE
+            [[
         #include <@CXX_FILESYSTEM_HEADER@>
 
         int main() {
             auto cwd = @CXX_FILESYSTEM_NAMESPACE@::current_path();
             return static_cast<int>(cwd.string().size());
         }
-    ]] code @ONLY)
+    ]]
+            code
+        @ONLY
+    )
 
     # Try to compile a simple filesystem program without any linker flags
     check_cxx_source_compiles("${code}" CXX_FILESYSTEM_NO_LINK_NEEDED)
@@ -232,5 +239,3 @@ set(Filesystem_FOUND ${_found} CACHE BOOL "TRUE if we can compile and link a pro
 if(Filesystem_FIND_REQUIRED AND NOT Filesystem_FOUND)
     message(FATAL_ERROR "Cannot Compile simple program using std::filesystem")
 endif()
-
-

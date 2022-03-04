@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::TagValueInstanceRemoveSplitterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::TagValueInstanceRemoveSplitterTest);
 
 namespace sight::filter::dicom
 {
@@ -77,7 +77,7 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -94,11 +94,11 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     filter->setTag(DCM_AcquisitionNumber);
     filter->setTagValue("1");
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 
     // Check number of instances in series
-    CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeries->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(275), dicomSeries->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

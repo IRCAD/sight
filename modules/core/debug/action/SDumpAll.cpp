@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ SDumpAll::~SDumpAll() noexcept
 
 void SDumpAll::updating()
 {
-    size_t nbBuffDumped = 0;
+    std::size_t nbBuffDumped = 0;
     core::memory::BufferManager::BufferInfoMapType buffInfoMap;
     core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if(buffManager)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ DicomSRNumNode::~DicomSRNumNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::write(::gdcm::DataSet& dataset) const
+void DicomSRNumNode::write(gdcm::DataSet& dataset) const
 {
     io::dicom::container::sr::DicomSRNode::write(dataset);
 
@@ -65,18 +65,18 @@ void DicomSRNumNode::write(::gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet& dataset) const
+void DicomSRNumNode::writeMeasuredValueSequence(gdcm::DataSet& dataset) const
 {
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
-    ::gdcm::Item item;
+    gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
+    gdcm::Item item;
     item.SetVLToUndefined();
-    ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+    gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Add numerical value - Type 1
     io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0040, 0xa30a>(&m_numValue, 1, itemDataset);
 
     // Add measured units code sequence - Type 1
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence =
+    gdcm::SmartPointer<gdcm::SequenceOfItems> codeSequence =
         this->createConceptNameCodeSequence(m_measurementUnits);
     io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(codeSequence, itemDataset);
 

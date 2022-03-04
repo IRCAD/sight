@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,8 +60,9 @@ void Os::getSharedLibraryPath()
     const auto cwd = fs::current_path();
 
     {
-        const auto execPath = ::boost::dll::program_location().remove_filename();
+        const auto execPath = boost::dll::program_location().remove_filename();
 
+        // cspell: disable
 #if defined(WIN32)
         const auto actualPath       = core::tools::os::getSharedLibraryPath("sight_core.dll");
         const fs::path expectedPath = fs::path(execPath.string()) / "sight_core.dll";
@@ -82,18 +83,21 @@ void Os::getSharedLibraryPath()
 
     // Now load that library and check that we find it
 #if defined(WIN32)
+    const auto lib = "zstd";
     #if defined(_DEBUG)
-    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "campd.dll");
+    const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstdd.dll");
     #else
-    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "camp.dll");
+    const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstd.dll");
     #endif
 #else
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";
+    const auto lib     = "boost_date_time";
+    const auto libPath = fs::path(BOOST_LIB_DIR) / "libboost_date_time.so.1.74.0";
 #endif
-    auto handle = ::boost::dll::shared_library(campPath.string());
-    CPPUNIT_ASSERT_MESSAGE("Could not load camp for testing", handle);
+    auto handle = boost::dll::shared_library(libPath.string());
+    CPPUNIT_ASSERT_MESSAGE("Could not load library for testing", handle);
 
-    CPPUNIT_ASSERT_EQUAL(campPath, core::tools::os::getSharedLibraryPath("camp"));
+    CPPUNIT_ASSERT_EQUAL(libPath, core::tools::os::getSharedLibraryPath(lib));
+    // cspell: enable
 }
 
 } // namespace ut

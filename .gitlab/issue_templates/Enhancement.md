@@ -1,17 +1,21 @@
 ### Description
 
-(Include problem, use cases, benefits, and/or goals)
+_Describe briefly the existing feature and what is the enhancement, use cases, benefits, and goals_
 
 ### Proposal
 
-(How you will do it) 
+_Optional section to give some functional or technical hints_
 
-### Outcomes
+### Functional specifications
 
-(What could be the benefits (readability, performance, ...)
+_Workflow, UX/UI design, screenshots, etc..._
 
-### Links / references
+### Technical specifications
 
-(Any references)
+_Details of the implementation_
 
-/label ~"Type:enhancement"
+### Test plan
+
+_Describe how you will verify that the implementation fulfils the specifications_
+
+/label ~"Type::enhancement" ~"Priority::medium"

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "WorkerQtTest.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
@@ -37,6 +36,7 @@
 #include <QTimer>
 
 #include <functional>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::qt::ut::WorkerQtTest);
@@ -93,13 +93,13 @@ void WorkerQtTest::setUp()
     // Set up context before running a test.
     static char arg1[] = "WorkerQtTest";
 #if defined(__linux)
-    static char arg2[]  = "-platform";
-    static char arg3[]  = "offscreen";
-    static char* argv[] = {arg1, arg2, arg3, nullptr};
-    static int argc     = 3;
+    static char arg2[] = "-platform";
+    static char arg3[] = "offscreen";
+    char* argv[]       = {arg1, arg2, arg3, nullptr};
+    int argc           = 3;
 #else
-    static char* argv[] = {arg1, 0};
-    static int argc     = 1;
+    char* argv[] = {arg1, 0};
+    int argc     = 1;
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
@@ -122,7 +122,6 @@ void WorkerQtTest::tearDown()
 {
     // Clean up after the test run.
     m_worker.reset();
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 
@@ -236,7 +235,7 @@ static CppUnit::Exception exception;
 void runBasicTimerTest(
     TestHandler& handler,
     const core::thread::Timer::sptr& timer,
-    core::thread::Timer::TimeDurationType duration
+    core::thread::Timer::TimeDurationType
 )
 {
     timer->start();
@@ -256,7 +255,7 @@ void oneShotBasicTimerTest(
     int& i,
     TestHandler& handler,
     const core::thread::Timer::sptr& timer,
-    core::thread::Timer::TimeDurationType duration,
+    core::thread::Timer::TimeDurationType,
     const core::thread::Worker::sptr& worker
 )
 {

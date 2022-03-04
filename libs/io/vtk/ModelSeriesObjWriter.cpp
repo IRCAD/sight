@@ -47,7 +47,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::ModelSeriesObjWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ModelSeriesObjWriter);
 
 namespace sight::io::vtk
 {
@@ -138,7 +138,7 @@ void ModelSeriesObjWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ModelSeriesObjWriter::extension()
+std::string ModelSeriesObjWriter::extension() const
 {
     return ".obj";
 }

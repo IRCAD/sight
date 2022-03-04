@@ -27,7 +27,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::PowellOptimizerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::PowellOptimizerTest);
 
 namespace sight::filter::image
 {

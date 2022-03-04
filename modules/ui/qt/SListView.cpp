@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ SListView::~SListView() noexcept
 
 bool SListView::eventFilter(QObject* watched, QEvent* event)
 {
-    // filter suppr key release event in order to delete the current selected item of the list.
+    // filter "del" key release event in order to delete the current selected item of the list.
     if(watched == m_listWidget && event->type() == QEvent::KeyRelease)
     {
         QKeyEvent* eventKey = static_cast<QKeyEvent*>(event);
@@ -94,7 +94,7 @@ void SListView::configuring()
 void SListView::starting()
 {
     this->create();
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     layout->setObjectName("SListViewLayout");

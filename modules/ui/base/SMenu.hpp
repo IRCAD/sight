@@ -32,11 +32,11 @@ namespace sight::module::ui::base
 /**
  * @brief   Defines the default menu for standard application
  */
-class MODULE_UI_BASE_CLASS_API SMenu : public ::sight::ui::base::IMenu
+class MODULE_UI_BASE_CLASS_API SMenu : public sight::ui::base::IMenu
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMenu, ::sight::ui::base::IMenu);
+    SIGHT_DECLARE_SERVICE(SMenu, sight::ui::base::IMenu);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SMenu() noexcept;
@@ -55,7 +55,7 @@ protected:
 
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="ui::base::IMenuBar" impl="::sight::module::ui::base::SMenuBar"
+       <service uid="menuBar" type="ui::base::IMenuBar" impl="sight::module::ui::base::SMenuBar"
      * autoConnect="false"
      *>
           <gui>

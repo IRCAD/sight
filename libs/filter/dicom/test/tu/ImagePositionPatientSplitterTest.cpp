@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
 
 namespace sight::filter::dicom
 {
@@ -76,7 +76,7 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -95,13 +95,13 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     filter = filter::dicom::factory::New("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesContainer.size());
     data::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
     data::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
 
     // Check number of instances in series
-    CPPUNIT_ASSERT_EQUAL(size_t(233), dicomSeriesA->getDicomContainer().size());
-    CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeriesB->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(233), dicomSeriesA->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(275), dicomSeriesB->getDicomContainer().size());
 }
 
 //-----------------------------------------------------------------------------
@@ -109,10 +109,9 @@ void ImagePositionPatientSplitterTest::simpleApplication()
 void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-
+    // cspell: ignore SCRAT
     const std::string filename       = "04-CT-DICOM_SCRAT_CORRUPTED/46140000";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
-
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
@@ -124,8 +123,9 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
 
-    // Horos seems also to think that there is two series in this dicom
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
+    // There is two series in this dicom
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(0));
@@ -135,14 +135,14 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     // which is the opposite on windows (???)... Assuming the Dicom is file based, the way the OS sorts files may
     // explain the different behaviors. We should investigate this ....
     // The test is written to assume the one of 304 elements is taken.
-    if(dicomSeries->getNumberOfInstances() != 304)
+    if(dicomSeries->numInstances() != 304)
     {
         dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(1));
         CPPUNIT_ASSERT(dicomSeries);
     }
 
     // Just in case we load the wrong series or the data is corrupted.
-    CPPUNIT_ASSERT_EQUAL(size_t(304), dicomSeries->getNumberOfInstances());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(304), dicomSeries->numInstances());
 
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
@@ -158,7 +158,7 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     filter = filter::dicom::factory::New("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(37), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(37), dicomSeriesContainer.size());
 }
 
 //------------------------------------------------------------------------------

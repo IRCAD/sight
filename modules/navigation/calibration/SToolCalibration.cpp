@@ -92,15 +92,15 @@ void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 
     data::Matrix4::sptr calibrationMatrix = data::Matrix4::New();
 
-    m_matrixCalibration = calibrationMatrix;
-
     data::Matrix4::sptr centerMatrixNoRot = data::Matrix4::New();
 
     geometry::vision::helper::calibratePointingTool(matricesVector.get_shared(), calibrationMatrix, centerMatrixNoRot);
 
+    m_matrixCalibration = calibrationMatrix;
+
     if(m_hasOutputCenter)
     {
-        m_matrixCalibration = centerMatrixNoRot;
+        m_matrixCenter = centerMatrixNoRot;
     }
 }
 

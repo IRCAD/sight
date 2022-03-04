@@ -32,7 +32,7 @@
 
 #include <filesystem>
 
-fwGuiRegisterMacro(::sight::ui::qml::dialog::MessageDialog, ::sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qml::dialog::MessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 namespace sight::ui::qml
 {
@@ -108,13 +108,13 @@ void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void MessageDialog::addCustomButton(const std::string&, std::function<void()>)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button)
+void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons)
 {
 }
 

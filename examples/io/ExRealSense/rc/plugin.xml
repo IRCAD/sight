@@ -5,8 +5,8 @@
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
-    
-    <extension implements="::sight::service::extension::AppConfig" >
+
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRealSense_AppCgf</id>
         <config>
 
@@ -499,18 +499,17 @@
                 </inout>
             </service>
 
-            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
-             <service uid="extractCameraSrv" type="sight::module::data::SExtractObj" >
-                 <inout key="source" uid="RGBDCameraSeries" autoConnect="true" >
-                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
-                     <extract from="@cameras.1" /> <!-- Camp path of the first camera in cameraSeries -->
-                     <extract from="@extrinsic_matrices.1" />
-                 </inout>
-                 <out group="target" >
-                     <key uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
-                     <key uid="RGBCamera" /> <!-- Color Camera -->
-                     <key uid="depth_to_color" /> <!-- Infrared1 to Color coordinate frame -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
+             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
+                 <inout key="cameraSeries" uid="RGBDCameraSeries" autoConnect="true" />
+                 <out group="camera" >
+                     <key index="0" uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
+                     <key index="1" uid="RGBCamera" /> <!-- Color Camera -->  
                  </out>
+                <out group="extrinsic" >
+                    <key index="0" uid="depth_to_color" /> <!-- Infrared1 to Color coordinate frame -->
+                </out>
+                
              </service>
 
             <!-- ******************************* Connections ***************************************** -->

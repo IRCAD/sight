@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,9 +109,9 @@ void Profile::setParams(const Profile::ParamsContainer& params)
     m_argv = new char*[m_params.size()];
 
     // for each string, allocate memory in the character array and copy
-    for(size_t i = 0 ; i < m_params.size() ; i++)
+    for(std::size_t i = 0 ; i < m_params.size() ; i++)
     {
-        size_t paramSize = m_params[i].size();
+        std::size_t paramSize = m_params[i].size();
         m_argv[i] = new char [paramSize + 1];
 #ifndef _WIN32
         strncpy(m_argv[i], m_params[i].c_str(), paramSize);
@@ -124,7 +124,7 @@ void Profile::setParams(const Profile::ParamsContainer& params)
 
 //------------------------------------------------------------------------------
 
-void setCurrentProfile(Profile::sptr prof)
+void setCurrentProfile(Profile::sptr)
 {
 }
 

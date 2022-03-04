@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,7 +87,7 @@ void SImageSeriesReader::openLocationDialog()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(size_t i = 1 ; i < ext.size() ; i++)
+        for(std::size_t i = 1 ; i < ext.size() ; i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }
@@ -146,10 +146,10 @@ void SImageSeriesReader::info(std::ostream& _sstream)
 
 void initSeries(data::Series::sptr series)
 {
-    const std::string instanceUID        = core::tools::UUID::generateUUID();
-    const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    const std::string date               = core::tools::getDate(now);
-    const std::string time               = core::tools::getTime(now);
+    const std::string instanceUID      = core::tools::UUID::generateUUID();
+    const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+    const std::string date             = core::tools::getDate(now);
+    const std::string time             = core::tools::getTime(now);
 
     series->setModality("OT");
     series->setDate(date);

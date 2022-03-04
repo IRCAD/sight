@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -135,10 +135,10 @@ private:
     void setBoolParameter(bool _val, std::string _key);
 
     /// Defines the resolution in X.
-    size_t m_resolutionX {25u};
+    std::size_t m_resolutionX {25u};
 
     /// Defines the resolution in Y.
-    size_t m_resolutionY {25u};
+    std::size_t m_resolutionY {25u};
 
     /// Defines the depth of the US plane.
     int m_depth {132};

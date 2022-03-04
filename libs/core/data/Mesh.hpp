@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,14 +26,13 @@
 #include "data/config.hpp"
 #include "data/Exception.hpp"
 #include "data/factory/new.hpp"
-#include "data/iterator/MeshIterators.hpp"
+#include "data/iterator.hpp"
 
 #include <core/macros.hpp>
 #include <core/memory/IBuffered.hpp>
 
-#include <boost/multi_array.hpp>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Mesh));
+#include <boost/range/combine.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::data
 {
@@ -43,58 +42,22 @@ namespace sight::data
  *
  * @section Structure Structure
  *
- * The mesh structure contains some information stocked in data::Array
+ * The mesh structure contains some information stocked in Array
  *
- * - An array (m_points) which contains point coord (x,y,z)
- * - An array (m_cellTypes) which contains cell type (TRIAN or QUAD for the moment)
- * - An array (m_cellData) which contains point indexes in m_points used to create cells, 3 indexes are necessary to
- * create a triangle cell, 4 for quad cell.
- * - An array (m_cellDataOffsets) which contains indexes relative to m_cellData, to retrieve the first point necessary
- * to the cell creation.
- * And some additional arrays to store the mesh attributes (normals, texture coordinates and colors for points and
- * cells).
- *
- * \b Example:
- * - m_nbPoints = number of mesh points  * 3
- * - m_points = [ x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, ... ]
- * - m_nbCells = number of mesh cells
- * - m_cellTypes.size = m_nbCells
- * - m_cellTypes = [TRIANGLE, TRIANGLE, QUAD, QUAD, TRIANGLE ... ]
- * - m_cellDataOffsets.size = m_nbCells
- * - m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] (offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad
- * cell)
- *
- * - m_cellsDataSize = m_nbCells * <nb_points_per_cell> (m_nbCells * 3 if only triangle cell)
- * - m_cellData = [0, 1, 2, 0, 1, 3, 0, 1, 3, 5... ] ( correspond to point id )
- *
- * Get the points coordinates of the third cell:
- * @verbatim
-    m_cellTypes[2] => cell type = QUAD
-    m_cellDataOffsets[2] => index in m_cellData of cell definition = 6
-    index of p1 = m_cellData[6] = 0
-    index of p2 = m_cellData[6+1] = 1
-    index of p3 = m_cellData[6+2] = 3
-    index of p4 = m_cellData[6+3] = 5
-    p1 = [ x0=m_points[0]  y0 z0 ] ( 0 * 3 = 0 )
-    p2 = [ x1=m_points[3]  y1 z1 ] ( 1 * 3 = 3 )
-    p3 = [ x3=m_points[9]  y3 z3 ] ( 3 * 3 = 9 )
-    p4 = [ x5=m_points[15] y5 z5 ] ( 5 * 3 = 15 )
-   @endverbatim
- *
- * There is other arrays to stock normal by points, normal by edges, color by points or color by cells :
- * - Normal arrays contains normal vector (x,y,z)
- * - normals.size = number of mesh points (respc cells)
+ * - A list of arrays (m_points) which contains point attributes, such as position, normal, color and textures
+ * coordinates.
+ * - A list of arrays (m_cells) which contains cell indexes, and other cell attributes such as normal, color and
+ *  textures coordinates.
+ * *
+ * The arrays store attributes as array of structures, i.e. for the normals :
  *  -normals = [ x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, ... ]
- * - Color arrays contains RGBA colors
- * - colors.size = number of mesh points (respc cells) * 4
- * - colors = [ r0, g0, b0, a0, r1, g1, b1, a1, ... ]
  *
  * @section Usage Usage
  *
  * @subsection Allocation Allocation
  *
  * The two methods reserve() and resize() allocate the mesh arrays. The difference between the two methods is
- * that resize modifies the number of points and cells.
+ * that resize() modifies the number of points and cells.
  *
  * The pushPoint() and pushCell() methods add new points or cells, they increment the number of points/cells and
  * allocate more memory if needed. It is recommended to call reserve() method before it if you know the number of
@@ -104,55 +67,55 @@ namespace sight::data
  *
  * Example with resize(), setPoint() and setCell()
  * @code{.cpp}
-    data::Mesh::sptr mesh = data::Mesh::New();
+    Mesh::sptr mesh = Mesh::New();
 
     mesh->resize(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
     const auto lock = mesh->lock(); // prevents the buffers from being dumped on the disk
 
-    for (size_t i = 0; i < NB_POINTS; ++i)
+    for (std::size_t i = 0; i < NB_POINTS; ++i)
     {
-        const std::uint8_t val                               = static_cast<uint8_t>(i);
-        const data::Mesh::ColorValueType color[4]        = {val, val, val, val};
-        const float floatVal                                 = static_cast<float>(i);
-        const data::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-        const data::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
-        const size_t value                                   = 3*i;
+        const std::uint8_t val              = static_cast<uint8_t>(i);
+        const Mesh::color_t color[4]        = {val, val, val, val};
+        const float floatVal                = static_cast<float>(i);
+        const Mesh::normal_t normal[3]      = {floatVal, floatVal, floatVal};
+        const Mesh::texcoord_t texCoords[2] = {floatVal, floatVal};
+        const size_t value                  = 3*i;
         mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
         mesh->setPointColor(i, color);
         mesh->setPointNormal(i, normal);
         mesh->setPointTexCoord(i, texCoords);
     }
 
-    for (size_t i = 0; i < NB_CELLS; ++i)
+    for (std::size_t i = 0; i < NB_CELLS; ++i)
     {
         mesh->setCell(i, i, i+1, i+2);
 
-        const data::Mesh::ColorValueType val             = static_cast< data::Mesh::ColorValueType >(i);
-        const data::Mesh::ColorValueType color[4]        = {val, val, val, val};
+        const Mesh::color_t val             = static_cast< Mesh::color_t >(i);
+        const Mesh::color_t color[4]        = {val, val, val, val};
         const float floatVal                                 = static_cast<float>(i);
-        const data::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-        const data::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+        const Mesh::normal_t normal[3]      = {floatVal, floatVal, floatVal};
+        const Mesh::texcoord_t texCoords[2] = {floatVal, floatVal};
         mesh->setCellColor(i, color);
         mesh->setCellNormal(i, normal);
         mesh->setCellTexCoord(i, texCoords);
     }
    @endcode
  *
- * Example with reseve(), pushPoint() and pushCell()
+ * Example with reserve(), pushPoint() and pushCell()
  * @code{.cpp}
-    data::Mesh::sptr mesh = data::Mesh::New();
+    Mesh::sptr mesh = Mesh::New();
 
     mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
     const auto lock = mesh->lock();
 
-    for (size_t i = 0; i < NB_POINTS; ++i)
+    for (std::size_t i = 0; i < NB_POINTS; ++i)
     {
-        const std::uint8_t val                               = static_cast<uint8_t>(i);
-        const data::Mesh::ColorValueType color[4]        = {val, val, val, val};
-        const float floatVal                                 = static_cast<float>(i);
-        const data::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-        const data::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
-        const size_t value                                   = 3*i;
+        const std::uint8_t val              = static_cast<uint8_t>(i);
+        const Mesh::color_t color[4]        = {val, val, val, val};
+        const float floatVal                = static_cast<float>(i);
+        const Mesh::normal_t normal[3]      = {floatVal, floatVal, floatVal};
+        const Mesh::texcoord_t texCoords[2] = {floatVal, floatVal};
+        const size_t value                  = 3*i;
         const auto id =
             mesh->pushPoint(static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
         mesh->setPointColor(id, color);
@@ -160,15 +123,15 @@ namespace sight::data
         mesh->setPointTexCoord(id, texCoords);
     }
 
-    for (size_t i = 0; i < NB_CELLS; ++i)
+    for (std::size_t i = 0; i < NB_CELLS; ++i)
     {
         const auto id = mesh->pushCell(i, i+1, i+2);
 
-        const data::Mesh::ColorValueType val             = static_cast< data::Mesh::ColorValueType >(i);
-        const data::Mesh::ColorValueType color[4]        = {val, val, val, val};
+        const Mesh::color_t val             = static_cast< Mesh::color_t >(i);
+        const Mesh::color_t color[4]        = {val, val, val, val};
         const float floatVal                                 = static_cast<float>(i);
-        const data::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-        const data::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+        const Mesh::normal_t normal[3]      = {floatVal, floatVal, floatVal};
+        const Mesh::texcoord_t texCoords[2] = {floatVal, floatVal};
         mesh->setCellColor(id, color);
         mesh->setCellNormal(id, normal);
         mesh->setCellTexCoord(id, texCoords);
@@ -177,133 +140,126 @@ namespace sight::data
  *
  * @subsection Iterators Iterators
  *
- * To access the mesh points and cells, you should use the following iterators:
- *  - data::iterator::PointIterator: to iterate through mesh points
- *  - data::iterator::ConstPointIterator: to iterate through mesh points read-only
- *  - data::iterator::CellIterator: to iterate through mesh cells
- *  - data::iterator::ConstCellIterator: to iterate through mesh cells read-only
+ * To access the mesh points and cells, it is recommended to use iterators because they are the most efficient.
+ * Our iterators can loop over a single array or multiple arrays, thanks to boost::zip_iterator.
  *
- * Example to iterate through points:
+ * Example to iterate over points:
  * @code{.cpp}
-    data::Mesh::sptr mesh = data::Mesh::New();
-    mesh->resize(25, 33, data::Mesh::CellType::TRIANGLE);
-    auto iter    = mesh->begin< data::iterator::PointIterator >();
-    const auto iterEnd = mesh->end< data::iterator::PointIterator >();
-    float p[3] = {12.f, 16.f, 18.f};
+   Mesh::sptr mesh = Mesh::New();
+   mesh->resize(25, 33, Mesh::CellType::TRIANGLE);
 
-   for (; iter != iterEnd; ++iter)
+   float p[3] = {12.f, 16.f, 18.f};
+
+   for (auto& pt = mesh->range<iterator::point::xyz>())
    {
-       iter->point->x = p[0];
-       iter->point->y = p[1];
-       iter->point->z = p[2];
+       pt.x = p[0];
+       pt.y = p[1];
+       pt.z = p[2];
    }
    @endcode
  *
- * Example to iterate through cells:
+ * Example to iterate over cells:
  *
  * @code{.cpp}
-    data::Mesh::sptr mesh = data::Mesh::New();
-    mesh->resize(25, 33, data::Mesh::CellType::TRIANGLE);
-    auto iter         = mesh->begin< data::iterator::ConstCellIterator >();
-    const auto endItr = mesh->end< data::iterator::ConstCellIterator >();
+    Mesh::sptr mesh = Mesh::New();
+    mesh->resize(25, 33, Mesh::CellType::TRIANGLE);
 
-    auto itrPt = mesh->begin< data::iterator::ConstPointIterator >();
+    auto itrPt = mesh->begin<iterator::point::xyz>();
     float p[3];
 
-    for(; iter != endItr; ++iter)
+    for(const auto& cell : mesh->range<iterator::cell::triangle>())
     {
-        const auto nbPoints = iter->nbPoints;
-
-        for(size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < 3 ; ++i)
         {
-            auto pIdx = static_cast< data::iterator::ConstCellIterator::difference_type >(iter->pointIdx[i]);
+            const auto pIdx = cell.pt[i];
 
-            data::iterator::ConstPointIterator pointItr(itrPt + pIdx);
-            p[0] = pointItr->point->x;
-            p[1] = pointItr->point->y;
-            p[2] = pointItr->point->z;
+            auto& pointItr(itrPt + pIdx);
+            p[0] = pointItr->x;
+            p[1] = pointItr->y;
+            p[2] = pointItr->z;
         }
     }
    @endcode
  *
- * pushCell() and setCell() may not be very efficient, you can use CellIterator to define the cell. But be careful to
- * properly define all the cell attributes.
+ * pushCell() and setCell() are not very efficient, you can use CellIterator to define the cells if speed is a concern.
  *
  * Example of defining cells using iterators
  *
  * @code{.cpp}
-    data::Mesh::sptr mesh = data::Mesh::New();
-    mesh->resize(25, 33, data::Mesh::CellType::QUAD);
-    auto it          = mesh->begin< data::iterator::CellIterator >();
-    const auto itEnd = mesh->end< data::iterator::CellIterator >();
+    Mesh::sptr mesh = Mesh::New();
+    mesh->resize(25, 33, Mesh::CellType::QUAD);
+    const auto cellType = Mesh::CellType::QUAD;
+    const std::size_t nbPointPerCell = 4;
 
-    const auto cellType = data::Mesh::CellType::QUAD;
-    const size_t nbPointPerCell = 4;
-
-    size_t count = 0;
-    for (; it != itEnd; ++it)
+    std::size_t count = 0;
+    for(const auto& cell : mesh->range<iterator::cell::quad>())
     {
-        // define the cell type and cell offset
-        (*it->type)   = cellType;
-        (*it->offset) = nbPointPerCell*count;
-
-        // /!\ define the next offset to be able to iterate through point indices
-        if (it != itEnd-1)
-        {
-            (*(it+1)->offset) = nbPointPerCell*(count+1);
-        }
-
         // define the point indices
-        for (size_t i = 0; i < 4; ++i)
+        for (std::size_t i = 0; i < 4; ++i)
         {
-            data::Mesh::CellId ptIdx = val;
-            it->pointIdx[i] = ptIdx;
+            cell.pt[i] = count++;
         }
     }
    @endcode
  *
- * It is also possible to use the iterators as a standard std iterator, for example with std::copy.
+ * The iterators are compatible with all STL algorithm functions, for example std::copy.
  *
  * @code{.cpp}
-    void copyPoints(const data::Mesh::csptr& origin, const data::Mesh::sptr& dest)
+    void copyPoints(const Mesh& origin, const Mesh& dest)
     {
         SIGHT_ASSERT("Meshes must have the same number of points",
-                   origin->getNumberOfPoints() == dest->getNumberOfPoints());
+                   origin.numPoints() == dest.numPoints());
 
-        auto origIt = origin->begin< data::Mesh::ConstPointIterator >();
-        auto origEnd = origin->end< data::Mesh::ConstPointIterator >();
-        auto destIt = dest->begin< data::Mesh::PointIterator >();
+        auto origIt = origin.begin< Mesh::iterator::xyz >();
+        auto origEnd = origin.end< Mesh::iterator::xyz >();
+        auto destIt = dest.begin< Mesh::iterator::xyz >();
         std::copy(origIt, origEnd, dest);
     }
    @endcode
+ *
+ * Last but not least, it is also possible to get an iterator over multiple attributes using the zip_range()
+ * function. Coupled with C++17 structured bindings, this makes such loops fairly elegant.
+ *
+ * @code{.cpp}
+    uint32_t count = 0;
+    for(auto&& [p, n, c, uv] : mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>())
+    {
+        p.x = static_cast<float>(3 * count);
+        p.y = static_cast<float>(3 * count + 1);
+        p.z = static_cast<float>(3 * count + 2);
+
+        n.nx = static_cast<float>(3 * count + 1);
+        n.ny = static_cast<float>(3 * count + 2);
+        n.nz = static_cast<float>(3 * count + 3);
+
+        c.r = static_cast<std::uint8_t>(4 * count);
+        c.g = static_cast<std::uint8_t>(4 * count + 1);
+        c.b = static_cast<std::uint8_t>(4 * count + 2);
+        c.a = static_cast<std::uint8_t>(4 * count + 3);
+
+        uv.u = static_cast<float>(2 * count);
+        uv.v = static_cast<float>(2 * count + 1);
+ ++count;
+    }
+ * @endcode
  */
-class DATA_CLASS_API Mesh : public data::Object,
+class DATA_CLASS_API Mesh : public Object,
                             public core::memory::IBuffered
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Mesh, data::Object, data::factory::New<Mesh>);
+    SIGHT_DECLARE_CLASS(Mesh, Object, factory::New<Mesh>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Mesh))
-
-    typedef std::map<std::string, data::Array::sptr> ArrayMapType;
-
-    [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
+    /// Stores a cell type.
+    enum class CellType : std::uint8_t
     {
-        NO_CELL = 0,
-        POINT,
-        EDGE,
+        POINT = 0,
+        LINE,
         TRIANGLE,
         QUAD,
-        POLY,
-        TETRA
-    } CellTypesEnum;
-
-    [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
-    {
-        RGB  = 3,
-        RGBA = 4
-    } ColorArrayTypes;
+        TETRA,
+        _SIZE
+    };
 
     enum class Attributes : std::uint8_t
     {
@@ -316,38 +272,42 @@ public:
         CELL_TEX_COORDS  = 1 << 6
     };
 
-    typedef data::iterator::CellType CellType;
+    using position_t = float;
+    using color_t    = std::uint8_t;
+    using normal_t   = float;
+    using texcoord_t = float;
 
-    typedef float PointValueType;
-    typedef std::uint8_t ColorValueType;
-    typedef float NormalValueType;
-    typedef float TexCoordValueType;
-    typedef std::uint8_t CellTypes;
+    using cell_t  = iterator::cell_t;
+    using point_t = iterator::point_t;
+    using size_t  = iterator::Size;
 
-    typedef iterator::PointIterator PointIterator;
-    typedef iterator::ConstPointIterator ConstPointIterator;
-    typedef iterator::CellIterator CellIterator;
-    typedef iterator::ConstCellIterator ConstCellIterator;
+    /**
+     * @name Signals
+     * @{
+     */
+    using signal_t = core::com::Signal<void ()>;
 
-    typedef data::iterator::CellId CellId;
-    typedef data::iterator::PointId PointId;
-    typedef data::iterator::Size Size;
+    /// Key in m_signals map of signal m_sigVertexModified
+    DATA_API static const core::com::Signals::SignalKeyType s_VERTEX_MODIFIED_SIG;
+    DATA_API static const core::com::Signals::SignalKeyType s_POINT_COLORS_MODIFIED_SIG;
+    DATA_API static const core::com::Signals::SignalKeyType s_CELL_COLORS_MODIFIED_SIG;
+    DATA_API static const core::com::Signals::SignalKeyType s_POINT_NORMALS_MODIFIED_SIG;
+    DATA_API static const core::com::Signals::SignalKeyType s_CELL_NORMALS_MODIFIED_SIG;
+    DATA_API static const core::com::Signals::SignalKeyType s_POINT_TEX_COORDS_MODIFIED_SIG;
+    DATA_API static const core::com::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
+    /// @}
 
-    typedef std::vector<core::memory::BufferObject::Lock> LocksType;
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Mesh(data::Object::Key key);
+    DATA_API Mesh(Object::Key key);
 
     /// Destructor
     DATA_API ~Mesh() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Allocate Mesh memory
@@ -360,42 +320,18 @@ public:
      * @param nbCells number of cells to allocate
      * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
      *        mix different types of cells in the same mesh, you should use
-     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
+     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
      * @return Return the allocated memory
      *
-     * @throw Raise data::Exception if the memory can not be allocated.
+     * @throw Raise Exception if the memory can not be allocated.
      */
-    DATA_API size_t reserve(
-        Size nbPts,
-        Size nbCells,
+    DATA_API std::size_t reserve(
+        Mesh::size_t nbPts,
+        Mesh::size_t nbCells,
         CellType cellType    = CellType::TRIANGLE,
-        Attributes arrayMask = Attributes::NONE
-    );
-
-    /**
-     * @brief Allocate Mesh memory
-     *
-     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays with the information given by the
-     * parameters.
-     * It does not modify the number of points and cells.
-     *
-     * @param nbPts number of points to allocate
-     * @param nbCells number of cells to allocate
-     * @param nbCellsData sum of the number of points of each cell, il allows to allocate the cells array.
-     * @param arrayMask Mesh attribute: additional Arrays to allocate
-     *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
-     *
-     * @return Return the allocated memory
-     *
-     * @throw Raise data::Exception if the memory can not be allocated.
-     */
-    DATA_API size_t reserve(
-        Size nbPts,
-        Size nbCells,
-        Size nbCellsData,
         Attributes arrayMask = Attributes::NONE
     );
 
@@ -408,73 +344,43 @@ public:
      * @param nbCells number of cells to allocate
      * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
      *        use different types of cells in the same mesh, use
-     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
+     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
      * @return Return the allocated memory
      *
-     * @throw Raise data::Exception if the memory can not be allocated.
+     * @throw Raise Exception if the memory can not be allocated.
      */
-    DATA_API size_t resize(
-        Size nbPts,
-        Size nbCells,
+    DATA_API std::size_t resize(
+        Mesh::size_t nbPts,
+        Mesh::size_t nbCells,
         CellType cellType    = CellType::TRIANGLE,
-        Attributes arrayMask = Attributes::NONE
-    );
-
-    /**
-     * @brief Allocate Mesh memory and initialize the number of points and cells
-     *
-     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays with the information given by the
-     * parameters.
-     *
-     * @param nbPts number of points to allocate
-     * @param nbCells number of cells to allocate
-     * @param nbCellsData sum of the number of points of each cell, il allows to allocate the cells array.
-     * @param arrayMask Mesh attribute: additional Arrays to allocate
-     *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
-     *
-     * @return Return the allocated memory
-     *
-     * @throw Raise data::Exception if the memory can not be allocated.
-     */
-    DATA_API size_t resize(
-        Size nbPts,
-        Size nbCells,
-        Size nbCellsData,
         Attributes arrayMask = Attributes::NONE
     );
 
     /**
      * @brief Adjust mesh memory usage
      *
-     * The arrays (points, cell-types, cell-data, cell-data-offsets, and if they
-     * exists point-colors/normals and cell-colors/normals) will be resized
-     * according to the number of points and cells of the mesh (they may have
-     * been defined before adjusting by setNumberOfPoints or setNumberOfCells).
+     * The arrays (points, cell-types, cell-data, cell-data-offsets, and if they exists point-colors/normals and
+     * cell-colors/normals) will be resized according to the number of points and cells of the mesh.
      *
      * @return true if memory usage changed
      *
-     * @throw Raise data::Exception if the memory can not be re-allocated.
+     * @throw Raise Exception if the memory can not be re-allocated.
      */
-    DATA_API bool adjustAllocatedMemory();
+    DATA_API bool shrinkToFit();
 
     /**
-     * @brief Clear mesh points.
+     * @brief Truncate the number of points and cells of a mesh.
      *
-     * Reset the number of points to 0. It doesn't impact memory allocation.
-     */
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API void clearPoints();
-
-    /**
-     * @brief Clear mesh cells.
+     * Use this method to downsize the number of elements without reallocating any array.
+     * This is particularly useful with dynamic meshes to avoid an allocation every frame, which would occur if you
+     * use shrinkToFit() for instance.
      *
-     * Reset the number of cells and celldata size to 0. It doesn't impact memory allocation.
+     * @throw Raise Exception if the number of elements if higher than the allocated size.
      */
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API void clearCells();
+    DATA_API void truncate(Mesh::size_t nbPts, Mesh::size_t nbCells);
 
     /**
      * @brief Remove all data contained in the mesh. Memory is freed.
@@ -482,40 +388,27 @@ public:
     DATA_API void clear();
 
     /// Clear corresponding array, memory is freed.
-    DATA_API void clearPointNormals();
+    template<Mesh::Attributes A>
+    void clear();
 
-    /// Clear corresponding array, memory is freed.
-    DATA_API void clearPointColors();
-
-    /// Clear corresponding array, memory is freed.
-    DATA_API void clearPointTexCoords();
-
-    /// Clear corresponding array, memory is freed.
-    DATA_API void clearCellNormals();
-
-    /// Clear corresponding array, memory is freed.
-    DATA_API void clearCellColors();
-
-    /// Clear corresponding array, memory is freed.
-    DATA_API void clearCellTexCoords();
-
-    /// Set number of points.
-    DATA_API void setNumberOfPoints(Size nb);
+    /// Return true if the mesh has a given point attribute set
+    template<Mesh::Attributes A>
+    bool has() const;
 
     /// Get number of points.
-    DATA_API Size getNumberOfPoints() const;
-
-    /// Set number of cells.
-    DATA_API void setNumberOfCells(Size nb);
+    Mesh::size_t numPoints() const;
 
     /// Get number of cells.
-    DATA_API Size getNumberOfCells() const;
+    Mesh::size_t numCells() const;
 
-    /// Set cell data size.
-    DATA_API void setCellDataSize(Size nb);
+    /// Get the cell type of this mesh.
+    CellType getCellType() const;
 
-    /// Get cell data size.
-    DATA_API Size getCellDataSize() const;
+    /// Get the size of a cell given its type
+    Mesh::size_t getCellSize() const;
+
+    /// Get the mask type of point and cell attributes enabled
+    Mesh::Attributes getAttributes() const;
 
     /**
      * @brief Get the mesh data size in bytes.
@@ -523,64 +416,15 @@ public:
      * @return Mesh data size in bytes
      * @note The allocated memory may be greater than the data size in bytes.
      */
-    DATA_API size_t getDataSizeInBytes() const;
+    DATA_API std::size_t getDataSizeInBytes() const;
 
     /**
-     * @brief Get the amount of memory allocated in this mesh. Mey be bigger
-     * than getDataSizeInBytes().
+     * @brief Get the amount of memory allocated in this mesh. May be bigger than getDataSizeInBytes().
      *
      * @return Mesh data size in bytes
-     * @note You can call adjustAllocatedMemory() to free extra memory.
+     * @note You can call shrinkToFit() to free extra memory.
      */
-    DATA_API size_t getAllocatedSizeInBytes() const;
-
-    /**
-     * @name Signals
-     * @{
-     */
-
-    /// Type of signal when vertex are modified
-    typedef core::com::Signal<void ()> VertexModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigVertexModified
-    DATA_API static const core::com::Signals::SignalKeyType s_VERTEX_MODIFIED_SIG;
-
-    /// Type of signal when point colors are modified
-    typedef core::com::Signal<void ()> PointColorsModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigPointColorsModified
-    DATA_API static const core::com::Signals::SignalKeyType s_POINT_COLORS_MODIFIED_SIG;
-
-    /// Type of signal when cell colors are modified
-    typedef core::com::Signal<void ()> CellColorsModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigCellColorsModified
-    DATA_API static const core::com::Signals::SignalKeyType s_CELL_COLORS_MODIFIED_SIG;
-
-    /// Type of signal when point normals are modified
-    typedef core::com::Signal<void ()> PointNormalsModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigPointNormalsModified
-    DATA_API static const core::com::Signals::SignalKeyType s_POINT_NORMALS_MODIFIED_SIG;
-
-    /// Type of signal when cell normals are modified
-    typedef core::com::Signal<void ()> CellNormalsModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigCellNormalsModified
-    DATA_API static const core::com::Signals::SignalKeyType s_CELL_NORMALS_MODIFIED_SIG;
-
-    /// Type of signal when point tex coords are modified
-    typedef core::com::Signal<void ()> PointTexCoordsModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigPointTexCoorddModified
-    DATA_API static const core::com::Signals::SignalKeyType s_POINT_TEX_COORDS_MODIFIED_SIG;
-
-    /// Type of signal when cell tex coords are modified
-    typedef core::com::Signal<void ()> CellTexCoordsModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigCellTexCoorddModified
-    DATA_API static const core::com::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
-    /// @}
+    DATA_API std::size_t getAllocatedSizeInBytes() const;
 
     /**
      *  @{
@@ -589,14 +433,10 @@ public:
      *
      * @return The id of the new point
      *
-     * @throw data::Exception if the allocation failed
+     * @throw Exception if the allocation failed
      */
-    DATA_API PointId pushPoint(const PointValueType p[3]);
-    DATA_API PointId pushPoint(
-        PointValueType x,
-        PointValueType y,
-        PointValueType z
-    );
+    DATA_API point_t pushPoint(const position_t p[3]);
+    DATA_API point_t pushPoint(position_t x, position_t y, position_t z);
     /// @}
     /**
      * @{
@@ -606,27 +446,14 @@ public:
      *
      * @return The id of the new cell
      *
-     * @throw data::Exception if the allocation failed
+     * @throw Exception if the allocation failed
      */
-    DATA_API CellId pushCell(PointId idPt);
-    DATA_API CellId pushCell(PointId idP1, PointId idP2);
-    DATA_API CellId pushCell(PointId idP1, PointId idP2, PointId idP3);
-    DATA_API CellId pushCell(
-        PointId idP1,
-        PointId idP2,
-        PointId idP3,
-        PointId idP4,
-        CellType type = CellType::QUAD
-    );
-    DATA_API CellId pushCell(
-        CellType type,
-        const std::vector<PointId> pointIds
-    );
-    DATA_API CellId pushCell(
-        CellType type,
-        const PointId* pointIds,
-        Size nbPoints
-    );
+    DATA_API cell_t pushCell(point_t idPt);
+    DATA_API cell_t pushCell(point_t idP1, point_t idP2);
+    DATA_API cell_t pushCell(point_t idP1, point_t idP2, point_t idP3);
+    DATA_API cell_t pushCell(point_t idP1, point_t idP2, point_t idP3, point_t idP4);
+    DATA_API cell_t pushCell(const std::vector<point_t> pointIds);
+    DATA_API cell_t pushCell(const point_t* pointIds, std::size_t nbPoints);
     /// @}
 
     /**
@@ -636,9 +463,9 @@ public:
      *
      * @param id point index
      * @param p point coordinates
-     * @throw Raise data::Exception if the id is out of bounds
+     * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void setPoint(PointId id, const data::Mesh::PointValueType p[3]);
+    DATA_API void setPoint(point_t id, const Mesh::position_t p[3]);
 
     /**
      * @brief Set a point coordinates.
@@ -646,9 +473,9 @@ public:
      * The mesh must be allocated before calling this method.
      *
      * @see setPoint
-     * @throw Raise data::Exception if the id is out of bounds
+     * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void setPoint(PointId id, PointValueType x, PointValueType y, PointValueType z);
+    DATA_API void setPoint(point_t id, position_t x, position_t y, position_t z);
 
     /**
      * @{
@@ -657,47 +484,40 @@ public:
      * @warning Use this method carefully, the cell should be properly allocated. If the current cell does not contain
      * as many points as the previous one the following cells will be corrupted.
      *
-     * @throw data::Exception if the mesh is not correctly allocated (ie. the id is out of bounds)
+     * @throw Exception if the mesh is not correctly allocated (ie. the id is out of bounds)
      */
-    DATA_API void setCell(CellId id, PointId idPt);
-    DATA_API void setCell(CellId id, PointId idP1, PointId idP2);
-    DATA_API void setCell(CellId id, PointId idP1, PointId idP2, PointId idP3);
-    DATA_API void setCell(
-        CellId id,
-        PointId idP1,
-        PointId idP2,
-        PointId idP3,
-        PointId idP4,
-        CellType type = CellType::QUAD
-    );
-    DATA_API void setCell(CellId id, CellType type, const std::vector<PointId>& pointIds);
-    DATA_API void setCell(CellId id, CellType type, const PointId* pointIds, Size nbPoints);
+    DATA_API void setCell(cell_t id, point_t idPt);
+    DATA_API void setCell(cell_t id, point_t idP1, point_t idP2);
+    DATA_API void setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3);
+    DATA_API void setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3, point_t idP4);
+    DATA_API void setCell(cell_t id, const std::vector<point_t>& pointIds);
+    DATA_API void setCell(cell_t id, const point_t* pointIds, std::size_t nbPoints);
     /// @}
 
     /**
      * @{
      * @brief Set a point's color.
      *
-     * @warning The point colors must be allocated with 4 components (RBGA)
+     * @warning The point colors must be allocated with 4 components (RGBA)
      *
      * @param id point index
      * @param c color
      */
-    DATA_API void setPointColor(PointId id, const std::array<ColorValueType, 4>& c);
-    DATA_API void setPointColor(PointId id, ColorValueType r, ColorValueType g, ColorValueType b, ColorValueType a);
+    DATA_API void setPointColor(point_t id, const std::array<color_t, 4>& c);
+    DATA_API void setPointColor(point_t id, color_t r, color_t g, color_t b, color_t a);
     /// @}
     ///
     /**
      * @{
      * @brief Set a cell's color.
      *
-     * @warning The cell colors must be allocated with 4 components (RBGA)
+     * @warning The cell colors must be allocated with 4 components (RGBA)
      *
      * @param id cell index
      * @param c color
      */
-    DATA_API void setCellColor(CellId id, const std::array<ColorValueType, 4>& c);
-    DATA_API void setCellColor(CellId id, ColorValueType r, ColorValueType g, ColorValueType b, ColorValueType a);
+    DATA_API void setCellColor(cell_t id, const std::array<color_t, 4>& c);
+    DATA_API void setCellColor(cell_t id, color_t r, color_t g, color_t b, color_t a);
     /// @}
 
     /**
@@ -709,8 +529,8 @@ public:
      * @param id point index
      * @param n normal
      */
-    DATA_API void setPointNormal(PointId id, const std::array<NormalValueType, 3>& n);
-    DATA_API void setPointNormal(PointId id, NormalValueType nx, NormalValueType ny, NormalValueType nz);
+    DATA_API void setPointNormal(point_t id, const std::array<normal_t, 3>& n);
+    DATA_API void setPointNormal(point_t id, normal_t nx, normal_t ny, normal_t nz);
     ///@}
     /**
      * @{
@@ -721,13 +541,8 @@ public:
      * @param id cell index
      * @param n normal
      */
-    DATA_API void setCellNormal(CellId id, const std::array<NormalValueType, 3>& n);
-    DATA_API void setCellNormal(
-        CellId id,
-        NormalValueType nx,
-        NormalValueType ny,
-        NormalValueType nz
-    );
+    DATA_API void setCellNormal(cell_t id, const std::array<normal_t, 3>& n);
+    DATA_API void setCellNormal(cell_t id, normal_t nx, normal_t ny, normal_t nz);
     /// @}
     /**
      * @{
@@ -738,12 +553,8 @@ public:
      * @param id point index
      * @param t texCoord
      */
-    DATA_API void setPointTexCoord(PointId id, const std::array<TexCoordValueType, 2>& t);
-    DATA_API void setPointTexCoord(
-        PointId id,
-        TexCoordValueType u,
-        TexCoordValueType v
-    );
+    DATA_API void setPointTexCoord(point_t id, const std::array<texcoord_t, 2>& t);
+    DATA_API void setPointTexCoord(point_t id, texcoord_t u, texcoord_t v);
     /// @}
 
     /**
@@ -755,360 +566,132 @@ public:
      * @param id cell index
      * @param t texCoord
      */
-    DATA_API void setCellTexCoord(CellId id, const std::array<TexCoordValueType, 2>& t);
-    DATA_API void setCellTexCoord(
-        CellId id,
-        TexCoordValueType u,
-        TexCoordValueType v
-    );
+    DATA_API void setCellTexCoord(cell_t id, const std::array<texcoord_t, 2>& t);
+    DATA_API void setCellTexCoord(cell_t id, texcoord_t u, texcoord_t v);
     /// @}
 
     /**
      * @brief Returns the begin/end iterators to the mesh buffers
-     *
-     * @tparam ITERATOR iterator type:
-     *  - data::iterator::PointIterator: to iterate through mesh points
-     *  - data::iterator::ConstPointIterator: to iterate through mesh points read-only
-     *  - data::iterator::CellIterator: to iterate through mesh cells
-     *  - data::iterator::ConstCellIterator: to iterate through mesh cells read-only
-     *
-     * @warning If the Mesh is 'const', only "Const" iterators are available (data::iterator::ConstPointIterator and
-     * data::iterator::ConstCellIterator)
-     * @note These iterators lock the buffers for dump (see lock())
-     * @{
      */
-    template<typename ITERATOR>
-    ITERATOR begin();
-    template<typename ITERATOR>
-    ITERATOR end();
-    template<typename ITERATOR>
-    ITERATOR begin() const;
-    template<typename ITERATOR>
-    ITERATOR end() const;
+    template<typename T>
+    array_iterator<T> begin();
+    template<typename T>
+    array_iterator<T> end();
+    template<typename T>
+    const_array_iterator<T> begin() const;
+    template<typename T>
+    const_array_iterator<T> end() const;
+    template<typename T>
+    const_array_iterator<T> cbegin() const;
+    template<typename T>
+    const_array_iterator<T> cend() const;
+
+    template<typename T>
+    auto range();
+    template<typename ... ATTRS>
+    auto zip_range();
+
+    template<typename T>
+    auto range() const;
+    template<typename ... ATTRS>
+    auto zip_range() const;
+
+    template<typename T>
+    auto crange() const;
+    template<typename ... ATTRS>
+    auto czip_range() const;
     /// @}
 
-    /**
-     * @brief Return a lock on the mesh to prevent from dumping the buffers on the disk
-     *
-     * The buffer cannot be accessed if the mesh is not locked
-     *
-     * @warning You must allocate all the mesh's arrays before calling lock()
-     */
-    [[nodiscard]] DATA_API LocksType lock() const;
-
-    /// Return true if the mesh has point colors
-    bool hasPointColors() const;
-
-    /// Return true if the mesh has cell colors
-    bool hasCellColors() const;
-
-    /// Return true if the mesh has point normals
-    bool hasPointNormals() const;
-
-    /// Return true if the mesh has cell normals
-    bool hasCellNormals() const;
-
-    /// Return true if the mesh has point texture coordinates
-    bool hasPointTexCoords() const;
-
-    /// Return true if the mesh has cell texture coordinates
-    bool hasCellTexCoords() const;
-
-    /**
-     * @brief Return true if the point color are RGB (used for temporary support of RGB colors)
-     * @pre Point colors must be allocated
-     */
-    bool hasRGBPointColors() const;
-    /**
-     * @brief Return true if the cell color are RGB (used for temporary support of RGB colors)
-     * @pre Cell colors must be allocated
-     */
-    bool hasRGBCellColors() const;
-
-    /// Returns current Attributes of the Mesh as binary mask @see data::Mesh::Attributes
-    Attributes getAttributes() const;
-
-    /// Sets current Attributes of the Mesh as binary mask @see data::Mesh::Attributes
-    /// @warning: Attributes are set automatically or using resize()/reserve methode, usually it is not recommended to
-    /// call this method.
-    ///  This is only used when converting from/to fwAtoms
-    void setAttributes(const Attributes& _attributes);
-
-    /**
-     * @brief Return the buffer of point colors.
-     *
-     * It is used for efficient conversion between our mesh and external libraries mesh.
-     *
-     * @throw data::Exception The buffer cannot be accessed if the mesh is not locked
-     * @note For temporary support of RGB colors, use hasRGBPointColors() to know the buffer size :
-     * numberOfPoints * 4 for RGBA colors or numberOfPoints * 3 for RGB.
-     */
-    DATA_API const ColorValueType* getPointColorsBuffer() const;
-
-    /**
-     * @brief Return the buffer of cell colors.
-     *
-     * It is used for efficient conversion between our mesh and external libraries mesh.
-     *
-     * @throw data::Exception The buffer cannot be accessed if the mesh is not locked
-     * @note For temporary support of RGB colors, use hasRGBPCellColors() to know the buffer size :
-     * numberOfCells * 4 for RGBA colors or numberOfPCells * 3 for RGB.
-     */
-    DATA_API const ColorValueType* getCellColorsBuffer() const;
-
-    // ---------------------------------------
-    // Deprecated API for sight 22.0
-    // ---------------------------------------
-
-    [[deprecated]] typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<CellId, 1> CellDataMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<CellId, 1> CellDataOffsetsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<ColorValueType, 2> PointColorsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<ColorValueType, 2> CellColorsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<NormalValueType, 2> CellNormalsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<TexCoordValueType, 2> PointTexCoordsMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<TexCoordValueType, 2> CellTexCoordsMultiArrayType;
-
-    [[deprecated]] typedef boost::const_multi_array_ref<PointValueType, 2> ConstPointsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<CellTypes, 1> ConstCellTypesMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<CellId, 1> ConstCellDataMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<CellId, 1> ConstCellDataOffsetsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<ColorValueType, 2> ConstPointColorsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<ColorValueType, 2> ConstCellColorsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<NormalValueType, 2> ConstPointNormalsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<NormalValueType, 2> ConstCellNormalsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstPointTexCoordsMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstCellTexCoordsMultiArrayType;
-
-    /**
-     * @brief Allocate Mesh memory
-     *
-     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays
-     * with informations given by the parameters. if nbCellData is zero, it
-     * will be initialized to 3*nbCells
-     * @param nbPts
-     * @param nbCells
-     * @param nbCellsData
-     *
-     * @deprecated Call resize(nbPoints, nbCells, cellType, extraArrays) to allocate the arrays.
-     *
-     * @throw data::Exception
-     */
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0);
-
-    /// Allocates normals array according to the number of points of the mesh.
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocatePointNormals();
-
-    /// Allocates colors array according to the number of points of the mesh.
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocatePointColors(ColorArrayTypes t);
-
-    /// Allocates texCoords array according to the number of points of the mesh.
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocatePointTexCoords();
-
-    /// Allocates normals array according to the number of cells of the mesh.
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocateCellNormals();
-
-    /// Allocates colors array according to the number of cells of the mesh.
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocateCellColors(ColorArrayTypes t);
-
-    /// Allocates texCoords array according to the number of cells of the mesh.
-    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
-    DATA_API size_t allocateCellTexCoords();
-
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setPointsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setCellTypesArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setCellDataArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setCellDataOffsetsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setPointColorsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setCellColorsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setPointNormalsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setCellNormalsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setPointTexCoordsArray(const data::Array::sptr& array);
-    /// Sets the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void setCellTexCoordsArray(const data::Array::sptr& array);
-
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getPointsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getCellTypesArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getCellDataArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getCellDataOffsetsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getPointColorsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getCellColorsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getPointNormalsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getCellNormalsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getPointTexCoordsArray() const;
-    /// Returns the internal corresponding array
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getCellTexCoordsArray() const;
-
-    /// Add an array in the mesh array-map
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void addDataArray(const std::string& name, data::Array::sptr array);
-
-    /// Get an array in the mesh array-map
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API data::Array::sptr getDataArray(const std::string& name) const;
-
-    /// Remove an array in the mesh array-map
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API void removeDataArray(const std::string& name);
-
-    /// Return all array names stock in the mesh array-map
-    [[deprecated("The mesh arrays can no longer be accessed(sight 22.0)")]]
-    DATA_API std::vector<std::string> getDataArrayNames() const;
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Mesh& other) const noexcept;
+    DATA_API bool operator!=(const Mesh& other) const noexcept;
+    /// @}
 
 protected:
 
-    // make iterator friend in order to access mesh arrays
-    friend class data::iterator::PointIterator;
-    friend class data::iterator::ConstPointIterator;
-    friend class data::iterator::CellIterator;
-    friend class data::iterator::ConstCellIterator;
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
-    template<class DATATYPE>
-    friend class data::mt::locked_ptr;
+    /// Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
+    /// This is needed for IBuffered interface implementation
+    DATA_API void dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const override;
 
-    /**
-     * @brief Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
-     *
-     * This is needed for IBuffered interface implementation
-     */
-    DATA_API void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const override;
+private:
+
+    /// Helper function used to get the array given a point or cell attribute type
+    template<class ATTR>
+    Array::sptr getArray();
+
+    /// Helper function used to get the array given a point or cell attribute type
+    template<class ATTR>
+    Array::csptr getArray() const;
+
+    /// Helper function used to get the number of points or cells given a point or cell attribute type
+    template<class ATTR>
+    std::size_t numElements() const;
+
+    enum class PointAttribute : std::uint8_t
+    {
+        POSITION = 0,
+        COLORS,
+        NORMALS,
+        TEX_COORDS,
+        _SIZE
+    };
+    enum class CellAttribute : std::uint8_t
+    {
+        INDEX = 0,
+        COLORS,
+        NORMALS,
+        TEX_COORDS,
+        _SIZE
+    };
 
     /// Number of points defined for the mesh
-    Size m_nbPoints;
+    Mesh::size_t m_numPoints {0};
 
     /// Number of cells defined for the mesh
-    Size m_nbCells;
+    Mesh::size_t m_numCells {0};
 
-    /// Number of point index defined for mesh (size of m_cellData)
-    Size m_cellsDataSize;
+    /// Type of primitive
+    CellType m_cellType {CellType::_SIZE};
 
     /**
-     * @brief Mesh point array : 3-components 1-dimension float array, size = m_nbPoints x 3.
+     * @brief Points arrays
      *
-     * This array contains points : [ x1 y1 z1 x2 y2 z2 ... xn yn zn ]
+     * Position : 3-components 1-dimension float array, size = m_numPoints x 3.
+     * Contains points : [ x1 y1 z1 x2 y2 z2 ... xn yn zn ]
+     *
+     * Point colors array : 3 or 4-components 1-dimension float array, size = m_numPoints.
+     * Contains point colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
+     *
+     * Mesh point array : 3-components 1-dimension uint8_t array, size = m_numPoints.
+     * Contains point normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
+     *
+     * Mesh texCoord array : 2-components 1-dimension float array, size = m_numPoints.
+     * Contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
-    data::Array::sptr m_points;
+    std::array<Array::sptr, static_cast<std::size_t>(PointAttribute::_SIZE)> m_points;
 
     /**
-     * @brief Cell types array : 1-components 1-dimension uint8 array, size = m_nbCells.
+     * @brief Cell data arrays
      *
-     * This array each cell type : [ TRIANGLE QUAD QUAD ... TRIANGLE TRIANGLE QUAD ]
-     */
-    data::Array::sptr m_cellTypes;
-
-    /**
-     * @brief Cell data array : 1-components 1-dimension uint64 array, size = m_cellsDataSize.
-     *
+     * Cell index array : 1-components 1-dimension uint64 array, size = m_cellsDataSize.
      * Contains cell data : cell points ids are contiguously stored regardless
-     * of the cell type. Size depends of cell type. If we have only TRIANGLE type, size = m_nbCells x 3.
+     * of the cell type. Size depends of cell type. If we have only TRIANGLE type, size = m_numCells x 3.
+     * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, ... ]
      *
-     * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, QUAD_ID1, QUAD_ID2,
-     * QUAD_ID3, QUAD_ID4, ... ]
+     * Cell colors array : 3 or 4-components 1-dimension uint8_t array, size = m_numCells.
+     * Contains cell colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
+     *
+     * Cell normal array : 3-components 1-dimension float array, size = m_numCells.
+     * Contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
+     *
+     * Cell texCoord array : 2-components 1-dimension float array, size = m_numCells.
+     * Contains cell texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
-    data::Array::sptr m_cellData;
-
-    /**
-     * @brief Cell data offsets array : 1-components 1-dimension uint64 array, size = m_nbCells.
-     *
-     * Contains cell data offsets : for each cell, gives the offset of
-     * the first item of this cell in m_cellData.
-     *
-     * This array contains cell indexes m_cellData : [ INDEX_TRIAN_1, INDEX_QUAD_1, INDEX_QUAD_2 ...  ]
-     */
-    data::Array::sptr m_cellDataOffsets;
-
-    /**
-     * @brief point colors array : 3 or 4-components 1-dimension float array, size = m_nbPoints.
-     *
-     * This array contains point colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
-     */
-    data::Array::sptr m_pointColors;
-
-    /**
-     * @brief Mesh point array : 3 or 4-components 1-dimension uint8_t array, size = m_nbCells.
-     *
-     * This array contains cell colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
-     */
-    data::Array::sptr m_cellColors;
-
-    /**
-     * @brief Mesh point array : 3-components 1-dimension uint8_t array, size = m_nbPoints.
-     *
-     * This array contains point normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
-     */
-    data::Array::sptr m_pointNormals;
-
-    /**
-     * @brief Mesh point array : 3-components 1-dimension float array, size = m_nbCells.
-     *
-     * This array contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
-     */
-    data::Array::sptr m_cellNormals;
-
-    /**
-     * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbPoints.
-     *
-     * This array contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
-     */
-    data::Array::sptr m_pointTexCoords;
-
-    /**
-     * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbCells.
-     *
-     * This array contains cell texCoords : [ tx1 ty1 tx2 ty2 ... ]
-     */
-    data::Array::sptr m_cellTexCoords;
-
-    /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific
-    /// analysis.
-    /// @deprecated Will be removed in sight 22.0
-    [[deprecated("sight 22.0")]] ArrayMapType m_arrayMap;
+    std::array<Array::sptr, static_cast<std::size_t>(CellAttribute::_SIZE)> m_cells;
 
     /// Stores current attributes.
     Attributes m_attributes {Attributes::NONE};
@@ -1143,94 +726,32 @@ inline Mesh::Attributes operator~(const Mesh::Attributes& lhs)
 
 //------------------------------------------------------------------------------
 
-template<typename ITERATOR>
-inline ITERATOR Mesh::begin()
+inline Mesh::size_t Mesh::numPoints() const
 {
-    return ITERATOR(this);
+    return m_numPoints;
 }
 
 //------------------------------------------------------------------------------
 
-template<typename ITERATOR>
-inline ITERATOR Mesh::end()
+inline Mesh::size_t Mesh::numCells() const
 {
-    auto itr = ITERATOR(this);
-    itr += static_cast<typename ITERATOR::difference_type>(itr.m_numberOfElements);
-    return itr;
+    return m_numCells;
 }
 
 //------------------------------------------------------------------------------
 
-template<typename ITERATOR>
-inline ITERATOR Mesh::begin() const
+inline Mesh::CellType Mesh::getCellType() const
 {
-    return ITERATOR(this);
+    return m_cellType;
 }
 
 //------------------------------------------------------------------------------
 
-template<typename ITERATOR>
-inline ITERATOR Mesh::end() const
+inline Mesh::size_t Mesh::getCellSize() const
 {
-    auto itr = ITERATOR(this);
-    itr += static_cast<typename ITERATOR::difference_type>(itr.m_numberOfElements);
-    return itr;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasPointColors() const
-{
-    return static_cast<bool>(m_attributes & Mesh::Attributes::POINT_COLORS);
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasCellColors() const
-{
-    return static_cast<bool>(m_attributes & Mesh::Attributes::CELL_COLORS);
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasPointNormals() const
-{
-    return static_cast<bool>(m_attributes & Mesh::Attributes::POINT_NORMALS);
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasCellNormals() const
-{
-    return static_cast<bool>(m_attributes & Mesh::Attributes::CELL_NORMALS);
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasPointTexCoords() const
-{
-    return static_cast<bool>(m_attributes & Mesh::Attributes::POINT_TEX_COORDS);
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasCellTexCoords() const
-{
-    return static_cast<bool>(m_attributes & Mesh::Attributes::CELL_TEX_COORDS);
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasRGBPointColors() const
-{
-    return m_pointColors->getNumberOfComponents() == 3;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool Mesh::hasRGBCellColors() const
-{
-    return m_cellColors->getNumberOfComponents() == 3;
+    static const std::array<Mesh::size_t, static_cast<std::size_t>(Mesh::CellType::_SIZE)> s_cellTypeToSize =
+    {1, 2, 3, 4, 4};
+    return s_cellTypeToSize[static_cast<std::size_t>(m_cellType)];
 }
 
 //------------------------------------------------------------------------------
@@ -1242,9 +763,130 @@ inline Mesh::Attributes Mesh::getAttributes() const
 
 //------------------------------------------------------------------------------
 
-inline void Mesh::setAttributes(const Mesh::Attributes& _attributes)
+template<Mesh::Attributes A>
+void Mesh::clear()
 {
-    m_attributes = _attributes;
+    m_attributes = m_attributes & ~A;
+    m_points[static_cast<std::size_t>(A)]->clear();
+}
+
+//------------------------------------------------------------------------------
+
+template<Mesh::Attributes A>
+inline bool Mesh::has() const
+{
+    return static_cast<bool>(m_attributes & A);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline array_iterator<T> Mesh::begin()
+{
+    auto array = getArray<T>();
+    return array_iterator<T>(static_cast<typename array_iterator<T>::pointer>(array->getBuffer()));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline array_iterator<T> Mesh::end()
+{
+    auto itr = begin<T>();
+    itr += static_cast<typename array_iterator<T>::difference_type>(numElements<T>());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline const_array_iterator<T> Mesh::begin() const
+{
+    auto array = getArray<T>();
+    return const_array_iterator<T>(static_cast<typename const_array_iterator<T>::pointer>(array->getBuffer()));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline const_array_iterator<T> Mesh::end() const
+{
+    auto itr = cbegin<T>();
+    itr += static_cast<typename const_array_iterator<T>::difference_type>(numElements<T>());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline const_array_iterator<T> Mesh::cbegin() const
+{
+    auto array = getArray<T>();
+    return const_array_iterator<T>(static_cast<typename const_array_iterator<T>::pointer>(array->getBuffer()));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline const_array_iterator<T> Mesh::cend() const
+{
+    auto itr = cbegin<T>();
+    itr += static_cast<typename const_array_iterator<T>::difference_type>(numElements<T>());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+auto Mesh::range()
+{
+    auto b = begin<T>();
+    auto e = end<T>();
+    return boost::make_iterator_range(b, e);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename ... ATTRS>
+auto Mesh::zip_range()
+{
+    return boost::combine(range<ATTRS>() ...);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+auto Mesh::range() const
+{
+    auto b = cbegin<T>();
+    auto e = cend<T>();
+    return boost::make_iterator_range(b, e);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename ... ATTRS>
+auto Mesh::zip_range() const
+{
+    return boost::combine(crange<ATTRS>() ...);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+auto Mesh::crange() const
+{
+    auto b = cbegin<T>();
+    auto e = cend<T>();
+    return boost::make_iterator_range(b, e);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename ... ATTRS>
+auto Mesh::czip_range() const
+{
+    return boost::combine(crange<ATTRS>() ...);
 }
 
 //------------------------------------------------------------------------------

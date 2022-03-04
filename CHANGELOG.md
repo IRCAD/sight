@@ -330,7 +330,7 @@ The algorithm is a bit more complex, but still straightforward:
 
 1. Extract the UUID and the class name of the current object stored in the ptree index.
 1. With the UUID, look into an object cache. If the object is already deserialized return it, and stop.
-1. With the UUID, look into the global UUID object registry. Use it to avoid unneeded object instanciation. It also allow us to safely deserialize children which have direct reference on parent objects.
+1. With the UUID, look into the global UUID object registry. Use it to avoid unneeded object instantiation. It also allow us to safely deserialize children which have direct reference on parent objects.
 1. With the classname, find a suitable deserializer.
 1. First, deserialize the child objects by recalling recursively the step (1) on them.
 1. Deserialize current object, passing the deserialized child objects from step (5)
@@ -420,9 +420,9 @@ The encryption policy defines if we uses the password as is or with salt. It can
 ### General improvement:
 
 * `ExActivities` has been modified to use the new session services instead of atoms
-* new `TemporaryFile` class in `core`::tools::System``that use ROII to delete the associated file as soon as the `TemporaryFile` class is destroyed.
+* new `TemporaryFile` class in `core::tools::System` that uses RAII to delete the associated file as soon as the `TemporaryFile` class is destroyed.
 * `core::tools::System::RobustRename()` now have an optional parameter to force renaming, even if the target already exists (it will be first deleted)
-* `ui`::base::Cursor``improvement: `BusyCursor`, `WaitCursor`, `CrossCursor` classes that use ROII to restore back "default" cursor, even if an exception occurs
+* `ui::base::Cursor` improvement: `BusyCursor`, `WaitCursor`, `CrossCursor` classes that use RAII to restore back "default" cursor, even if an exception occurs
 * `ui`::xxx::dialog::InputDialog``improvement: add a "bullet" mode for password field.
 * `ui`::xxx::dialog::MessageDialog``improvement: add a "retry" button.
 
@@ -430,7 +430,7 @@ The encryption policy defines if we uses the password as is or with salt. It can
 
 The serialization is done through two classes: SessionSerializer, SessionsDeserializer, and many .hpp with two functions: `serialize()` and `deserialize`, depending of the type of data object to serialize.
 
-For exemple, the serializers for meshes and images are coded respectively in `Mesh.hpp` and `Image.hpp`. They are good samples to demonstrate how it is possible to use a well known format to serialize objects. The Sight images / meshes are converted into VTK format using Sight helpers and are then saved with the now "standard" VTK way using `vtkXMLImageDataWriter` for image and `vtkXMLPolyDataWriter` for meshes.
+For example, the serializers for meshes and images are coded respectively in `Mesh.hpp` and `Image.hpp`. They are good samples to demonstrate how it is possible to use a well known format to serialize objects. The Sight images / meshes are converted into VTK format using Sight helpers and are then saved with the now "standard" VTK way using `vtkXMLImageDataWriter` for image and `vtkXMLPolyDataWriter` for meshes.
 
 As a side notes, since the files are stored in a zstd compressed zip file, and since VTK doesn't provide any way to use an output streams, the VTK writers are configured as such (image and mesh are equivalent):
 
@@ -820,7 +820,7 @@ Implement qt3d material service:
 
 *Read tfp TF from directory with ::uiTF::SMultipleTF.*
 
-*Add setNotifyInterval method to the Graber interface.*
+*Add setNotifyInterval method to the Grabber interface.*
 
 Adds an option in the videoQt Player to change the notifyInterval option. This is useful to require frame through "setPosition".
 
@@ -894,7 +894,7 @@ Deprecate the bundle `uiHandEye`
 
 *Complete meshFunction baricentric  API.*
 
-Add a method `isInsideThetrahedron( const ::glm::dvec4 barycentricCoord);` in the MeshFunction.
+Add a method `isInsideTetrahedron( const ::glm::dvec4 barycentricCoord);` in the MeshFunction.
 
 *Add [[nodiscard]] attribute for weak/shared_ptr::lock().*
 
@@ -928,7 +928,7 @@ Add detailed logs for our communications with the PACS.
 
 Adds a PACS series selection to `OgreViewer`.
 
-* `SPacsConfiguationEditor`: send notifications.
+* `SPacsConfigurationEditor`: send notifications.
 * `NotificationDialog`: use the height of the notification instead of the width for computation.
 * `SSelector`: remove margin.
 * `SNegato2D` and `SNegato3D`: avoid a division by 0.
@@ -1184,7 +1184,7 @@ Improve Ogre resources management in '::visuOgreAdaptor::SLandmark' and display 
 
 *Add Ircad-IHU logo overlay in Ogre Scene.*
 
-- 8 positions are supported: left-top, left-center, left-bottom, center-top, center-bottom, right-top, right-center and rght-bottom.
+- 8 positions are supported: left-top, left-center, left-bottom, center-top, center-bottom, right-top, right-center and right-bottom.
 
 ### io
 
@@ -1257,7 +1257,7 @@ The unit tests have been updated to check this error.
 
 *Fix useless variable.*
 
-Remove wrong `#ifdef` arround `FwCoreNotUsedMacro(ret);`
+Remove wrong `#ifdef` around `FwCoreNotUsedMacro(ret);`
 
 ### Array
 
@@ -1507,7 +1507,7 @@ Add more Mesh format in VTK readers/writers.
 * Stereo lithography format (\*.stl)
 * Polygonal File Format (\*.ply)
 
-This was added to improve compatibility with other VTK sofwares (paraview for example), it seems that the \*.vtk format is a legacy format and we should use \*.vtp when dealing with polydata (our ::fwData::Mesh).
+This was added to improve compatibility with other VTK software (paraview for example), it seems that the \*.vtk format is a legacy format and we should use \*.vtp when dealing with polydata (our ::fwData::Mesh).
 
 **Note:** when using OBJ/PLY/STL format you may loose some informations (point normals/point color/...), often it saves only global geometry of the data (points, edges, ...).
 
@@ -1574,7 +1574,7 @@ Fix a crash when loading a folder containing files not readable as images.
 
 *Skip structured report and improve the activity data view.*
 
-When you load a DICOM folder that contains a `SR` modality with the reader ``::vtk`Gdcm`::Series`FBReader`, it throws an execption. Now it's skipped with a message.
+When you load a DICOM folder that contains a `SR` modality with the reader ``::vtk`Gdcm`::Series`FBReader`, it throws an exception. Now it's skipped with a message.
 
 The activity data view is also improved in this MR.
 
@@ -1628,7 +1628,7 @@ Fix auto reset camera in `::visuOgreAdaptor::SMesh`:
 *Modify camera position in function of the image.*
 
 Modify the AutoReset camera method to reset the camera position in function of the image and not the world position.
-If there is other adaptors than SNegato2D, the scene will be autoreset with the position of the image. It avoids some strange scalling due to other adaptors.
+If there is other adaptors than SNegato2D, the scene will be autoreset with the position of the image. It avoids some strange scaling due to other adaptors.
 
 ### SNegato3D
 
@@ -1663,7 +1663,7 @@ The `text` configuration was wrong when parsing xml file.
 *Remove or add the node instead of change the visibility.*
 
 Show or hide the transform node directly impact attached entities and services like `::visuOgreAdaptor::SMesh`, that can't manage its visibility since STransform change it any time.
-Now, the node is juste remove or add from it's parent to avoid a visibility error.
+Now, the node is just removed or added from/to its parent to avoid a visibility error.
 
 ### STransformEditor
 
@@ -1790,7 +1790,7 @@ Also, `fwQtTest` failed a lot during testing, so a fix has been proposed. It sho
 
 *Rename THOROUGH_DEBUG option.*
 
-Rename `THOROUG_DEBUG` into `SIGHT_ENABLE_FULL_DEBUG`
+Rename `THOROUGH_DEBUG` into `SIGHT_ENABLE_FULL_DEBUG`
 
 ### deprecated
 
@@ -1806,7 +1806,7 @@ Rename `THOROUG_DEBUG` into `SIGHT_ENABLE_FULL_DEBUG`
 *Remove the use of deprecated Image, Mesh and Array API.*
 
 * Remove the last remaining usage of the deprecated API of Image, Array and Mesh outside of fwData and fwDataTools: add a `2` after get/setSize, get/setOrigin, get/SetSpacing.
-* Fix dump lock on Image and Arry iterators: lock bust be called before accessing the buffer.
+* Fix dump lock on Image and Array iterators: lock must be called before accessing the buffer.
 * Improve the documentation about the dump lock.
 
 *Use new Image, Mesh and Array API.*
@@ -1854,7 +1854,7 @@ And here is the new one:
 
 *Clean fwData and fwTest with new API of Image, Mesh and Array.*
 
-* Update `config.hpp.in` to add `<PROJECT_NAME>_DEPRECATED_CLASS_API`, it allows to set the `deprecated` attribut on a class (display a compilation warning).
+* Update `config.hpp.in` to add `<PROJECT_NAME>_DEPRECATED_CLASS_API`, it allows to set the `deprecated` attribute on a class (display a compilation warning).
 * Update `fwTest` and `fwData` libraries to remove the dependency to `fwDataTools`
 * Clean `fwDataTools` to remove the use of deprecated helpers, but the helpers are still here.
 * fix SImagesBlend adaptor: fix size, spacing and origin comparison
@@ -1915,7 +1915,7 @@ However, one drawback is that since symbols are not exported, it was no longer p
 
 **But**, this was not that simple. In our tests that are often more functional tests than unit-tests, we face two issues:
 - we have circular dependencies between libraries, so the test may try to link against both the OBJECT_LIBRARY and the SHARED_LIBRARY, causing awful runtime errors,
-- we use lots of static singletons to register types, factories, etc... The same singleton may be instanced both in the OBJECT_LIBRARY and the SHARED_LIBRARY, ending up with a doublon and not a singleton.
+- we use lots of static singletons to register types, factories, etc... The same singleton may be instanced both in the OBJECT_LIBRARY and the SHARED_LIBRARY, ending up with a duplicate and not a singleton.
 
 The first issue can be tackled, I tried at some point, but it was quite hard, especially as soon as we load modules. The second is even harder sometimes. At the end I chose an alternative. I propose to split tests in two. One for the public API (ex: `fwRuntimeTest`) and one for the implementation (ex: `fwRuntimeImplTest`). The implementation test should be much more minimal and should not require many dependencies, thus reducing the possibility of these two problems to occur. At least that's my hope. :candle:
 
@@ -2187,7 +2187,7 @@ Example to iterate through cells:
 `pushCell()` and `setCell()` may not be very efficient, you can use `CellIterator` to define the cell. But take care to
 properly define all the cell attribute.
 
-Example of defining cells usign iterators
+Example of defining cells using iterators
 
 ```cpp
     `::fwData::Mesh::sptr`mesh = ::fwData::Mesh::New();
@@ -2378,7 +2378,7 @@ For some ci tasks like deploying issues and merge requests templates, we will us
   ** Explicitly convert quaternions to matrices.
   ** Fix normal rendering.
 
-* Add Visula studio 2019 support with conan package available on artifactory. All conan packages have been updated
+* Add Visual studio 2019 support with conan package available on artifactory. All conan packages have been updated
 
 * Share "optimized" debug compiler flags across all conan package and Sight. Some previous work on array API (and in many place in our code or our dependencies) showed very bad performance in debug. To mitigate this, we want to use optimized debug build with `-Og -g` (unix) or `/Ox /Oy- /Ob1 /Z7 /MDd` (windows) which will effectively make the speed almost reach release build, while being "debuggable".
 
@@ -2667,7 +2667,7 @@ Add a configurable marker on `visuOgreAdaptor::SAxis`
 
 *Add new signals to be consistent with SMatrixTLSynchronizer.*
 
-  -  Add slots to be compatible with the baviour of `SMatrixTLSynchronizer` in order to connect with a `SStatus` service. The `ExStereoARCV` example is updated to show its usage.
+  -  Add slots to be compatible with the behaviour of `SMatrixTLSynchronizer` in order to connect with a `SStatus` service. The `ExStereoARCV` example is updated to show its usage.
 
   -  The configuration of `SMatrixTLSynchronizer` is updated to take into account the wish to send the status of some matrices in timelines in `SMatrixSynchronizer`.
 
@@ -2836,7 +2836,7 @@ Add a `updateVisibility` slot in `visuOgreAdaptor::SVideo`
 * Improve the background management in 'fwGuiQt'.
 * Disable parameters in 'uiMeasurement::SLandmarks' instead of hide them.
 * Allow to configure the style of 'SActivityWizard'.
-* Poperly use the 'hideActions' mode on toolbars.
+* Properly use the 'hideActions' mode on toolbars.
 * Properly set bounding boxes on 'visuOgreAdaptor::SAxis'.
 * Add a flatdark theme.
 
@@ -2868,7 +2868,7 @@ Add a new adaptor `SFragmentsInfo` that takes informations of the configured lay
 
 Some minors updates are also pushed in this MR:
 
-1. SMaterial can now be configured with a `representatioMode` (SURFACE/POINT/EDGE/WIREFRAME).
+1. SMaterial can now be configured with a `representationMode` (SURFACE/POINT/EDGE/WIREFRAME).
 1. Add new conversion function in `fwRenderOgre`::helper::Camera``to convert from screen space to NDC or viewspace. deprecates the old ones.
 
 *Directional light editing.*
@@ -3005,7 +3005,7 @@ Please refer to `cmake --help-policy CMP0072` for details
 
 *Only set the output when the first frame has been grabbed.*
 
- -  Wait until the first frame hase been grabbed to set the output. Doing so, prevent the use of an allocated but randomly filled buffer to be processed by other services, thus making them crash. See #333 for detail.
+ -  Wait until the first frame has been grabbed to set the output. Doing so, prevent the use of an allocated but randomly filled buffer to be processed by other services, thus making them crash. See #333 for detail.
 
  -  Additionally, the pause mode has been fixed to not consume all cpu power.
 
@@ -3081,7 +3081,7 @@ Releases Ogre texture properly
 
 *Fix infinite loop and graphic corruption in ogre shader code.*
 
--  Fix infinite loop and graphic corruption in ogre shader code by replacing a 'for' loop with it's 'reverse' equivalent. It is über strange, and looks like a glsl compiler bug, but the workaround seems to work.
+-  Fix infinite loop and graphic corruption in ogre shader code by replacing a 'for' loop with its 'reverse' equivalent. It is very strange, and looks like a glsl compiler bug, but the workaround seems to work.
 
 -  Some missing `makeCurrent()` were added
 
@@ -3165,7 +3165,7 @@ Now, Both adaptors have the same behavior and display the frustum at the same si
 
 ### videoVLC
 
-*Vlc SFrameGrabber continously pushing while paused.*
+*Vlc SFrameGrabber continuously pushing while paused.*
 
 ### AppConfigTest
 
@@ -3177,7 +3177,7 @@ Now, Both adaptors have the same behavior and display the frustum at the same si
 
 The test was not written correctly. This could lead to race conditions. We rewrote it in the following way.
 
-The test try to lock the data to write "lili" or "tata" in a `fwData::String`. It launches two asynchronous methods that lock the data to write, wait 2 ms between each char insertion and wait 5ms after the unlock. Then, it ensures that the letters from "tata" and "lili" are not mixed in the string.
+The test try to lock the data to write two different string sequences in a `fwData::String`. It launches two asynchronous methods that lock the data to write, wait 2 ms between each char insertion and wait 5ms after the unlock. Then, it ensures that the letters from the two sequences are not mixed in the string.
 
 ### ObjectService
 
@@ -3227,7 +3227,7 @@ Fix ExRealSense configuration to set the proper parameters for the service.
   - use temporary folders for writing instead of folders in the build tree,
   - last, we realized it is a bad practice to rely on stopping a worker with the auto-destruction (i.e. using shared pointers), because this could lead the `std`::thread``to be destroyed from its own execution scope. So we deprecated the call of `stop()` in the `WorkerAsio` and now we advise people to call `stop()` from the callee thread (most often the main thread).
 
-All of this solves a lot of random errors when lauching all unit-tests. We can also launch unit-tests in parallel now, making the CI jobs faster.
+All of this solves a lot of random errors when launching all unit-tests. We can also launch unit-tests in parallel now, making the CI jobs faster.
 
 ### SDK
 
@@ -3450,7 +3450,7 @@ Details:
 * **boost** related 
 ### fwIO
 
-*Implement a fail/sucess notification on all readers and writers.*
+*Implement a fail/success notification on all readers and writers.*
 
 Adds a new member status boolean to `IReader` and `IWriter`and all of their inherited implementations.
 
@@ -3494,7 +3494,7 @@ Writers :
 * ioVTK/SMeshWriter
 * ioVTK/SModelSeriesObjWriter
 * ioVTK/SModelSeriesWriter
-* ioVTKGdcm/SImageSeriewWriter
+* ioVTKGdcm/SImageSeriesWriter
 
 The following implementation of those interfaces have **not** been modified : Note: by default we consider that a non modified reader always return success...
 
@@ -3999,7 +3999,7 @@ The bookmarks are no longer used and the service still use a deprecated API.
 
 ### HiResClock
 
-*Undeprecate getTime* functions.*
+*Un-deprecate getTime* functions.*
 
 Resolve "Un-deprecate HiResClock functions"
 
@@ -4172,7 +4172,7 @@ Merge remote-tracking branch 'origin/fix-calibration-activity-crash-on-start' in
 
 ### fwRuntime
 
-*Resolve NOMINMAX redifinition.*
+*Resolve NOMINMAX redefinition.*
 
 - NOMINMAX was defined twice (in 'fw-boost.cmake' and in 'fwRuntime/dl/Win32.hpp')
 - a warning C4005 was displayed each time this file is used
@@ -4508,7 +4508,7 @@ It will be a lot easier to add stereo IDVR now.
 
 - Moves all programs/materials/compositors used in fwRenderOgre to it.
 
-* **:warning: IMPORTANT** Delete share/fwRendreOgre and share/material in your build directory
+* **:warning: IMPORTANT** Delete share/fwRenderOgre and share/material in your build directory
 
 ### cmake
 
@@ -4663,7 +4663,7 @@ Add `FW_DEPRECATED` macro for:
 - fwServices::get(obj)
 
 Replace the deprecated methods in the tests by the new ones.
-Replace configuration writen in C++ by XML file for the tests of AppConfigTest.
+Replace C++ configuration by XML file for the tests of AppConfigTest.
 
 Keep a few tests on the deprecated methods until the methods are officially removed.
 
@@ -4759,8 +4759,6 @@ Convert from/to `::cv::Mat`rvec & tvec convention to ::fwData::TransformationMat
 Add new unit tests cases.
 Refactor Calibration code to use new helpers.
 
-merge(54-refactor-trasformationmatrix3d-from-to-opencv-mat): into 'dev'
-
 ### trackedCameraCalibration
 
 *Merge activities.*
@@ -4839,7 +4837,7 @@ support zero.
 
 ### docset
 
-*Unbreak broken docset generation.*
+*Fix broken docset generation.*
 
 ### boost
 
@@ -4909,7 +4907,7 @@ For triangle based meshes, when we don't have normals, we generate them. The pro
 
 *Do not crash when clicking on the distance button in VR.*
 
-The service `::uiMeasurement::editor::Distance`was also cleaned a bit, and the unused configuration option 'placeInscene' was removed.
+The service `::uiMeasurement::editor::Distance` was also cleaned a bit, and the unused configuration option 'placeInScene' was removed.
 
 ### docset
 

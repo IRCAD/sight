@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,9 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/helper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/String.hpp>
 
 #include <filter/image/Labeling.hpp>
@@ -66,12 +63,12 @@ void SLabelGeometryImage::configuring()
 
         SIGHT_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
 
-        for(size_t i = 0 ; i < clusterVect.size() ; ++i)
+        for(std::size_t i = 0 ; i < clusterVect.size() ; ++i)
         {
             std::string clusterStr = clusterVect[i]->getValue();
-            std::vector<size_t> clusterLabels;
-            const ::boost::char_separator<char> separator(",");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tok {clusterStr, separator};
+            std::vector<std::size_t> clusterLabels;
+            const boost::char_separator<char> separator(",");
+            const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
 
             for(const auto& t : tok)
             {
@@ -96,27 +93,17 @@ void SLabelGeometryImage::updating()
 {
     const auto image = m_image.lock();
 
-    data::helper::Image imageHelper(image.get_shared());
-    if(!imageHelper.getBuffer())
-    {
-        SIGHT_INFO("Image is not set.");
-        return;
-    }
-
     // Call the ITK operator
     sight::filter::image::computeCentroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);
 
     if(m_lPointListCentroids.empty())
     {
-        //get landmarks
-        data::fieldHelper::MedicalImageHelpers::checkLandmarks(image.get_shared());
-        data::PointList::sptr landmarks =
-            image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+        data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
+
         SIGHT_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
         {
-            // notify
             auto sig = image->signal<data::Image::LandmarkAddedSignalType>(data::Image::s_LANDMARK_ADDED_SIG);
             sig->asyncEmit(point);
         }
@@ -152,10 +139,9 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
 
     data::PointList::sptr selectedPointList = m_lPointListCentroids.at(indexPlane);
 
-    for(size_t idPoint = 0 ; idPoint < selectedPointList->getPoints().size() ; ++idPoint)
+    for(std::size_t idPoint = 0 ; idPoint < selectedPointList->getPoints().size() ; ++idPoint)
     {
-        data::String::sptr label = data::String::New(std::to_string(idPoint));
-        selectedPointList->getPoints().at(idPoint)->setField(data::fieldHelper::Image::m_labelId, label);
+        selectedPointList->getPoints().at(idPoint)->setLabel(std::to_string(idPoint));
     }
 
     this->setOutput("pointList", m_lPointListCentroids.at(indexPlane));

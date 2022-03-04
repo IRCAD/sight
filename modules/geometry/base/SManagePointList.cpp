@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/Image.hpp>
 #include <data/String.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -65,7 +64,7 @@ void SManagePointList::configuring()
 
     if(config)
     {
-        m_max       = config->get<size_t>(s_MAX_CONFIG, m_max);
+        m_max       = config->get<std::size_t>(s_MAX_CONFIG, m_max);
         m_removable = config->get<bool>(s_REMOVABLE_CONFIG, m_removable);
         m_label     = config->get<bool>(s_LABEL_CONFIG, m_label);
         m_tolerance = config->get<float>(s_TOLERANCE_CONFIG, m_tolerance);
@@ -133,9 +132,8 @@ void SManagePointList::addPoint(const data::Point::sptr _point) const
 
     if(m_label)
     {
-        const auto counter             = pointList->getPoints().size();
-        const data::String::sptr label = data::String::New(std::to_string(counter));
-        _point->setField(data::fieldHelper::Image::m_labelId, label);
+        const auto counter = pointList->getPoints().size();
+        _point->setLabel(std::to_string(counter));
     }
 
     pointList->pushBack(_point);

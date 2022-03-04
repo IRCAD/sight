@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,7 +120,7 @@ Q_SIGNALS:
 
 private:
 
-    /// Gets recursivly alls node from the frame graph.
+    /// Gets recursively all nodes from the frame graph.
     void getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes, Qt3DRender::QFrameGraphNode* _currentNode);
 
     ///Contains a viewport allowing to choose which portion of the screen is rendered. Default is the whole screen.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include <string>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::log::ut::LoggerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::log::ut::LoggerTest);
 
-namespace sight::log
+namespace sight::core::log
 {
 
 namespace ut
@@ -133,4 +133,4 @@ void LoggerTest::simpleLoggerTest()
 
 } // namespace ut
 
-} // namespace sight::log
+} // namespace sight::core::log

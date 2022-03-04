@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>SightViewer_GenericScene_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -17,6 +17,7 @@
         <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
+        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
@@ -27,8 +28,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
+        <object uid="${image}" type="sight::data::Image" src="deferred" />
         <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
@@ -125,7 +126,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="axialNegatoSlicerSrv" start="true" />
+                <view sid="axialNegatoSlicerSrv" start="false" />
             </registry>
         </service>
 
@@ -138,7 +139,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="bottomNegatoSlicerView" start="true" />
+                <view sid="bottomNegatoSlicerView" start="false" />
             </registry>
         </service>
 
@@ -151,8 +152,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sagittalNegatoSlicerSrv" start="true" />
-                <view sid="frontalNegatoSlicerSrv" start="true" />
+                <view sid="sagittalNegatoSlicerSrv" start="false" />
+                <view sid="frontalNegatoSlicerSrv" start="false" />
             </registry>
         </service>
 
@@ -241,6 +242,7 @@
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
                 </layer>
                 <adaptor uid="orientationMarkerAdp" />
+                <adaptor uid="resizeOrientationMarkerViewportAdp" />
             </scene>
         </service>
 
@@ -307,6 +309,10 @@
 
         <service uid="resizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
+        </service>
+
+        <service uid="resizeOrientationMarkerViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
+            <config layer="orientationMarkerLayer" hOffset="0.5" vOffset="0.5" width="0.1" height="0.1" hAlign="right" vAlign="bottom"/>
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
@@ -535,6 +541,7 @@
             <slot>frontalBackgroundResizeViewportAdp/resize</slot>
             <slot>frontalNegatoResizeViewportAdp/resize</slot>
             <slot>resizeViewportAdp/resize</slot>
+            <slot>resizeOrientationMarkerViewportAdp/resize</slot>
             <slot>topNegatoSlicerSliderView/show</slot>
             <slot>bottomNegatoSlicerSliderView/show</slot>
         </connect>
@@ -547,6 +554,7 @@
             <slot>frontalBackgroundResizeViewportAdp/revert</slot>
             <slot>frontalNegatoResizeViewportAdp/revert</slot>
             <slot>resizeViewportAdp/revert</slot>
+            <slot>resizeOrientationMarkerViewportAdp/revert</slot>
             <slot>topNegatoSlicerSliderView/hide</slot>
             <slot>bottomNegatoSlicerSliderView/hide</slot>
         </connect>
@@ -609,6 +617,10 @@
             <signal>frontalPickerInteractorAdp/picked</signal>
         </connect>
 
+        <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}" >
+            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
         <!-- Slide view -->
         <connect>
             <signal>mainView/started</signal>
@@ -649,6 +661,15 @@
             <slot>notifierSrv/popFailure</slot>
         </connect>
 
+        <!-- Connects double click on landmark to slice moves. -->
+        <connect>
+            <signal>landmarksAdp/sendWorldCoord</signal>
+            <signal>axialLandmarksAdp/sendWorldCoord</signal>
+            <signal>frontalLandmarksAdp/sendWorldCoord</signal>
+            <signal>sagittalLandmarksAdp/sendWorldCoord</signal>
+            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -671,9 +692,10 @@
         <start uid="pickedVoxelTextAdp" />
         <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
+        <start uid="resizeOrientationMarkerViewportAdp" />
         <start uid="snapshotAdp" />
         <start uid="orientationMarkerAdp" />
-        
+
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />
@@ -701,8 +723,14 @@
         <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
+        
+        <start uid="axialNegatoSlicerSrv" />
+        <start uid="frontalNegatoSlicerSrv" />
+        <start uid="sagittalNegatoSlicerSrv" />
+        <start uid="bottomNegatoSlicerView" />
 
         <update uid="backgroundReaderSrv" />
+        <update uid="imageExtruderSrv" />
         <update uid="shapeExtruderAdp" />
 
     </config>

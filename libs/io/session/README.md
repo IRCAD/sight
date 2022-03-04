@@ -38,7 +38,7 @@ and de-serialization function, stored in a separated header file (all of them ar
     sessionWriter->setFile("Sample.zip");
 
     // Setting a password means the session will be encrypted
-    sessionWriter->setPassword("Password");
+    sessionWriter->set_password("Password");
 
     // Write
     sessionWriter->write();
@@ -53,7 +53,7 @@ and de-serialization function, stored in a separated header file (all of them ar
     sessionReader->setFile(testPath);
 
     // Setting a password means the session will be decrypted
-    sessionReader->setPassword(password);
+    sessionReader->set_password(password);
 
     // Read the session
     sessionReader->read();

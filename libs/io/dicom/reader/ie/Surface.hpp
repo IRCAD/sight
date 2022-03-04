@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ public:
      */
     IO_DICOM_API Surface(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::ModelSeries::sptr& series,
         const core::log::Logger::sptr& logger = nullptr,
@@ -101,8 +101,8 @@ protected:
      */
     virtual void readSurfaceSegmentationModule(
         const SPTR(data::Reconstruction)& reconstruction,
-        const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
-        const ::gdcm::Item& segmentItem
+        const gdcm::SmartPointer<gdcm::Segment>& segment,
+        const gdcm::Item& segmentItem
     );
     /**
      * @brief Read Surface Mesh Module tags
@@ -112,7 +112,7 @@ protected:
      */
     IO_DICOM_API virtual void readSurfaceMeshModule(
         const SPTR(data::Reconstruction)& reconstruction,
-        const ::gdcm::SmartPointer< ::gdcm::Surface>& surface
+        const gdcm::SmartPointer<gdcm::Surface>& surface
     );
     /// Segment Property Registry
     io::dicom::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;

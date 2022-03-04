@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ namespace sight::module::ui::qt::image
  *
  * @code{.xml}
    <service type="sight::module::ui::qt::image::TransferFunctionEditor">
-       <in key="currentTF" uid="..." optional="true" />
+       <in key="currentTF" uid="..." />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config useDefaultPath="true">
@@ -67,8 +67,7 @@ namespace sight::module::ui::qt::image
  * It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
- *      TF in another service. Don't forget to set 'optional="true"' when you use this input, otherwise the service will
- *      not start if a TF is not previously defined.
+ *      TF in another service.
  * @subsection In-Out In-Out
  * - \b tfPool [sight::data::Composite]: composite containing the transfer function.
  * @subsection Output Output
@@ -130,8 +129,8 @@ protected:
     /// Check if the image contain the specified TF.
     MODULE_UI_QT_API bool hasTransferFunctionName(const std::string& _sName) const;
 
-    /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
-    /// already used, it will return blabla_1.
+    /// Create a string that represents a TF name not already present in the composite. For example, if "test" is
+    /// already used, it will return "test_1".
     MODULE_UI_QT_API std::string createTransferFunctionName(const std::string& _sBasename) const;
 
     /// Update the output transferFunction with the selected TF in the ComboBox.
@@ -171,7 +170,7 @@ private:
     static constexpr std::string_view s_TF_POOL         = "tfPool";
     static constexpr std::string_view s_NEW_SELECTED_TF = "tf";
 
-    data::ptr<data::TransferFunction, data::Access::in> m_currentTf {this, s_CURRENT_TF};
+    data::ptr<data::TransferFunction, data::Access::in> m_currentTf {this, s_CURRENT_TF, false, true};
     data::ptr<data::Composite, data::Access::inout> m_tfPool {this, s_TF_POOL};
     data::ptr<data::TransferFunction, data::Access::out> m_newSelectedTf {this, s_NEW_SELECTED_TF};
 };

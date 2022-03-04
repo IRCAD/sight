@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,11 +122,11 @@ SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const data::Histogra
 
     Point p;
     Points controlPoints;
-    const size_t nbValues = histogramValues.size();
+    const std::size_t nbValues = histogramValues.size();
 
     // WARNING: we shouldn't add all the points of the histogram into the vector of controlPoints
     // (testing...)
-    for(size_t i = 0 ; i < nbValues ; ++i)
+    for(std::size_t i = 0 ; i < nbValues ; ++i)
     {
         p.first  = static_cast<double>(histogramMin + i * binsWidth);
         p.second = histogramValues[i];
@@ -162,7 +162,7 @@ SCurvedHistogram::Points SCurvedHistogram::getBSplinePoints(const Points& _point
         )
     );
 
-    // Commpute the points of the B-Spline with external code from AHO (to be integrated here later).
+    // Computes the points of the B-Spline with external code from AHO (to be integrated here later).
     cat_curve curve(list);
     curve.m_precision = static_cast<int>(_points.size() * 5);
     curve.compute();
@@ -432,7 +432,7 @@ SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
            a3 = _p1.second;
          */
 
-        // Smoother curves (Catmull-Rom s_plines)
+        // Smoother curves (Catmull-Rom splines)
         a0 = -0.5 * _p0.second + 1.5 * _p1.second - 1.5 * _p2.second + 0.5 * _p3.second;
         a1 = _p0.second - 2.5 * _p1.second + 2 * _p2.second - 0.5 * _p3.second;
         a2 = -0.5 * _p0.second + 0.5 * _p2.second;

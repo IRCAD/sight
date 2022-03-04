@@ -26,7 +26,7 @@ Window {
             id: column
             anchors.fill: parent
 
-            //Label to show programm message
+            //Label to show program message
             Label {
                 text: inputDialog.message
                 font.bold: true

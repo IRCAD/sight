@@ -36,7 +36,7 @@
 #include <vtkXMLImageDataWriter.h>
 #include <vtkZLibDataCompressor.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::VtiImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::VtiImageWriter);
 
 namespace sight::io::vtk
 {
@@ -98,7 +98,7 @@ void VtiImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string VtiImageWriter::extension()
+std::string VtiImageWriter::extension() const
 {
     return ".vti";
 }

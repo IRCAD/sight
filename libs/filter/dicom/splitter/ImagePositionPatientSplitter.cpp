@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImagePositionPatientSplitter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::ImagePositionPatientSplitter);
 
 namespace sight::filter::dicom
 {
@@ -49,7 +49,7 @@ const std::string ImagePositionPatientSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key key) :
+ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key) :
     ISplitter()
 {
 }
@@ -95,7 +95,7 @@ const
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
-        const size_t buffSize                            = bufferObj->getSize();
+        const std::size_t buffSize                       = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast<char*>(lock.getBuffer());
 

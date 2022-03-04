@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,42 +31,42 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
+static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 {
     const auto imageType = _image->getType();
-    const auto imageComp = _image->getNumberOfComponents();
+    const auto imageComp = _image->numComponents();
 
     const auto cvType = io::opencv::Type::toCv(imageType, imageComp);
 
-    const auto dumpLock = _image->lock();
+    const auto dumpLock = _image->dump_lock();
 
     SIGHT_ASSERT("Empty image buffer", _image->getBuffer());
 
-    const auto imageSize = _image->getSize2();
+    const auto imageSize = _image->getSize();
     std::vector<int> cvSize;
-    for(size_t i = 0 ; i < _image->getNumberOfDimensions() ; ++i)
+    for(std::size_t i = 0 ; i < _image->numDimensions() ; ++i)
     {
         cvSize.push_back(static_cast<int>(imageSize[i]));
     }
 
     if(cvSize.size() == 1)
     {
-        // If we have a single row, we want to initialize the ::cv::Math with (1, N) since it takes (rows,cols)
+        // If we have a single row, we want to initialize the cv::Math with (1, N) since it takes (rows,cols)
         cvSize.push_back(1);
     }
 
     // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
     std::reverse(cvSize.begin(), cvSize.end());
 
-    ::cv::Mat cvImage;
+    cv::Mat cvImage;
     if(_copy)
     {
-        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
+        cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
         cvImage = mat.clone();
     }
     else
     {
-        cvImage = ::cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
+        cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
     }
 
     return cvImage;
@@ -74,24 +74,24 @@ static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::moveToCv(data::Image::sptr& _image)
+cv::Mat Image::moveToCv(data::Image::sptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-const ::cv::Mat Image::moveToCv(const data::Image::csptr& _image)
+const cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
+void Image::copyFromCv(data::Image& _image, const cv::Mat& _cvImage)
 {
     const auto prevImageType = _image.getType();
-    const auto prevImageComp = _image.getNumberOfComponents();
+    const auto prevImageComp = _image.numComponents();
 
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;
@@ -123,17 +123,36 @@ void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
         imageSize[2] = _cvImage.size[0];
     }
 
-    const auto prevImageSize = _image.getSize2();
+    const auto prevImageSize = _image.getSize();
     if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
     {
-        // The pixel format is not changed here, we have no way to know the format from a ::cv::Mat
-        _image.setSize2(imageSize);
-        _image.setType(imageType);
-        _image.setNumberOfComponents(imageComp);
-        _image.resize();
+        data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
+        switch(imageComp)
+        {
+            case 1:
+                format = data::Image::PixelFormat::GRAY_SCALE;
+                break;
+
+            case 2:
+                format = data::Image::PixelFormat::RG;
+                break;
+
+            case 3:
+                format = data::Image::PixelFormat::RGB;
+                break;
+
+            case 4:
+                format = data::Image::PixelFormat::RGBA;
+                break;
+
+            default:
+                SIGHT_FATAL("Unhandled OpenCV format");
+        }
+
+        _image.resize(imageSize, imageType, format);
     }
 
-    const auto dumpLock = _image.lock();
+    const auto dumpLock = _image.dump_lock();
     SIGHT_ASSERT("Empty image buffer", _image.getAllocatedSizeInBytes() > 0);
 
     auto buffer = _image.begin<std::uint8_t>();
@@ -142,7 +161,7 @@ void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::copyToCv(const data::Image::csptr& _image)
+cv::Mat Image::copyToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, true);
 }

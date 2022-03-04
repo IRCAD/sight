@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,25 +109,25 @@ void SPointToLandmarkVector::updating()
     }
 
     // Compute the vector and put the result in the translation part of the matrix.
-    const ::glm::dvec3 sourcePt(sourcePoint[0], sourcePoint[1], sourcePoint[2]);
-    const ::glm::dvec3 targetPt(targetPoint[0], targetPoint[1], targetPoint[2]);
-    const ::glm::dvec3 pointToTarget = targetPt - sourcePt;
-    const float length               = static_cast<float>(::glm::length(pointToTarget));
+    const glm::dvec3 sourcePt(sourcePoint[0], sourcePoint[1], sourcePoint[2]);
+    const glm::dvec3 targetPt(targetPoint[0], targetPoint[1], targetPoint[2]);
+    const glm::dvec3 pointToTarget = targetPt - sourcePt;
+    const float length             = static_cast<float>(glm::length(pointToTarget));
     this->signal<LengthChangedSignalType>(LENGTH_CHANGED_SIG)->asyncEmit(length);
     const std::string lengthStr = std::to_string(length) + " mm";
     this->signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG)->asyncEmit(lengthStr);
 
-    ::glm::dmat4x4 pointToTargetMat(1.0);
-    const ::glm::dvec3 front = ::glm::normalize(pointToTarget);
+    glm::dmat4x4 pointToTargetMat(1.0);
+    const glm::dvec3 front = glm::normalize(pointToTarget);
     // compute an orthogonal vector to front ( vec(a,b,c) --> vecOrtho(-b,a,0))
-    ::glm::dvec3 up          = ::glm::dvec3(-front[1], front[0], 0);
-    const ::glm::dvec3 right = ::glm::normalize(cross(up, front));
-    up = ::glm::cross(front, right);
+    glm::dvec3 up          = glm::dvec3(-front[1], front[0], 0);
+    const glm::dvec3 right = glm::normalize(cross(up, front));
+    up = glm::cross(front, right);
 
-    pointToTargetMat[0] = ::glm::dvec4(right, 0.0);
-    pointToTargetMat[1] = ::glm::dvec4(up, 0.0);
-    pointToTargetMat[2] = ::glm::dvec4(front, 0.0);
-    pointToTargetMat[3] = ::glm::dvec4(sourcePt, 1.0);
+    pointToTargetMat[0] = glm::dvec4(right, 0.0);
+    pointToTargetMat[1] = glm::dvec4(up, 0.0);
+    pointToTargetMat[2] = glm::dvec4(front, 0.0);
+    pointToTargetMat[3] = glm::dvec4(sourcePt, 1.0);
 
     sight::geometry::data::setTF3DFromMatrix(*transform, pointToTargetMat);
     auto sig = transform->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);

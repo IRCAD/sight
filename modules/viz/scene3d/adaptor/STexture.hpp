@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API STexture final : public sight::viz::scene3d::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STexture, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STexture, sight::viz::scene3d::IAdaptor);
 
     /// Defines the keys of the slot @ref textureSwapped().
     MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
@@ -80,7 +80,7 @@ public:
     MODULE_VIZ_SCENE3D_API ~STexture() noexcept override;
 
     /// Gets the Ogre texture.
-    MODULE_VIZ_SCENE3D_API ::Ogre::TexturePtr getTexture() const;
+    MODULE_VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
 
     /// Gets the textures name.
     MODULE_VIZ_SCENE3D_API std::string getTextureName() const;
@@ -120,7 +120,7 @@ protected:
 private:
 
     /// Contains the Ogre texture.
-    ::Ogre::TexturePtr m_texture;
+    Ogre::TexturePtr m_texture;
 
     /// Defines the texture's name in the Ogre resource manager.
     std::string m_textureName;
@@ -147,7 +147,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::TexturePtr STexture::getTexture() const
+inline Ogre::TexturePtr STexture::getTexture() const
 {
     return m_texture;
 }

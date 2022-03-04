@@ -33,7 +33,7 @@ namespace action
 {
 
 /// Implements an action to show in a message box few memory information
-class MODULE_DEBUG_CLASS_API MemoryInfo : public ::sight::ui::base::IAction
+class MODULE_DEBUG_CLASS_API MemoryInfo : public sight::ui::base::IAction
 {
 public:
 

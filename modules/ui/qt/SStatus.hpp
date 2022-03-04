@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -168,7 +168,7 @@ protected:
 private:
 
     /// Number of status
-    size_t m_count;
+    std::size_t m_count;
 
     QVector<QPointer<QLabel> > m_indicator;
     QVector<QPointer<QLabel> > m_labelStatus;
@@ -180,8 +180,8 @@ private:
 
     bool m_isCircular; ///< label is a circle if true (else it's a square)
 
-    size_t m_width;  ///< width of idicator
-    size_t m_height; ///< height of idicator
+    std::size_t m_width;  ///< width of indicator
+    std::size_t m_height; ///< height of indicator
 };
 
 } // namespace sight::module::ui::qt

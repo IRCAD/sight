@@ -72,7 +72,7 @@ void IXMLParser::setObjectConfig(core::runtime::ConfigurationElement::csptr _cfg
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::createConfig(core::tools::Object::sptr _obj)
+void IXMLParser::createConfig(core::tools::Object::sptr)
 {
 }
 

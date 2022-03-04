@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,7 +115,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      * @brief       Return the number of configurations
      * @return      Return the number of configurations
      */
-    CORE_API size_t size() const;
+    CORE_API std::size_t size() const;
 
     //TODO: Fix visibility
 //    protected:

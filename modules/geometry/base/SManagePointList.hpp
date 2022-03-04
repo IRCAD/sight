@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,8 @@ namespace sight::module::geometry::base
  * - \b matrix [sight::data::Matrix4](optional): Transformation applied to picked positions.
  *
  * @subsection Configuration Configuration:
- * - \b max (optional, size_t, default=0): set the maximum number of points contained in the point list, if it's 0, the
+ * - \b max (optional, std::size_t, default=0): set the maximum number of points contained in the point list, if it's 0,
+ * the
  * capacity is set to the maximum. if the maximum is reached, the first point in the list will be removed.
  * - \b removable (optional, bool, default=true): allow points to be removed.
  * - \b label (optional, bool, default=false): add an ID label to added points.
@@ -70,7 +71,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public service::IControl
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SManagePointList, ::sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SManagePointList, sight::service::IController);
 
     /// Initialize slots.
     MODULE_GEOMETRY_BASE_API SManagePointList() noexcept;
@@ -114,7 +115,7 @@ private:
     void clearPoints() const;
 
     /// Maximum number of contained points.
-    size_t m_max {0};
+    std::size_t m_max {0};
 
     /// Allows points to be removed.
     bool m_removable {true};

@@ -460,15 +460,14 @@ void STransferFunction::renameTF()
 
 void STransferFunction::importTF()
 {
-    const data::TransferFunction::sptr tf = data::TransferFunction::New();
-    const auto reader                     =
-        service::add<io::base::service::IReader>("sight::module::io::atoms::SReader");
+    const auto tf     = data::TransferFunction::New();
+    const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
 
     reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
-    config.add("archive.<xmlattr>.backend", "json");
-    config.add("archive.extension", ".tf");
+    config.add("dialog.<xmlattr>.extension", ".tf");
+    config.add("dialog.<xmlattr>.description", "Transfer Function");
 
     reader->configure(config);
     reader->start();
@@ -500,17 +499,13 @@ void STransferFunction::importTF()
 
 void STransferFunction::exportTF()
 {
-    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::atoms::SWriter");
+    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
 
     writer->setInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
-    config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
-    config.add("patcher.<xmlattr>.version", s_VERSION_TF);
-    config.add("archive.<xmlattr>.backend", "json");
-    config.add("archive.extension", ".tf");
-    config.add("extensions.extension", ".tf");
-    config.add("extensions.extension.<xmlattr>.label", "Transfer Function");
+    config.add("dialog.<xmlattr>.extension", ".tf");
+    config.add("dialog.<xmlattr>.description", "Transfer Function");
 
     writer->configure(config);
     writer->start();
@@ -550,17 +545,15 @@ void STransferFunction::initTransferFunctions()
                     ++it)
                 {
                     if(!std::filesystem::is_directory(*it)
-                       && it->path().extension().string() == ".json")
+                       && it->path().extension().string() == ".sight")
                     {
                         paths.push_back(*it);
                     }
                 }
             }
 
-            const data::TransferFunction::sptr tf = data::TransferFunction::New();
-            const auto reader                     = service::add<io::base::service::IReader>(
-                "sight::module::io::atoms::SReader"
-            );
+            const auto tf     = data::TransferFunction::New();
+            const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
             reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
             const auto srvCfg  = core::runtime::EConfigurationElement::New("service");

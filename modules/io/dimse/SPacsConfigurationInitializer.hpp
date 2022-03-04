@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,7 +115,7 @@ private:
     /// Defines the AET of the SCP (server name).
     std::string m_SCPAppEntityTitle;
 
-    /// Defines the SCP host name (server adress).
+    /// Defines the SCP host name (server address).
     std::string m_SCPHostName;
 
     /// Defines the SCP port (server port).
@@ -139,6 +139,9 @@ private:
 
     /// Defines the key to save/load preferences.
     std::string m_preferenceKey;
+
+    /// Return the canonical preference key
+    std::string getKey(const std::string& subKey) const noexcept;
 
     static constexpr std::string_view s_CONFIG_INOUT = "config";
     data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::inout> m_config {this, s_CONFIG_INOUT, true};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
      * @param[in] definedCharsetTerm DICOM source charset
      * @param[in] logger Logger used for conversion errors
      * @throw core::Exception
-     * @throw ::boost::locale::conv::invalid_charset_error
+     * @throw boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
     IO_DICOM_API static std::string convertString(
@@ -88,7 +88,7 @@ private:
      * @param[in] definedTermList DICOM charset list
      * @param[in] logger Logger used for conversion errors
      * @throw core::Exception
-     * @throw ::boost::locale::conv::invalid_charset_error
+     * @throw boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format
      */
     static std::string convertSequenceWithCodeExtensions(

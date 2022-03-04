@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,8 +60,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the frustum's layer
  * - \b transform (optional, string, default=""): transform applied to the frustum's scene node
- * - \b near (optional, float, default=1.0): near clipping distance of the ::Ogre::Camera
- * - \b far (optional, float, default=20.0): far clipping distance of the ::Ogre::Camera
+ * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
+ * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera
  * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
@@ -72,7 +72,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFrustum final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFrustum, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFrustum, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SFrustum() noexcept;
@@ -111,11 +111,11 @@ protected:
 
 private:
 
-    /// Sets ::Ogre::Camera from data::Camera parameters.
+    /// Sets Ogre::Camera from data::Camera parameters.
     void setOgreCamFromData();
 
     /// Contains the Ogre's camera (frustum) representing data::Camera position and parameters.
-    ::Ogre::Camera* m_ogreCamera {nullptr};
+    Ogre::Camera* m_ogreCamera {nullptr};
 
     /// Contains the material data.
     data::Material::sptr m_material {nullptr};

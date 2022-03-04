@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,10 +45,10 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b removeGroup(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
  * - \b addPoint(std::string): adds the last point of a landmarks group.
- * - \b removePoint(std::string, size_t): removes a point.
- * - \b insertPoint(std::string, size_t): inserts a point.
- * - \b selectPoint(std::string, size_t) hightlights the selected landmark.
- * - \b deselectPoint(std::string, size_t): resets the hightlighting of the selected landmark.
+ * - \b removePoint(std::string, std::size_t): removes a point.
+ * - \b insertPoint(std::string, std::size_t): inserts a point.
+ * - \b selectPoint(std::string, std::size_t) hightlights the selected landmark.
+ * - \b deselectPoint(std::string, std::size_t): resets the hightlighting of the selected landmark.
  * - \b initializeImage(): initializes image slices index if there is one.
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
@@ -56,6 +56,9 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
+ *
+ * @section Signals Signals
+ * - \b sendWorldCoord(double, double, double): sends world coordinates of current selected landmarks (by double click).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -96,7 +99,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLandmarks, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLandmarks, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SLandmarks() noexcept;
@@ -139,6 +142,19 @@ public:
      * @param _y Y screen coordinate.
      */
     MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+
+    /**
+     * @brief Listens to mouse buttons being double pressed.
+     * @param _button pressed mouse button.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     */
+    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+
+    /// Signal send when double clicked on a landmark, send its world coordinates;
+    MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
+    typedef core::com::Signal<void (double, double, double)> world_coordinates_signal_t;
 
 protected:
 
@@ -183,10 +199,10 @@ private:
     struct Landmark
     {
         Landmark(
-            ::Ogre::SceneNode* _node,
-            ::Ogre::ManualObject* _object,
+            Ogre::SceneNode* _node,
+            Ogre::ManualObject* _object,
             std::string _groupName,
-            size_t _index,
+            std::size_t _index,
             sight::viz::scene3d::Text* _label
         ) :
             m_node(_node),
@@ -197,10 +213,10 @@ private:
         {
         }
 
-        ::Ogre::SceneNode* m_node {nullptr};          /*!< Contains the node of the landmark */
-        ::Ogre::ManualObject* m_object {nullptr};     /*!< Contains the manual object that represent the landmark */
+        Ogre::SceneNode* m_node {nullptr};            /*!< Contains the node of the landmark */
+        Ogre::ManualObject* m_object {nullptr};       /*!< Contains the manual object that represent the landmark */
         std::string m_groupName {""};                 /*!< Defines the group name of the landmark */
-        size_t m_index {0};                           /*!< Defines the index of the landmark */
+        std::size_t m_index {0};                      /*!< Defines the index of the landmark */
         sight::viz::scene3d::Text* m_label {nullptr}; /*!< Defines the text label of the landmark (can be nullptr) */
     };
 
@@ -218,14 +234,14 @@ private:
         bool m_show {false};
     };
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /**
      * @brief Gets the normalized camera direction vector.
      * @param _cam camera from which to extract the direction vector.
      * @return A vector representing the camera direction
      */
-    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const _cam);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const _cam);
 
     /**
      * @brief SLOT: removes an entire group.
@@ -244,7 +260,7 @@ private:
      * @param _groupName name of the group to update.
      * @param _index index of the point relative to the group.
      */
-    void modifyPoint(std::string _groupName, size_t _index);
+    void modifyPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: adds the last point of a landmarks group.
@@ -257,14 +273,14 @@ private:
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void removePoint(std::string _groupName, size_t _index);
+    void removePoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: inserts a point.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void insertPoint(std::string _groupName, size_t _index);
+    void insertPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief inserts a point.
@@ -272,21 +288,21 @@ private:
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertMyPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks);
+    void insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks);
 
     /**
      * @brief SLOT: hightlights the selected landmark.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void selectPoint(std::string _groupName, size_t _index);
+    void selectPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: resets the hightlights the selected landmark.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void deselectPoint(std::string _groupName, size_t _index);
+    void deselectPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
@@ -324,7 +340,7 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional< ::Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
+    std::optional<Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
@@ -345,7 +361,7 @@ private:
     );
 
     /// Contains the root scene node.
-    ::Ogre::SceneNode* m_transNode {nullptr};
+    Ogre::SceneNode* m_transNode {nullptr};
 
     /// Contains the material data.
     data::Material::sptr m_material {nullptr};
@@ -360,7 +376,7 @@ private:
     bool m_enableLabels {true};
 
     /// Defines the label font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
@@ -390,13 +406,13 @@ private:
     std::uint32_t m_queryMask {0xFFFFFFFF};
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_landmarksQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_landmarksQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view s_LANDMARKS_INPUT = "landmarks";
     static constexpr std::string_view s_IMAGE_INPUT     = "image";
 
-    sight::data::ptr<sight::data::Landmarks, sight::data::Access::in> m_landmarks {this, s_LANDMARKS_INPUT};
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INPUT, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

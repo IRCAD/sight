@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,11 @@ namespace sight::module::activity::validator
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSeries::ContainOneTool);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::ModelSeries::ContainOneTool);
 
 //-----------------------------------------------------------------------------
 
-ContainOneTool::ContainOneTool(::sight::activity::IValidator::Key key)
+ContainOneTool::ContainOneTool(sight::activity::IValidator::Key)
 {
 }
 
@@ -51,7 +51,7 @@ ContainOneTool::~ContainOneTool()
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData) const
+sight::activity::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -64,7 +64,7 @@ ContainOneTool::~ContainOneTool()
 
     if(modelSeries)
     {
-        size_t skinCount = 0;
+        std::size_t skinCount = 0;
         for(auto rec : modelSeries->getReconstructionDB())
         {
             if(rec->getStructureType() == "Tool")
@@ -95,7 +95,7 @@ ContainOneTool::~ContainOneTool()
             }
             else
             {
-                size_t skinCount = 0;
+                std::size_t skinCount = 0;
                 for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Tool")
@@ -130,7 +130,7 @@ ContainOneTool::~ContainOneTool()
             }
             else
             {
-                size_t skinCount = 0;
+                std::size_t skinCount = 0;
                 for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Tool")

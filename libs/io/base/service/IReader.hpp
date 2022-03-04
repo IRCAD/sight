@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,11 +56,11 @@ public:
     /// Enum to define a password policy
     enum class DialogPolicy : uint8_t
     {
-        NEVER   = 0,      /// Never use show the dialog
-        ONCE    = 1,      /// Show only once, store the location as long as the service is started
-        ALWAYS  = 2,      /// Always show the location dialog
-        DEFAULT = ALWAYS, /// Default behavior if nothing is set
-        INVALID = 255     /// Used for error management
+        NEVER   = 0,     /// Never use show the dialog
+        ONCE    = 1,     /// Show only once, store the location as long as the service is started
+        ALWAYS  = 2,     /// Always show the location dialog
+        DEFAULT = NEVER, /// Default behavior if nothing is set
+        INVALID = 255    /// Used for error management
     };
 
     /**
@@ -168,7 +168,7 @@ public:
 
     //@}
 
-    /// Convenience function to convert from dialogPolicy enum value to string
+    /// Convenience function to convert from DialogPolicy enum value to string
     constexpr static std::string_view dialogPolicyToString(DialogPolicy policy) noexcept
     {
         switch(policy)
@@ -187,7 +187,7 @@ public:
         }
     }
 
-    /// Convenience function to convert from string to PasswordPolicy enum value
+    /// Convenience function to convert from string to DialogPolicy enum value
     constexpr static DialogPolicy stringToDialogPolicy(std::string_view policy) noexcept
     {
         if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER); policy == NEVER)

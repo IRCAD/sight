@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,9 +120,9 @@ void AlwaysDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::C
 
 //------------------------------------------------------------------------------
 
-size_t AlwaysDump::dump()
+std::size_t AlwaysDump::dump()
 {
-    size_t dumped = 0;
+    std::size_t dumped = 0;
 
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     if(manager)

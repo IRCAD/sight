@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,12 +56,14 @@ static const std::string s_INTERACTIVE_CONFIG     = "interactive";
 static const std::string s_PRIORITY_CONFIG        = "priority";
 static const std::string s_QUERY_MASK_CONFIG      = "queryMask";
 
+const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
+
 //------------------------------------------------------------------------------
 
-::Ogre::Vector3 SLandmarks::getCamDirection(const ::Ogre::Camera* const _cam)
+Ogre::Vector3 SLandmarks::getCamDirection(const Ogre::Camera* const _cam)
 {
-    const ::Ogre::Matrix4 view = _cam->getViewMatrix();
-    ::Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
+    const Ogre::Matrix4 view = _cam->getViewMatrix();
+    Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
     direction.normalise();
     return -direction;
 }
@@ -81,6 +83,8 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_INITIALIZE_IMAGE_SLOT, &SLandmarks::initializeImage, this);
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
+
+    newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +110,7 @@ void SLandmarks::configuring()
     );
 
     m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize     = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_enableLabels = config.get<bool>(s_LABEL_CONFIG, m_enableLabels);
     m_interactive  = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority     = config.get<int>(s_PRIORITY_CONFIG, m_priority);
@@ -162,14 +166,14 @@ void SLandmarks::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_transNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    m_transNode = this->getOrCreateTransformNode(rootSceneNode);
 
     m_material = data::Material::New();
 
     // Register the material adaptor.
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
-        "::sight::module::viz::scene3d::adaptor::SMaterial"
+        "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
@@ -233,7 +237,7 @@ void SLandmarks::updating()
     for(const std::string& groupName : landmarks->getGroupNames())
     {
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
-        for(size_t index = 0 ; index < group.m_points.size() ; ++index)
+        for(std::size_t index = 0 ; index < group.m_points.size() ; ++index)
         {
             this->insertMyPoint(groupName, index, landmarks.get_shared());
         }
@@ -280,7 +284,7 @@ void SLandmarks::removeGroup(std::string _groupName)
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     // Find object where name match _groupName and delete Ogre's resources.
     for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; )
@@ -318,7 +322,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
     this->getRenderService()->makeCurrent();
 
     // Get all selected point.
-    std::vector<size_t> indexes;
+    std::vector<std::size_t> indexes;
     for(const std::shared_ptr<SelectedLandmark>& landmark : m_selectedLandmarks)
     {
         indexes.push_back(landmark->m_landmark->m_index);
@@ -333,16 +337,16 @@ void SLandmarks::modifyGroup(std::string _groupName)
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
-    size_t groupSize = group.m_points.size();
+    std::size_t groupSize = group.m_points.size();
 
     // Re-create the group.
-    for(size_t index = 0 ; index < groupSize ; ++index)
+    for(std::size_t index = 0 ; index < groupSize ; ++index)
     {
         this->insertMyPoint(_groupName, index, landmarks.get_shared());
     }
 
     // Re-run selected landmark threads
-    for(size_t index : indexes)
+    for(std::size_t index : indexes)
     {
         this->selectPoint(_groupName, index);
     }
@@ -350,7 +354,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
+void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -363,9 +367,9 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
         const std::string& name = (*objectIt)->m_groupName;
         if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index == _index)
         {
-            const ::Ogre::Vector3 position(static_cast<float>(point[0]),
-                                           static_cast<float>(point[1]),
-                                           static_cast<float>(point[2]));
+            const Ogre::Vector3 position(static_cast<float>(point[0]),
+                                         static_cast<float>(point[1]),
+                                         static_cast<float>(point[2]));
             (*objectIt)->m_node->setPosition(position);
             break;
         }
@@ -390,7 +394,7 @@ void SLandmarks::addPoint(std::string _groupName)
     );
 
     // Get the last index.
-    size_t index = group.m_points.size() - 1;
+    std::size_t index = group.m_points.size() - 1;
 
     // Add the new point.
     this->insertMyPoint(_groupName, index, landmarks.get_shared());
@@ -398,12 +402,12 @@ void SLandmarks::addPoint(std::string _groupName)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removePoint(std::string _groupName, size_t _index)
+void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     // Find object where name match _groupName and the index, and delete Ogre's resources.
     for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; ++objectIt)
@@ -446,7 +450,7 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertPoint(std::string _groupName, size_t _index)
+void SLandmarks::insertPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current
     this->getRenderService()->makeCurrent();
@@ -457,7 +461,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks)
+void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks)
 {
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
@@ -466,11 +470,11 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
     const std::string pointName = _groupName + "_" + std::to_string(_index);
 
     // Create the manual object.
-    const ::Ogre::ColourValue color =
-        ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
+    const Ogre::ColourValue color =
+        Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
 
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    ::Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
+    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
     switch(group.m_shape)
     {
         case data::Landmarks::Shape::SPHERE:
@@ -494,11 +498,11 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
 
     object->setQueryFlags(m_landmarksQueryFlag);
 
-    ::Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
+    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
 
     // Set the point to the right position.
     const data::Landmarks::PointType& point = _landmarks->getPoint(_groupName, _index);
-    node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));
+    node->setPosition(Ogre::Real(point[0]), Ogre::Real(point[1]), Ogre::Real(point[2]));
 
     // Attach data.
     node->attachObject(object);
@@ -508,10 +512,10 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
     if(m_enableLabels)
     {
         // Get necessary data.
-        const float dpi                   = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-        ::Ogre::Camera* cam               = this->getLayer()->getDefaultCamera();
-        const std::string textName        = this->getID() + "_" + pointName + "_text";
-        ::Ogre::OverlayContainer* overlay = this->getLayer()->getOverlayTextPanel();
+        const float dpi                 = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
+        Ogre::Camera* cam               = this->getLayer()->getDefaultCamera();
+        const std::string textName      = this->getID() + "_" + pointName + "_text";
+        Ogre::OverlayContainer* overlay = this->getLayer()->getOverlayTextPanel();
 
         // Create the label.
         text = sight::viz::scene3d::Text::New(textName, sceneMgr, overlay, m_fontSource, m_fontSize, dpi, cam);
@@ -536,7 +540,7 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::selectPoint(std::string _groupName, size_t _index)
+void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -556,7 +560,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
             if(it == m_selectedLandmarks.end())
             {
-                // This method must be synchronized with deselectPoint(std::string, size_t).
+                // This method must be synchronized with deselectPoint(std::string, std::size_t).
                 std::lock_guard<std::mutex> guard(m_selectedMutex);
 
                 // Create thread data.
@@ -578,12 +582,12 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::deselectPoint(std::string _groupName, size_t _index)
+void SLandmarks::deselectPoint(std::string _groupName, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    // This method must be synchronized with selectPoint(std::string, size_t).
+    // This method must be synchronized with selectPoint(std::string, std::size_t).
     std::lock_guard<std::mutex> guard(m_selectedMutex);
 
     // Find the thread and stop it.
@@ -679,8 +683,8 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
     {
         this->getRenderService()->makeCurrent();
 
-        const auto& imgSpacing = imageLock->getSpacing2();
-        const auto& imgOrigin  = imageLock->getOrigin2();
+        const auto& imgSpacing = imageLock->getSpacing();
+        const auto& imgOrigin  = imageLock->getOrigin();
 
         m_currentSlicePos = {
             static_cast<float>(_sagittalIndex + 1) * static_cast<float>(imgSpacing[0])
@@ -745,7 +749,7 @@ void SLandmarks::hideMyLandmark(
     if(imageLock)
     {
         // Show the landmark only if the slice is inside it.
-        ::Ogre::SceneNode* node = _landmark->m_node;
+        Ogre::SceneNode* node = _landmark->m_node;
         switch(m_orientation)
         {
             case OrientationMode::X_AXIS:
@@ -764,7 +768,7 @@ void SLandmarks::hideMyLandmark(
                 break;
 
             default:
-                SIGHT_ERROR("Unhandle orientation mode");
+                SIGHT_ERROR("Unhandled orientation mode");
                 break;
         }
     }
@@ -793,10 +797,10 @@ void SLandmarks::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional< ::Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y)
+std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y)
 {
     sight::viz::scene3d::picker::IPicker picker;
-    ::Ogre::SceneManager* sm = this->getSceneManager();
+    Ogre::SceneManager* sm = this->getSceneManager();
     picker.setSceneManager(sm);
     picker.executeRaySceneQuery(_x, _y, m_queryMask);
 
@@ -809,9 +813,9 @@ std::optional< ::Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int
         const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
         const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-        const ::Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
+        const Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
 
-        ::Ogre::Vector3 normal = -ray.getDirection();
+        Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
 
         return picker.getIntersectionInWorldSpace() + normal * 0.01f;
@@ -828,27 +832,27 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
     {
         const auto layer = this->getLayer();
 
-        ::Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+        Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
 
-        const ::Ogre::Camera* const cam = layer->getDefaultCamera();
-        const auto* const vp            = cam->getViewport();
+        const Ogre::Camera* const cam = layer->getDefaultCamera();
+        const auto* const vp          = cam->getViewport();
 
         const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
         const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-        const ::Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+        const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
-        bool found                                 = false;
-        ::Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
+        bool found                               = false;
+        Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
         raySceneQuery->setSortByDistance(false);
         if(raySceneQuery->execute().size() != 0)
         {
-            const ::Ogre::Real scale = 1.15f;
+            const Ogre::Real scale = 1.15f;
 
-            const ::Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
-            for(size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+            const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
+            for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
             {
-                const ::Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+                const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
                 for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
                 {
                     if(landmark->m_object == object)
@@ -866,35 +870,6 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
         }
 
         delete raySceneQuery;
-
-        if(found)
-        {
-            this->getLayer()->cancelFurtherInteraction();
-
-            // Check if something is picked to update the position of the distance.
-            std::optional< ::Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-            if(pickedPos.has_value())
-            {
-                // Update the data, the autoconnection will call modifyPoint.
-                auto landmarks                   = m_landmarks.lock();
-                data::Landmarks::PointType point = landmarks->getPoint(
-                    m_pickedData->m_groupName,
-                    m_pickedData->m_index
-                );
-                const ::Ogre::Vector3 newPos = pickedPos.value();
-                point[0] = newPos[0];
-                point[1] = newPos[1];
-                point[2] = newPos[2];
-
-                const auto& sig = landmarks->signal<data::Landmarks::PointModifiedSigType>(
-                    data::Landmarks::s_POINT_MODIFIED_SIG
-                );
-
-                sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
-            }
-
-            this->requestRender();
-        }
     }
 }
 
@@ -904,36 +879,43 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedData != nullptr)
     {
-        ::Ogre::Vector3 newPos;
-
-        // Discard the current distance to launch the ray over the scene without picking this one.
+        // Discard the current landmark to launch the ray over the scene without picking this one.
         m_pickedData->m_object->setQueryFlags(0x0);
 
-        // Check if something is picked.
-        std::optional< ::Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-        if(pickedPos.has_value())
-        {
-            newPos = pickedPos.value();
-        }
-        // Else we move the distance along a plane.
-        else
-        {
-            const auto layer = this->getLayer();
+        const auto layer              = this->getLayer();
+        const Ogre::Camera* const cam = layer->getDefaultCamera();
+        SIGHT_ASSERT("No camera found", cam);
 
-            const ::Ogre::Camera* const cam = layer->getDefaultCamera();
-            const auto* const vp            = cam->getViewport();
+        bool moveInCameraPlane = true;
+
+        Ogre::Vector3 newPos;
+        if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
+        {
+            // If something is picked, we will snap the landmark to it
+            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
+            if(pickedPos.has_value())
+            {
+                newPos            = pickedPos.value();
+                moveInCameraPlane = false;
+            }
+        }
+
+        // Else we move the distance along a plane.
+        if(moveInCameraPlane)
+        {
+            const auto* const vp = cam->getViewport();
 
             const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
             const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-            const ::Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
-            const ::Ogre::Vector3 direction = this->getCamDirection(cam);
+            const Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
+            const Ogre::Vector3 direction = this->getCamDirection(cam);
 
-            const ::Ogre::Vector3 position = m_pickedData->m_node->getPosition();
+            const Ogre::Vector3 position = m_pickedData->m_node->getPosition();
 
-            const ::Ogre::Plane plane(direction, position);
+            const Ogre::Plane plane(direction, position);
 
-            const std::pair<bool, ::Ogre::Real> hit = ::Ogre::Math::intersects(ray, plane);
+            const std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, plane);
 
             if(!hit.first)
             {
@@ -948,8 +930,8 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
         m_pickedData->m_object->setQueryFlags(m_landmarksQueryFlag);
 
         // Update the data, the autoconnection will call modifyPoint.
-        auto landmarks                   = m_landmarks.lock();
-        data::Landmarks::PointType point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
+        auto landmarks                    = m_landmarks.lock();
+        data::Landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
         point[0] = newPos[0];
         point[1] = newPos[1];
         point[2] = newPos[2];
@@ -970,7 +952,7 @@ void SLandmarks::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedData != nullptr)
     {
-        const ::Ogre::Real scale = 1.f;
+        const Ogre::Real scale = 1.f;
         m_pickedData->m_node->setScale(scale, scale, scale);
         m_pickedData = nullptr;
 
@@ -979,5 +961,73 @@ void SLandmarks::buttonReleaseEvent(MouseButton, Modifier, int, int)
 }
 
 //------------------------------------------------------------------------------
+
+void SLandmarks::buttonDoublePressEvent(MouseButton, Modifier, int _x, int _y)
+{
+    const auto layer = this->getLayer();
+
+    Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+
+    const Ogre::Camera* const cam = layer->getDefaultCamera();
+    const auto* const vp          = cam->getViewport();
+
+    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+
+    const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+
+    bool found                               = false;
+    Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
+    raySceneQuery->setSortByDistance(false);
+    if(raySceneQuery->execute().size() != 0)
+    {
+        const Ogre::Real scale = 1.15f;
+
+        const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
+        for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+        {
+            const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+            for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
+            {
+                if(landmark->m_object == object)
+                {
+                    const auto landmarks = m_landmarks.lock();
+
+                    m_pickedData = landmark;
+                    landmark->m_node->setScale(scale, scale, scale);
+
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    delete raySceneQuery;
+
+    if(found)
+    {
+        this->getLayer()->cancelFurtherInteraction();
+
+        // Check if something is picked to update the position of the distance.
+        std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
+        if(pickedPos.has_value())
+        {
+            // Update the data, the autoconnection will call modifyPoint.
+            auto landmarks                   = m_landmarks.lock();
+            data::Landmarks::PointType point = landmarks->getPoint(
+                m_pickedData->m_groupName,
+                m_pickedData->m_index
+            );
+
+            // Send signal with world coordinates of the landmarks
+            this->signal<world_coordinates_signal_t>(s_SEND_WORLD_COORD)->asyncEmit(
+                point[0],
+                point[1],
+                point[2]
+            );
+        }
+    }
+}
 
 } // namespace sight::module::viz::scene3d::adaptor.

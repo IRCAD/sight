@@ -60,7 +60,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="ui::base::IMenuBar" impl="::sight::module::ui::base::SMenuBar"
+       <service uid="menuBar" type="ui::base::IMenuBar" impl="sight::module::ui::base::SMenuBar"
      * autoConnect="false"
      *>
           <gui>

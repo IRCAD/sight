@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,9 @@ void INetworkSender::updating()
 {
     if(this->isStarted())
     {
-        const size_t numObjects = m_objects.size();
+        const std::size_t numObjects = m_objects.size();
         // Grab the objects to send.
-        for(size_t i = 0 ; i < numObjects ; ++i)
+        for(std::size_t i = 0 ; i < numObjects ; ++i)
         {
             const auto object = m_objects[i].lock();
 
@@ -71,7 +71,7 @@ void INetworkSender::updating()
 service::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_OBJECTS_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_OBJECTS_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

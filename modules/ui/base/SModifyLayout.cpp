@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ void SModifyLayout::updating()
         SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
         service::IService::sptr service = service::get(uid);
         SIGHT_ASSERT("service not found", service);
-        ::sight::ui::base::IGuiContainer::sptr container = ::sight::ui::base::IGuiContainer::dynamicCast(service);
+        sight::ui::base::IGuiContainer::sptr container = sight::ui::base::IGuiContainer::dynamicCast(service);
         SIGHT_ASSERT("::ui::base::IGuiContainer dynamicCast failed", container);
 
         container->setParent(wid);
@@ -94,7 +94,7 @@ void SModifyLayout::updating()
         SIGHT_ASSERT("service not found", service);
         if(service->isStarted())
         {
-            ::sight::ui::base::IGuiContainer::sptr containerSrv = ::sight::ui::base::IGuiContainer::dynamicCast(
+            sight::ui::base::IGuiContainer::sptr containerSrv = sight::ui::base::IGuiContainer::dynamicCast(
                 service
             );
             if(containerSrv)
@@ -102,7 +102,7 @@ void SModifyLayout::updating()
                 containerSrv->getContainer()->setEnabled(isEnable);
             }
 
-            auto actionSrv = ::sight::ui::base::IAction::dynamicCast(service);
+            auto actionSrv = sight::ui::base::IAction::dynamicCast(service);
             if(actionSrv)
             {
                 actionSrv->setIsExecutable(isEnable);
@@ -112,10 +112,10 @@ void SModifyLayout::updating()
 
     for(ShowSrvVectType::value_type elt : m_showSrvWid)
     {
-        std::string wid                                           = elt.first;
-        ::boost::logic::tribool isVisible                         = elt.second;
-        ::sight::ui::base::container::fwContainer::sptr container =
-            ::sight::ui::base::GuiRegistry::getWIDContainer(wid);
+        std::string wid                                         = elt.first;
+        boost::logic::tribool isVisible                         = elt.second;
+        sight::ui::base::container::fwContainer::sptr container =
+            sight::ui::base::GuiRegistry::getWIDContainer(wid);
         SIGHT_ASSERT("::ui::base::IGuiContainer " << wid << " is unknown", container);
 
         if(isVisible)
@@ -134,15 +134,15 @@ void SModifyLayout::updating()
 
     for(ShowSrvVectType::value_type elt : m_showSrvSid)
     {
-        std::string uid                   = elt.first;
-        ::boost::logic::tribool isVisible = elt.second;
+        std::string uid                 = elt.first;
+        boost::logic::tribool isVisible = elt.second;
         SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
         service::IService::sptr service = service::get(uid);
 
-        auto containerSrv = ::sight::ui::base::IGuiContainer::dynamicCast(service);
+        auto containerSrv = sight::ui::base::IGuiContainer::dynamicCast(service);
         SIGHT_ASSERT("::ui::base::IGuiContainer dynamicCast failed", containerSrv);
 
-        ::sight::ui::base::container::fwContainer::sptr container = containerSrv->getContainer();
+        sight::ui::base::container::fwContainer::sptr container = containerSrv->getContainer();
 
         if(isVisible)
         {
@@ -183,7 +183,7 @@ void SModifyLayout::configuring()
                     || actionCfg->getName() == "hide"
                     || actionCfg->getName() == "show_or_hide")
             {
-                ::boost::logic::tribool isVisible;
+                boost::logic::tribool isVisible;
                 if(actionCfg->getName() == "show")
                 {
                     isVisible = true;
@@ -194,7 +194,7 @@ void SModifyLayout::configuring()
                 }
                 else
                 {
-                    isVisible = ::boost::logic::indeterminate;
+                    isVisible = boost::logic::indeterminate;
                 }
 
                 if(actionCfg->hasAttribute("wid"))

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "AppManagerTest.hpp"
 
-#include "core/thread/ActiveWorkers.hpp"
-
 #include "service/extension/AppConfig.hpp"
 #include "service/extension/Factory.hpp"
 #include "service/helper/ProxyConnections.hpp"
@@ -41,7 +39,7 @@
 #include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::AppManagerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::AppManagerTest);
 
 namespace sight::service
 {
@@ -54,9 +52,6 @@ namespace ut
 void AppManagerTest::setUp()
 {
     // Set up context before running a test.
-
-    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -72,9 +67,6 @@ void AppManagerTest::tearDown()
         m_appMgr->destroy();
         m_appMgr = nullptr;
     }
-
-    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -208,7 +200,7 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT(boolean == m_appMgr->getObject(booleanId));
 
     // add a service when object are already added
-    auto service5 = service::add("::sight::service::ut::STest2Inputs");
+    auto service5 = service::add("sight::service::ut::STest2Inputs");
     service5->registerObject(imageId, "data1", data::Access::in, false, false);
     service5->registerObject(booleanId, "data2", data::Access::in, true, false);
     m_appMgr->addService(service5, true, true);
@@ -365,19 +357,19 @@ void AppManagerTest::managerWithServiceConnectionTest()
     const std::string channel = "channel";
 
     auto service1 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
     auto service2 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
     auto service3 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
     auto service4 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
 
@@ -462,17 +454,17 @@ void AppManagerTest::managerWithOutputCreationTest()
 
     // Fill inouts of services with dummy data, there are not considered in this test
     data::Integer::sptr dummy = data::Integer::New(0);
-    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
-    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
-    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
-    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
-    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
-    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
-    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
-    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(0));
+    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, false, false, std::size_t(1));
 
     m_appMgr->startServices();
     CPPUNIT_ASSERT_EQUAL(false, service1->isStarted());
@@ -539,12 +531,12 @@ void AppManagerTest::managerWithGroupTest()
     );
 
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), service1->m_inoutGroup.size());
     service1->setObjectId(service::ut::TestServiceWithData::s_INPUT, integerId0);
     service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, integerId1, 0);
     service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, integerId2, 1);
     service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, integerId3, 2);
-    CPPUNIT_ASSERT_EQUAL(size_t(0), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer0, integerId0);
 
     m_appMgr->startServices();
@@ -558,20 +550,20 @@ void AppManagerTest::managerWithGroupTest()
 
     m_appMgr->addObject(integer1, integerId1);
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer2, integerId2);
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(2), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer3, integerId3);
     CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(3), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), service1->m_inoutGroup.size());
 
     m_appMgr->removeObject(integer3, integerId3);
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(2), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), service1->m_inoutGroup.size());
     m_appMgr->removeObject(integer2, integerId2);
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), service1->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), service1->m_inoutGroup.size());
 
     m_appMgr->destroy();
 }
@@ -606,7 +598,7 @@ void AppManagerTest::managerWithInputsTest()
 
     appMgr->requireInput(INPUT_OBJ1, AppManagerForTest::InputType::OBJECT);
     appMgr->requireInput(INPUT_OBJ2, AppManagerForTest::InputType::OBJECT);
-    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "::sight::data::Image");
+    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "sight::data::Image");
 
     CPPUNIT_ASSERT(!appMgr->checkInputs());
 
@@ -641,7 +633,7 @@ void AppManagerTest::managerWithInputsTest()
 
     // Check that getInputID return the same string on each iteration
     const std::string testSTR = appMgr->getInputID("myString");
-    for(size_t i = 0 ; i < 10 ; ++i)
+    for(std::size_t i = 0 ; i < 10 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(testSTR, appMgr->getInputID("myString"));
     }

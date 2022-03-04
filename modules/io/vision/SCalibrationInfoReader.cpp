@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -38,7 +37,7 @@
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -126,7 +125,7 @@ void SCalibrationInfoReader::updating()
         const auto calibInfo = std::dynamic_pointer_cast<data::CalibrationInfo>(data.get_shared());
         SIGHT_ASSERT("Missing calibration info.", calibInfo);
 
-        data::mt::ObjectWriteLock calibInfoLock(calibInfo);
+        data::mt::locked_ptr calibInfoLock(calibInfo);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -140,12 +139,12 @@ void SCalibrationInfoReader::updating()
 
         for(const std::filesystem::path& dirEntry : std::filesystem::directory_iterator(folder))
         {
-            ::cv::Mat img = ::cv::imread(dirEntry.string(), ::cv::IMREAD_COLOR);
+            cv::Mat img = cv::imread(dirEntry.string(), cv::IMREAD_COLOR);
             std::string errorMessage;
 
             if(!img.empty())
             {
-                ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
+                cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
 
                 data::PointList::sptr chessboardPts = geometry::vision::helper::detectChessboard(
                     img,
@@ -159,8 +158,8 @@ void SCalibrationInfoReader::updating()
                     data::Image::sptr calibImg = data::Image::New();
                     sight::io::opencv::Image::copyFromCv(*calibImg.get(), img);
 
-                    calibImg->setSpacing2({{1., 1., 1.}});
-                    calibImg->setOrigin2({{0., 0., 0.}});
+                    calibImg->setSpacing({{1., 1., 1.}});
+                    calibImg->setOrigin({{0., 0., 0.}});
 
                     const auto detectionPair = std::make_pair(calibImg, chessboardPts);
                     const auto filename      = dirEntry.filename().string();
@@ -229,28 +228,34 @@ void SCalibrationInfoReader::stopping()
 
 void SCalibrationInfoReader::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
-    }
+        ui::base::Preferences preferences;
 
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string scaleStr = ui::base::preferences::getPreference(m_scaleKey);
-    if(!scaleStr.empty())
-    {
-        m_scale = std::stof(scaleStr);
-
-        if(m_scale > 1.f)
+        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
         {
-            m_scale = 1.f;
-            SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
+            m_width = *saved;
         }
+
+        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_heightKey); saved)
+        {
+            m_height = *saved;
+        }
+
+        if(const auto& saved = preferences.get_optional<decltype(m_scale)>(m_scaleKey); saved)
+        {
+            m_scale = *saved;
+
+            if(m_scale > 1.f)
+            {
+                m_scale = 1.f;
+                SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
+            }
+        }
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <glm/glm.hpp>
-
 #include <viz/scene3d/TransferFunction.hpp>
+
+#include <glm/glm.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTexture.h>
@@ -50,7 +50,7 @@ public:
     /// Constructor, creates an SAT with the given resolution.
     VIZ_SCENE3D_API SummedAreaTable(
         std::string _parentId,
-        ::Ogre::SceneManager* _sceneManager,
+        Ogre::SceneManager* _sceneManager,
         float _sizeRatio = 0.25f
     );
 
@@ -62,27 +62,45 @@ public:
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
     VIZ_SCENE3D_API void computeParallel(
-        ::Ogre::TexturePtr _imgTexture,
+        Ogre::TexturePtr _imgTexture,
         const viz::scene3d::TransferFunction::sptr& _gpuTf,
         float _sampleDistance
     );
 
     /// Returns the texture holding the SAT.
-    VIZ_SCENE3D_API ::Ogre::TexturePtr getTexture() const;
+    VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
 
     /// Returns the texture used as a ping-pong buffer during SAT computation allowing it to be repurposed.
-    VIZ_SCENE3D_API ::Ogre::TexturePtr getSpareTexture() const;
+    VIZ_SCENE3D_API Ogre::TexturePtr getSpareTexture() const;
 
     /// Updates the current size of the image according to the passed texture and updates the SAT
-    VIZ_SCENE3D_API void updateSatFromTexture(::Ogre::TexturePtr _imgTexture);
+    VIZ_SCENE3D_API void updateSatFromTexture(Ogre::TexturePtr _imgTexture);
 
     /// Updates the SAT size ratio and updates the SAT.
     VIZ_SCENE3D_API void updateSatFromRatio(float _sizeRatio);
 
 private:
 
-    /// Creates the buffers and initializes the SAT
-    void initializeSAT();
+    class SummedAreaTableInitCompositorListener;
+    class SummedAreaTableCompositorListener;
+
+    /// Internal wrapper keeping trace of the current listeners in use.
+    struct listeners_t
+    {
+        /// SAT init listener.
+        SummedAreaTableInitCompositorListener* init = nullptr;
+
+        /// SAT table update listener.
+        SummedAreaTableCompositorListener* table = nullptr;
+    };
+
+    /// Creates the buffers and initializes the SAT.
+    void updateBuffers();
+
+    /// Returns the voxel colour after TF application.
+    glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
+
+    listeners_t m_listeners {};
 
     /// SAT size ratio used to computes its resolution.
     float m_satSizeRatio;
@@ -94,25 +112,25 @@ private:
     data::Image::Size m_currentImageSize;
 
     /// Texture used as source during SAT GPU computation, holds the result at the end.
-    ::Ogre::TexturePtr m_sourceBuffer;
+    Ogre::TexturePtr m_sourceBuffer {nullptr};
 
     /// Texture used as target during SAT GPU computation.
-    ::Ogre::TexturePtr m_targetBuffer;
+    Ogre::TexturePtr m_targetBuffer {nullptr};
 
     /// Prefix used to name the buffers.
     std::string m_parentId;
 
     /// Scene manager.
-    ::Ogre::SceneManager* m_sceneManager;
+    Ogre::SceneManager* m_sceneManager;
 
     /// Camera used as a viewport for each slice of the SAT buffers.
-    ::Ogre::Camera* m_dummyCamera;
+    Ogre::Camera* m_dummyCamera;
 
     /// The pass orientation, horizontal = 0, vertical = 1, z-wise = 2.
     int m_passOrientation;
 
     /// The index of the slice to which we currently render.
-    size_t m_sliceIndex;
+    std::size_t m_sliceIndex;
 
     /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset =
     /// r^i.
@@ -122,23 +140,14 @@ private:
     float m_currentSliceDepth;
 
     /// Number of texture reads per pass. A higher number will result in fewer passes.
-    /// /!\ This number must be the same as the one used in the FS.
-    const int m_nbTextReads = 32;
-
-    /// Returns the voxel colour after TF application.
-    ::glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
-
-    /// Returns the SAT value at position (x, y, z).
-    ::glm::vec4 getSatValue(glm::vec4* satBuffer, int x, int y, int z);
-
-    /// Sets the SAT value at position (x, y, z).
-    void setSatValue(glm::vec4* satBuffer, ::glm::vec4 value, int x, int y, int z);
+    /// /!\ This number must be the same as the one used in the fragment shader.
+    static constexpr int s_nbTextReads = 32;
 
     /// Resource name of the source buffer.
-    const std::string SOURCE_BUFFER_NAME = "__GPU_SummedAreaTable_Ping";
+    static inline const std::string SOURCE_BUFFER_NAME = "__GPU_SummedAreaTable_Ping";
 
     // Resource name of the target buffer.
-    const std::string TARGET_BUFFER_NAME = "__GPU_SummedAreaTable_Pong";
+    static inline const std::string TARGET_BUFFER_NAME = "__GPU_SummedAreaTable_Pong";
 };
 
 //-----------------------------------------------------------------------------

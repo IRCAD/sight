@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
     /// Updates material polygon mode (surface, point or wireframe)
     VIZ_SCENE3D_API void updatePolygonMode(int _polygonMode);
 
-    /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
+    /// Update material shading mode (flat/phong)
     VIZ_SCENE3D_API void updateShadingMode(
         int _shadingMode,
         int _numLights,
@@ -67,15 +67,13 @@ public:
         bool useTextureAlpha
     );
 
-    /// Update material color in fixed function pipeline
+    /// Update material color
     VIZ_SCENE3D_API void updateRGBAMode(data::Material::sptr _sightMaterial);
 
     void setHasMeshNormal(bool _hasMeshNormal);
     void setHasUV(bool _hasUV);
     void setHasVertexColor(bool _hasVertexColor);
     void setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName);
-    [[deprecated("Use 'data::Mesh::CellType' instead of 'data::Mesh::CellTypesEnum'(sight 22.0)")]]
-    void setPrimitiveType(data::Mesh::CellTypesEnum _type);
 
     /// Set the type of primitive
     void setPrimitiveType(data::Mesh::CellType _type);
@@ -84,7 +82,7 @@ public:
     void setMeshSize(const float _size);
 
     /// Set the diffuse texture
-    VIZ_SCENE3D_API void setDiffuseTexture(const ::Ogre::TexturePtr& _texture);
+    VIZ_SCENE3D_API void setDiffuseTexture(const Ogre::TexturePtr& _texture);
 
     /// Set the material template used
     VIZ_SCENE3D_API void setTemplate(const std::string& _templateName);
@@ -100,7 +98,7 @@ private:
     void cleanTransparencyTechniques();
 
     /// Associated Ogre material
-    ::Ogre::MaterialPtr m_material;
+    Ogre::MaterialPtr m_material;
 
     /// Defines if the associated mesh has a normal layer
     bool m_hasMeshNormal {true};
@@ -121,7 +119,7 @@ private:
     std::string m_perPrimitiveColorTextureName;
 
     /// Size of the mesh, used either to adjust the size of normals or to expand billboards
-    ::Ogre::Real m_meshSize {1.f};
+    Ogre::Real m_meshSize {1.f};
 
     /// Name of the material template
     std::string m_templateName;
@@ -154,13 +152,6 @@ inline void Material::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::s
 {
     m_hasPrimitiveColor            = _hasPrimitiveColor;
     m_perPrimitiveColorTextureName = _textureName;
-}
-
-//------------------------------------------------------------------------------
-
-inline void Material::setPrimitiveType(data::Mesh::CellTypesEnum _type)
-{
-    m_primitiveType = static_cast<data::Mesh::CellType>(_type);
 }
 
 //------------------------------------------------------------------------------

@@ -133,12 +133,6 @@ private:
     /// Preference key to retrieve the size of the chessboard's squares.
     std::string m_squareSizeKey;
 
-    /// Width of the chessboard we're looking for.
-    size_t m_width {11};
-
-    /// Height of the chessboard we're looking for.
-    size_t m_height {8};
-
     /// Apply distortion to the reprojected points if true. Undistort the detected points otherwise.
     bool m_distortReprojection {true};
 

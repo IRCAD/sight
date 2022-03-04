@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ public:
      * @brief   Generate a random filename.
      * @param   length: the length of the generated filename.
      */
-    CORE_API static const std::string genTempFileName(size_t _length = 64);
+    CORE_API static const std::string genTempFileName(std::size_t _length = 64);
 
     /**
      * @brief   Returns a unique per-process temporary folder.

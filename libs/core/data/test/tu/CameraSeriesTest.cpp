@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,8 @@
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 
-#include <utestData/helper/compare.hpp>
-
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::CameraSeriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraSeriesTest);
 
 namespace sight::data
 {
@@ -82,9 +80,9 @@ data::CameraSeries::sptr initCameraSeries()
 
     // --------------- Extrinsic matrix ----------------------
     data::Matrix4::sptr mat = data::Matrix4::New();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const auto value = static_cast<data::Matrix4::TM3DType>(2 * i + j);
             mat->setCoefficient(i, j, value);
@@ -105,9 +103,9 @@ void CameraSeriesTest::cameraTest()
 
     data::Matrix4::sptr identity = data::Matrix4::New();
     data::Matrix4::sptr mat      = data::Matrix4::New();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const auto value = static_cast<data::Matrix4::TM3DType>(2 * i + j);
             mat->setCoefficient(i, j, value);
@@ -123,14 +121,14 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT_THROW(series->addCamera(camera2), core::Exception);
 
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(0));
-    CPPUNIT_ASSERT(utestData::helper::compare(identity, series->getExtrinsicMatrix(0)));
+    CPPUNIT_ASSERT(*identity == *series->getExtrinsicMatrix(0));
     CPPUNIT_ASSERT(!series->getExtrinsicMatrix(1));
     CPPUNIT_ASSERT_NO_THROW(series->setExtrinsicMatrix(1, mat));
     CPPUNIT_ASSERT_THROW(series->setExtrinsicMatrix(2, mat), core::Exception);
     CPPUNIT_ASSERT_THROW(series->getExtrinsicMatrix(2), core::Exception);
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(1) == mat);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series->numCameras());
 
     CPPUNIT_ASSERT(series->getCamera(0) == camera1);
     CPPUNIT_ASSERT(series->getCamera(1) == camera2);
@@ -140,16 +138,16 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT(series->getCamera(2) == camera3);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera1));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series->numCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera2);
     CPPUNIT_ASSERT_THROW(series->removeCamera(camera1), core::Exception);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera2));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series->numCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera3);
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera3));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(0), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), series->numCameras());
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +159,7 @@ void CameraSeriesTest::shallowCopyTest()
 
     series2->shallowCopy(series);
 
-    CPPUNIT_ASSERT_EQUAL(series->getNumberOfCameras(), series2->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(series->numCameras(), series2->numCameras());
     CPPUNIT_ASSERT_EQUAL(series->getCamera(0), series2->getCamera(0));
     CPPUNIT_ASSERT_EQUAL(series->getCamera(1), series2->getCamera(1));
 }
@@ -174,7 +172,7 @@ void CameraSeriesTest::deepCopyTest()
     data::CameraSeries::sptr series2;
     series2 = data::Object::copy<data::CameraSeries>(series);
 
-    CPPUNIT_ASSERT(utestData::helper::compare(series, series2));
+    CPPUNIT_ASSERT(*series == *series2);
 }
 
 } //namespace ut

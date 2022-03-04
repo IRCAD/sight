@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
@@ -50,8 +50,7 @@ bool Fiducial::containsLandmarks(const SPTR(data::SeriesDB)& seriesDB)
             data::Image::sptr image = imageSeries->getImage();
             if(image)
             {
-                data::PointList::sptr pointList =
-                    image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+                data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image);
                 if(pointList && !pointList->getPoints().empty())
                 {
                     return true;
@@ -76,8 +75,7 @@ bool Fiducial::containsDistances(const SPTR(data::SeriesDB)& seriesDB)
             data::Image::sptr image = imageSeries->getImage();
             if(image)
             {
-                data::Vector::sptr distanceVector =
-                    image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+                data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
                 if(distanceVector && !distanceVector->empty())
                 {
                     return true;
@@ -102,8 +100,7 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
             data::Image::csptr image = imageSeries->getImage();
             if(image)
             {
-                data::Vector::sptr distanceVector =
-                    image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+                data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
                 if(distanceVector && !distanceVector->empty())
                 {
                     for(const data::Object::sptr& object : distanceVector->getContainer())
@@ -113,9 +110,9 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
                         {
                             const data::Point::csptr point1 = *pointList->getPoints().begin();
                             const data::Point::csptr point2 = *(++pointList->getPoints().begin());
-                            const size_t frameNumber1       =
+                            const std::size_t frameNumber1  =
                                 io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
-                            const size_t frameNumber2 =
+                            const std::size_t frameNumber2 =
                                 io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image, point2);
                             if(frameNumber1 != frameNumber2)
                             {

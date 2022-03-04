@@ -44,6 +44,7 @@ class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ConfigParserTest);
 CPPUNIT_TEST(testObjectCreationWithConfig);
+CPPUNIT_TEST(testImageParser);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +54,7 @@ public:
 
     /// test object with services creation from a configuration
     void testObjectCreationWithConfig();
+    void testImageParser();
 
 private:
 

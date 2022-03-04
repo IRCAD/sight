@@ -5,7 +5,7 @@
 fragment_program Default/Foggy_FP glsl
 {
     source Foggy_FP.glsl
-    preprocessor_defines PIXEL_LIT=1
+    preprocessor_defines PHONG=1
     default_params
     {
         param_named u_fogParams float2 100. 1000.

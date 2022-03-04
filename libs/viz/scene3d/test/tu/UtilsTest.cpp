@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,19 @@
 
 #include "UtilsTest.hpp"
 
+#include <core/data/Image.hpp>
+
+#include <utestData/generator/Image.hpp>
+
 #include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreColourValue.h>
+#include <OGRE/OgrePrerequisites.h>
 
 #include <random>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::scene3d::ut::UtilsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::UtilsTest);
 
 namespace sight::viz::scene3d
 {
@@ -56,7 +61,7 @@ void UtilsTest::convertOgreColorToFwColor()
     data::Color::sptr refColor = data::Color::New();
     refColor->setRGBA(1.f, 1.f, 1.f, 1.f);
 
-    data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(::Ogre::ColourValue());
+    data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(Ogre::ColourValue());
     CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
     CPPUNIT_ASSERT(static_cast<int>(resultColor->green()) == static_cast<int>(refColor->green()));
     CPPUNIT_ASSERT(static_cast<int>(resultColor->blue()) == static_cast<int>(refColor->blue()));
@@ -82,7 +87,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             coeff = dist(rng);
         }
 
-        const ::Ogre::Matrix4 ogreMat0 = viz::scene3d::Utils::convertTM3DToOgreMx(mat0);
+        const Ogre::Matrix4 ogreMat0 = viz::scene3d::Utils::convertTM3DToOgreMx(mat0);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -109,7 +114,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
     // Convert from ogre to Sight and back to ogre.
     {
-        ::Ogre::Matrix4 ogreMat1;
+        Ogre::Matrix4 ogreMat1;
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
@@ -129,7 +134,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
 
-        const ::Ogre::Matrix4 ogreMat1Copy = viz::scene3d::Utils::convertTM3DToOgreMx(mat1Copy);
+        const Ogre::Matrix4 ogreMat1Copy = viz::scene3d::Utils::convertTM3DToOgreMx(mat1Copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
@@ -140,6 +145,38 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void UtilsTest::worldToSliceTest()
+{
+    data::Image::sptr image = data::Image::New();
+
+    Ogre::Vector3 world_inside_im  = {20., 10., 5.};
+    Ogre::Vector3 world_outside_im = {50., -1., 5.};
+
+    // Spacing is 0, throw exception.
+    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_inside_im), core::Exception);
+
+    utestData::generator::Image::generateImage(
+        image,
+        {40, 40, 40},
+        {1., 1., 1.},
+        {0., 0., 0.},
+        core::tools::Type::s_UINT8,
+        data::Image::PixelFormat::GRAY_SCALE
+    );
+
+    Ogre::Vector3i slice_idx;
+
+    CPPUNIT_ASSERT_NO_THROW(slice_idx = Utils::worldToSlices(*image, world_inside_im));
+
+    CPPUNIT_ASSERT_EQUAL(20, slice_idx[0]);
+    CPPUNIT_ASSERT_EQUAL(10, slice_idx[1]);
+    CPPUNIT_ASSERT_EQUAL(5, slice_idx[2]);
+
+    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_outside_im), core::Exception);
 }
 
 //------------------------------------------------------------------------------

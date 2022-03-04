@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
@@ -74,23 +73,16 @@ void SShowDistance::updating()
 {
     const auto image = m_image.lock();
 
-    if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
         this->sight::ui::base::IAction::setIsActive(false);
     }
     else
     {
-        const data::Boolean::sptr showDistances =
-            image->getField<data::Boolean>(
-                data::fieldHelper::Image::m_distanceVisibility,
-                data::Boolean::New(
-                    true
-                )
-            );
-        const bool isShown = showDistances->value();
+        const bool isShown = data::helper::MedicalImage::getDistanceVisibility(*image);
 
         const bool toShow = !isShown;
-        image->setField(data::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
+        data::helper::MedicalImage::setDistanceVisibility(*image, toShow);
 
         // Manage hide/show from the field information.
         this->sight::ui::base::IAction::setIsActive(!toShow);
@@ -126,17 +118,10 @@ service::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 
 void SShowDistance::showDistance(bool)
 {
-    const auto image = m_image.lock();
+    const auto image          = m_image.lock();
+    const auto show_distances = data::helper::MedicalImage::getDistanceVisibility(*image);
 
-    data::Boolean::sptr SShowDistances =
-        image->getField<data::Boolean>(
-            data::fieldHelper::Image::m_distanceVisibility,
-            data::Boolean::New(
-                true
-            )
-        );
-
-    this->sight::ui::base::IAction::setIsActive(!(SShowDistances->value()));
+    this->sight::ui::base::IAction::setIsActive(!(show_distances));
 }
 
 //------------------------------------------------------------------------------

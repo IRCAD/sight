@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::sorter::ImagePositionPatientSorter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::sorter::ImagePositionPatientSorter);
 
 namespace sight::filter::dicom
 {
@@ -49,7 +49,7 @@ const std::string ImagePositionPatientSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key key) :
+ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key) :
     ISorter()
 {
 }
@@ -92,7 +92,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
-        const size_t buffSize                            = bufferObj->getSize();
+        const std::size_t buffSize                       = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast<char*>(lock.getBuffer());
 
@@ -156,7 +156,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     }
 
     series->clearDicomContainer();
-    size_t index = 0;
+    std::size_t index = 0;
     for(const auto& item : sortedDicom)
     {
         series->addBinary(index++, item.second);

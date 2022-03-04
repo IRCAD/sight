@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SReconstruction final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SReconstruction, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SReconstruction, sight::viz::scene3d::IAdaptor);
 
     /// Initialise slots.
     MODULE_VIZ_SCENE3D_API SReconstruction() noexcept;
@@ -88,7 +88,7 @@ public:
     MODULE_VIZ_SCENE3D_API ~SReconstruction() noexcept override;
 
     /**
-     * @brief Actives/deactives automatic reset on camera.
+     * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
     MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _autoResetCamera);
@@ -167,7 +167,7 @@ private:
     bool m_isDynamicVertices {false};
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view s_RECONSTRUCTION_INPUT = "reconstruction";
     data::ptr<data::Reconstruction, data::Access::in> m_reconstruction {this, s_RECONSTRUCTION_INPUT, true};

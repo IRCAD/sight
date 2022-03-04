@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class Mesh
 {
 public:
 
-    typedef std::map<std::array<float, 3>, data::Mesh::PointId> PointsMapType;
+    typedef std::map<std::array<float, 3>, data::Mesh::point_t> PointsMapType;
 
     /**
      * @brief Generate a mesh.
@@ -95,15 +95,15 @@ private:
      *
      * @param[out]  mesh data::Mesh Mesh structure to fill with quad cells.
      * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
-     * @param[in]   nbPointsByEdge size_t Number of points by edge.
+     * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
 
     static void addQuadMesh(
         const data::Mesh::sptr& mesh,
         PointsMapType& points,
-        size_t nbPointsByEdge = 10,
-        float edgeDim         = 100.f
+        std::size_t nbPointsByEdge = 10,
+        float edgeDim              = 100.f
     );
 
     /**
@@ -111,18 +111,18 @@ private:
      *
      * @param[out]  mesh data::Mesh Mesh structure to fill with triangle cells.
      * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
-     * @param[in]   nbPointsByEdge size_t Number of points by edge.
+     * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
     static void addTriangleMesh(
         const data::Mesh::sptr& mesh,
         PointsMapType& points,
-        size_t nbPointsByEdge = 10,
-        float edgeDim         = 100.f
+        std::size_t nbPointsByEdge = 10,
+        float edgeDim              = 100.f
     );
 
-    static data::Mesh::PointId addPoint(
-        const data::Mesh::PointValueType* pt,
+    static data::Mesh::point_t addPoint(
+        const data::Mesh::position_t* pt,
         const data::Mesh::sptr& mesh,
         PointsMapType& points
     );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <data/Array.hpp>
 #include <data/Image.hpp>
 #include <data/Material.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 

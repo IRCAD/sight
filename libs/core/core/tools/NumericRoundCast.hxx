@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,16 +37,16 @@ namespace sight::core::tools
  * @param value to cast (and rounds if is a floating point type) in TYPEOUT
  * @return casted and rounded value.
  */
-template < typename TYPEOUT, typename TYPEIN>
-TYPEOUT numericRoundCast (const TYPEIN& value)
+template<typename TYPEOUT, typename TYPEIN>
+TYPEOUT numericRoundCast(const TYPEIN& value)
 {
-    typedef ::boost::numeric::conversion_traits<TYPEOUT, TYPEIN> TraitsType;
-    typedef ::boost::numeric::silent_overflow_handler OverflowHandlerType;
-    typedef ::boost::numeric::RoundEven<typename TraitsType::source_type> RoundEvenType;
-    typedef ::boost::numeric::raw_converter<TraitsType> ConverterType;
-    typedef ::boost::numeric::UseInternalRangeChecker RangeCheckerType;
+    typedef boost::numeric::conversion_traits<TYPEOUT, TYPEIN> TraitsType;
+    typedef boost::numeric::silent_overflow_handler OverflowHandlerType;
+    typedef boost::numeric::RoundEven<typename TraitsType::source_type> RoundEvenType;
+    typedef boost::numeric::raw_converter<TraitsType> ConverterType;
+    typedef boost::numeric::UseInternalRangeChecker RangeCheckerType;
 
-    typedef ::boost::numeric::converter<
+    typedef boost::numeric::converter<
             TYPEOUT,
             TYPEIN,
             TraitsType,
@@ -54,7 +54,7 @@ TYPEOUT numericRoundCast (const TYPEIN& value)
             RoundEvenType,
             ConverterType,
             RangeCheckerType
-            > RoundCastType;
+    > RoundCastType;
 
     return RoundCastType::convert(value);
 }

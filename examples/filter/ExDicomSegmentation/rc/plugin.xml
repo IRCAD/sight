@@ -1,4 +1,4 @@
-<plugin id="ExDicomSegmentation" >
+<plugin id="ExDicomSegmentation">
 
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
@@ -11,7 +11,7 @@
     <xi:include href="Threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="VTKMesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::extension::Activity" >
+    <extension implements="sight::activity::extension::Activity">
         <id>ExDicomSegmentation_VTKMesher_Activity</id>
         <title>VTK mesher</title>
         <desc>Mesher activity using VTK</desc>
@@ -20,15 +20,10 @@
             <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg" >
-            <parameters>
-                <parameter replace="imageSeries" by="@values.imageSeries" />
-                <parameter replace="image" by="@values.imageSeries.image" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg"/>
     </extension>
 
-    <extension implements="::sight::activity::extension::Activity" >
+    <extension implements="sight::activity::extension::Activity">
         <id>ExDicomSegmentation_Threshold_Activity</id>
         <title>Threshold</title>
         <desc>Simple threshold activity</desc>
@@ -37,25 +32,21 @@
             <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExDicomSegmentation_Threshold_AppCfg" >
-            <parameters>
-                <parameter replace="imageSeries" by="@values.imageSeries" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExDicomSegmentation_Threshold_AppCfg" />
     </extension>
 
-    <extension implements="::sight::activity::extension::Activity" >
+    <extension implements="sight::activity::extension::Activity">
         <id>ExDicomSegmentation_Base_Activity</id>
         <title>ExDicomSegmentation</title>
         <desc>ExDicomSegmentation main activity</desc>
         <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
         <requirements />
-        <appConfig id="ExDicomSegmentation_Base_AppCfg" >
+        <appConfig id="ExDicomSegmentation_Base_AppCfg">
             <parameters />
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExDicomSegmentation_AppCfg</id>
         <config>
 
@@ -65,7 +56,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>ExDicomSegmentation</name>
@@ -79,7 +70,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView" >
+            <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView">
                 <inout key="seriesDB" uid="seriesDB" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>
@@ -91,7 +82,7 @@
 
             <!-- ******************************* Connections ***************************************** -->
 
-            <connect channel="DYNAMICVIEW_RECIEVER_CHANNEL" >
+            <connect channel="DYNAMICVIEW_RECIEVER_CHANNEL">
                 <slot>dynamicViewSrv/createTab</slot>
             </connect>
 

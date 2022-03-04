@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
 private:
 
     /// Compositor created by this object.
-    ::Ogre::CompositorPtr m_compositor;
+    Ogre::CompositorPtr m_compositor;
 
     /// Created compositor's name.
     const std::string m_compositorName;

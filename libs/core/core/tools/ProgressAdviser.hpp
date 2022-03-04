@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,16 +42,16 @@ namespace sight::core::tools
  * boost::signal with a signature
  * ( float, std::string ) and returning nothing.
  */
-class CORE_CLASS_API ProgressAdviser : public ::boost::signals2::trackable
+class CORE_CLASS_API ProgressAdviser : public boost::signals2::trackable
 {
 public:
 
     /// define a boost signal signature for the ProgessHandler
-    typedef ::boost::signals2::signal<void (float, std::string)> ProgessSignal; // signal for fctor or function
-                                                                                // returning void
+    typedef boost::signals2::signal<void (float, std::string)> ProgessSignal; // signal for functor or function
+                                                                              // returning void
 
     /// define the ProgessHandler type
-    typedef ProgessSignal::slot_type ProgessHandler; // signal for fctor or function returning void and
+    typedef ProgessSignal::slot_type ProgessHandler; // signal for functor or function returning void and
                                                      // accepting a float as argument percent
                                                      // string for information
 

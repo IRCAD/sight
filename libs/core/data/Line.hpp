@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 #include <utility>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Line));
-
 namespace sight::data
 {
 
@@ -42,88 +40,92 @@ class DATA_CLASS_API Line : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Line, data::Object, data::factory::New<Line>);
+    SIGHT_DECLARE_CLASS(Line, Object, factory::New<Line>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Line(data::Object::Key key);
+    DATA_API Line(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Line();
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Line));
-
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
-    DATA_API void setValue(const data::Point::sptr& _position, const data::Point::sptr& _direction);
+    DATA_API void setValue(const Point::sptr& _position, const Point::sptr& _direction);
 
     /** @{
      *  @brief get/set point position
      */
-    data::Point::sptr& getPosition();
-    const data::Point::sptr& getPosition() const;
-    void setPosition(const data::Point::sptr& _position);
+    Point::sptr& getPosition();
+    Point::csptr getPosition() const;
+    void setPosition(const Point::sptr& _position);
     /// @}
 
     /** @{
      *  @brief get/set point direction
      */
-    data::Point::sptr& getDirection();
-    const data::Point::sptr& getDirection() const;
-    void setDirection(const data::Point::sptr& _direction);
+    Point::sptr& getDirection();
+    const Point::sptr& getDirection() const;
+    void setDirection(const Point::sptr& _direction);
+    /// @}
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Line& other) const noexcept;
+    DATA_API bool operator!=(const Line& other) const noexcept;
     /// @}
 
 protected:
 
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
     //! Points container
-    data::Point::sptr m_position;
-    data::Point::sptr m_direction;
+    Point::sptr m_position;
+    Point::sptr m_direction;
 }; // class Line
 
 //-----------------------------------------------------------------------------
 
-inline data::Point::sptr& Line::getPosition()
+inline Point::sptr& Line::getPosition()
 {
     return this->m_position;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const data::Point::sptr& Line::getPosition() const
+inline Point::csptr Line::getPosition() const
 {
     return this->m_position;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Line::setPosition(const data::Point::sptr& _position)
+inline void Line::setPosition(const Point::sptr& _position)
 {
     this->m_position = _position;
 }
 
 //-----------------------------------------------------------------------------
 
-inline data::Point::sptr& Line::getDirection()
+inline Point::sptr& Line::getDirection()
 {
     return this->m_direction;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const data::Point::sptr& Line::getDirection() const
+inline const Point::sptr& Line::getDirection() const
 {
     return this->m_direction;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Line::setDirection(const data::Point::sptr& _direction)
+inline void Line::setDirection(const Point::sptr& _direction)
 {
     this->m_direction = _direction;
 }

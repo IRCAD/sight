@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::ImagePositionPatientSorterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::ImagePositionPatientSorterTest);
 
 namespace sight::filter::dicom
 {
@@ -67,7 +67,7 @@ void ImagePositionPatientSorterTest::tearDown()
 
 double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
 {
-    ::gdcm::ImageReader reader;
+    gdcm::ImageReader reader;
     const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     reader.SetStream(*streamInfo.stream);
 
@@ -77,19 +77,19 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
     }
 
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
     // Check tags availability
-    if(!dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0037)))
+    if(!dataset.FindDataElement(gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(gdcm::Tag(0x0020, 0x0037)))
     {
         const std::string msg = "Unable to compute the spacing between slices of the series.";
         throw io::dicom::exception::Failed(msg);
     }
 
     // Retrieve image position
-    const ::gdcm::Image& gdcmImage = reader.GetImage();
-    const double* gdcmOrigin       = gdcmImage.GetOrigin();
-    const fwVec3d imagePosition    = {{gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]}};
+    const gdcm::Image& gdcmImage = reader.GetImage();
+    const double* gdcmOrigin     = gdcmImage.GetOrigin();
+    const fwVec3d imagePosition  = {{gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]}};
 
     // Retrieve image orientation
     const double* directionCosines  = gdcmImage.GetDirectionCosines();
@@ -134,7 +134,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -149,13 +149,13 @@ void ImagePositionPatientSorterTest::simpleApplication()
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_NO_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 
     double oldPosition = -1.0;
 
     const data::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
-    for(size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->getNumberOfInstances() ; ++index)
+    for(std::size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->numInstances() ; ++index)
     {
         const double position = getInstanceZPosition(dicomContainer.at(index));
 
@@ -184,7 +184,7 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);

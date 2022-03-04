@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,14 +36,14 @@ namespace sight::module::viz::scene3dQt
 
 // ----------------------------------------------------------------------------
 
-static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModifiers(::Qt::KeyboardModifiers _qmods)
+static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModifiers(Qt::KeyboardModifiers _modifiers)
 {
     using SightOgreModType = sight::viz::scene3d::interactor::IInteractor::Modifier;
     SightOgreModType mods = SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::ShiftModifier) ? SightOgreModType::SHIFT : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::ControlModifier) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::AltModifier) ? SightOgreModType::ALT : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::MetaModifier) ? SightOgreModType::META : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::ShiftModifier) ? SightOgreModType::SHIFT : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::ControlModifier) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::AltModifier) ? SightOgreModType::ALT : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::MetaModifier) ? SightOgreModType::META : SightOgreModType::NONE;
 
     return mods;
 }
@@ -113,7 +113,7 @@ void Window::initialize()
      */
 #if defined(Q_OS_WIN)
     {
-        const size_t winId = static_cast<size_t>(this->winId());
+        const std::size_t winId = static_cast<std::size_t>(this->winId());
         parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
         parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(winId);
     }
@@ -232,7 +232,7 @@ void Window::render()
     }
     catch(const std::exception& e)
     {
-        SIGHT_ERROR("Exception occured during Ogre rendering" << e.what());
+        SIGHT_ERROR("Exception occurred during Ogre rendering" << e.what());
     }
 }
 
@@ -517,14 +517,14 @@ void Window::ogreResize(const QSize& _newSize)
 
     this->makeCurrent();
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
     m_ogreRenderWindow->resize(static_cast<unsigned int>(newWidth), static_cast<unsigned int>(newHeight));
 #endif
     m_ogreRenderWindow->windowMovedOrResized();
 
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
-    ::Ogre::Viewport* viewport = nullptr;
+    Ogre::Viewport* viewport = nullptr;
     for(unsigned short i = 0 ; i < numViewports ; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
@@ -535,9 +535,9 @@ void Window::ogreResize(const QSize& _newSize)
         viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
     }
 
-    if(viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+    if(viewport && Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
     {
-        ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+        Ogre::CompositorChain* chain = Ogre::CompositorManager::getSingleton().getCompositorChain(
             viewport
         );
 

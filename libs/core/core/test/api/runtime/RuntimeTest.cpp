@@ -81,7 +81,7 @@ void RuntimeTest::testLibrary()
 
 void RuntimeTest::testModule()
 {
-    auto module = core::runtime::loadModule(std::string("::sight::module::utest"));
+    auto module = core::runtime::loadModule(std::string("sight::module::utest"));
 
     CPPUNIT_ASSERT_MESSAGE("Module not found", module);
     CPPUNIT_ASSERT_EQUAL(std::string("sight::module::utest"), module->getIdentifier());
@@ -113,17 +113,17 @@ void RuntimeTest::testOperations()
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
 
     // module location prototype
-    auto path = core::runtime::getModuleResourcePath(std::string("::sight::module::utest"));
+    auto path = core::runtime::getModuleResourcePath(std::string("sight::module::utest"));
     CPPUNIT_ASSERT_EQUAL(location / "module_utest", path);
 
     path = core::runtime::getModuleResourcePath("notExistingBundle");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
-    path = core::runtime::getModuleResourceFilePath("::sight::module::utest/plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("sight::module::utest/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("::sight::module::utest/not_existing.file");
+    path = core::runtime::getModuleResourceFilePath("sight::module::utest/not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle/plugin.xml");
@@ -138,7 +138,7 @@ void RuntimeTest::testOperations()
     path = core::runtime::getLibraryResourceFilePath("sight::core/plugin.xsd");
     CPPUNIT_ASSERT_EQUAL(location / "core/plugin.xsd", path);
 
-    path = core::runtime::getLibraryResourceFilePath("::sight::core/plugin.xsd");
+    path = core::runtime::getLibraryResourceFilePath("sight::core/plugin.xsd");
     CPPUNIT_ASSERT_EQUAL(location / "core/plugin.xsd", path);
 
     path = core::runtime::getResourceFilePath("core/plugin.xsd");
@@ -148,10 +148,10 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
     // (module, path) prototype
-    path = core::runtime::getModuleResourceFilePath("::sight::module::utest", "plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("sight::module::utest", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("::sight::module::utest", "not_existing.file");
+    path = core::runtime::getModuleResourceFilePath("sight::module::utest", "not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle", "plugin.xml");

@@ -38,7 +38,7 @@ class UI_QT_CLASS_API Application : public ui::base::Application
 {
 public:
 
-    Application(ui::base::GuiBaseObject::Key key)
+    Application(ui::base::GuiBaseObject::Key)
     {
     }
 

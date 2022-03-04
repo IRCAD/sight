@@ -27,7 +27,7 @@
 namespace sight::module::io::pcl
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::igtl::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::igtl::Plugin");
 
 // ------------------------------------------------------------------------------
 

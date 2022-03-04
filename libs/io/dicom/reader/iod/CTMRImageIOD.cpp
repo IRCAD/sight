@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ void CTMRImageIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader>(new ::gdcm::ImageReader);
+    SPTR(gdcm::ImageReader) reader = std::shared_ptr<gdcm::ImageReader>(new gdcm::ImageReader);
 
     // Read the first file
     const core::memory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
 
     if(_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
-        // Logarithme 10 cannot get negative values
+        // Logarithm 10 cannot get negative values
         if(_xy.first <= 0.)
         {
             x = 0.;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <data/Color.hpp>
 #include <data/DicomSeries.hpp>
 #include <data/Equipment.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
@@ -59,7 +59,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::SeriesDBReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::SeriesDBReaderTest);
 
 namespace sight::io::dicom
 {
@@ -70,7 +70,7 @@ namespace ut
 //------------------------------------------------------------------------------
 
 std::string getValue(
-    const ::boost::property_tree::ptree& node,
+    const boost::property_tree::ptree& node,
     const std::string& name,
     const std::filesystem::path& filePath
 )
@@ -81,14 +81,14 @@ std::string getValue(
         value = node.get<std::string>(name);
 
         // Remove leading and trailing spaces
-        size_t first = value.find_first_not_of(" ");
+        std::size_t first = value.find_first_not_of(" ");
         if(first != std::string::npos)
         {
-            size_t last = value.find_last_not_of(" ");
+            std::size_t last = value.find_last_not_of(" ");
             value = value.substr(first, last - first + 1);
         }
     }
-    catch(::boost::property_tree::ptree_bad_path&)
+    catch(boost::property_tree::ptree_bad_path&)
     {
         SIGHT_WARN(name + " information are missing in '" + filePath.string() + "'.");
         value = "";
@@ -118,8 +118,8 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         const std::string metaName           = filename + "/" + series->getInstanceUID() + ".json";
         const std::filesystem::path metaFile = metaPath / metaName;
         const std::string mf                 = metaFile.string();
-        ::boost::property_tree::ptree root;
-        ::boost::property_tree::json_parser::read_json(mf, root);
+        boost::property_tree::ptree root;
+        boost::property_tree::json_parser::read_json(mf, root);
 
         // Series
         CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesInstanceUID", mf), series->getInstanceUID());
@@ -169,7 +169,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
 
         // SliceThickness - This value is recomputed using the SliceThicknessModifier filter.
 //        std::string spacingZ = getValue(root, "SliceThickness", mf);
-//        CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(spacingZ), image->getSpacing()[2], 0.0001);
+//        CPPUNIT_ASSERT_DOUBLES_EQUAL(boost::lexical_cast< double >(spacingZ), image->getSpacing()[2], 0.0001);
 
         // Origin - Not checked as the image could be rotated
 
@@ -180,9 +180,9 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         if(!windowCenter.empty())
         {
             std::vector<std::string> windowCenterValues;
-            ::boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
+            boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
-                ::boost::lexical_cast<double>(windowCenterValues[0]),
+                boost::lexical_cast<double>(windowCenterValues[0]),
                 image->getWindowCenter(),
                 delta
             );
@@ -197,9 +197,9 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         if(!windowWidth.empty())
         {
             std::vector<std::string> windowWidthValues;
-            ::boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
+            boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
-                ::boost::lexical_cast<double>(windowWidthValues[0]),
+                boost::lexical_cast<double>(windowWidthValues[0]),
                 image->getWindowWidth(),
                 delta
             );
@@ -211,7 +211,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
 
         // Number of components
         const std::string photometricInterpretation = getValue(root, "PhotometricInterpretation", mf);
-        size_t nbComponents                         = 0;
+        std::size_t nbComponents                    = 0;
         if(photometricInterpretation == "MONOCHROME2")
         {
             nbComponents = 1;
@@ -225,7 +225,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
             nbComponents = 4;
         }
 
-        CPPUNIT_ASSERT_EQUAL(nbComponents, image->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(nbComponents, image->numComponents());
     }
 }
 
@@ -438,7 +438,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
 void SeriesDBReaderTest::readJMSSeries()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-
+    // cspell: ignore Genou
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE(
@@ -453,14 +453,14 @@ void SeriesDBReaderTest::readJMSSeries()
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
 
     // Check trimmed values
     CPPUNIT_ASSERT(utestData::DicomReaderTest::checkSeriesJMSGenouTrimmed(series));
 
     // Read image in lazy mode
-    const auto dumpLock = series->getImage()->lock();
+    const auto dumpLock = series->getImage()->dump_lock();
 }
 
 //------------------------------------------------------------------------------
@@ -488,30 +488,30 @@ void SeriesDBReaderTest::readCTSeries()
     const double delta = 0.00001;
 
     // Check number of series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
 
     // Check size
-    const data::Image::Size size = image->getSize2();
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[0]);
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[1]);
-    CPPUNIT_ASSERT_EQUAL(size_t(129), size[2]);
+    const data::Image::Size size = image->getSize();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(129), size[2]);
 
     // Check spacing
-    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.6), spacing[2], delta);
 
     // Check origin
-    const data::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
@@ -554,31 +554,31 @@ void SeriesDBReaderTest::readMRSeries()
     const double delta = 0.01;
 
     // Check number of series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
 
     // Check size
-    const data::Image::Size size = image->getSize2();
-    CPPUNIT_ASSERT_EQUAL(size_t(1), size[0]);
-    CPPUNIT_ASSERT_EQUAL(size_t(1024), size[1]);
-    CPPUNIT_ASSERT_EQUAL(size_t(1024), size[2]);
+    const data::Image::Size size = image->getSize();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[2]);
 
     // Check spacing
-    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[2], delta);
 
     // Check origin
-    const data::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin();
     SIGHT_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-112.828), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-180.058), origin[1], delta);
@@ -622,31 +622,31 @@ void SeriesDBReaderTest::readOTSeries()
     const double delta = 0.01;
 
     // Check number of series
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Read image buffer
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), image->numDimensions());
 
     // Check size
-    data::Image::Size size = image->getSize2();
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[0]);
-    CPPUNIT_ASSERT_EQUAL(size_t(512), size[1]);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), size[2]);
+    data::Image::Size size = image->getSize();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
     // Check spacing
-    data::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[2], delta);
 
     // Check origin
-    data::Image::Origin origin = image->getOrigin2();
+    data::Image::Origin origin = image->getOrigin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
@@ -688,14 +688,14 @@ void SeriesDBReaderTest::readSEGSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
 
     //Retrieve ImageSeries
     data::ModelSeries::sptr series = data::ModelSeries::dynamicCast((*seriesDB)[1]);
     CPPUNIT_ASSERT(series);
 
     data::ModelSeries::ReconstructionVectorType reconstructionDB = series->getReconstructionDB();
-    CPPUNIT_ASSERT_EQUAL(size_t(1), reconstructionDB.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), reconstructionDB.size());
 
     // Check reconstruction
     data::Reconstruction::sptr reconstruction = reconstructionDB[0];
@@ -703,9 +703,8 @@ void SeriesDBReaderTest::readSEGSeries()
 
     // Check mesh
     data::Mesh::sptr mesh = reconstruction->getMesh();
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::Size(2498), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::Size(5000), mesh->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::Size(15000), mesh->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(2498), mesh->numPoints());
+    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(5000), mesh->numCells());
 
     // Check material
     data::Material::sptr material = reconstruction->getMaterial();
@@ -740,21 +739,19 @@ void SeriesDBReaderTest::readSFSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Retrieve landmarks
-    data::PointList::sptr pointList =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image);
 
     // Verify first landmark
     const data::Point::sptr& pointA = pointList->getPoints()[0];
-    const std::string labelA        =
-        pointA->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
@@ -762,8 +759,7 @@ void SeriesDBReaderTest::readSFSeries()
 
     // Verify second landmark
     const data::Point::sptr& pointB = pointList->getPoints()[1];
-    const std::string labelB        =
-        pointB->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
@@ -794,22 +790,20 @@ void SeriesDBReaderTest::readSRSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     CPPUNIT_ASSERT(series);
     data::Image::sptr image = series->getImage();
-    const auto dumpLock     = image->lock();
+    const auto dumpLock     = image->dump_lock();
 
     // Retrieve landmarks
-    data::PointList::sptr landmarkPointList =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*image);
 
     // Verify first landmark
     const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA        =
-        pointA->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
@@ -817,16 +811,14 @@ void SeriesDBReaderTest::readSRSeries()
 
     // Verify second landmark
     const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB        =
-        pointB->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    data::Vector::sptr distanceVector =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
 
     // Verify first distance
     data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
@@ -864,21 +856,18 @@ void SeriesDBReaderTest::read3DSRSeries()
 
     const double delta = 0.01;
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve ImageSeries
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Retrieve landmarks
-    data::PointList::sptr landmarkPointList =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
-
+    data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*image);
     // Verify first landmark
     const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA        =
-        pointA->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
@@ -886,16 +875,14 @@ void SeriesDBReaderTest::read3DSRSeries()
 
     // Verify second landmark
     const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB        =
-        pointB->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    data::Vector::sptr distanceVector =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
 
     // Verify first distance
     data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
@@ -936,8 +923,8 @@ void SeriesDBReaderTest::readDisabledSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(0), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -964,8 +951,8 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDir()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has succeed
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -991,21 +978,19 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Retrieve ImageSeries
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
     data::Image::sptr image        = series->getImage();
-    const auto dumpLock            = image->lock();
+    const auto dumpLock            = image->dump_lock();
 
     // Get internal buffer
     auto buffer = image->getBuffer();
     CPPUNIT_ASSERT(buffer);
 
-    CPPUNIT_ASSERT(dumpLock.getBuffer());
-
     // Compute sha1 digest
-    ::boost::uuids::detail::sha1 sha1;
-    sha1.process_bytes(static_cast<char*>(dumpLock.getBuffer()), image->getSizeInBytes());
-    ::boost::uuids::detail::sha1::digest_type digest = {0};
+    boost::uuids::detail::sha1 sha1;
+    sha1.process_bytes(static_cast<char*>(buffer), image->getSizeInBytes());
+    boost::uuids::detail::sha1::digest_type digest = {0};
     sha1.get_digest(digest);
 
     // Check digests
@@ -1039,8 +1024,8 @@ void SeriesDBReaderTest::readCTWithSurviewSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(3), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1066,8 +1051,8 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(4), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1093,8 +1078,8 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Verify that the reading has failed
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 } // namespace ut

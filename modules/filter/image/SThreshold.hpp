@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SThreshold : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SThreshold, ::sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SThreshold, sight::service::IFilter);
 
     MODULE_FILTER_IMAGE_API SThreshold() noexcept;
 
@@ -89,7 +89,7 @@ private:
     static constexpr std::string_view s_IMAGE_IN  = "source";
     static constexpr std::string_view s_IMAGE_OUT = "target";
 
-    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_source {this, s_IMAGE_IN, true};
+    sight::data::ptr<sight::data::Object, sight::data::Access::in> m_source {this, s_IMAGE_IN, true};
     sight::data::ptr<sight::data::Object, sight::data::Access::out> m_target {this, s_IMAGE_OUT};
 };
 

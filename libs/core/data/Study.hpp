@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,9 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/factory/new.hpp"
+#include "data/Object.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Study))
 
 namespace sight::data
 {
@@ -35,19 +33,17 @@ namespace sight::data
 /**
  * @brief Holds a study information.
  */
-class DATA_CLASS_API Study : public data::Object
+class DATA_CLASS_API Study : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Study, data::Object, data::factory::New<Study>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Study))
+    SIGHT_DECLARE_CLASS(Study, Object, factory::New<Study>);
 
     /**
      * @brief Creates the study.
      * @param _key private construction key.
      */
-    DATA_API Study(data::Object::Key _key);
+    DATA_API Study(Object::Key _key);
 
     /// Destroys the study.
     DATA_API virtual ~Study();
@@ -56,14 +52,7 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object where find data.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object where find data.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the unique identifier of the study.
     const DicomValueType& getInstanceUID() const;
@@ -130,6 +119,21 @@ public:
 
     /// Sets the body mass index of the Patient.
     void setPatientBodyMassIndex(const DicomValueType& _val);
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Study& other) const noexcept;
+    DATA_API bool operator!=(const Study& other) const noexcept;
+    /// @}
+
+protected:
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 
@@ -321,7 +325,5 @@ inline void Study::setPatientBodyMassIndex(const DicomValueType& _val)
 {
     m_patientBodyMassIndex = _val;
 }
-
-//-----------------------------------------------------------------------------
 
 } // Namespace fwMedData.

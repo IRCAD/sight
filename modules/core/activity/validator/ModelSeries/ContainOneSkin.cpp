@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,11 @@ namespace sight::module::activity::validator
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSeries::ContainOneSkin);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::ModelSeries::ContainOneSkin);
 
 //-----------------------------------------------------------------------------
 
-ContainOneSkin::ContainOneSkin(::sight::activity::IValidator::Key key)
+ContainOneSkin::ContainOneSkin(sight::activity::IValidator::Key)
 {
 }
 
@@ -51,7 +51,7 @@ ContainOneSkin::~ContainOneSkin()
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData) const
+sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -64,7 +64,7 @@ ContainOneSkin::~ContainOneSkin()
 
     if(modelSeries)
     {
-        size_t skinCount = 0;
+        std::size_t skinCount = 0;
         for(auto rec : modelSeries->getReconstructionDB())
         {
             if(rec->getStructureType() == "Skin")
@@ -95,7 +95,7 @@ ContainOneSkin::~ContainOneSkin()
             }
             else
             {
-                size_t skinCount = 0;
+                std::size_t skinCount = 0;
                 for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Skin")
@@ -130,7 +130,7 @@ ContainOneSkin::~ContainOneSkin()
             }
             else
             {
-                size_t skinCount = 0;
+                std::size_t skinCount = 0;
                 for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Skin")

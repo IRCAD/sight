@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,7 +91,7 @@ namespace sight::module::navigation::openvslam
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  *   - scaleFactor: to rescale matrix and points (by default Monocular use an arbitrary scale).
  *   - initializer.parallaxDegThr: Parallax threshold in degree for openvslam initializer (advanced).
- *   - initializer.reprojErrThr: Reprojection error threshold for openvslam initializer (advanced).
+ *   - initializer.reprojectionErrThr: Reprojection error threshold for openvslam initializer (advanced).
  *   - initializer.scalingFactor: Initial scale magnitude for openvslam initializer (advanced).
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  *   - nFeatures: Set the number of features per image.
@@ -100,7 +100,7 @@ namespace sight::module::navigation::openvslam
  *   - minThFAST: Min FAST Threshold value.
  *   - initializer.numRansacIterations: Number of RANSAC iteration of openvslam initializer (advanced).
  *   - initializer.minNumTriangulatedPts: Minimal number of triangulated points for openvslam initializer (advanced).
- *   - initializer.numBAIterations: Number of iterations of the Bundle-Adjustement for openvslam initializer (advanced).
+ *   - initializer.numBAIterations: Number of iterations of the Bundle-Adjustment for openvslam initializer (advanced).
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  *   - showFeatures: Call an imshow to display internal image of openvslam (with features projected).
  * - \b setEnumParameter(string, string): Calls an enum parameter slot according to the given key.
@@ -157,7 +157,7 @@ public:
     /**
      * @name Tracking Mode : Openvslam can be used with 3 mode.
      * - \b MONO : Use only a monocular camera.
-     * - \b STEREO: Use a sterovision system.(NOT IMPLEMENTED)
+     * - \b STEREO: Use a stereovision system.(NOT IMPLEMENTED)
      * - \b DEPTH : Use a RGB-D sensor. (NOT IMPLEMENTED)
      */
     enum class MODULE_NAVIGATION_OPENVSLAM_API TrackingMode
@@ -297,7 +297,7 @@ private:
     TrackingMode m_trackingMode {TrackingMode::MONO};
 
     /// Target width when downsampling is required.
-    size_t m_downSampleWidth {0};
+    std::size_t m_downSampleWidth {0};
 
     /// Mutex to lock m_slamSystem.
     std::mutex m_slamLock;

@@ -2,14 +2,14 @@
     <requirement id="sight::module::ui::qt"/>
     <requirement id="sight::module::viz::scene3d"/>
     <requirement id="sight::module::viz::scene3dQt"/>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IGuiContainer</type>
          <service>sight::module::viz::sample::SImage</service>
          <object key="image">sight::data::Image</object>
          <desc>Render a 3D negatoscope of a medical image.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IGuiContainer</type>
          <service>sight::module::viz::sample::SMesh</service>
          <object key="mesh">sight::data::Mesh</object>

@@ -1,6 +1,6 @@
 <plugin id="sight::module::io::activity">
 
-    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::session" />
     <requirement id="sight::module::activity" />
 
     <!-- Activity used to export an image series. -->
@@ -13,11 +13,7 @@
             <requirement name="series" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExportSelection" />
     </extension>
 
     <!-- Activity used to export a model series. -->
@@ -30,11 +26,7 @@
             <requirement name="series" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExportSelection" />
     </extension>
 
     <!-- Activity used to export a model series. -->
@@ -47,27 +39,23 @@
             <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
-        <appConfig id="ExportDicomSelection">
-            <parameters>
-                <parameter replace="model" by="@values.modelSeries" />
-            </parameters>
-        </appConfig>
+        <appConfig id="ExportDicomSelection" />
     </extension>
 
     <!-- App config used to export the selected series. -->
     <extension implements="sight::service::extension::AppConfig">
         <id>ExportSelection</id>
         <parameters>
-            <param name="selection" />
+            <param name="series" />
         </parameters>
         <config>
-            <object uid="${selection}" src="ref" />
+            <object uid="${series}" src="ref" />
 
             <service uid="export_selection" type="sight::module::ui::base::io::SSelector">
-                <inout key="data" uid="${selection}" />
+                <inout key="data" uid="${series}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
-                <addSelection service="sight::module::io::atoms::SWriter" />
+                <addSelection service="sight::module::io::session::SWriter" />
             </service>
             <start uid="export_selection" />
             <update uid="export_selection" />
@@ -78,13 +66,13 @@
     <extension implements="sight::service::extension::AppConfig">
         <id>ExportDicomSelection</id>
         <parameters>
-            <param name="model" />
+            <param name="modelSeries" />
         </parameters>
         <config>
-            <object uid="${model}" type="sight::data::ModelSeries" src="ref" />
+            <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
 
             <service uid="exportSelection" type="sight::module::ui::base::io::SSelector">
-                <inout key="data" uid="${model}" />
+                <inout key="data" uid="${modelSeries}" />
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::dicom::SSurfaceSegmentationWriter" />
@@ -95,7 +83,7 @@
         </config>
     </extension>
 
-    <!-- Service config used to read SeriesDB without using ioAtoms. -->
+    <!-- Service config used to read SeriesDB without using session. -->
     <extension implements="sight::service::extension::Config">
         <id>SDBReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
@@ -103,35 +91,34 @@
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="sight::module::io::atoms::SReader" />
             <addSelection service="sight::module::io::session::SReader" />
             <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
         </config>
     </extension>
 
-    <!-- Service config used to read seriesDB using ioAtoms. -->
+    <!-- Service config used to read seriesDB using Session. -->
     <extension implements="sight::service::extension::Config">
-        <id>SDBAtomsReaderIOSelectorConfig</id>
+        <id>SDBSessionReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
-        <desc>Atoms seriesDB reader.</desc>
+        <desc>Session seriesDB reader.</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::atoms::SReader" />
-            <config id="MDAtomsConfig" service="sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::session::SReader" />
+            <config id="SightDataConfig" service="sight::module::io::session::SReader" />
         </config>
     </extension>
 
-    <!-- Service config used to write a seriesDB using ioAtoms. -->
+    <!-- Service config used to write a seriesDB using Session. -->
     <extension implements="sight::service::extension::Config">
-        <id>SDBAtomsWriterIOSelectorConfig</id>
+        <id>SDBSessionWriterIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
-        <desc>Atoms seriesDB writer.</desc>
+        <desc>Session seriesDB writer.</desc>
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::atoms::SWriter" />
-            <config id="MDAtomsConfig" service="sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
+            <config id="SightDataConfig" service="sight::module::io::session::SWriter" />
         </config>
     </extension>
 
@@ -144,31 +131,17 @@
             <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
-            <config id="MDAtomsConfig" service="sight::module::io::atoms::SReader" />
+            <config id="SightDataConfig" service="sight::module::io::session::SReader" />
         </config>
     </extension>
 
-    <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
+    <!-- Service config used for io_session reader and writer -->
     <extension implements="sight::service::extension::Config">
-        <id>MDAtomsConfig</id>
-        <desc>Json/Xml Reader/Writer (Sight)</desc>
+        <id>SightDataConfig</id>
+        <desc>Sight data</desc>
         <config>
-            <patcher />
-            <filter>FilterUnknownActivities</filter>
-        </config>
-    </extension>
-
-    <extension implements="sight::service::extension::Config">
-        <id>ActivityMDAtomsConfig</id>
-        <desc>Reader/Writer for atoms representing an activity project</desc>
-        <config>
-            <archive backend="jsonz">
-                <extension>.apz</extension>
-            </archive>
-            <extensions>
-                <extension label="Zipped Activity Project">.apz</extension>
-            </extensions>
-            <patcher />
+            <dialog extension=".sight" description="Sight data" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 
@@ -179,8 +152,8 @@
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::atoms::SReader" />
-            <config id="ActivityMDAtomsConfig" service="sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::session::SReader" />
+            <config id="DefaultSessionReaderConfig" service="sight::module::io::session::SReader" />
         </config>
     </extension>
 
@@ -191,17 +164,18 @@
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::atoms::SWriter" />
-            <config id="ActivityMDAtomsConfig" service="sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
+            <config id="DefaultSessionWriterConfig" service="sight::module::io::session::SWriter" />
         </config>
     </extension>
 
-    <!-- Service config used for ioAtoms reader and writer to read landmarks -->
+    <!-- Service config used for reading / writing landmarks -->
     <extension implements="sight::service::extension::Config">
-        <id>LandmarksAtomsConfig</id>
-        <desc>Json/Xml Reader/Writer (Sight)</desc>
+        <id>LandmarksConfig</id>
+        <desc>Landmarks Reader/Writer</desc>
         <config>
-            <patcher context="Landmark" version="V2" />
+            <dialog extension=".sight" description="Sight Landmarks" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 
@@ -211,7 +185,8 @@
         <service>sight::module::io::session::SReader</service>
         <desc>Session reader</desc>
         <config>
-            <dialog extension=".sight" description="Sight session file"/>
+            <dialog extension=".sight" description="Sight session" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 
@@ -220,7 +195,8 @@
         <service>sight::module::io::session::SWriter</service>
         <desc>Session writer</desc>
         <config>
-            <dialog extension=".sight" description="Sight session file"/>
+            <dialog extension=".sight" description="Sight session" policy="default" />
+            <password policy="default" encryption="default" />
         </config>
     </extension>
 

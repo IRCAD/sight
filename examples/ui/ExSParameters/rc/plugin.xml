@@ -10,7 +10,7 @@ This example shows the possibilities of SParameters:
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExSParameters_AppCfg</id>
         <config>
 

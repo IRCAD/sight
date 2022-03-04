@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -189,7 +189,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     data::Image::PixelFormat format;
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
-    switch(frameTL->getNumberOfComponents())
+    switch(frameTL->numComponents())
     {
         case 1:
             format = data::Image::GRAY_SCALE;
@@ -209,13 +209,13 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     image->resize(size, frameTL->getType(), format);
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
     const data::Image::Spacing spacing = {1., 1., 1.};
-    image->setSpacing2(spacing);
+    image->setSpacing(spacing);
     image->setWindowWidth(100);
     image->setWindowCenter(0);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     const std::uint8_t* frameBuff = &buffer->getElement(0);
     std::uint8_t* imgBuffer       = static_cast<std::uint8_t*>(image->getBuffer());

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,10 +42,12 @@ struct Resampling
 {
     struct Parameters
     {
-        ::itk::AffineTransform<double, 3>::Pointer i_trf;
+        itk::AffineTransform<double, 3>::Pointer i_trf;
         data::Image::csptr i_image;
         data::Image::sptr o_image;
-        data::Image::csptr i_targetImage;
+        std::optional<std::tuple<data::Image::Size,
+                                 data::Image::Origin,
+                                 data::Image::Spacing> > i_parameters;
     };
 
     //------------------------------------------------------------------------------
@@ -53,14 +55,14 @@ struct Resampling
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
-        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(params.i_image);
+        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
+        const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
-        typename ::itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
-            ::itk::ResampleImageFilter<ImageType, ImageType>::New();
+        typename itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
+            itk::ResampleImageFilter<ImageType, ImageType>::New();
 
-        typename ::itk::MinimumMaximumImageCalculator<ImageType>::Pointer minCalculator =
-            ::itk::MinimumMaximumImageCalculator<ImageType>::New();
+        typename itk::MinimumMaximumImageCalculator<ImageType>::Pointer minCalculator =
+            itk::MinimumMaximumImageCalculator<ImageType>::New();
 
         minCalculator->SetImage(itkImage);
         minCalculator->ComputeMinimum();
@@ -76,15 +78,16 @@ struct Resampling
 
         SIGHT_ASSERT("Input spacing can't be null along any axis", spacing[0] > 0 && spacing[1] > 0 && spacing[2] > 0);
 
-        if(params.i_targetImage)
+        if(params.i_parameters.has_value())
         {
+            auto& [outSize, outOrigin, outSpacing] = params.i_parameters.value();
             for(std::uint8_t i = 0 ; i < 3 ; ++i)
             {
                 // ITK uses unsigned long to store sizes.
-                size[i] = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize2()[i]);
+                size[i] = static_cast<typename ImageType::SizeType::SizeValueType>(outSize[i]);
 
-                origin[i]  = params.i_targetImage->getOrigin2()[i];
-                spacing[i] = params.i_targetImage->getSpacing2()[i];
+                origin[i]  = outOrigin[i];
+                spacing[i] = outSpacing[i];
 
                 SIGHT_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
             }
@@ -99,7 +102,7 @@ struct Resampling
 
         typename ImageType::Pointer outputImage = resampler->GetOutput();
 
-        io::itk::itkImageToFwDataImage(outputImage, params.o_image);
+        io::itk::moveFromItk(outputImage, params.o_image);
     }
 };
 
@@ -109,7 +112,9 @@ void Resampler::resample(
     const data::Image::csptr& _inImage,
     const data::Image::sptr& _outImage,
     const data::Matrix4::csptr& _trf,
-    const data::Image::csptr& _targetImg
+    std::optional<std::tuple<data::Image::Size,
+                             data::Image::Origin,
+                             data::Image::Spacing> > parameters
 )
 {
     const itk::Matrix<double, 4, 4> itkMatrix = io::itk::helper::Transform::convertToITK(_trf);
@@ -137,10 +142,10 @@ void Resampler::resample(
     transf->SetTranslation(translation);
 
     Resampling::Parameters params;
-    params.i_image       = _inImage;
-    params.o_image       = _outImage;
-    params.i_trf         = transf.GetPointer();
-    params.i_targetImage = _targetImg;
+    params.i_image      = _inImage;
+    params.o_image      = _outImage;
+    params.i_trf        = transf.GetPointer();
+    params.i_parameters = parameters;
 
     const core::tools::Type type = _inImage->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, Resampling>::invoke(type, params);
@@ -151,28 +156,16 @@ void Resampler::resample(
 data::Image::sptr Resampler::resample(
     const data::Image::csptr& _img,
     const data::Matrix4::csptr& _trf,
-    const data::Image::SpacingType& _outputSpacing
-)
-{
-    data::Image::Spacing spacing = {_outputSpacing[0], _outputSpacing[1], _outputSpacing[2]};
-    return Resampler::resample(_img, _trf, spacing);
-}
-
-//-----------------------------------------------------------------------------
-
-data::Image::sptr Resampler::resample(
-    const data::Image::csptr& _img,
-    const data::Matrix4::csptr& _trf,
     const data::Image::Spacing& _outputSpacing
 )
 {
-    using PointType           = ::itk::Point<double, 3>;
-    using VectorContainerType = ::itk::VectorContainer<int, PointType>;
-    using BoundingBoxType     = ::itk::BoundingBox<int, 3, double, VectorContainerType>;
+    using PointType           = itk::Point<double, 3>;
+    using VectorContainerType = itk::VectorContainer<int, PointType>;
+    using BoundingBoxType     = itk::BoundingBox<int, 3, double, VectorContainerType>;
 
-    const auto& inputSize    = _img->getSize2();
-    const auto& inputOrigin  = _img->getOrigin2();
-    const auto& inputSpacing = _img->getSpacing2();
+    const auto& inputSize    = _img->getSize();
+    const auto& inputOrigin  = _img->getOrigin();
+    const auto& inputSpacing = _img->getSpacing();
 
     SIGHT_ASSERT(
         "Image dimension must be 3.",
@@ -192,7 +185,7 @@ data::Image::sptr Resampler::resample(
     inputBB->SetMaximum(max);
 
     const auto inputCorners = inputBB->GetCorners();
-    const ::itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
+    const itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
 
     // Apply transform matrix to all bounding box corners.
     typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();
@@ -204,7 +197,7 @@ data::Image::sptr Resampler::resample(
         [&matrix](const PointType& _in)
         {
             // Convert input to homogeneous coordinates.
-            const ::itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
+            const itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
             const auto p = matrix * input;
             return PointType(p.GetDataPointer());
         });
@@ -222,14 +215,14 @@ data::Image::sptr Resampler::resample(
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         outputOrigin[i] = outputBB->GetMinimum()[i];
-        outputSize[i]   = size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
+        outputSize[i]   = std::size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
     }
 
-    output->setSize2(outputSize);
-    output->setSpacing2(_outputSpacing);
-    output->setOrigin2(outputOrigin);
+    output->setSpacing(_outputSpacing);
+    output->setOrigin(outputOrigin);
 
-    resample(_img, output, _trf, output);
+    resample(_img, output, _trf, std::make_tuple(outputSize, outputOrigin, _outputSpacing));
+
     return output;
 }
 

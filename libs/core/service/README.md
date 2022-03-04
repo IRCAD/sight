@@ -51,7 +51,7 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 
 ### _op_
 
-- **Add**: creats and attaches services to object
+- **Add**: creates and attaches services to object
 - **Get**: provides acces to services
 
 ### _parser_
@@ -70,7 +70,7 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 ### _registry_
 
 - **ActiveWorkers**: registers active worker and creates a default worker if necessary. 
-Deprecated, please use `sight::core::thread::ActiveWorkers` instead.
+Deprecated, please use `sight::core::thread` instead.
 - **ObjectService**:  maintains the relation between objects and services
  The API of ObjectService should not be directly invoked, please make use of service/op methods (i.e. add, get,...) instead
 - **Proxy**: defines a proxy for signal/slot connections between services

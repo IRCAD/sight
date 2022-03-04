@@ -61,11 +61,11 @@ namespace action
  * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)..
  */
-class MODULE_FILTER_MESH_CLASS_API SMeshCreation : public ::sight::ui::base::IAction
+class MODULE_FILTER_MESH_CLASS_API SMeshCreation : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMeshCreation, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SMeshCreation, sight::ui::base::IAction);
 
     MODULE_FILTER_MESH_API SMeshCreation() noexcept;
 

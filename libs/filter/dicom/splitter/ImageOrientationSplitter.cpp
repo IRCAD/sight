@@ -28,7 +28,7 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImageOrientationSplitter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::ImageOrientationSplitter);
 
 namespace sight::filter::dicom
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/foreach.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::DicomDirTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomDirTest);
 
 namespace sight::io::dicom
 {
@@ -76,7 +76,7 @@ void DicomDirTest::readDicomDir()
 
     const std::filesystem::path path = utestData::Data::dir()
                                        / "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
-    const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+    const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -89,11 +89,11 @@ void DicomDirTest::readDicomDir()
 
     // Read DICOMDIR file
     io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesDB, logger);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB.size());
     CPPUNIT_ASSERT(logger->empty());
 
     auto series = *seriesDB.begin();
-    CPPUNIT_ASSERT_EQUAL(size_t(84), series->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(84), series->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

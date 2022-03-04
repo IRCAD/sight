@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,41 +24,41 @@
 
 #include "data/Camera.hpp"
 #include "data/config.hpp"
-#include <data/Matrix4.hpp>
-#include <data/Object.hpp>
-#include <data/Series.hpp>
+#include "data/Matrix4.hpp"
+#include "data/Object.hpp"
+#include "data/Series.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
 
+#include <data/Matrix4.hpp>
+#include <data/Object.hpp>
+#include <data/Series.hpp>
+
 #include <map>
 #include <vector>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (CameraSeries));
 
 namespace sight::data
 {
 
 /**
- * @brief  This class contains the information about cameras (container of camera and extrinsec matrix).
+ * @brief  This class contains the information about cameras (container of camera and extrinsic matrix).
  */
 
-class DATA_CLASS_API CameraSeries : public data::Series
+class DATA_CLASS_API CameraSeries : public Series
 {
 public:
 
-    SIGHT_DECLARE_CLASS(CameraSeries, data::Object, data::factory::New<CameraSeries>);
+    SIGHT_DECLARE_CLASS(CameraSeries, Object, factory::New<CameraSeries>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (CameraSeries));
-
-    typedef std::vector<data::Camera::sptr> CameraContainerType;
+    typedef std::vector<Camera::sptr> CameraContainerType;
 
     /**
      *@brief Constructor
      *@param key Private construction key
      */
-    DATA_API CameraSeries(data::Object::Key key);
+    DATA_API CameraSeries(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~CameraSeries();
@@ -67,49 +67,49 @@ public:
      * @brief Defines shallow copy
      * @throws data::Exception if an errors occurs during copy
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy
-     * @throws data::Exception if an errors occurs during copy
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /**@name Signals API
      * @{
      */
     DATA_API static const core::com::Signals::SignalKeyType s_ADDED_CAMERA_SIG;
-    typedef core::com::Signal<void (data::Camera::sptr)> AddedCameraSignalType;
+    typedef core::com::Signal<void (Camera::sptr)> AddedCameraSignalType;
 
     DATA_API static const core::com::Signals::SignalKeyType s_REMOVED_CAMERA_SIG;
-    typedef core::com::Signal<void (data::Camera::sptr)> RemovedCameraSignalType;
+    typedef core::com::Signal<void (Camera::sptr)> RemovedCameraSignalType;
 
     DATA_API static const core::com::Signals::SignalKeyType s_EXTRINSIC_CALIBRATED_SIG;
     typedef core::com::Signal<void ()> ExtrinsicCalibratedSignalType;
     /** @} */
 
-    typedef std::vector<data::Matrix4::sptr> MatricesContainer;
+    typedef std::vector<Matrix4::sptr> MatricesContainer;
 
     /**
      * @brief Adds a camera in the cameraSeries.
      * @throws core::Exception if the camera is already present in the `CameraSeries`
      */
-    DATA_API void addCamera(const data::Camera::sptr& camera);
+    DATA_API void addCamera(const Camera::sptr& camera);
 
     /**
      * @brief Returns the camera at the index.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API data::Camera::sptr getCamera(size_t index) const;
+    DATA_API Camera::csptr getCamera(std::size_t index) const;
+
+    /**
+     * @brief Returns the camera at the index.
+     * @throws core::Exception if the index is out of range
+     */
+    DATA_API Camera::sptr getCamera(std::size_t index);
 
     /**
      * @brief Remove the given camera from the series
      * @throws core::Exception if the camera is not found in the series
      */
-    DATA_API void removeCamera(const data::Camera::sptr& camera);
+    DATA_API void removeCamera(const Camera::sptr& camera);
 
     /// Returns the number of cameras
-    inline size_t getNumberOfCameras() const
+    inline std::size_t numCameras() const
     {
         return m_cameras.size();
     }
@@ -128,7 +128,7 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API void setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix);
+    DATA_API void setExtrinsicMatrix(std::size_t index, Matrix4::sptr matrix);
 
     /**
      * @brief Gets the extrinsic matrix.
@@ -137,20 +137,26 @@ public:
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
      * @throws core::Exception if the index is out of range
+     *
+     * @{
      */
-    DATA_API data::Matrix4::sptr getExtrinsicMatrix(size_t index) const;
+    DATA_API Matrix4::csptr getExtrinsicMatrix(std::size_t index) const;
+    DATA_API Matrix4::sptr getExtrinsicMatrix(std::size_t index);
+    /// @}
 
-    /**
-     * @brief Gets the extrinsic matrix corresponding to the transformation from camera[0] to camera[1].
-     * @return Returns the extrinsic transformation matrix, or null if not defined.
-     * @deprecated Use getExtrinsicMatrix(1) instead of this method
-     */
-    data::Matrix4::sptr getExtrinsicMatrix() const
-    {
-        return this->getExtrinsicMatrix(1);
-    }
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const CameraSeries& other) const noexcept;
+    DATA_API bool operator!=(const CameraSeries& other) const noexcept;
+    /// @}
 
 protected:
+
+    /**
+     * @brief Defines deep copy
+     * @throws data::Exception if an errors occurs during copy
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Contains camera
     CameraContainerType m_cameras;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Node));
-
 namespace sight::data
 {
 
@@ -38,15 +36,14 @@ namespace sight::data
  * @brief This class defines a node.
  * A node is represented by input and output ports.
  */
-class DATA_CLASS_API Node : public data::Object
+class DATA_CLASS_API Node : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Node, data::Object, data::factory::New<Node>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Node));
+    SIGHT_DECLARE_CLASS(Node, Object, factory::New<Node>);
 
     /// Port container
-    typedef std::vector<data::Port::sptr> PortContainer;
+    typedef std::vector<Port::sptr> PortContainer;
 
     /// Type of 'updated' signal
     typedef core::com::Signal<void ()> UpdatedSignalType;
@@ -55,16 +52,16 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Node(data::Object::Key key);
+    DATA_API Node(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Node();
 
     /// Add an input port
-    DATA_API void addInputPort(const data::Port::sptr& port);
+    DATA_API void addInputPort(const Port::sptr& port);
 
     /// Add an output port
-    DATA_API void addOutputPort(const data::Port::sptr& port);
+    DATA_API void addOutputPort(const Port::sptr& port);
 
     /// Get the container of input ports
     DATA_API PortContainer& getInputPorts();
@@ -75,10 +72,10 @@ public:
     DATA_API const PortContainer& getOutputPorts() const;
 
     /// Set object to the node
-    DATA_API void setObject(const data::Object::sptr& object);
+    DATA_API void setObject(const Object::sptr& object);
 
     /// Get node object
-    DATA_API data::Object::sptr getObject() const;
+    DATA_API Object::sptr getObject() const;
 
     /**
      * @brief Get the port with given identifier
@@ -93,16 +90,22 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /// Updated signal key
     DATA_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Node& other) const noexcept;
+    DATA_API bool operator!=(const Node& other) const noexcept;
+    /// @}
+
 protected:
 
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
     /// node object
-    data::Object::sptr m_object;
+    Object::sptr m_object;
 
     //! Input port container
     PortContainer m_inputs;

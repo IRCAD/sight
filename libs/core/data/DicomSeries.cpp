@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "data/DicomSeries.hpp"
 
+#include <core/memory/stream/in/Raw.hpp>
+
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
-
-#include <core/memory/stream/in/Raw.hpp>
 
 #include <filesystem>
 
@@ -171,6 +171,30 @@ void DicomSeries::addComputedTagValue(const std::string& _tagName, const std::st
 bool DicomSeries::hasComputedValues(const std::string& _tagName) const
 {
     return m_computedTagValues.find(_tagName) != m_computedTagValues.end();
+}
+
+//------------------------------------------------------------------------------
+
+bool DicomSeries::operator==(const DicomSeries& other) const noexcept
+{
+    if(m_numberOfInstances != other.m_numberOfInstances
+       || m_SOPClassUIDs != other.m_SOPClassUIDs
+       || m_computedTagValues != other.m_computedTagValues
+       || m_firstInstanceNumber != other.m_firstInstanceNumber
+       || !core::tools::is_equal(m_dicomContainer, other.m_dicomContainer))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Series::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool DicomSeries::operator!=(const DicomSeries& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

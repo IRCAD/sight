@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <optional>
+
 namespace sight::activity
 {
 
@@ -41,11 +43,12 @@ class ACTIVITY_CLASS_API IActivityLauncher
 {
 public:
 
-    typedef ::boost::property_tree::ptree ConfigurationType;
+    typedef boost::property_tree::ptree ConfigurationType;
     typedef activity::extension::ActivityAppConfigParam ParameterType;
-    typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::ActivityAppConfigParamsType ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;
-    typedef std::map<std::pair<std::string, size_t>, data::mt::weak_ptr<data::Object> > InOutMapType;
+    typedef std::map<std::pair<std::string, std::optional<std::size_t> >,
+                     data::mt::weak_ptr<data::Object> > InOutMapType;
 
     /// Constructor. Do nothing.
     ACTIVITY_API IActivityLauncher();
@@ -71,29 +74,6 @@ protected:
     ACTIVITY_API std::pair<bool, std::string> validateActivity(
         const data::ActivitySeries::csptr& activitySeries
     ) const;
-
-    /**
-     * @brief Translate parameters from source object.
-     *
-     * Replace camp path (ex.@values.myParam.image) by the uid of the corresponding object.
-     *
-     * @param[in] sourceObj source object used to find sub-object form camp path
-     * @param[in] parameters list of parameters to translate
-     * @param[out] replaceMap map containing the translated parameter
-     */
-    ACTIVITY_API void translateParameters(
-        const data::Object::csptr& sourceObj,
-        const ParametersType& parameters,
-        ReplaceMapType& replaceMap
-    );
-
-    /**
-     * @brief Create the replace map from the parameters.
-     *
-     * @param[in] parameters list of parameters to translate
-     * @param[out] replaceMap map containing the translated parameter
-     */
-    ACTIVITY_API void translateParameters(const ParametersType& parameters, ReplaceMapType& replaceMap);
 
     std::string m_mainActivityId; ///< configuration id of the main activity
 

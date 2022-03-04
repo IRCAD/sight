@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DNegato</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -46,7 +46,7 @@
                 <slideView sid="negato_bottom_slider_view" start="true" />
             </registry>
         </service>
-        
+
         <service uid="negato_top_slider_view" type="sight::module::ui::base::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
@@ -70,7 +70,7 @@
                 <menuItem sid="snapshotAct" start="true" />
             </registry>
         </service>
-        
+
         <service uid="negato_bottom_slider_view" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
@@ -166,7 +166,7 @@
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
-            <addSelection service="sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
         </service>
 
         <connect channel="${CrossTypeChannel}">

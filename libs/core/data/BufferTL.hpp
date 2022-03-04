@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 #include <boost/array.hpp>
 #include <boost/pool/poolfwd.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (BufferTL));
-
 namespace sight::data
 {
 
@@ -42,68 +40,68 @@ class DATA_CLASS_API BufferTL : public TimeLine
 {
 public:
 
-    SIGHT_DECLARE_CLASS(BufferTL, data::Object);
+    SIGHT_DECLARE_CLASS(BufferTL, Object);
 
     typedef core::HiResClock::HiResClockType TimestampType;
-    typedef std::map<TimestampType, SPTR(data::timeline::Buffer)> TimelineType;
-    typedef std::pair<TimestampType, SPTR(data::timeline::Buffer)> BufferPairType;
-    typedef ::boost::pool<> PoolType;
+    typedef std::map<TimestampType, SPTR(timeline::Buffer)> TimelineType;
+    typedef std::pair<TimestampType, SPTR(timeline::Buffer)> BufferPairType;
+    typedef boost::pool<> PoolType;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API BufferTL(data::Object::Key key);
+    DATA_API BufferTL(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~BufferTL();
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API virtual bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const = 0;
+    DATA_API virtual bool isObjectValid(const CSPTR(timeline::Object)& obj) const = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param timestamp timestamp used to find the closest object
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API virtual CSPTR(data::timeline::Object) getClosestObject(
+    DATA_API virtual CSPTR(timeline::Object) getClosestObject(
         core::HiResClock::HiResClockType timestamp,
         DirectionType direction = BOTH
     ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    DATA_API virtual CSPTR(data::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
+    DATA_API virtual CSPTR(timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
     const override;
 
     /// Clear the timeline
     DATA_API virtual void clearTimeline();
 
     /// Push a buffer to the timeline
-    DATA_API void pushObject(const SPTR(data::timeline::Object)& obj) override;
+    DATA_API void pushObject(const SPTR(timeline::Object)& obj) override;
 
     /// Remove a buffer to the timeline
-    DATA_API SPTR(data::timeline::Object) popObject(TimestampType timestamp) override;
+    DATA_API SPTR(timeline::Object) popObject(TimestampType timestamp) override;
 
     /// Change a buffer timestamp to the timeline
     DATA_API void modifyTime(TimestampType timestamp, TimestampType newTimestamp) override;
 
     /// Change a buffer object to the specified timestamp
-    DATA_API void setObject(TimestampType timestamp, const SPTR(data::timeline::Object)& obj) override;
+    DATA_API void setObject(TimestampType timestamp, const SPTR(timeline::Object)& obj) override;
 
     /// Return the last object in the timeline
-    DATA_API CSPTR(data::timeline::Object) getNewerObject() const;
+    DATA_API CSPTR(timeline::Object) getNewerObject() const;
 
     /// Return the last timestamp in the timeline
     DATA_API core::HiResClock::HiResClockType getNewerTimestamp() const;
 
     /// Change the maximum size of the timeline
-    void setMaximumSize(size_t maximumSize)
+    void setMaximumSize(std::size_t maximumSize)
     {
         m_maximumSize = maximumSize;
     }
 
     /// Default Timeline Size
-    DATA_API static const size_t s_DEFAULT_TIMELINE_MAX_SIZE;
+    DATA_API static const std::size_t s_DEFAULT_TIMELINE_MAX_SIZE;
 
     /// Return true if the pool is allocated
     bool isAllocated() const
@@ -111,13 +109,16 @@ public:
         return m_pool != nullptr;
     }
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const BufferTL& other) const noexcept;
+    DATA_API bool operator!=(const BufferTL& other) const noexcept;
+    /// @}
+
 protected:
 
     /// Allocate the pool buffer.
     DATA_API void allocPoolSize(std::size_t size);
-
-    /// Mutex to protect m_timeline and m_pool access
-    mutable core::mt::ReadWriteMutex m_tlMutex;
 
     ///Timeline
     TimelineType m_timeline;
@@ -126,7 +127,7 @@ protected:
     SPTR(PoolType) m_pool;
 
     /// maximum size
-    size_t m_maximumSize;
+    std::size_t m_maximumSize;
 }; // class BufferTL
 
 } // namespace sight::data

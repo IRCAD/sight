@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -301,7 +301,18 @@ public:
 
 private:
 
-    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true};
+    data::ptr<data::Object, data::Access::in> m_input {this, "data1", false};
+};
+
+class STest1OptInput : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest1OptInput, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true, true};
 };
 
 class STest2Inputs : public ISTest
@@ -312,8 +323,8 @@ public:
 
 private:
 
-    data::ptr<data::Object, data::Access::in> m_input1 {this, "data1", true};
-    data::ptr<data::Object, data::Access::in> m_input2 {this, "data2", true};
+    data::ptr<data::Object, data::Access::in> m_input1 {this, "data1"};
+    data::ptr<data::Object, data::Access::in> m_input2 {this, "data2"};
 };
 
 class STest2InputsV2 : public ISTest
@@ -347,9 +358,9 @@ public:
 private:
 
     data::ptr<data::Object, data::Access::in> m_inout1 {this, "data1", true};
-    data::ptr<data::Object, data::Access::in> m_inout2 {this, "data2", true};
-    data::ptr<data::Object, data::Access::in> m_inout3 {this, "data3", true};
-    data::ptr<data::Object, data::Access::in> m_inout4 {this, "data4", true};
+    data::ptr<data::Object, data::Access::in> m_inout2 {this, "data2", true, true};
+    data::ptr<data::Object, data::Access::in> m_inout3 {this, "data3", true, true};
+    data::ptr<data::Object, data::Access::in> m_inout4 {this, "data4", true, true};
 };
 
 class STest1Inout : public ISTest
@@ -443,8 +454,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(STest2InputGroups, service::ut::ISTest);
 
-    data::ptr_vector<data::Object, data::Access::in> m_input1 {this, "dataGroup0", true};
-    data::ptr_vector<data::Object, data::Access::in> m_input2 {this, "dataGroup1", true};
+    data::ptr_vector<data::Object, data::Access::in> m_input1 {this, "dataGroup0", false};
+    data::ptr_vector<data::Object, data::Access::in> m_input2 {this, "dataGroup1", false};
 };
 
 class STest1Input1InputGroup : public ISTest
@@ -453,7 +464,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(STest1Input1InputGroup, service::ut::ISTest);
 
-    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true};
+    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true, 1};
     data::ptr_vector<data::Object, data::Access::in> m_inputGroup {this, "dataGroup", true};
 };
 
@@ -515,7 +526,7 @@ public:
     void updating() override;
 
     data::ptr<data::Object, data::Access::in> m_input {this, "input", true};
-    data::ptr_vector<data::Integer, data::Access::inout> m_inoutGroup {this, "inoutGroup", true, 2};
+    data::ptr_vector<data::Integer, data::Access::inout> m_inoutGroup {this, "inoutGroup", true};
     data::ptr<data::Object, data::Access::out> m_output {this, "output", false, true};
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,21 +27,21 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Matrix4.hpp>
 
 #include <filter/image/Metric.hpp>
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
 
+#include <io/itk/itk.hpp>
+
+#include <utestData/generator/Image.hpp>
+
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
-
-#include <io/itk/itk.hpp>
-
-#include <utestData/generator/Image.hpp>
 
 #include <itkImage.h>
 #include <itkRegionOfInterestImageFilter.h>
@@ -71,7 +71,7 @@ void MIPMatchingRegistrationTest::tearDown()
 
 void MIPMatchingRegistrationTest::identityTest()
 {
-    data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::csptr moving = createSphereImage<std::uint16_t, 3>();
     data::Image::csptr fixed  = data::Object::copy(moving);
     data::Matrix4::sptr mat   = data::Matrix4::New();
 
@@ -82,7 +82,7 @@ void MIPMatchingRegistrationTest::identityTest()
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
 
-    for(size_t i = 0 ; i != 3 ; ++i)
+    for(std::size_t i = 0 ; i != 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Translation value is not equal to '0' ",
@@ -97,7 +97,7 @@ void MIPMatchingRegistrationTest::identityTest()
 
 void MIPMatchingRegistrationTest::translateTransformTest()
 {
-    data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::csptr moving = createSphereImage<std::uint16_t, 3>();
     data::Image::sptr fixed   = data::Image::New();
 
     data::Matrix4::sptr transform = data::Matrix4::New();
@@ -113,7 +113,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Actual transform does not match expected results",
@@ -128,14 +128,14 @@ void MIPMatchingRegistrationTest::translateTransformTest()
 
 void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
 {
-    using ImageType = ::itk::Image<std::uint16_t, 3>;
+    using ImageType = itk::Image<std::uint16_t, 3>;
 
     // Create the moving image
     auto movingSpacing = ImageType::SpacingType(1.);
     movingSpacing[1] = 1.3;
-    data::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
+    data::Image::sptr moving = createSphereImage<std::uint16_t, 3>(movingSpacing);
     data::Image::sptr fixed  = data::Image::New();
-    moving->setOrigin2({107., 50., -30.});
+    moving->setOrigin({107., 50., -30.});
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{4., 19., 7.}};
@@ -145,8 +145,8 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(2, 3, vTrans[2]);
     sight::filter::image::Resampler::resample(moving, fixed, transform);
     auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}},
-         movingOrigin = moving->getOrigin2();
-    fixed->setOrigin2(fixedOrigin);
+         movingOrigin = moving->getOrigin();
+    fixed->setOrigin(fixedOrigin);
     std::array<float, 3> expected {
         {
             float(movingOrigin[0] + vTrans[0] - fixedOrigin[0]),
@@ -155,24 +155,24 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
         }
     };
 
-    auto itkFixed = io::itk::itkImageFactory<ImageType>(fixed, false);
+    auto itkFixed = io::itk::moveToItk<ImageType>(fixed);
 
     // Resample the image to get a different spacing
     ImageType::SizeType newSize;
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0 ; i != 3 ; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize2()[i]);
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
     }
 
-    auto resample = ::itk::ResampleImageFilter<ImageType, ImageType>::New();
+    auto resample = itk::ResampleImageFilter<ImageType, ImageType>::New();
     resample->SetInput(itkFixed);
     resample->SetSize(newSize);
     resample->SetOutputSpacing(newSpacing);
     resample->SetOutputOrigin(itkFixed->GetOrigin());
     resample->Update();
     auto resampled         = resample->GetOutput();
-    auto resampledF4sFixed = io::itk::dataImageFactory<ImageType>(resampled, true);
+    auto resampledF4sFixed = io::itk::moveFromItk<ImageType>(resampled, true);
 
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;
@@ -180,7 +180,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
-    for(size_t i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Actual transform does not match expected results",

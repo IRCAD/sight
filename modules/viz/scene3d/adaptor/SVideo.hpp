@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
         <in key="image" uid="..." />
-        <in key="tf" uid="..." optional="true" />
+        <in key="tf" uid="..." />
         <config layer="default" />
     </service>
    @endcode
@@ -86,7 +86,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVideo final : public sight::viz::scene3d::IA
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVideo, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVideo, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor an initialize slots.
     MODULE_VIZ_SCENE3D_API SVideo() noexcept;
@@ -147,19 +147,19 @@ private:
     void clearEntity();
 
     /// Contains the Ogre texture used to store the image.
-    ::Ogre::TexturePtr m_texture;
+    Ogre::TexturePtr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
-    ::Ogre::MaterialPtr m_material;
+    Ogre::MaterialPtr m_material;
 
     /// Contains the Ogre mesh used to display the video plane.
-    ::Ogre::MeshPtr m_mesh;
+    Ogre::MeshPtr m_mesh;
 
     /// Contains the node where the plane is attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Contains the Ogre entity used to display the video plane.
-    ::Ogre::Entity* m_entity {nullptr};
+    Ogre::Entity* m_entity {nullptr};
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF;
@@ -168,10 +168,10 @@ private:
     bool m_isTextureInit {false};
 
     /// Defines the previous image size.
-    size_t m_previousWidth {0};
+    std::size_t m_previousWidth {0};
 
     /// Defines the previous image spacing.
-    size_t m_previousHeight {0};
+    std::size_t m_previousHeight {0};
 
     /// Defines the previous viewport width.
     int m_previousViewportWidth {0};
@@ -231,9 +231,9 @@ private:
     static constexpr std::string_view s_TF_INPUT    = "tf";
     static constexpr std::string_view s_PL_INPUT    = "pointList";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT};
-    sight::data::ptr<sight::data::PointList, sight::data::Access::in> m_pl {this, s_PL_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT, true, true};
+    sight::data::ptr<sight::data::PointList, sight::data::Access::in> m_pl {this, s_PL_INPUT, true, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ private:
     /// Applies the style _stylename.
     void changeStyle(const std::string& _styleName);
 
-    ///Slot: check preference key THEME, and update theme accordly.
+    ///Slot: check preference key THEME, and update theme accordingly.
     void updateFromPrefs();
 
     /// Map to stores theme names and their path.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ class DATA_CLASS_API MatrixTL : public GenericTL<float [16]>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MatrixTL, data::TimeLine, data::factory::New<MatrixTL>);
+    SIGHT_DECLARE_CLASS(MatrixTL, TimeLine, factory::New<MatrixTL>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    MatrixTL(data::Object::Key key) :
+    MatrixTL(Object::Key key) :
         GenericTL<float [16]>(key)
     {
     }

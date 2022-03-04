@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "viz/scene3d/registry/macros.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreCamera.h>
@@ -74,10 +73,10 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier, int, int,
         }
         else if(button == RIGHT)
         {
-            ::Ogre::Camera* const camera = m_layer.lock()->getDefaultCamera();
-            const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
+            Ogre::Camera* const camera = m_layer.lock()->getDefaultCamera();
+            const Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
 
-            camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
+            camera->getParentNode()->translate(transVec, Ogre::Node::TS_LOCAL);
         }
     }
 }
@@ -123,9 +122,9 @@ void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
             m_zoom = newZoom;
 
             // Translate the camera.
-            ::Ogre::Camera* const camera     = layer->getDefaultCamera();
-            ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-            camNode->translate(::Ogre::Vector3(0, 0, -1) * z, ::Ogre::Node::TS_LOCAL);
+            Ogre::Camera* const camera     = layer->getDefaultCamera();
+            Ogre::SceneNode* const camNode = camera->getParentSceneNode();
+            camNode->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
             layer->resetCameraClippingRange();
         }
@@ -159,7 +158,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
                 {
                     // We use a timer on the main thread instead of a separate thread.
                     // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                    const auto worker = core::thread::ActiveWorkers::getDefault()->getDefaultWorker();
+                    const auto worker = core::thread::getDefaultWorker();
                     m_timer = worker->createTimer();
 
                     m_timer->setFunction(
@@ -180,8 +179,8 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
 
 void TrackballInteractor::resizeEvent(int, int)
 {
-    const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    ::Ogre::Camera* const camera                   =
+    const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
+    Ogre::Camera* const camera                   =
         sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
     const float width  = static_cast<float>(camera->getViewport()->getActualWidth());
     const float height = static_cast<float>(camera->getViewport()->getActualHeight());
@@ -194,95 +193,95 @@ void TrackballInteractor::resizeEvent(int, int)
 
 void TrackballInteractor::cameraRotate(int dx, int dy)
 {
-    ::Ogre::Real wDelta = static_cast< ::Ogre::Real>(dx);
-    ::Ogre::Real hDelta = static_cast< ::Ogre::Real>(dy);
+    Ogre::Real wDelta = static_cast<Ogre::Real>(dx);
+    Ogre::Real hDelta = static_cast<Ogre::Real>(dy);
 
-    ::Ogre::Camera* const camera     = m_layer.lock()->getDefaultCamera();
-    ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-    const ::Ogre::Viewport* const vp = camera->getViewport();
+    Ogre::Camera* const camera     = m_layer.lock()->getDefaultCamera();
+    Ogre::SceneNode* const camNode = camera->getParentSceneNode();
+    const Ogre::Viewport* const vp = camera->getViewport();
 
     const float height = static_cast<float>(vp->getActualHeight());
     const float width  = static_cast<float>(vp->getActualWidth());
 
     // Current orientation of the camera
-    const ::Ogre::Quaternion orientation = camNode->getOrientation();
-    const ::Ogre::Vector3 viewRight      = orientation.xAxis();
-    const ::Ogre::Vector3 viewUp         = orientation.yAxis();
+    const Ogre::Quaternion orientation = camNode->getOrientation();
+    const Ogre::Vector3 viewRight      = orientation.xAxis();
+    const Ogre::Vector3 viewUp         = orientation.yAxis();
 
     // Rotate around the right vector according to the dy of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(::Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(Ogre::Vector3(0.f, 0.f, -m_lookAtZ), Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        ::Ogre::Vector3 vecX(std::abs(hDelta), 0.f, 0.f);
-        ::Ogre::Vector3 rotateX = vecX * viewRight;
+        Ogre::Vector3 vecX(std::abs(hDelta), 0.f, 0.f);
+        Ogre::Vector3 rotateX = vecX * viewRight;
         rotateX.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateX.dotProduct(::Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
+        if(rotateX.dotProduct(Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
         {
             hDelta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        const float angle = (hDelta * ::Ogre::Math::PI / height);
+        const float angle = (hDelta * Ogre::Math::PI / height);
 
         // 5 - Apply the rotation on the scene node
-        ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateX);
+        Ogre::Quaternion rotate(Ogre::Radian(angle), rotateX);
         camNode->rotate(rotate);
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), Ogre::Node::TS_LOCAL);
     }
 
     // Rotate around the up vector according to the dx of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(::Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(Ogre::Vector3(0.f, 0.f, -m_lookAtZ), Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        ::Ogre::Vector3 vecY(0.f, std::abs(wDelta), 0.f);
-        ::Ogre::Vector3 rotateY = vecY * viewUp;
+        Ogre::Vector3 vecY(0.f, std::abs(wDelta), 0.f);
+        Ogre::Vector3 rotateY = vecY * viewUp;
         rotateY.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateY.dotProduct(::Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
+        if(rotateY.dotProduct(Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
         {
             wDelta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        const float angle = (wDelta * ::Ogre::Math::PI / width);
+        const float angle = (wDelta * Ogre::Math::PI / width);
 
         // 5 - Apply the rotation on the scene node
-        ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateY);
+        Ogre::Quaternion rotate(Ogre::Radian(angle), rotateY);
         camNode->rotate(rotate);
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), Ogre::Node::TS_LOCAL);
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::cameraTranslate(int xmove, int ymove)
+void TrackballInteractor::cameraTranslate(int x_move, int y_move)
 {
-    float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
-    float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
+    float dx = static_cast<float>(x_move) / (m_mouseScale * 10.f);
+    float dy = static_cast<float>(-y_move) / (m_mouseScale * 10.f);
 
-    const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    ::Ogre::Camera* camera                         =
+    const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
+    Ogre::Camera* camera                         =
         sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
+    Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
-    ::Ogre::Vector3 vec(dx, dy, 0.f);
+    Ogre::Vector3 vec(dx, dy, 0.f);
 
-    camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
+    camNode->translate(vec, Ogre::Node::TS_LOCAL);
 }
 
 // ----------------------------------------------------------------------------
@@ -306,8 +305,8 @@ void TrackballInteractor::updateCameraFocalLength()
     // to the scale of the world
     const float focalLength = std::max(0.001f, std::abs(m_lookAtZ));
 
-    const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    ::Ogre::Camera* const camera                   =
+    const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
+    Ogre::Camera* const camera                   =
         sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
     camera->setFocalLength(focalLength);
 }

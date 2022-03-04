@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,6 +88,39 @@ void PatientTest::sexTest()
 }
 
 //------------------------------------------------------------------------------
+
+void PatientTest::equalityTest()
+{
+    auto patient1 = data::Patient::New();
+    auto patient2 = data::Patient::New();
+
+    CPPUNIT_ASSERT(*patient1 == *patient2);
+
+    patient1->setBirthdate("1");
+    CPPUNIT_ASSERT(*patient1 != *patient2);
+    patient2->setBirthdate(patient1->getBirthdate());
+    CPPUNIT_ASSERT(*patient1 == *patient2);
+
+    patient1->setName("2");
+    CPPUNIT_ASSERT(*patient1 != *patient2);
+    patient2->setName(patient1->getName());
+    CPPUNIT_ASSERT(*patient1 == *patient2);
+
+    patient1->setPatientId("3");
+    CPPUNIT_ASSERT(*patient1 != *patient2);
+    patient2->setPatientId(patient1->getPatientId());
+    CPPUNIT_ASSERT(*patient1 == *patient2);
+
+    patient1->setSex("4");
+    CPPUNIT_ASSERT(*patient1 != *patient2);
+    patient2->setSex(patient1->getSex());
+    CPPUNIT_ASSERT(*patient1 == *patient2);
+
+    // Test also deepcopy, just for fun
+    auto Patient3 = data::Patient::New();
+    Patient3->deepCopy(patient1);
+    CPPUNIT_ASSERT(*patient1 == *Patient3);
+}
 
 } //namespace ut
 

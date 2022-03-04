@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,11 +120,14 @@ void SImageSeriesWriter::updating()
 {
     if(this->hasLocationDefined())
     {
-        const auto data    = m_data.lock();
-        const auto iseries = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", iseries);
+        const auto data         = m_data.lock();
+        const auto image_series = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
+        SIGHT_ASSERT(
+            "The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
+            image_series
+        );
 
-        const data::Image::csptr& associatedImage = iseries->getImage();
+        const data::Image::csptr& associatedImage = image_series->getImage();
         SIGHT_ASSERT("associatedImage not instanced", associatedImage);
 
         sight::ui::base::Cursor cursor;

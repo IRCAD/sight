@@ -4,7 +4,7 @@ Library which handles conversions between _Sight_ and [OpenVSLAM](https://github
 
 ## Class
 
-- **Helper**: contains methods to convert sight data to openvslams' ones, as well as openvslam configuration reader and writter.
+- **Helper**: contains methods to convert sight data to openvslam's ones, as well as openvslam configuration reader and writter.
 
 - **OpenvslamConfig**: defines the openvslam configuration elements. Is only used in the Helper of **sight::navigation::openvslam**.
 

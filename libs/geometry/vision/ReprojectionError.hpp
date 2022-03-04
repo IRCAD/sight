@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,11 +50,11 @@ public:
      * @param _tvec: translation vector
      */
     GEOMETRY_VISION_API ReprojectionError(
-        const ::cv::Mat& _cameraMat,
-        const ::cv::Mat& _distCoef,
-        const ::cv::Point2f& _imagePoints,
-        const ::cv::Point3f& _objectPoints,
-        const ::cv::Mat& _extrinsic
+        const cv::Mat& _cameraMat,
+        const cv::Mat& _distCoef,
+        const cv::Point2f& _imagePoints,
+        const cv::Point3f& _objectPoints,
+        const cv::Mat& _extrinsic
     );
     /**
      * @brief operator() is a templated method, which assumes that all its inputs and outputs are of some type T.
@@ -79,20 +79,20 @@ public:
      */
 
     GEOMETRY_VISION_API static ::ceres::CostFunction* Create(
-        const ::cv::Mat& _cameraMatrix,
-        const ::cv::Mat& _distCoef,
-        const ::cv::Point2f& _imagePoints,
-        const ::cv::Point3f& _objectPoints,
-        const ::cv::Mat& _extrinsic
+        const cv::Mat& _cameraMatrix,
+        const cv::Mat& _distCoef,
+        const cv::Point2f& _imagePoints,
+        const cv::Point3f& _objectPoints,
+        const cv::Mat& _extrinsic
     );
 
 private:
 
-    ::cv::Point2f m_imagePoint;  ///< point on image
-    ::cv::Point3f m_objectPoint; ///< corresponding point in scene
-    ::cv::Mat m_extrinsic;       ///< extrinsic matrix
-    ::cv::Mat m_cameraMatrix;    ///< camera calibration (Fx, Fy, Cx, Cy)
-    ::cv::Mat m_distCoef;        ///< camera distorsion
+    cv::Point2f m_imagePoint;  ///< point on image
+    cv::Point3f m_objectPoint; ///< corresponding point in scene
+    cv::Mat m_extrinsic;       ///< extrinsic matrix
+    cv::Mat m_cameraMatrix;    ///< camera calibration (Fx, Fy, Cx, Cy)
+    cv::Mat m_distCoef;        ///< camera distorsion
 };
 
 //-----------------------------------------------------------------------------
@@ -102,28 +102,28 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
 {
     //Use OpenCV template structures since this operator is templated.
     // Conversion to OpenCv Mat
-    const ::cv::Mat rvecPose = (::cv::Mat_<T>(3, 1) << pose[0], pose[1], pose[2]);
-    const ::cv::Mat tvecPose = (::cv::Mat_<T>(3, 1) << pose[3], pose[4], pose[5]);
-    ::cv::Mat rotMatPose     = ::cv::Mat_<T>(3, 3);
+    const cv::Mat rvecPose = (cv::Mat_<T>(3, 1) << pose[0], pose[1], pose[2]);
+    const cv::Mat tvecPose = (cv::Mat_<T>(3, 1) << pose[3], pose[4], pose[5]);
+    cv::Mat rotMatPose     = cv::Mat_<T>(3, 3);
 
-    ::cv::Rodrigues(rvecPose, rotMatPose); // rotation vector to matrix.
+    cv::Rodrigues(rvecPose, rotMatPose); // rotation vector to matrix.
 
-    ::cv::Mat transformPose = ::cv::Mat_<T>::eye(4, 4);
+    cv::Mat transformPose = cv::Mat_<T>::eye(4, 4);
 
     // Copy in transform_pose
-    transformPose(::cv::Range(0, 3), ::cv::Range(0, 3)) = rotMatPose * 1;
-    transformPose(::cv::Range(0, 3), ::cv::Range(3, 4)) = tvecPose * 1;
+    transformPose(cv::Range(0, 3), cv::Range(0, 3)) = rotMatPose * 1;
+    transformPose(cv::Range(0, 3), cv::Range(3, 4)) = tvecPose * 1;
 
     // compute real pose (extrinsic mat * pose)
     // Note: extrinsic can be identity if we use reference camera
-    const ::cv::Mat transformPoseExtrinsic = m_extrinsic * transformPose;
+    const cv::Mat transformPoseExtrinsic = m_extrinsic * transformPose;
 
     //matrix to rotation vector.
-    ::cv::Mat rvecPoseExtrinsic;
-    ::cv::Rodrigues(transformPoseExtrinsic(::cv::Range(0, 3), ::cv::Range(0, 3)), rvecPoseExtrinsic);
+    cv::Mat rvecPoseExtrinsic;
+    cv::Rodrigues(transformPoseExtrinsic(cv::Range(0, 3), cv::Range(0, 3)), rvecPoseExtrinsic);
 
-    std::vector< ::cv::Point_<T> > pointReprojected(1); // 2d point
-    const std::vector< ::cv::Point3_<T> > point3dVector = {{
+    std::vector<cv::Point_<T> > pointReprojected(1); // 2d point
+    const std::vector<cv::Point3_<T> > point3dVector = {{
         {T(m_objectPoint.x),
          T(m_objectPoint.y),
          T(m_objectPoint.z)
@@ -132,10 +132,10 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
     };
 
     // Reproject the point with new pose
-    ::cv::projectPoints(
+    cv::projectPoints(
         point3dVector,
         rvecPoseExtrinsic,
-        transformPoseExtrinsic(::cv::Range(0, 3), ::cv::Range(3, 4)),
+        transformPoseExtrinsic(cv::Range(0, 3), cv::Range(3, 4)),
         m_cameraMatrix,
         m_distCoef,
         pointReprojected

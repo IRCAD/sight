@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ public:
         std::vector<std::string> _selections
     );
 
-    /// will instanciate the concrete implementation
+    /// will instantiate the concrete implementation
     UI_BASE_API SelectorDialog();
 
     /// Called by the constructor in the GUI thread.

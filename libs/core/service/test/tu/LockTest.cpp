@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::LockTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::LockTest);
 
 //------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ const service::IService::KeyType LockedService::s_INPUT  = "input";
 const service::IService::KeyType LockedService::s_INOUT  = "inout";
 const service::IService::KeyType LockedService::s_OUTPUT = "output";
 
-SIGHT_REGISTER_SERVICE(::sight::service::IService, ::sight::service::ut::LockedService);
+SIGHT_REGISTER_SERVICE(sight::service::IService, sight::service::ut::LockedService);
 
 //------------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ void LockTest::tearDown()
 void LockTest::testScopedLock()
 {
     // Add the service
-    service::IService::sptr lockedService = service::add("::sight::service::ut::LockedService");
+    service::IService::sptr lockedService = service::add("sight::service::ut::LockedService");
     CPPUNIT_ASSERT(lockedService);
 
     // Create the data
@@ -286,11 +286,11 @@ void LockTest::testDumpLock()
 
         mesh->reserve(3, 1, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS);
 
-        data::Mesh::PointValueType A[3] = {0., 0., 0.};
-        data::Mesh::PointValueType B[3] = {1., 0., 0.};
-        data::Mesh::PointValueType C[3] = {1., 1., 0.};
+        data::Mesh::position_t A[3] = {0., 0., 0.};
+        data::Mesh::position_t B[3] = {1., 0., 0.};
+        data::Mesh::position_t C[3] = {1., 1., 0.};
 
-        data::Mesh::PointId ids[3];
+        data::Mesh::point_t ids[3];
 
         ids[0] = mesh->pushPoint(A);
         ids[1] = mesh->pushPoint(B);
@@ -302,9 +302,9 @@ void LockTest::testDumpLock()
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(B));
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(C));
 
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(data::Mesh::CellType::TRIANGLE, ids, 3));
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(ids, 3));
 
-        const std::array<data::Mesh::ColorValueType, 4> color = {255, 0, 0, 255};
+        const std::array<data::Mesh::color_t, 4> color = {255, 0, 0, 255};
 
         // This are not locked since they didn't exists when creating the mesh the first time.
         CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[0], color));
@@ -361,7 +361,7 @@ void LockTest::testThreadedLock()
         auto sharedInput = weakInput.lock();
         CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
 
-        std::thread t1(&::sight::service::ut::LockedService::starting, lockedService);
+        std::thread t1(&sight::service::ut::LockedService::starting, lockedService);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t1 should be in the sleep_for, so m_started and m_input should still be the initial value
@@ -377,8 +377,8 @@ void LockTest::testThreadedLock()
 
     // Test that outputLock is blocking
     {
-        // Start thread immediatly
-        std::thread t2(&::sight::service::ut::LockedService::stopping, lockedService);
+        // Start thread immediately
+        std::thread t2(&sight::service::ut::LockedService::stopping, lockedService);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t2 should be in the sleep_for, so m_stopped should still be the initial value

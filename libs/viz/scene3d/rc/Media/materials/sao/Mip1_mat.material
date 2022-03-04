@@ -8,10 +8,6 @@ fragment_program Mip_FP_def glsl
     }
 }
 
-
-
-// argument de texture à compléter surement
-
 material Mip1_mat
 {
     technique

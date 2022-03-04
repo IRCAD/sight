@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace adaptor
    @code{.xml}
    <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="true">
        <in key="histogram" uid="..." />
-       <inout key="point" uid="..." optional="true" />
+       <inout key="point" uid="..." />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5"/>
    </service>
    @endcode
@@ -67,7 +67,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SHistogram : public sight::viz::scene2d::IAda
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogram, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogram, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SHistogram() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SHistogram() noexcept;
@@ -114,7 +114,7 @@ private:
     static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
 
     sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
+    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point", false, true};
 };
 
 } // namespace adaptor

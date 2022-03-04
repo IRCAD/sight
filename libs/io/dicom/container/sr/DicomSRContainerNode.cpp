@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ DicomSRContainerNode::~DicomSRContainerNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRContainerNode::write(::gdcm::DataSet& dataset) const
+void DicomSRContainerNode::write(gdcm::DataSet& dataset) const
 {
     io::dicom::container::sr::DicomSRNode::write(dataset);
 

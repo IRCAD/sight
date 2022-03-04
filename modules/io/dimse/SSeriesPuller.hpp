@@ -54,7 +54,7 @@ namespace sight::module::io::dimse
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
         <inout key="seriesDB" uid="..." />
-        <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+        <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
     </service>
    @endcode
  *

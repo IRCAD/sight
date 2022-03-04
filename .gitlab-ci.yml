@@ -4,67 +4,28 @@ stages:
   - build
   - deploy
 
-.linux_before:
-  image: "${SIGHT_CI_UBUNTU21_04}:dev"
-  dependencies: []
-  variables:
-    CCACHE_BASEDIR: $CI_PROJECT_DIR
-    CCACHE_MAXSIZE: "32G"
-    CCACHE_COMPRESS: "1"
-    CCACHE_SLOPPINESS: "include_file_ctime,pch_defines,time_macros,file_macro,system_headers"
-    CCACHE_NOHASHDIR: "1"
-    CCACHE_DIR: "/cache/ccache"
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_DOC: "ON"
-    CC: "/usr/lib/ccache/gcc"
-    CXX: "/usr/lib/ccache/g++"
-  before_script:
-    # Prepare sight source
-    - sudo chown -R sight:sight .
-    - mkdir -p $CI_PROJECT_DIR/.install $CI_PROJECT_DIR/.build
-    # git configuration
-    - git config merge.renameLimit 999999
-    - git config user.name ${GITLAB_USER_ID}
-    - git config user.email ${GITLAB_USER_EMAIL}
-    - git config advice.addIgnoredFile false
-    # Merge the MR branch into dev.
-    - >
-      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-        git fetch --all
-        git checkout dev
-        git reset --hard origin/dev
-        git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
-        export EXTRA_BRANCH="dev"
-      else
-        export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
-      fi
-    # Reset the modified time of all files to improve ccache performance
-    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
+include:
+  - project: "sight/sight-gitlab"
+    ref: dev
+    file: "/.templates/deploy.yml"
+  - project: "sight/sight-gitlab"
+    ref: dev
+    file: "/.templates/build.yml"
 
 lint:sheldon:
-  extends: .linux_before
-  dependencies: []
-  stage: lint
-  script:
-    # Download sheldon.
-    # TODO: use dev/master/tag branch
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b ${EXTRA_BRANCH} $CI_PROJECT_DIR/.build/sight-git
-    # Stage all files from the merge to get them checked by sheldon.
-    - git add *
-    # Display modified files.
-    - git status
-    # Run sheldon on the merge result.
-    - .build/sight-git/hooks/sheldon
-  except:
-    - dev
-    - master
-    - tags
+  extends: .lint
 
 .linux_build:
   extends: .linux_before
   dependencies: []
   stage: build
+  variables:
+    SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGES: "OFF"
+    SIGHT_BUILD_SDK: "OFF"
   script:
+    # Reset the modified time of all files to improve ccache performance
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
     # Print CCache statistics
     - ccache -s
     # Launch CMake
@@ -74,11 +35,15 @@ lint:sheldon:
       -G Ninja
       -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
       -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+      -DSIGHT_ARCH=sandybridge
       -DSIGHT_BUILD_TESTS=ON
       -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
       -DSIGHT_ENABLE_PCH=OFF
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
       -DSIGHT_ENABLE_OPENVSLAM=ON
+      -DSIGHT_ENABLE_REALSENSE=ON
+      -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
+      -DSIGHT_ENABLE_GDB=ON
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
@@ -89,107 +54,90 @@ lint:sheldon:
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/.build/sight-data
     # Launch tests
-    - ctest --timeout 480 --output-on-failure -O ctest.log -j4
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j4 --output-junit junit.xml
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
         ninja doc
       fi
     - >
-      if [ "${SIGHT_BUILD_PACKAGE}" == "ON" ]; then
+      if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
         ninja SightViewer_package
+        rm -rf ${CI_PROJECT_DIR}/.install
+        ninja SightCalibrator_package
+        rm -rf ${CI_PROJECT_DIR}/.install
+      fi
+    - >
+      if [ "${SIGHT_BUILD_SDK}" == "ON" ]; then
         ninja install
         ninja package
       fi
+    - >
+      if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
+        mkdir -p coverage
+        gcovr -j$(nproc) -r .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary . | grep lines | sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/' | xargs -i echo 'scale=4;a={}*100;scale=2;a/1' | bc | xargs -i echo "lines: {}%"
+      fi
 
-  artifacts:
+  artifacts: &linux_build_artifacts
     when: always
     paths:
       - .build/ctest.log
       - .build/Documentation/Doxygen/
-      - .build/SightViewer*.tar.zst
-      - .build/packages/sight-*.tar.zst
+      - .build/packages/*.tar.zst
+      - .build/coverage
+      - .build/bin/*.core
+    reports:
+      junit: .build/junit.xml
 
-build:linux-21.04-debug-gcc:
+build:linux-21.10-debug-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
-    SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGE: "ON"
+    SIGHT_BUILD_SDK: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.04-release-gcc:
+build:linux-21.10-release-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
-    SIGHT_BUILD_DOC: "ON"
-    SIGHT_BUILD_PACKAGE: "ON"
+    SIGHT_BUILD_SDK: "ON"
+    SIGHT_BUILD_PACKAGES: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.04-release-clang:
+build:linux-21.10-RelWithDebInfo-clang:
   extends: .linux_build
   variables:
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGE: "OFF"
+    BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
 
-build:linux-20.10-release-gcc:
+build:linux-21.10-coverage-gcc:
   extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU20_10}:dev"
   variables:
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGE: "OFF"
+    BUILD_TYPE: "RelWithDebInfo"
+    SIGHT_BUILD_DOC: "ON"
+    SIGHT_ENABLE_COVERAGE: "ON"
+    SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
-
-.linux_deploy:
-  image: "${SIGHT_CI_UBUNTU21_04}:dev"
-  variables:
-    BUILD_TYPE: "Release"
-  stage: deploy
-  script:
-    - cd .build/
-    - >
-      if [ "$BUILD_TYPE" == "Release" ]; then
-        package_name=$(ls -1 SightViewer*)
-        if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-          new_name=`echo "$package_name" | sed -e 's/-[0-9]*-[a-z0-9]*/-latest/g'`
-          mv $package_name $new_name
-          package_name=$new_name
-        fi
-        new_name=${package_name/-Release/}
-        mv $package_name $new_name
-        package_name=$new_name
-        curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$package_name" --data-binary @"$package_name"
-      fi
-    - cd packages
-    - package_name=$(ls -1 sight-*)
-    - >
-      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-        new_name=`echo "$package_name" | sed -e 's/-[0-9]*-[a-z0-9]*/-latest/g'`
-        mv $package_name $new_name
-        package_name=$new_name
-      fi
-    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$package_name" --data-binary @"$package_name"
+  coverage: /^lines:\s+(\d+\.*\d*\%).*$/
   artifacts:
-    paths:
-      - .build/SightViewer*.tar.zst
-      - .build/packages/sight-*.tar.zst
+    <<: *linux_build_artifacts
+    reports:
+      cobertura: .build/coverage/cobertura-coverage.xml
 
 deploy:linux-debug:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-debug-gcc
+    - build:linux-21.10-debug-gcc
   variables:
-    BUILD_TYPE: "Debug"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   only:
     refs:
       - master
@@ -198,17 +146,19 @@ deploy:linux-debug:
 deploy_manual:linux-debug:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-debug-gcc
+    - build:linux-21.10-debug-gcc
   variables:
-    BUILD_TYPE: "Debug"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   when: manual
 
 deploy:linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-release-gcc
   variables:
-    BUILD_TYPE: "Release"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   only:
     refs:
       - master
@@ -217,61 +167,40 @@ deploy:linux-release:
 deploy_manual:linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-release-gcc
   variables:
-    BUILD_TYPE: "Release"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   when: manual
 
-.windows_before:
-  dependencies: []
+deploy:apps-linux-release:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-21.10-release-gcc
   variables:
-    BUILD_TYPE: "Release"
-    CACHE: "D:\\gitlab-cache"
-  before_script:
-    # Merge the branch into dev.
-    - $EXTRA_BRANCH=${env:CI_COMMIT_REF_NAME}
-    - Write-Warning "${env:CI_COMMIT_REF_NAME} ${env:CI_COMMIT_TAG}"
-    - |
-      if ("${env:CI_COMMIT_REF_NAME}" -ne "dev" -and "${env:CI_COMMIT_REF_NAME}" -ne "master") {
-        if ("${env:CI_COMMIT_TAG}" -eq "$null") {
-          git config user.name $GITLAB_USER_ID
-          git config user.email $GITLAB_USER_EMAIL
-          git fetch --all
-          git checkout dev
-          git reset --hard origin/dev
-          git merge "origin/${env:CI_COMMIT_REF_NAME}" --no-commit --no-ff
-          $EXTRA_BRANCH="dev"
-        }
-      }
-    - md "${env:CI_PROJECT_DIR}/install"
-    - md "${env:CI_PROJECT_DIR}/build"
-    - $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-    - $vcvarspath = &$vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-    - Write-Output "vc tools located at $vcvarspath"
-    - cmd.exe /c "call `"$vcvarspath\VC\Auxiliary\Build\vcvars64.bat`" && set > vcvars.txt"
-    - |
-      Get-Content "vcvars.txt" | Foreach-Object {
-        if ($_ -match "^(.*?)=(.*)$") {
-          Set-Content "env:\$($matches[1])" $matches[2]
-        }
-      }
-  tags:
-    - conan
-    - windows
+    APPS: "SightViewer,SightCalibrator"
+    URL: "IRCAD%20-%20Open/"
+  only:
+    refs:
+      - master
+      - dev
 
-prebuild:windows:
-  extends: .windows_before
-  dependencies: []
-  stage: prebuild
-  script:
-    # Checkout vcpkg packages, the script only downloads if necessary
-    - cmake -DSIGHT_DEPS_ROOT_DIRECTORY="${env:CACHE}" -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake"
+deploy_manual:apps-linux-release:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-21.10-release-gcc
+  variables:
+    APPS: "SightViewer,SightCalibrator"
+    URL: "IRCAD%20-%20Open/"
+  when: manual
 
 .windows_build:
   extends: .windows_before
   dependencies: []
   variables:
     TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
+    SIGHT_BUILD_PACKAGES: "OFF"
+    SIGHT_BUILD_SDK: "OFF"
   stage: build
   script:
     # Get the package_name name from our CMake script
@@ -286,11 +215,16 @@ prebuild:windows:
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
     # Launch tests
-    - ctest --timeout 480 --output-on-failure -O ctest.log -j6
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
     - |
-      if ("${SIGHT_BUILD_PACKAGE}" -eq "ON") {
+      if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
-        rd /S /Q "$env:CI_PROJECT_DIR/install"
+        Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
+        ninja SightCalibrator_package
+        Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
+      }
+    - |
+      if ("${SIGHT_BUILD_SDK}" -eq "ON") {
         ninja install
         ninja package
       }
@@ -300,63 +234,31 @@ prebuild:windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
-      - build/SightViewer*.exe
+      - build/packages/*.exe
       - build/packages/sight-*.zip
+    reports:
+      junit: build/junit.xml
 
 build:windows-debug:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Debug"
-    SIGHT_BUILD_PACKAGE: "ON"
+    SIGHT_BUILD_SDK: "ON"
 
 build:windows-release:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Release"
-    SIGHT_BUILD_PACKAGE: "ON"
-
-.windows_deploy:
-  stage: deploy
-  script:
-    - cd build
-    - |
-      if ("$BUILD_TYPE" -eq "release" ) {
-        $package_name=ls SightViewer* | Select-Object -First 1
-        $package_name=$package_name.name
-        if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-          $new_name=[regex]::replace($package_name, "-[0-9]*-[a-z0-9]*", "-latest")
-          mv $package_name $new_name
-          $package_name=$new_name
-        }
-        $new_name=$package_name.replace("-Release", "")
-        mv $package_name $new_name
-        $package_name=$new_name
-        curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$package_name" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$package_name"
-      }
-    - cd packages
-    - $package_name=ls sight-* | Select-Object -First 1
-    - $package_name=$package_name.name
-    - |            
-      if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-        $new_name=[regex]::replace($package_name, "-[0-9]*-[a-z0-9]*", "-latest")
-        mv $package_name $new_name
-        $package_name=$new_name
-      }
-    - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$package_name" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$package_name"
-  artifacts:
-    paths:
-      - build/SightViewer*.exe
-      - build/packages/sight-*.zip
-  tags:
-    - conan
-    - windows
+    SIGHT_BUILD_PACKAGES: "ON"
+    SIGHT_BUILD_SDK: "ON"
 
 deploy:windows-debug:
   extends: .windows_deploy
   dependencies:
     - build:windows-debug
   variables:
-    BUILD_TYPE: "Debug"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   only:
     refs:
       - master
@@ -367,7 +269,8 @@ deploy_manual:windows-debug:
   dependencies:
     - build:windows-debug
   variables:
-    BUILD_TYPE: "Debug"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   when: manual
 
 deploy:windows-release:
@@ -375,7 +278,8 @@ deploy:windows-release:
   dependencies:
     - build:windows-release
   variables:
-    BUILD_TYPE: "Release"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
   only:
     refs:
       - master
@@ -386,16 +290,39 @@ deploy_manual:windows-release:
   dependencies:
     - build:windows-release
   variables:
-    BUILD_TYPE: "Release"
+    APPS: "sight-"
+    URL: "IRCAD%20-%20Open/"
+  when: manual
+
+deploy:apps-windows-release:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-release
+  variables:
+    APPS: "SightViewer,SightCalibrator"
+    URL: "IRCAD%20-%20Open/"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:apps-windows-release:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-release
+  variables:
+    APPS: "SightViewer,SightCalibrator"
+    URL: "IRCAD%20-%20Open/"
   when: manual
 
 deploy:pages:
-  image: "${SIGHT_CI_UBUNTU21_04}:dev"
+  image: "${SIGHT_CI_UBUNTU21_10}:dev"
   stage: deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-coverage-gcc
   script:
     - mv .build/Documentation/Doxygen/html/ public/
+    - mv .build/coverage/ public/coverage
   artifacts:
     paths:
       - public

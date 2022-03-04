@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ FILTER_IMAGE_API data::Image::sptr labeling(data::Image::sptr image, unsigned in
 FILTER_IMAGE_API void computeCentroids(
     data::Image::sptr image,
     std::vector<data::PointList::sptr> pointListCentroids,
-    std::vector<std::vector<size_t> > pointListLabels
+    std::vector<std::vector<std::size_t> > pointListLabels
 );
 
 } //namespace sight::filter::image.

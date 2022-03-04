@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ class MemoryArchiveSink
 public:
 
     typedef char char_type;
-    typedef ::boost::iostreams::sink_tag category;
+    typedef boost::iostreams::sink_tag category;
 
     /**
      * @brief constructor
@@ -93,7 +93,7 @@ protected:
     std::filesystem::path m_path;
 
     /// buffer write size is large because it is in memory
-    static const size_t s_WRITE_BUFFER_SIZE = 20000;
+    static const std::size_t s_WRITE_BUFFER_SIZE = 20000;
 };
 
 /**
@@ -168,7 +168,7 @@ public:
      * @param[in] n number of byte to write
      * @return number of byte have been written
      */
-    static ssize_t write(struct archive* archive, void* client_data, const void* buff, size_t n);
+    static ssize_t write(struct archive* archive, void* client_data, const void* buff, std::size_t n);
 
     /**
      * @brief close callback for archive instance
@@ -181,7 +181,7 @@ public:
 
 protected:
 
-    typedef SPTR(::boost::iostreams::stream<MemoryArchiveSink>) StreamSPtr;
+    typedef SPTR(boost::iostreams::stream<MemoryArchiveSink>) StreamSPtr;
 
     /// archive path
     std::filesystem::path m_archivePath;

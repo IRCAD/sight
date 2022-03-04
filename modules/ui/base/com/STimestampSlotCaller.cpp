@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <regex>
 
@@ -102,7 +101,7 @@ void STimestampSlotCaller::updating()
         if(core::tools::fwID::exist(HasSlotId))
         {
             core::tools::Object::sptr obj      = core::tools::fwID::getObject(HasSlotId);
-            core::com::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast<core::com::HasSlots>(obj);
+            core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast<core::com::HasSlots>(obj);
             SIGHT_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);

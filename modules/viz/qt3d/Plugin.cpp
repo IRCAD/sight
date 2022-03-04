@@ -27,7 +27,7 @@ namespace sight::module::viz::qt3d
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::viz::qt3d::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::viz::qt3d::Plugin");
 
 //-----------------------------------------------------------------------------
 

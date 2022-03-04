@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,7 +180,7 @@ void SSignalButton::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
@@ -248,10 +248,10 @@ void SSignalButton::onClicked()
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::onToggled(bool toogled)
+void SSignalButton::onToggled(bool toggled)
 {
-    this->setChecked(toogled);
-    m_sigToggled->asyncEmit(toogled);
+    this->setChecked(toggled);
+    m_sigToggled->asyncEmit(toggled);
 }
 
 //-----------------------------------------------------------------------------

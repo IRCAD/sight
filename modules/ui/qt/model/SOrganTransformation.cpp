@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ void SOrganTransformation::updating()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::info(::std::ostream& sstream)
+void SOrganTransformation::info(std::ostream& sstream)
 {
 }
 
@@ -202,7 +202,7 @@ void SOrganTransformation::refresh()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::notitfyTransformationMatrix(data::Matrix4::sptr aTransMat)
+void SOrganTransformation::notifyTransformationMatrix(data::Matrix4::sptr aTransMat)
 {
     auto sig = aTransMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
@@ -215,7 +215,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
     const auto pComposite = m_composite.lock();
     if(pComposite)
     {
-        ::std::string item_name                    = currentItem->text().toStdString();
+        std::string item_name                      = currentItem->text().toStdString();
         data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
@@ -259,7 +259,7 @@ void SOrganTransformation::onResetClick()
         if(pTmpMat)
         {
             geometry::data::identity(*pTmpMat);
-            this->notitfyTransformationMatrix(pTmpMat);
+            this->notifyTransformationMatrix(pTmpMat);
         }
     }
 }
@@ -287,7 +287,7 @@ void SOrganTransformation::onSaveClick()
             }
         }
 
-        ::std::stringstream tmpSaveName;
+        std::stringstream tmpSaveName;
         tmpSaveName << "save_" << m_saveCount;
         m_saveListing[tmpSaveName.str()] = matMap;
         m_saveSelectionComboBox->addItem(QString::fromStdString(tmpSaveName.str()));
@@ -316,7 +316,7 @@ void SOrganTransformation::onLoadClick()
                 if(pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
-                    this->notitfyTransformationMatrix(pTmpMat);
+                    this->notifyTransformationMatrix(pTmpMat);
                 }
             }
         }

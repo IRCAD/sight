@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,28 +45,28 @@ viz::scene3d::SRender::OgreObjectIdType ITransformable::getTransformId() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* const _parentNode)
+Ogre::SceneNode* ITransformable::getTransformNode() const
 {
-    SIGHT_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
-    m_transformNode = this->getTransformNode(m_transformId, _parentNode);
     return m_transformNode;
 }
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(
-    const std::string& _name,
-    ::Ogre::SceneNode* const _parentNode
+Ogre::SceneNode* ITransformable::getOrCreateTransformNode(
+    Ogre::SceneNode* const _parentNode
 )
 {
-    SIGHT_ASSERT("Transform name is not set.", !_name.empty());
-    auto transformNode = viz::scene3d::helper::Scene::getNodeById(_name, _parentNode);
+    SIGHT_ASSERT("Transform id is not set.", !m_transformId.empty());
+    auto transformNode = viz::scene3d::helper::Scene::getNodeById(m_transformId, _parentNode);
     if(transformNode == nullptr)
     {
-        transformNode = _parentNode->createChildSceneNode(_name);
+        transformNode = _parentNode->createChildSceneNode(m_transformId);
     }
 
-    return transformNode;
+    // assign m_transform to the retrieved/created node.
+    m_transformNode = transformNode;
+
+    return m_transformNode;
 }
 
 //-----------------------------------------------------------------------------

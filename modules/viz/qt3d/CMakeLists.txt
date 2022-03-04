@@ -1,4 +1,4 @@
-sight_add_target( module_viz_qt3d TYPE MODULE START ON WARNINGS_AS_ERRORS ON )
+sight_add_target(module_viz_qt3d TYPE MODULE START ON)
 
 add_definitions("-DQT_NO_KEYWORDS")
 

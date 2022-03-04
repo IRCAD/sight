@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ void SMatrixTLSynchronizer::synchronize()
     {
         std::stringstream matrixPrint;
 
-        for(size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
+        for(std::size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
         {
             const unsigned int index = static_cast<unsigned int>(matrixIndex);
 
@@ -102,13 +102,13 @@ void SMatrixTLSynchronizer::synchronize()
                     matrixPrint << std::endl;
                 }
 
-                this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(index);
+                this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(int(index));
                 auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
             }
             else
             {
-                this->signal<MatrixUnsynchronizedSignalType>(MATRIX_UNSYNCHRONIZED_SIG)->asyncEmit(index);
+                this->signal<MatrixUnsynchronizedSignalType>(MATRIX_UNSYNCHRONIZED_SIG)->asyncEmit(int(index));
             }
         }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,6 @@ private:
 
     CPPUNIT_TEST_SUITE(ReconstructionTest);
     CPPUNIT_TEST(methode1);
-    CPPUNIT_TEST(methode2);
     CPPUNIT_TEST(image);
     CPPUNIT_TEST_SUITE_END();
 
@@ -47,7 +46,6 @@ public:
     void tearDown();
 
     void methode1();
-    void methode2();
     void image();
 };
 

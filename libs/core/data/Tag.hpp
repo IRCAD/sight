@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,39 +29,35 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Tag), DATA_API);
-
 namespace sight::data
 {
 
 /**
  * @brief This class represent a tag. A tag contains a list of points.
- * @see data::PointList
+ * @see PointList
  */
 class DATA_CLASS_API Tag : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Tag, data::Object, data::factory::New<Tag>);
+    SIGHT_DECLARE_CLASS(Tag, Object, factory::New<Tag>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Tag(data::Object::Key key);
+    DATA_API Tag(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Tag();
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Tag));
 
     /**
      * @{
      * @brief Get/Set value of the pointList.
      */
-    data::PointList::sptr& getPointList();
-    const data::PointList::sptr& getPointList() const;
-    void setPointList(const data::PointList::sptr& _pointList);
+    PointList::sptr& getPointList();
+    const PointList::sptr& getPointList() const;
+    void setPointList(const PointList::sptr& _pointList);
     /// @}
 
     /**
@@ -85,13 +81,19 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Tag& other) const noexcept;
+    DATA_API bool operator!=(const Tag& other) const noexcept;
+    /// @}
 
 protected:
 
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
+
     /// list of points
-    data::PointList::sptr m_pointList;
+    PointList::sptr m_pointList;
 
     /// type of tag
     std::string m_sType;
@@ -102,21 +104,21 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline data::PointList::sptr& Tag::getPointList()
+inline PointList::sptr& Tag::getPointList()
 {
     return this->m_pointList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const data::PointList::sptr& Tag::getPointList() const
+inline const PointList::sptr& Tag::getPointList() const
 {
     return this->m_pointList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Tag::setPointList(const data::PointList::sptr& _pointList)
+inline void Tag::setPointList(const PointList::sptr& _pointList)
 {
     this->m_pointList = _pointList;
 }

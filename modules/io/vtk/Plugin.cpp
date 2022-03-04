@@ -25,7 +25,7 @@
 namespace sight::module::io::vtk
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::vtk::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::vtk::Plugin");
 
 Plugin::~Plugin() noexcept
 {

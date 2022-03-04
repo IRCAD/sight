@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ namespace sight::module::ui::qml::activity
  *
  * @section Config Configuration
  *
- * This service should be instanciated in a Qml file, but it should also be registered in C++ AppManager.
+ * This service should be instantiated in a Qml file, but it should also be registered in C++ AppManager.
  * You may need to configure it to add extra information in the replace map (map to define the string that will be
  * replaced in the launched activities, for example channels, object ids, ...
  *
@@ -85,9 +85,7 @@ namespace sight::module::ui::qml::activity
  * - \b parameters (optional) : additional parameters used to launch the activities
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
- *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
- *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
- *          composite contained in the ActivitySeries.
+ *        - \b by: defines the string that will replace the parameter name.
  *
  * To simplify the use of SView and SSequencer, a Qml object ActivityLauncher can be used
  *  @code{.qml}
@@ -107,7 +105,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SView, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SView, sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SView();

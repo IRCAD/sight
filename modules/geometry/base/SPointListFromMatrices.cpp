@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/fieldHelper/Image.hpp>
 #include <data/String.hpp>
 
 #include <service/macros.hpp>
@@ -73,7 +72,7 @@ void SPointListFromMatrices::stopping()
 
 void SPointListFromMatrices::updating()
 {
-    const size_t numMatrices = m_matrices.size();
+    const std::size_t numMatrices = m_matrices.size();
     SIGHT_ASSERT("no matrices found", numMatrices != 0);
 
     auto pointList = m_pointList.lock();
@@ -82,7 +81,7 @@ void SPointListFromMatrices::updating()
         pointList->getPoints().clear();
     }
 
-    for(size_t j = 0 ; j < numMatrices ; ++j)
+    for(std::size_t j = 0 ; j < numMatrices ; ++j)
     {
         const auto mat = m_matrices[j].lock();
 
@@ -101,8 +100,7 @@ void SPointListFromMatrices::updating()
             label = std::to_string(j);
         }
 
-        data::String::sptr fwLabel = data::String::New(label);
-        p->setField(data::fieldHelper::Image::m_labelId, fwLabel);
+        p->setLabel(label);
         pointList->pushBack(p);
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,7 @@
 
 #include <core/spyLog.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/helper/Image.hpp>
-#include <data/helper/ImageGetter.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 namespace sight::filter::image
 {
@@ -37,11 +35,11 @@ LineDrawer::LineDrawer(const data::Image::sptr& img, const data::Image::csptr& r
     m_image(img),
     m_roiImage(roi)
 {
-    m_useROI = data::fieldHelper::MedicalImageHelpers::checkImageValidity(m_roiImage);
+    m_useROI = data::helper::MedicalImage::checkImageValidity(m_roiImage);
 
     m_imageTypeSize = m_image->getType().sizeOf();
     m_roiTypeSize   = m_useROI ? m_roiImage->getType().sizeOf() : 0;
-    const auto& size = m_image->getSize2();
+    const auto& size = m_image->getSize();
     m_yPitch = size[0];
     m_zPitch = size[1] * m_yPitch;
 }
@@ -52,16 +50,16 @@ bool LineDrawer::drawEllipse(
     const LineDrawer::CoordinatesType& c,
     data::Image::BufferType* value,
     const double radius,
-    const size_t firstDim,
-    const size_t secondDim,
+    const std::size_t firstDim,
+    const std::size_t secondDim,
     const bool overwrite,
     ImageDiff& diff
 )
 {
     bool modified = false;
 
-    const auto& spacing = m_image->getSpacing2();
-    const auto& size    = m_image->getSize2();
+    const auto& spacing = m_image->getSpacing();
+    const auto& size    = m_image->getSize();
 
     const double width  = radius / spacing[firstDim];
     const double height = radius / spacing[secondDim];
@@ -71,15 +69,15 @@ bool LineDrawer::drawEllipse(
 
     LineDrawer::CoordinatesType point = c;
 
-    int wbegin = std::max(static_cast<int>(-width), -origX);
-    int hbegin = std::max(static_cast<int>(-height), -origY);
+    int w_begin = std::max(static_cast<int>(-width), -origX);
+    int h_begin = std::max(static_cast<int>(-height), -origY);
 
-    int wend = std::min(static_cast<int>(width), static_cast<int>(size[firstDim]) - 1 - origX);
-    int hend = std::min(static_cast<int>(height), static_cast<int>(size[secondDim]) - 1 - origY);
+    int w_end = std::min(static_cast<int>(width), static_cast<int>(size[firstDim]) - 1 - origX);
+    int h_end = std::min(static_cast<int>(height), static_cast<int>(size[secondDim]) - 1 - origY);
 
-    for(int y = hbegin ; y <= hend ; y++)
+    for(int y = h_begin ; y <= h_end ; y++)
     {
-        for(int x = wbegin ; x <= wend ; x++)
+        for(int x = w_begin ; x <= w_end ; x++)
         {
             double dx = x / width;
             double dy = y / height;
@@ -108,13 +106,13 @@ bool LineDrawer::drawPixel(
 )
 {
     const data::Image::BufferType* pixBuf =
-        reinterpret_cast<data::Image::BufferType*>(m_image->getPixelBuffer(index));
+        reinterpret_cast<data::Image::BufferType*>(m_image->getPixel(index));
 
     if(m_useROI)
     {
-        data::Image::BufferType* roiVal =
-            reinterpret_cast<data::Image::BufferType*>(m_roiImage->getPixelBuffer(index));
-        if(data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
+        const data::Image::BufferType* roiVal =
+            reinterpret_cast<const data::Image::BufferType*>(m_roiImage->getPixel(index));
+        if(data::helper::MedicalImage::isBufNull(roiVal, m_roiTypeSize))
         {
             return false;
         }
@@ -125,13 +123,13 @@ bool LineDrawer::drawPixel(
         return false;
     }
 
-    if(!overwrite && !data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, m_imageTypeSize))
+    if(!overwrite && !data::helper::MedicalImage::isBufNull(pixBuf, m_imageTypeSize))
     {
         return false;
     }
 
     diff.addDiff(index, pixBuf, value);
-    m_image->setPixelBuffer(index, value);
+    m_image->setPixel(index, value);
 
     return true;
 }
@@ -139,7 +137,7 @@ bool LineDrawer::drawPixel(
 //-----------------------------------------------------------------------------
 
 ImageDiff LineDrawer::draw(
-    const OrientationType orientation,
+    const BresenhamLine::Orientation orientation,
     const CoordinatesType& startCoord,
     const CoordinatesType& endCoord,
     data::Image::BufferType* value,
@@ -149,21 +147,21 @@ ImageDiff LineDrawer::draw(
 {
     ImageDiff diff(m_imageTypeSize, 128);
 
-    size_t dim0, dim1;
+    std::size_t dim0, dim1;
 
     switch(orientation)
     {
-        case data::helper::MedicalImage::Z_AXIS:
+        case BresenhamLine::Orientation::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
             break;
 
-        case data::helper::MedicalImage::Y_AXIS:
+        case BresenhamLine::Orientation::Y_AXIS:
             dim0 = 2;
             dim1 = 0;
             break;
 
-        case data::helper::MedicalImage::X_AXIS:
+        case BresenhamLine::Orientation::X_AXIS:
             dim0 = 1;
             dim1 = 2;
             break;

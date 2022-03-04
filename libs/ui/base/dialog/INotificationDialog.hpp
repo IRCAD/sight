@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,6 +122,9 @@ public:
     /// Closes the notification, needs to be reimplemented.
     UI_BASE_API virtual void close() const = 0;
 
+    /// Move the notification to the lower index
+    UI_BASE_API virtual void moveDown() = 0;
+
     /**
      * @brief Attaches a parent container to the notification.
      * @param _container the parent container, nullptr is handled.
@@ -131,6 +134,12 @@ public:
         m_parentContainer = _container;
     }
 
+    /// Define the callback called when the dialog is closed
+    UI_BASE_API virtual void setClosedCallback(std::function<void()> f)
+    {
+        m_closedCallBack = f;
+    }
+
 protected:
 
     /// Total duration of the popup (cannot be below 2000ms).
@@ -138,6 +147,9 @@ protected:
 
     /// Message to display.
     std::string m_message;
+
+    /// Full message if doesn't fit in size of the notification popup.
+    std::string m_fullMessage;
 
     /// Type of notification (may change the background color).
     Type m_notificationType {Type::DEFAULT};
@@ -154,6 +166,8 @@ protected:
 
     /// Pointer to the parent container, default nullptr.
     ui::base::container::fwContainer::csptr m_parentContainer {nullptr};
+
+    std::function<void()> m_closedCallBack;
 };
 
 } //namespace dialog

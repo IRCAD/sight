@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace ut
 
 const static double s_EPSILON = 10e-9;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::glm::ut::MeshFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::glm::ut::MeshFunctionsTest);
 
 //-----------------------------------------------------------------------------
 
@@ -303,20 +303,20 @@ void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
     const ::glm::dvec3 C {0., 1., 0.};
     const ::glm::dvec3 D {0., 0., 1.};
 
-    const ::glm::dvec3 Pin {0.25, 0.25, 0.25};
-    const ::glm::dvec3 Pout {1., 2., 3.};
-    const ::glm::dvec3 Pedge {0.5, 0., 0.};
-    const ::glm::dvec3 Pvertex {0., 0., 0.};
+    const ::glm::dvec3 p_in {0.25, 0.25, 0.25};
+    const ::glm::dvec3 p_out {1., 2., 3.};
+    const ::glm::dvec3 p_edge {0.5, 0., 0.};
+    const ::glm::dvec3 p_vertex {0., 0., 0.};
 
-    const bool isInsidePin     = geometry::glm::isInsideTetrahedron(Pin, A, B, C, D);
-    const bool isInsidePout    = geometry::glm::isInsideTetrahedron(Pout, A, B, C, D);
-    const bool isInsidePedge   = geometry::glm::isInsideTetrahedron(Pedge, A, B, C, D);
-    const bool isInsidePvertex = geometry::glm::isInsideTetrahedron(Pvertex, A, B, C, D);
+    const bool is_inside_p_in     = geometry::glm::isInsideTetrahedron(p_in, A, B, C, D);
+    const bool is_inside_p_out    = geometry::glm::isInsideTetrahedron(p_out, A, B, C, D);
+    const bool is_inside_p_edge   = geometry::glm::isInsideTetrahedron(p_edge, A, B, C, D);
+    const bool is_inside_p_vertex = geometry::glm::isInsideTetrahedron(p_vertex, A, B, C, D);
 
-    CPPUNIT_ASSERT_MESSAGE("Pin should be inside though is compute outside", isInsidePin);
-    CPPUNIT_ASSERT_MESSAGE("Pout should be outside though is compute inside", !isInsidePout);
-    CPPUNIT_ASSERT_MESSAGE("Pedge should be inside though is compute outside", isInsidePedge);
-    CPPUNIT_ASSERT_MESSAGE("Pvertex should be inside though is compute outside", isInsidePvertex);
+    CPPUNIT_ASSERT_MESSAGE("p_in should be inside though is compute outside", is_inside_p_in);
+    CPPUNIT_ASSERT_MESSAGE("p_out should be outside though is compute inside", !is_inside_p_out);
+    CPPUNIT_ASSERT_MESSAGE("p_edge should be inside though is compute outside", is_inside_p_edge);
+    CPPUNIT_ASSERT_MESSAGE("p_vertex should be inside though is compute outside", is_inside_p_vertex);
 }
 
 //-----------------------------------------------------------------------------

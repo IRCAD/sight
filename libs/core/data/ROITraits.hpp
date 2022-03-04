@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 #include "data/Node.hpp"
 #include "data/StructureTraits.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ROITraits));
-
 namespace sight::data
 {
 
@@ -44,18 +42,17 @@ namespace sight::data
  * @note Several ROITraits can be associated to the same structure.
  * @see StructureTraits
  */
-class DATA_CLASS_API ROITraits : public data::Object
+class DATA_CLASS_API ROITraits : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ROITraits, data::Object, data::factory::New<ROITraits>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ROITraits));
+    SIGHT_DECLARE_CLASS(ROITraits, Object, factory::New<ROITraits>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API ROITraits(data::Object::Key key);
+    DATA_API ROITraits(Object::Key key);
 
     /**
      * @brief destructor
@@ -64,9 +61,6 @@ public:
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @{
@@ -87,19 +81,30 @@ public:
     /// @}
 
     /// Set the ROI mask node used for ROI
-    DATA_API void setMaskOpNode(const data::Node::sptr& maskOpNode);
+    DATA_API void setMaskOpNode(const Node::sptr& maskOpNode);
 
     /// Get the ROI mask node used for ROI, the only case where sptr can be null is when m_evaluatedExp correspond to
     // "W" ( W <=> World <=> no roi constraint ).
-    DATA_API data::Node::sptr getMaskOpNode();
-    DATA_API data::Node::csptr getMaskOpNode() const;
+    DATA_API Node::sptr getMaskOpNode();
+    DATA_API Node::csptr getMaskOpNode() const;
 
     /// Set the associated structure traits
-    DATA_API void setStructureTraits(const data::StructureTraits::sptr& structureTraits);
+    DATA_API void setStructureTraits(const StructureTraits::sptr& structureTraits);
 
     /// Get the associated structure traits
-    DATA_API data::StructureTraits::sptr getStructureTraits();
-    DATA_API data::StructureTraits::csptr getStructureTraits() const;
+    DATA_API StructureTraits::sptr getStructureTraits();
+    DATA_API StructureTraits::csptr getStructureTraits() const;
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ROITraits& other) const noexcept;
+    DATA_API bool operator!=(const ROITraits& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 
@@ -107,10 +112,10 @@ private:
     std::string m_identifier;
 
     /// mask node used for ROITraits
-    data::Node::sptr m_maskOpNode;
+    Node::sptr m_maskOpNode;
 
     /// associated structure traits
-    data::StructureTraits::sptr m_structureTraits;
+    StructureTraits::sptr m_structureTraits;
 
     /// roi evaluated expression
     StructureTraits::ROIExpression m_evaluatedExp;

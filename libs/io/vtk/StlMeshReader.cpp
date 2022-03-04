@@ -35,7 +35,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSTLReader.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::StlMeshReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::StlMeshReader);
 
 namespace sight::io::vtk
 {
@@ -95,7 +95,7 @@ void StlMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string StlMeshReader::extension()
+std::string StlMeshReader::extension() const
 {
     return ".stl";
 }

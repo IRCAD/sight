@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,6 @@
 #include <QFutureWatcher>
 #include <QPointer>
 #include <QPushButton>
-#include <QSignalMapper>
 #include <QTableView>
 #include <QTableWidget>
 
@@ -116,9 +115,6 @@ private:
 
     /// Button to force refresh
     QPushButton* m_refresh;
-
-    /// Mapper use in list widget to map each dump button to an action
-    QSignalMapper* m_mapper;
 
     /// Editor to manage dump policy
     QTableView* m_policyEditor;

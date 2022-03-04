@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>ExDicomSegmentation_Threshold_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -83,22 +83,14 @@
             <parameter replace="patient_name" by="Mask Image" />
         </service>
 
-        <service uid="extractImage1Srv" type="sight::module::data::SExtractObj" >
-           <inout key="source" uid="${imageSeries}" >
-               <extract from="@image" />
-           </inout>
-           <out group="target" >
-               <key uid="inputImage" />
-           </out>
+        <service uid="extractImage1Srv" type="sight::module::data::SGetImage" >
+           <in key="imageSeries" uid="${imageSeries}" />
+           <out key="image" uid="inputImage" />
         </service>
 
-        <service uid="extractImage2Srv" type="sight::module::data::SExtractObj" >
-           <inout key="source" uid="imageSeriesMask" >
-               <extract from="@image" />
-           </inout>
-           <out group="target" >
-               <key uid="outputImage" />
-           </out>
+        <service uid="extractImage2Srv" type="sight::module::data::SGetImage" >
+           <in key="imageSeries" uid="imageSeriesMask" />
+           <out key="image" uid="outputImage" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

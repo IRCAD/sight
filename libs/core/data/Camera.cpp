@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "data/Camera.hpp"
 
-#include <data/Exception.hpp>
-#include <data/registry/macros.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 #include <boost/assign.hpp>
 #include <boost/bimap/bimap.hpp>
@@ -87,9 +87,9 @@ Camera::~Camera() noexcept
 
 //------------------------------------------------------------------------------
 
-typedef ::boost::bimaps::bimap<Camera::PixelFormat, std::string> PixelFormatTranslatorType;
+typedef boost::bimaps::bimap<Camera::PixelFormat, std::string> PixelFormatTranslatorType;
 PixelFormatTranslatorType pixelFormatTranslator =
-    ::boost::assign::list_of<PixelFormatTranslatorType::relation>
+    boost::assign::list_of<PixelFormatTranslatorType::relation>
         (Camera::PixelFormat::INVALID, std::string("INVALID"))
         (Camera::PixelFormat::ARGB32, std::string("ARGB32"))
         (Camera::PixelFormat::ARGB32_PREMULTIPLIED, std::string("ARGB32_PREMULTIPLIED"))
@@ -237,5 +237,36 @@ void Camera::setDistortionCoefficient(double k1, double k2, double p1, double p2
 }
 
 // -------------------------------------------------------------------------
+
+bool Camera::operator==(const Camera& other) const noexcept
+{
+    if(m_width != other.m_width
+       || m_height != other.m_height
+       || !core::tools::is_equal(m_intrinsic, other.m_intrinsic)
+       || !core::tools::is_equal(m_distortionCoefficient, other.m_distortionCoefficient)
+       || !core::tools::is_equal(m_skew, other.m_skew)
+       || m_isCalibrated != other.m_isCalibrated
+       || m_description != other.m_description
+       || m_cameraID != other.m_cameraID
+       || !core::tools::is_equal(m_maxFrameRate, other.m_maxFrameRate)
+       || m_pixelFormat != other.m_pixelFormat
+       || m_videoFile != other.m_videoFile
+       || m_streamUrl != other.m_streamUrl
+       || m_cameraSource != other.m_cameraSource
+       || !core::tools::is_equal(m_scale, other.m_scale))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Camera::operator!=(const Camera& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

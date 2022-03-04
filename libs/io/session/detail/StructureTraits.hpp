@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Color.hpp>
 #include <data/StructureTraits.hpp>
@@ -52,7 +52,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto structureTraits = Helper::safeCast<data::StructureTraits>(object);
@@ -61,14 +61,14 @@ inline static void serialize(
     Helper::writeVersion<data::StructureTraits>(tree, 1);
 
     // Serialize attributes
-    Helper::writeString(tree, s_Type, structureTraits->getType(), password);
+    Helper::writeString(tree, s_Type, structureTraits->getType());
     tree.put(s_Class, structureTraits->getClass());
-    Helper::writeString(tree, s_NativeExp, structureTraits->getNativeExp(), password);
-    Helper::writeString(tree, s_NativeGeometricExp, structureTraits->getNativeGeometricExp(), password);
-    Helper::writeString(tree, s_AttachmentType, structureTraits->getAttachmentType(), password);
-    Helper::writeString(tree, s_AnatomicRegion, structureTraits->getAnatomicRegion(), password);
-    Helper::writeString(tree, s_PropertyCategory, structureTraits->getPropertyCategory(), password);
-    Helper::writeString(tree, s_PropertyType, structureTraits->getPropertyType(), password);
+    Helper::writeString(tree, s_NativeExp, structureTraits->getNativeExp());
+    Helper::writeString(tree, s_NativeGeometricExp, structureTraits->getNativeGeometricExp());
+    Helper::writeString(tree, s_AttachmentType, structureTraits->getAttachmentType());
+    Helper::writeString(tree, s_AnatomicRegion, structureTraits->getAnatomicRegion());
+    Helper::writeString(tree, s_PropertyCategory, structureTraits->getPropertyCategory());
+    Helper::writeString(tree, s_PropertyType, structureTraits->getPropertyType());
 
     // Categories
     boost::property_tree::ptree categoriesTree;
@@ -91,7 +91,7 @@ inline static data::StructureTraits::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -101,25 +101,25 @@ inline static data::StructureTraits::sptr deserialize(
     Helper::readVersion<data::StructureTraits>(tree, 0, 1);
 
     // Deserialize attributes
-    structureTraits->setType(Helper::readString(tree, s_Type, password));
+    structureTraits->setType(Helper::readString(tree, s_Type));
     structureTraits->setClass(static_cast<data::StructureTraits::StructureClass>(tree.get<int>(s_Class)));
-    structureTraits->setNativeExp(Helper::readString(tree, s_NativeExp, password));
-    structureTraits->setNativeGeometricExp(Helper::readString(tree, s_NativeGeometricExp, password));
-    structureTraits->setAttachmentType(Helper::readString(tree, s_AttachmentType, password));
-    structureTraits->setAnatomicRegion(Helper::readString(tree, s_AnatomicRegion, password));
-    structureTraits->setPropertyCategory(Helper::readString(tree, s_PropertyCategory, password));
-    structureTraits->setPropertyType(Helper::readString(tree, s_PropertyType, password));
+    structureTraits->setNativeExp(Helper::readString(tree, s_NativeExp));
+    structureTraits->setNativeGeometricExp(Helper::readString(tree, s_NativeGeometricExp));
+    structureTraits->setAttachmentType(Helper::readString(tree, s_AttachmentType));
+    structureTraits->setAnatomicRegion(Helper::readString(tree, s_AnatomicRegion));
+    structureTraits->setPropertyCategory(Helper::readString(tree, s_PropertyCategory));
+    structureTraits->setPropertyType(Helper::readString(tree, s_PropertyType));
 
     // Categories
-    auto& categories = structureTraits->getCategories();
-
     // Clearing is required in case the object is reused
-    categories.clear();
+    data::StructureTraits::CategoryContainer categories;
 
     for(const auto& categoryTree : tree.get_child(s_Categories))
     {
         categories.push_back(static_cast<data::StructureTraits::Category>(categoryTree.second.get_value<int>()));
     }
+
+    structureTraits->setCategories(categories);
 
     // Color
     structureTraits->setColor(std::dynamic_pointer_cast<data::Color>(children.at(s_Color)));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::GzArrayWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::GzArrayWriter);
 
 namespace sight::io::base
 {
@@ -67,15 +67,15 @@ void GzArrayWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    const auto dumpLock = array->lock();
+    const auto dumpLock = array->dump_lock();
 
     // file is OK : process now
-    const size_t arraySizeInBytes = array->getSizeInBytes();
+    const std::size_t arraySizeInBytes = array->getSizeInBytes();
 
-    const int uncompressedbyteswrited =
+    const int uncompressed_bytes_written =
         gzwrite(rawFile, array->getBuffer(), static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
-    if(uncompressedbyteswrited != static_cast<int>(arraySizeInBytes))
+    if(uncompressed_bytes_written != static_cast<int>(arraySizeInBytes))
     {
         std::string str = "GzArrayWriter::write unable to write ";
         str += getFile().string();
@@ -85,7 +85,7 @@ void GzArrayWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string GzArrayWriter::extension()
+std::string GzArrayWriter::extension() const
 {
     return ".raw.gz";
 }

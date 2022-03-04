@@ -1,16 +1,70 @@
 # This script is used in two different ways:
 # On Linux, it is directly included in the main CMakeLists.txt
-# On Windows, it is invoked from the command with cmake -P and optionnaly with arguments: -DOUTPUT and -DGET_ARCHIVE_FOLDER
+# On Windows, it is invoked from the command with cmake -P and optionnaly with arguments: -DSIGHT_DEPS_ROOT_DIRECTORY
+# and -DGET_ARCHIVE_FOLDER
 
 cmake_minimum_required(VERSION 3.18)
 
+# Download and install package, if needed
+function(
+    download_deps
+    root_directory
+    package
+    archive
+    archive_hash
+    url
+    basename
+)
+    # Retrieve the package directory
+    get_filename_component(package_directory "${root_directory}/${package}" REALPATH)
+
+    if(NOT EXISTS "${package_directory}")
+
+        # Download the sight deps archive
+        message(STATUS "Downloading ${archive}...")
+        file(DOWNLOAD "${url}" "${root_directory}/${archive}" SHOW_PROGRESS EXPECTED_HASH SHA256=${archive_hash})
+
+        # Extract it
+        # cmake-lint: disable=E1126
+        message(STATUS "Extracting ${archive}...")
+        file(ARCHIVE_EXTRACT INPUT "${root_directory}/${archive}" DESTINATION "${root_directory}" VERBOSE)
+
+        # Cleanup
+        file(REMOVE "${root_directory}/${archive}")
+
+        if(NOT "${basename}" STREQUAL "")
+            # Rename the extracted directory to ${package} to include commit hash, os version, build type.
+            file(RENAME "${root_directory}/${basename}" "${root_directory}/${package}")
+        endif()
+    else()
+        message(STATUS "Download of ${archive} skipped, already present.")
+    endif()
+
+    # Use ${package_directory} as external libraries
+    set(SIGHT_EXTERNAL_LIBRARIES ${package_directory} PARENT_SCOPE)
+endfunction()
+
 if(WIN32)
-    set(SIGHT_DEPS_BASENAME "sight-vcpkg")
-    set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-9a2a3688")
-    set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.zip")
-    set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/0BOiihqxtewTbAL/download")
-    set(SIGHT_DEPS_PACKAGE_HASH "146f463a2264d873028608145ae86817ec8f44c0f65a4459076eaa5b2cc8a144")
-                
+    if(NOT SIGHT_DEPS_BASENAME)
+        set(SIGHT_DEPS_BASENAME "sight-vcpkg")
+    endif()
+
+    if(NOT SIGHT_DEPS_PACKAGE)
+        set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-e84c51f8")
+    endif()
+
+    if(NOT SIGHT_DEPS_ARCHIVE)
+        set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.7z")
+    endif()
+
+    if(NOT SIGHT_DEPS_PUBLIC_URL)
+        set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/6AYcRXHM3a9LtWu/download")
+    endif()
+
+    if(NOT SIGHT_DEPS_ARCHIVE_HASH)
+        set(SIGHT_DEPS_ARCHIVE_HASH "3aed1723ba01bbac1f2d2467ec8bef86ce2ddee5043995200c2a90828be1c825")
+    endif()
+
     # By default, we avoid to download binary packages inside the build tree on windows
     set(OUTPUT ".")
 else()
@@ -19,33 +73,43 @@ else()
     execute_process(COMMAND lsb_release -r -s COMMAND tr -d '\n' OUTPUT_VARIABLE LINUX_VERSION)
     execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
 
-    set(SIGHT_DEPS_PACKAGE "sight-deps-19-0-0-19-g59a1b24-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}")
-    set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.tar.zst")    
-    
-    if("${LINUX_VERSION}" STREQUAL "20.10")
-        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/caCCGDZMZZMg7uG/download")
-            set(SIGHT_DEPS_PACKAGE_HASH "55f30102eac33361b26808593c82d8c3727980850bb5bea4a23ffd9bf7020405")
-        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-            set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/vW1N8KPoLKlLJ6C/download")
-            set(SIGHT_DEPS_PACKAGE_HASH "794ff689f63178f9bbfc65894cd331c1a1a4307199b9b3429897453ceead20a4")
+    if(NOT SIGHT_DEPS_PACKAGE)
+        set(SIGHT_DEPS_PACKAGE
+            "sight-deps-21-0-0-2-geb877f3-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}"
+        )
+    endif()
+
+    if(NOT SIGHT_DEPS_ARCHIVE)
+        set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.tar.zst")
+    endif()
+
+    if(NOT SIGHT_DEPS_PUBLIC_URL OR NOT SIGHT_DEPS_ARCHIVE_HASH)
+        if("${LINUX_NAME}" STREQUAL "Ubuntu" AND "${LINUX_VERSION}" STREQUAL "21.04")
+            if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+                set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/0R2oAv8jVWdGMtC/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "d5cfc332414e9e256820b77a8e37612afa571bf1a6888fabdf97a061f2646724")
+            elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+                set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/1TMxbBmAB8vMwzA/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "d72f481ea83c9ba1c2a90bad0999b76230ec107834a632beb634040fd4f13f3f")
+            else()
+                # RelWithDebInfo (DEFAULT)
+                set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/pXQArciqbYHSLvW/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "2f02e359831ab25d990d5008404372ad84a6707cfa8ab283ef3c07bc834246ea")
+            endif()
+        elseif("${LINUX_NAME}" STREQUAL "Ubuntu" AND "${LINUX_VERSION}" STREQUAL "21.10")
+            if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+                set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/Lg6oV2UjosyvKxs/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "95f0cb26c4fbffa6775934d9fa41006b6caa7062d219510ae1a78c30e385f807")
+            elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+                set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/4H30wGNgMet06L0/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "c87282fb3358cdedf57664e12fa7a854fab0c4d3b7e5f0eeb7141206279370ae")
+            else()
+                # RelWithDebInfo (DEFAULT)
+                set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/mV6y1lHk5AYPDLX/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "b0ef945f7a6a7acf4ad7bd2bd19daebdf161bdff42b4036360f1c44a591d956f")
+            endif()
         else()
-            # RelWithDebInfo (DEFAULT)
-            set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/huQEEPbJ0Hxs733/download")
-            set(SIGHT_DEPS_PACKAGE_HASH "998ffc99799b36c9cb266a19ab98fcc51da800a16544320e0bd5cceedddffffa")
-        endif()        
-    else()
-        # 21.04 (DEFAULT)
-        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/yNQH9ecuO6voqp9/download")
-            set(SIGHT_DEPS_PACKAGE_HASH "a19f8404ec1c01eec627e10ea6d1a3df6649552502a63d240c1696a325bd81fa")
-        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-            set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/vpllWT5daEzxmxt/download")
-            set(SIGHT_DEPS_PACKAGE_HASH "ae93af3c2189acc0bb65faf8b2dec5fd890b2544a2f882b4365a185e13c6010b")
-        else()
-            # RelWithDebInfo (DEFAULT)
-            set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/Z8xrbiyVuT5OOIG/download")
-            set(SIGHT_DEPS_PACKAGE_HASH "b41cb80af4941b94e1a96b4302442c602753218a2e94adff9aa9f5612697390a")
+            message(FATAL_ERROR "Unsupported linux distribution: ${LINUX_NAME} ${LINUX_VERSION}")
         endif()
     endif()
 
@@ -59,49 +123,20 @@ if(GET_ARCHIVE_FOLDER)
     return()
 endif()
 
-# Set sight deps root directory (where the sight deps packages will be installed ) 
+# Set sight deps root directory (where the sight deps packages will be installed )
 set(SIGHT_DEPS_ROOT_DIRECTORY "${OUTPUT}" CACHE PATH "Sight deps root directory")
 mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
 
-# Download and install package, if needed
-get_filename_component(SIGHT_DEPS_PACKAGE_DIRECTORY "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}" REALPATH)
-    
-if(NOT EXISTS "${SIGHT_DEPS_PACKAGE_DIRECTORY}")
+download_deps(
+    ${SIGHT_DEPS_ROOT_DIRECTORY} ${SIGHT_DEPS_PACKAGE} ${SIGHT_DEPS_ARCHIVE} ${SIGHT_DEPS_ARCHIVE_HASH}
+    ${SIGHT_DEPS_PUBLIC_URL} "${SIGHT_DEPS_BASENAME}"
+)
 
-    # Download the sight deps archive
-    file(
-        DOWNLOAD "${SIGHT_DEPS_PUBLIC_URL}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}"
-        SHOW_PROGRESS
-        EXPECTED_HASH SHA256=${SIGHT_DEPS_PACKAGE_HASH}
-    )
-
-    # Extract it
-    file(
-        ARCHIVE_EXTRACT 
-        INPUT "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}"
-        DESTINATION "${SIGHT_DEPS_ROOT_DIRECTORY}"
-        VERBOSE
-    )
-
-    # Cleanup
-    file(REMOVE "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}")
-
-    if(SIGHT_DEPS_BASENAME)
-        # Rename the extracted directory to ${SIGHT_DEPS_PACKAGE}, so we can discredit commit hash, os version, build type.
-        file(RENAME "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_BASENAME}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}")
-    endif()
-else()
-    message(STATUS "Download of ${SIGHT_DEPS_PACKAGE_ARCHIVE} skipped, already present.")
-endif()
-
-# Use ${SIGHT_DEPS_PACKAGE_DIRECTORY} as external libraries
-set(SIGHT_EXTERNAL_LIBRARIES ${SIGHT_DEPS_PACKAGE_DIRECTORY})
 message("Using ${SIGHT_EXTERNAL_LIBRARIES} for Sight external libraries")
 
-unset(SIGHT_DEPS_PACKAGE_DIRECTORY)
 unset(OUTPUT)
 unset(SIGHT_DEPS_PUBLIC_URL)
-unset(SIGHT_DEPS_PACKAGE_HASH)
+unset(SIGHT_DEPS_ARCHIVE_HASH)
 unset(SIGHT_DEPS_ARCHIVE)
 unset(SIGHT_DEPS_PACKAGE)
 unset(SIGHT_DEPS_BASENAME)

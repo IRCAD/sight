@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::base::ut::DictionaryReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::base::ut::DictionaryReaderTest);
 
 namespace sight::io::base
 {
@@ -62,9 +62,9 @@ void DictionaryReaderTest::tearDown()
     // Clean up after the test run.
     if(std::filesystem::exists(m_tmpDictionaryFilePath))
     {
-        bool suppr;
-        suppr = std::filesystem::remove(m_tmpDictionaryFilePath);
-        CPPUNIT_ASSERT(suppr);
+        bool removed;
+        removed = std::filesystem::remove(m_tmpDictionaryFilePath);
+        CPPUNIT_ASSERT(removed);
     }
 }
 
@@ -217,6 +217,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(std::filesyst
 
 void DictionaryReaderTest::generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile)
 {
+    //cspell: ignore Enironment Anat
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());

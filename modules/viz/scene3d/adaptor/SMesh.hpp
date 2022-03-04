@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * This class handles the conversion of data::Mesh to Ogre3d. It can handle triangles, edges, quads or tetrahedrons.
  * For the quads and tetrahedrons, we generate the triangles in a pre-process, using the render to vertex buffer (r2vb)
- * feature to avoid the cost of geometry shaders when usign multi-pass rendering techniques.
+ * feature to avoid the cost of geometry shaders when using multi-pass rendering techniques.
  *
  * An Ogre entity is created from the mesh. A second mesh and a second entity are created as an input for the r2vb.
  * Thus, the main mesh will contains only triangles or edges, while the second entity contains only quads or tetras.
@@ -80,16 +80,14 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SMesh" >
-        <inout key="mesh" uid="..." />
-        <config layer="..." transform="..." visible="true" materialName="..." shadingMode="gouraud" textureName="..."
+        <in key="mesh" uid="..." />
+        <config layer="..." transform="..." visible="true" materialName="..." shadingMode="phong" textureName="..."
         queryFlags="0x40000000" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
- * - \b mesh [sight::data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
- * some
- * fields.
+ * @subsection Input Input
+ * - \b mesh [sight::data::Mesh]: adapted mesh.
  *
  * @subsection Configuration Configuration:
  *  - \b layer (mandatory, string): defines the mesh's layer
@@ -107,7 +105,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b materialTemplate (optional, string, default=""): the name of the base Ogre material for the internally created
  *       SMaterial.
  *  - \b textureName (optional, default=""): the name of the Ogre texture that the mesh will use.
- *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong): name of the used shading mode.
+ *  - \b shadingMode (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
  *  - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
  */
@@ -118,7 +116,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMesh final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMesh, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMesh() noexcept;
@@ -145,7 +143,7 @@ public:
     MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName);
 
     /**
-     * @brief Actives/deactives automatic reset on camera.
+     * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
     MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _autoResetCamera);
@@ -154,7 +152,7 @@ public:
      * @brief Gets the associated entity.
      * @return The entity.
      */
-    MODULE_VIZ_SCENE3D_API ::Ogre::Entity* getEntity() const;
+    MODULE_VIZ_SCENE3D_API Ogre::Entity* getEntity() const;
 
     /**
      * @brief Gets the mesh visibility.
@@ -237,7 +235,7 @@ private:
      * @brief Updates the mesh, checks if color, number of vertices have changed, and updates them.
      * @param _mesh used for the update.
      */
-    void updateMesh(const data::Mesh::sptr& _mesh);
+    void updateMesh(data::Mesh::csptr _mesh);
 
     /**
      * @brief Instantiates a new material adaptor
@@ -245,7 +243,7 @@ private:
      * @param _mesh used to create an unique material name.
      */
     module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(
-        const data::Mesh::sptr& _mesh,
+        data::Mesh::csptr _mesh,
         const std::string& _materialSuffix = ""
     );
 
@@ -254,23 +252,23 @@ private:
      * With this method, SMesh is responsible for creating a SMaterial.
      * @param _mesh used to create the material service.
      */
-    void updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh);
+    void updateNewMaterialAdaptor(data::Mesh::csptr _mesh);
 
     /// Updates the associated material adaptor.
     /// This method is called when a material adaptor has been configured in the XML scene.
     void updateXMLMaterialAdaptor();
 
     /**
-     * @brief Attachs a node in the scene graph.
+     * @brief Attaches a node in the scene graph.
      * @param _node the node to attach.
      */
-    void attachNode(::Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* _node);
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {true};
 
-    /// Contains the node in the scene graph whwre the mesh is attached.
-    ::Ogre::Entity* m_entity {nullptr};
+    /// Contains the node in the scene graph where the mesh is attached.
+    Ogre::Entity* m_entity {nullptr};
 
     /// Contains the Ogre material adaptor.
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
@@ -306,13 +304,13 @@ private:
     sight::viz::scene3d::Mesh::sptr m_meshGeometry {nullptr};
 
     /// Stores material adaptors attached to the r2vb objects.
-    std::map<data::Mesh::CellTypes, module::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
+    std::map<data::Mesh::cell_t, module::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    static constexpr std::string_view s_MESH_INOUT = "mesh";
-    data::ptr<data::Mesh, data::Access::inout> m_mesh {this, s_MESH_INOUT, true};
+    static constexpr std::string_view s_MESH_IN = "mesh";
+    data::ptr<data::Mesh, data::Access::in> m_mesh {this, s_MESH_IN, true};
 };
 
 //------------------------------------------------------------------------------
@@ -345,7 +343,7 @@ inline void SMesh::setAutoResetCamera(bool _autoResetCamera)
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::Entity* SMesh::getEntity() const
+inline Ogre::Entity* SMesh::getEntity() const
 {
     return m_entity;
 }

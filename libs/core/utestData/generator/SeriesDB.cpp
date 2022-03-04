@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,7 +139,7 @@ data::Study::sptr SeriesDB::createStudy()
 
 //------------------------------------------------------------------------------
 
-data::Equipment::sptr SeriesDB::createEquipement()
+data::Equipment::sptr SeriesDB::createequipment()
 {
     data::Equipment::sptr equipment = data::Equipment::New();
     const std::string INSTITUTION   = "hospital";
@@ -154,7 +154,7 @@ void SeriesDB::generateSeriesInformation(data::Series::sptr series)
 {
     series->setPatient(SeriesDB::createPatient());
     series->setStudy(SeriesDB::createStudy());
-    series->setEquipment(SeriesDB::createEquipement());
+    series->setEquipment(SeriesDB::createequipment());
 
     static unsigned int count = 1;
     std::stringstream str;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void RuntimeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
 void RuntimeTest::testPosix()
 {
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
@@ -80,7 +80,7 @@ void RuntimeTest::testPosix()
     const auto path = nativeLibrary->getFullPath();
     CPPUNIT_ASSERT_EQUAL(
         (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX
-         / std::filesystem::path("libsight_module_utest.so")).string(),
+         / std::filesystem::path("libsight_module_utest.so." VERSION)).string(),
         path.string()
     );
 }
@@ -115,7 +115,7 @@ void RuntimeTest::testRuntime()
     core::runtime::init();
 
     core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
-    const auto moduleStr                    = "::sight::module::utest";
+    const auto moduleStr                    = "sight::module::utest";
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
     auto bundle = std::dynamic_pointer_cast<core::runtime::detail::Module>(runtime.findModule(moduleStr));

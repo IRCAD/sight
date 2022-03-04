@@ -1,4 +1,4 @@
-sight_add_target( io_zip TYPE LIBRARY )
+sight_add_target(io_zip TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 target_link_libraries(io_zip PUBLIC core)
 
 include(CheckIncludeFile)
@@ -6,7 +6,7 @@ include(CheckTypeSize)
 include(CheckFunctionExists)
 
 # Check for system includes
-check_include_file(stdint.h   HAVE_STDINT_H)
+check_include_file(stdint.h HAVE_STDINT_H)
 if(HAVE_STDINT_H)
     target_compile_definitions(io_zip PRIVATE "-DHAVE_STDINT_H")
 endif()

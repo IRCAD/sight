@@ -36,6 +36,7 @@ CPPUNIT_TEST_SUITE(ArchiveTest);
 CPPUNIT_TEST(newTest);
 CPPUNIT_TEST(singletonTest);
 CPPUNIT_TEST(openTest);
+CPPUNIT_TEST(rawTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,6 +48,7 @@ public:
     void newTest();
     void singletonTest();
     void openTest();
+    void rawTest();
 };
 
 } // namespace ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ class IO_OPENCV_CLASS_API Camera
 public:
 
     /// Copy the intrinsic matrix, the image size and the distortion coefficients from a Sight camera.
-    IO_OPENCV_API static std::tuple< ::cv::Mat, ::cv::Size, ::cv::Mat> copyToCv(const data::Camera::csptr& _src);
+    IO_OPENCV_API static std::tuple<cv::Mat, cv::Size, cv::Mat> copyToCv(const data::Camera::csptr& _src);
 };
 
 } // namespace sight::io::opencv

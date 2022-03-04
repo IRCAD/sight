@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,6 +43,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <thread>
 
 namespace sight::module::io::realsense
 {
@@ -172,7 +173,7 @@ std::string SScan::selectDevice()
     // TODO: Check if a device is already selected (via Qt).
 
     // Obtain a list of devices currently present on the system
-    ::rs2::context ctx;
+    rs2::context ctx;
     const auto devices          = ctx.query_devices();
     const uint32_t device_count = devices.size();
     std::string selectedDevice;
@@ -207,8 +208,8 @@ std::string SScan::selectDevice()
         const std::string selected = dial.show();
 
         // Get the index of selected camera.
-        const size_t dot = selected.find(".");
-        const auto index = std::atoi(selected.substr(0, dot).c_str()) - 1;
+        const std::size_t dot = selected.find(".");
+        const auto index      = std::atoi(selected.substr(0, dot).c_str()) - 1;
 
         // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
@@ -221,11 +222,11 @@ std::string SScan::selectDevice()
 
 //-----------------------------------------------------------------------------
 
-void SScan::initialize(const ::rs2::pipeline_profile& _profile)
+void SScan::initialize(const rs2::pipeline_profile& _profile)
 {
-    const auto depthStream    = _profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
-    const auto colorStream    = _profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
-    const auto infraredStream = _profile.get_stream(RS2_STREAM_INFRARED).as< ::rs2::video_stream_profile>();
+    const auto depthStream    = _profile.get_stream(RS2_STREAM_DEPTH).as<rs2::video_stream_profile>();
+    const auto colorStream    = _profile.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
+    const auto infraredStream = _profile.get_stream(RS2_STREAM_INFRARED).as<rs2::video_stream_profile>();
 
     std::stringstream str;
     str << "-- fps : " << depthStream.fps() << std::endl;
@@ -238,10 +239,10 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
     SIGHT_DEBUG("Actual mode : \n" + str.str());
 
-    const data::Mesh::Size depthStreamW = static_cast<data::Mesh::Size>(depthStream.width());
-    const data::Mesh::Size depthStreamH = static_cast<data::Mesh::Size>(depthStream.height());
-    const data::Mesh::Size colorStreamW = static_cast<data::Mesh::Size>(colorStream.width());
-    const data::Mesh::Size colorStreamH = static_cast<data::Mesh::Size>(colorStream.height());
+    const data::Mesh::size_t depthStreamW = static_cast<data::Mesh::size_t>(depthStream.width());
+    const data::Mesh::size_t depthStreamH = static_cast<data::Mesh::size_t>(depthStream.height());
+    const data::Mesh::size_t colorStreamW = static_cast<data::Mesh::size_t>(colorStream.width());
+    const data::Mesh::size_t colorStreamH = static_cast<data::Mesh::size_t>(colorStream.height());
 
     {
         const auto colorTimeline = m_frame.lock();
@@ -278,7 +279,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
             data::Camera::sptr depthCamera;
 
             // check if there is camera
-            if(cameraSeries->getNumberOfCameras() == 0)
+            if(cameraSeries->numCameras() == 0)
             {
                 depthCamera = data::Camera::New();
                 colorCamera = data::Camera::New();
@@ -291,7 +292,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
                 sig->asyncEmit(depthCamera);
                 sig->asyncEmit(colorCamera);
             }
-            else if(cameraSeries->getNumberOfCameras() == 1) // missing one camera
+            else if(cameraSeries->numCameras() == 1) // missing one camera
             {
                 depthCamera = cameraSeries->getCamera(0);
                 colorCamera = data::Camera::New();
@@ -355,11 +356,11 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
                 );
                 colorCamera->setIsCalibrated(true);
 
-                size_t index = 0;
-                for(size_t i = 0 ; i < 3 ; ++i)
+                std::size_t index = 0;
+                for(std::size_t i = 0 ; i < 3 ; ++i)
                 {
                     matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
-                    for(size_t j = 0 ; j < 3 ; ++j)
+                    for(std::size_t j = 0 ; j < 3 ; ++j)
                     {
                         matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
                         ++index;
@@ -379,27 +380,21 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     //Only create the pointer one time.
 
     auto pointcloud     = data::Mesh::New();
-    const auto dumpLock = pointcloud->lock();
+    const auto dumpLock = pointcloud->dump_lock();
 
-    const data::Mesh::Size nbPoints = depthStreamW * depthStreamH;
+    const data::Mesh::size_t nbPoints = depthStreamW * depthStreamH;
 
     // Allocate mesh.
-    pointcloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
-
-    auto itr = pointcloud->begin<data::iterator::CellIterator>();
+    pointcloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, data::Mesh::Attributes::POINT_COLORS);
 
     // to display the mesh, we need to create cells with one point.
-    for(data::Mesh::Size i = 0 ; i < nbPoints ; ++i, ++itr)
+    data::Mesh::cell_t i = 0;
+    for(auto& cell : pointcloud->range<data::iterator::cell::point>())
     {
-        *itr->type         = data::Mesh::CellType::POINT;
-        *itr->offset       = i;
-        *(itr + 1)->offset = i + 1; // to be able to iterate through point indices
-        itr->pointIdx[0]   = i;
+        cell.pt = i++;
     }
 
-    pointcloud->setNumberOfPoints(nbPoints);
-    pointcloud->setNumberOfCells(nbPoints);
-    pointcloud->setCellDataSize(nbPoints);
+    pointcloud->truncate(nbPoints, nbPoints);
 
     m_pointCloudOutput = pointcloud;
 }
@@ -471,11 +466,11 @@ void SScan::startCamera()
         }
     }
 
-    ::rs2::config cfg;
+    rs2::config cfg;
 
-    m_pipe = std::make_unique< ::rs2::pipeline>();
+    m_pipe = std::make_unique<rs2::pipeline>();
 
-    ::rs2::pipeline_profile profile;
+    rs2::pipeline_profile profile;
     try
     {
         if(m_deviceID.empty() && !m_playbackMode)
@@ -540,7 +535,7 @@ void SScan::startCamera()
             {
                 // Enable advanced-mode.
                 advanced_mode_dev.toggle_advanced_mode(true);
-                SIGHT_DEBUG("Enable avdanced mode on realsense device.");
+                SIGHT_DEBUG("Enable advanced mode on realsense device.");
             }
         }
         else
@@ -565,7 +560,7 @@ void SScan::startCamera()
             advanced_mode_dev.load_json(json_content);
         }
 
-        auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor>();
+        auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
 
         // Get the depth scale: depth in mm corresponding to a depth value of 1.
         m_depthScale = depthSensor.get_depth_scale() * s_METERS_TO_MMS;
@@ -637,9 +632,7 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(
-            IGrabber::s_CAMERA_STOPPED_SIG
-        );
+        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
 }
@@ -663,11 +656,11 @@ void SScan::pauseCamera()
         {
             if(m_pause)
             {
-                m_currentDevice.as< ::rs2::recorder>().pause();
+                m_currentDevice.as<rs2::recorder>().pause();
             }
             else
             {
-                m_currentDevice.as< ::rs2::recorder>().resume();
+                m_currentDevice.as<rs2::recorder>().resume();
             }
         }
     }
@@ -786,7 +779,7 @@ void SScan::setBoolParameter(bool _value, std::string _key)
             // Change the parameter live if grabber is running, otherwise it will be changed on next startCamera.
             if(!m_deviceID.empty() && m_running)
             {
-                auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor>();
+                auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
                 depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (_value ? 1.f : 0.f));
             }
         }
@@ -1009,27 +1002,27 @@ void SScan::popMessageDialog(const std::string& _message)
 void SScan::grab()
 {
     // Declare pointcloud object, for calculating pointclouds and texture mappings
-    ::rs2::pointcloud pc;
-    ::rs2::spatial_filter spatialFilter;                // Spatial    - edge-preserving spatial smoothing
-    ::rs2::temporal_filter temporalFilter;              // Temporal   - reduces temporal noise
-    ::rs2::hole_filling_filter holesFilter;             // Holes filling
-    ::rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
-    ::rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
+    rs2::pointcloud pc;
+    rs2::spatial_filter spatialFilter;                // Spatial    - edge-preserving spatial smoothing
+    rs2::temporal_filter temporalFilter;              // Temporal   - reduces temporal noise
+    rs2::hole_filling_filter holesFilter;             // Holes filling
+    rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
+    rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
 
-    bool needAligment = false;
+    bool needAlignment = false;
 
-    ::rs2::align alignFrames(RS2_STREAM_COLOR);
+    rs2::align alignFrames(RS2_STREAM_COLOR);
 
     // Since RS2_STREAM_* is an enum, and DEPTH, COLOR & INFRARED are stored in this order, we can eliminate other
     // value, and default one.
     if(m_cameraSettings.streamToAlignTo != RS2_STREAM_ANY && m_cameraSettings.streamToAlignTo < RS2_STREAM_FISHEYE)
     {
-        alignFrames  = rs2::align(m_cameraSettings.streamToAlignTo);
-        needAligment = true;
+        alignFrames   = rs2::align(m_cameraSettings.streamToAlignTo);
+        needAlignment = true;
     }
 
     // We want the points object to be persistent so we can display the last cloud when a frame drops
-    ::rs2::points points;
+    rs2::points points;
 
     while(m_running)
     {
@@ -1045,7 +1038,7 @@ void SScan::grab()
             auto frames = m_pipe->wait_for_frames();
 
             // Align each frames in the chosen coordinate frames.
-            if(needAligment)
+            if(needAlignment)
             {
                 frames = alignFrames.process(frames);
             }
@@ -1053,7 +1046,7 @@ void SScan::grab()
             auto depth = frames.get_depth_frame();
             auto color = frames.get_color_frame();
             auto infra = frames.get_infrared_frame();
-            ::rs2::frame mapframe, colorOrInfra;
+            rs2::frame mapframe, colorOrInfra;
 
             // push infrared in color TL if needed.
             m_switchInfra2Color ? colorOrInfra = infra : colorOrInfra = color;
@@ -1257,7 +1250,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
         const auto sizeBuffer      = width * height;
 
         // Re-map depth frame in mm.
-        for(size_t i = 0 ; i < sizeBuffer ; ++i)
+        for(std::size_t i = 0 ; i < sizeBuffer ; ++i)
         {
             *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *m_depthScale);
         }
@@ -1273,7 +1266,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 
 //-----------------------------------------------------------------------------
 
-void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture)
+void SScan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture)
 {
     auto pointcloud = m_pointCloudOutput.lock();
 
@@ -1291,21 +1284,19 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         const auto vertices     = _pc.get_vertices();
         const auto textureCoord = _pc.get_texture_coordinates();
 
-        const size_t pcSize = _pc.size();
+        const std::size_t pcSize = _pc.size();
 
         // Parallelization of the loop is possible since each element is independent.
 
-        const auto pointBegin = pointcloud->begin<data::iterator::PointIterator>();
-        auto points           = pointBegin->point;
-        auto colors           = pointBegin->rgba;
+        auto points = pointcloud->begin<data::iterator::point::xyz>();
+        auto colors = pointcloud->begin<data::iterator::point::rgba>();
 
-        #pragma omp parallel for
         for(std::int64_t i = 0 ; i < static_cast<std::int64_t>(pcSize) ; ++i)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
-            points[i].x = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
-            points[i].y = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
-            points[i].z = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale; // Re-map to mm.
+            points->x = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
+            points->y = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
+            points->z = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale; // Re-map to mm.
 
             // Normals to Texture Coordinates conversion
             const int x_value = std::min(
@@ -1330,18 +1321,19 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             const int index   = (bytes + strides);
 
             // Fill the color buffer (R = +0, G = +1, B = +2).
-            colors[i].r = textureBuff[index + 0];
-            colors[i].g = textureBuff[index + 1];
-            colors[i].b = textureBuff[index + 2];
-            colors[i].a = 255;
+            colors->r = textureBuff[index + 0];
+            colors->g = textureBuff[index + 1];
+            colors->b = textureBuff[index + 2];
+            colors->a = 255;
+
+            ++points;
+            ++colors;
         }
 
-        const auto sigVertex = pointcloud->signal<data::Mesh::VertexModifiedSignalType>
-                                   (data::Mesh::s_VERTEX_MODIFIED_SIG);
+        const auto sigVertex = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sigVertex->asyncEmit();
 
-        const auto sigcolor = pointcloud->signal<data::Mesh::PointColorsModifiedSignalType>
-                                  (data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        const auto sigcolor = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sigcolor->asyncEmit();
     }
 }

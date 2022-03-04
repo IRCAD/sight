@@ -140,7 +140,7 @@ void SModelSeries::updating()
     for(auto reconstruction : modelSeries->getReconstructionDB())
     {
         auto adaptor = this->registerService<module::viz::scene3d::adaptor::SReconstruction>(
-            "::sight::module::viz::scene3d::adaptor::SReconstruction"
+            "sight::module::viz::scene3d::adaptor::SReconstruction"
         );
         adaptor->setInput(reconstruction, "reconstruction", true);
 

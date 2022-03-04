@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ public:
     static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STransform, sight::viz::scene3d::IAdaptor);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API STransform() noexcept;
@@ -74,7 +74,7 @@ protected:
     /// Retrieves id sets in the configurations.
     MODULE_VIZ_SCENE3D_API void configuring() override;
 
-    /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
+    /// Creates the Ogre::SceneNode corresponding to the associated transform matrix.
     MODULE_VIZ_SCENE3D_API void starting() override;
 
     /**
@@ -97,13 +97,13 @@ private:
     sight::viz::scene3d::SRender::OgreObjectIdType m_parentTransformId;
 
     /// Contains the Ogre transform node.
-    ::Ogre::SceneNode* m_transformNode {nullptr};
+    Ogre::SceneNode* m_transformNode {nullptr};
 
     /// Contains the Ogre parent transform sceneNode.
-    ::Ogre::SceneNode* m_parentTransformNode {nullptr};
+    Ogre::SceneNode* m_parentTransformNode {nullptr};
 
     /// Defines the Ogre transformation of this service
-    ::Ogre::Affine3 m_ogreTransform;
+    Ogre::Affine3 m_ogreTransform;
 
     data::ptr<data::Matrix4, data::Access::inout> m_matrix {this, s_TRANSFORM_INOUT, true};
 };

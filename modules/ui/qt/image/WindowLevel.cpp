@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,8 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/Composite.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
@@ -49,7 +48,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
-#include <QSignalMapper>
 #include <QToolButton>
 #include <QWidget>
 
@@ -146,8 +144,8 @@ void WindowLevel::starting()
 
         m_toggleAutoButton = new QToolButton();
         QIcon icon;
-        std::string windo(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
-        icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
+        std::string win(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
+        icon.addFile(QString::fromStdString(win), QSize(), QIcon::Normal, QIcon::On);
         std::string nowindo(core::runtime::getModuleResourceFilePath(
                                 "sight::module::ui::qt",
                                 "nowindowing.svg"
@@ -184,8 +182,6 @@ void WindowLevel::starting()
 
         qtContainer->setLayout(layout);
 
-        m_dynamicRangeSignalMapper = new QSignalMapper(this);
-
         // Set the visibility after the layout is created so it doesn't open its own window.
         m_toggleTFButton->setVisible(m_enableSquareTF);
 
@@ -219,7 +215,7 @@ void WindowLevel::updating()
     const auto image = m_image.lock();
     SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
 
-    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+    const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
     this->setEnabled(imageIsValid);
 
     if(imageIsValid)
@@ -227,7 +223,7 @@ void WindowLevel::updating()
         if(m_autoWindowing)
         {
             double min, max;
-            data::fieldHelper::MedicalImageHelpers::getMinMax(image.get_shared(), min, max);
+            data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
             this->updateImageWindowLevel(min, max);
         }
 
@@ -403,7 +399,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
             break;
 
         case 4: // Fit Image Range
-            data::fieldHelper::MedicalImageHelpers::getMinMax(image.get_shared(), min, max);
+            data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
             break;
 
         case 5: // Custom : TODO
@@ -491,7 +487,7 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
         const auto image = m_image.lock();
         SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
         double min, max;
-        data::fieldHelper::MedicalImageHelpers::getMinMax(image.get_shared(), min, max);
+        data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
         this->updateImageWindowLevel(min, max);
         this->onImageWindowLevelChanged(min, max);
     }

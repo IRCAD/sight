@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,29 +31,26 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Plane));
 namespace sight::data
 {
 
 /**
  * @brief   This class defines a plane defined by tree points.
- * @see     data::Point
+ * @see     Point
  */
 class DATA_CLASS_API Plane : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Plane, data::Object, data::factory::New<Plane>);
+    SIGHT_DECLARE_CLASS(Plane, Object, factory::New<Plane>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Plane));
-
-    typedef std::array<data::Point::sptr, 3> PointContainer;
+    typedef std::array<Point::sptr, 3> PointContainer;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Plane(data::Object::Key key);
+    DATA_API Plane(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Plane();
@@ -61,14 +58,11 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /// Re-initialize the plane with 3 points
     DATA_API void setValue(
-        data::Point::sptr _point1,
-        data::Point::sptr _point2,
-        data::Point::sptr _point3
+        Point::sptr _point1,
+        Point::sptr _point2,
+        Point::sptr _point3
     );
 
     /** @{
@@ -97,7 +91,16 @@ public:
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Plane& other) const noexcept;
+    DATA_API bool operator!=(const Plane& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! Points container
     PointContainer m_vPoints;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ class SHistogramValue : public sight::viz::scene2d::IAdaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogramValue, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogramValue, sight::viz::scene2d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API SHistogramValue() noexcept;
@@ -120,7 +120,7 @@ private:
     /// Sets the display status.
     bool m_isInteracting;
 
-    /// Defiens the font used for displaying the text.
+    /// Defines the font used for displaying the text.
     QFont m_font;
 
     /// Defines  the coordinates of the current event.
@@ -135,8 +135,9 @@ private:
     static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
     static constexpr std::string_view s_VIEWPORT_INPUT  = "viewport";
 
-    ::sight::data::ptr<sight::data::Histogram, ::sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    ::sight::data::ptr<sight::data::Point, ::sight::data::Access::in> m_point {this, "point"};
+    sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
+    sight::data::ptr<sight::data::Point, sight::data::Access::in> m_point {this, "point"};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace timeline
 /**
  * @brief   This class defines a TimeLine object buffer.
  */
-class DATA_CLASS_API Buffer : public data::timeline::Object
+class DATA_CLASS_API Buffer : public Object
 {
 public:
 
@@ -45,7 +45,7 @@ public:
     DATA_API Buffer(
         core::HiResClock::HiResClockType timestamp = 0,
         BufferDataType buffer                      = 0,
-        size_t size                                = 0,
+        std::size_t size                           = 0,
         DeleterType d                              = 0
     );
 
@@ -53,18 +53,24 @@ public:
     DATA_API virtual ~Buffer();
 
     /// Makes a copy of this buffer
-    DATA_API virtual void deepCopy(const data::timeline::Object& other);
+    DATA_API virtual void deepCopy(const Object& other);
 
     /// Returns size
-    size_t getSize() const
+    std::size_t getSize() const
     {
         return m_size;
     }
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Buffer& other) const noexcept;
+    DATA_API bool operator!=(const Buffer& other) const noexcept;
+    /// @}
+
 protected:
 
     ///Buffer size
-    size_t m_size;
+    std::size_t m_size;
 
     ///Buffer
     BufferDataType m_buffer;

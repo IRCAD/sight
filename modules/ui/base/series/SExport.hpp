@@ -61,11 +61,11 @@ namespace series
  * - \b series [sight::data::Series]: Source series to export.
  * - \b seriesDB [sight::data::SeriesDB]: Target series database where the series should be exported.
  */
-class MODULE_UI_BASE_CLASS_API SExport : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SExport : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SExport, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SExport, sight::ui::base::IAction);
 
     /// Constructor
     MODULE_UI_BASE_API SExport();

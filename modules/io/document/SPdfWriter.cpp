@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 #include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/thread/Pool.hpp>
 #include <core/thread/Worker.hpp>
+
+#include <data/iterator/types.hpp>
 
 #include <service/macros.hpp>
 
@@ -126,7 +128,7 @@ void SPdfWriter::updating()
         pdfWriter.setPageSize(QPagedPaintDevice::A4);
 
         // Scale value to fit the images to a PDF page
-        const int scale          = static_cast<const int>(pdfWriter.logicalDpiX() * 8);
+        const int scale          = static_cast<int>(pdfWriter.logicalDpiX() * 8);
         core::thread::Pool& pool = core::thread::getDefaultPool();
 
         // Adding fwImage from generic scene to the list of images to scale
@@ -163,8 +165,8 @@ void SPdfWriter::updating()
 
         // Scales images to fit the A4 format
         std::vector<std::shared_future<void> > futures;
-        const size_t sizeImagesToScale = imagesToScale.size();
-        for(size_t idx = 0 ; idx < sizeImagesToScale ; ++idx)
+        const std::size_t sizeImagesToScale = imagesToScale.size();
+        for(std::size_t idx = 0 ; idx < sizeImagesToScale ; ++idx)
         {
             std::shared_future<void> future;
             future = pool.post(&SPdfWriter::scaleQImage, std::ref(imagesToScale[idx]), scale);
@@ -246,21 +248,21 @@ void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
 
 QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
 {
-    if(fwImage.getNumberOfComponents() == 3
+    if(fwImage.numComponents() == 3
        && fwImage.getType().string() == "uint8"
-       && fwImage.getSize2()[2] == 1)
+       && fwImage.getSize()[2] == 1)
     {
         // Initialize QImage parameters
-        const data::Image::Size dimension = fwImage.getSize2();
+        const data::Image::Size dimension = fwImage.getSize();
         const int width                   = static_cast<int>(dimension[0]);
         const int height                  = static_cast<int>(dimension[1]);
 
         QImage qImage(width, height, QImage::Format_ARGB32);
         std::uint8_t* qImageBuffer = qImage.bits();
 
-        const auto dumpLock = fwImage.lock();
+        const auto dumpLock = fwImage.dump_lock();
 
-        auto imageItr = fwImage.begin<data::iterator::RGB>();
+        auto imageItr = fwImage.begin<data::iterator::rgb>();
 
         const unsigned int size = static_cast<unsigned int>(width * height) * 4;
         for(unsigned int idx = 0 ; idx < size ; idx += 4, ++imageItr)

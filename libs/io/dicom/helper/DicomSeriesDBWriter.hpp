@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,14 +68,14 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
-     * @brief Construtor/Destructor
+     * @brief Constructor/Destructor
      * @{ */
     IO_DICOM_API DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key);
     IO_DICOM_API virtual ~DicomSeriesDBWriter();
     /**  @} */
 
     /// Return an empty string
-    IO_DICOM_API std::string extension() override;
+    IO_DICOM_API std::string extension() const override;
 
     /// Get job Aggregator
     IO_DICOM_API SPTR(core::jobs::Aggregator) getAggregator();
@@ -86,9 +86,6 @@ public:
     /// Write the image series in DICOM format.
     IO_DICOM_API void write() override;
 
-    /// Enable Zip output format
-    IO_DICOM_API void enableZippedArchive(bool enable);
-
     /// Set Producer
     IO_DICOM_API void setProducer(std::string producer);
 
@@ -97,11 +94,8 @@ private:
     /// Job observer
     SPTR(core::jobs::Aggregator) m_aggregator;
 
-    /// Optionnal anonymiser
+    /// Optional anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;
-
-    /// Enable zip archive
-    bool m_enableZippedArchive;
 
     /// Producer
     std::string m_producer;

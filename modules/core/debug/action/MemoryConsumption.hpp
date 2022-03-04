@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MODULE_DEBUG_CLASS_API MemoryConsumption : public ::sight::ui::base::IAction
+class MODULE_DEBUG_CLASS_API MemoryConsumption : public sight::ui::base::IAction
 {
 public:
 
@@ -54,7 +54,7 @@ protected:
      *
      * @code{.xml}
          <service uid="myIncMemConsum"  type="ui::base::IAction"
-            implementation="::sight::module::core::debug::action::MemoryConsumption" autoComChannel="false" >
+            implementation="sight::module::debug::action::MemoryConsumption" autoComChannel="false" >
             <config mode="increase" value="256" />
         </service>
        @endcode
@@ -76,13 +76,13 @@ protected:
 private:
 
     /// Intern method to create a new array
-    void pushNewArray(size_t memorySizeInBytes);
+    void pushNewArray(std::size_t memorySizeInBytes);
 
     /// To manage allocation or free memory ( data are saved in a static member )
     bool m_isIncreaseMode;
 
     /// Memory allocated in "increase" mode
-    size_t m_memorySizeInBytes;
+    std::size_t m_memorySizeInBytes;
 };
 
 } // namespace action

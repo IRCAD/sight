@@ -69,7 +69,7 @@ void IAdaptor::initialize()
     // Retrieve the render service attached to the adaptor.
     if(m_renderService.expired())
     {
-        auto servicesVector = service::OSR::getServices("::sight::viz::qt3d::SRender");
+        auto servicesVector = service::OSR::getServices("sight::viz::qt3d::SRender");
 
         auto& registry       = viz::qt3d::registry::getAdaptorRegistry();
         auto renderServiceId = registry[this->getID()];

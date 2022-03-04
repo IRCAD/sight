@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,10 +52,10 @@ namespace sight::module::ui::qt::metrics
  *
  * - \b pick(data::tools::PickingInfo): adds or removes picked landmark.
  * - \b addPoint(std::string): adds a point to editor.
- * - \b modifyPoint(std::string, size_t): updates the editor when a point has moved.
- * - \b selectPoint(std::string, size_t): selects a point in the editor.
- * - \b deselectPoint(std::string, size_t): deselect a point in the editor.
- * - \b removePoint(std::string, size_t): removes a point from editor.
+ * - \b modifyPoint(std::string, std::size_t): updates the editor when a point has moved.
+ * - \b selectPoint(std::string, std::size_t): selects a point in the editor.
+ * - \b deselectPoint(std::string, std::size_t): deselect a point in the editor.
+ * - \b removePoint(std::string, std::size_t): removes a point from editor.
  * - \b addGroup(std::string): adds a group to the editor.
  * - \b removeGroup(std::string): removes a group from the editor.
  * - \b modifyGroup(std::string): updates a group attributes.
@@ -136,6 +136,10 @@ public:
      */
     KeyConnectionsMap getAutoConnections() const override;
 
+    /// Signal send when double clicked on a landmark, send its world coordinates;
+    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
+    typedef core::com::Signal<void (double, double, double)> world_coordinates_signal_t;
+
     /// Resets the interface content and create connections between widgets and this service.
     void updating() override;
 
@@ -160,6 +164,14 @@ public:
      * @param _previous the old selected item.
      */
     void onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous);
+
+    /**
+     * @brief Called when double clicked on a landmark
+     *
+     * @param _item clicked item (landmark)
+     * @param _column column num (not used)
+     */
+    void onLandmarkDoubleClicked(QTreeWidgetItem* _item, int _column) const;
 
     /**
      * @brief Called when a group's point size is modified.
@@ -228,17 +240,17 @@ public:
      * @param _groupName the group name of the updated point.
      * @param _index the index of the point to update.
      */
-    void modifyPoint(std::string _groupName, size_t _index);
+    void modifyPoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: selects the point's corresponding item in the editor.
      * @param _groupName the group name of the selected point.
      * @param _index the index of the point to select.
      */
-    void selectPoint(std::string _groupName, size_t _index);
+    void selectPoint(std::string _groupName, std::size_t _index);
 
     /// Slot: deselects the currently selected item.
-    void deselectPoint(std::string, size_t);
+    void deselectPoint(std::string, std::size_t);
 
     /**
      * @brief Slot: adds a landmark group to the editor.
@@ -257,7 +269,7 @@ public:
      * @param _groupName the group name of the point the remove.
      * @param _index the index of the point to remove.
      */
-    void removePoint(std::string _groupName, size_t _index);
+    void removePoint(std::string _groupName, std::size_t _index);
 
     /**
      * @brief SLOT: renames a group in the editor.

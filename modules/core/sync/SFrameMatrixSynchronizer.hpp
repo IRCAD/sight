@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -202,7 +202,7 @@ private:
     /// Check if output images are initialized
     bool m_imagesInitialized;
 
-    static constexpr size_t s_MAX_MATRICES_TL                             = 4;
+    static constexpr std::size_t s_MAX_MATRICES_TL                        = 4;
     static constexpr std::string_view s_FRAMETL_INPUT                     = "frameTL";
     static constexpr std::string_view s_IMAGE_INOUT                       = "image";
     static constexpr std::string_view s_MATRIXTL_INPUT                    = "matrixTL";
@@ -221,10 +221,10 @@ private:
 
     /// registers matrices with associated timeline key
     std::array<data::ptr_vector<data::Matrix4, data::Access::inout>, s_MAX_MATRICES_TL> m_matrices = {{
-        {this, s_MATRICES_INOUT[0], false, 1},
-        {this, s_MATRICES_INOUT[1], false, 1},
-        {this, s_MATRICES_INOUT[2], false, 1},
-        {this, s_MATRICES_INOUT[3], false, 1}
+        {this, s_MATRICES_INOUT[0], false, true},
+        {this, s_MATRICES_INOUT[1], false, true},
+        {this, s_MATRICES_INOUT[2], false, true},
+        {this, s_MATRICES_INOUT[3], false, true}
     }
     };
 
@@ -235,7 +235,7 @@ private:
     unsigned int m_timeStep;
 
     /// Total number of matrices in output (used to know if all the matrices are synchronized)
-    size_t m_totalOutputMatrices;
+    std::size_t m_totalOutputMatrices;
 
     /// Delay in milliseconds between frames and matrices
     int m_delay {0};

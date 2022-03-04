@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -223,5 +223,24 @@ void ProcessObject::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheTyp
 }
 
 //------------------------------------------------------------------------------
+
+bool ProcessObject::operator==(const ProcessObject& other) const noexcept
+{
+    if(!core::tools::is_equal(m_inputs, other.m_inputs)
+       || !core::tools::is_equal(m_outputs, other.m_outputs))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ProcessObject::operator!=(const ProcessObject& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

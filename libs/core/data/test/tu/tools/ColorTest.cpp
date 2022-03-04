@@ -27,7 +27,7 @@
 #include <data/tools/Color.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::tools::ut::ColorTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::ColorTest);
 
 namespace sight::data::tools
 {

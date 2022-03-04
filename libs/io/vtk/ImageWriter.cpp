@@ -34,7 +34,7 @@
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::ImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ImageWriter);
 
 namespace sight::io::vtk
 {
@@ -91,7 +91,7 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ImageWriter::extension()
+std::string ImageWriter::extension() const
 {
     return ".vtk";
 }

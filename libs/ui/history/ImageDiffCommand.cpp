@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::ui::history
 
 ImageDiffCommand::ImageDiffCommand(const data::Image::sptr& img, filter::image::ImageDiff diff) :
     m_img(img),
-    m_modifSig(img->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG)),
+    m_modifiedSig(img->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG)),
     m_diff(diff)
 {
     m_diff.shrink();
@@ -42,7 +42,7 @@ ImageDiffCommand::ImageDiffCommand(const data::Image::sptr& img, filter::image::
 
 //------------------------------------------------------------------------------
 
-size_t ImageDiffCommand::getSize() const
+std::size_t ImageDiffCommand::getSize() const
 {
     return sizeof(*this) + m_diff.getSize();
 }
@@ -53,7 +53,7 @@ bool ImageDiffCommand::redo()
 {
     m_diff.applyDiff(m_img);
 
-    m_modifSig->asyncEmit();
+    m_modifiedSig->asyncEmit();
 
     return true;
 }
@@ -64,7 +64,7 @@ bool ImageDiffCommand::undo()
 {
     m_diff.revertDiff(m_img);
 
-    m_modifSig->asyncEmit();
+    m_modifiedSig->asyncEmit();
 
     return true;
 }

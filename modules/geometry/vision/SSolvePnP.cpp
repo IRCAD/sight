@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,8 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
         io::opencv::Camera::copyToCv(camera.get_shared());
 
     //get points
-    std::vector< ::cv::Point2f> points2d;
-    std::vector< ::cv::Point3f> points3d;
+    std::vector<cv::Point2f> points2d;
+    std::vector<cv::Point3f> points3d;
 
     const auto fwPoints2d = m_pointList2d.lock();
     const auto fwPoints3d = m_pointList3d.lock();
@@ -64,37 +64,43 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
         return;
     }
 
-    const size_t numberOfPoints = fwPoints2d->getPoints().size();
+    const std::size_t numberOfPoints = fwPoints2d->getPoints().size();
 
-    const float cxcyShift[2] = {(static_cast<float>(camera->getWidth()) / 2.f) - static_cast<float>(camera->getCx()),
-                                (static_cast<float>(camera->getHeight()) / 2.f)
-                                - static_cast<float>(camera->getCy())
-    };
+    float shiftX = 0.f, shiftY = 0.f;
+    // Shift back 2d points to compensate "shifted" camera in a 3dScene.
+    if(m_shiftPoints)
+    {
+        shiftX = static_cast<float>(camera->getWidth()) / 2.f - static_cast<float>(camera->getCx());
+        shiftY = static_cast<float>(camera->getHeight()) / 2.f - static_cast<float>(camera->getCy());
+    }
 
-    for(size_t i = 0 ; i < numberOfPoints ; ++i)
+    points2d.resize(numberOfPoints);
+    points3d.resize(numberOfPoints);
+
+    for(std::size_t i = 0 ; i < numberOfPoints ; ++i)
     {
         // 2d
         data::Point::csptr p2d = fwPoints2d->getPoints()[i];
-        ::cv::Point2f cvP2d;
+        cv::Point2f cvP2d;
 
-        cvP2d.x = static_cast<float>(p2d->getCoord()[0]) - cxcyShift[0];
-        cvP2d.y = static_cast<float>(p2d->getCoord()[1]) - cxcyShift[1];
+        cvP2d.x = static_cast<float>(p2d->getCoord()[0]) - shiftX;
+        cvP2d.y = static_cast<float>(p2d->getCoord()[1]) - shiftY;
 
-        points2d.push_back(cvP2d);
+        points2d[i] = cvP2d;
 
         // 3d
         data::Point::csptr p3d = fwPoints3d->getPoints()[i];
-        ::cv::Point3f cvP3d;
+        cv::Point3f cvP3d;
 
         cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
         cvP3d.y = static_cast<float>(p3d->getCoord()[1]);
         cvP3d.z = static_cast<float>(p3d->getCoord()[2]);
 
-        points3d.push_back(cvP3d);
+        points3d[i] = cvP3d;
     }
 
     // call solvepnp
-    ::cv::Matx44f cvMat = sight::geometry::vision::helper::cameraPoseMonocular(
+    cv::Matx44f cvMat = sight::geometry::vision::helper::cameraPoseMonocular(
         points3d,
         points2d,
         cvCamera.intrinsicMat,
@@ -121,7 +127,8 @@ void SSolvePnP::configuring()
 {
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_reverseMatrix = config.get<bool>("inverse", false);
+    m_reverseMatrix = config.get<bool>("inverse", m_reverseMatrix);
+    m_shiftPoints   = config.get<bool>("shift", m_shiftPoints);
 }
 
 //-----------------------------------------------------------------------------

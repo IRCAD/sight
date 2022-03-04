@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -270,10 +270,10 @@ std::string Convert::toXmlString(core::runtime::ConfigurationElement::sptr _cfgE
 
 //------------------------------------------------------------------------------
 
-::boost::property_tree::ptree Convert::toPropertyTree(core::runtime::ConfigurationElement::csptr _cfgElement)
+boost::property_tree::ptree Convert::toPropertyTree(core::runtime::ConfigurationElement::csptr _cfgElement)
 {
-    ::boost::property_tree::ptree pt;
-    ::boost::property_tree::ptree ptAttr;
+    boost::property_tree::ptree pt;
+    boost::property_tree::ptree ptAttr;
 
     std::string propertyName  = _cfgElement->getName();
     std::string propertyValue = _cfgElement->getValue();
@@ -300,11 +300,11 @@ std::string Convert::toXmlString(core::runtime::ConfigurationElement::sptr _cfgE
     for(auto iterElement : _cfgElement->getElements())
     {
         const std::string childName = iterElement->getName();
-        ::boost::property_tree::ptree ptChild;
+        boost::property_tree::ptree ptChild;
 
         ptChild = toPropertyTree(iterElement);
 
-        boost::optional< ::boost::property_tree::ptree&> child = ptChild.get_child_optional(childName);
+        boost::optional<boost::property_tree::ptree&> child = ptChild.get_child_optional(childName);
 
         if(child)
         {
@@ -319,10 +319,10 @@ std::string Convert::toXmlString(core::runtime::ConfigurationElement::sptr _cfgE
 
 //------------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr Convert::fromPropertyTree(::boost::property_tree::ptree pt)
+core::runtime::ConfigurationElement::sptr Convert::fromPropertyTree(boost::property_tree::ptree pt)
 {
     std::stringstream sstr;
-    ::boost::property_tree::write_xml(sstr, pt);
+    boost::property_tree::write_xml(sstr, pt);
 
     std::string xml = sstr.str();
 

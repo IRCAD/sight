@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,6 @@
 #include <data/Composite.hpp>
 #include <data/Equipment.hpp>
 #include <data/Patient.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/Study.hpp>
 #include <data/Vector.hpp>
 
@@ -46,7 +45,7 @@ fwActivitiesBuilderRegisterMacro(activity::builder::ActivitySeries, "::activity:
 
 //-----------------------------------------------------------------------------
 
-ActivitySeries::ActivitySeries(activity::IBuilder::Key key)
+ActivitySeries::ActivitySeries(activity::IBuilder::Key)
 {
 }
 
@@ -73,14 +72,7 @@ data::Composite::sptr vectorToComposite(
     for(const data::Object::sptr& obj : *vector)
     {
         const ActReg::ActivityRequirementKey& keyTag = (*iter++);
-        if(keyTag.path.empty())
-        {
-            (*composite)[keyTag.key] = obj;
-        }
-        else
-        {
-            (*composite)[keyTag.key] = data::reflection::getObject(obj, keyTag.path);
-        }
+        (*composite)[keyTag.key] = obj;
     }
 
     return composite;
@@ -115,7 +107,7 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
     actSeries->setModality("OT");
     actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID());
 
-    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     actSeries->setDate(core::tools::getDate(now));
     actSeries->setTime(core::tools::getTime(now));
 

@@ -38,7 +38,7 @@
 #include <itkImageFileWriter.h>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::itk::ut::ImageReaderWriterJPGTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageReaderWriterJPGTest);
 
 namespace sight::io::itk
 {

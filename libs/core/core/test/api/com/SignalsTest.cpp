@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ void SignalsTest::buildTest()
     CPPUNIT_ASSERT(sig2 == signals["sig2"]);
     CPPUNIT_ASSERT(!signals["wrong_signal"]);
 
-    CPPUNIT_ASSERT_EQUAL((size_t) 2, signals.getSignalKeys().size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 2, signals.getSignalKeys().size());
 }
 
 //-----------------------------------------------------------------------------

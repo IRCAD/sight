@@ -1,4 +1,9 @@
-sight_add_target( filter_image TYPE LIBRARY PCH pchServiceOmp )
+sight_add_target(
+    filter_image
+    TYPE LIBRARY
+    PCH pchServiceOmp
+    WARNINGS_AS_ERRORS OFF
+)
 
 find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT REQUIRED)
 target_link_libraries(filter_image PUBLIC ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT)
@@ -9,7 +14,7 @@ if(MSVC)
 endif()
 
 find_package(OpenMP QUIET)
-if (OPENMP_FOUND)
+if(OPENMP_FOUND)
     target_link_libraries(filter_image PRIVATE OpenMP::OpenMP_CXX)
 endif()
 

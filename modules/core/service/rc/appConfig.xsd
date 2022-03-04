@@ -46,6 +46,7 @@
             <xs:element name="node"  type="NodeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="colors"  type="ColorType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' use="required" />
@@ -119,7 +120,7 @@
     </xs:complexType>
 
     <!-- EdgeType Type -->
-    <xs:complexType name="EdgeType"> <!-- Same as NodeType, but with optionnal "weight" attribute -->
+    <xs:complexType name="EdgeType"> <!-- Same as NodeType, but with optional "weight" attribute -->
         <xs:sequence>
             <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="1" />
             <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />

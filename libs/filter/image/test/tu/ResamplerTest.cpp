@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ResamplerTest.hpp"
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
@@ -75,21 +75,21 @@ void ResamplerTest::identityTest()
         data::Image::csptr(imageIn),
         imageOut,
         data::Matrix4::csptr(idMat),
-        imageIn
+        std::make_tuple(imageIn->getSize(), imageIn->getOrigin(), imageIn->getSpacing())
     );
 
-    CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
+    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
+    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
     CPPUNIT_ASSERT(imageOut->getType() == TYPE);
 
-    const auto inDumpLock  = imageIn->lock();
-    const auto outDumpLock = imageOut->lock();
+    const auto inDumpLock  = imageIn->dump_lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
-    for(size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
-        for(size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
         {
-            for(size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
             {
                 const std::int16_t valueIn  = imageIn->at<std::int16_t>(i, j, k);
                 const std::int16_t valueOut = imageOut->at<std::int16_t>(i, j, k);
@@ -120,9 +120,9 @@ void ResamplerTest::translateTest()
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
 
     // Draw a tiny 2x2 cube at the center
     imageIn->at<std::uint8_t>(7, 7, 7) = value;
@@ -144,13 +144,13 @@ void ResamplerTest::translateTest()
         data::Matrix4::csptr(transMat)
     );
 
-    const auto dumpLock = imageOut->lock();
+    const auto dumpLock = imageOut->dump_lock();
 
-    for(size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
-        for(size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
         {
-            for(size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
             {
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, k);
 
@@ -167,8 +167,8 @@ void ResamplerTest::translateTest()
     }
 
     // Check if size and spacing are the same as the input.
-    CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
+    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
+    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
 }
 
 //------------------------------------------------------------------------------
@@ -187,12 +187,12 @@ void ResamplerTest::rotateTest()
 
     const float value = 1.f;
 
-    const auto dumpLock = imageIn->lock();
+    const auto dumpLock = imageIn->dump_lock();
 
     // draw the back Z face.
-    for(size_t i = 0 ; i < 64 ; ++i)
+    for(std::size_t i = 0 ; i < 64 ; ++i)
     {
-        for(size_t j = 0 ; j < 64 ; ++j)
+        for(std::size_t j = 0 ; j < 64 ; ++j)
         {
             imageIn->at<float>(i, j, 0) = value;
         }
@@ -216,13 +216,13 @@ void ResamplerTest::rotateTest()
         data::Matrix4::csptr(rotMat)
     );
 
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
-    for(size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
     {
-        for(size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
         {
-            for(size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
             {
                 const float valueOut = imageOut->at<float>(i, j, k);
 

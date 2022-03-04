@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ namespace dialog
 /**
  * @brief   Allows to select an acquisition in a patient database.
  *
- * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this lasted is not copiable.
+ * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this former is not copyable.
  * @todo ProgressDialog is not commented.
  */
 class UI_QT_CLASS_API ProgressDialog : public QObject,
@@ -89,10 +89,10 @@ protected:
 
     QString m_title;
 
-    QPointer<QProgressDialog> m_pdialog;
-    QPointer<QProgressBar> m_pprogressbar;
-    QPointer<QPushButton> m_pcancelButton;
-    QPointer<QMainWindow> m_pmainWindow;
+    QPointer<QProgressDialog> m_dialog;
+    QPointer<QProgressBar> m_progressbar;
+    QPointer<QPushButton> m_cancelButton;
+    QPointer<QMainWindow> m_mainWindow;
 };
 
 } // namespace dialog

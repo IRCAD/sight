@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "SCoreCompositorEditor.hpp"
 
-#include <viz/scene3d/SRender.hpp>
-
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -80,7 +80,7 @@ void SCoreCompositorEditor::starting()
     m_layersBox = new QComboBox();
     layout->addWidget(m_layersBox);
 
-    // Transparency depth managment
+    // Transparency depth management
     {
         QLabel* labelTransparency = new QLabel(tr("Transparency depth"));
         layout->addWidget(labelTransparency);
@@ -189,7 +189,7 @@ void SCoreCompositorEditor::refreshRenderers()
 
     // Fill layer box with all enabled layers
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::scene3d::SRender");
+        service::OSR::getServices("sight::viz::scene3d::SRender");
 
     bool is3DLayer = false;
     for(auto srv : renderers)
@@ -250,7 +250,7 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     }
 
     // Reloads buttons to match layer's parameters
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
+    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
 
     // If the layer is not yet started, we can't use its default compositor
     auto layer = m_currentLayer.lock();
@@ -278,7 +278,7 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
 
-            case CELSHADING_DEPTHPEELING:
+            case CELLSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
@@ -331,7 +331,7 @@ void SCoreCompositorEditor::onEditTransparency(int index)
                 break;
 
             case 5:
-                transparencyUpdated = layer->setTransparencyTechnique(CELSHADING_DEPTHPEELING);
+                transparencyUpdated = layer->setTransparencyTechnique(CELLSHADING_DEPTHPEELING);
                 break;
         }
 

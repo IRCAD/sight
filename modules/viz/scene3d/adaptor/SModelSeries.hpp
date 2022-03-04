@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b material (optional, string, default=""): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
  *"false".
- * - \b dynamic (optional, true/false, default=false): if the modelSeries topolgy is likely to be updated frequently.
+ * - \b dynamic (optional, true/false, default=false): if the modelSeries topology is likely to be updated frequently.
  * This is
  *      a performance hint that will choose a specific GPU memory pool accordingly.
  * - \b dynamicVertices (optional, true/false, default=false): if the modelSeries geometry is likely to be updated
@@ -89,7 +89,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SModelSeries final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SModelSeries, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SModelSeries, sight::viz::scene3d::IAdaptor);
 
     /// Initialisa slots.
     MODULE_VIZ_SCENE3D_API SModelSeries() noexcept;
@@ -151,7 +151,7 @@ private:
     bool m_isDynamicVertices {false};
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines if the visibility tag is present in the configuration.
     bool m_isVisibleTag {false};

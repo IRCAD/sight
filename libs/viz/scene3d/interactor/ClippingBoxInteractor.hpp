@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ public:
         SPTR(Layer)_layer,
         bool _layerOrderDependant,
         const std::string& _id,
-        ::Ogre::SceneNode* _parentSceneNode,
-        const ::Ogre::Matrix4& _clippingMatrix,
+        Ogre::SceneNode* _parentSceneNode,
+        const Ogre::Matrix4& _clippingMatrix,
         const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
         const std::string& _boxMtlName,
         const std::string& _handleMtlName
@@ -70,13 +70,13 @@ public:
     VIZ_SCENE3D_API void setBoxVisibility(bool _visibility);
 
     /// Retrieves the positions of the box in model space.
-    VIZ_SCENE3D_API ::Ogre::AxisAlignedBox getClippingBox() const;
+    VIZ_SCENE3D_API Ogre::AxisAlignedBox getClippingBox() const;
 
     /// Retrieves the current clipping transform.
-    VIZ_SCENE3D_API ::Ogre::Matrix4 getClippingTransform() const;
+    VIZ_SCENE3D_API Ogre::Matrix4 getClippingTransform() const;
 
     /// Sets the current clipping box positions from the input transform.
-    VIZ_SCENE3D_API void updateFromTransform(const ::Ogre::Matrix4& _clippingTrf);
+    VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clippingTrf);
 
 private:
 
@@ -84,7 +84,7 @@ private:
     void cancelFurtherLayerInteractions();
 
     /// Containst the currently selected widget.
-    ::Ogre::MovableObject* m_pickedObject {nullptr};
+    Ogre::MovableObject* m_pickedObject {nullptr};
 
     /// Defines the widget with whom we interact.
     widget::ClippingBox m_widget;
@@ -93,7 +93,7 @@ private:
     viz::scene3d::picker::IPicker m_picker;
 
     /// Attempts to pick the first object at screen coordinates (x, y), returns nullptr if no object was picked.
-    ::Ogre::MovableObject* pickObject(int x, int y);
+    Ogre::MovableObject* pickObject(int x, int y);
 };
 
 } // namespace interactor.

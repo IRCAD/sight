@@ -10,7 +10,7 @@
   * Removed useless notify in TransferFunctionEditor::initTransferFunctions()
 
  * General:
-  * Updated fwAtomsPatch and spyLogger according to Bost 1.54
+  * Updated fwAtomsPatch and spyLogger according to Boost 1.54
   * Removed author field in doxygen
   * Fixed Mac OS issue with Qt (QTBUG-32789)
   * Fixed ProfileRunner for Mac OS
@@ -77,7 +77,7 @@
   * Added resection patching in MedicalData V2 context
 
  * Activities:
-  * Added activity validator concept to fwActivites
+  * Added activity validator concept to fwActivities
   * Added image properties validator
   * Added new option for SActivityLauncher to define a default association
   * Made activity launch cancelable
@@ -105,9 +105,9 @@
   * Updated CompareObjects visitor for BufferObject   
   * Created a new library fwAtomsPatch which contains the base interface to transform atoms from a version to an other into a context.  
   * Added a version generator utility to generate .versions files (files used by the patch system).
-  * Added MedicalData pacth system to VRRender
+  * Added MedicalData patch system to VRRender
   * Updated ioAtoms reader(SReader)/writer(SWriter) to use the patch system.
-  * Added verison on Atom writers/readers(Hdf5 reader/writer and BoostIO writer/reader). 
+  * Added version on Atom writers/readers(Hdf5 reader/writer and BoostIO writer/reader). 
   * Added test for getAttribute() template method. 
 
  * General : 
@@ -122,7 +122,7 @@
    * V1 uses the fwData PatientDB, Acquisition, etc.
    * V2 uses the new Data fwMedData ( ModelSeries, ImageSeries, ...)
   * Added fwStructuralPatch library which contains structural patches.
-  * Added fwMDContexttualPatch library which contains semantic patches.
+  * Added fwMDContextualPatch library which contains semantic patches.
   * Added patchMedicalData bundle.
   * Updated VRRender config to use MedicalData patch system.
   * Added unit test for fwStructuralPatch
@@ -169,13 +169,13 @@
    * read : .vtk, .vti, .mhd, .inr
    * write : .vtk, .vti, .mhd, .obj, .inr, .jpg
   * Updated ioGdcm to support fwMedData ( and fix few old problems )  
-  * Updated fwAtomConversion to support several UUID management policies : when you convert an atom to a data, if the uuid object already exists in application, you can abord the process, you can re use the object or you can generate another uuid
+  * Updated fwAtomConversion to support several UUID management policies : when you convert an atom to a data, if the uuid object already exists in application, you can abort the process, you can re use the object or you can generate another uuid
   * Replace specific atoms reader/writer. Added ioAtoms SReader and SWriter services ( these services work on ::fwData::Object and support 'inject' mode). Removed SMedDataReader and SMedDataWriter services.
   * Fixed fwAtomsBoostIO issue when hiting a cache value stored in a Atoms::Map, added unit tests
 
  * General :
   * Updated fwAtomConversion: getSubObject() throw exceptions or null object if path is not valid ( data introspection )
-  * Added macro FW_FORWARD_EXCEPTION_IF(excep, cond)
+  * Added macro FW_FORWARD_EXCEPTION_IF(ex, cond)
   * Added ConfigLauncher helper to centralize management of AppConfig
   * Added new service SConfigLauncher, updated SConfigController
   * Updated SActivityLauncher to be able to launch directly a standalone activity.
@@ -206,11 +206,11 @@
  * Patch system : 
   * Created a new library fwAtomsPatch which contains the base interface to transform atoms from a version to an other into a context.  
   * Added a version generator utility to generate .versions files (files used by the patch system).
-  * Added MedicalData pacth system to VRRender
+  * Added MedicalData patch system to VRRender
 
  * IO :
   * Updated ioAtoms reader(SReader)/writer(SWriter) to use the patch system.
-  * Added verison on Atom writers/readers(Hdf5 reader/writer and BoostIO writer/reader).
+  * Added version on Atom writers/readers(Hdf5 reader/writer and BoostIO writer/reader).
   
  * TU : 
   * Added test for getAttribute() template method.
@@ -222,7 +222,7 @@
   * Fixed deep copy bugs (multiple references to the same data, recursive data) and updated all data
 
  * IO :
-  * Updated fwAtomConversion to support several UUID management policies : when you convert an atom to a data, if the uuid object already exists in application, you can abord the process, you can re use the object or you can generate another uuid
+  * Updated fwAtomConversion to support several UUID management policies: when you convert an atom to a data, if the uuid object already exists in application, you can abort the process, you can re use the object or you can generate another uuid
   * Replace specific atoms reader/writer. Added ioAtoms SReader and SWriter services ( these services work on ::fwData::Object and support 'inject' mode). Removed SMedDataReader and SMedDataWriter services.
   * Fixed fwAtomsBoostIO issue when hiting a cache value stored in a Atoms::Map, added unit tests
 
@@ -334,7 +334,7 @@
 
  * General :
   * Modify Appconfig xml syntax. "parameters" appConfig type is now required ( "standard" and "template" type are no longer supported )
-  * Modify Appconfig xml syntax. Replace xml attribut : implementation to impl, autoComChannel to autoConnect. priority tag is no longer supported ( priority is now relative to connection creation order )
+  * Modify Appconfig xml syntax. Replace xml attribute : implementation to impl, autoComChannel to autoConnect. priority tag is no longer supported ( priority is now relative to connection creation order )
   * Update Appconfig xml syntax. Add two new xml elements ( to support signal/slot connection ) : <connect> and <proxy> (see Tuto15Multithread AppConfig to see an example)
   * Update SwapperSrv to support new connection system. Updated SwapperSrv xml syntax to manage <connect> and <proxy> tag.
   * Fix VRRender application to support new communication system / new xml appConfig syntax
@@ -374,9 +374,9 @@
    * direct slot calling
    * asynchronous slot calling
    * ability to work with multiple threads
-   * auto-deconnection of slot and signals
+   * auto-disconnection of slot and signals
    * arguments loss between slots and signals
-  * fwCom::Slot is wrappers for a function or a class method that can be attached to a fwThread::Worker. The purpose of this class is to provide synchronous and asynchronous mecanisms for method and function calling.
+  * fwCom::Slot is wrappers for a function or a class method that can be attached to a fwThread::Worker. The purpose of this class is to provide synchronous and asynchronous mechanisms for method and function calling.
   * fwCom::Slots is a structure that contains a mapping between a key and a Slot
   * fwCom::HasSlots manages a fwCom::Slots
   * fwCom::Signal allows to perform grouped calls on slots.  In this purpose, Signal provides a mechanism to connect slots to itself.
@@ -485,7 +485,7 @@
 
  * General
   * Fixed invalid free in fwRenderVTK/vtklogging.cpp
-  * Code cleanning : Removed several warnings, unused file, missing export
+  * Code cleaning : Removed several warnings, unused file, missing export
   * Fixed small bug in AppConfigManager when starting and stopping ComChannels
   * Fixed small bug in fwservice/ObjectMsg.cpp when subject has expired
   * Added dynamicConfigStartStop attribute configuration in guiQt/editor/DynamicView.cpp
@@ -507,7 +507,7 @@
   * Removed old fwTools::Singleton
   * Removed unused XMLSubstitute
   * Removed unused RootManager
-  * Desable _( maccro to avoid conflict with boost and replace _( by wxGetTranslation(
+  * Disable _( macro to avoid conflict with boost and replace _( by wxGetTranslation(
   * Now, it is not possible to create an ::fwData::Object
 
  * Log :
@@ -527,7 +527,7 @@
   * Added FactoryRegistry and LazyInstantiator & UT
   * Updated fwData to use fwCore/util factory registry
   * Refactoring all data you must have specific constructor
-  * Updated ServiceFatory to use fwCore/util Instanciator and to be thread safe
+  * Updated ServiceFactory to use fwCore/util Instanciator and to be thread safe
   * Refactoring all services constructors/destructor must become public
   * Added new message factory
   * Updated ActionNotifyService : used new message factory
@@ -596,7 +596,7 @@
   * Add config option in Window Level editor to use image grey level tf instead of create new tf
 
  * Python :
-  * python management of Image.size .spacing .origin as pyhton list
+  * python management of Image.size .spacing .origin as python list
   * Added handler for python outputs
   * Binding Image::deepCopy
 
@@ -643,7 +643,7 @@
   * Added swap on fwTools::BufferObject
   * Added fwTools::Exception on BufferAllocatePolicy allocate/reallocate
 
- * Dump managment :
+ * Dump management :
   * Added documentation
   * Introduced hysteresis offset in fwMemory::policy::ValveDump
   * Updated fwMemory Policy API : added policy factory, added setParam API on dump policies
@@ -670,8 +670,8 @@
   * Fixed ImagesBlend Adaptor when there is twice the same image
   * Fixed selected acquisition index in PatientDBGuiSelectorService
   * New service SPatientDBInserter (io::IWriter type) that permits to push a structure (patientDB, patient, study, acquisition or image) in a patientDB. If destination pdb is not configured, a dialog box proposes to select a pdb from an active pdb list ( pdb registered in OSR )
-  * Added helper to compare float/double value with 'epsilon' error margin (fwMath/Comapre.hpp) and Upadte ImageBlend Adaptor to use it
-  * Unactivated minimized mode (in preference) for frames
+  * Added helper to compare float/double value with 'epsilon' error margin (fwMath/Comapre.hpp) and Update ImageBlend Adaptor to use it
+  * Inactivated minimized mode (in preference) for frames
   * Update compression level for raw buffer ( low compression, hight speed )
 
  * Apps :
@@ -693,7 +693,7 @@
   * Removed few critical methods of basic structures (fwData::Array, fwData::Mesh and fwData::Image) according to buffer lock mecanism. These methods are now proposed by helpers (fwComEd::helper::Array, fwComEd::helper::Mesh, fwComEd::helper::Image) and manage buffer lock process.
   * Support buffer lock process in many helpers/services ( MeshGenerator, vtk conversion, itk conversion, serialization, etc )
 
- * Dump managment
+ * Dump management
   * Added an implementation of fwTools::IBufferManager with fwMemory::BufferManager : This implementation purpose is to manage memory load, freeing memory and restoring freed buffers as needed. A dump policy is used to trigger memory freeing process. The restore process is always triggers when a lock is requested on a dumped buffer. Available policies :
    * NeverDump : This policy will never take the initiative to free memory. This is the policy used when no automatic memory management is wanted. Memory will be dumped on demand.
    * AlwaysDump : This policy will dump buffers as often as possible. As soon as a buffer is released (ie the lock count become zero), it will be dumped.
@@ -715,7 +715,7 @@
    * a transfert function has its own window level
    * window can be negative or null
    * transfert function associate a value in double to a RGBA color
-  * Added reimplementation of vtkWindowLevelLooupTable, fwVtkWindowLevelLookupTable ( in fwRenderVTK ) managing negative window and out-of-range value clamp
+  * Added reimplementation of vtkWindowLevelLookupTable, fwVtkWindowLevelLookupTable ( in fwRenderVTK ) managing negative window and out-of-range value clamp
   * Method to convert a ::fwData::TransferFunction to vtk lookup table are added in vtkIO::helper::TransfertFunction
   * It's possible now for negato or volume rendering or window level interactor to work only on a specific transfert function
   * All image messages concerning window/level or transfer function has been removed, no messages are send directly on the tf
@@ -731,7 +731,7 @@
     * Type getParam() const;
     * void setParam( Type attrParam );
     * User must declare Type m_attrParam;
-  * fwData introduces new maccro to register data in factory fwDataRegisterMacro ( ex : fwDataRegisterMacro( ::fwData::Image ) ) instead of REGISTER_BINDING_BYCLASSNAME
+  * fwData introduces new macro to register data in factory fwDataRegisterMacro ( ex : fwDataRegisterMacro( ::fwData::Image ) ) instead of REGISTER_BINDING_BYCLASSNAME
   * fwData provides a new factory helper (::fwData::Factory) to build ::fwData::Object, use it instead ::fwTools::Factory to build class of type ::fwData::Object
   * Support change in fwXML, and thus increment .yaf version (3->4) to support new structures (old yaf version are not compatible)
   * Move ObjectGenerator/ObjectComparator from fwXML unit test to fwDataTools to merge helper to create and compare data
@@ -748,10 +748,10 @@
   * Added new helper fwTools::Type to manage different system type
   * Image structure refactoring
    * Replaced IBufferDelegate by ::fwData::Array
-   * fwTools::Type to defin the image type
+   * fwTools::Type to define the image type
   * Support new image structure in the system
   * Improve origin image management : reader/writer, visualization 2D/3D/VR, pipeline, registration, resection
-  * Fixed libxml memory managment (source of different problems in VRMed)
+  * Fixed libxml memory management (source of different problems in VRMed)
   * Updated ImagesBlend adaptor to check if images have the same size, spacing and origin. Show a message dialog if image have not same size, spacing or origin. Added tolerance for spacing and origin comparison
   * Modified Pulse dialog to work when guiQt is disable
   * Add new function in class Array to setBuffer with all parameters instead of allocating it
@@ -765,13 +765,13 @@
   * IWriter/IReader refactoring, these classes propose now new API to regroup common source code
   * Added some unit tests and fixed few io problems
   * Added ioBasic to read/write .bio file
-  * Reintroduced bad managment of rescale data with gdcm
+  * Reintroduced bad management of rescale data with gdcm
 
  * Testing :
-  * Added some unit test on bunldes (io)
+  * Added some unit test on bundles (io)
   * Added some unit test on lib (io)
   * Added fwDataTools::Image to generate and test image and added unit test
-  * Added new project fwTest that propose few helpers used in different UT ( for exemple management of data path ) 
+  * Added new project fwTest that propose few helpers used in different UT ( for example management of data path ) 
   * Added helper in fwTest to check patient struct after a dicom file parsing to regroup test concerning dicom format
 e sptr )
   * Updated object comparator/generator in fwDataTools for test

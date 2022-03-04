@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,15 +32,15 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Ogre::Matrix4 Camera::computeFrustumShearTransform(const ::Ogre::Camera& _camera, float _angle)
+Ogre::Matrix4 Camera::computeFrustumShearTransform(const Ogre::Camera& _camera, float _angle)
 {
-    ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
+    Ogre::Matrix4 shearTransform = Ogre::Matrix4::IDENTITY;
 
     const float focalLength  = _camera.getFocalLength();
-    const float xshearFactor = std::tan(_angle);
+    const float xShearFactor = std::tan(_angle);
 
-    shearTransform[0][2] = -xshearFactor;
-    shearTransform[0][3] = -focalLength * xshearFactor;
+    shearTransform[0][2] = -xShearFactor;
+    shearTransform[0][3] = -focalLength * xShearFactor;
 
     return shearTransform;
 }
@@ -101,7 +101,7 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(
     const float wcy = cy1 / (invWinH / 2.f) - 1.f;
 
     // setup projection matrix
-    ::Ogre::Matrix4 m;
+    Ogre::Matrix4 m;
 
     m[0][0] = 2.f * nfx / _width;
     m[0][1] = 0.f;
@@ -128,8 +128,8 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(
 
 //-----------------------------------------------------------------------------
 
-::Ogre::Vector2 Camera::convertFromWindowToViewportSpace(
-    const ::Ogre::Camera& _camera,
+Ogre::Vector2 Camera::convertFromWindowToViewportSpace(
+    const Ogre::Camera& _camera,
     int _renderWindowX,
     int _renderWindowY
 )
@@ -140,7 +140,7 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(
     const int left       = vp->getActualLeft();
     const int top        = vp->getActualTop();
 
-    return ::Ogre::Vector2(
+    return Ogre::Vector2(
         static_cast<float>(_renderWindowX - left) / static_cast<float>(width),
         static_cast<float>(_renderWindowY - top) / static_cast<float>(height)
     );
@@ -150,14 +150,14 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(
 
 Ogre::Vector3 Camera::convertScreenSpaceToViewSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _screenPos)
 {
-    const ::Ogre::Viewport* viewport = _camera.getViewport();
+    const Ogre::Viewport* viewport = _camera.getViewport();
 
-    const ::Ogre::Vector3 vpSize(static_cast<float>(viewport->getActualWidth()),
-                                 static_cast<float>(viewport->getActualHeight()), 1.f);
-    const ::Ogre::Vector3 vpPosition(static_cast<float>(viewport->getActualLeft()),
-                                     static_cast<float>(viewport->getActualTop()), 0.f);
+    const Ogre::Vector3 vpSize(static_cast<float>(viewport->getActualWidth()),
+                               static_cast<float>(viewport->getActualHeight()), 1.f);
+    const Ogre::Vector3 vpPosition(static_cast<float>(viewport->getActualLeft()),
+                                   static_cast<float>(viewport->getActualTop()), 0.f);
 
-    ::Ogre::Vector3 ndcPos = (_screenPos - vpPosition) / vpSize;
+    Ogre::Vector3 ndcPos = (_screenPos - vpPosition) / vpSize;
     ndcPos    = ndcPos * 2.f - 1.f;
     ndcPos.y *= -1.f;
 
@@ -166,14 +166,14 @@ Ogre::Vector3 Camera::convertScreenSpaceToViewSpace(const Ogre::Camera& _camera,
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 Camera::convertNDCToViewSpace(const ::Ogre::Camera& _camera, const ::Ogre::Vector3& _ndcPos)
+Ogre::Vector3 Camera::convertNDCToViewSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _ndcPos)
 {
-    ::Ogre::Vector4 clippingCoordinatePixel;
-    if(_camera.getProjectionType() == ::Ogre::ProjectionType::PT_PERSPECTIVE)
+    Ogre::Vector4 clippingCoordinatePixel;
+    if(_camera.getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
     {
-        const float near = static_cast<const float>(_camera.getNearClipDistance());
+        const float near = static_cast<float>(_camera.getNearClipDistance());
         const float far  = static_cast<float>(_camera.getFarClipDistance());
-        clippingCoordinatePixel.w = static_cast< ::Ogre::Real>(2.0 * near * far)
+        clippingCoordinatePixel.w = static_cast<Ogre::Real>(2.0 * near * far)
                                     / (near + far + _ndcPos.z * (near - far));
     }
     else
@@ -185,12 +185,12 @@ Ogre::Vector3 Camera::convertNDCToViewSpace(const ::Ogre::Camera& _camera, const
     clippingCoordinatePixel.y = _ndcPos.y * clippingCoordinatePixel.w;
     clippingCoordinatePixel.z = _ndcPos.z * clippingCoordinatePixel.w;
 
-    const ::Ogre::Affine3& viewMat = _camera.getViewMatrix();
-    const ::Ogre::Matrix4& projMat = _camera.getProjectionMatrixWithRSDepth();
-    const auto inversedCombinedMat = (projMat * viewMat).inverse();
+    const Ogre::Affine3& viewMat   = _camera.getViewMatrix();
+    const Ogre::Matrix4& projMat   = _camera.getProjectionMatrixWithRSDepth();
+    const auto invertedCombinedMat = (projMat * viewMat).inverse();
 
     // We multiply by the inverse since we are performing the usual projection in the other way around.
-    const ::Ogre::Vector4 result = inversedCombinedMat * clippingCoordinatePixel;
+    const Ogre::Vector4 result = invertedCombinedMat * clippingCoordinatePixel;
 
     return result.xyz();
 }

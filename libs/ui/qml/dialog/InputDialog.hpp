@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ private:
     /// Dialog box message
     QString m_message;
 
-    /// Text inputed
+    /// Text input
     QString m_input;
 
     /// Echo mode for the TextField

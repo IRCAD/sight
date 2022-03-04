@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,11 +40,11 @@ namespace sight::module::ui::qt::metrics
 /**
  * @brief   Distance service is represented by a button. It allows to show distances in a generic scene.
  *
- * @note Sends a signal to request a distance. It should be conected to an ImageMultiDistance adaptor to create the
+ * @note Sends a signal to request a distance. It should be connected to an ImageMultiDistance adaptor to create the
  * distance.
  *
  * @section Signals Signals
- *  \b distanceRequested() : signal to request a distance. It should be conected to an ImageMultiDistance
+ *  \b distanceRequested() : signal to request a distance. It should be connected to an ImageMultiDistance
  * adaptor to create the distance.
  *
  * @section XML XML Configuration

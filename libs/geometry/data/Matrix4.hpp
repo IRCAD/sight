@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,11 +112,11 @@ inline void setTF3DFromMatrix(sight::data::Matrix4& _trf, const glm::dmat4x4& _i
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
     auto& coefs = _trf.getCoefficients();
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const size_t rowDst        = i * 4;
+        const std::size_t rowDst   = i * 4;
         const glm::length_t rowSrc = static_cast<glm::length_t>(i);
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const glm::length_t colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = _input[colSrc][rowSrc];

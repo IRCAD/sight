@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,60 +39,60 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-typedef std::map<core::tools::Type, ::gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
+typedef std::map<core::tools::Type, gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
-    {core::tools::Type::create("uint8"), ::gdcm::PixelFormat::UINT8},
-    {core::tools::Type::create("int8"), ::gdcm::PixelFormat::INT8},
-    // {core::tools::Type::create("XXX")    , ::gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
-    // {core::tools::Type::create("XXX")    , ::gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
-    {core::tools::Type::create("uint16"), ::gdcm::PixelFormat::UINT16},
-    {core::tools::Type::create("int16"), ::gdcm::PixelFormat::INT16},
-    {core::tools::Type::create("uint32"), ::gdcm::PixelFormat::UINT32},
-    {core::tools::Type::create("int32"), ::gdcm::PixelFormat::INT32},
-    // { core::tools::Type::create("XXX")   , ::gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
-    {core::tools::Type::create("float"), ::gdcm::PixelFormat::FLOAT32},
-    {core::tools::Type::create("double"), ::gdcm::PixelFormat::FLOAT64}
+    {core::tools::Type::create("uint8"), gdcm::PixelFormat::UINT8},
+    {core::tools::Type::create("int8"), gdcm::PixelFormat::INT8},
+    // {core::tools::Type::create("XXX")    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
+    // {core::tools::Type::create("XXX")    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
+    {core::tools::Type::create("uint16"), gdcm::PixelFormat::UINT16},
+    {core::tools::Type::create("int16"), gdcm::PixelFormat::INT16},
+    {core::tools::Type::create("uint32"), gdcm::PixelFormat::UINT32},
+    {core::tools::Type::create("int32"), gdcm::PixelFormat::INT32},
+    // { core::tools::Type::create("XXX")   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
+    {core::tools::Type::create("float"), gdcm::PixelFormat::FLOAT32},
+    {core::tools::Type::create("double"), gdcm::PixelFormat::FLOAT64}
 };
 
 //------------------------------------------------------------------------------
 
-const ::gdcm::PixelFormat DicomDataTools::getPixelType(const data::Image::csptr& image)
+const gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& type)
 {
-    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(image->getType());
+    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
     {
         return it->second;
     }
 
-    return ::gdcm::PixelFormat::UNKNOWN;
+    return gdcm::PixelFormat::UNKNOWN;
 }
 
 //------------------------------------------------------------------------------
 
-const ::gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
+const gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 {
-    ::gdcm::PhotometricInterpretation pi;
-    const size_t components = image->getNumberOfComponents();
+    gdcm::PhotometricInterpretation pi;
+    const std::size_t components = image->numComponents();
 
     // Attempt a guess (VTK do the same choice)
     switch(components)
     {
         case 1: // It could well be MONOCHROME1
-            pi = ::gdcm::PhotometricInterpretation::MONOCHROME2;
+            pi = gdcm::PhotometricInterpretation::MONOCHROME2;
             break;
 
         case 3: // It could well be YBR
-            pi = ::gdcm::PhotometricInterpretation::RGB;
+            pi = gdcm::PhotometricInterpretation::RGB;
             break;
 
         case 4: // It could well be CMYK
-            pi = ::gdcm::PhotometricInterpretation::ARGB;
+            pi = gdcm::PhotometricInterpretation::ARGB;
             break;
 
         default:
             SIGHT_ERROR("Photometric interpretation not found");
-            pi = ::gdcm::PhotometricInterpretation::UNKNOWN;
+            pi = gdcm::PhotometricInterpretation::UNKNOWN;
             break;
     }
 
@@ -101,42 +101,42 @@ const ::gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpreta
 
 //------------------------------------------------------------------------------
 
-::gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
+gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
     data::Material::RepresentationType representationMode
 )
 {
     switch(representationMode)
     {
         case data::Material::SURFACE:
-            return ::gdcm::Surface::SURFACE;
+            return gdcm::Surface::SURFACE;
 
         case data::Material::POINT:
-            return ::gdcm::Surface::POINTS;
+            return gdcm::Surface::POINTS;
 
         case data::Material::WIREFRAME:
-            return ::gdcm::Surface::WIREFRAME;
+            return gdcm::Surface::WIREFRAME;
 
         default:
             SIGHT_WARN("Representation type not handle (changed to : SURFACE)");
-            return ::gdcm::Surface::SURFACE;
+            return gdcm::Surface::SURFACE;
     }
 }
 
 //------------------------------------------------------------------------------
 
 data::Material::RepresentationType DicomDataTools::convertToRepresentationMode(
-    ::gdcm::Surface::VIEWType presentationType
+    gdcm::Surface::VIEWType presentationType
 )
 {
     switch(presentationType)
     {
-        case ::gdcm::Surface::SURFACE:
+        case gdcm::Surface::SURFACE:
             return data::Material::SURFACE;
 
-        case ::gdcm::Surface::WIREFRAME:
+        case gdcm::Surface::WIREFRAME:
             return data::Material::WIREFRAME;
 
-        case ::gdcm::Surface::POINTS:
+        case gdcm::Surface::POINTS:
             return data::Material::POINT;
 
         default:
@@ -153,10 +153,10 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
+    const double zSpacing = (image->numDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
+    const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
     const double zCoordinate = static_cast<double>(point->getCoord()[2]);
@@ -165,7 +165,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameNumber<1 || frameNumber> image->getSize2()[2]
+        frameNumber<1 || frameNumber> image->getSize()[2]
     );
 
     return frameNumber;
@@ -179,16 +179,16 @@ double DicomDataTools::convertFrameNumberToZCoordinate(
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
+    const double zSpacing = (image->numDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
+    const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Compute coordinate
     const std::size_t frameIndex = (frameNumber - 1);
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameIndex >= image->getSize2()[2]
+        frameIndex >= image->getSize()[2]
     );
     const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include "SExtractDeviceInfo.hpp"
 
 #include <data/Composite.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 
@@ -62,7 +61,7 @@ void SExtractDeviceInfo::configuring()
     {
         deviceConfig = service::extension::Config::getDefault()->getServiceConfig(
             configCfg->getValue(),
-            "::sight::module::data::SExtractDeviceInfo"
+            "sight::module::data::SExtractDeviceInfo"
         );
     }
     else
@@ -126,7 +125,8 @@ void SExtractDeviceInfo::updating()
     SIGHT_DEBUG("Device: " + device);
 
     ConfigurationType config = m_devicesConfig[device];
-    double width, height, fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
+    std::size_t width, height;
+    double fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
     if(config)
     {
         ConfigurationType intrinsicCfg = config->findConfigurationElement("intrinsic");
@@ -134,11 +134,11 @@ void SExtractDeviceInfo::updating()
 
         ConfigurationType cfgWidth = intrinsicCfg->findConfigurationElement("width");
         SIGHT_ASSERT("Missing 'width' config element.", cfgWidth);
-        width = std::stod(cfgWidth->getValue());
+        width = std::stoul(cfgWidth->getValue());
 
         ConfigurationType cfgHeight = intrinsicCfg->findConfigurationElement("height");
         SIGHT_ASSERT("Missing 'height' config element.", cfgHeight);
-        height = std::stod(cfgHeight->getValue());
+        height = std::stoul(cfgHeight->getValue());
 
         ConfigurationType cfgFx = intrinsicCfg->findConfigurationElement("fx");
         SIGHT_ASSERT("Missing 'fx' config element.", cfgFx);
@@ -184,8 +184,8 @@ void SExtractDeviceInfo::updating()
     {
         SIGHT_DEBUG(" Device " + device + " not found, default calibration is set ");
 
-        width  = 640.;
-        height = 480.;
+        width  = 640;
+        height = 480;
         fx     = 600.;
         fy     = 600.;
         cx     = 320.;

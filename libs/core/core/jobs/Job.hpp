@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,7 +116,7 @@ private:
     /// The task meant to be run
     Task m_task;
 
-    /// The worker on wich the task is meant to be run
+    /// The worker on which the task is meant to be run
     SPTR(core::thread::Worker) m_worker;
 };
 

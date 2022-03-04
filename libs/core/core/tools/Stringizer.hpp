@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/tools/TypeInfo.hpp"
+
 #include <core/Demangler.hpp>
 
 #include  <boost/lexical_cast.hpp>
@@ -49,7 +50,7 @@ struct NumericCast
     {
         // note boost::lexical_cast with char is a ASCII-code conversion
         // instead numerical casting. We provide fix with specialization
-        return ::boost::lexical_cast<std::string>(t);
+        return boost::lexical_cast<std::string>(t);
     }
 };
 
@@ -72,7 +73,6 @@ struct Default
  */
 
 // inline mandatory to be supported in multi compilation unit and avoid conflict when linking
-// function doesn't exist code is rewritted
 /**
  * @brief       Convert the value to a string
  * @param[in]   t value

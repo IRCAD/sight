@@ -1,18 +1,18 @@
-sight_add_target( io_dicom TYPE LIBRARY )
-
+sight_add_target(io_dicom TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 
 find_package(Boost QUIET COMPONENTS locale REQUIRED)
 
 target_link_libraries(io_dicom PRIVATE Boost::locale PUBLIC gdcmMSFF)
 
-target_link_libraries(io_dicom PUBLIC 
-                      io_base
-                      filter_dicom
-                      core
-                      geometry_data
-                      data
-                      service
-                      io_zip
+target_link_libraries(
+    io_dicom
+    PUBLIC io_base
+           filter_dicom
+           core
+           geometry_data
+           data
+           service
+           io_zip
 )
 
 if(SIGHT_BUILD_TESTS)

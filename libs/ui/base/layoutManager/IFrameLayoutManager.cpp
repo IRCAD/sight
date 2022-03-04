@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -53,6 +53,48 @@ const std::string IFrameLayoutManager::FRAME_SIZE_W_UI     = "FRAME_SIZE_W_UI";
 const std::string IFrameLayoutManager::FRAME_SIZE_H_UI     = "FRAME_SIZE_H_UI";
 const std::string IFrameLayoutManager::FRAME_POSITION_X_UI = "FRAME_POSITION_X_UI";
 const std::string IFrameLayoutManager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_UI";
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_key(const std::string& name)
+{
+    return IFrameLayoutManager::SOFTWARE_UI + "." + name;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_state_key(const std::string& name)
+{
+    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_STATE_UI;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_w_key(const std::string& name)
+{
+    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_SIZE_W_UI;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_h_key(const std::string& name)
+{
+    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_SIZE_H_UI;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_x_key(const std::string& name)
+{
+    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_POSITION_X_UI;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_y_key(const std::string& name)
+{
+    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_POSITION_Y_UI;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -107,12 +149,12 @@ void IFrameLayoutManager::initialize(ConfigurationType configuration)
         if(minSize.at(0)->hasAttribute("width"))
         {
             m_frameInfo.m_minSize.first =
-                ::boost::lexical_cast<int>(minSize.at(0)->getExistingAttributeValue("width"));
+                boost::lexical_cast<int>(minSize.at(0)->getExistingAttributeValue("width"));
         }
 
         if(minSize.at(0)->hasAttribute("height"))
         {
-            m_frameInfo.m_minSize.second = ::boost::lexical_cast<int>(
+            m_frameInfo.m_minSize.second = boost::lexical_cast<int>(
                 minSize.at(0)->getExistingAttributeValue(
                     "height"
                 )
@@ -165,48 +207,29 @@ void IFrameLayoutManager::defaultCloseCallback()
 
 void IFrameLayoutManager::readConfig()
 {
-    data::Composite::sptr prefUI = this->getPreferenceUI();
-    if(prefUI)
+    try
     {
-        if(prefUI->find(IFrameLayoutManager::FRAME_STATE_UI) != prefUI->end())
-        {
-            data::Integer::sptr state =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_STATE_UI]);
-            SIGHT_ASSERT("UI state not correct", state);
-            m_frameInfo.m_state = (FrameState) state->value();
-        }
+        ui::base::Preferences preferences;
 
-        if(prefUI->find(IFrameLayoutManager::FRAME_SIZE_W_UI) != prefUI->end())
-        {
-            data::Integer::sptr sizew =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_W_UI]);
-            SIGHT_ASSERT("UI sizeW not correct", sizew);
-            m_frameInfo.m_size.first = *sizew;
-        }
-
-        if(prefUI->find(IFrameLayoutManager::FRAME_SIZE_H_UI) != prefUI->end())
-        {
-            data::Integer::sptr sizeh =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_H_UI]);
-            SIGHT_ASSERT("UI sizeH not correct", sizeh);
-            m_frameInfo.m_size.second = *sizeh;
-        }
-
-        if(prefUI->find(IFrameLayoutManager::FRAME_POSITION_X_UI) != prefUI->end())
-        {
-            data::Integer::sptr posx =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_X_UI]);
-            SIGHT_ASSERT("UI posX not correct", posx);
-            m_frameInfo.m_position.first = *posx;
-        }
-
-        if(prefUI->find(IFrameLayoutManager::FRAME_POSITION_Y_UI) != prefUI->end())
-        {
-            data::Integer::sptr posy =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_Y_UI]);
-            SIGHT_ASSERT("UI posY not correct", posy);
-            m_frameInfo.m_position.second = *posy;
-        }
+        m_frameInfo.m_state =
+            static_cast<FrameState>(preferences.get(
+                                        get_frame_state_key(m_frameInfo.m_name),
+                                        static_cast<std::uint8_t>(m_frameInfo.m_state)
+            ));
+        m_frameInfo.m_size.first     = preferences.get(get_frame_w_key(m_frameInfo.m_name), m_frameInfo.m_size.first);
+        m_frameInfo.m_size.second    = preferences.get(get_frame_h_key(m_frameInfo.m_name), m_frameInfo.m_size.second);
+        m_frameInfo.m_position.first = preferences.get(
+            get_frame_x_key(m_frameInfo.m_name),
+            m_frameInfo.m_position.first
+        );
+        m_frameInfo.m_position.second = preferences.get(
+            get_frame_y_key(m_frameInfo.m_name),
+            m_frameInfo.m_position.second
+        );
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 }
 
@@ -214,64 +237,24 @@ void IFrameLayoutManager::readConfig()
 
 void IFrameLayoutManager::writeConfig()
 {
-    data::Composite::sptr prefUI = this->getPreferenceUI();
-    if(prefUI)
+    try
     {
-        if(m_frameInfo.m_state != ICONIZED)
+        ui::base::Preferences preferences;
+
+        if(m_frameInfo.m_state != FrameState::ICONIZED)
         {
-            data::Integer::sptr state = data::Integer::New(m_frameInfo.m_state);
-            (*prefUI)[IFrameLayoutManager::FRAME_STATE_UI] = state;
+            preferences.put(get_frame_state_key(m_frameInfo.m_name), static_cast<std::uint8_t>(m_frameInfo.m_state));
         }
 
-        data::Integer::sptr sizew = data::Integer::New(m_frameInfo.m_size.first);
-        (*prefUI)[IFrameLayoutManager::FRAME_SIZE_W_UI] = sizew;
-
-        data::Integer::sptr sizeh = data::Integer::New(m_frameInfo.m_size.second);
-        (*prefUI)[IFrameLayoutManager::FRAME_SIZE_H_UI] = sizeh;
-
-        data::Integer::sptr posx = data::Integer::New(m_frameInfo.m_position.first);
-        (*prefUI)[IFrameLayoutManager::FRAME_POSITION_X_UI] = posx;
-
-        data::Integer::sptr posy = data::Integer::New(m_frameInfo.m_position.second);
-        (*prefUI)[IFrameLayoutManager::FRAME_POSITION_Y_UI] = posy;
+        preferences.put(get_frame_w_key(m_frameInfo.m_name), m_frameInfo.m_size.first);
+        preferences.put(get_frame_h_key(m_frameInfo.m_name), m_frameInfo.m_size.second);
+        preferences.put(get_frame_x_key(m_frameInfo.m_name), m_frameInfo.m_position.first);
+        preferences.put(get_frame_y_key(m_frameInfo.m_name), m_frameInfo.m_position.second);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-data::Composite::sptr IFrameLayoutManager::getPreferenceUI()
-{
-    data::Composite::sptr prefUI;
-    data::Composite::sptr prefs = ui::base::preferences::getPreferences();
-
-    // Get preferences
-    if(prefs)
+    catch(const ui::base::PreferencesDisabled&)
     {
-        data::Composite::sptr framesUI;
-        // Retreives software UI pref
-        if(prefs->find(IFrameLayoutManager::SOFTWARE_UI) == prefs->end())
-        {
-            framesUI                                   = data::Composite::New();
-            (*prefs)[IFrameLayoutManager::SOFTWARE_UI] = framesUI;
-        }
-        else
-        {
-            framesUI = data::Composite::dynamicCast((*prefs)[IFrameLayoutManager::SOFTWARE_UI]);
-        }
-
-        // Retreives frame UI pref
-        if(framesUI->find(this->m_frameInfo.m_name) != framesUI->end())
-        {
-            prefUI = data::Composite::dynamicCast((*framesUI)[this->m_frameInfo.m_name]);
-        }
-        else
-        {
-            prefUI                                = data::Composite::New();
-            (*framesUI)[this->m_frameInfo.m_name] = prefUI;
-        }
+        // Nothing to do..
     }
-
-    return prefUI;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ class SHistogramCursor : public sight::viz::scene2d::IAdaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogramCursor, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogramCursor, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SHistogramCursor() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SHistogramCursor() noexcept;
@@ -96,7 +96,7 @@ protected:
     /// Color used for graphic item's border color
     QPen m_borderColor;
 
-    // A graphics item that is located onto hsitogram's upper border and moves along this border
+    // A graphics item that is located onto histogram's upper border and moves along this border
     // according to the position of mouse's cursor. The goal of this graphical index is to show
     // the associated value within the histogram pointed buy this index.
     QGraphicsEllipseItem* m_index;
@@ -114,7 +114,8 @@ protected:
     static constexpr std::string_view s_VIEWPORT_INPUT  = "viewport";
 
     sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
+    sight::data::ptr<sight::data::Point, sight::data::Access::in> m_point {this, "point"};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

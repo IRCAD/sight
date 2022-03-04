@@ -35,7 +35,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLPolyDataWriter.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::VtpMeshWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::VtpMeshWriter);
 
 namespace sight::io::vtk
 {
@@ -94,7 +94,7 @@ void VtpMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string VtpMeshWriter::extension()
+std::string VtpMeshWriter::extension() const
 {
     return ".vtp";
 }

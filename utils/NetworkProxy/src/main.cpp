@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,7 +120,7 @@ std::map<std::string, configuration> initialize(std::string configFile)
                 messageType.push_back(words[0]);
                 deviceInTab.push_back(words[1]);
                 deviceOutTab.push_back(words[2]);
-                portTab.push_back(::boost::lexical_cast<std::uint16_t>(words[3]));
+                portTab.push_back(boost::lexical_cast<std::uint16_t>(words[3]));
             }
 
             lineStream.clear();
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    std::uint16_t port = ::boost::lexical_cast<std::uint16_t>(argv[1]);
+    std::uint16_t port = boost::lexical_cast<std::uint16_t>(argv[1]);
     std::string configFile(argv[2]);
 
     //Initialization of parameters

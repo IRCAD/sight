@@ -1,4 +1,4 @@
-<plugin id="activity_viz_negato" >
+<plugin id="activity_viz_negato">
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -24,12 +24,7 @@
                 <desc>Landmarks to display.</desc>
             </requirement>
         </requirements>
-        <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
-        <appConfig id="2DVisualization">
-            <parameters>
-                <parameter replace="image" by="@values.imageSeries.image" />
-                <parameter replace="landmarks" by="@values.landmarks" />
-            </parameters>
-        </appConfig>
+        <builder>sight::activity::builder::ActivitySeriesInitData</builder>
+        <appConfig id="2DVisualization" />
     </extension>
 </plugin>

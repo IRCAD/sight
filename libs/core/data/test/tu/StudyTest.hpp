@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,7 @@ CPPUNIT_TEST(timeTest);
 CPPUNIT_TEST(referringPhysicianNameTest);
 CPPUNIT_TEST(descriptionTest);
 CPPUNIT_TEST(patientAgeTest);
+CPPUNIT_TEST(equalityTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +56,7 @@ public:
     void referringPhysicianNameTest();
     void descriptionTest();
     void patientAgeTest();
+    void equalityTest();
 
 private:
 

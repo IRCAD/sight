@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ private:
     void clear();
 
     /// Send 'canUndo' and 'canRedo' signals.
-    void emitModifSig() const;
+    void emitModifiedSig() const;
 
     CanDoSignalType::sptr m_canUndoSig;
 

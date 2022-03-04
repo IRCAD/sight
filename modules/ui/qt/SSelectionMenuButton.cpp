@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,6 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
-
-#include <data/fieldHelper/Image.hpp>
 
 #include <service/macros.hpp>
 
@@ -121,7 +119,7 @@ void SSelectionMenuButton::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     m_dropDownButton = new QPushButton(QString::fromStdString(m_text));
     m_dropDownButton->setToolTip(QString::fromStdString(m_toolTip));

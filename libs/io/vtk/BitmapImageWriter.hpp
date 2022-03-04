@@ -71,7 +71,7 @@ public:
     IO_VTK_API void write() override;
 
     /// @return The available file extensions for saving bitmap images.
-    IO_VTK_API std::string extension() override;
+    IO_VTK_API std::string extension() const override;
 
     /// @return internal job
     IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;

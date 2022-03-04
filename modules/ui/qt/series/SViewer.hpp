@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,9 +45,7 @@ namespace sight::module::ui::qt::series
         <in key="series" uid="..." autoConnect="true" />
         <parentView>preview</parentView>
         <configs>
-            <config id="2DSimpleConfig" type="data::ImageSeries">
-                <extract path="@image" pattern="imageID" />
-            </config>
+            <config id="2DSimpleConfig" type="data::ImageSeries" />
             <config id="2DPacsPreviewConfig" type="data::DicomSeries" >
                 <parameter replace="PACS_CONFIGURATION" by="None" />
             </config>
@@ -66,7 +64,6 @@ namespace sight::module::ui::qt::series
  *   - \b parameter: allow to pass specific value to the associated config
  *     - \b replace: name of the parameter to be replaced
  *     - \b by: specific value to replace for the parameter
- * - \b extract: extracts the object from the path and replaces pattern with its fwID
  */
 class MODULE_UI_QT_CLASS_API SViewer : public service::IController
 {
@@ -94,7 +91,7 @@ protected:
     /**
      * @brief Launch the config on the object if possible.
      *
-     * If there is a single selection : it launchs an AppConfig on the object defined in this service configuration
+     * If there is a single selection : it launches an AppConfig on the object defined in this service configuration
      * (stored in m_seriesConfigs). The selected object fwID replaces the 'objectID' parameter in the AppConfig.
      * no configuration are launched if there is no selection, a multiple selection or if there is no configuration
      * associated with the selected object.
@@ -121,9 +118,6 @@ private:
     {
         /// Id of the configuration to launch.
         std::string configId;
-
-        /// Stores the pattern to replace in the config by the fwID of the object given by a path.
-        ReplaceValuesMapType extractValues;
 
         /// Stores the parameters to pass to config.
         ReplaceValuesMapType parameters;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 
 #include <core/Profiling.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <service/macros.hpp>
 
@@ -71,7 +71,7 @@ SUltrasoundImage::SUltrasoundImage() noexcept
     newSignal<IntegerChangedSignalType>(s_INTEGER_CHANGED_SIG);
 
     // Extraction corner reference points of US image initialization.
-    for(size_t i = 0 ; i < m_echoRefPoints.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_echoRefPoints.size() ; ++i)
     {
         m_echoRefPoints[i] = {{0.0, 0.0, 0.0}};
     }
@@ -122,12 +122,12 @@ void SUltrasoundImage::stopping()
 void SUltrasoundImage::updating()
 {
     // HACK: Const cast to avoid a useless copy, fix this by overloading the `moveToCv` function to
-    // take a `data::Image::cpstr` and output `const cv::Mat`.
+    // take a `data::Image::csptr` and output `const cv::Mat`.
     const auto constImage        = m_ultrasoudImage.lock();
     data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
     SIGHT_ASSERT("Missing input frame.", inputImage);
 
-    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(inputImage);
+    const bool isValid = data::helper::MedicalImage::checkImageValidity(inputImage);
     if(!isValid)
     {
         return;
@@ -171,15 +171,12 @@ void SUltrasoundImage::updating()
 
     const data::Image::Size outputSize = {{m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
 
-    if(outputImage->getSize2() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8
-       || outputImage->getNumberOfComponents() != 1)
+    if(outputImage->getSize() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8
+       || outputImage->numComponents() != 1)
     {
-        outputImage->setSize2(outputSize);
-        outputImage->setSpacing2({{1., 1., 0.}});
-        outputImage->setOrigin2({{0., 0., 0.}});
-        outputImage->setType(core::tools::Type::s_UINT8);
-        outputImage->setNumberOfComponents(1);
-        outputImage->resize();
+        outputImage->setSpacing({{1., 1., 0.}});
+        outputImage->setOrigin({{0., 0., 0.}});
+        outputImage->resize(outputSize, core::tools::Type::s_UINT8, data::Image::PixelFormat::GRAY_SCALE);
     }
 
     cv::Mat remapResult = io::opencv::Image::moveToCv(outputImage.get_shared());
@@ -347,7 +344,7 @@ void SUltrasoundImage::process(const cv::Mat& input)
     cv::erode(lowThresh, lowThresh, elementErode);
 
     // Compute final lines
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
         cv::Vec4d l = lines.at(i);
 
@@ -434,7 +431,7 @@ void SUltrasoundImage::process(const cv::Mat& input)
 
     /* Display information about the intersection lines found */
     SIGHT_DEBUG("Number of lines found: " << foundLines.size());
-    for(size_t i = 0 ; i < foundLines.size() ; i++)
+    for(std::size_t i = 0 ; i < foundLines.size() ; i++)
     {
         cv::Vec2f v = foundLines.at(i);
         SIGHT_DEBUG(" - " << v[0] << " * x + " << v[1]);
@@ -475,7 +472,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
 
     int nbHorizontalLines(0), nbVerticalLines(0);
     cv::Vec2d meanCenter(0.0, 0.0);
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
         if(std::isinf(lines.at(i)[0]))
         {
@@ -494,7 +491,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
 
     double meanLeftX(0.0), meanRightX(0.0), meanTopY(0.0), meanBottomY(0.0);
     int nbLeftLines(0), nbTopLines(0);
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
         cv::Vec2d currentLine = lines.at(i);
 
@@ -598,9 +595,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     meanInter[0] = meanInter[1] = 0.0;
 
     // Compute all the intersection to find the closest one to the a specific point.
-    for(size_t i = 0 ; i < lines.size() ; i++)
+    for(std::size_t i = 0 ; i < lines.size() ; i++)
     {
-        for(size_t j = 0 ; j < lines.size() ; j++)
+        for(std::size_t j = 0 ; j < lines.size() ; j++)
         {
             /* Avoid auto intersecting lines */
             if(i == j)
@@ -733,7 +730,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     SIGHT_DEBUG("B:" << m_echoRefPoints[1][0] << " " << m_echoRefPoints[1][1]);
 
     fwVec3d AmC, BmC;
-    ::glm::dvec3 BmA;
+    glm::dvec3 BmA;
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
@@ -743,9 +740,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         BmC[i] = m_echoRefPoints[1][i] - probeSettings.centerPosition[i];
     }
 
-    BmA = ::glm::normalize(BmA);
+    BmA = glm::normalize(BmA);
 
-    ::glm::dvec3 v1, v2;
+    glm::dvec3 v1, v2;
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
@@ -755,9 +752,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         v2[i] = BmC[i];
     }
 
-    v1                  = ::glm::normalize(v1);
-    v2                  = ::glm::normalize(v2);
-    probeSettings.angle = static_cast<int>(std::nearbyint(::glm::degrees(::glm::angle(v1, v2))));
+    v1                  = glm::normalize(v1);
+    v2                  = glm::normalize(v2);
+    probeSettings.angle = static_cast<int>(std::nearbyint(glm::degrees(glm::angle(v1, v2))));
 
     // Compute the outer radius.
     int iOut;
@@ -879,6 +876,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
 
     // Compute the intersection between the lines and the outer circle.
     // Compute the intersection with the descending line.
+    //cspell: ignore Exter
     const std::vector<cv::Vec2d> lcExterDesc = computeLineCircleIntersection(descLine, center, outerRadius);
 
     if(lcExterDesc.size() != 2)
@@ -935,8 +933,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         v2[i] = m_echoRefPoints[3][i] - m_echoRefPoints[2][i];
     }
 
-    probeSettings.depth = static_cast<int>(std::nearbyint(::glm::length(v1)));
-    probeSettings.width = static_cast<int>(std::nearbyint(::glm::length(v2)));
+    probeSettings.depth = static_cast<int>(std::nearbyint(glm::length(v1)));
+    probeSettings.width = static_cast<int>(std::nearbyint(glm::length(v2)));
 
     probeSettings.echoShapeOn = true;
 
@@ -999,16 +997,16 @@ double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vec
         arcPointMinY[1] = arcPoint[0][1];
     }
 
-    const double opposit = center[0] - arcPointMinY[0];
-    const double side    = -center[1] + arcPointMinY[1];
-    return ::glm::degrees(std::atan2(opposit, side));
+    const double opposite = center[0] - arcPointMinY[0];
+    const double side     = -center[1] + arcPointMinY[1];
+    return glm::degrees(std::atan2(opposite, side));
 }
 
 // -----------------------------------------------------------------------------
 
 bool SUltrasoundImage::isDataUnderArc(const cv::Mat& input, const std::vector<cv::Point2d>& points) const
 {
-    for(size_t i = 0 ; i < points.size() ; ++i)
+    for(std::size_t i = 0 ; i < points.size() ; ++i)
     {
         if(input.at<uchar>(static_cast<int>(points[i].y), static_cast<int>(points[i].x)) != 0)
         {
@@ -1057,8 +1055,8 @@ void SUltrasoundImage::updateBeamExtractionMap()
     m_extractionMap = cv::Mat(mapSize, CV_32FC2);
 
     const float halfAngle  = static_cast<float>(m_probeSettings.angle) * 0.5f;
-    const float angleBegin = ::glm::radians(90.f - halfAngle);
-    const float angleEnd   = ::glm::radians(90.f + halfAngle);
+    const float angleBegin = glm::radians(90.f - halfAngle);
+    const float angleEnd   = glm::radians(90.f + halfAngle);
 
     const float angleStep = (angleEnd - angleBegin) / static_cast<float>(mapSize.width - 1);
 

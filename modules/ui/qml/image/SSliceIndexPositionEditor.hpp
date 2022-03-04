@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,21 +83,23 @@ namespace sight::module::ui::qml::image
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image on which the slice index will be changed
  */
-class MODULE_UI_QML_CLASS_QT_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor,
-                                                             public data::helper::MedicalImage
+class MODULE_UI_QML_CLASS_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_QT_API SSliceIndexPositionEditor() noexcept;
+    MODULE_UI_QML_API SSliceIndexPositionEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_QT_API virtual ~SSliceIndexPositionEditor() noexcept;
+    MODULE_UI_QML_API virtual ~SSliceIndexPositionEditor() noexcept;
+
+    /// To handle orientation of slices.
+    using orientation_t = data::helper::MedicalImage::orientation_t;
 
 Q_SIGNALS:
 
@@ -108,27 +110,24 @@ Q_SIGNALS:
 public Q_SLOTS:
 
     /// This method is called when the slider is moved. Notify the slice index is modified.
-    MODULE_UI_QML_QT_API void onSliceIndex(int index);
+    MODULE_UI_QML_API void onSliceIndex(int index);
 
     /// This method is called when the slice type selected changes. Notify the slice type is modified.
-    MODULE_UI_QML_QT_API void onSliceType(int type);
+    MODULE_UI_QML_API void onSliceType(int type);
 
 protected:
 
-    /// @brief The slice type: axial, frontal, sagittal.
-    using data::helper::MedicalImage::Orientation;
-
-    /// Update the infromation from the image
-    MODULE_UI_QML_QT_API void starting() override;
+    /// Update the information from the image
+    MODULE_UI_QML_API void starting() override;
 
     /// Do nothing
-    MODULE_UI_QML_QT_API void stopping() override;
+    MODULE_UI_QML_API void stopping() override;
 
     /// Update editor information from the image
-    MODULE_UI_QML_QT_API void updating() override;
+    MODULE_UI_QML_API void updating() override;
 
     /// Do nothing
-    MODULE_UI_QML_QT_API void configuring() override;
+    MODULE_UI_QML_API void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -139,13 +138,13 @@ protected:
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QML_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QML_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Update the editor slider from the image slice index.
-    MODULE_UI_QML_QT_API void updateSliceIndexFromImg();
+    MODULE_UI_QML_API void updateSliceIndexFromImg();
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QML_QT_API void updateSliceTypeFromImg(Orientation type);
+    MODULE_UI_QML_API void updateSliceTypeFromImg(const orientation_t& type);
 
 private:
 
@@ -166,12 +165,15 @@ private:
     void setSliceIndex(int sliceIndex);
     int getSliceIndex() const;
 
-    /// @brief The field IDs for the slice index.
-    static const std::string* SLICE_INDEX_FIELDID[3];
-
     /// Image data
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+
+    std::int64_t m_axialIndex {-1};
+    std::int64_t m_frontalIndex {-1};
+    std::int64_t m_sagittalIndex {-1};
+
+    orientation_t m_orientation {orientation_t::Z_AXIS};
 };
 
 } // uiImageQml

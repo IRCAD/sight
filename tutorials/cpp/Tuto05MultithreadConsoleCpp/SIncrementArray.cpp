@@ -71,7 +71,7 @@ void SIncrementArray::starting()
 void SIncrementArray::updating()
 {
     const auto array = m_array.lock();
-    SIGHT_ASSERT("Bad number of dimensions", array->getNumberOfDimensions() == 1);
+    SIGHT_ASSERT("Bad number of dimensions", array->numDimensions() == 1);
 
     auto itr       = array->begin<unsigned int>();
     const auto end = array->end<unsigned int>();

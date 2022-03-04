@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <core/thread/Worker.hpp>
 
 #include <data/Composite.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
 #include <data/timeline/Buffer.hpp>
 
@@ -121,7 +120,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
             size[2] = 0;
 
             // Check if image dimensions has changed
-            if(size != image->getSize2())
+            if(size != image->getSize())
             {
                 m_imageInitialized = false;
             }
@@ -131,7 +130,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                 data::Image::PixelFormat format;
                 // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or
                 // RGBA
-                switch(frameTL->getNumberOfComponents())
+                switch(frameTL->numComponents())
                 {
                     case 1:
                         format = data::Image::GRAY_SCALE;
@@ -146,20 +145,20 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                         break;
 
                     default:
-                        SIGHT_ERROR("Number of compenent not managed")
+                        SIGHT_ERROR("Number of components not managed")
                         return;
                 }
 
                 image->resize(size, frameTL->getType(), format);
                 const data::Image::Origin origin = {0., 0., 0.};
-                image->setOrigin2(origin);
+                image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 0.};
-                image->setSpacing2(spacing);
+                image->setSpacing(spacing);
                 image->setWindowWidth(1);
                 image->setWindowCenter(0);
                 m_imageInitialized = true;
 
-                //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
+                //Notify
                 auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
                 {

@@ -48,8 +48,7 @@ struct allocator
     using propagate_on_container_move_assignment =
         typename std::allocator_traits<std::allocator<T> >::propagate_on_container_move_assignment;
 
-    inline constexpr allocator()                 = default;
-    inline constexpr allocator(const allocator&) = default;
+    inline constexpr allocator() = default;
 
     template<class U>
     inline constexpr allocator(const allocator<U>&) noexcept
@@ -94,9 +93,9 @@ using secure_string = std::basic_string<char, std::char_traits<char>, allocator<
 
 // Zeroes the strings own memory on destruction
 template<>
-inline ::sight::core::crypto::secure_string::~basic_string()
+inline sight::core::crypto::secure_string::~basic_string()
 {
     clear();
     shrink_to_fit();
-    ::sight::core::crypto::cleanse(this, sizeof(*this));
+    sight::core::crypto::cleanse(this, sizeof(*this));
 }

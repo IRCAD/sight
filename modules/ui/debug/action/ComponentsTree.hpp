@@ -40,11 +40,11 @@ namespace action
 /**
  * @brief  Implements an action that show module information.
  */
-class MODULE_UI_DEBUG_CLASS_API ComponentsTree : public ::sight::ui::base::IAction
+class MODULE_UI_DEBUG_CLASS_API ComponentsTree : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(ComponentsTree, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(ComponentsTree, sight::ui::base::IAction);
 
     /// Does nothing
     MODULE_UI_DEBUG_API ComponentsTree() noexcept;

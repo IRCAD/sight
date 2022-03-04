@@ -35,7 +35,7 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::PlyMeshReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::PlyMeshReader);
 
 namespace sight::io::vtk
 {
@@ -95,7 +95,7 @@ void PlyMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string PlyMeshReader::extension()
+std::string PlyMeshReader::extension() const
 {
     return ".ply";
 }

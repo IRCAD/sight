@@ -16,7 +16,7 @@ The main folder is reserved for other services that do not fit any of the catego
 
 ## Services
 
-Here is the list of uncategorized services:
+Here is the list of uncategorised services:
 
 - **SLaunchBrowser**: launches a browser with a url.
 - **SListView**: draws a list of string elements.
@@ -26,7 +26,6 @@ Here is the list of uncategorized services:
 - **SSelectionMenuButton**: shows a menu button. The user can select one item in the menu.
 - **SShowAbout**: shows the about frame.
 - **SShowHelp**: shows the help content.
-- **SSlider**: draws a slider with an integer data.
 - **SStatus**: shows a colored square (red, orange, green) representing a status.
 - **SStyleSelector**: selects a CSS style.
 - **STextStatus**: displays and update values (int, double or string) in a `QLabel`.

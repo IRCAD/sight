@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ class VIZ_SCENE3D_CLASS_API Plane
 {
 public:
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /// Defines the texture filtering mode.
     typedef enum FilteringEnum
@@ -80,10 +80,10 @@ public:
      */
     VIZ_SCENE3D_API Plane(
         const core::tools::fwID::IDType& _negatoId,
-        ::Ogre::SceneNode* _parentSceneNode,
-        ::Ogre::SceneManager* _sceneManager,
+        Ogre::SceneNode* _parentSceneNode,
+        Ogre::SceneManager* _sceneManager,
         OrientationMode _orientation,
-        ::Ogre::TexturePtr _tex,
+        Ogre::TexturePtr _tex,
         FilteringEnumType _filtering,
         float _entityOpacity = 1.0f,
         bool _displayBorder  = true
@@ -119,13 +119,13 @@ public:
      * @brief Sets the real world image's origin.
      * @param _origPos the image origin.
      */
-    VIZ_SCENE3D_API void setOriginPosition(const ::Ogre::Vector3& _origPos);
+    VIZ_SCENE3D_API void setOriginPosition(const Ogre::Vector3& _origPos);
 
     /**
      * @brief Sets the real world size of a voxel.
      * @param _spacing the image spacing.
      */
-    VIZ_SCENE3D_API void setVoxelSpacing(const ::Ogre::Vector3& _spacing);
+    VIZ_SCENE3D_API void setVoxelSpacing(const Ogre::Vector3& _spacing);
 
     /**
      * @brief Sets the plane's opacity.
@@ -154,10 +154,10 @@ public:
     VIZ_SCENE3D_API void switchThresholding(bool _threshold);
 
     /// Gets the plane's width in model space.
-    VIZ_SCENE3D_API ::Ogre::Real getWidth() const;
+    VIZ_SCENE3D_API Ogre::Real getWidth() const;
 
     /// Gets the plane's height in model space.
-    VIZ_SCENE3D_API ::Ogre::Real getHeight() const;
+    VIZ_SCENE3D_API Ogre::Real getHeight() const;
 
     /// Moves the scene node to m_originPosition point
     VIZ_SCENE3D_API void moveToOriginPosition();
@@ -169,10 +169,10 @@ public:
     VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
 
     /// Gets the material used to render the plane.
-    VIZ_SCENE3D_API ::Ogre::MaterialPtr getMaterial();
+    VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();
 
     /// Gets the movable object created by this class.
-    VIZ_SCENE3D_API const ::Ogre::MovableObject* getMovableObject() const;
+    VIZ_SCENE3D_API const Ogre::MovableObject* getMovableObject() const;
 
     /**
      * @brief Sets the picking flags.
@@ -197,8 +197,8 @@ private:
     /// Moves plane along its Normal.
     void moveAlongAxis();
 
-    /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
-    ::Ogre::MovablePlane setDimensions();
+    /// Sets the dimensions for the related members, and also creates a movable plane to instantiate the entity.
+    Ogre::MovablePlane setDimensions();
 
     /// Indicates whether whe want to threshold instead of windowing.
     bool m_threshold {false};
@@ -209,26 +209,26 @@ private:
     /// Defines the orientation mode of the plane.
     OrientationMode m_orientation;
 
-    /// Contains the plane on wich we will apply a texture.
-    ::Ogre::MeshPtr m_slicePlane;
+    /// Contains the plane on which we will apply a texture.
+    Ogre::MeshPtr m_slicePlane;
 
     /// Contains the manual object that represent borders.
-    ::Ogre::ManualObject* m_border {nullptr};
+    Ogre::ManualObject* m_border {nullptr};
 
     /// Defines the origin position of the slice plane according to the source image's origin.
-    ::Ogre::Vector3 m_originPosition {::Ogre::Vector3::ZERO};
+    Ogre::Vector3 m_originPosition {Ogre::Vector3::ZERO};
 
     /// Contains the plane material.
-    ::Ogre::MaterialPtr m_texMaterial {nullptr};
+    Ogre::MaterialPtr m_texMaterial {nullptr};
 
     /// Contains the material used to display borders.
-    ::Ogre::MaterialPtr m_borderMaterial {nullptr};
+    Ogre::MaterialPtr m_borderMaterial {nullptr};
 
     /// Contains the texture.
-    ::Ogre::TexturePtr m_texture;
+    Ogre::TexturePtr m_texture;
 
     /// Contains the scenemanager containing the plane.
-    ::Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Defines a strings needed to initialize mesh, scenenode, etc.
     std::string m_slicePlaneName;
@@ -240,22 +240,22 @@ private:
     std::string m_sceneNodeName;
 
     /// Contains the scene node on which we will attach the mesh.
-    ::Ogre::SceneNode* m_planeSceneNode {nullptr};
+    Ogre::SceneNode* m_planeSceneNode {nullptr};
 
     /// Contains the parent scene node.
-    ::Ogre::SceneNode* m_parentSceneNode {nullptr};
+    Ogre::SceneNode* m_parentSceneNode {nullptr};
 
     /// Defines the entity's width.
-    ::Ogre::Real m_width {0.f};
+    Ogre::Real m_width {0.f};
 
     /// Defines the entity's height.
-    ::Ogre::Real m_height {0.f};
+    Ogre::Real m_height {0.f};
 
     /// Defines the entity's depth.
-    ::Ogre::Real m_depth {0.f};
+    Ogre::Real m_depth {0.f};
 
     /// Defines the spacing in the texture 3d image file.
-    ::Ogre::Vector3 m_spacing {::Ogre::Vector3::ZERO};
+    Ogre::Vector3 m_spacing {Ogre::Vector3::ZERO};
 
     /// Defines the depth range.
     float m_relativePosition {0.8f};
@@ -269,7 +269,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void Plane::setOriginPosition(const ::Ogre::Vector3& _origPos)
+inline void Plane::setOriginPosition(const Ogre::Vector3& _origPos)
 {
     m_originPosition = _origPos;
 }
@@ -283,21 +283,21 @@ inline Plane::OrientationMode Plane::getOrientationMode() const
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::MaterialPtr Plane::getMaterial()
+inline Ogre::MaterialPtr Plane::getMaterial()
 {
     return m_texMaterial;
 }
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::Real Plane::getWidth() const
+inline Ogre::Real Plane::getWidth() const
 {
     return m_width;
 }
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::Real Plane::getHeight() const
+inline Ogre::Real Plane::getHeight() const
 {
     return m_height;
 }

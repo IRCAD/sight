@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,15 +23,14 @@
 #include "LabelingTest.hpp"
 
 #include <data/Array.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
 #include <filter/image/Labeling.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::LabelingTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::LabelingTest);
 
 namespace sight::filter::image
 {
@@ -64,11 +63,11 @@ void LabelingTest::computeCentroids()
     const data::Image::Origin imgOrigin   = {0., 0., 0.};
     uint8_t val                           = 0;
 
-    img->setSpacing2(imgSpacing);
-    img->setOrigin2(imgOrigin);
+    img->setSpacing(imgSpacing);
+    img->setOrigin(imgOrigin);
     img->resize(imgSize, type, data::Image::PixelFormat::GRAY_SCALE);
 
-    const auto dumpLock = img->lock();
+    const auto dumpLock = img->dump_lock();
 
     // Setup image with 0 values
     for(unsigned int x = 0 ; x < imgSize[0] ; ++x)
@@ -115,15 +114,13 @@ void LabelingTest::computeCentroids()
         }
     }
 
-    std::vector<std::vector<size_t> > pointListLabels;
+    std::vector<std::vector<std::size_t> > pointListLabels;
     std::vector<data::PointList::sptr> pointListCentroids;
 
     // Call the ITK operator
     filter::image::computeCentroids(img, pointListCentroids, pointListLabels);
 
-    data::fieldHelper::MedicalImageHelpers::checkLandmarks(img);
-    data::PointList::sptr landmarks =
-        img->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*img);
 
     // Check that we can get the landmarks
     CPPUNIT_ASSERT(landmarks);

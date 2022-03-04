@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ CORE_API boost::posix_time::ptime fromIsoExtendedString(const std::string& time_
  * @param   date_string date in the xsd format YYYY-MM-DD
  * @return  Time in the boost format
  */
-CORE_API ::boost::posix_time::ptime fromDateInXsdFormat(const std::string& date_string);
+CORE_API boost::posix_time::ptime fromDateInXsdFormat(const std::string& date_string);
 
 /**
  * @brief       Construct a string in iso extended format from a boost ptime

@@ -27,7 +27,7 @@
 #include "viz/qt3d/core/GenericScene.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::qt3dTest::ut::GenericSceneTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::GenericSceneTest);
 
 namespace sight::viz::qt3dTest
 {

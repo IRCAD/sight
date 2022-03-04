@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -276,7 +276,7 @@ struct UseFactoryThread
     void run()
     {
         int duration = 20;
-        for(int i = 0 ; i < s_NBOBJECTS ; ++i)
+        for(int i = 0 ; i < s_NB_OBJECTS ; ++i)
         {
             SIGHT_WARN("building 1 " << m_objectType << "... ");
             m_objects.push_back(m_factory.create(m_objectType, duration));
@@ -287,10 +287,10 @@ struct UseFactoryThread
     const ThreadSafetyTestFactoryType& m_factory;
     ObjectVectorType m_objects;
     std::string m_objectType;
-    static const int s_NBOBJECTS;
+    static const int s_NB_OBJECTS;
 };
 
-const int UseFactoryThread::s_NBOBJECTS = 10;
+const int UseFactoryThread::s_NB_OBJECTS = 10;
 
 struct PopulateRegistryThread
 {
@@ -306,7 +306,7 @@ struct PopulateRegistryThread
 
     void run()
     {
-        for(int i = 0 ; i < s_NBREGISTRYITEMS ; ++i)
+        for(int i = 0 ; i < s_NB_REGISTRY_ITEMS ; ++i)
         {
             std::stringstream ss;
             ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() << "-" << i;
@@ -324,10 +324,10 @@ struct PopulateRegistryThread
     }
 
     ThreadSafetyTestFactoryType& m_factory;
-    static const int s_NBREGISTRYITEMS;
+    static const int s_NB_REGISTRY_ITEMS;
 };
 
-const int PopulateRegistryThread::s_NBREGISTRYITEMS = 1000;
+const int PopulateRegistryThread::s_NB_REGISTRY_ITEMS = 1000;
 
 //------------------------------------------------------------------------------
 
@@ -355,7 +355,7 @@ void FactoryRegistryTest::threadSafetyTest()
     std::vector<std::thread> tg;
 
     UseFactoryThreadVector objects;
-    for(size_t i = 0 ; i < NB_THREAD ; i++)
+    for(std::size_t i = 0 ; i < NB_THREAD ; i++)
     {
         UseFactoryThread::sptr uft;
 
@@ -368,7 +368,7 @@ void FactoryRegistryTest::threadSafetyTest()
         objects.push_back(uft);
     }
 
-    for(size_t i = 0 ; i < NB_THREAD ; i++)
+    for(std::size_t i = 0 ; i < NB_THREAD ; i++)
     {
         PopulateRegistryThread::sptr pft;
 
@@ -383,12 +383,12 @@ void FactoryRegistryTest::threadSafetyTest()
 
     for(const UseFactoryThreadVector::value_type& uft : objects)
     {
-        CPPUNIT_ASSERT_EQUAL(size_t(UseFactoryThread::s_NBOBJECTS), uft->m_objects.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(UseFactoryThread::s_NB_OBJECTS), uft->m_objects.size());
     }
 
-    CPPUNIT_ASSERT_EQUAL(NB_THREAD * UseFactoryThread::s_NBOBJECTS* 2, ObjectTest::s_counter);
+    CPPUNIT_ASSERT_EQUAL(NB_THREAD * UseFactoryThread::s_NB_OBJECTS* 2, ObjectTest::s_counter);
     CPPUNIT_ASSERT_EQUAL(
-        size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
+        std::size_t(NB_THREAD * PopulateRegistryThread::s_NB_REGISTRY_ITEMS + 2),
         objectTestFactory.getFactoryKeys().size()
     );
     ObjectTest::s_counter = 0;

@@ -40,7 +40,7 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::activity::ut::ImagePropertiesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ImagePropertiesTest);
 
 namespace sight::activity
 {
@@ -67,7 +67,7 @@ void ImagePropertiesTest::tearDown()
 void ImagePropertiesTest::propertiesTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::sight::activity::validator::ImageProperties");
+        activity::validator::factory::New("sight::activity::validator::ImageProperties");
     CPPUNIT_ASSERT(validator);
 
     activity::IObjectValidator::sptr objValidator = activity::IObjectValidator::dynamicCast(validator);
@@ -104,9 +104,9 @@ void ImagePropertiesTest::propertiesTest()
 
         utestData::generator::Image::generateImage(
             img2,
-            img1->getSize2(),
-            img1->getSpacing2(),
-            img1->getOrigin2(),
+            img1->getSize(),
+            img1->getSpacing(),
+            img1->getOrigin(),
             img1->getType(),
             data::Image::PixelFormat::GRAY_SCALE
         );

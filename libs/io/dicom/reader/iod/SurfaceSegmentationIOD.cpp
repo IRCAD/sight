@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
-    SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader>(new ::gdcm::SurfaceReader);
+    SPTR(gdcm::SurfaceReader) reader = std::shared_ptr<gdcm::SurfaceReader>(new gdcm::SurfaceReader);
 
     // Dicom container
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();

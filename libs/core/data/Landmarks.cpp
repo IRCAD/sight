@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::data
 {
 
 const core::com::Signals::SignalKeyType Landmarks::s_GROUP_ADDED_SIG      = "groupAdded";
-const core::com::Signals::SignalKeyType Landmarks::s_GROUP_REMOVED_SIG    = "groupemoved";
+const core::com::Signals::SignalKeyType Landmarks::s_GROUP_REMOVED_SIG    = "groupMoved";
 const core::com::Signals::SignalKeyType Landmarks::s_POINT_ADDED_SIG      = "pointAdded";
 const core::com::Signals::SignalKeyType Landmarks::s_POINT_REMOVED_SIG    = "pointRemoved";
 const core::com::Signals::SignalKeyType Landmarks::s_POINT_INSERTED_SIG   = "pointInserted";
@@ -218,7 +218,7 @@ void Landmarks::addPoint(const std::string& name, const Landmarks::PointType& po
 
 //------------------------------------------------------------------------------
 
-void Landmarks::insertPoint(const std::string& name, const size_t index, const Landmarks::PointType& point)
+void Landmarks::insertPoint(const std::string& name, const std::size_t index, const Landmarks::PointType& point)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
     auto iter                        = group.m_points.begin() + static_cast<PointContainer::difference_type>(index);
@@ -227,7 +227,7 @@ void Landmarks::insertPoint(const std::string& name, const size_t index, const L
 
 //------------------------------------------------------------------------------
 
-const Landmarks::PointType& Landmarks::getPoint(const std::string& name, size_t index) const
+const Landmarks::PointType& Landmarks::getPoint(const std::string& name, std::size_t index) const
 {
     const Landmarks::LandmarksGroup& group = this->getGroup(name);
     return group.m_points.at(index);
@@ -235,7 +235,7 @@ const Landmarks::PointType& Landmarks::getPoint(const std::string& name, size_t 
 
 //------------------------------------------------------------------------------
 
-Landmarks::PointType& Landmarks::getPoint(const std::string& name, size_t index)
+Landmarks::PointType& Landmarks::getPoint(const std::string& name, std::size_t index)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
     return group.m_points.at(index);
@@ -251,7 +251,7 @@ const Landmarks::PointContainer& Landmarks::getPoints(const std::string& name) c
 
 //------------------------------------------------------------------------------
 
-void Landmarks::removePoint(const std::string& name, size_t index)
+void Landmarks::removePoint(const std::string& name, std::size_t index)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
 
@@ -274,9 +274,9 @@ void Landmarks::clearPoints(const std::string& name)
 
 //------------------------------------------------------------------------------
 
-size_t Landmarks::getNumberOfPoints() const
+std::size_t Landmarks::numPoints() const
 {
-    size_t nb = 0;
+    std::size_t nb = 0;
     for(const auto& elt : m_landmarks)
     {
         const LandmarksGroup group = elt.second;
@@ -288,12 +288,53 @@ size_t Landmarks::getNumberOfPoints() const
 
 //------------------------------------------------------------------------------
 
-size_t Landmarks::getNumberOfPoints(const std::string& name) const
+std::size_t Landmarks::numPoints(const std::string& name) const
 {
     const LandmarksGroup& group = this->getGroup(name);
     return group.m_points.size();
 }
 
 //------------------------------------------------------------------------------
+
+bool Landmarks::LandmarksGroup::operator==(const LandmarksGroup& other) const noexcept
+{
+    if(!core::tools::is_equal(m_color, other.m_color)
+       || !core::tools::is_equal(m_size, other.m_size)
+       || m_shape != other.m_shape
+       || m_visibility != other.m_visibility
+       || !core::tools::is_equal(m_points, other.m_points))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::LandmarksGroup::operator!=(const LandmarksGroup& other) const noexcept
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::operator==(const Landmarks& other) const noexcept
+{
+    if(!core::tools::is_equal(m_landmarks, other.m_landmarks))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::operator!=(const Landmarks& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

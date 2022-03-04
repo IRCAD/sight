@@ -88,9 +88,6 @@ void SDBMerger::updating()
 {
     sight::ui::base::LockAction lock(this->getSptr());
 
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not correctly set.", seriesDB);
-
     // Create a new SeriesDB
     data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
@@ -127,6 +124,10 @@ void SDBMerger::updating()
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
     service::remove(ioSelectorSrv);
+
+    // Lock only when needed.
+    auto seriesDB = m_seriesDB.lock();
+    SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not correctly set.", seriesDB);
 
     data::helper::SeriesDB sDBhelper(*seriesDB);
     sDBhelper.merge(localSeriesDB);

@@ -4,10 +4,10 @@ Module containing services to read/write matrices from/to files.
 
 ## Services
 
-- **SMatrixReader**: reads a csv file, extracts matrices from it and pushes them into a ::sight::data::MatrixTL.
-- **Matrix4ReaderService**: reads a ::sight::data::Matrix4 from a .trf file
+- **SMatrixReader**: reads a csv file, extracts matrices from it and pushes them into a sight::data::MatrixTL.
+- **Matrix4ReaderService**: reads a sight::data::Matrix4 from a .trf file
 - **SMatrixWriter**: saves a timeline of matrices in a csv file.
-- **Matrix4WriterService**: writes a ::sight::data::Matrix4 into a .trf file.
+- **Matrix4WriterService**: writes a sight::data::Matrix4 into a .trf file.
 
 ## How to use it
 

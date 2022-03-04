@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/InputDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
 
 namespace sight::ui::base
 {
@@ -47,7 +47,7 @@ std::string InputDialog::showInputDialog(
 
 InputDialog::InputDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -66,7 +66,7 @@ InputDialog::InputDialog(
     EchoMode echoMode
 )
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -90,7 +90,7 @@ InputDialog::~InputDialog()
 
 void InputDialog::setTitle(const std::string& title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -103,7 +103,7 @@ void InputDialog::setTitle(const std::string& title)
 
 void InputDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -116,7 +116,7 @@ void InputDialog::setMessage(const std::string& msg)
 
 void InputDialog::setInput(const std::string& text)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -129,7 +129,7 @@ void InputDialog::setInput(const std::string& text)
 
 void InputDialog::setEchoMode(EchoMode echoMode)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -144,7 +144,7 @@ std::string InputDialog::getInput()
 {
     std::function<std::string()> func = std::bind(&IInputDialog::getInput, m_implementation);
     std::shared_future<std::string> f =
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
+        core::thread::getDefaultWorker()->postTask<std::string>(func);
     f.wait();
     return f.get();
 }

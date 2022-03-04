@@ -55,7 +55,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::I
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SBitwiseAnd, ::sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SBitwiseAnd, sight::service::IFilter);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SBitwiseAnd();

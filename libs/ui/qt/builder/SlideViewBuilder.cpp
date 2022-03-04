@@ -30,8 +30,8 @@
 #include <QWidget>
 
 fwGuiRegisterMacro(
-    ::sight::ui::base::builder::SlideViewBuilder,
-    ::sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
+    sight::ui::base::builder::SlideViewBuilder,
+    sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
 )
 
 namespace sight::ui::base

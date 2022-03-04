@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "data/FrameTL.hpp"
 
+#include <core/base.hpp>
+
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
-
-#include <core/base.hpp>
 
 #include <boost/pool/pool.hpp>
 
@@ -69,18 +69,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 
     this->clearTimeline();
 
-    // FIXME: tmp to support old API (sight 22.0)
-    if(other->m_pixelFormat == data::FrameTL::PixelFormat::UNDEFINED)
-    {
-        this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_numberOfComponents);
-    }
-    else
-    {
-        this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
-    }
-
-    core::mt::WriteLock writeLock(m_tlMutex);
-    core::mt::WriteLock readLock(other->m_tlMutex);
+    this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
 
     for(TimelineType::value_type elt : other->m_timeline)
     {
@@ -93,50 +82,8 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 //------------------------------------------------------------------------------
 
 void FrameTL::initPoolSize(
-    size_t width,
-    size_t height,
-    const core::tools::Type& type,
-    size_t numberOfComponents,
-    unsigned int maxElementNum
-)
-{
-    m_width              = width;
-    m_height             = height;
-    m_numberOfComponents = numberOfComponents;
-    m_type               = type;
-
-    // We assume that image with 3 components are RGB and image with 4 components are RGBA
-    switch(numberOfComponents)
-    {
-        case 1:
-            m_pixelFormat = data::FrameTL::PixelFormat::GRAY_SCALE;
-            break;
-
-        case 3:
-            m_pixelFormat = data::FrameTL::PixelFormat::RGB;
-            break;
-
-        case 4:
-            m_pixelFormat = data::FrameTL::PixelFormat::RGBA;
-            break;
-
-        default:
-            m_pixelFormat = data::FrameTL::PixelFormat::UNDEFINED;
-    }
-
-    std::size_t size = width * height * numberOfComponents * type.sizeOf();
-
-    SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
-
-    m_maxElementNum = maxElementNum;
-    this->allocPoolSize(size * m_maxElementNum);
-}
-
-//------------------------------------------------------------------------------
-
-void FrameTL::initPoolSize(
-    size_t width,
-    size_t height,
+    std::size_t width,
+    std::size_t height,
     const core::tools::Type& type,
     const PixelFormat format,
     unsigned int maxElementNum
@@ -179,6 +126,30 @@ void FrameTL::initPoolSize(
 void FrameTL::initPoolSize(unsigned int)
 {
     SIGHT_ERROR("This function should not be called");
+}
+
+//------------------------------------------------------------------------------
+
+bool FrameTL::operator==(const FrameTL& other) const noexcept
+{
+    if(m_width != other.m_width
+       || m_height != other.m_height
+       || m_numberOfComponents != other.m_numberOfComponents
+       || m_type != other.m_type
+       || m_pixelFormat != other.m_pixelFormat)
+    {
+        return false;
+    }
+
+    // Super class last
+    return GenericTL<uint8_t>::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool FrameTL::operator!=(const FrameTL& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ public:
 
     typedef std::vector<CSPTR(DcmDataset)> DatasetContainer;
 
-    /// Initializes memnbers.
+    /// Initializes members.
     IO_DIMSE_API SeriesEnquirer();
 
     /// Destroyes the instance.
@@ -165,7 +165,7 @@ public:
 
     /**
      * @brief Finds series by description.
-     * @param _description The desription.
+     * @param _description The description.
      * @return The dcmtk response list.
      */
     IO_DIMSE_API OFList<QRResponse*> findSeriesByDescription(const std::string& _description);

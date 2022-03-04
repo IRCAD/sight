@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>OgreLightManager</id>
     <parameters>
         <param name="WID_PARENT" />

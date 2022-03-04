@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::SliceThicknessModifierTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::SliceThicknessModifierTest);
 
 namespace sight::filter::dicom
 {
@@ -76,7 +76,7 @@ void SliceThicknessModifierTest::simpleApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
@@ -95,13 +95,13 @@ void SliceThicknessModifierTest::simpleApplication()
     filter = filter::dicom::factory::New("sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 
     // Check that the computed value has been added to the DicomSeries
     const double delta          = 1e-8;
     const double sliceThickness =
-        ::boost::lexical_cast<double>(dicomSeries->getComputedTagValues().at("SliceThickness"));
+        boost::lexical_cast<double>(dicomSeries->getComputedTagValues().at("SliceThickness"));
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8, sliceThickness, delta);
 }
 
@@ -124,7 +124,7 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <io/itk/itk.hpp>
@@ -210,14 +210,14 @@ public:
 
     bool isInROI(const IndexType& index) const
     {
-        const auto dumpLock = m_roi->lock();
-        const auto size     = m_roi->getSize2();
+        const auto dumpLock = m_roi->dump_lock();
+        const auto size     = m_roi->getSize();
 
-        data::Image::BufferType* roiVal =
-            reinterpret_cast<data::Image::BufferType*>(
-                m_roi->getPixelBuffer(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
+        const data::Image::BufferType* roiVal =
+            reinterpret_cast<const data::Image::BufferType*>(
+                m_roi->getPixel(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
 
-        return !data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roi->getType().sizeOf());
+        return !data::helper::MedicalImage::isBufNull(roiVal, m_roi->getType().sizeOf());
     }
 
 private:
@@ -259,10 +259,10 @@ struct MinMaxPropagator
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
+        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
         typedef MinMaxPropagCriterion<ImageType> CriterionType;
 
-        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(params.inputImage);
+        const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.inputImage);
 
         std::vector<typename ImageType::IndexType> itkSeeds;
         for(const auto& seed : params.seeds)
@@ -281,27 +281,27 @@ struct MinMaxPropagator
         criterion->SetInputImage(itkImage);
         criterion->setParams(params.roi, itkSeeds, params.radius, params.overwrite, params.mode);
 
-        ::itk::FloodFilledImageFunctionConditionalIterator<ImageType, CriterionType> iter(
+        itk::FloodFilledImageFunctionConditionalIterator<ImageType, CriterionType> iter(
             itkImage, criterion, itkSeeds);
 
-        const auto dumpLock = params.outputImage->lock();
+        const auto dumpLock = params.outputImage->dump_lock();
 
         const std::uint8_t outImgPixelSize = params.outputImage->getType().sizeOf()
-                                             * static_cast<std::uint8_t>(params.outputImage->getNumberOfComponents());
+                                             * static_cast<std::uint8_t>(params.outputImage->numComponents());
 
         for( ; !iter.IsAtEnd() ; ++iter)
         {
             const typename ImageType::IndexType currentIndex = iter.GetIndex();
 
-            const size_t bufferIndex = static_cast<size_t>(itkImage->ComputeOffset(currentIndex));
+            const std::size_t bufferIndex = static_cast<std::size_t>(itkImage->ComputeOffset(currentIndex));
 
             const data::Image::BufferType* pixBuf =
-                reinterpret_cast<data::Image::BufferType*>(params.outputImage->getPixelBuffer(bufferIndex));
+                reinterpret_cast<data::Image::BufferType*>(params.outputImage->getPixel(bufferIndex));
 
             if(!std::equal(pixBuf, pixBuf + outImgPixelSize, params.value))
             {
                 params.diff.addDiff(bufferIndex, pixBuf, params.value);
-                params.outputImage->setPixelBuffer(bufferIndex, params.value);
+                params.outputImage->setPixel(bufferIndex, params.value);
             }
         }
     }
@@ -330,8 +330,8 @@ ImageDiff MinMaxPropagation::propagate(
     const Mode mode
 )
 {
-    const core::tools::Type type   = m_inImage->getType();
-    const size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->getNumberOfComponents();
+    const core::tools::Type type        = m_inImage->getType();
+    const std::size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->numComponents();
 
     MinMaxPropagator::Parameters params;
     params.inputImage  = m_inImage;

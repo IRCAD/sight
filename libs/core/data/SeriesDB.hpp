@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,13 +23,12 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/factory/new.hpp"
+#include "data/Object.hpp"
+#include "data/Series.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
 
 #include <vector>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (SeriesDB))
 
 namespace sight::data
 {
@@ -39,15 +38,13 @@ class Series;
 /**
  * @brief Holds series data.
  */
-class DATA_CLASS_API SeriesDB : public data::Object
+class DATA_CLASS_API SeriesDB : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesDB, data::Object, data::factory::New<SeriesDB>);
+    SIGHT_DECLARE_CLASS(SeriesDB, Object, factory::New<SeriesDB>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (SeriesDB))
-
-    typedef std::vector<SPTR(Series)> ContainerType;
+    typedef std::vector<Series::sptr> ContainerType;
 
     typedef ContainerType::value_type ValueType;
     typedef ContainerType::reference ReferenceType;
@@ -94,7 +91,7 @@ public:
      * @brief Creates the series DB.
      * @param _key private construction key.
      */
-    DATA_API SeriesDB(data::Object::Key _key);
+    DATA_API SeriesDB(Object::Key _key);
 
     /// Destroys the series DB.
     DATA_API virtual ~SeriesDB();
@@ -103,14 +100,7 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the series container.
     ContainerType& getContainer();
@@ -136,7 +126,20 @@ public:
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const SeriesDB& other) const noexcept;
+    DATA_API bool operator!=(const SeriesDB& other) const noexcept;
+    /// @}
+
 protected:
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Stores all series.
     ContainerType m_container;

@@ -56,15 +56,6 @@
 
 include(CMakeParseArguments)
 
-macro(combine_arguments _variable)
-  set(_result "")
-  foreach(_element ${${_variable}})
-    set(_result "${_result} \"${_element}\"")
-  endforeach()
-  string(STRIP "${_result}" _result)
-  set(${_variable} "${_result}")
-endmacro()
-
 # Hook used to add a dependency on the automoc obj file for each pch target
 function(pch_msvc_hook variable access value current_list_file stack)
 
@@ -72,12 +63,17 @@ function(pch_msvc_hook variable access value current_list_file stack)
         return()
     endif()
     list(LENGTH CMAKE_PCH_COMPILER_TARGETS length)
+
+    # foreach(<loop_var> RANGE <start> <stop>) IS valid
+    # cmake-lint: disable=E1120
     foreach(index RANGE -${length} -1)
         list(GET CMAKE_PCH_COMPILER_TARGETS ${index} target)
         list(GET CMAKE_PCH_COMPILER_TARGET_FLAGS ${index} flags)
 
         # Find OBJ pch target dependencies
-        target_include_directories(${target}_PCH_OBJ SYSTEM PRIVATE "$<TARGET_PROPERTY:${target},INTERFACE_INCLUDE_DIRECTORIES>")
+        target_include_directories(
+            ${target}_PCH_OBJ SYSTEM PRIVATE "$<TARGET_PROPERTY:${target},INTERFACE_INCLUDE_DIRECTORIES>"
+        )
 
         # 2. Add the same compile definitions
         get_target_property(def ${target} COMPILE_DEFINITIONS)
@@ -113,7 +109,9 @@ function(export_all_flags _filename)
     set(_compile_flags "$<$<BOOL:${_compile_flags}>:$<JOIN:${_compile_flags},\n>\n>")
     set(_compile_options "$<$<BOOL:${_compile_options}>:$<JOIN:${_compile_options},\n>\n>")
     set(_define_symbol "$<$<BOOL:${_define_symbol}>:-D$<JOIN:${_define_symbol},\n-D>\n>")
-    file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}${_define_symbol}\n")
+    file(GENERATE OUTPUT "${_filename}"
+         CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}${_define_symbol}\n"
+    )
 endfunction()
 
 # Only used on Linux
@@ -144,183 +142,201 @@ function(assign_precompiled_header _target _pch _pch_header)
             endif()
             list(APPEND _object_depends "${_pch}")
 
-            set_source_files_properties(${_source} PROPERTIES
-                COMPILE_FLAGS "${_pch_compile_flags}"
-                OBJECT_DEPENDS "${_object_depends}")
+            set_source_files_properties(
+                ${_source} PROPERTIES COMPILE_FLAGS "${_pch_compile_flags}" OBJECT_DEPENDS "${_object_depends}"
+            )
         endif()
     endforeach()
 
 endfunction()
 
+# Add an "object" library to compile the pch
+# That allows to share the pch, targets using this pch can then link with the pch.obj thanks to this fake library
+# This also help us to remove some unwanted compile definitions (see pch_msvc_hook function)
 macro(add_precompiled_header_cpp _target)
-    # Add an "object" library to compile the pch
-    # That allows to share the pch, targets using this pch can then link with the pch.obj thanks to this fake library
-    # This also help us to remove some unwanted compile definitions (see pch_msvc_hook function)
     add_library(${_target}_PCH_OBJ OBJECT "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
-    set_target_properties(${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY
-                          "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${_target}.dir/")
-
+    set_target_properties(
+        ${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY
+                                      "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${_target}.dir/"
+    )
 endmacro()
 
+# Enable precompiled headers for target
 function(add_precompiled_header _target _input)
-  cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
+    cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
-  if(MSVC)
-    get_filename_component(_input_we ${_input} NAME_WE)
-    get_filename_component(_input_pch ${_input} NAME)
+    if(MSVC)
+        get_filename_component(_input_we ${_input} NAME_WE)
+        get_filename_component(_input_pch ${_input} NAME)
 
-    set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
+        set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
 
-    set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}")
-    set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp")
-    set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
-    set(_pch_cxx_pdb "${_cxx_path}/${_input_we}.pdb")
+        set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}")
+        set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp")
+        set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
+        set(_pch_cxx_pdb "${_cxx_path}/${_input_we}.pdb")
 
-    set_target_properties(${_target} PROPERTIES PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+        set_target_properties(${_target} PROPERTIES PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
-    # Iterate over all source files and request pch usage
-    get_target_property(sources ${_target} SOURCES)
-    foreach(_source ${sources})
-        set(_pch_compile_flags "")
-        if(_source MATCHES \\.\(cc|cxx|cpp\)$)
+        # Iterate over all source files and request pch usage
+        get_target_property(sources ${_target} SOURCES)
+        foreach(_source ${sources})
+            set(_pch_compile_flags "")
+            if(_source MATCHES \\.\(cc|cxx|cpp\)$)
 
-            set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_input}")
-            set_source_files_properties("${_source}" PROPERTIES OBJECT_DEPENDS "${_pch_cxx_pch}")
-            # Force the include of the PCH on every source file
-            set(_pch_compile_flags "${_pch_compile_flags} /FI${_input}")
+                set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_input}")
+                set_source_files_properties("${_source}" PROPERTIES OBJECT_DEPENDS "${_pch_cxx_pch}")
+                # Force the include of the PCH on every source file
+                set(_pch_compile_flags "${_pch_compile_flags} /FI${_input}")
 
-            get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
-            if(NOT _object_depends)
-                set(_object_depends)
+                get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
+                if(NOT _object_depends)
+                    set(_object_depends)
+                endif()
+
+                list(APPEND _object_depends "${_pch_cxx_header}")
+
+                set_source_files_properties(
+                    ${_source} PROPERTIES COMPILE_FLAGS "${_pch_compile_flags}" OBJECT_DEPENDS "${_object_depends}"
+                )
             endif()
+        endforeach()
 
-            list(APPEND _object_depends "${_pch_cxx_header}")
+        # Iterate over the pch source file and compile the pch
+        get_target_property(sources ${_target}_PCH_OBJ SOURCES)
+        foreach(_source ${sources})
+            set(_pch_compile_flags "")
+            if(_source STREQUAL "${_PCH_SOURCE_CXX}")
+                set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yc${_input_pch} \
+                                    \"/I${CMAKE_CURRENT_SOURCE_DIR}\""
+                )
+                set(_pch_source_cxx_found TRUE)
+                set_source_files_properties("${_source}" PROPERTIES OBJECT_OUTPUTS "${_pch_cxx_pch}")
 
-            set_source_files_properties(${_source} PROPERTIES
-                COMPILE_FLAGS "${_pch_compile_flags}"
-                OBJECT_DEPENDS "${_object_depends}")
-        endif()
-    endforeach()
+                get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
+                if(NOT _object_depends)
+                    set(_object_depends)
+                endif()
 
-    # Iterate over the pch source file and compile the pch
-    get_target_property(sources ${_target}_PCH_OBJ SOURCES)
-    foreach(_source ${sources})
-        set(_pch_compile_flags "")
-        if(_source STREQUAL "${_PCH_SOURCE_CXX}")
-            set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yc${_input_pch} \
-                                    \"/I${CMAKE_CURRENT_SOURCE_DIR}\"")
-            set(_pch_source_cxx_found TRUE)
-            set_source_files_properties("${_source}" PROPERTIES OBJECT_OUTPUTS "${_pch_cxx_pch}")
+                list(APPEND _object_depends "${_pch_cxx_header}")
 
-            get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
-            if(NOT _object_depends)
-                set(_object_depends)
+                set_source_files_properties(
+                    ${_source} PROPERTIES COMPILE_FLAGS "${_pch_compile_flags}" OBJECT_DEPENDS "${_object_depends}"
+                )
             endif()
+        endforeach()
 
-            list(APPEND _object_depends "${_pch_cxx_header}")
+        # Add this target to process in pch_msvc_hook
+        # Indeed at this point all compile definitions and include directories may be not set yet
+        list(APPEND CMAKE_PCH_COMPILER_TARGETS ${_target})
+        set(CMAKE_PCH_COMPILER_TARGETS "${CMAKE_PCH_COMPILER_TARGETS}" PARENT_SCOPE)
 
-            set_source_files_properties(${_source} PROPERTIES
-                COMPILE_FLAGS "${_pch_compile_flags}"
-                OBJECT_DEPENDS "${_object_depends}")
+        if(NOT _pch_source_cxx_found)
+            message(FATAL_ERROR "A source file ${_PCH_SOURCE_CXX} for ${_input} is required for MSVC builds.\
+             Can be set with the SOURCE_CXX option."
+            )
         endif()
-    endforeach()
+    endif(MSVC)
 
-    # Add this target to process in pch_msvc_hook
-    # Indeed at this point all compile definitions and include directories may be not set yet
-    list(APPEND CMAKE_PCH_COMPILER_TARGETS ${_target})
-    set(CMAKE_PCH_COMPILER_TARGETS "${CMAKE_PCH_COMPILER_TARGETS}" PARENT_SCOPE)
+    if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        get_filename_component(_name ${_input} NAME)
+        set(_pch_header "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
+        set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
+        set(_pchfile "${_pch_binary_dir}/include/${_target}/${_input}")
 
-    if(NOT _pch_source_cxx_found)
-      message(FATAL_ERROR "A source file ${_PCH_SOURCE_CXX} for ${_input} is required for MSVC builds. Can be set with the SOURCE_CXX option.")
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            set(_outdir "${_pchfile}.pch")
+        else()
+            set(_outdir "${_pchfile}.gch")
+
+            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/include/${_target})
+        endif()
+        set(_output_cxx "${_outdir}")
+
+        # we use a response file to pass most compiler flags
+        set(_pch_response_file "compile_flags.rsp")
+        set(_pch_flags_file "${_pch_binary_dir}/${_pch_response_file}")
+        export_all_flags("${_pch_flags_file}.in")
+        set(_compiler_FLAGS "@${_pch_flags_file}")
+
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
+            string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_DEBUG}")
+        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+            set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
+            string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
+            set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
+            string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_MINSIZEREL}")
+        else()
+            set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
+            string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_RELEASE}")
+        endif()
+
+        # separate_arguments(VAR) IS valid
+        # cmake-lint: disable=E1120
+        separate_arguments(CXXFLAGS)
+
+        # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
+        list(APPEND CXXFLAGS "-std=gnu++17" "-fPIC")
+
+        # Hacky custom command to remove the custom defines that would prevent from sharing the pch
+        # and they should be useless anyway
+        # Also, we strip "/usr/include" as CMake does for regular C++ files (otherwise we may hide our bin pkgs headers)
+        add_custom_command(
+            OUTPUT "${_pch_flags_file}"
+            COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in | sed '/_VER=\\\|_EXPORTS/d' | sed
+                    '/-isystem\\/usr\\/include$$/d' > ${_pch_flags_file}
+            DEPENDS "${_pch_flags_file}.in"
+            COMMENT "Fixing ${_pch_flags_file}"
+        )
+
+        if(${CMAKE_GENERATOR} STREQUAL "Ninja")
+            # Ninja generator does not support IMPLICIT_DEPENDS, thus we have to use an another way to get correct
+            # dependencies so that the pch is recompiled when one of its include file changes.
+            # We generate the dependencies file manually with the compiler
+            file(RELATIVE_PATH relative_output_cxx "${CMAKE_BINARY_DIR}" "${_output_cxx}")
+
+            add_custom_command(
+                OUTPUT "${_pch_binary_dir}/pch.d"
+                COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} ${CXXFLAGS} -M -MF "${_pch_binary_dir}/pch.d.in"
+                        "${_pch_header}"
+                COMMAND sed 's|^pch\.o|${relative_output_cxx}|' "${_pch_binary_dir}/pch.d.in" >
+                        "${_pch_binary_dir}/pch.d"
+                DEPENDS "${_pch_header}" "${_pch_flags_file}"
+                COMMENT "Generating pch deps file for ${_target} (PCH)"
+            )
+            add_custom_command(
+                OUTPUT "${_output_cxx}"
+                COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}"
+                        ${CXXFLAGS}
+                DEPENDS "${_pch_header}" "${_pch_flags_file}" "${_pch_binary_dir}/pch.d"
+                DEPFILE "${_pch_binary_dir}/pch.d"
+                COMMENT "Precompiling ${_name} for ${_target} (PCH)"
+            )
+        else()
+            add_custom_command(
+                OUTPUT "${_output_cxx}"
+                COMMAND mkdir --parents "${_pch_binary_dir}/include/${_target}" && "${CMAKE_CXX_COMPILER}"
+                        ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
+                DEPENDS "${_pch_header}" "${_pch_flags_file}"
+                IMPLICIT_DEPENDS CXX "${_pch_header}"
+                COMMENT "Precompiling ${_name} for ${_target} (PCH)"
+            )
+        endif()
+
+        assign_precompiled_header(${_target} ${_output_cxx} pch.hpp)
     endif()
-  endif(MSVC)
-
-  if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    get_filename_component(_name ${_input} NAME)
-    set(_pch_header "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
-    set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
-    set(_pchfile "${_pch_binary_dir}/include/${_target}/${_input}")
-
-    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        set(_outdir "${_pchfile}.pch")
-    else()
-        set(_outdir "${_pchfile}.gch")
-
-        target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/include/${_target})
-    endif()
-    set(_output_cxx "${_outdir}")
-
-    # we use a response file to pass most compiler flags
-    set(_pch_response_file "compile_flags.rsp")
-    set(_pch_flags_file "${_pch_binary_dir}/${_pch_response_file}")
-    export_all_flags("${_pch_flags_file}.in")
-    set(_compiler_FLAGS "@${_pch_flags_file}")
-
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
-        string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_DEBUG}")
-    elseif("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-        set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
-        string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-    elseif("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
-        set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
-        string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_MINSIZEREL}")
-    else()
-        set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
-        string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_RELEASE}")
-    endif()
-    separate_arguments(CXXFLAGS)
-
-    # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
-    list(APPEND CXXFLAGS "-std=gnu++17" "-fPIC")
-
-    # Hacky custom command to remove the custom defines that would prevent from sharing the pch
-    # and they should be useless anyway
-    # Also, we strip "/usr/include" as CMake does for regular C++ files (otherwise we may hide our bin pkgs headers)
-    add_custom_command(
-      OUTPUT "${_pch_flags_file}"
-      COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in | sed '/_VER=\\\|_EXPORTS/d' | sed '/-isystem\\/usr\\/include$$/d' > ${_pch_flags_file}
-      DEPENDS "${_pch_flags_file}.in"
-      COMMENT "Fixing ${_pch_flags_file}")
-
-    if(${CMAKE_GENERATOR} STREQUAL "Ninja")
-      # Ninja generator does not support IMPLICIT_DEPENDS, thus we have to use an another way to get correct
-      # dependencies so that the pch is recompiled when one of its include file changes.
-      # We generate the dependencies file manually with the compiler
-      file(RELATIVE_PATH relative_output_cxx "${CMAKE_BINARY_DIR}" "${_output_cxx}")
-
-      add_custom_command(
-        OUTPUT "${_pch_binary_dir}/pch.d"
-        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} ${CXXFLAGS} -M -MF "${_pch_binary_dir}/pch.d.in" "${_pch_header}"
-        COMMAND sed 's|^pch\.o|${relative_output_cxx}|' "${_pch_binary_dir}/pch.d.in" > "${_pch_binary_dir}/pch.d"
-        DEPENDS "${_pch_header}" "${_pch_flags_file}"
-        COMMENT "Generating pch deps file for ${_target} (PCH)")
-      add_custom_command(
-        OUTPUT "${_output_cxx}"
-        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
-        DEPENDS "${_pch_header}" "${_pch_flags_file}" "${_pch_binary_dir}/pch.d"
-        DEPFILE "${_pch_binary_dir}/pch.d"
-        COMMENT "Precompiling ${_name} for ${_target} (PCH)")
-    else()
-      add_custom_command(
-        OUTPUT "${_output_cxx}"
-        COMMAND mkdir --parents "${_pch_binary_dir}/include/${_target}" && "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header  -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
-        DEPENDS "${_pch_header}" "${_pch_flags_file}"
-        IMPLICIT_DEPENDS CXX "${_pch_header}"
-        COMMENT "Precompiling ${_name} for ${_target} (PCH)")
-    endif()
-
-    assign_precompiled_header(${_target} ${_output_cxx} pch.hpp)
-  endif()
 endfunction()
 
+# Use precompiled header from another target
 function(use_precompiled_header _target _input)
 
     get_target_property(_pch_binary_dir ${_input} BINARY_DIR)
 
     if(MSVC)
         get_target_property(INPUT_PROJECT_DIR ${_input} PROJECT_DIR)
-        target_include_directories(${_target} PRIVATE "${INPUT_PROJECT_DIR}" )
+        target_include_directories(${_target} PRIVATE "${INPUT_PROJECT_DIR}")
 
         set(_pch_header "${INPUT_PROJECT_DIR}/pch.hpp")
         set(_cxx_path "${_pch_binary_dir}")
@@ -344,9 +360,9 @@ function(use_precompiled_header _target _input)
 
                 list(APPEND _object_depends "${_pch_header}")
 
-                set_source_files_properties(${_source}  PROPERTIES
-                                                        COMPILE_FLAGS "${_pch_compile_flags}"
-                                                        OBJECT_DEPENDS "${_object_depends}")
+                set_source_files_properties(
+                    ${_source} PROPERTIES COMPILE_FLAGS "${_pch_compile_flags}" OBJECT_DEPENDS "${_object_depends}"
+                )
             endif()
         endforeach()
     endif(MSVC)
@@ -361,7 +377,7 @@ function(use_precompiled_header _target _input)
             set(_output_cxx "${_pchfile}.gch")
 
             # Add the location of the pch as an include directory
-            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/include/${_input} )
+            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/include/${_input})
         endif()
 
         assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})

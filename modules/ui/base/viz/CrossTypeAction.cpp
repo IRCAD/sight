@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,9 +44,9 @@ namespace sight::module::ui::base::viz
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0},
-    {std::string("half"), 0.5},
-    {std::string("hide"), 0.0
+std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0f},
+    {std::string("half"), 0.5f},
+    {std::string("hide"), 0.0f
     }
 };
 
@@ -88,8 +88,8 @@ void CrossTypeAction::configuring()
         std::vector<ConfigurationType> vectConfig = this->m_configuration->find("crossType");
         SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
         m_crossType = vectConfig.at(0)->getValue();
-        ::boost::algorithm::trim(m_crossType);
-        ::boost::algorithm::to_lower(m_crossType);
+        boost::algorithm::trim(m_crossType);
+        boost::algorithm::to_lower(m_crossType);
         SIGHT_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());
     }
 }
@@ -103,7 +103,7 @@ void CrossTypeAction::updating()
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::info(std::ostream& _sstream)
+void CrossTypeAction::info(std::ostream&)
 {
 }
 

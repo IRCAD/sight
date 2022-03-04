@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,13 +68,13 @@ LineConverter::~LineConverter()
         srcLine->getPosition()->getCoord().begin(),
         srcLine->getPosition()->getCoord().end(),
         &pos[0],
-        ::boost::numeric_cast<double, float>
+        boost::numeric_cast<double, float>
     );
     std::transform(
         srcLine->getDirection()->getCoord().begin(),
         srcLine->getDirection()->getCoord().end(),
         &direction[0],
-        ::boost::numeric_cast<double, float>
+        boost::numeric_cast<double, float>
     );
     dest->SetPosition(pos);
     dest->SetQuaternion(direction); // We use the quaternion to store the direction
@@ -99,13 +99,13 @@ data::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         &igtlPos[0],
         &igtlPos[3],
         dest->getPosition()->getCoord().begin(),
-        ::boost::numeric_cast<float, double>
+        boost::numeric_cast<float, double>
     );
     std::transform(
         &igtlDirection[0],
         &igtlDirection[3],
         dest->getDirection()->getCoord().begin(),
-        ::boost::numeric_cast<float, double>
+        boost::numeric_cast<float, double>
     );
 
     return dest;

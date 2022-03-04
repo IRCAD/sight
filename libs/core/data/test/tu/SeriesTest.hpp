@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,6 +46,7 @@ CPPUNIT_TEST(attrDateTest);
 CPPUNIT_TEST(attrTimeTest);
 CPPUNIT_TEST(attrPerformingPhysiciansNameTest);
 CPPUNIT_TEST(attrDescriptionTest);
+CPPUNIT_TEST(equalityTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -64,6 +65,7 @@ public:
     void attrTimeTest();
     void attrPerformingPhysiciansNameTest();
     void attrDescriptionTest();
+    void equalityTest();
 
 protected:
 

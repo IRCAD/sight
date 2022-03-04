@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,16 @@
  *
  ***********************************************************************/
 
-#include "activity/extension/Activity.hpp"
+#include "Activity.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/helper.hpp>
 #include <core/runtime/Module.hpp>
 #include <core/runtime/Runtime.hpp>
+#include <core/tools/fwID.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Vector.hpp>
 
 #include <boost/foreach.hpp>
@@ -74,8 +76,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
 //-----------------------------------------------------------------------------
 
 ActivityRequirementKey::ActivityRequirementKey(const ConfigType& config) :
-    key(config.get_value<std::string>()),
-    path(config.get_optional<std::string>("<xmlattr>.path").get_value_or(""))
+    key(config.get_value<std::string>())
 {
 }
 
@@ -110,7 +111,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
 
     SIGHT_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
-        0 <= minOccurs && minOccurs <= maxOccurs
+        minOccurs <= maxOccurs
     );
 }
 
@@ -159,7 +160,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     }
     else
     {
-        builderImpl = "::sight::activity::builder::ActivitySeriesInitData";
+        builderImpl = "sight::activity::builder::ActivitySeriesInitData";
     }
 
     // backward compatibility
@@ -186,7 +187,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     // Set Default validator if none is defined
     if(validatorsImpl.empty())
     {
-        validatorsImpl.push_back("::sight::activity::validator::DefaultActivity");
+        validatorsImpl.push_back("sight::activity::validator::DefaultActivity");
     }
 }
 
@@ -320,7 +321,7 @@ ActivityInfo::DataCountType Activity::getDataCount(const data::Vector::csptr& da
 {
     ActivityInfo::DataCountType dataCount;
 
-    for(const data::Object::csptr& obj : *data)
+    for(const data::Object::csptr obj : *data)
     {
         ++dataCount[obj->getClassname()];
     }
@@ -379,6 +380,70 @@ const ActivityInfo Activity::getInfo(const std::string& extensionId) const
 }
 
 //-----------------------------------------------------------------------------
+
+std::tuple<ActivityInfo, std::map<std::string, std::string> > Activity::getInfoAndReplacementMap(
+    const data::ActivitySeries& activitySeries,
+    const ActivityAppConfigParamsType& parameters
+) const
+{
+    // Retrieve the activity informations
+    const auto& info = getInfo(activitySeries.getActivityConfigId());
+
+    return {info, getReplacementMap(activitySeries, info, parameters)};
+}
+
+//------------------------------------------------------------------------------
+
+std::map<std::string, std::string> Activity::getReplacementMap(
+    const data::ActivitySeries& activitySeries,
+    const ActivityInfo& info,
+    const ActivityAppConfigParamsType& parameters
+) const
+{
+    std::map<std::string, std::string> replacement_map;
+
+    // Get the composite
+    const auto& composite = activitySeries.getData();
+
+    // First, use requirements to populate replacement map with an object from the root composite
+    for(const auto& requirement : info.requirements)
+    {
+        // Use the name as "key" for the AppConfig parameter
+        const auto& it = composite->find(requirement.name);
+
+        if(it != composite->end() && it->second)
+        {
+            replacement_map[requirement.name] = it->second->getID();
+        }
+    }
+
+    const auto add_parameters =
+        [&replacement_map](const auto& parameters)
+        {
+            for(const auto& parameter : parameters)
+            {
+                // @TODO This should be removed later when legacy xml code is cleaned.
+                SIGHT_FATAL_IF(
+                    "Cannot replace '" << parameter.replace << "' by CAMP path '" << parameter.by << "'.",
+                    parameter.isObjectPath()
+                );
+
+                replacement_map[parameter.replace] = parameter.by;
+            }
+        };
+
+    // Then, use AppConfig parameters
+    // Parameters will override already present requirements with the same name
+    add_parameters(info.appConfig.parameters);
+
+    // Finally, use additional parameters...
+    add_parameters(parameters);
+
+    // Store the activity UID
+    replacement_map["AS_UID"] = activitySeries.getID();
+
+    return replacement_map;
+}
 
 } // namespace extension
 

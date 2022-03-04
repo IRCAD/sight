@@ -53,11 +53,11 @@ namespace com
  * - \b sync : Determines whether slots are called asynchronously ("false") or synchronously ("true")
  */
 
-class MODULE_UI_BASE_CLASS_API SSlotCaller : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SSlotCaller : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSlotCaller, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SSlotCaller, sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;

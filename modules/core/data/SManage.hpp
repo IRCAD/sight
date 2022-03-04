@@ -105,7 +105,7 @@ class MODULE_DATA_CLASS_API SManage : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SManage, ::sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SManage, sight::service::IController);
 
     /// Constructor.  Do nothing.
     MODULE_DATA_API SManage() noexcept;

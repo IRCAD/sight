@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -179,22 +179,22 @@ void InrImageIO::ReadImageInformation()
     {
         if(it->first == "XDIM")
         {
-            int xdim = ::boost::lexical_cast<int>(it->second);
+            int xdim = boost::lexical_cast<int>(it->second);
             this->SetDimensions(0, xdim);
         }
         else if(it->first == "YDIM")
         {
-            int ydim = ::boost::lexical_cast<int>(it->second);
+            int ydim = boost::lexical_cast<int>(it->second);
             this->SetDimensions(1, ydim);
         }
         else if(it->first == "ZDIM")
         {
-            int zdim = ::boost::lexical_cast<int>(it->second);
+            int zdim = boost::lexical_cast<int>(it->second);
             this->SetDimensions(2, zdim);
         }
         else if(it->first == "VDIM")
         {
-            int vdim = ::boost::lexical_cast<int>(it->second);
+            int vdim = boost::lexical_cast<int>(it->second);
             if(vdim == 1)
             {
                 SetPixelType(SCALAR);
@@ -208,17 +208,17 @@ void InrImageIO::ReadImageInformation()
         }
         else if(it->first == "VX")
         {
-            float vx = ::boost::lexical_cast<float>(it->second);
+            float vx = boost::lexical_cast<float>(it->second);
             this->SetSpacing(0, vx);
         }
         else if(it->first == "VY")
         {
-            float vy = ::boost::lexical_cast<float>(it->second);
+            float vy = boost::lexical_cast<float>(it->second);
             this->SetSpacing(1, vy);
         }
         else if(it->first == "VZ")
         {
-            float vz = ::boost::lexical_cast<float>(it->second);
+            float vz = boost::lexical_cast<float>(it->second);
             this->SetSpacing(2, vz);
         }
         else if(it->first == "TYPE")

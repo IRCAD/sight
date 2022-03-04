@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,10 @@
 #include <core/runtime/Plugin.hpp>
 #include <core/thread/Worker.hpp>
 
+/**
+ * Do not mark `EXTIMELINE` as incorrect.
+ * cspell:ignore EXTIMELINE
+ */
 namespace ExTimeLine
 {
 

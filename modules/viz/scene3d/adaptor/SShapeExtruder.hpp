@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SShapeExtruder final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SShapeExtruder, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SShapeExtruder, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the slot and the signal.
     MODULE_VIZ_SCENE3D_API SShapeExtruder() noexcept;
@@ -116,36 +116,36 @@ private:
          * @param _b second point of the triangle.
          * @param _c third point of the triangle.
          */
-        Triangle2D(const ::Ogre::Vector2& _a, const ::Ogre::Vector2& _b, const ::Ogre::Vector2& _c);
+        Triangle2D(const Ogre::Vector2& _a, const Ogre::Vector2& _b, const Ogre::Vector2& _c);
 
         /// Compare two triangles ID.
         inline bool operator<(const Triangle2D& _second) const;
 
         /// Defines the first point of the triangle.
-        ::Ogre::Vector2 a;
+        Ogre::Vector2 a;
 
         /// Defines the second point of the triangle.
-        ::Ogre::Vector2 b;
+        Ogre::Vector2 b;
 
         /// Defines the third point of the triangle.
-        ::Ogre::Vector2 c;
+        Ogre::Vector2 c;
 
         /// Defines the center of the circumscribed circle.
-        ::Ogre::Vector2 center;
+        Ogre::Vector2 center;
 
         /// Defines the radius of the circumscribed circle.
         float radius;
 
         /// Defines the barycenter.
-        ::Ogre::Vector2 barycentre;
+        Ogre::Vector2 barycentre;
 
         /// Defines the unique ID of the triangle.
-        size_t id;
+        std::size_t id;
 
     private:
 
         /// Defines the next ID to used for triangles.
-        inline static size_t s_id = 0;
+        inline static std::size_t s_id = 0;
     };
 
     /// Represents a 3D triangle by three points.
@@ -157,16 +157,16 @@ private:
          * @param _b second point of the triangle.
          * @param _c third point of the triangle.
          */
-        inline Triangle3D(const ::Ogre::Vector3& _a, const ::Ogre::Vector3& _b, const ::Ogre::Vector3& _c);
+        inline Triangle3D(const Ogre::Vector3& _a, const Ogre::Vector3& _b, const Ogre::Vector3& _c);
 
         /// Defines the first point of the triangle.
-        ::Ogre::Vector3 a;
+        Ogre::Vector3 a;
 
         /// Defines the second point of the triangle.
-        ::Ogre::Vector3 b;
+        Ogre::Vector3 b;
 
         /// Defines the third point of the triangle.
-        ::Ogre::Vector3 c;
+        Ogre::Vector3 c;
     };
 
     /// Represents an edge (a segment).
@@ -177,7 +177,7 @@ private:
          * @param _a first point of the edge.
          * @param _b second point of the edge.
          */
-        inline Edge(const ::Ogre::Vector2& _a, const ::Ogre::Vector2& _b);
+        inline Edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b);
 
         /// Checks if the segment intersects an other one.
         bool intersect(Edge _edge) const;
@@ -186,14 +186,14 @@ private:
         inline bool operator==(const Edge& _edge) const;
 
         /// Defines the first point of the triangle.
-        ::Ogre::Vector2 a;
+        Ogre::Vector2 a;
 
         /// Defines the second point of the triangle.
-        ::Ogre::Vector2 b;
+        Ogre::Vector2 b;
     };
 
     /// Computes the camera direction vector.
-    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const _cam);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const _cam);
 
     /// Sets if the tool is enabled or not.
     void enableTool(bool _enable);
@@ -209,7 +209,7 @@ private:
      * @param _y y screen coordinate.
      * @return the tool, near and far 3D intersection in the world space.
      */
-    std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3> getNearFarRayPositions(int _x, int _y) const;
+    std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> getNearFarRayPositions(int _x, int _y) const;
 
     /**
      * @brief Cancels further interactions.
@@ -265,12 +265,12 @@ private:
      * @param _wordTriangulation vector where all generated triangles are pushed.
      */
     void generateDelaunayTriangulation(
-        const std::vector< ::Ogre::Vector3>& _points,
+        const std::vector<Ogre::Vector3>& _points,
         std::vector<Triangle3D>& _wordTriangulation
     ) const;
 
     /// Adds a point to the triangulation with the delaunay constraints.
-    void addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const ::Ogre::Vector2& _sommet) const;
+    void addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet) const;
 
     /**
      * @brief Add a constrained edge to the triangulation. IT inserts a new point corresponding to the midpoint of the
@@ -282,7 +282,7 @@ private:
      * @param _depth used only by this method because it is recursive, it avoids stack overflow.
      * @return a list of new constrained generated points.
      */
-    std::list< ::Ogre::Vector2> addConstraints(
+    std::list<Ogre::Vector2> addConstraints(
         std::vector<Triangle2D>& _triangulation,
         const Edge& _edge,
         int _depth = 0
@@ -300,10 +300,10 @@ private:
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Defines the color of the lasso's line.
-    ::Ogre::ColourValue m_lineColor {::Ogre::ColourValue::White};
+    Ogre::ColourValue m_lineColor {Ogre::ColourValue::White};
 
     /// Defines the color of the lasso's edge.
-    ::Ogre::ColourValue m_edgeColor {::Ogre::ColourValue::White};
+    Ogre::ColourValue m_edgeColor {Ogre::ColourValue::White};
 
     /// Handles the tool activation state.
     bool m_toolEnableState {false};
@@ -315,37 +315,37 @@ private:
     bool m_leftButtonMoveState {false};
 
     /// Defines the plane where the lasso tool is drawn.
-    ::Ogre::Plane m_lassoToolPlane;
+    Ogre::Plane m_lassoToolPlane;
 
     /// Defines the near plane where the lasso work.
-    ::Ogre::Plane m_lassoNearPlane;
+    Ogre::Plane m_lassoNearPlane;
 
     /// Defines the far plane where the lasso work.
-    ::Ogre::Plane m_lassoFarPlane;
+    Ogre::Plane m_lassoFarPlane;
 
     /// Stores all position clicked or clicked and moved that are at near to the camera.
-    std::vector< ::Ogre::Vector3> m_lassoToolPositions;
+    std::vector<Ogre::Vector3> m_lassoToolPositions;
 
     /// Stores all position clicked or clicked and moved that are near to the camera.
-    std::vector< ::Ogre::Vector3> m_lassoNearPositions;
+    std::vector<Ogre::Vector3> m_lassoNearPositions;
 
     /// Stores same position than near ones, but at the edge of the world bounding box.
-    std::vector< ::Ogre::Vector3> m_lassoFarPositions;
+    std::vector<Ogre::Vector3> m_lassoFarPositions;
 
     /// Stores all clicked position.
-    std::vector< ::Ogre::Vector3> m_lassoEdgePositions;
+    std::vector<Ogre::Vector3> m_lassoEdgePositions;
 
     /// Defines the radius of each point drawn at edges positions.
     const float m_lassoEdgeSize {0.005f};
 
     /// Contains the node where all manual objects that represent the lasso are attached.
-    ::Ogre::SceneNode* m_lassoNode {nullptr};
+    Ogre::SceneNode* m_lassoNode {nullptr};
 
     /// Contains the lasso object.
-    ::Ogre::ManualObject* m_lasso {nullptr};
+    Ogre::ManualObject* m_lasso {nullptr};
 
     /// Contains the last lasso line, this line is drawn between the last position and the current mouse position.
-    ::Ogre::ManualObject* m_lastLassoLine {nullptr};
+    Ogre::ManualObject* m_lastLassoLine {nullptr};
 
     /// Contains the signal sent when interactions are finished.
     core::com::Signal<void()>::sptr m_toolDisabledSig;
@@ -363,9 +363,9 @@ bool SShapeExtruder::Triangle2D::operator<(const Triangle2D& _second) const
 //------------------------------------------------------------------------------
 
 SShapeExtruder::Triangle3D::Triangle3D(
-    const ::Ogre::Vector3& _a,
-    const ::Ogre::Vector3& _b,
-    const ::Ogre::Vector3& _c
+    const Ogre::Vector3& _a,
+    const Ogre::Vector3& _b,
+    const Ogre::Vector3& _c
 ) :
     a(_a),
     b(_b),
@@ -375,7 +375,7 @@ SShapeExtruder::Triangle3D::Triangle3D(
 
 //------------------------------------------------------------------------------
 
-SShapeExtruder::Edge::Edge(const ::Ogre::Vector2& _a, const ::Ogre::Vector2& _b) :
+SShapeExtruder::Edge::Edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b) :
     a(_a),
     b(_b)
 {

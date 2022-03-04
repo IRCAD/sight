@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,11 +67,11 @@ namespace sight::module::ui::base
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  */
-class MODULE_UI_BASE_CLASS_API SConfigLauncher : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SConfigLauncher : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SConfigLauncher, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SConfigLauncher, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SConfigLauncher() noexcept;
@@ -112,12 +112,11 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::sight::module::ui::base::SConfigLauncher" type="ui::base::IAction">
+       <service impl="sight::module::ui::base::SConfigLauncher" type="ui::base::IAction">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>
-                        <parameter replace="SERIESDB" by="medicalData"  />
-                        <parameter replace="IMAGE" by="@values.image"  />
+                        <parameter replace="SERIESDB" by="medicalData" />
                     </parameters>
                 </appConfig>
             </config>

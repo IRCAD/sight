@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STestNoData);
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STestNoData2);
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Input);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1OptInput);
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest2Inputs);
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest2InputsV2);
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest4Inputs);

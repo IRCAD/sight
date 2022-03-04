@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace ModelSeries
 
 /**
  * @brief Defines a validator which checks that the ModelSeries contains one and only one Tool.
- * @note If the given Obect is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
+ * @note If the given Object is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
  *       with one and only one Tool.
  */
 class MODULE_ACTIVITY_CLASS_API ContainOneTool : public sight::activity::IObjectValidator
@@ -43,12 +43,12 @@ public:
 
     SIGHT_DECLARE_CLASS(
         ContainOneTool,
-        ::sight::activity::IObjectValidator,
-        ::sight::activity::validator::factory::New<ContainOneTool>
+        sight::activity::IObjectValidator,
+        sight::activity::validator::factory::New<ContainOneTool>
     )
 
     /// Constructor. Do nothing.
-    MODULE_ACTIVITY_API ContainOneTool(::sight::activity::IValidator::Key key);
+    MODULE_ACTIVITY_API ContainOneTool(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
     MODULE_ACTIVITY_API virtual ~ContainOneTool();

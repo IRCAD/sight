@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void SCameraSeriesEditor::configuring()
     sight::ui::base::IGuiContainer::initialize();
 
     service::IService::ConfigType config = this->getConfigTree();
-    m_camIndex = config.get<size_t>("index", 1);
+    m_camIndex = config.get<std::size_t>("index", 1);
 }
 
 // -------------------------------------------------------------------------

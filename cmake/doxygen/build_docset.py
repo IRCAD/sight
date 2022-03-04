@@ -3,6 +3,7 @@
 Generate a dash docset from a doxygen documentation.
 """
 
+# cspell: disable
 import json
 import os
 from pathlib import Path

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
     void addModules(const std::filesystem::path& repository) override;
 
     /**
-     * @brief       Retrieves the module for the specified idenfier.
+     * @brief       Retrieves the module for the specified identifier.
      *
      * @param[in]   identifier  a string containing a module identifier
      * @param[in]   version     the version of the module (undefined by default)
@@ -166,7 +166,7 @@ public:
     void unregisterModule(std::shared_ptr<detail::Module> module);
 
     /**
-     * @brief       Retrieves the enabled module for the specified idenfier.
+     * @brief       Retrieves the enabled module for the specified identifier.
      *
      * @param[in]   identifier  a string containing a module identifier
      * @param[in]   version     the version of the module (undefined by default)
@@ -178,7 +178,7 @@ public:
     //@}
 
     /**
-     * @name    Executable, Executable Factories & Dynamic Executable Instanciation
+     * @name    Executable, Executable Factories & Dynamic Executable Instantiation
      *
      * @{
      */

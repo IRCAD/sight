@@ -3,14 +3,14 @@
     To use this application, you should open a 3D image mask of an organ. An used the mesher actions to creates a
     reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
  -->
-<plugin id="Tuto08MesherWithGenericScene" >
+<plugin id="Tuto08MesherWithGenericScene">
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>Tuto08MesherWithGenericScene_AppCfg</id>
         <config>
 
@@ -24,13 +24,13 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>Tuto08MesherWithGenericScene</name>
                         <icon>Tuto08MesherWithGenericScene/tuto.ico</icon>
                     </frame>
-                    <menuBar/>
+                    <menuBar />
                 </gui>
                 <registry>
                     <menuBar sid="menuBarView" start="true" />
@@ -40,7 +40,7 @@
 
             <service uid="progressBarView" type="sight::module::ui::base::SJobBar" />
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -53,12 +53,12 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
                         <menuItem name="Save meshes" shortcut="Ctrl+S" />
-                        <separator/>
+                        <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuMesherView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Create Mesh 50" />
@@ -82,9 +82,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView" >
+            <service uid="mainView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
@@ -96,9 +96,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="2" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -110,9 +110,9 @@
                 </registry>
             </service>
 
-            <service uid="organsView" type="sight::module::ui::base::SView" >
+            <service uid="organsView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::ToolboxLayoutManager" >
+                    <layout type="sight::ui::base::ToolboxLayoutManager">
                         <view caption="Organs" expanded="true" />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" />
@@ -125,9 +125,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneEditorsView" type="sight::module::ui::base::SView" >
+            <service uid="sceneEditorsView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -143,7 +143,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -155,55 +155,55 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
+            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true">
                 <in key="model" uid="modelSeries" />
                 <config layer="default" />
             </service>
 
-            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
+            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
                 <inout key="image" uid="image" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
+            <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
                 <inout key="image" uid="snapshot" />
                 <config layer="default" flip="true" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter">
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="saveModelSeriesAct" type="sight::module::ui::base::com::SStarter" >
+            <service uid="saveModelSeriesAct" type="sight::module::ui::base::com::SStarter">
                 <start_if_exists uid="modelSeriesWriterSrv" />
             </service>
 
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
-            <service uid="createMesh50Act" type="sight::module::ui::base::com::SStarter" >
+            <service uid="createMesh50Act" type="sight::module::ui::base::com::SStarter">
                 <start_if_exists uid="mesher50Srv" />
             </service>
 
-            <service uid="createMesh80Act" type="sight::module::ui::base::com::SStarter" >
+            <service uid="createMesh80Act" type="sight::module::ui::base::com::SStarter">
                 <start_if_exists uid="mesher80Srv" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="sight::module::ui::qt::com::SSignalButton" >
+            <service uid="snapshotSrv" type="sight::module::ui::qt::com::SSignalButton">
                 <config>
-                   <checkable>false</checkable>
-                   <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <checkable>false</checkable>
+                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="showNegatoSrv" type="sight::module::ui::qt::com::SSignalButton" >
+            <service uid="showNegatoSrv" type="sight::module::ui::qt::com::SSignalButton">
                 <config>
                     <checkable>true</checkable>
                     <icon>sight::module::ui::flaticons/RedCross.svg</icon>
@@ -214,19 +214,19 @@
                 </config>
             </service>
 
-            <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true" >
+            <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true">
                 <inout key="modelSeries" uid="modelSeries" />
                 <columns>
                     <organ_name>@organ_name</organ_name>
                 </columns>
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
+            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="mesher50Srv" type="sight::module::filter::mesh::SVTKMesher" >
+            <service uid="mesher50Srv" type="sight::module::filter::mesh::SVTKMesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
                 <config>
@@ -234,7 +234,7 @@
                 </config>
             </service>
 
-            <service uid="mesher80Srv" type="sight::module::filter::mesh::SVTKMesher" >
+            <service uid="mesher80Srv" type="sight::module::filter::mesh::SVTKMesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
                 <config>
@@ -242,49 +242,40 @@
                 </config>
             </service>
 
-            <service uid="modelSeriesWriterSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="modelSeriesWriterSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="modelSeries" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>
+            <!-- extract a sight::data::Image from the sight::data::ImageSeries -->
+            <service uid="extractImageSrv" type="sight::module::data::SGetImage">
+                <in key="imageSeries" uid="imageSeries" />
+                <out key="image" uid="image" />
 
-            <!-- extract a ::sight::data::Image from the ::sight::data::ImageSeries -->
-            <service uid="extractImageSrv" type="sight::module::data::SExtractObj" >
-               <inout key="source" uid="imageSeries" >
-                   <extract from="@image" />
-               </inout>
-               <out group="target" >
-                   <key uid="image" />
-               </out>
             </service>
 
-            <!-- This service converts a simple fwData::Image to medical Image -->
-            <service uid="medicaImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="image" />
-            </service>
-
-            <service uid="updaterReconstSrv" type="sight::module::data::updater::SObjFromSlot" >
+            <service uid="updaterReconstSrv" type="sight::module::data::SSelectObject">
                 <out key="object" uid="reconstruction" />
             </service>
 
-            <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor" autoConnect="true" >
+            <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor" autoConnect="true">
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
-            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="true" >
+            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="true">
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::module::io::atoms::SWriter" />
+                <addSelection service="sight::module::io::session::SWriter" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -330,7 +321,6 @@
             <start uid="progressBarView" />
             <start uid="imageWriterSrv" />
             <start uid="updaterReconstSrv" />
-            <start uid="medicaImageConverterSrv" />
             <start uid="representationEditorSrv" />
             <start uid="organMaterialEditorSrv" />
             <start uid="sliderIndexEditorSrv" />

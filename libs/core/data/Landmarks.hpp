@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 #include <map>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Landmarks));
-
 namespace sight::data
 {
 
@@ -54,7 +52,7 @@ public:
         CUBE
     };
 
-    struct LandmarksGroup
+    struct DATA_CLASS_API LandmarksGroup
     {
         LandmarksGroup(ColorType color, SizeType size, Shape shape, bool visibility) :
             m_color(color),
@@ -64,6 +62,12 @@ public:
         {
         }
 
+        /// Equality comparison operators
+        /// @{
+        DATA_API bool operator==(const LandmarksGroup& other) const noexcept;
+        DATA_API bool operator!=(const LandmarksGroup& other) const noexcept;
+        /// @}
+
         ColorType m_color;
         SizeType m_size;
         Shape m_shape;
@@ -71,24 +75,19 @@ public:
         PointContainer m_points;
     };
 
-    SIGHT_DECLARE_CLASS(Landmarks, data::Object, data::factory::New<Landmarks>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Landmarks));
+    SIGHT_DECLARE_CLASS(Landmarks, Object, factory::New<Landmarks>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Landmarks(data::Object::Key key);
+    DATA_API Landmarks(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Landmarks();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Add a new landmark group
@@ -176,21 +175,21 @@ public:
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API void insertPoint(const std::string& name, const size_t index, const PointType& point);
+    DATA_API void insertPoint(const std::string& name, const std::size_t index, const PointType& point);
 
     /**
      * @brief Get the point at the given index
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API const PointType& getPoint(const std::string& name, size_t index) const;
+    DATA_API const PointType& getPoint(const std::string& name, std::size_t index) const;
 
     /**
      * @brief Get the point at the given index
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API PointType& getPoint(const std::string& name, size_t index);
+    DATA_API PointType& getPoint(const std::string& name, std::size_t index);
 
     /**
      * @brief Get all group's points
@@ -204,7 +203,7 @@ public:
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API void removePoint(const std::string& name, size_t index);
+    DATA_API void removePoint(const std::string& name, std::size_t index);
 
     /**
      * @brief Remove all the group's points
@@ -214,13 +213,13 @@ public:
     DATA_API void clearPoints(const std::string& name);
 
     /// Return the number of groups
-    size_t getNumberOfGroups() const;
+    std::size_t numGroups() const;
 
     /// Return the number of points in the entire structure
-    DATA_API size_t getNumberOfPoints() const;
+    DATA_API std::size_t numPoints() const;
 
     /// Return the number of points in the group
-    DATA_API size_t getNumberOfPoints(const std::string& name) const;
+    DATA_API std::size_t numPoints(const std::string& name) const;
 
     /**
      * @name Signals
@@ -239,15 +238,15 @@ public:
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_ADDED_SIG;
 
     /// Type of signal when a point is removed
-    typedef core::com::Signal<void (std::string name, size_t index)> PointRemovedSignalType;
+    typedef core::com::Signal<void (std::string name, std::size_t index)> PointRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_REMOVED_SIG;
 
     /// Type of signal when a point is inserted
-    typedef core::com::Signal<void (std::string name, size_t index)> PointInsertedSignalType;
+    typedef core::com::Signal<void (std::string name, std::size_t index)> PointInsertedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_INSERTED_SIG;
 
     /// Type of signal when a point is modified
-    typedef core::com::Signal<void (std::string name, size_t index)> PointModifiedSigType;
+    typedef core::com::Signal<void (std::string name, std::size_t index)> PointModifiedSigType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_MODIFIED_SIG;
 
     /// Type of signal when group properties changed
@@ -259,16 +258,27 @@ public:
     DATA_API static const core::com::Signals::SignalKeyType s_GROUP_RENAMED_SIG;
 
     /// Type of signal when point is selected
-    typedef core::com::Signal<void (std::string name, size_t index)> PointSelectedSignalType;
+    typedef core::com::Signal<void (std::string name, std::size_t index)> PointSelectedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_SELECTED_SIG;
 
     /// Type of signal when point is deselected
-    typedef core::com::Signal<void (std::string name, size_t index)> PointDeselectedSignalType;
+    typedef core::com::Signal<void (std::string name, std::size_t index)> PointDeselectedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_DESELECTED_SIG;
 
 /**
  * @}
  */
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Landmarks& other) const noexcept;
+    DATA_API bool operator!=(const Landmarks& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 
@@ -278,7 +288,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline size_t Landmarks::getNumberOfGroups() const
+inline std::size_t Landmarks::numGroups() const
 {
     return m_landmarks.size();
 }

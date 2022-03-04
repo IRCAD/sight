@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DNegatoWithTF</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -30,7 +30,7 @@
                 <view sid="multiView_negato_bottom" start="true" />
             </registry>
         </service>
-        
+
         <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
@@ -135,7 +135,7 @@
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
-            <addSelection service="sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
         </service>
 
         <!-- START AND STOP SERVICES -->

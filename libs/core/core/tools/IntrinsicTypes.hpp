@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,9 +30,9 @@ namespace sight::core::tools
 {
 
 #ifdef DEBUG
-typedef ::boost::mpl::push_back<IntegerTypes, float>::type IntrinsicTypes;
+typedef boost::mpl::push_back<IntegerTypes, float>::type IntrinsicTypes;
 #else
-typedef ::boost::mpl::push_back< ::boost::mpl::push_back<IntegerTypes, float>::type, double>::type IntrinsicTypes;
+typedef boost::mpl::push_back<boost::mpl::push_back<IntegerTypes, float>::type, double>::type IntrinsicTypes;
 #endif
 
 } // end namespace sight::core::tools

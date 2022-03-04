@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,13 +54,13 @@ struct SpheroidExtractor
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
-        typedef typename ::itk::Image<std::uint16_t, 3> BinaryImageType;
+        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
+        typedef typename itk::Image<std::uint16_t, 3> BinaryImageType;
 
-        typename ImageType::Pointer inputImage = io::itk::itkImageFactory<ImageType>(params.inputImage);
+        typename ImageType::Pointer inputImage = io::itk::moveToItk<ImageType>(params.inputImage);
 
-        typename ::itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::Pointer thresholdFilter =
-            ::itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::New();
+        typename itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::Pointer thresholdFilter =
+            itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::New();
 
         PIXELTYPE threshold = PIXELTYPE(params.threshold);
         thresholdFilter->SetLowerThreshold(threshold);
@@ -73,14 +73,14 @@ struct SpheroidExtractor
 
         BinaryImageType::Pointer binaryImage =
             thresholdFilter->GetOutput();
-        ::itk::ConnectedComponentImageFilter<BinaryImageType, BinaryImageType>::Pointer cc =
-            ::itk::ConnectedComponentImageFilter<BinaryImageType, BinaryImageType>::New();
+        itk::ConnectedComponentImageFilter<BinaryImageType, BinaryImageType>::Pointer cc =
+            itk::ConnectedComponentImageFilter<BinaryImageType, BinaryImageType>::New();
 
         cc->SetInput(thresholdFilter->GetOutput());
         cc->FullyConnectedOn();
         cc->Update();
 
-        typedef ::itk::LabelGeometryImageFilter<BinaryImageType, ImageType> LabelStatsFilterType;
+        typedef itk::LabelGeometryImageFilter<BinaryImageType, ImageType> LabelStatsFilterType;
         typename LabelStatsFilterType::Pointer labelGeometryFilter = LabelStatsFilterType::New();
 
         labelGeometryFilter->SetInput(cc->GetOutput());

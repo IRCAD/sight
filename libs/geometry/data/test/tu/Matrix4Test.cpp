@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -168,12 +168,12 @@ void Matrix4Test::matrixTest()
 
     // Test matrix-matrix multiplication
     geometry::data::multiply(tm1, tm2, tm3);
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             double val = 0;
-            for(size_t k = 0 ; k < 4 ; ++k)
+            for(std::size_t k = 0 ; k < 4 ; ++k)
             {
                 val += tm1.getCoefficient(i, k) * tm2.getCoefficient(k, j);
             }
@@ -274,9 +274,9 @@ void Matrix4Test::glmGetterSetterTest()
 
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(glmMat[i][j], coefs[i + j * 4]);
         }
@@ -289,7 +289,7 @@ void Matrix4Test::glmGetterSetterTest()
                        .13, 0.1, -0.1, 0.2
     };
 
-    glmMat = ::glm::make_mat4<double>(coefs2);
+    glmMat = glm::make_mat4<double>(coefs2);
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::setTF3DFromMatrix");
@@ -302,9 +302,9 @@ void Matrix4Test::glmGetterSetterTest()
     geometry::data::setTF3DFromMatrix(mat, glmMat);
 #endif
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(mat.getCoefficient(i, j), coefs2[i + j * 4]);
         }

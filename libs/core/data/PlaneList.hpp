@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,39 +32,32 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (PlaneList));
-
 namespace sight::data
 {
 
 /**
  * @brief   This class defines a list of planes.
- * @see     data::Point
+ * @see     Point
  */
 class DATA_CLASS_API PlaneList : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PlaneList, data::Object, data::factory::New<PlaneList>);
+    SIGHT_DECLARE_CLASS(PlaneList, Object, factory::New<PlaneList>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (PlaneList));
-
-    typedef std::vector<data::Plane::sptr> PlaneListContainer;
+    typedef std::vector<Plane::sptr> PlaneListContainer;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API PlaneList(data::Object::Key key);
+    DATA_API PlaneList(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~PlaneList();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /** @{
      *  @brief get/set container of all planes
@@ -79,11 +72,11 @@ public:
      * @{
      */
     /// Signal emitted when a plane is added
-    typedef core::com::Signal<void (data::Plane::sptr)> PlaneAddedSignalType;
+    typedef core::com::Signal<void (Plane::sptr)> PlaneAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_PLANE_ADDED_SIG;
 
     /// Signal emitted when a plane is removed
-    typedef core::com::Signal<void (data::Plane::sptr)> PlaneRemovedSignalType;
+    typedef core::com::Signal<void (Plane::sptr)> PlaneRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_PLANE_REMOVED_SIG;
 
     /// Signal emitted when the visibility changed
@@ -93,7 +86,16 @@ public:
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const PlaneList& other) const noexcept;
+    DATA_API bool operator!=(const PlaneList& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! Planes container
     PlaneListContainer m_vPlanes;

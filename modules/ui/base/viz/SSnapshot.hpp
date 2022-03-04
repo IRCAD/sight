@@ -42,11 +42,11 @@ namespace sight::module::ui::base::viz
  * Send a 'snapped' signal containing the filename used to save the snapshot.
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
-class MODULE_UI_BASE_CLASS_API SSnapshot : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SSnapshot : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSnapshot, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SSnapshot, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SSnapshot() noexcept;

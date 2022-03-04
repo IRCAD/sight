@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 {
     const auto* const camera = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
     const auto vpPos         = helper::Camera::convertFromWindowToViewportSpace(*camera, _x, _y);
-    const ::Ogre::Ray vpRay  = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
+    const Ogre::Ray vpRay    = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
 #ifdef SHOW_BOUNDS
     if(m_selectedObject)
@@ -99,30 +99,30 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
 //-----------------------------------------------------------------------------
 
-::Ogre::SceneNode* IPicker::getCameraSceneNode() const
+Ogre::SceneNode* IPicker::getCameraSceneNode() const
 {
-    SIGHT_ASSERT("The associated SceneManager is not instanciated", m_sceneManager);
+    SIGHT_ASSERT("The associated SceneManager is not instantiated", m_sceneManager);
     return m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)->getParentSceneNode();
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::Vector3 IPicker::getIntersectionInWorldSpace() const
+Ogre::Vector3 IPicker::getIntersectionInWorldSpace() const
 {
     return m_rayIntersect;
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::Vector2 IPicker::getIntersectionInViewSpace() const
+Ogre::Vector2 IPicker::getIntersectionInViewSpace() const
 {
-    ::Ogre::Camera* cam        = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    ::Ogre::Matrix4 viewMatrix = cam->getViewMatrix();
-    ::Ogre::Matrix4 projMatrix = cam->getProjectionMatrixWithRSDepth();
+    Ogre::Camera* cam        = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    Ogre::Matrix4 viewMatrix = cam->getViewMatrix();
+    Ogre::Matrix4 projMatrix = cam->getProjectionMatrixWithRSDepth();
 
-    ::Ogre::Vector3 point = projMatrix * (viewMatrix * m_rayIntersect);
+    Ogre::Vector3 point = projMatrix * (viewMatrix * m_rayIntersect);
 
-    ::Ogre::Vector2 screenSpacePoint = ::Ogre::Vector2::ZERO;
+    Ogre::Vector2 screenSpacePoint = Ogre::Vector2::ZERO;
     screenSpacePoint.x = (point.x / 2.f) + 0.5f;
     screenSpacePoint.y = (point.y / 2.f) + 0.5f;
 
@@ -131,23 +131,23 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
 //-----------------------------------------------------------------------------
 
-::Ogre::Vector2 IPicker::getIntersectionInPixel() const
+Ogre::Vector2 IPicker::getIntersectionInPixel() const
 {
-    ::Ogre::Vector2 screenSpacePoint = getIntersectionInViewSpace();
+    Ogre::Vector2 screenSpacePoint = getIntersectionInViewSpace();
 
-    ::Ogre::Camera* cam        = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    ::Ogre::Viewport* viewport = cam->getViewport();
+    Ogre::Camera* cam        = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    Ogre::Viewport* viewport = cam->getViewport();
 
     /// We need to round the result to get the right pixel
-    screenSpacePoint.x = std::round(screenSpacePoint.x * static_cast< ::Ogre::Real>(viewport->getActualWidth()));
-    screenSpacePoint.y = std::round(screenSpacePoint.y * static_cast< ::Ogre::Real>(viewport->getActualHeight()));
+    screenSpacePoint.x = std::round(screenSpacePoint.x * static_cast<Ogre::Real>(viewport->getActualWidth()));
+    screenSpacePoint.y = std::round(screenSpacePoint.y * static_cast<Ogre::Real>(viewport->getActualHeight()));
 
     return screenSpacePoint;
 }
 
 //-----------------------------------------------------------------------------
 
-void IPicker::setSceneManager(::Ogre::SceneManager* _sceneMgr)
+void IPicker::setSceneManager(Ogre::SceneManager* _sceneMgr)
 {
     m_sceneManager    = _sceneMgr;
     m_hasSceneManager = true;

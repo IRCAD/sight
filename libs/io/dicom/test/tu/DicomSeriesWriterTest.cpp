@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,25 +25,21 @@
 #include <core/tools/System.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/dicom/helper/DicomAnonymizer.hpp>
 #include <io/dicom/helper/DicomSeriesWriter.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
-#include <io/zip/ReadZipArchive.hpp>
 #include <io/zip/WriteDirArchive.hpp>
-#include <io/zip/WriteZipArchive.hpp>
 
 #include <utest/Filter.hpp>
 
 #include <utestData/Data.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::DicomSeriesWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomSeriesWriterTest);
 
 namespace sight::io::dicom
 {
@@ -79,7 +75,7 @@ void DicomSeriesWriterTest::setUp()
     reader->setObject(srcSeriesDB);
     reader->setFolder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), srcSeriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), srcSeriesDB->size());
 
     m_srcDicomSeries =
         data::DicomSeries::dynamicCast(srcSeriesDB->getContainer().front());
@@ -107,27 +103,21 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
     reader->setObject(destSeriesDB);
     reader->setFolder(p);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), destSeriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), destSeriesDB->size());
     data::DicomSeries::sptr destDicomSeries =
         data::DicomSeries::dynamicCast(destSeriesDB->getContainer().front());
 
     // Compare Source and Destination Series
-    ExcludeSetType excludeSetPrefix;
-    excludeSetPrefix.insert("dicom_container");
-
-    ExcludeSetType excludeSet;
     if(anonymized)
     {
-        excludeSet.insert("instance_uid");
-        excludeSet.insert("study.instance_uid");
-        excludeSet.insert("study.date");
-        excludeSet.insert("patient.birth_date");
+        destDicomSeries->setInstanceUID(m_srcDicomSeries->getInstanceUID());
+        destDicomSeries->setStudy(m_srcDicomSeries->getStudy());
+        destDicomSeries->setPatient(m_srcDicomSeries->getPatient());
     }
 
-    CPPUNIT_ASSERT_MESSAGE(
-        "Series not equal",
-        utestData::helper::compare(m_srcDicomSeries, destDicomSeries, excludeSet, excludeSetPrefix)
-    );
+    destDicomSeries->setDicomContainer(m_srcDicomSeries->getDicomContainer());
+
+    CPPUNIT_ASSERT_MESSAGE("Series not equal", *m_srcDicomSeries == *destDicomSeries);
 }
 
 // TODO: This test is disabled as DicomSeries doesn't store Binaries anymore.

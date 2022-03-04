@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::qt3dTest::ut::MeshTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::MeshTest);
 
 namespace sight::viz::qt3dTest
 {
@@ -79,7 +79,7 @@ void MeshTest::setCubeMesh()
     const data::Mesh::sptr mesh = data::Mesh::New();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     mesh->pushPoint(0.0, 0.0, 0.0);
     mesh->pushPoint(1.0, 0.0, 0.0);
@@ -117,37 +117,31 @@ void MeshTest::setCubeMesh()
     CPPUNIT_ASSERT_EQUAL(Qt3DRender::QGeometryRenderer::Triangles, geomRenderer->primitiveType());
 
     // Asserts number of vertices, normals, and indexes.
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfPoints()), posAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfPoints()), normalAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfCells() * 3), indexAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), posAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), normalAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numCells() * 3), indexAttribute->count());
 
     // Asserts each point is at the right position.
-    auto itrPt          = mesh->begin<data::iterator::ConstPointIterator>();
-    const auto endItrPt = mesh->end<data::iterator::ConstPointIterator>();
-
     const QByteArray posBufferDataByte = posAttribute->buffer()->data();
     const float* const posBufferData   = reinterpret_cast<const float*>(posBufferDataByte.data());
     unsigned int count                 = 0;
-    for( ; itrPt != endItrPt ; ++itrPt)
+    for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
-        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->x) - posBufferData[count] < 0.01f);
-        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->y) - posBufferData[count + 1] < 0.01f);
-        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->z) - posBufferData[count + 2] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.x) - posBufferData[count] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.y) - posBufferData[count + 1] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.z) - posBufferData[count + 2] < 0.01f);
         count += 3;
     }
 
     // Asserts indexes are in the right order.
-    auto itrCell      = mesh->begin<data::iterator::ConstCellIterator>();
-    const auto endItr = mesh->end<data::iterator::ConstCellIterator>();
-
     const QByteArray indexBufferDataByte      = indexAttribute->buffer()->data();
     const unsigned int* const indexBufferData = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
     count = 0;
-    for( ; itrCell != endItr ; ++itrCell)
+    for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
     {
-        for(unsigned int i = 0 ; i < itrCell->nbPoints ; ++i)
+        for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(itrCell->pointIdx[i]), indexBufferData[count]);
+            CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(cell.pt[i]), indexBufferData[count]);
             count++;
         }
     }
@@ -169,7 +163,7 @@ void MeshTest::centerCameraOnCube()
     const data::Mesh::sptr mesh = data::Mesh::New();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
-    const auto lock = mesh->lock();
+    const auto lock = mesh->dump_lock();
 
     mesh->pushPoint(0.0, 0.0, 0.0);
     mesh->pushPoint(1.0, 0.0, 0.0);

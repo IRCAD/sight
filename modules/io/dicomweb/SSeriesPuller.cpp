@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <filesystem>
 
@@ -143,16 +143,15 @@ void SSeriesPuller::stopping()
 
 void SSeriesPuller::updating()
 {
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    try
     {
-        m_serverHostname = hostname;
+        ui::base::Preferences preferences;
+        m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
-
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    catch(...)
     {
-        m_serverPort = std::stoi(port);
+        // Do nothing
     }
 
     if(m_isPulling)
@@ -228,7 +227,7 @@ void SSeriesPuller::pullSeries()
                 m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
 
                 pullSeriesVector.push_back(series);
-                m_instanceCount += series->getNumberOfInstances();
+                m_instanceCount += series->numInstances();
             }
 
             selectedSeriesVector.push_back(series);
@@ -278,8 +277,8 @@ void SSeriesPuller::pullSeries()
                 QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
                 const QJsonArray& seriesArray = jsonResponse.array();
 
-                const size_t seriesArraySize = seriesArray.count();
-                for(size_t i = 0 ; i < seriesArraySize ; ++i)
+                const std::size_t seriesArraySize = seriesArray.count();
+                for(std::size_t i = 0 ; i < seriesArraySize ; ++i)
                 {
                     const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
 
@@ -291,8 +290,8 @@ void SSeriesPuller::pullSeries()
                     const QJsonObject& jsonObj       = jsonResponse.object();
                     const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
 
-                    const size_t instancesArraySize = instancesArray.count();
-                    for(size_t j = 0 ; j < instancesArraySize ; ++j)
+                    const std::size_t instancesArraySize = instancesArray.count();
+                    for(std::size_t j = 0 ; j < instancesArraySize ; ++j)
                     {
                         const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
 

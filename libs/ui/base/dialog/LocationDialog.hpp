@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
     UI_BASE_API ui::base::dialog::ILocationDialog& setOption(ui::base::dialog::ILocationDialog::Options option)
     override;
 
-    /// Set the type of location for the dialog (SINGLE_FILE, FORLDER, MULTI_FILES)
+    /// Set the type of location for the dialog (SINGLE_FILE, FOLDER, MULTI_FILES)
     UI_BASE_API void setType(ui::base::dialog::ILocationDialog::Types type) override;
 
     /**

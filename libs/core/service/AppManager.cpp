@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,11 @@
 
 #include "service/AppManager.hpp"
 
+#include <core/com/Slots.hxx>
+
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
 #include <service/registry/Proxy.hpp>
-
-#include <core/com/Slots.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::service
 {
@@ -35,7 +34,7 @@ namespace sight::service
 static const core::com::Slots::SlotKeyType s_ADD_OBJECT_SLOT    = "addObject";
 static const core::com::Slots::SlotKeyType s_REMOVE_OBJECT_SLOT = "removeObject";
 
-size_t AppManager::s_counter = 0;
+std::size_t AppManager::s_counter = 0;
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +73,7 @@ void AppManager::create()
     m_addObjectConnection    = service::OSR::getRegisterSignal()->connect(this->slot(s_ADD_OBJECT_SLOT));
     m_removeObjectConnection = service::OSR::getUnregisterSignal()->connect(this->slot(s_REMOVE_OBJECT_SLOT));
 
-    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::getDefaultWorker();
     core::com::HasSlots::m_slots.setWorker(defaultWorker);
 }
 
@@ -225,7 +224,7 @@ void AppManager::AppManager::addService(const service::IService::sptr& srv, bool
     std::unique_lock<std::mutex> lock(m_serviceMutex);
 
     service::OSR::registerService(srv);
-    auto worker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto worker = core::thread::getDefaultWorker();
     srv->setWorker(worker);
 
     this->internalAddService(srv, autoStart, autoUpdate);
@@ -289,7 +288,7 @@ void AppManager::startServices()
 
     m_isStarted = true;
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
     futures.clear();
 
     for(const auto& srv : serviceToUpdate)
@@ -297,7 +296,7 @@ void AppManager::startServices()
         futures.push_back(srv->update());
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 //------------------------------------------------------------------------------
@@ -306,26 +305,32 @@ void AppManager::stopAndUnregisterServices()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
-    std::unique_lock<std::mutex> lock(m_serviceMutex);
-
-    // stop the started services
-    while(!m_startedService.empty())
     {
-        const auto& srv         = m_startedService.back();
-        const ServiceInfo& info = this->getServiceInfo(srv);
-        futures.emplace_back(this->stop(info));
+        std::unique_lock<std::mutex> lock(m_serviceMutex);
+
+        // stop the started services
+        while(!m_startedService.empty())
+        {
+            const auto& srv         = m_startedService.back();
+            const ServiceInfo& info = this->getServiceInfo(srv);
+            futures.emplace_back(this->stop(info));
+        }
     }
 
+    // This part in unlocked to allow potential async calls of add/removeObject() to not result in a deadlock
     std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
-    // unregister the services
-    for(auto& srv : m_services)
     {
-        service::OSR::unregisterService(srv.m_service.lock());
-    }
+        // unregister the services
+        std::unique_lock<std::mutex> lock(m_serviceMutex);
+        for(auto& srv : m_services)
+        {
+            service::OSR::unregisterService(srv.m_service.lock());
+        }
 
-    m_startedService.clear();
-    m_services.clear();
+        m_startedService.clear();
+        m_services.clear();
+    }
     m_isStarted = false;
 }
 
@@ -335,8 +340,8 @@ void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 {
     std::unique_lock<std::mutex> lock(m_serviceMutex);
 
-    static size_t count = 0;
-    std::string channel = proxy.m_channel;
+    static std::size_t count = 0;
+    std::string channel      = proxy.m_channel;
     if(channel == "undefined")
     {
         channel = "AppManager_channel_" + std::to_string(count++);
@@ -453,7 +458,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             futures.push_back(this->start(srvInfo));
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
         futures.clear();
 
         for(const auto& srv : serviceToUpdate)
@@ -461,7 +466,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             futures.push_back(srv->update());
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
     }
 
     m_registeredObject.insert(std::make_pair(id, obj));

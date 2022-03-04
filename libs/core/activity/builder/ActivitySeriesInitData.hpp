@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace builder
 {
 
 /**
- * @brief Defines an activity builder which instanciates a new requirement if minOccurs and maxOccurs are set to 0.
+ * @brief Defines an activity builder which instantiates a new requirement if minOccurs and maxOccurs are set to 0.
  */
 class ACTIVITY_CLASS_API ActivitySeriesInitData : public activity::builder::ActivitySeries
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <service/macros.hpp>
@@ -45,6 +44,8 @@ namespace sight::module::viz::scene3d::adaptor
 const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
+
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
 static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
@@ -59,6 +60,7 @@ SNegato2D::SNegato2D() noexcept :
 {
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
+    newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato2D::updateSlicesFromWorld, this);
 
     m_sliceIndexChangedSig = this->newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
 }
@@ -126,7 +128,7 @@ void SNegato2D::starting()
     }
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         sight::viz::scene3d::RESOURCE_GROUP,
         true
@@ -136,10 +138,10 @@ void SNegato2D::starting()
     m_gpuTF = std::unique_ptr<sight::viz::scene3d::TransferFunction>(new sight::viz::scene3d::TransferFunction());
     m_gpuTF->createTexture(this->getID());
 
-    // Scene node's instanciation
+    // Scene node's instantiation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
-    // Plane's instanciation
+    // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::Plane>(
         this->getID(),
         m_negatoSceneNode,
@@ -164,7 +166,7 @@ void SNegato2D::stopping()
 
     m_plane.reset();
 
-    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
+    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
@@ -213,7 +215,7 @@ void SNegato2D::newImage()
         const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
-        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+        if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
         {
             return;
         }
@@ -226,27 +228,11 @@ void SNegato2D::newImage()
         m_plane->setOriginPosition(origin);
 
         // Update Slice
-        const auto imgSize       = image->getSize2();
-        const auto axialIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_axialSliceIndexId
-        );
-        SIGHT_INFO_IF("Axial Idx field missing", !axialIdxField);
-        axialIdx = axialIdxField
-                   ? static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2] / 2);
+        namespace imHelper = data::helper::MedicalImage;
 
-        const auto frontalIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_frontalSliceIndexId
-        );
-        SIGHT_INFO_IF("Frontal Idx field missing", !frontalIdxField);
-        frontalIdx = frontalIdxField
-                     ? static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1] / 2);
-
-        const auto sagittalIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_sagittalSliceIndexId
-        );
-        SIGHT_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
-        sagittalIdx = sagittalIdxField
-                      ? static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0] / 2);
+        axialIdx    = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0)));
+        frontalIdx  = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)));
+        sagittalIdx = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)));
     }
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
@@ -297,7 +283,7 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
     this->getRenderService()->makeCurrent();
 
-    auto imgSize = image->getSize2();
+    auto imgSize = image->getSize();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].
@@ -319,10 +305,34 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 //------------------------------------------------------------------------------
 
+void SNegato2D::updateSlicesFromWorld(double _x, double _y, double _z)
+{
+    const auto image = m_image.lock();
+
+    Ogre::Vector3 point = {static_cast<float>(_x), static_cast<float>(_y), static_cast<float>(_z)};
+    Ogre::Vector3i slice_idx;
+    try
+    {
+        slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
+    }
+    catch(core::Exception& _e)
+    {
+        SIGHT_WARN("Cannot update slice index: " << _e.what());
+        return;
+    }
+
+    const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
+                         (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
+
+    sig->asyncEmit(slice_idx[2], slice_idx[1], slice_idx[0]);
+}
+
+//------------------------------------------------------------------------------
+
 void SNegato2D::updateShaderSliceIndexParameter()
 {
     this->getRenderService()->makeCurrent();
-    m_plane->changeSlice(m_currentSliceIndex[static_cast<size_t>(m_plane->getOrientationMode())]);
+    m_plane->changeSlice(m_currentSliceIndex[static_cast<std::size_t>(m_plane->getOrientationMode())]);
 
     this->requestRender();
 }
@@ -362,7 +372,7 @@ service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
+void SNegato2D::createPlane(const Ogre::Vector3& _spacing)
 {
     this->getRenderService()->makeCurrent();
 

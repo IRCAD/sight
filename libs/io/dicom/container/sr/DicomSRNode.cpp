@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void DicomSRNode::addSubNode(const SPTR(DicomSRNode)& node)
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::write(::gdcm::DataSet& dataset) const
+void DicomSRNode::write(gdcm::DataSet& dataset) const
 {
     // Value Type - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa040>(m_type, dataset);
@@ -75,7 +75,7 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
     // Concept Name Code Sequence - Type 1C
     if(!m_codedAttribute.getCodeValue().empty() && !m_codedAttribute.getCodingSchemeDesignator().empty())
     {
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence =
+        gdcm::SmartPointer<gdcm::SequenceOfItems> codeSequence =
             this->createConceptNameCodeSequence(m_codedAttribute);
         io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa043>(codeSequence, dataset);
     }
@@ -89,18 +89,18 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-::gdcm::SmartPointer< ::gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequence(
+gdcm::SmartPointer<gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequence(
     const DicomCodedAttribute& codedAttribute
 ) const
 {
     // Write code sequence
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence = new ::gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> codeSequence = new gdcm::SequenceOfItems();
     codeSequence->SetLengthToUndefined();
 
     // Create item (shall be one)
-    ::gdcm::Item item;
+    gdcm::Item item;
     item.SetVLToUndefined();
-    ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+    gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Code value - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0100>(codedAttribute.getCodeValue(), itemDataset);
@@ -131,17 +131,17 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::writeContentSequence(::gdcm::DataSet& dataset) const
+void DicomSRNode::writeContentSequence(gdcm::DataSet& dataset) const
 {
     // Create the content sequence
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
 
     // Write every node
     for(const SPTR(io::dicom::container::sr::DicomSRNode) & child : m_subNodeContainer)
     {
-        ::gdcm::Item item;
+        gdcm::Item item;
         item.SetVLToUndefined();
-        ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+        gdcm::DataSet& itemDataset = item.GetNestedDataSet();
         child->write(itemDataset);
         sequence->AddItem(item);
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,5 +98,24 @@ void Plane::setValue(data::Point::sptr _point1, data::Point::sptr _point2, data:
 }
 
 //------------------------------------------------------------------------------
+
+bool Plane::operator==(const Plane& other) const noexcept
+{
+    if(m_isIntersection != other.m_isIntersection
+       || !core::tools::is_equal(m_vPoints, other.m_vPoints))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Plane::operator!=(const Plane& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

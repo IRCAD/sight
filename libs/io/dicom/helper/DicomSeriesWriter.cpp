@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,11 +31,11 @@
 #include <data/DicomSeries.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
-#include <io/zip/WriteZipArchive.hpp>
+#include <io/zip/IWriteArchive.hpp>
 
 #include <boost/foreach.hpp>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::helper::DicomSeriesWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::helper::DicomSeriesWriter);
 
 namespace sight::io::dicom
 {
@@ -82,7 +82,7 @@ void DicomSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesWriter::getFilename(const size_t& instanceIndex)
+std::string DicomSeriesWriter::getFilename(const std::size_t& instanceIndex)
 {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(7);
@@ -133,9 +133,9 @@ void DicomSeriesWriter::processWrite()
         std::filesystem::create_directories(folder);
     }
 
-    std::size_t nbInstances = dicomSeries->getNumberOfInstances();
+    std::size_t nb_instances = dicomSeries->numInstances();
 
-    m_job->setTotalWorkUnits(nbInstances);
+    m_job->setTotalWorkUnits(nb_instances);
     unsigned int count = 0;
 
     // Write binary files
@@ -182,10 +182,10 @@ void DicomSeriesWriter::processWriteArchive()
 
     data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
-    const size_t nbInstances = dicomSeries->getNumberOfInstances();
-    unsigned int count       = 0;
+    const std::size_t nb_instances = dicomSeries->numInstances();
+    unsigned int count             = 0;
 
-    m_job->setTotalWorkUnits(nbInstances);
+    m_job->setTotalWorkUnits(nb_instances);
 
     for(const auto& value : dicomSeries->getDicomContainer())
     {
@@ -220,7 +220,7 @@ void DicomSeriesWriter::processWriteArchive()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesWriter::extension()
+std::string DicomSeriesWriter::extension() const
 {
     return "";
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     SIGHT_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
-    SPTR(::gdcm::SurfaceWriter) writer = std::make_shared< ::gdcm::SurfaceWriter>();
+    SPTR(gdcm::SurfaceWriter) writer = std::make_shared<gdcm::SurfaceWriter>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());

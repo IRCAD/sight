@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ public:
     UTESTDATA_API static SPTR(data::Study) createStudy();
 
     /// Returns an Equipment with dummy informations
-    UTESTDATA_API static SPTR(data::Equipment) createEquipement();
+    UTESTDATA_API static SPTR(data::Equipment) createequipment();
 
     /// Generates dummy informations for the series
     UTESTDATA_API static void generateSeriesInformation(SPTR(data::Series) series);
@@ -103,7 +103,7 @@ public:
      * @param rec   reconstruction to generate
      * @param index index of the reconstruction in reconstruction list (optional).
      * If index > -1, it will be used to prefix organName (and filename) by the index (ex: '0_Liver...')
-     * this can be helpful in tests to ensure taht readers will load reconstruction in the same order than the
+     * this can be helpful in tests to ensure that readers will load reconstruction in the same order than the
      * reconstructionDB.
      */
     UTESTDATA_API static void generateReconstruction(SPTR(data::Reconstruction) rec, int index = -1);

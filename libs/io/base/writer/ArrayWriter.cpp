@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <fstream>
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::ArrayWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::ArrayWriter);
 
 namespace sight::io::base
 {
@@ -54,10 +54,10 @@ void ArrayWriter::write()
 {
     std::filesystem::path file = getFile();
 
-    data::Array::csptr array = this->getConcreteObject();
-    size_t arraySizeInBytes  = array->getSizeInBytes();
-    const auto dumpLock      = array->lock();
-    const char* buff         = static_cast<const char*>(array->getBuffer());
+    data::Array::csptr array     = this->getConcreteObject();
+    std::size_t arraySizeInBytes = array->getSizeInBytes();
+    const auto dumpLock          = array->dump_lock();
+    const char* buff             = static_cast<const char*>(array->getBuffer());
 
     std::ofstream fs(file.string().c_str(), std::ios::binary | std::ios::trunc);
 
@@ -69,7 +69,7 @@ void ArrayWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ArrayWriter::extension()
+std::string ArrayWriter::extension() const
 {
     return ".raw";
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #include "data/ActivitySeries.hpp"
 
-#include <data/Composite.hpp>
-#include <data/Exception.hpp>
-#include <data/registry/macros.hpp>
+#include "data/Exception.hpp"
+#include "data/registry/macros.hpp"
 
 SIGHT_REGISTER_DATA(sight::data::ActivitySeries)
 
@@ -81,5 +80,24 @@ void ActivitySeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopy
 }
 
 //------------------------------------------------------------------------------
+
+bool ActivitySeries::operator==(const ActivitySeries& other) const noexcept
+{
+    if(m_activityConfigId != other.m_activityConfigId
+       || !core::tools::is_equal(m_data, other.m_data))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Series::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ActivitySeries::operator!=(const ActivitySeries& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

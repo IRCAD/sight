@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-        <service uid="myMenu" type="ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
+        <service uid="myMenu" type="ui::base::IMenu" impl="sight::module::ui::base::SMenu"
      * autoConnect="false" >
             <gui>
                 <layout>
@@ -96,7 +96,7 @@ public:
                 <menuItem sid="item1" start="true" />
                 <menuItem sid="item2" start="false" />
                 <menuItem sid="item3" start="false" />
-                <menu sid="mymenu" start="true" />
+                <menu sid="myMenu" start="true" />
                 <menuItem sid="actionQuit" start="false" />
             </registry>
         </service>
@@ -113,13 +113,13 @@ public:
      *
      * Register the menuItem containers for the associated services. Start the services if start=true.
      *
-     * If a menuItem has attribut start="false", the associated action won't be started and the menuItem will be
+     * If a menuItem has attribute start="false", the associated action won't be started and the menuItem will be
      * disabled.
-     * If a menuItem has attribut start="true", two possibilities: \n
-     *  - the associated action has attribut executable="false" then the menuItem will be disabled.\n
-     *  - the associated action has attribut executable="true" then the menuItem will be enabled.\n
+     * If a menuItem has attribute start="true", two possibilities: \n
+     *  - the associated action has attribute executable="false" then the menuItem will be disabled.\n
+     *  - the associated action has attribute executable="true" then the menuItem will be enabled.\n
      *
-     * If an action manages by menuItems in a toolbar and/or in the menuBar has its attribut executable="false",
+     * If an action manages by menuItems in a toolbar and/or in the menuBar has its attribute executable="false",
      * the associated menuItems will be disabled in toolbar and in menuBar.
      *
      * @warning If the action is present in different toolbars and menus it must be started only one time.
@@ -132,8 +132,8 @@ public:
     /**
      * @brief manages menu service associated with fwMenu of menu.
      *
-     * If a menuItem has attribut start="false", the associated menu won't be started.
-     * If a menuItem has attribut start="true", the associated menu will be started
+     * If a menuItem has attribute start="false", the associated menu won't be started.
+     * If a menuItem has attribute start="true", the associated menu will be started
      *
      * @pre Menu must be initialized before.
      * @pre sub menu items must be instanced before.

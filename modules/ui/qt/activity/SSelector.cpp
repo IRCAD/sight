@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,10 +140,10 @@ void SSelector::starting()
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);
 
-    size_t indexButton = 0;
-    const float rows   = std::sqrt(static_cast<float>(m_activitiesInfo.size()));
-    int numCols        = static_cast<int>(std::ceil(rows));
-    const int numRows  = static_cast<int>(std::floor(rows));
+    std::size_t indexButton = 0;
+    const float rows        = std::sqrt(static_cast<float>(m_activitiesInfo.size()));
+    int numCols             = static_cast<int>(std::ceil(rows));
+    const int numRows       = static_cast<int>(std::floor(rows));
     numCols = 2 * numCols + 1;
 
     QWidget* const container = qtContainer->getQtContainer();
@@ -238,7 +238,7 @@ void SSelector::onClicked(int id)
     else
     {
         auto sig = this->signal<ActivityIDSelectedSignalType>(s_ACTIVITY_ID_SELECTED_SIG);
-        sig->asyncEmit(m_activitiesInfo[static_cast<size_t>(id)].id);
+        sig->asyncEmit(m_activitiesInfo[static_cast<std::size_t>(id)].id);
     }
 }
 

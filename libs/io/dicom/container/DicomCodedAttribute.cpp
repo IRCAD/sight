@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,9 +65,9 @@ bool DicomCodedAttribute::operator==(const DicomCodedAttribute& other) const
 
 //------------------------------------------------------------------------------
 
-::gdcm::SegmentHelper::BasicCodedEntry DicomCodedAttribute::toGDCMFormat() const
+gdcm::SegmentHelper::BasicCodedEntry DicomCodedAttribute::toGDCMFormat() const
 {
-    return ::gdcm::SegmentHelper::BasicCodedEntry(
+    return gdcm::SegmentHelper::BasicCodedEntry(
         m_codeValue.c_str(),
         m_codingSchemeDesignator.c_str(),
         m_codingSchemeVersion.c_str(),

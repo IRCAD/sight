@@ -28,7 +28,7 @@
 namespace sight::module::appXml
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::appXml::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::appXml::Plugin");
 
 //------------------------------------------------------------------------------
 

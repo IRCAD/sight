@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
@@ -146,7 +145,7 @@ void IFrame::create()
         m_frameLayoutManager
     );
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
@@ -186,7 +185,7 @@ void IFrame::create()
 
     if(m_hasMenuBar)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -199,7 +198,7 @@ void IFrame::create()
 
     if(m_hasToolBar)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -222,7 +221,7 @@ void IFrame::destroy()
         m_viewRegistry->unmanageToolBar();
         SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -236,7 +235,7 @@ void IFrame::destroy()
         m_viewRegistry->unmanageMenuBar();
         SIGHT_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             std::function<void()>(
                 [&]
             {
@@ -248,7 +247,7 @@ void IFrame::destroy()
     m_viewRegistry->unmanage();
     SIGHT_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {

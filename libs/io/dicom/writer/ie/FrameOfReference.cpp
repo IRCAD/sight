@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 FrameOfReference::FrameOfReference(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Series::csptr& series,
     const core::log::Logger::sptr& logger,
@@ -61,7 +61,7 @@ FrameOfReference::~FrameOfReference()
 void FrameOfReference::writeFrameOfReferenceModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Frame of Reference UID
     const std::string frameOfReferenceUID = m_instance->getFrameOfReferenceUID();

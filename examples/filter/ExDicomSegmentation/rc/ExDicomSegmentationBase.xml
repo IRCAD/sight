@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>ExDicomSegmentation_Base_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -120,10 +120,8 @@
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries" >
-                    <extract path="@image" pattern="imageID" />
-                </config>
-                <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
+                <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
             </configs>
         </service>
 

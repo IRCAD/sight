@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 
@@ -109,14 +109,14 @@ void SSliceIndexDicomEditor::starting()
     SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
-    m_sliceTriggerer = m_associatedWorker->createTimer();
-    m_sliceTriggerer->setFunction(
+    m_sliceTrigger = m_associatedWorker->createTimer();
+    m_sliceTrigger->setFunction(
         [&]()
         {
             this->retrieveSlice();
         });
-    m_sliceTriggerer->setDuration(std::chrono::milliseconds(m_delay));
-    m_sliceTriggerer->setOneShot(true);
+    m_sliceTrigger->setDuration(std::chrono::milliseconds(m_delay));
+    m_sliceTrigger->setOneShot(true);
 
     // Create the slider.
     sight::ui::base::IGuiContainer::create();
@@ -161,8 +161,8 @@ service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections(
 void SSliceIndexDicomEditor::updating()
 {
     // Retrieve the DICOM series and its informations.
-    const auto dicomSeries   = m_series.lock();
-    const size_t sliceNumber = dicomSeries->getNumberOfInstances();
+    const auto dicomSeries        = m_series.lock();
+    const std::size_t sliceNumber = dicomSeries->numInstances();
 
     if(sliceNumber > 0)
     {
@@ -204,7 +204,7 @@ void SSliceIndexDicomEditor::changeSliceIndex(int _value)
     this->setSliderInformation(static_cast<unsigned int>(_value));
 
     // Get the new slice if there is no change for m_delay milliseconds.
-    m_sliceTriggerer->start();
+    m_sliceTrigger->start();
 }
 
 //------------------------------------------------------------------------------
@@ -221,9 +221,9 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
-    const auto dicomSeries          = m_series.lock();
-    const size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
-    const bool isInstanceAvailable  = dicomSeries->isInstanceAvailable(selectedSliceIndex);
+    const auto dicomSeries               = m_series.lock();
+    const std::size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
+    const bool isInstanceAvailable       = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
     // If the slice is not pulled, pull it.
     if(!isInstanceAvailable)
@@ -349,8 +349,8 @@ void SSliceIndexDicomEditor::readSlice(
     SIGHT_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
-    const char* buffer      = static_cast<char*>(lockerDest.getBuffer());
-    const size_t bufferSize = bufferObj->getSize();
+    const char* buffer           = static_cast<char*>(lockerDest.getBuffer());
+    const std::size_t bufferSize = bufferObj->getSize();
 
     // Creates unique temporary folder to save the DICOM instance.
     std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("dicom");
@@ -370,25 +370,36 @@ void SSliceIndexDicomEditor::readSlice(
 
     // Read the image.
     m_dicomReader->setFolder(tmpPath);
-    m_dicomReader->update();
+    m_dicomReader->update().wait();
 
     if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
     {
-        // Copy the read serie to the image.
-        const data::ImageSeries::sptr imageSeries =
-            data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
+        // Copy the read series to the image.
+        const auto imageSeries           = data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
         const data::Image::sptr newImage = imageSeries->getImage();
 
         const auto image = m_image.lock();
         image->deepCopy(newImage);
 
         data::Integer::sptr axialIndex    = data::Integer::New(0);
-        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0] / 2);
-        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1] / 2);
+        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize()[0] / 2);
+        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize()[1] / 2);
 
-        image->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
-        image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
-        image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
+        data::helper::MedicalImage::setSliceIndex(
+            *image,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            axialIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *image,
+            data::helper::MedicalImage::orientation_t::FRONTAL,
+            frontalIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *image,
+            data::helper::MedicalImage::orientation_t::SAGITTAL,
+            sagittalIndex->value()
+        );
 
         // Send the signal
         const auto sig = image->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);

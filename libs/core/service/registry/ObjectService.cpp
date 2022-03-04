@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ void registerServiceOutput(
     data::Object::sptr obj,
     std::string_view objKey,
     service::IService::sptr service,
-    size_t index
+    std::optional<std::size_t> index
 )
 {
     service::OSR::get()->registerServiceOutput(obj, objKey, service, index);
@@ -94,7 +94,7 @@ void unregisterService(service::IService::sptr service)
 
 //------------------------------------------------------------------------------
 
-void unregisterServiceOutput(std::string_view objKey, IService::sptr service, size_t index)
+void unregisterServiceOutput(std::string_view objKey, IService::sptr service, std::optional<std::size_t> index)
 {
     service::OSR::get()->unregisterServiceOutput(objKey, service, index);
 }
@@ -136,7 +136,7 @@ std::string ObjectService::getRegistryInformation() const
             data::Object::csptr object = obj.lock().get_shared();
             if(object)
             {
-                const auto key_name = KEY_GROUP_NAME(key.first, key.second);
+                const auto key_name = KEY_GROUP_NAME(key.first, key.second.has_value() ? key.second.value() : 0);
                 info << "    input: key = " << key_name << ", classname = " << object->getClassname() << std::endl;
             }
         }
@@ -146,7 +146,7 @@ std::string ObjectService::getRegistryInformation() const
             data::Object::sptr object = obj.lock().get_shared();
             if(object)
             {
-                const auto key_name = KEY_GROUP_NAME(key.first, key.second);
+                const auto key_name = KEY_GROUP_NAME(key.first, key.second.has_value() ? key.second.value() : 0);
                 info << "    inout: key = " << key_name << ", classname = " << object->getClassname() << std::endl;
             }
         }
@@ -156,7 +156,7 @@ std::string ObjectService::getRegistryInformation() const
             data::Object::sptr object = obj.get_shared();
             if(object)
             {
-                const auto key_name = KEY_GROUP_NAME(key.first, key.second);
+                const auto key_name = KEY_GROUP_NAME(key.first, key.second.has_value() ? key.second.value() : 0);
                 info << "    output: key = " << key_name << ", classname = " << object->getClassname() << std::endl;
             }
         }
@@ -179,7 +179,7 @@ void ObjectService::registerServiceOutput(
     data::Object::sptr object,
     std::string_view objKey,
     service::IService::sptr service,
-    size_t index
+    std::optional<std::size_t> index
 )
 {
     core::mt::WriteLock writeLock(m_containerMutex);
@@ -247,7 +247,7 @@ void ObjectService::unregisterService(service::IService::sptr service)
 void ObjectService::unregisterServiceOutput(
     std::string_view objKey,
     service::IService::sptr service,
-    size_t index
+    std::optional<std::size_t> index
 )
 {
     core::mt::WriteLock writeLock(m_containerMutex);

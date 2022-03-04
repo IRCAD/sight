@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void SReadArray::updating()
     array->resize(size, sight::core::tools::Type::s_UINT32);
 
     // Fill the array values.
-    const auto dumpLock = array->lock();
+    const auto dumpLock = array->dump_lock();
 
     auto itr = array->begin<unsigned int>();
 

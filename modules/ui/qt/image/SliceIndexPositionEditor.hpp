@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ protected:
     static const service::IService::KeyType s_IMAGE_INOUT;
 
     /// @brief The slice type: axial, frontal, sagittal.
-    typedef data::helper::MedicalImage::Orientation Orientation;
+    using orientation_t = data::helper::MedicalImage::orientation_t;
 
     /**
      * @brief Install the layout.
@@ -118,7 +118,7 @@ protected:
     MODULE_UI_QT_API void updateSliceIndexFromImg(sight::data::Image& _image);
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QT_API void updateSliceTypeFromImg(Orientation type);
+    MODULE_UI_QT_API void updateSliceTypeFromImg(const orientation_t& type);
 
     /// This method is called when the slider is move. Notify the slice index is modified.
     MODULE_UI_QT_API void sliceIndexNotification(unsigned int index);
@@ -145,14 +145,15 @@ private:
      * @}
      */
 
-    /// @brief The field IDs for the slice index.
-    static const std::string* SLICE_INDEX_FIELDID[3];
-
     sight::ui::qt::SliceSelector* m_sliceSelectorPanel;
 
-    data::helper::MedicalImage m_helper;
-
     data::ptr<data::Image, data::Access::inout> m_image {this, "image", true};
+
+    std::int64_t m_axialIndex {-1};
+    std::int64_t m_frontalIndex {-1};
+    std::int64_t m_sagittalIndex {-1};
+
+    orientation_t m_orientation {orientation_t::Z_AXIS};
 };
 
 } // uiImageQt

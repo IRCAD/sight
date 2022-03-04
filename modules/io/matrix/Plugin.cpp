@@ -25,7 +25,7 @@
 namespace sight::module::io::matrix
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::matrix::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::matrix::Plugin");
 
 Plugin::~Plugin() noexcept
 {

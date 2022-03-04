@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "ClientQtTest.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
-
 #include <io/http/helper/Series.hpp>
 
 #include <ui/qt/App.hpp>
@@ -31,7 +29,7 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::ClientQtTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::ClientQtTest);
 
 namespace sight::io::http
 {
@@ -81,13 +79,13 @@ void ClientQtTest::setUp()
     // Set up context before running a test.
     static char arg1[] = "ClientQtTest";
 #if defined(__linux)
-    static char arg2[]  = "-platform";
-    static char arg3[]  = "offscreen";
-    static char* argv[] = {arg1, arg2, arg3, nullptr};
-    static int argc     = 3;
+    static char arg2[] = "-platform";
+    static char arg3[] = "offscreen";
+    char* argv[]       = {arg1, arg2, arg3, nullptr};
+    int argc           = 3;
 #else
-    static char* argv[] = {arg1, 0};
-    static int argc     = 1;
+    char* argv[] = {arg1, 0};
+    int argc     = 1;
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
@@ -118,7 +116,6 @@ void ClientQtTest::tearDown()
     m_worker->getFuture().wait();
     m_worker.reset();
 
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 

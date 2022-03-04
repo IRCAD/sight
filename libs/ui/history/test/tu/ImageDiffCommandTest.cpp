@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <utestData//generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::ui::history::ut::ImageDiffCommandTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::ImageDiffCommandTest);
 
 namespace sight::ui::history
 {
@@ -61,7 +61,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     filter::image::ImageDiff diff(image->getType().sizeOf());
 
@@ -72,17 +72,17 @@ void ImageDiffCommandTest::undoredoTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(int i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixelBuffer(index, newBufferValue);
+        image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(i + 1, diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 
@@ -92,26 +92,26 @@ void ImageDiffCommandTest::undoredoTest()
     // Revert diff. Ensure that the image is the same as before (all values equal to zero).
     CPPUNIT_ASSERT(imageDiffCommand.undo());
 
-    for(size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
+    for(std::size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
     {
-        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(it)));
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixel(it)));
     }
 
     // Apply diff. Ensure all values are zero except the ones at the selected indices.
     CPPUNIT_ASSERT(imageDiffCommand.redo());
 
-    for(size_t i = 0 ; i < image->getSizeInBytes() ; ++i)
+    for(std::size_t i = 0 ; i < image->getSizeInBytes() ; ++i)
     {
         // Check if 'i' is an index
         auto indexIt = std::find(indices.begin(), indices.end(), i);
 
         if(indexIt != indices.end())
         {
-            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
         else
         {
-            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
     }
 }
@@ -130,7 +130,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     filter::image::ImageDiff diff(image->getType().sizeOf() * 64);
 
@@ -141,17 +141,17 @@ void ImageDiffCommandTest::getSizeTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(size_t i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixelBuffer(index, newBufferValue);
+        image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 

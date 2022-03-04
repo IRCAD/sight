@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STransferFunction, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STransferFunction, sight::viz::scene2d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API STransferFunction() noexcept;
@@ -225,7 +225,7 @@ private:
     void midButtonClickEvent(sight::viz::scene2d::data::Event& _event);
 
     /**
-     * @brief Update the window/level of the TF relativly to the mouse movement.
+     * @brief Update the window/level of the TF relatively to the mouse movement.
      * @param _event the 2D scene event.
      *
      * @pre m_capturedTF must be previously sets.
@@ -301,6 +301,7 @@ private:
     static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
 
     sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
     };
 
     /// Constructor.
-    FILTER_IMAGE_API ImageDiff(const size_t imageElementSize = 0, const size_t reservedElements = 0);
+    FILTER_IMAGE_API ImageDiff(const std::size_t imageElementSize = 0, const std::size_t reservedElements = 0);
 
     /// Destructor
     FILTER_IMAGE_API ~ImageDiff();
@@ -78,10 +78,10 @@ public:
     FILTER_IMAGE_API void revertDiff(const data::Image::sptr& img) const;
 
     /// Return the amount of memory actually used by the elements.
-    FILTER_IMAGE_API size_t getSize() const;
+    FILTER_IMAGE_API std::size_t getSize() const;
 
     /// Returns the number of stored pixel diffs.
-    FILTER_IMAGE_API size_t getNumberOfElements() const;
+    FILTER_IMAGE_API std::size_t numElements() const;
 
     /// Set the number of elements to 0.
     FILTER_IMAGE_API void clear();
@@ -90,30 +90,30 @@ public:
     FILTER_IMAGE_API void shrink();
 
     /// Returns the element at the given index
-    FILTER_IMAGE_API ElementType getElement(size_t index) const;
+    FILTER_IMAGE_API ElementType getElement(std::size_t index) const;
 
     /// Returns the image index from the element at the given index
-    inline data::Image::IndexType getElementDiffIndex(size_t eltIndex) const;
+    inline data::Image::IndexType getElementDiffIndex(std::size_t eltIndex) const;
 
 private:
 
     /// Write the new value in the image from one element.
-    void applyDiffElt(const data::Image::sptr& img, size_t eltIndex) const;
+    void applyDiffElt(const data::Image::sptr& img, std::size_t eltIndex) const;
 
     /// Write the old value back in the image from one element.
-    void revertDiffElt(const data::Image::sptr& img, size_t eltIndex) const;
+    void revertDiffElt(const data::Image::sptr& img, std::size_t eltIndex) const;
 
     /// The size of a single pixel diff.
-    size_t m_imgEltSize;
+    std::size_t m_imgEltSize;
 
     /// Size of an element (image index + old value + new value)
-    size_t m_eltSize;
+    std::size_t m_eltSize;
 
     /// Number of pixel diffs.
-    size_t m_nbElts;
+    std::size_t m_nbElts;
 
     /// The allocated buffer size.
-    size_t m_reservedSize;
+    std::size_t m_reservedSize;
 
     /// The buffer holding the diff.
     std::uint8_t* m_buffer;
@@ -121,7 +121,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-data::Image::IndexType ImageDiff::getElementDiffIndex(size_t eltIndex) const
+data::Image::IndexType ImageDiff::getElementDiffIndex(std::size_t eltIndex) const
 {
     std::uint8_t* eltPtr = m_buffer + eltIndex * m_eltSize;
     return *reinterpret_cast<data::Image::IndexType*>(eltPtr);

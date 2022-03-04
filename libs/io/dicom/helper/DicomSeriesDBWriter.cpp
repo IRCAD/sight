@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,14 +28,12 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/zip/WriteDirArchive.hpp>
-#include <io/zip/WriteZipArchive.hpp>
 
 namespace sight::io::dicom
 {
@@ -46,8 +44,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 DicomSeriesDBWriter::DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key) :
-    m_aggregator(core::jobs::Aggregator::New("Writing Dicom series")),
-    m_enableZippedArchive(false)
+    m_aggregator(core::jobs::Aggregator::New("Writing Dicom series"))
 {
 }
 
@@ -59,7 +56,7 @@ DicomSeriesDBWriter::~DicomSeriesDBWriter()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesDBWriter::extension()
+std::string DicomSeriesDBWriter::extension() const
 {
     return "";
 }
@@ -87,13 +84,6 @@ void DicomSeriesDBWriter::setProducer(std::string producer)
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesDBWriter::enableZippedArchive(bool enable)
-{
-    m_enableZippedArchive = enable;
-}
-
-//------------------------------------------------------------------------------
-
 std::string getSubPath(int index)
 {
     std::stringstream ss;
@@ -108,18 +98,7 @@ void DicomSeriesDBWriter::write()
     data::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SIGHT_ASSERT("Unable to retrieve associated SeriesDB", seriesDB);
 
-    io::zip::IWriteArchive::sptr writeArchive;
-
-    if(m_enableZippedArchive)
-    {
-        io::zip::WriteZipArchive::sptr writeZipArchive = io::zip::WriteZipArchive::New(this->getFile(), m_producer);
-
-        writeArchive = writeZipArchive;
-    }
-    else
-    {
-        writeArchive = io::zip::WriteDirArchive::New(this->getFolder());
-    }
+    io::zip::IWriteArchive::sptr writeArchive = io::zip::WriteDirArchive::New(this->getFolder());
 
     const auto nbSeries = seriesDB->getContainer().size();
     int processedSeries = 0;
@@ -168,7 +147,7 @@ void DicomSeriesDBWriter::write()
                         }
                     }
                 },
-                core::thread::ActiveWorkers::getDefaultWorker()
+                core::thread::getDefaultWorker()
             );
 
         m_aggregator->addCancelHook(

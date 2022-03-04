@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,14 +93,14 @@ public:
 
     struct ProbeSimulationSettings
     {
-        int depth          = 120;
-        int width          = 90;
-        int angle          = 60;
-        int deltaDepth     = 50;
-        size_t matrixWidth = 310;
-        size_t matrixDepth = 290;
-        bool simuEchoOn    = false;
-        bool echoShapeOn   = false;
+        int depth               = 120;
+        int width               = 90;
+        int angle               = 60;
+        int deltaDepth          = 50;
+        std::size_t matrixWidth = 310;
+        std::size_t matrixDepth = 290;
+        bool simuEchoOn         = false;
+        bool echoShapeOn        = false;
 
         fwVec3d centerPosition {0., 0., 0.};
         fwVec3d direction {1., 0., 0.};
@@ -133,7 +133,7 @@ private:
      * @param p2 coordinates of the second point of the line.
      * @return the line equation passing through the 2 points p1 and p2.
      */
-    ::cv::Vec2d computeLineEquation(const ::cv::Vec2d& p1, const ::cv::Vec2d& p2) const;
+    cv::Vec2d computeLineEquation(const cv::Vec2d& p1, const cv::Vec2d& p2) const;
 
     /**
      * @brief Computes intersection between two lines.
@@ -141,7 +141,7 @@ private:
      * @param eql2 second line equation (eql2[0]x + eql2[1]).
      * @return the coordinates of the intersection point between the two lines eql1 and eql2.
      */
-    ::cv::Vec2d computeLinesIntersection(const ::cv::Vec2d& eql1, const ::cv::Vec2d& eql2) const;
+    cv::Vec2d computeLinesIntersection(const cv::Vec2d& eql1, const cv::Vec2d& eql2) const;
 
     /**
      * @brief Computes intersections between a circle and a line.
@@ -151,9 +151,9 @@ private:
      * @return the list of intersection points between a circle defined by a center (center) and a radius (R), and a
      * line (eql).
      */
-    std::vector< ::cv::Vec2d> computeLineCircleIntersection(
-        const ::cv::Vec2d& eql,
-        const ::cv::Vec2d& center,
+    std::vector<cv::Vec2d> computeLineCircleIntersection(
+        const cv::Vec2d& eql,
+        const cv::Vec2d& center,
         const double R
     ) const;
 
@@ -163,7 +163,7 @@ private:
      * @param arcPoint line equation of a side of an arc.
      * @return angle (degrees) between vertical line and a line equation.
      */
-    double computeArcAngle(const ::cv::Vec2d& center, const std::vector< ::cv::Vec2d>& arcPoint) const;
+    double computeArcAngle(const cv::Vec2d& center, const std::vector<cv::Vec2d>& arcPoint) const;
 
     /**
      * @brief Checks if there is data (pixel value !=0) under the arc equation define by a set of 2D points.
@@ -171,7 +171,7 @@ private:
      * @param points arc points.
      * @return true if there is data under the arc equation, false otherwise.
      */
-    bool isDataUnderArc(const ::cv::Mat& input, const std::vector< ::cv::Point2d>& points) const;
+    bool isDataUnderArc(const cv::Mat& input, const std::vector<cv::Point2d>& points) const;
 
     /**
      * @brief Extracts the data from the ultrasound plane as a texture.
@@ -188,10 +188,10 @@ private:
      * @return convex probe simulation settings.
      */
     ProbeSimulationSettings processConvexShape(
-        ::cv::Mat input,
-        std::vector< ::cv::Vec2d> lines,
-        ::cv::Mat thresh,
-        ::cv::Mat binaryConvex
+        cv::Mat input,
+        std::vector<cv::Vec2d> lines,
+        cv::Mat thresh,
+        cv::Mat binaryConvex
     );
 
     /**
@@ -199,7 +199,7 @@ private:
      * @param lines equations of the lines corresponding to rectangular sides.
      * @return rectangular probe simulation settings.
      */
-    ProbeSimulationSettings processRectangularShape(std::vector< ::cv::Vec2d> lines);
+    ProbeSimulationSettings processRectangularShape(std::vector<cv::Vec2d> lines);
 
     /**
      * @brief SLOT: Updates integer extraction parameters used to extract the ultrasound plane.
@@ -259,7 +259,7 @@ private:
     bool m_convexShape {true};
 
     /// Map used to extract the ultrasound beam from the video.
-    ::cv::Mat m_extractionMap {1, 1, CV_32FC2};
+    cv::Mat m_extractionMap {1, 1, CV_32FC2};
 
     static constexpr std::string_view s_ULTRASOUND_IMAGE_INPUT           = "ultrasoundImage";
     static constexpr std::string_view s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT = "extractedUltrasoundBeam";

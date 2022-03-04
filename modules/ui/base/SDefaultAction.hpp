@@ -34,11 +34,11 @@ namespace sight::module::ui::base
 /**
  * @brief  Defines the default action to have a simple action button.
  */
-class MODULE_UI_BASE_CLASS_API SDefaultAction : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SDefaultAction : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDefaultAction, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SDefaultAction, sight::ui::base::IAction);
 
     /**
      * @brief Constructor. Do nothing.

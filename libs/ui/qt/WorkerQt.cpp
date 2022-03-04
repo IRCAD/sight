@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include "ui/qt/util/FuncSlot.hpp"
 
 #include <core/runtime/Runtime.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/Os.hpp>
 
+#include <QApplication>
 #include <QDir>
 #include <QEvent>
 #include <QPointer>
@@ -124,7 +124,7 @@ core::thread::Worker::sptr getQtWorker(
     SPTR(WorkerQt) workerQt = std::make_shared<WorkerQt>();
     workerQt->init(argc, argv);
     workerQt->setApp(callback(argc, argv), name, version);
-    return std::move(workerQt);
+    return workerQt;
 }
 
 //-----------------------------------------------------------------------------
@@ -207,6 +207,8 @@ WorkerQt::WorkerQt() :
 
 void WorkerQt::init(int& argc, char** argv)
 {
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
 #ifdef WIN32
     // To get Qt initialized properly, we need to find its plugins
     // This is difficult to do, especially because the location of the deps is different whether
@@ -237,7 +239,7 @@ void WorkerQt::init(int& argc, char** argv)
 void WorkerQt::setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version)
 {
     m_app = app;
-    m_app.get()->setOrganizationName("IRCAD-IHU");
+    m_app.get()->setOrganizationName("IRCAD");
     m_app.get()->setOrganizationDomain("https://www.ircad.fr/");
     m_app.get()->setApplicationName(QString::fromStdString(name));
     m_app.get()->setApplicationVersion(QString::fromStdString(version));
@@ -263,9 +265,9 @@ core::thread::Worker::FutureType WorkerQt::getFuture()
 
         std::packaged_task<ExitReturnType()> task(std::bind(&QCoreApplication::exec));
 
-        std::future<ExitReturnType> ufuture = task.get_future();
+        std::future<ExitReturnType> future = task.get_future();
 
-        m_future = std::move(ufuture);
+        m_future = std::move(future);
 
         task();
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,6 @@
 #include "modules/viz/scene2d/adaptor/STransferFunction.hpp"
 
 #include <core/com/Signal.hxx>
-
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <service/macros.hpp>
 
@@ -150,12 +147,12 @@ void STransferFunction::stopping()
 void STransferFunction::createTFPoints()
 {
     sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::ObjectReadLock viewportLock(viewport);
+    const data::mt::locked_ptr viewportLock(viewport);
 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
 
-    // Computes point size in screen space and keep the smallest size (relativly to width or height).
+    // Computes point size in screen space and keep the smallest size (relatively to width or height).
     double pointSize = sceneWidth * m_pointSize;
     if(pointSize > sceneHeight * m_pointSize)
     {
@@ -239,7 +236,7 @@ void STransferFunction::destroyTFPoints()
 void STransferFunction::createTFPolygon()
 {
     const sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::ObjectReadLock viewportLock(viewport);
+    const data::mt::locked_ptr viewportLock(viewport);
 
     QVector<QPointF> position;
     QLinearGradient grad;
@@ -247,7 +244,7 @@ void STransferFunction::createTFPolygon()
     const std::pair<Point2DType, QGraphicsEllipseItem*>& firstTFPoint = m_TFPoints.front();
     const std::pair<Point2DType, QGraphicsEllipseItem*>& lastTFPoint  = m_TFPoints.back();
 
-    const QGraphicsEllipseItem* const firtsPoint = firstTFPoint.second;
+    const QGraphicsEllipseItem* const firstPoint = firstTFPoint.second;
 
     double xBegin = firstTFPoint.first.first;
     double xEnd   = lastTFPoint.first.first;
@@ -279,7 +276,7 @@ void STransferFunction::createTFPolygon()
         }
     }
 
-    grad.setColorAt(0, firtsPoint->brush().color());
+    grad.setColorAt(0, firstPoint->brush().color());
 
     grad.setStart(xBegin, 0);
     grad.setFinalStop(xEnd, 0);
@@ -417,7 +414,7 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
         return;
     }
 
-    // If it's a resize event, all the scene must be recompted.
+    // If it's a resize event, all the scene must be recomputed.
     if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
     {
         this->updating();
@@ -517,7 +514,7 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
         return;
     }
 
-    // If midlle button is pressed, select the current TF to adjust the window/level.
+    // If middle button is pressed, select the current TF to adjust the window/level.
     if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
        && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
@@ -645,7 +642,7 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     this->buildLayer();
 
     // Updates the TF with the new point position.
-    size_t pointIndex = pointIt - m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
     const auto tf = m_tf.lock();
@@ -747,7 +744,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair<Point2DType,
         auto pointIt =
             std::find(m_TFPoints.begin(), m_TFPoints.end(), _TFPoint);
         SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
-        size_t pointIndex = pointIt - m_TFPoints.begin();
+        std::size_t pointIndex = pointIt - m_TFPoints.begin();
 
         const auto tf = m_tf.lock();
         SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
@@ -810,7 +807,7 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair<Point2DType, QGra
     auto pointIt =
         std::find(m_TFPoints.begin(), m_TFPoints.end(), _TFPoint);
     SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
-    size_t pointIndex = pointIt - m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
     const auto tf = m_tf.lock();
@@ -928,7 +925,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
             -newCoord.getY()
         );
     }
-    // Gets an interpolate color since the new point is between two ohers.
+    // Gets an interpolated color since the new point is between two others.
     else
     {
         newColor   = tf->getInterpolatedColor(newCoord.getX());

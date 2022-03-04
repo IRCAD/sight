@@ -35,7 +35,7 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::MeshWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::MeshWriter);
 
 namespace sight::io::vtk
 {
@@ -94,7 +94,7 @@ void MeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string MeshWriter::extension()
+std::string MeshWriter::extension() const
 {
     return ".vtk";
 }

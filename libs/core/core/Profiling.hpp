@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2021 IRCAD France
+ * Copyright (C) 2004-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,9 +47,7 @@ public:
     {
         m_timer.stop();
 
-        std::stringstream log;
-        log << "TIMER : " << m_label << " = " << m_timer.getElapsedTimeInMilliSec() << " ms.";
-        core::log::SpyLogger::getSpyLogger().info(log.str(), __FILE__, __LINE__);
+        SIGHT_INFO("TIMER : " << m_label << " = " << m_timer.getElapsedTimeInMilliSec() << " ms.");
     }
 
     /// Timer
@@ -129,10 +127,10 @@ public:
 
         if(m_frameTimer.tick(m_timer.getElapsedTimeInMilliSec()))
         {
-            std::stringstream log;
-            log << "TIMER (avg over " << m_frameTimer.m_interval << "s) : " << m_label
-            << " = " << m_frameTimer.m_average << " ms.";
-            core::log::SpyLogger::getSpyLogger().info(log.str(), __FILE__, __LINE__);
+            SIGHT_INFO(
+                "TIMER (avg over " << m_frameTimer.m_interval << "s) : "
+                << m_label << " = " << m_frameTimer.m_average << " ms."
+            )
             m_frameTimer.reset();
         }
     }
@@ -156,9 +154,7 @@ public:
         m_label(label),
         m_frameTimer(frameTimer)
     {
-        std::stringstream log;
-        log << "FRAME : " << m_label << " = " << m_frameTimer.m_timer.getElapsedTimeInMilliSec() << " ms.";
-        core::log::SpyLogger::getSpyLogger().info(log.str(), __FILE__, __LINE__);
+        SIGHT_INFO("FRAME : " << m_label << " = " << m_frameTimer.m_timer.getElapsedTimeInMilliSec() << " ms.");
         m_frameTimer.reset();
     }
 
@@ -185,10 +181,10 @@ public:
     {
         if(m_frameTimer.tick())
         {
-            std::stringstream log;
-            log << "FRAME (avg over " << m_frameTimer.m_interval << "s) : " << m_label
-            << " = " << m_frameTimer.m_average << " ms.";
-            core::log::SpyLogger::getSpyLogger().info(log.str(), __FILE__, __LINE__);
+            SIGHT_INFO(
+                "FRAME (avg over " << m_frameTimer.m_interval << "s) : "
+                << m_label << " = " << m_frameTimer.m_average << " ms."
+            );
             m_frameTimer.reset();
         }
     }
@@ -206,22 +202,22 @@ public:
 #ifndef FW_PROFILING_DISABLED
 /// Display the elapsed time inside a code block
 #define FW_PROFILE(_label) \
-    core::fwProfileScope BOOST_PP_CAT(profiler, __LINE__)(_label);
+    sight::core::fwProfileScope BOOST_PP_CAT(profiler, __LINE__)(_label);
 
 /// Display the elapsed time inside a code block, every N seconds
 #define FW_PROFILE_AVG(_label, interval) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
-    core::fwProfileScopeAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
+    static sight::core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
+    sight::core::fwProfileScopeAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block
 #define FW_PROFILE_FRAME(_label) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(0); \
-    core::fwProfileFrame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
+    static sight::core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(0); \
+    sight::core::fwProfileFrame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block, every N seconds
 #define FW_PROFILE_FRAME_AVG(_label, interval) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
-    core::fwProfileFrameAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
+    static sight::core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
+    sight::core::fwProfileFrameAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 #else // FW_PROFILING_DISABLED
 #define FW_PROFILE(_label)
 #define FW_PROFILE_AVG(_label, interval)

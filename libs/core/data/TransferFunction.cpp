@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -424,5 +424,43 @@ const TransferFunction::TFColor& TransferFunction::getTFColor(TFValueType _value
 }
 
 //------------------------------------------------------------------------------
+
+bool TransferFunction::TFColor::operator==(const TFColor& _color) const noexcept
+{
+    return r == _color.r && g == _color.g && b == _color.b && a == _color.a;
+}
+
+//------------------------------------------------------------------------------
+
+bool TransferFunction::TFColor::operator!=(const TFColor& other) const noexcept
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+bool TransferFunction::operator==(const TransferFunction& other) const noexcept
+{
+    if(!core::tools::is_equal(m_level, other.m_level)
+       || !core::tools::is_equal(m_window, other.m_window)
+       || m_name != other.m_name
+       || m_interpolationMode != other.m_interpolationMode
+       || m_isClamped != other.m_isClamped
+       || !core::tools::is_equal(m_backgroundColor, other.m_backgroundColor)
+       || !core::tools::is_equal(m_tfData, other.m_tfData))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool TransferFunction::operator!=(const TransferFunction& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // end namespace sight::data

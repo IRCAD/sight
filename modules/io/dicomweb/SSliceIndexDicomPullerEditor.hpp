@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ protected:
     /// Gets the configurations and creates a timer on a worker.
     MODULE_IO_DICOMWEB_API void configuring() override;
 
-    /// Creates the wigdets, connect the signal, register the DICOM reader and starts the callback timer.
+    /// Creates the widgets, connect the signal, register the DICOM reader and starts the callback timer.
     MODULE_IO_DICOMWEB_API void starting() override;
 
     /// Stops the timer, unregister the DICOM reader and destroy the created widgets.
@@ -122,7 +122,7 @@ private:
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    void readImage(sight::data::DicomSeries& dicomSeries, size_t selectedSliceIndex);
+    void readImage(sight::data::DicomSeries& dicomSeries, std::size_t selectedSliceIndex);
 
     /// Pull the selected slice from the Pacs
     void pullInstance(sight::data::DicomSeries& dicomSeries);
@@ -139,7 +139,7 @@ private:
     QPointer<QLineEdit> m_sliceIndexLineEdit;
 
     /// Number of instances
-    size_t m_numberOfSlices;
+    std::size_t m_numberOfSlices;
 
     /// IODICOMWEB Reader
     std::string m_dicomReaderType;

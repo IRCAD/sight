@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,20 @@
 
 #include "core/thread/Timer.hpp"
 #include "core/thread/Worker.hpp"
+
 #include <core/TimeStamp.hpp>
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
+
+#include <thread>
 
 namespace sight::core::thread
 {
 
 //------------------------------------------------------------------------------
 
-std::size_t WorkerThread(SPTR(::boost::asio::io_service)io_service)
+std::size_t WorkerThread(SPTR(boost::asio::io_service)io_service)
 {
     std::size_t res = io_service->run();
     return res;
@@ -45,8 +48,8 @@ class WorkerAsio : public core::thread::Worker
 {
 public:
 
-    typedef ::boost::asio::io_service IOServiceType;
-    typedef ::boost::asio::io_service::work WorkType;
+    typedef boost::asio::io_service IOServiceType;
+    typedef boost::asio::io_service::work WorkType;
     typedef std::shared_ptr<WorkType> WorkPtrType;
     typedef std::thread ThreadType;
 
@@ -99,7 +102,7 @@ public:
     /**
      * @brief Constructs a TimerAsio from given io_service.
      */
-    TimerAsio(::boost::asio::io_service& ioSrv);
+    TimerAsio(boost::asio::io_service& ioSrv);
 
     ~TimerAsio();
 
@@ -147,7 +150,7 @@ protected:
     TimerAsio& operator=(const TimerAsio&);
 
     /// Timer object.
-    ::boost::asio::deadline_timer m_timer;
+    boost::asio::deadline_timer m_timer;
 
     /// Time to wait until timer's expiration.
     TimeDurationType m_duration;
@@ -168,11 +171,11 @@ WorkerAsio::WorkerAsio() :
     m_work(std::make_shared<WorkType>(*m_ioService))
 {
     std::packaged_task<core::thread::Worker::ExitReturnType()> task(std::bind(&WorkerThread, m_ioService));
-    std::future<core::thread::Worker::ExitReturnType> ufuture = task.get_future();
+    std::future<core::thread::Worker::ExitReturnType> future = task.get_future();
 
     m_thread = std::make_shared<ThreadType>(std::move(task));
 
-    m_future = std::move(ufuture);
+    m_future = std::move(future);
 }
 
 //------------------------------------------------------------------------------
@@ -253,7 +256,7 @@ SPTR(Worker) Worker::defaultFactory()
 
 // ---------- Timer private implementation ----------
 
-TimerAsio::TimerAsio(::boost::asio::io_service& ioSrv) :
+TimerAsio::TimerAsio(boost::asio::io_service& ioSrv) :
     m_timer(ioSrv),
     m_duration(std::chrono::seconds(1)),
     m_oneShot(false),
@@ -299,8 +302,8 @@ void TimerAsio::stop()
 void TimerAsio::rearmNoLock(TimeDurationType duration)
 {
     this->cancelNoLock();
-    ::boost::posix_time::time_duration d =
-        ::boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
+    boost::posix_time::time_duration d =
+        boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
     m_timer.expires_from_now(d);
     m_timer.async_wait(std::bind(&TimerAsio::call, this, std::placeholders::_1));
 }

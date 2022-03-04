@@ -35,7 +35,7 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::ObjMeshReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::ObjMeshReader);
 
 namespace sight::io::vtk
 {
@@ -95,7 +95,7 @@ void ObjMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string ObjMeshReader::extension()
+std::string ObjMeshReader::extension() const
 {
     return ".obj";
 }

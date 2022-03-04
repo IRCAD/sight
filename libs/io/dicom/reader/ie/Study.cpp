@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace ie
 
 Study::Study(
     const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(::gdcm::Reader)& reader,
+    const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Study::sptr& study,
     const core::log::Logger::sptr& logger,
@@ -63,7 +63,7 @@ Study::~Study()
 void Study::readGeneralStudyModule()
 {
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     const std::string& studyUID = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000d>(dataset);
     m_object->setInstanceUID(studyUID);
@@ -94,7 +94,7 @@ void Study::readGeneralStudyModule()
 void Study::readPatientStudyModule()
 {
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     const std::string& studyPatientAge = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1010>(dataset);
     m_object->setPatientAge(studyPatientAge);

@@ -322,11 +322,9 @@ void SMultipleTF::initializePools()
         // Test if transfer function composite has few TF
         if(tfPools->size() <= 1)
         {
-            // Creates the TF atoms reader.
-            const data::TransferFunction::sptr tf = data::TransferFunction::New();
-            const auto tfReader                   = service::add<io::base::service::IReader>(
-                "sight::module::io::atoms::SReader"
-            );
+            // Creates the TF reader.
+            const auto tf       = data::TransferFunction::New();
+            const auto tfReader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
             tfReader->setInOut(tf, io::base::service::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
@@ -340,13 +338,14 @@ void SMultipleTF::initializePools()
                     ++it)
                 {
                     if(!std::filesystem::is_directory(*it)
-                       && it->path().extension().string() == ".json")
+                       && it->path().extension().string() == ".tf")
                     {
                         const std::filesystem::path file = *it;
 
                         // Add a new composite for each TF path.
                         service::IService::ConfigType config;
-                        config.add("file", file.string());
+                        config.put("file", file.string());
+                        config.put("archive.<xmlattr>.format", "filesystem");
 
                         tfReader->setConfiguration(config);
                         tfReader->configure();
@@ -392,11 +391,9 @@ void SMultipleTF::initializePools()
             // Delete the reader.
             service::remove(tfReader);
 
-            // Creates the multiple TF atoms reader.
-            data::Composite::sptr tfPool                       = data::Composite::New();
-            const io::base::service::IReader::sptr mulTFReader = service::add<io::base::service::IReader>(
-                "sight::module::io::atoms::SReader"
-            );
+            // Creates the multiple TF reader.
+            const auto tfPool      = data::Composite::New();
+            const auto mulTFReader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
             mulTFReader->setInOut(tfPool, io::base::service::s_DATA_KEY);
 
             // Parse all path contained in m_path and read multiple TF.
@@ -413,10 +410,10 @@ void SMultipleTF::initializePools()
                         const std::filesystem::path file = *it;
 
                         service::IService::ConfigType config;
-                        config.add("archive.<xmlattr>.backend", "json");
-                        config.add("archive.extension", ".tfp");
-                        config.add("extensions.extension", ".tfp");
-                        config.add("file", file.string());
+                        config.put("dialog.<xmlattr>.extension", ".tfp");
+                        config.put("dialog.<xmlattr>.description", "Transfer Function Pool");
+                        config.put("file", file.string());
+                        config.put("archive.<xmlattr>.format", "filesystem");
 
                         mulTFReader->setConfiguration(config);
                         mulTFReader->configure();
@@ -763,23 +760,19 @@ void SMultipleTF::importPool()
 {
     const data::Composite::sptr tfPool = data::Composite::New();
 
-    const io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-        "sight::module::io::atoms::SReader"
-    );
+    const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
 
     reader->setInOut(tfPool, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
-    config.add("archive.<xmlattr>.backend", "json");
-    config.add("archive.extension", ".tfp");
-    config.add("extensions.extension", ".tfp");
+    config.put("dialog.<xmlattr>.extension", ".tfp");
+    config.put("dialog.<xmlattr>.description", "Transfer Function Pool");
+    config.put("archive.<xmlattr>.format", "filesystem");
 
     reader->configure(config);
     reader->start();
     reader->openLocationDialog();
     reader->update().wait();
-    reader->stop().wait();
-    service::remove(reader);
 
     // Check the loaded composite.
     if(tfPool->size() >= 1)
@@ -807,25 +800,23 @@ void SMultipleTF::importPool()
 
         this->presetChoice(index);
     }
+
+    reader->stop().wait();
+    service::remove(reader);
 }
 
 //------------------------------------------------------------------------------
 
 void SMultipleTF::exportPool()
 {
-    const io::base::service::IWriter::sptr writer = service::add<io::base::service::IWriter>(
-        "sight::module::io::atoms::SWriter"
-    );
+    const auto writer        = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
     const auto currentTfPool = m_currentTfPool.lock();
     writer->setInput(currentTfPool.get_shared(), io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
-    config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
-    config.add("patcher.<xmlattr>.version", s_VERSION_TF);
-    config.add("archive.<xmlattr>.backend", "json");
-    config.add("archive.extension", ".tfp");
-    config.add("extensions.extension", ".tfp");
-    config.add("extensions.extension.<xmlattr>.label", "Transfer Function Pool");
+    config.add("dialog.<xmlattr>.extension", ".tfp");
+    config.add("dialog.<xmlattr>.description", "Transfer Function Pool");
+    config.put("archive.<xmlattr>.format", "filesystem");
 
     writer->configure(config);
     writer->start();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@
 
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
@@ -88,7 +87,7 @@ SDynamicView::~SDynamicView() noexcept
 
 void SDynamicView::configuring()
 {
-    this->::sight::ui::base::view::IActivityView::configuring();
+    this->sight::ui::base::view::IActivityView::configuring();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
@@ -124,9 +123,9 @@ void SDynamicView::configuring()
 
 void SDynamicView::starting()
 {
-    this->::sight::ui::base::IGuiContainer::create();
+    this->sight::ui::base::IGuiContainer::create();
 
-    auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable(true);
@@ -194,7 +193,7 @@ void SDynamicView::createTab(sight::activity::ActivityMsg info)
     viewInfo.icon           = info.getIconPath();
     viewInfo.tooltip        = info.getToolTip();
     viewInfo.viewConfigID   = info.getAppConfigID();
-    viewInfo.replaceMap     = info.getReplaceMap();
+    viewInfo.replacementMap = info.getReplacementMap();
     viewInfo.activitySeries = info.getActivitySeries();
 
     this->launchTab(viewInfo);
@@ -230,20 +229,19 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     QString finalTitle = QString("%1 %2").arg(info.title.c_str(), "(%1)").arg(m_titleToCount[info.title]);
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
-    auto subContainer = ::sight::ui::qt::container::QtContainer::New();
+    auto subContainer = sight::ui::qt::container::QtContainer::New();
     QWidget* widget   = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
-    ::sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
+    sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
-    info.replaceMap["WID_PARENT"] = info.wid;
-    std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
-    info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
+    info.replacementMap["WID_PARENT"]  = info.wid;
+    info.replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
 
     service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
 
     try
     {
-        helper->setConfig(info.viewConfigID, info.replaceMap);
+        helper->setConfig(info.viewConfigID, info.replacementMap);
         if(!m_dynamicConfigStartStop)
         {
             helper->launch();
@@ -329,7 +327,7 @@ void SDynamicView::closeTab(int index, bool forceClose)
         m_currentWidget = 0;
         m_tabWidget->removeTab(index);
 
-        ::sight::ui::base::GuiRegistry::unregisterWIDContainer(info.wid);
+        sight::ui::base::GuiRegistry::unregisterWIDContainer(info.wid);
 
         info.container->destroyContainer();
         info.container.reset();
@@ -404,61 +402,18 @@ void SDynamicView::buildMainActivity()
 
 SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries::sptr activitySeries)
 {
-    ReplaceMapType replaceMap;
-    this->translateParameters(m_parameters, replaceMap);
-
-    ActivityInfo info;
-    info = Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
-
-    std::string tabInfo;
-    if(info.tabInfo.empty())
-    {
-        tabInfo = info.title;
-    }
-    else
-    {
-        std::string newTabInfo = info.tabInfo;
-        std::regex e("(!(([\\w]+\\.?)+[\\w]))");
-        std::smatch what;
-        if(std::regex_search(newTabInfo, what, e))
-        {
-            std::string submatch(what[1].first, what[1].second);
-
-            submatch.replace(0, 1, "@");
-
-            data::Object::sptr obj = data::reflection::getObject(activitySeries->getData(), submatch);
-            SIGHT_ASSERT("Invalid seshat path : '" << submatch << "'", obj);
-
-            data::String::sptr stringParameter = data::String::dynamicCast(obj);
-
-            std::string tabInfoSeshat;
-
-            if(stringParameter)
-            {
-                tabInfoSeshat = stringParameter->getValue();
-            }
-            else
-            {
-                SIGHT_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
-            }
-
-            submatch.replace(0, 1, "!");
-            ::boost::algorithm::replace_all(newTabInfo, submatch, tabInfoSeshat);
-        }
-
-        tabInfo = newTabInfo;
-    }
-
-    this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
-    replaceMap["AS_UID"] = activitySeries->getID();
+    auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
+        *activitySeries,
+        m_parameters
+    );
 
     SDynamicViewInfo viewInfo;
     viewInfo.title          = info.title;
     viewInfo.icon           = info.icon;
-    viewInfo.tooltip        = tabInfo;
+    viewInfo.tooltip        = info.tabInfo.empty() ? info.title : info.tabInfo;
     viewInfo.viewConfigID   = info.appConfig.id;
     viewInfo.activitySeries = activitySeries;
-    viewInfo.replaceMap     = replaceMap;
+    viewInfo.replacementMap = replacementMap;
 
     return viewInfo;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "DataConverter.hpp"
-
-#include "io/igtl/detail/converter/AtomConverter.hpp"
 
 #include <core/LazyInstantiator.hpp>
 
@@ -53,7 +51,6 @@ void DataConverter::registerConverter(converter::IConverter::sptr c)
 
 DataConverter::DataConverter()
 {
-    m_defaultConverter = io::igtl::detail::converter::AtomConverter::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +72,8 @@ DataConverter::~DataConverter()
         }
     }
 
-    return m_defaultConverter->fromFwDataObject(src);
+    SIGHT_THROW("Object of type " << classname << " is not supported");
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,12 +82,6 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 {
     data::Object::sptr obj;
     const std::string deviceType = src->GetDeviceType();
-
-    if(deviceType == "ATOMS")
-    {
-        obj = m_defaultConverter->fromIgtlMessage(src);
-        return obj;
-    }
 
     for(const converter::IConverter::sptr& converter : m_converters)
     {
@@ -100,7 +92,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         }
     }
 
-    SIGHT_WARN("Message type not supported : " + std::string(src->GetDeviceType()));
+    SIGHT_THROW("Message of type " << std::string(src->GetDeviceType()) << " is not supported");
     return obj;
 }
 
@@ -127,7 +119,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 {
     ::igtl::CapabilityMessage::Pointer msg = ::igtl::CapabilityMessage::New();
     msg->SetNumberOfTypes(static_cast<int>(m_converters.size()));
-    for(size_t i = 0 ; i < m_converters.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_converters.size() ; ++i)
     {
         msg->SetType(static_cast<int>(i), m_converters[i]->getIgtlType().c_str());
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -199,9 +199,9 @@ void SInrSeriesDBReader::updating()
 void SInrSeriesDBReader::initSeries(data::Series::sptr series, const std::string& instanceUID)
 {
     series->setModality("OT");
-    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    const std::string date         = core::tools::getDate(now);
-    const std::string time         = core::tools::getTime(now);
+    boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+    const std::string date       = core::tools::getDate(now);
+    const std::string time       = core::tools::getTime(now);
     series->setDate(date);
     series->setTime(time);
 

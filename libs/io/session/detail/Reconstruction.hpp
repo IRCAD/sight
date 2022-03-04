@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Image.hpp>
 #include <data/Material.hpp>
@@ -50,7 +50,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto reconstruction = Helper::safeCast<data::Reconstruction>(object);
@@ -60,8 +60,8 @@ inline static void serialize(
 
     // Serialize attributes
     tree.put(s_IsVisible, reconstruction->getIsVisible());
-    Helper::writeString(tree, s_OrganName, reconstruction->getOrganName(), password);
-    Helper::writeString(tree, s_StructureType, reconstruction->getStructureType(), password);
+    Helper::writeString(tree, s_OrganName, reconstruction->getOrganName());
+    Helper::writeString(tree, s_StructureType, reconstruction->getStructureType());
 
     children[s_Material] = reconstruction->getMaterial();
     children[s_Image]    = reconstruction->getImage();
@@ -77,7 +77,7 @@ inline static data::Reconstruction::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -88,8 +88,8 @@ inline static data::Reconstruction::sptr deserialize(
 
     // Deserialize attributes
     reconstruction->setIsVisible(tree.get<bool>(s_IsVisible));
-    reconstruction->setOrganName(Helper::readString(tree, s_OrganName, password));
-    reconstruction->setStructureType(Helper::readString(tree, s_StructureType, password));
+    reconstruction->setOrganName(Helper::readString(tree, s_OrganName));
+    reconstruction->setStructureType(Helper::readString(tree, s_StructureType));
 
     reconstruction->setMaterial(std::dynamic_pointer_cast<data::Material>(children.at(s_Material)));
     reconstruction->setImage(std::dynamic_pointer_cast<data::Image>(children.at(s_Image)));

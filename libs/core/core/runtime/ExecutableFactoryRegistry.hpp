@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ class ExecutableFactory;
  * An instance of this class is responsible for the registration of an
  * executable factory instance in the runtime environment. The factory instace
  * gets registered as soon as a registry instance gets created.
- * That's why this class is design to be instanciated as static object.
+ * That's why this class is design to be instantiated as static object.
  *
  *
  */

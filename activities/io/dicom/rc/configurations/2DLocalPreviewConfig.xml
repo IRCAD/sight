@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DLocalPreviewConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -50,14 +50,10 @@
             <inout key="target" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
-            <inout key="image" uid="image" />
-        </service>
-
         <service uid="sliderIndexDicomPullerEditor" type="sight::module::ui::dicom::SSliceIndexDicomEditor">
             <in key="series" uid="${objectID}" />
             <out key="image" uid="image" />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
                 <readerConfig>
                     <config>
                         <showLogDialog>false</showLogDialog>
@@ -70,7 +66,6 @@
 
         <start uid="mainview" />
         <!-- Deferred start -->
-        <start uid="medicalImgConverter" />
         <start uid="imageDumpLocker" />
         <!-- 3D scene 'gs' -->
         <start uid="pNegatoAdp" />

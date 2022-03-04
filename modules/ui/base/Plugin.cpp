@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,27 @@
 
 #include "modules/ui/base/Plugin.hpp"
 
+#include <core/crypto/PasswordKeeper.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Os.hpp>
 
-#include <data/String.hpp>
-
 #include <service/base.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 namespace sight::module::ui::base
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::base::Plugin");
+using sight::core::crypto::secure_string;
+using sight::core::crypto::PasswordKeeper;
+using sight::ui::base::Preferences;
 
-const std::string Plugin::s_PREF_SERVICE_UID = "PREF_SERVICE_UID";
+constexpr static auto s_PREFERENCES_ENABLED           = "preferences_enabled";
+constexpr static auto s_PREFERENCES_PASSWORD_POLICY   = "preferences_password_policy";
+constexpr static auto s_PREFERENCES_ENCRYPTION_POLICY = "preferences_encryption_policy";
+constexpr static auto s_PREFERENCES_PASSWORD          = "preferences_password";
+
+SIGHT_REGISTER_PLUGIN("sight::module::ui::base::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -48,31 +54,37 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    m_preferences = data::Composite::New();
+    const auto module = getModule();
 
-    service::IService::sptr prefSrv;
-    prefSrv = service::add("sight::module::ui::base::SPreferences", s_PREF_SERVICE_UID);
-    prefSrv->setInOut(m_preferences, sight::ui::base::preferences::s_PREFERENCES_KEY);
+    // By default enable preferences
+    const bool enabled = !module->hasParameter(s_PREFERENCES_ENABLED)
+                         || module->getParameterValue(s_PREFERENCES_ENABLED) != "false";
 
-    try
+    Preferences::set_enabled(enabled);
+
+    // Set the password policy
+    const PasswordKeeper::PasswordPolicy password_policy =
+        !module->hasParameter(s_PREFERENCES_PASSWORD_POLICY)
+        ? PasswordKeeper::PasswordPolicy::DEFAULT
+        : PasswordKeeper::string_to_password_policy(module->getParameterValue(s_PREFERENCES_PASSWORD_POLICY));
+
+    SIGHT_THROW_IF("Invalid password policy.", password_policy == PasswordKeeper::PasswordPolicy::INVALID);
+    Preferences::set_password_policy(password_policy);
+
+    // Set the encryption policy
+    const PasswordKeeper::EncryptionPolicy encryption_policy =
+        !module->hasParameter(s_PREFERENCES_ENCRYPTION_POLICY)
+        ? PasswordKeeper::EncryptionPolicy::DEFAULT
+        : PasswordKeeper::string_to_encryption_policy(module->getParameterValue(s_PREFERENCES_ENCRYPTION_POLICY));
+
+    SIGHT_THROW_IF("Invalid encryption policy.", encryption_policy == PasswordKeeper::EncryptionPolicy::INVALID);
+    Preferences::set_encryption_policy(encryption_policy);
+
+    // Set an hardcoded password
+    if(module->hasParameter(s_PREFERENCES_PASSWORD))
     {
-        core::runtime::EConfigurationElement::sptr prefConfig = core::runtime::EConfigurationElement::New("filename");
-        std::filesystem::path prefFile                        = sight::ui::base::preferences::getPreferencesFile();
-        prefConfig->setValue(prefFile.string());
-
-        prefSrv->setConfiguration(prefConfig);
-        prefSrv->configure();
-        prefSrv->start();
-
-        if(m_preferences->find("PREFERENCES_VERSION") == m_preferences->end())
-        {
-            data::String::sptr version = data::String::New("0.1");
-            (*m_preferences)["PREFERENCES_VERSION"] = version;
-        }
-    }
-    catch(core::Exception& e)
-    {
-        SIGHT_ERROR("Preferences service not started. " << e.what());
+        const secure_string& password = module->getParameterValue(s_PREFERENCES_PASSWORD).c_str();
+        Preferences::set_password(password);
     }
 }
 
@@ -80,14 +92,7 @@ void Plugin::start()
 
 void Plugin::stop() noexcept
 {
-    if(core::tools::fwID::exist(s_PREF_SERVICE_UID))
-    {
-        service::IService::sptr prefSrv = service::get(s_PREF_SERVICE_UID);
-        prefSrv->stop();
-        service::remove(prefSrv);
-    }
-
-    m_preferences.reset();
+    Preferences::set_enabled(false);
 }
 
 } // namespace sight::module::ui::base

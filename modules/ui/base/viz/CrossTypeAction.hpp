@@ -39,11 +39,11 @@ namespace sight::module::ui::base::viz
 /**
  * @brief   This action allows change the cross type
  */
-class MODULE_UI_BASE_CLASS_API CrossTypeAction : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API CrossTypeAction : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(CrossTypeAction, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(CrossTypeAction, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API CrossTypeAction() noexcept;

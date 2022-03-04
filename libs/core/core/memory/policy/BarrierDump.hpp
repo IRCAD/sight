@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include "core/memory/BufferManager.hpp"
 #include "core/memory/IPolicy.hpp"
 #include "core/memory/policy/factory/new.hpp"
+
 #include <core/base.hpp>
 
 namespace sight::core::memory
@@ -94,14 +95,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setBarrier(size_t barrier)
+    void setBarrier(std::size_t barrier)
     {
         m_barrier = barrier;
     }
 
     //------------------------------------------------------------------------------
 
-    size_t getBarrier() const
+    std::size_t getBarrier() const
     {
         return m_barrier;
     }
@@ -112,16 +113,16 @@ public:
 
 protected:
 
-    CORE_API size_t getTotalAlive() const;
+    CORE_API std::size_t getTotalAlive() const;
     CORE_API bool isBarrierCrossed() const;
 
-    CORE_API size_t dump(size_t nbOfBytes);
+    CORE_API std::size_t dump(std::size_t nbOfBytes);
 
     CORE_API void apply();
 
-    size_t m_totalAllocated;
-    size_t m_totalDumped;
-    size_t m_barrier;
+    std::size_t m_totalAllocated;
+    std::size_t m_totalDumped;
+    std::size_t m_barrier;
 };
 
 } // namespace policy

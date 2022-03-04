@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <io/opencv/FrameTL.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::FrameTLTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::FrameTLTest);
 
 namespace sight::io::opencv
 {
@@ -39,15 +39,28 @@ namespace ut
 
 template<typename T>
 static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameTL(
-    size_t _w,
-    size_t _h,
+    std::size_t _w,
+    std::size_t _h,
     std::uint8_t _numChannels
 )
 {
+    CPPUNIT_ASSERT(_numChannels == 1 || _numChannels == 3 || _numChannels == 4);
+
     const core::tools::Type type = core::tools::Type::create<T>();
 
     data::FrameTL::sptr frameTL = data::FrameTL::New();
-    frameTL->initPoolSize(_w, _h, type, _numChannels);
+    frameTL->initPoolSize(
+        _w,
+        _h,
+        type,
+        _numChannels == 1
+        ? data::FrameTL::PixelFormat::GRAY_SCALE
+        : _numChannels == 3
+        ? data::FrameTL::PixelFormat::RGB
+        : _numChannels == 4
+        ? data::FrameTL::PixelFormat::RGBA
+        : data::FrameTL::PixelFormat::UNDEFINED
+    );
     auto buffer = frameTL->createBuffer(core::HiResClock::getTimeInMilliSec());
 
     return std::make_pair(frameTL, buffer);
@@ -57,19 +70,19 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
 
 template<typename T>
 static void compareImages(
-    const ::cv::Mat& _cvImage,
+    const cv::Mat& _cvImage,
     const data::FrameTL::BufferType::ElementType* _buffer,
-    size_t _w,
-    size_t _h,
+    std::size_t _w,
+    std::size_t _h,
     std::uint8_t _numChannels
 )
 {
-    std::vector< ::cv::Mat> channels(_numChannels);
-    ::cv::split(_cvImage, channels);
+    std::vector<cv::Mat> channels(_numChannels);
+    cv::split(_cvImage, channels);
 
     CPPUNIT_ASSERT_EQUAL(2, _cvImage.dims);
-    CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[1]));
-    CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[0]));
+    CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[1]));
+    CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cvImage.size[0]));
 
     const T* imageBuffer = reinterpret_cast<const T*>(_buffer);
 
@@ -79,9 +92,9 @@ static void compareImages(
         {
             for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
             {
-                const size_t index = c
-                                     + static_cast<size_t>(i) * _numChannels
-                                     + static_cast<size_t>(j) * _numChannels * _w;
+                const std::size_t index = c
+                                          + static_cast<std::size_t>(i) * _numChannels
+                                          + static_cast<std::size_t>(j) * _numChannels * _w;
                 CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(j, i));
             }
         }
@@ -91,7 +104,7 @@ static void compareImages(
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
+static void testMoveToCV(std::size_t _w, std::size_t _h, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
 
@@ -103,7 +116,7 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
     {
-        ::cv::Mat cvImage;
+        cv::Mat cvImage;
         io::opencv::FrameTL::moveToCv(frameTL, eltBuffer, cvImage);
 
         // Since we share the same buffer, compare the pointers
@@ -112,7 +125,7 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
         compareImages<T>(cvImage, eltBuffer, _w, _h, _numChannels);
     }
     {
-        ::cv::Mat cvImage2;
+        cv::Mat cvImage2;
         cvImage2 = io::opencv::FrameTL::moveToCv(frameTL, eltBuffer);
 
         // Since we share the same buffer, compare the pointers
@@ -125,10 +138,10 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testCopyFromCV(size_t _w, size_t _h, std::uint8_t _numChannels)
+static void testCopyFromCV(std::size_t _w, std::size_t _h, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
-    const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, 0, _numChannels);
+    const cv::Mat cvImage            = genCvImage<T>(imageBuffer, _w, _h, 0, _numChannels);
 
     data::FrameTL::sptr frameTL;
     SPTR(data::FrameTL::BufferType) buffer;
@@ -147,7 +160,7 @@ static void testCopyFromCV(size_t _w, size_t _h, std::uint8_t _numChannels)
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testCopyToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
+static void testCopyToCV(std::size_t _w, std::size_t _h, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
 
@@ -158,7 +171,7 @@ static void testCopyToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
     auto eltBuffer = buffer->addElement(0);
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
-    ::cv::Mat cvImage;
+    cv::Mat cvImage;
     io::opencv::FrameTL::copyToCv(frameTL, eltBuffer, cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
@@ -184,81 +197,18 @@ void FrameTLTest::tearDown()
 void FrameTLTest::moveToCv()
 {
     testMoveToCV<std::uint8_t>(10, 2, 1);
-    testMoveToCV<std::uint8_t>(1, 20, 2);
     testMoveToCV<std::uint8_t>(6, 12, 3);
     testMoveToCV<std::uint8_t>(10, 7, 4);
-
-    testMoveToCV<std::int8_t>(10, 8, 1);
-    testMoveToCV<std::int8_t>(10, 20, 2);
-    testMoveToCV<std::int8_t>(23, 20, 3);
-    testMoveToCV<std::int8_t>(76, 2, 4);
-
-    testMoveToCV<std::uint16_t>(10, 2, 1);
-    testMoveToCV<std::uint16_t>(10, 20, 2);
-    testMoveToCV<std::uint16_t>(6, 20, 3);
-    testMoveToCV<std::uint16_t>(10, 7, 4);
-
-    testMoveToCV<std::int16_t>(10, 401, 1);
-    testMoveToCV<std::int16_t>(10, 20, 2);
-    testMoveToCV<std::int16_t>(23, 20, 3);
-    testMoveToCV<std::int16_t>(76, 2, 4);
-
-    testMoveToCV<std::int32_t>(10, 32, 1);
-    testMoveToCV<std::int32_t>(10, 20, 2);
-    testMoveToCV<std::int32_t>(23, 20, 3);
-    testMoveToCV<std::int32_t>(76, 2, 4);
-
-    testMoveToCV<float>(10, 32, 1);
-    testMoveToCV<float>(10, 20, 2);
-    testMoveToCV<float>(90, 20, 3);
-    testMoveToCV<float>(76, 2, 4);
-
-    testMoveToCV<double>(12, 32, 1);
-    testMoveToCV<double>(10, 1, 2);
-    testMoveToCV<double>(23, 8, 3);
-    testMoveToCV<double>(76, 2, 4);
 }
 
 //------------------------------------------------------------------------------
 
 void FrameTLTest::copyFromCv()
 {
-    testCopyFromCV<std::int16_t>(10, 7, 1);
+    testCopyFromCV<std::uint8_t>(10, 7, 1);
     testCopyFromCV<std::uint8_t>(10, 2, 1);
-    testCopyFromCV<std::uint8_t>(1, 20, 2);
     testCopyFromCV<std::uint8_t>(6, 12, 3);
     testCopyFromCV<std::uint8_t>(10, 7, 4);
-
-    testCopyFromCV<std::int8_t>(10, 144, 1);
-    testCopyFromCV<std::int8_t>(10, 20, 2);
-    testCopyFromCV<std::int8_t>(23, 20, 3);
-    testCopyFromCV<std::int8_t>(76, 2, 4);
-
-    testCopyFromCV<std::uint16_t>(10, 21, 1);
-    testCopyFromCV<std::uint16_t>(10, 2, 1);
-    testCopyFromCV<std::uint16_t>(10, 20, 2);
-    testCopyFromCV<std::uint16_t>(6, 20, 3);
-    testCopyFromCV<std::uint16_t>(10, 7, 4);
-
-    testCopyFromCV<std::int16_t>(10, 35, 1);
-    testCopyFromCV<std::int16_t>(10, 20, 2);
-    testCopyFromCV<std::int16_t>(23, 20, 3);
-    testCopyFromCV<std::int16_t>(76, 2, 4);
-
-    testCopyFromCV<std::int32_t>(10, 32, 1);
-    testCopyFromCV<std::int32_t>(10, 20, 2);
-    testCopyFromCV<std::int32_t>(23, 20, 3);
-    testCopyFromCV<std::int32_t>(76, 2, 4);
-
-    testCopyFromCV<float>(10, 32, 1);
-    testCopyFromCV<float>(10, 20, 2);
-    testCopyFromCV<float>(90, 20, 3);
-    testCopyFromCV<float>(76, 2, 4);
-
-    testCopyFromCV<double>(12, 32, 1);
-    testCopyFromCV<double>(10, 1, 2);
-    testCopyFromCV<double>(23, 8, 3);
-    testCopyFromCV<double>(76, 2, 4);
 }
 
 //------------------------------------------------------------------------------
@@ -266,39 +216,8 @@ void FrameTLTest::copyFromCv()
 void FrameTLTest::copyToCv()
 {
     testCopyToCV<std::uint8_t>(10, 2, 1);
-    testCopyToCV<std::uint8_t>(1, 20, 2);
     testCopyToCV<std::uint8_t>(6, 12, 3);
     testCopyToCV<std::uint8_t>(10, 7, 4);
-
-    testCopyToCV<std::int8_t>(10, 21, 1);
-    testCopyToCV<std::int8_t>(10, 20, 2);
-    testCopyToCV<std::int8_t>(23, 20, 3);
-    testCopyToCV<std::int8_t>(76, 2, 4);
-
-    testCopyToCV<std::uint16_t>(54, 2, 1);
-    testCopyToCV<std::uint16_t>(87, 20, 2);
-    testCopyToCV<std::uint16_t>(6, 20, 3);
-    testCopyToCV<std::uint16_t>(10, 7, 4);
-
-    testCopyToCV<std::int16_t>(10, 78, 1);
-    testCopyToCV<std::int16_t>(10, 20, 2);
-    testCopyToCV<std::int16_t>(23, 20, 3);
-    testCopyToCV<std::int16_t>(76, 2, 4);
-
-    testCopyToCV<std::int32_t>(10, 32, 1);
-    testCopyToCV<std::int32_t>(78, 20, 2);
-    testCopyToCV<std::int32_t>(23, 20, 3);
-    testCopyToCV<std::int32_t>(76, 2, 4);
-
-    testCopyToCV<float>(10, 32, 1);
-    testCopyToCV<float>(10, 20, 2);
-    testCopyToCV<float>(90, 20, 3);
-    testCopyToCV<float>(76, 2, 4);
-
-    testCopyToCV<double>(12, 32, 1);
-    testCopyToCV<double>(10, 1, 2);
-    testCopyToCV<double>(23, 8, 3);
-    testCopyToCV<double>(76, 2, 4);
 }
 
 } // namespace ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::modifier::SliceThicknessModifier);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::modifier::SliceThicknessModifier);
 
 namespace sight::filter::dicom
 {
@@ -49,7 +49,7 @@ const std::string SliceThicknessModifier::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-SliceThicknessModifier::SliceThicknessModifier(filter::dicom::IFilter::Key key) :
+SliceThicknessModifier::SliceThicknessModifier(filter::dicom::IFilter::Key) :
     IModifier()
 {
 }
@@ -78,7 +78,7 @@ std::string SliceThicknessModifier::getDescription() const
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::Logger::sptr&
 ) const
 {
     DicomSeriesContainerType result;
@@ -123,7 +123,7 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
     DcmFileFormat fileFormat;
     DcmDataset* dataset;
 
-    const size_t buffSize = bufferObj->getSize();
+    const std::size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast<char*>(lock.getBuffer());
 
@@ -179,7 +179,7 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
     OFCondition status;
     DcmDataset* dataset;
 
-    const size_t buffSize = bufferObj->getSize();
+    const std::size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast<char*>(lock.getBuffer());
 

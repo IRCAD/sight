@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,8 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
 #include "io/session/detail/Series.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
@@ -60,7 +60,7 @@ inline static void serialize(
     children[s_Data] = activitySeries->getData();
 
     // Serialize trivial properties
-    Helper::writeString(tree, s_ActivityConfigId, activitySeries->getActivityConfigId(), password);
+    Helper::writeString(tree, s_ActivityConfigId, activitySeries->getActivityConfigId());
 }
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ inline static data::ActivitySeries::sptr deserialize(
     activitySeries->setData(std::dynamic_pointer_cast<data::Composite>(children.at(s_Data)));
 
     // Deserialize trivial properties
-    activitySeries->setActivityConfigId(Helper::readString(tree, s_ActivityConfigId, password));
+    activitySeries->setActivityConfigId(Helper::readString(tree, s_ActivityConfigId));
 
     return activitySeries;
 }

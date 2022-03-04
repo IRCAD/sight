@@ -1,13 +1,12 @@
 <plugin id="sight::config::ui::activity">
 
     <requirement id="sight::module::io::session" />
-    <requirement id="sight::module::io::atoms" />
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::io::activity" />
 
     <xi:include href="configurations/ActivityLauncher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>defaultWizardConfig</id>
         <service>sight::module::ui::qt::activity::SWizard</service>
         <desc>Default configuration for activity wizard</desc>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Array.hpp>
 
@@ -71,9 +71,7 @@ inline static void serialize(
     // Create the output file inside the archive
     const auto& ostream = archive.openFile(
         std::filesystem::path(array->getUUID() + s_array),
-        password,
-        zip::Method::ZSTD,
-        zip::Level::DEFAULT
+        password
     );
 
     // Write back to the archive
@@ -97,22 +95,19 @@ inline static data::Array::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Array>(tree, 0, 1);
 
-    // Type
-    array->setType(tree.get<std::string>(s_Type));
-
     // IsBufferOwner
     array->setIsBufferOwner(tree.get<bool>(s_IsBufferOwner, false));
 
     // Sizes
-    std::vector<size_t> sizes;
+    std::vector<std::size_t> sizes;
 
     for(const auto& sizeTree : tree.get_child(s_Sizes))
     {
-        const auto& size = sizeTree.second.get_value<size_t>();
+        const auto& size = sizeTree.second.get_value<std::size_t>();
         sizes.push_back(size);
     }
 
-    array->resize(sizes, true);
+    array->resize(sizes, tree.get<std::string>(s_Type), true);
 
     // Buffer
     const auto& bufferObject = array->getBufferObject();

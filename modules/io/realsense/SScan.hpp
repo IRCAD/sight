@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::module::io::realsense
 /**
  * @brief  RealSense Camera Grabber
  *
- * This service grabs the depth, the color frame, and the poincloud from a compatible device (Realsense D400 cameras).
+ * This service grabs the depth, the color frame, and the pointcloud from a compatible device (Realsense D400 cameras).
  * The frames are pushed into timelines.
  * The pointloud is pushed into a data::Mesh and updated each time.
  *
@@ -93,10 +93,10 @@ namespace sight::module::io::realsense
  *      - nearest_from_around: Use the value from the neighboring pixel closest to the sensor
  * - \b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
  *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
- *  -  key 'alignTo': used to change the frames alignement, all frames can be aligned on (None (default), Color, Depth
+ *  -  key 'alignTo': used to change the frames alignment, all frames can be aligned on (None (default), Color, Depth
  * or Infrared Streams).
  *    (see also 'alignTo is subsection \ref Configuration below).'
- * - \b setDoubleParameter(vouble value, std::string key): Slot called when a double parameter changes:
+ * - \b setDoubleParameter(double value, std::string key): Slot called when a double parameter changes:
  *   - key 'spacialSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
  *     infinite filter [0.25-1]
  *   - key 'temporalSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
@@ -104,7 +104,7 @@ namespace sight::module::io::realsense
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="videoGrabber" type ="::sight::module::io::realsense::SScan" autoConnect="false">
+   <service uid="videoGrabber" type ="sight::module::io::realsense::SScan" autoConnect="false">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
@@ -131,7 +131,7 @@ namespace sight::module::io::realsense
  * - \b colorH:  desired color frame height (default: 720, max: 1080, min: 180) (optional).
  * - \b switchToIR: push infrared frame in color TL (default false) (optional)
  * - \b IREmitter: enable infrared emitter (default true) (optional)
- * - \b alignTo: align each frames to the chosen one, values can be: None (default), Color, Depth, Infrared (optionnal).
+ * - \b alignTo: align each frames to the chosen one, values can be: None (default), Color, Depth, Infrared (optional).
  * - \b preset: (advanced option): load a json preset ( overwrite previous resolution values) (optional).
  *   - Default: Default preset
  *   - HighResHighAccuracy
@@ -173,7 +173,7 @@ namespace sight::module::io::realsense
  * For more convenience we set the same fps for both color and depth streams.
  *
  *
- * - \b recordFile (optionnal): path & filename where recording will be saved.
+ * - \b recordFile (optional): path & filename where recording will be saved.
  */
 
 class MODULE_IO_REALSENSE_CLASS_API SScan : public sight::io::base::service::IRGBDGrabber
@@ -236,9 +236,9 @@ private:
         int minRange          = s_MIN_DEPTH_RANGE; ///< min depth range.
         bool needHardReset    = false;             ///< if device needs to be hard-reset before at stop.
         ///If frames needs to be aligned on in a particular STREAM.
-        /// Value can be RS2_STREAM_COUNT = No alignement, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
+        /// Value can be RS2_STREAM_COUNT = No alignment, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
         // values are ignored.
-        ::rs2_stream streamToAlignTo = RS2_STREAM_COUNT;
+        rs2_stream streamToAlignTo = RS2_STREAM_COUNT;
 
         /// Re-init all values to default.
         void reset()
@@ -344,7 +344,7 @@ private:
      * @brief initialize is called at "startCamera" and will do the initialization of sight data.
      * @param[in] _profile: realsense pipeline_profile created in 'startCamera'
      */
-    void initialize(const ::rs2::pipeline_profile& _profile);
+    void initialize(const rs2::pipeline_profile& _profile);
 
     /**
      * @brief  grabbing thread (launched from startCamera)
@@ -361,7 +361,7 @@ private:
      * @brief updateAlignment changes the reference frame where all frames will be aligned.
      * @param[in] _alignTo: reference frame name in string can be None, Color, Infrared or Depth.
      * All others values are ignored.
-     * @return bool: true if new alignement is register, false if _alignTo value is ignored (avoid an unnecessary
+     * @return bool: true if new alignment is registered, false if _alignTo value is ignored (avoid an unnecessary
      * call to stop/start).
      */
     bool updateAlignment(const std::string& _alignTo);
@@ -388,7 +388,7 @@ private:
      * @param[in] _pc : realsense points.
      * @param[in] _texture : realsense video_frame used to add color on points.
      */
-    void onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture);
+    void onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture);
 
     // Slots
 
@@ -410,7 +410,7 @@ private:
 
     // Members
 
-    std::unique_ptr< ::rs2::pipeline> m_pipe; ///< RealSense Pipeline
+    std::unique_ptr<rs2::pipeline> m_pipe; ///< RealSense Pipeline
 
     std::string m_depthKey; ///< Depth frame key.
     std::string m_colorKey; ///< Color frame key.
@@ -431,7 +431,7 @@ private:
     FilterSettings m_filterSettings;
 
     /// Contain the current realsense device (needed when parameters changed live).
-    ::rs2::device m_currentDevice;
+    rs2::device m_currentDevice;
 
     /// Map of json presets (in RC folder).
     std::map<std::string, ::fs::path> m_jsonPresets;

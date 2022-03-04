@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -255,8 +255,8 @@ void ToolBar::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
     for(SIDToolBarMapType::value_type sid : m_menuSids)
     {
         SIGHT_ASSERT(
-            "The toolBar '" << m_sid << "' contains more menu in <regitry> than in <layout>: "
-            << (sid.second.first + 1) << " menu in <regitry>, but only " << menus.size() << "  in <layout>.",
+            "The toolBar '" << m_sid << "' contains more menu in <registry> than in <layout>: "
+            << (sid.second.first + 1) << " menu in <registry>, but only " << menus.size() << "  in <layout>.",
             sid.second.first < menus.size()
         );
         menu = menus.at(sid.second.first);
@@ -286,7 +286,7 @@ void ToolBar::manage(std::vector<ui::base::container::fwContainer::sptr> contain
     for(SIDToolBarMapType::value_type sid : m_editorSids)
     {
         SIGHT_ASSERT(
-            "The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
+            "The toolBar '" << m_sid << "' contains more editors in <registry> than in <layout>: "
             << (sid.second.first + 1) << " editors in <registry>, but only " << containers.size() << " in <layout>.",
             sid.second.first < containers.size()
         );
@@ -311,7 +311,7 @@ void ToolBar::manage(std::vector<ui::base::container::fwContainer::sptr> contain
     for(WIDToolBarMapType::value_type wid : m_editorWids)
     {
         SIGHT_ASSERT(
-            "The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
+            "The toolBar '" << m_sid << "' contains more editors in <registry> than in <layout>: "
             << (wid.second + 1) << " editors in <registry>, but only " << containers.size() << " in <layout>.",
             wid.second < containers.size()
         );

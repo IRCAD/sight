@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@
 #include <unordered_set>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ServiceFactoryTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ServiceFactoryTest);
 
 //------------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ void ServiceFactoryTest::factoryTest()
         CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvThreeData not found ", it != servicesImpl.end());
 
         const auto objects = serviceFactory->getServiceObjects("sight::service::ut::TestSrvThreeData");
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), objects.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), objects.size());
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Float"), objects[0]);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Integer"), objects[1]);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Float"), objects[2]);

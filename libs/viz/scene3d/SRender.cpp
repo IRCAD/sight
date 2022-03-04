@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,8 +32,6 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
@@ -49,7 +47,7 @@
 
 #include <stack>
 
-SIGHT_REGISTER_SERVICE(::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite);
+SIGHT_REGISTER_SERVICE(sight::viz::base::IRender, sight::viz::scene3d::SRender, sight::data::Composite);
 
 namespace sight::viz::scene3d
 {
@@ -109,7 +107,7 @@ void SRender::configuring()
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
     const ConfigType sceneCfg = config.get_child("scene");
 
-    const size_t nbInouts = config.count("inout");
+    const std::size_t nbInouts = config.count("inout");
     SIGHT_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
 
     if(nbInouts == 1)
@@ -129,15 +127,6 @@ void SRender::configuring()
     }
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
-
-#ifdef __APPLE__
-    // TODO: fix fullscreen rendering on macOS.
-    SIGHT_ERROR(
-        "Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
-        "it is therefore disabled."
-    );
-    m_fullscreen = false;
-#endif
 
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if(renderMode == "auto")
@@ -235,7 +224,7 @@ void SRender::starting()
     }
 
     // Initialize resources to load overlay scripts.
-    ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
 
@@ -410,7 +399,7 @@ Layer::ViewportConfigType SRender::configureLayerViewport(const service::IServic
     const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");
     if(_vpConfig.has_value())
     {
-        const auto cfg = _vpConfig.value();
+        const auto cfg = _vpConfig.get();
 
         float xPos = cfg.get<float>("hOffset", 0.f);
         float yPos = cfg.get<float>("vOffset", 0.f);
@@ -462,7 +451,7 @@ void SRender::requestRender()
         const auto image = m_offScreenImage.lock();
         {
             this->makeCurrent();
-            ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
+            Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
             SIGHT_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
             viz::scene3d::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
         }
@@ -525,7 +514,7 @@ bool SRender::isShownOnScreen()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::SceneManager* SRender::getSceneManager(const ::std::string& sceneID)
+Ogre::SceneManager* SRender::getSceneManager(const std::string& sceneID)
 {
     viz::scene3d::Layer::sptr layer = this->getLayer(sceneID);
     return layer->getSceneManager();
@@ -533,7 +522,7 @@ bool SRender::isShownOnScreen()
 
 // ----------------------------------------------------------------------------
 
-viz::scene3d::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
+viz::scene3d::Layer::sptr SRender::getLayer(const std::string& sceneID)
 {
     SIGHT_ASSERT("Empty sceneID", !sceneID.empty());
     SIGHT_ASSERT("Layer ID " << sceneID << " does not exist", m_layers.find(sceneID) != m_layers.end());

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,16 +103,20 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
     if(isValid)
     {
-        sight::activity::extension::ActivityInfo info;
-        info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
+            *activitySeries,
+            m_parameters
+        );
 
-        std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
-        SIGHT_INFO_IF(
-            "Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
-                                                                                         "started !",
-            module->isStarted()
-        )
-        if(!module->isStarted())
+        auto module = core::runtime::findModule(info.bundleId);
+
+        if(module->isStarted())
+        {
+            SIGHT_INFO(
+                "Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already started !"
+            );
+        }
+        else
         {
             module->start();
         }
@@ -120,21 +124,18 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
         // get Activity path, it allows to retrieve the associated Qml file
         const auto path = core::runtime::getModuleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
 
-        ReplaceMapType replaceMap;
-        this->translateParameters(m_parameters, replaceMap);
-        this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
-        replaceMap["AS_UID"] = activitySeries->getID();
-
         // convert the replaceMap to Qt Map to send it to Qml(only QVariantMap type is implemented in Qml)
-        QVariantMap qReplaceMap;
-        for(const auto& elt : replaceMap)
+        QVariantMap variantMap;
+
+        for(const auto& replacement : replacementMap)
         {
-            QString replace = QString::fromStdString(elt.first);
-            QString by      = QString::fromStdString(elt.second);
-            qReplaceMap.insert(replace, by);
+            variantMap.insert(
+                QString::fromStdString(replacement.first),
+                QString::fromStdString(replacement.second)
+            );
         }
 
-        Q_EMIT launchRequested(QUrl::fromLocalFile(QString::fromStdString(path.string())), qReplaceMap);
+        Q_EMIT launchRequested(QUrl::fromLocalFile(QString::fromStdString(path.string())), variantMap);
     }
     else
     {

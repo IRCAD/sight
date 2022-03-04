@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ struct TestIHasServices : public service::IHasServices
             testService->setInOut(data1, "data1", true);
             testService->setInOut(data2, "data2", false);
             testService->setInOut(data3, "data3", true);
-            testService->start();
+            testService->start().wait();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
             CPPUNIT_ASSERT(!testService->getReceived());
@@ -97,7 +97,7 @@ struct TestIHasServices : public service::IHasServices
             testService->setInOut(data1, "data1", true);
             testService->setInOut(data2, "data2", true);
             testService->setInOut(data3, "data3");
-            testService->start();
+            testService->start().wait();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
             CPPUNIT_ASSERT(!testService->getReceived());
@@ -116,7 +116,7 @@ struct TestIHasServices : public service::IHasServices
             testService->setInOut(data1, "data1", true);
             testService->setInOut(data2, "data2", true);
             testService->setInOut(data3, "data3");
-            testService->start();
+            testService->start().wait();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
             CPPUNIT_ASSERT(!testService->getReceived());
@@ -145,14 +145,14 @@ struct TestIHasServices : public service::IHasServices
             {
                 auto testService1 = this->registerService("sight::service::ut::STest1Inout");
                 testService1->setInOut(data1, "data1", true);
-                testService1->start();
+                testService1->start().wait();
                 refService1 = testService1;
             }
 
             service::IService::wptr refService2;
             {
                 auto testService2 = this->registerService("sight::service::ut::STestNoData");
-                testService2->start();
+                testService2->start().wait();
                 refService2 = testService2;
             }
 
@@ -175,14 +175,14 @@ struct TestIHasServices : public service::IHasServices
             {
                 auto testService1 = this->registerService("sight::service::ut::STest1Input");
                 testService1->setInput(data1, "data1", true);
-                testService1->start();
+                testService1->start().wait();
                 refService1 = testService1;
             }
 
             service::IService::wptr refService2;
             {
                 auto testService2 = this->registerService("sight::service::ut::STestNoData");
-                testService2->start();
+                testService2->start().wait();
                 refService2 = testService2;
             }
 
@@ -205,14 +205,14 @@ struct TestIHasServices : public service::IHasServices
             {
                 auto testService1 = this->registerService("sight::service::ut::STest1Inout");
                 testService1->setInOut(data1, "data1", true);
-                testService1->start();
+                testService1->start().wait();
                 refService1 = testService1;
             }
 
             service::IService::wptr refService2;
             {
                 auto testService2 = this->registerService("sight::service::ut::STestNoData");
-                testService2->start();
+                testService2->start().wait();
                 refService2 = testService2;
             }
 
@@ -232,21 +232,21 @@ struct TestIHasServices : public service::IHasServices
         {
             auto testService1 = this->registerService("sight::service::ut::STest1Inout");
             testService1->setInOut(data1, "data1", true);
-            testService1->start();
+            testService1->start().wait();
 
             auto testService2 = this->registerService("sight::service::ut::STestNoData");
-            testService2->start();
+            testService2->start().wait();
 
             auto testService3 = this->registerService("sight::service::ut::STest1Inout");
             testService3->setInOut(data1, "data1", true);
-            testService3->start();
+            testService3->start().wait();
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
             this->unregisterServices("sight::service::ut::STest1Inout");
             this->unregisterServices("sight::service::ut::STestNoData");
 
-            CPPUNIT_ASSERT_EQUAL(size_t(0), this->getRegisteredServices().size());
+            CPPUNIT_ASSERT_EQUAL(std::size_t(0), this->getRegisteredServices().size());
         }
     }
 
@@ -263,22 +263,22 @@ struct TestIHasServices : public service::IHasServices
                 "sight::service::ut::STest1Input1OptInput1OptInOut"
             );
             testService->setInput(data1, "data1", true, false);
-            testService->start();
+            testService->start().wait();
 
             CPPUNIT_ASSERT(testService->getSwappedObjectKey().empty());
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
 
             testService->setInput(data2, "data2");
-            testService->swapKey("data2", nullptr);
+            testService->swapKey("data2", nullptr).wait();
             CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
             CPPUNIT_ASSERT(data2 == testService->getSwappedObject());
 
             testService->setInOut(data3, "data3");
-            testService->swapKey("data3", nullptr);
+            testService->swapKey("data3", nullptr).wait();
             CPPUNIT_ASSERT_EQUAL(std::string("data3"), testService->getSwappedObjectKey());
 
             testService->setInput(nullptr, "data2");
-            testService->swapKey("data2", nullptr);
+            testService->swapKey("data2", nullptr).wait();
             CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
         }
@@ -292,7 +292,7 @@ struct TestIHasServices : public service::IHasServices
                 "sight::service::ut::STest1Input1OptInput1OptInOut"
             );
             testService->setInput(data1, "data1", true, false);
-            testService->start();
+            testService->start().wait();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
             CPPUNIT_ASSERT(!testService->getReceived());
@@ -301,13 +301,13 @@ struct TestIHasServices : public service::IHasServices
             CPPUNIT_ASSERT(testService->getIsUpdated());
 
             testService->setInput(data2, "data2", false, true);
-            testService->swapKey("data2", nullptr);
+            testService->swapKey("data2", nullptr).wait();
 
             sig2->emit();
             CPPUNIT_ASSERT(!testService->getReceived());
 
             testService->setInOut(data3, "data3", true, true);
-            testService->swapKey("data3", data3);
+            testService->swapKey("data3", data3).wait();
 
             sig3->emit();
             CPPUNIT_ASSERT(testService->getReceived());

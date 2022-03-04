@@ -88,7 +88,7 @@ void SStereoToggler::updating()
     if(this->confirmAction())
     {
         service::registry::ObjectService::ServiceVectorType renderers =
-            service::OSR::getServices("::sight::viz::scene3d::SRender");
+            service::OSR::getServices("sight::viz::scene3d::SRender");
 
         const bool enableStereo = this->getIsActive() && this->getIsExecutable();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;

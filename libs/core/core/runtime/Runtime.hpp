@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/runtime/RuntimeException.hpp"
+
 #include <core/macros.hpp>
 
 #include <filesystem>
@@ -110,7 +111,7 @@ public:
     CORE_API virtual void addModules(const std::filesystem::path& repository) = 0;
 
     /**
-     * @brief       Retrieves the module for the specified idenfier.
+     * @brief       Retrieves the module for the specified identifier.
      *
      * @param[in]   identifier  a string containing a module identifier
      * @param[in]   version     the version of the module (undefined by default)

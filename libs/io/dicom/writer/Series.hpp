@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,6 +56,7 @@ public:
         io::base::writer::factory::New<Series>
     );
 
+    //cspell: ignore ComprehensiveSRIOD Comprehensive3DSRIOD
     typedef enum
     {
         SPATIAL_FIDUCIALS   = 1, /*! Export Fiducials using SpatialFiducialsIOD */
@@ -84,7 +85,7 @@ public:
      * Override
      * @brief Do nothing
      */
-    IO_DICOM_API std::string extension() override;
+    IO_DICOM_API std::string extension() const override;
 
     /// Get Fiducials Export Mode
     const FiducialsExportMode& getFiducialsExportMode() const

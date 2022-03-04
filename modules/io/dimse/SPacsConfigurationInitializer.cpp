@@ -28,31 +28,20 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <utility>
 
 namespace sight::module::io::dimse
 {
 
-template<typename T, typename CAST_T = T>
-struct SetFromConfig
-{
-    //------------------------------------------------------------------------------
-
-    void operator()(data::Composite::sptr config, std::string const& confName, T& attribute)
-    {
-        if(config)
-        {
-            data::Composite::iterator it = config->find(confName);
-            if(it != config->end())
-            {
-                data::String::sptr obj = data::String::dynamicCast(it->second);
-                attribute = T(::boost::lexical_cast<CAST_T>(obj->value()));
-            }
-        }
-    }
-};
+static const std::string s_LocalApplicationTitle("localApplicationTitle");
+static const std::string s_PacsHostName("pacsHostName");
+static const std::string s_PacsApplicationTitle("pacsApplicationTitle");
+static const std::string s_PacsApplicationPort("pacsApplicationPort");
+static const std::string s_MoveApplicationTitle("moveApplicationTitle");
+static const std::string s_MoveApplicationPort("moveApplicationPort");
+static const std::string s_RetrieveMethod("retrieveMethod");
 
 //------------------------------------------------------------------------------
 
@@ -68,35 +57,42 @@ SPacsConfigurationInitializer::~SPacsConfigurationInitializer() noexcept
 
 //------------------------------------------------------------------------------
 
+std::string SPacsConfigurationInitializer::getKey(const std::string& subKey) const noexcept
+{
+    return m_preferenceKey + "." + subKey;
+}
+
+//------------------------------------------------------------------------------
+
 void SPacsConfigurationInitializer::configuring()
 {
     const ConfigType configTree = this->getConfigTree();
     const auto config           = configTree.get_child("config.<xmlattr>");
 
     // Local application title.
-    m_SCUAppEntityTitle = config.get<std::string>("localApplicationTitle");
+    m_SCUAppEntityTitle = config.get<std::string>(s_LocalApplicationTitle);
 
     // Pacs host name.
-    m_SCPHostName = config.get<std::string>("pacsHostName");
+    m_SCPHostName = config.get<std::string>(s_PacsHostName);
 
     // Pacs application title.
-    m_SCPAppEntityTitle = config.get<std::string>("pacsApplicationTitle");
+    m_SCPAppEntityTitle = config.get<std::string>(s_PacsApplicationTitle);
 
     // Pacs port.
-    const std::string pacsApplicationPort = config.get<std::string>("pacsApplicationPort");
+    const std::string pacsApplicationPort = config.get<std::string>(s_PacsApplicationPort);
     m_SCPPort = static_cast<decltype(m_SCPPort)>(std::stoi(pacsApplicationPort));
 
     // Retrieve Method.
-    const std::string retrieveMethod = config.get<std::string>("retrieveMethod");
+    const std::string retrieveMethod = config.get<std::string>(s_RetrieveMethod);
     m_retrieveMethod = (retrieveMethod == "MOVE")
                        ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
                        : (sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD);
 
     // Move application title.
-    m_moveAppEntityTitle = config.get<std::string>("moveApplicationTitle");
+    m_moveAppEntityTitle = config.get<std::string>(s_MoveApplicationTitle);
 
     // Move application port.
-    const std::string moveApplicationPort = config.get<std::string>("moveApplicationPort");
+    const std::string moveApplicationPort = config.get<std::string>(s_MoveApplicationPort);
     m_movePort = static_cast<decltype(m_movePort)>(std::stoi(moveApplicationPort));
 
     // Preference Key.
@@ -113,22 +109,23 @@ void SPacsConfigurationInitializer::starting()
     // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
     {
-        data::Composite::sptr prefs = ui::base::preferences::getPreferences();
-        if(prefs)
+        try
         {
-            data::Composite::sptr config = data::Composite::dynamicCast((*prefs)[m_preferenceKey]);
+            ui::base::Preferences preferences;
 
-            SetFromConfig<std::string> setFromConfig;
-            SetFromConfig<unsigned short> setFromConfigShort;
-            SetFromConfig<sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD, int> setFromConfigEnum;
-
-            setFromConfig(config, "LocalApplicationTitle", m_SCUAppEntityTitle);
-            setFromConfig(config, "PacsHostName", m_SCPHostName);
-            setFromConfig(config, "PacsApplicationTitle", m_SCPAppEntityTitle);
-            setFromConfigShort(config, "PacsApplicationPort", m_SCPPort);
-            setFromConfig(config, "MoveApplicationTitle", m_moveAppEntityTitle);
-            setFromConfigShort(config, "MoveApplicationPort", m_movePort);
-            setFromConfigEnum(config, "RetrieveMethod", m_retrieveMethod);
+            m_SCUAppEntityTitle  = preferences.get(getKey(s_LocalApplicationTitle), m_SCUAppEntityTitle);
+            m_SCPHostName        = preferences.get(getKey(s_PacsHostName), m_SCPHostName);
+            m_SCPAppEntityTitle  = preferences.get(getKey(s_PacsApplicationTitle), m_SCPAppEntityTitle);
+            m_SCPPort            = preferences.get(getKey(s_PacsApplicationPort), m_SCPPort);
+            m_moveAppEntityTitle = preferences.get(getKey(s_MoveApplicationTitle), m_moveAppEntityTitle);
+            m_movePort           = preferences.get(getKey(s_MoveApplicationPort), m_movePort);
+            m_retrieveMethod     = static_cast<sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD>(
+                preferences.get(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod))
+            );
+        }
+        catch(const ui::base::PreferencesDisabled& e)
+        {
+            // Nothing to do..
         }
     }
 
@@ -180,28 +177,22 @@ void SPacsConfigurationInitializer::updating()
     // If a preference key is set, save the local var to the preferences
     if(!m_preferenceKey.empty())
     {
-        data::Composite::sptr prefs = ui::base::preferences::getPreferences();
-        if(prefs && (prefs->find(m_preferenceKey) == prefs->end() || !(*prefs)[m_preferenceKey]))
+        try
         {
-            (*prefs)[m_preferenceKey] = data::Composite::New();
-        }
+            ui::base::Preferences preferences;
 
-        if(prefs)
+            preferences.put(getKey(s_LocalApplicationTitle), m_SCUAppEntityTitle);
+            preferences.put(getKey(s_PacsHostName), m_SCPHostName);
+            preferences.put(getKey(s_PacsApplicationTitle), m_SCPAppEntityTitle);
+            preferences.put(getKey(s_PacsApplicationPort), m_SCPPort);
+            preferences.put(getKey(s_MoveApplicationTitle), m_moveAppEntityTitle);
+            preferences.put(getKey(s_MoveApplicationPort), m_movePort);
+            preferences.put(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod));
+        }
+        catch(const ui::base::PreferencesDisabled& e)
         {
-            data::Composite::sptr config = data::Composite::dynamicCast((*prefs)[m_preferenceKey]);
-            (*config)["LocalApplicationTitle"] = data::String::New(m_SCUAppEntityTitle);
-            (*config)["PacsHostName"]          = data::String::New(m_SCPHostName);
-            (*config)["PacsApplicationTitle"]  = data::String::New(m_SCPAppEntityTitle);
-            (*config)["PacsApplicationPort"]   =
-                data::String::New(::boost::lexical_cast<std::string>(m_SCPPort));
-            (*config)["MoveApplicationTitle"] = data::String::New(m_moveAppEntityTitle);
-            (*config)["MoveApplicationPort"]  =
-                data::String::New(::boost::lexical_cast<std::string>(m_movePort));
-            (*config)["RetrieveMethod"] =
-                data::String::New(::boost::lexical_cast<std::string>(m_retrieveMethod));
+            // Nothing to do..
         }
-
-        ui::base::preferences::savePreferences();
     }
 }
 

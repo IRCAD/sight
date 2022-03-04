@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -172,7 +172,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
 
                 // We can't give a default value for each component to SParameters :/
                 // For now fill it with the first one
-                const auto dumpLock = arrayObject->lock();
+                const auto dumpLock = arrayObject->dump_lock();
 
                 double defaultValue;
                 if(arrayObject->getType() == core::tools::Type::s_FLOAT)
@@ -203,7 +203,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
                     _adaptor,
                     "setInt" + strSize + "Parameter"
                 );
-                const auto dumpLock = arrayObject->lock();
+                const auto dumpLock = arrayObject->dump_lock();
 
                 const int defaultValue = arrayObject->at<std::int32_t>(0);
                 const auto minmax      = getRange(defaultValue);

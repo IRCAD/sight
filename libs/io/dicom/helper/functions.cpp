@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace helper
 
 std::string generatePatientId()
 {
-    ::gdcm::UIDGenerator uid;
+    gdcm::UIDGenerator uid;
     const char* id = uid.Generate();
     return std::string(id);
 }
@@ -48,7 +48,7 @@ std::string generatePatientId()
 
 std::string generateStudyInstanceUid()
 {
-    using namespace ::boost::posix_time;
+    using namespace boost::posix_time;
 
     ptime now         = microsec_clock::local_time();
     time_facet* facet = new time_facet("%f%S%M%H%d%m");

@@ -1,6 +1,6 @@
-sight_add_target( ui_base TYPE LIBRARY PCH pchService )
+sight_add_target(ui_base TYPE LIBRARY PCH pchService)
 
-target_link_libraries(ui_base PUBLIC core data service)
+target_link_libraries(ui_base PUBLIC core data service io_zip)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ BarrierDump::BarrierDump() :
 
 void BarrierDump::allocationRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType buffer,
+    core::memory::BufferManager::ConstBufferPtrType,
     BufferInfo::SizeType size
 )
 {
@@ -67,7 +67,7 @@ void BarrierDump::allocationRequest(
 
 void BarrierDump::setRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType buffer,
+    core::memory::BufferManager::ConstBufferPtrType,
     BufferInfo::SizeType size
 )
 {
@@ -87,7 +87,7 @@ void BarrierDump::setRequest(
 
 void BarrierDump::reallocateRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType buffer,
+    core::memory::BufferManager::ConstBufferPtrType,
     BufferInfo::SizeType newSize
 )
 {
@@ -105,7 +105,7 @@ void BarrierDump::reallocateRequest(
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
 {
     if(!info.loaded)
     {
@@ -119,27 +119,27 @@ void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::lockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::lockRequest(BufferInfo&, core::memory::BufferManager::ConstBufferPtrType)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::unlockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::unlockRequest(BufferInfo&, core::memory::BufferManager::ConstBufferPtrType)
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
 {
     m_totalDumped += info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
 {
     SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
@@ -147,10 +147,10 @@ void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-size_t BarrierDump::getTotalAlive() const
+std::size_t BarrierDump::getTotalAlive() const
 {
     SIGHT_ASSERT("More dumped data than allocated data.", m_totalAllocated >= m_totalDumped);
-    size_t totalAlive = m_totalAllocated - m_totalDumped;
+    std::size_t totalAlive = m_totalAllocated - m_totalDumped;
     return totalAlive;
 }
 
@@ -163,9 +163,9 @@ bool BarrierDump::isBarrierCrossed() const
 
 //------------------------------------------------------------------------------
 
-size_t BarrierDump::dump(size_t nbOfBytes)
+std::size_t BarrierDump::dump(std::size_t nbOfBytes)
 {
-    size_t dumped = 0;
+    std::size_t dumped = 0;
 
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     if(manager)
@@ -189,7 +189,7 @@ size_t BarrierDump::dump(size_t nbOfBytes)
             }
         }
 
-        for(const BufferVectorType::value_type& pair : bufferInfos)
+        for(const auto& pair : bufferInfos)
         {
             if(dumped < nbOfBytes)
             {

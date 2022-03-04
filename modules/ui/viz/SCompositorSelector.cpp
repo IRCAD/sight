@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "SCompositorSelector.hpp"
 
-#include <viz/scene3d/SRender.hpp>
-
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
@@ -32,6 +30,8 @@
 #include <service/registry/ObjectService.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -118,7 +118,7 @@ void SCompositorSelector::updating()
 
 void SCompositorSelector::onSelectedLayerItem(int index)
 {
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
+    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
     Layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
@@ -148,9 +148,9 @@ void SCompositorSelector::onSelectedLayerItem(int index)
 
 void SCompositorSelector::onSelectedCompositorItem(QListWidgetItem* compositorItem)
 {
-    const ::std::string compositorName = compositorItem->text().toStdString();
-    const bool isChecked               = (compositorItem->checkState() == ::Qt::Checked);
-    Layer::sptr layer                  = m_currentLayer.lock();
+    const std::string compositorName = compositorItem->text().toStdString();
+    const bool isChecked             = (compositorItem->checkState() == Qt::Checked);
+    Layer::sptr layer                = m_currentLayer.lock();
 
     if(layer)
     {
@@ -179,7 +179,7 @@ void SCompositorSelector::refreshRenderers()
 
     // Fill layer box with all enabled layers
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::scene3d::SRender");
+        service::OSR::getServices("sight::viz::scene3d::SRender");
 
     for(auto srv : renderers)
     {
@@ -218,19 +218,19 @@ void SCompositorSelector::updateCompositorList()
         layer->getRenderService()->makeCurrent();
 
         // Retrieving all compositors
-        ::Ogre::ResourceManager::ResourceMapIterator iter =
-            ::Ogre::CompositorManager::getSingleton().getResourceIterator();
+        Ogre::ResourceManager::ResourceMapIterator iter =
+            Ogre::CompositorManager::getSingleton().getResourceIterator();
         while(iter.hasMoreElements())
         {
-            ::Ogre::ResourcePtr compositor = iter.getNext();
+            Ogre::ResourcePtr compositor = iter.getNext();
             if(compositor->getGroup() == s_COMPOSITOR_RESOURCEGROUP_NAME)
             {
                 QString compositorName = compositor.get()->getName().c_str();
                 layer->addAvailableCompositor(compositorName.toStdString());
 
                 QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
-                newCompositor->setFlags(newCompositor->flags() | ::Qt::ItemIsUserCheckable);
-                newCompositor->setCheckState(::Qt::Unchecked);
+                newCompositor->setFlags(newCompositor->flags() | Qt::ItemIsUserCheckable);
+                newCompositor->setCheckState(Qt::Unchecked);
             }
         }
     }
@@ -265,7 +265,7 @@ void SCompositorSelector::checkEnabledCompositors()
                 {
                     if(layerCompositor->second)
                     {
-                        currentCompositor->setCheckState(::Qt::Checked);
+                        currentCompositor->setCheckState(Qt::Checked);
                         layer->updateCompositorState(currentCompositor->text().toStdString(), true);
                     }
                 }
@@ -281,7 +281,7 @@ void SCompositorSelector::uncheckCompositors()
     for(int i(0) ; i < m_compositorChain->count() ; ++i)
     {
         QListWidgetItem* currentCompositor = m_compositorChain->item(i);
-        currentCompositor->setCheckState(::Qt::Unchecked);
+        currentCompositor->setCheckState(Qt::Unchecked);
     }
 }
 

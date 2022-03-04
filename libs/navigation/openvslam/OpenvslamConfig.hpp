@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,8 +56,8 @@ struct NAVIGATION_OPENVSLAM_CLASS_API InitParams
     /// Parallax threshold  (in degree).
     float parallaxDegThr = 1.0;
     /// Reprojection Error threshold.
-    float reprojErrThr = 4.0;
-    /// Number of Iterations for module-Adjustement.
+    float reprojectionErrThr = 4.0;
+    /// Number of Iterations for bundle-adjustment.
     unsigned int numBAIterations = 20;
     /// Initial scale factor.
     float scalingFactor = 1000.0;

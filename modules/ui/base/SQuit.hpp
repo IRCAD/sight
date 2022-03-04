@@ -34,11 +34,11 @@ namespace sight::module::ui::base
 /**
  * @brief   This action tries to close the window and reset root object.
  */
-class MODULE_UI_BASE_CLASS_API SQuit : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SQuit : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SQuit, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SQuit, sight::ui::base::IAction);
 
     /**
      * @brief Constructor. Do nothing.

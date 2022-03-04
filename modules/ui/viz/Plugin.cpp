@@ -27,7 +27,7 @@
 namespace sight::module::ui::viz
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::viz::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::viz::Plugin");
 
 //-----------------------------------------------------------------------------
 

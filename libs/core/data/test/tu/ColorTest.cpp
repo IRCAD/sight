@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,12 +63,15 @@ void ColorTest::methode1()
     const float B = 0.5f;
     const float A = 0.6f;
 
-    data::Color::sptr color = data::Color::New(R, G, B, A);
+    auto color = data::Color::New(R, G, B, A);
 
     CPPUNIT_ASSERT_EQUAL(color->red(), R);
     CPPUNIT_ASSERT_EQUAL(color->green(), G);
     CPPUNIT_ASSERT_EQUAL(color->blue(), B);
     CPPUNIT_ASSERT_EQUAL(color->alpha(), A);
+
+    auto color2 = data::Color::New(R, G, B, A);
+    CPPUNIT_ASSERT(*color == *color2);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +84,7 @@ void ColorTest::methode2()
     const float B = 0.5f;
     const float A = 0.6f;
 
-    data::Color::sptr color = data::Color::New();
+    auto color = data::Color::New();
 
     data::Color::ColorArray array;
     array[0] = R;
@@ -95,6 +98,12 @@ void ColorTest::methode2()
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
+
+    auto color2 = data::Color::New();
+    CPPUNIT_ASSERT(*color != *color2);
+
+    color2->setRGBA(array);
+    CPPUNIT_ASSERT(*color == *color2);
 }
 
 //------------------------------------------------------------------------------
@@ -117,6 +126,12 @@ void ColorTest::methode3()
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
+
+    auto color2 = data::Color::New();
+    CPPUNIT_ASSERT(*color != *color2);
+
+    color2->setRGBA(fuchsia);
+    CPPUNIT_ASSERT(*color == *color2);
 }
 
 } //namespace ut

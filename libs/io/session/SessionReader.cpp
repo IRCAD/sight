@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 
 #include "detail/SessionDeserializer.hpp"
 
-#include "PasswordKeeper.hpp"
+#include <core/crypto/PasswordKeeper.hpp>
 
 #include <io/base/reader/registry/macros.hpp>
 
@@ -31,6 +31,10 @@ SIGHT_REGISTER_IO_READER(sight::io::session::SessionReader);
 
 namespace sight::io::session
 {
+
+using core::crypto::PasswordKeeper;
+using core::crypto::secure_string;
+using sight::io::zip::Archive;
 
 class SessionReader::SessionReaderImpl
 {
@@ -45,9 +49,10 @@ public:
 
     /// Constructor
     inline SessionReaderImpl(SessionReader* const sessionReader) :
-        m_SessionReader(sessionReader),
+        m_sessionReader(sessionReader),
         m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
+        m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
 
@@ -57,22 +62,32 @@ public:
     /// Read the session from archive.
     inline void read()
     {
-        // Create the session and deserialize the root object
-        detail::SessionDeserializer session;
-        m_object = session.deserialize(m_SessionReader->getFile(), m_password->getPassword(), m_encryptionPolicy);
+        // Deserialize the root object
+        m_object = m_sessionDeserializer.deserialize(
+            m_sessionReader->getFile(),
+            m_archiveFormat,
+            m_password->get_password(),
+            m_encryptionPolicy
+        );
     }
+
+    /// Session deserializer which perform the deserialization
+    detail::SessionDeserializer m_sessionDeserializer;
 
     /// Use a shared_ptr to keep the object alive as it is the read() return value
     core::tools::Object::sptr m_object;
 
     /// Pointer to the public interface
-    SessionReader* const m_SessionReader;
+    SessionReader* const m_sessionReader;
 
     /// Keep the password in a vault
     const std::unique_ptr<PasswordKeeper> m_password;
 
     /// The encryption policy
     PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
+
+    /// Archive format to use
+    Archive::ArchiveFormat m_archiveFormat;
 };
 
 SessionReader::SessionReader(base::reader::IObjectReader::Key) :
@@ -95,16 +110,16 @@ void SessionReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string SessionReader::extension()
+std::string SessionReader::extension() const
 {
     return ".zip";
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setPassword(const core::crypto::secure_string& password)
+void SessionReader::set_password(const secure_string& password)
 {
-    m_pimpl->m_password->setPassword(password);
+    m_pimpl->m_password->set_password(password);
 }
 
 //------------------------------------------------------------------------------
@@ -112,6 +127,27 @@ void SessionReader::setPassword(const core::crypto::secure_string& password)
 void SessionReader::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
+{
+    m_pimpl->m_archiveFormat = archiveFormat;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
+{
+    m_pimpl->m_sessionDeserializer.setDeserializer(className, deserializer);
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setDefaultDeserializer(const std::string& className, deserializer_t deserializer)
+{
+    detail::SessionDeserializer::setDefaultDeserializer(className, deserializer);
 }
 
 } // namespace sight::io::session

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Pool.hpp>
 
 #include <service/extension/AppConfig.hpp>
@@ -33,7 +32,7 @@
 namespace sight::module::service
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::service::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::service::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -72,9 +71,6 @@ void Plugin::uninitialize()
 
     // Clear all service factories
     sight::service::extension::Factory::getDefault()->clearFactory();
-
-    // Clear all active Workers
-    sight::core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //-----------------------------------------------------------------------------

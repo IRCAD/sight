@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Series::Series(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Series::csptr& series,
     const core::log::Logger::sptr& logger,
@@ -69,12 +69,12 @@ Series::~Series()
 void Series::writeGeneralSeriesModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>(m_object->getModality(), dataset);
 
     // As the data may have been updated between two export, we regenerate an UID
-    ::gdcm::UIDGenerator uidGenerator;
+    gdcm::UIDGenerator uidGenerator;
     const std::string instanceUID = uidGenerator.Generate();
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(instanceUID, dataset);
 
@@ -86,13 +86,13 @@ void Series::writeGeneralSeriesModule()
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0060>(m_object->getLaterality(), dataset);
 
-    ::boost::posix_time::ptime ptime = ::boost::posix_time::second_clock::local_time();
-    const std::string fulldate       = ::boost::posix_time::to_iso_string(ptime);
+    boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
+    const std::string fulldate     = boost::posix_time::to_iso_string(ptime);
     // Split iso time in YYYYMMDDTHHMMSS
-    ::boost::char_separator<char> sep("T");
-    ::boost::tokenizer< ::boost::char_separator<char> > tokens(fulldate, sep);
-    ::boost::tokenizer< ::boost::char_separator<char> >::iterator tok_iter = tokens.begin();
-    const std::string date                                                 = *tok_iter;
+    boost::char_separator<char> sep("T");
+    boost::tokenizer<boost::char_separator<char> > tokens(fulldate, sep);
+    boost::tokenizer<boost::char_separator<char> >::iterator tok_iter = tokens.begin();
+    const std::string date                                            = *tok_iter;
     tok_iter++;
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0021>(date, dataset);
 
@@ -103,14 +103,14 @@ void Series::writeGeneralSeriesModule()
     data::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
     if(!performingPhysicians.empty())
     {
-        ::gdcm::String<>* physicians = new ::gdcm::String<>[performingPhysicians.size()];
-        unsigned int count           = 0;
+        gdcm::String<>* physicians = new gdcm::String<>[performingPhysicians.size()];
+        unsigned int count         = 0;
         for(std::string physician : performingPhysicians)
         {
-            physicians[count++] = ::gdcm::String<>(physician);
+            physicians[count++] = gdcm::String<>(physician);
         }
 
-        io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x1050>(
+        io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<>, 0x0008, 0x1050>(
             physicians,
             count,
             dataset
@@ -205,10 +205,10 @@ void Series::writeGeneralSeriesModule()
 void Series::writeSegmentationSeriesModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Series's modality - Type 1
-    dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
+    dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("SEG", dataset);
 }
 
@@ -217,17 +217,17 @@ void Series::writeSegmentationSeriesModule()
 void Series::writeSRDocumentSeriesModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Create generator
-    ::gdcm::UIDGenerator uidGenerator;
+    gdcm::UIDGenerator uidGenerator;
 
     // Series's modality - Type 1
-    dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
+    dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("SR", dataset);
 
     // Serie's instance UID - Type 1
-    dataset.Remove(::gdcm::Tag(0x0020, 0x000e));
+    dataset.Remove(gdcm::Tag(0x0020, 0x000e));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
     // Serie's number - Type 1
@@ -242,17 +242,17 @@ void Series::writeSRDocumentSeriesModule()
 void Series::writeSpatialFiducialsSeriesModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Create uid generator
-    ::gdcm::UIDGenerator uidGenerator;
+    gdcm::UIDGenerator uidGenerator;
 
     // Serie's instance UID - Type 1
-    dataset.Remove(::gdcm::Tag(0x0020, 0x000e));
+    dataset.Remove(gdcm::Tag(0x0020, 0x000e));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
     // Series's modality - Type 1
-    dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
+    dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("FID", dataset);
 }
 

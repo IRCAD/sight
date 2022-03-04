@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ public:
     ) override;
 
     /**
-     * @brief Get the configuraton root.
+     * @brief Get the configuration root.
      * @return The configuration root.
      */
     SERVICE_API data::Object::sptr getConfigRoot() const override;
@@ -128,7 +128,7 @@ public:
     /**
      * @brief Adds an existing deferred object to the deferred objects map.
      *
-     * @pre The manager musn't be started.
+     * @pre The manager mustn't be started.
      *
      * When a configuration is launched, deferred objects may already exist.
      * This loop allow to notify the app config manager that this data exist and can be used by services.
@@ -141,7 +141,7 @@ public:
 
 private:
 
-    typedef ::std::pair<std::string, bool> ConfigAttribute;
+    typedef std::pair<std::string, bool> ConfigAttribute;
     typedef service::helper::ProxyConnections ProxyConnections;
     typedef service::IService::Config Config;
 
@@ -263,6 +263,9 @@ private:
 
     /// Update ordered list of deferred services.
     std::vector<std::string> m_deferredUpdateSrv;
+
+    /// List of created workers
+    std::vector<core::thread::Worker::sptr> m_createdWorkers;
 
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.

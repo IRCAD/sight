@@ -151,9 +151,9 @@ void SCompositorParameterEditor::updateCompositor(
         const std::string uuid = this->getID();
         m_editorInfo.uuid = uuid + "-editor";
 
-        ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
+        sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = service::add("::sight::module::ui::qt::SParameters", m_editorInfo.uuid);
+        auto editorService = service::add("sight::module::ui::qt::SParameters", m_editorInfo.uuid);
         m_editorInfo.service = editorService;
 
         service::IService::ConfigType editorConfig;
@@ -197,7 +197,7 @@ void SCompositorParameterEditor::clear()
     {
         objService->stop();
 
-        ::sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
+        sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
         service::OSR::unregisterService(objService);
 

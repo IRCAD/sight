@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "Fin
 
 //-----------------------------------------------------------------------------
 
-ChainManager::ChainManager(::Ogre::Viewport* _viewport) :
+ChainManager::ChainManager(Ogre::Viewport* _viewport) :
     m_ogreViewport(_viewport)
 {
     m_adaptorsObjectsOwner = data::Composite::New();
@@ -71,7 +71,7 @@ ChainManager::~ChainManager()
 
 void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
 {
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
     if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
@@ -82,7 +82,7 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
 
     // Add the new compositor
     m_compositorChain.push_back(CompositorType(_compositorName, false));
-    ::Ogre::CompositorInstance* compositor = compositorManager.addCompositor(m_ogreViewport, _compositorName);
+    Ogre::CompositorInstance* compositor = compositorManager.addCompositor(m_ogreViewport, _compositorName);
 
     // TODO: Handle this with a proper registration of the listener so that future extensions do not need to modify
     // anything here
@@ -101,7 +101,7 @@ void ChainManager::clearCompositorChain(
     viz::scene3d::SRender::sptr /*_renderService*/
 )
 {
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
     for(auto& chain : m_compositorChain)
     {
         compositorManager.setCompositorEnabled(m_ogreViewport, chain.first, false);
@@ -120,7 +120,7 @@ void ChainManager::updateCompositorState(
     viz::scene3d::SRender::sptr _renderService
 )
 {
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
 
     // If there isn't any compositor available, the update operation can't be done
     if(!m_compositorChain.empty())
@@ -155,7 +155,7 @@ void ChainManager::setCompositorChain(
 {
     this->clearCompositorChain(_layerId, _renderService);
 
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
     if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
@@ -191,7 +191,7 @@ void ChainManager::setCompositorChain(
 
 void ChainManager::addFinalCompositor()
 {
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
     compositorManager.addCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
     compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, true);
 }
@@ -205,15 +205,15 @@ void ChainManager::updateCompositorAdaptors(
     viz::scene3d::SRender::sptr _renderService
 )
 {
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    ::Ogre::CompositorChain* compChain           = compositorManager.getCompositorChain(m_ogreViewport);
-    ::Ogre::CompositorInstance* compositor       = compChain->getCompositor(_compositorName);
+    Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
+    Ogre::CompositorChain* compChain           = compositorManager.getCompositorChain(m_ogreViewport);
+    Ogre::CompositorInstance* compositor       = compChain->getCompositor(_compositorName);
     SIGHT_ASSERT("The given compositor '" + _compositorName + "' doesn't exist in the compositor chain", compositor);
 
-    ::Ogre::CompositionTechnique* tech = compositor->getTechnique();
+    Ogre::CompositionTechnique* tech = compositor->getTechnique();
 
     // Collect target passes
-    std::vector< ::Ogre::CompositionTargetPass*> targetPasses = tech->getTargetPasses();
+    std::vector<Ogre::CompositionTargetPass*> targetPasses = tech->getTargetPasses();
     targetPasses.push_back(tech->getOutputTargetPass());
 
     for(const auto targetPass : targetPasses)
@@ -223,7 +223,7 @@ void ChainManager::updateCompositorAdaptors(
         for(const auto pass : passes)
         {
             // We retrieve the parameters of the base material in a temporary material
-            const ::Ogre::MaterialPtr material = pass->getMaterial();
+            const Ogre::MaterialPtr material = pass->getMaterial();
 
             if(material)
             {
@@ -241,10 +241,10 @@ void ChainManager::updateCompositorAdaptors(
 
                     const auto shaderType = std::get<2>(constant);
 
-                    const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex"
-                                                                                               : shaderType
-                                                      == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
-                                                                                      :
+                    const std::string shaderTypeStr = shaderType == Ogre::GPT_VERTEX_PROGRAM ? "vertex"
+                                                                                             : shaderType
+                                                      == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
+                                                                                    :
                                                       "geometry";
 
                     // Naming convention for shader parameters

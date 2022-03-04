@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,9 +34,19 @@ namespace sight::data::dicom
 data::ImageSeries::sptr Series::convertToImageSeries(const data::DicomSeries::csptr& series)
 {
     data::ImageSeries::sptr result = data::ImageSeries::New();
-    result->setPatient(series->getPatient());
-    result->setStudy(series->getStudy());
-    result->setEquipment(series->getEquipment());
+
+    // Copy values of patient, study & equipment, since it returns const pointer.
+    data::Patient::sptr patient     = data::Patient::New();
+    data::Study::sptr study         = data::Study::New();
+    data::Equipment::sptr equipment = data::Equipment::New();
+
+    patient->deepCopy(series->getPatient());
+    study->deepCopy(series->getStudy());
+    equipment->deepCopy(series->getEquipment());
+
+    result->setPatient(patient);
+    result->setStudy(study);
+    result->setEquipment(equipment);
     result->setInstanceUID(series->getInstanceUID());
     result->setModality(series->getModality());
     result->setDate(series->getDate());
@@ -51,9 +61,19 @@ data::ImageSeries::sptr Series::convertToImageSeries(const data::DicomSeries::cs
 data::ModelSeries::sptr Series::convertToModelSeries(const data::DicomSeries::csptr& series)
 {
     data::ModelSeries::sptr result = data::ModelSeries::New();
-    result->setPatient(series->getPatient());
-    result->setStudy(series->getStudy());
-    result->setEquipment(series->getEquipment());
+
+    // Copy values of patient, study & equipment, since it returns const pointer.
+    data::Patient::sptr patient     = data::Patient::New();
+    data::Study::sptr study         = data::Study::New();
+    data::Equipment::sptr equipment = data::Equipment::New();
+
+    patient->deepCopy(series->getPatient());
+    study->deepCopy(series->getStudy());
+    equipment->deepCopy(series->getEquipment());
+
+    result->setPatient(patient);
+    result->setStudy(study);
+    result->setEquipment(equipment);
     result->setInstanceUID(series->getInstanceUID());
     result->setModality(series->getModality());
     result->setDate(series->getDate());

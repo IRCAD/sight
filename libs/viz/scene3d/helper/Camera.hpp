@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,8 +61,8 @@ public:
      *
      * @return screen position relatively to the viewport.
      */
-    static VIZ_SCENE3D_API ::Ogre::Vector2 convertFromWindowToViewportSpace(
-        const ::Ogre::Camera& _camera,
+    static VIZ_SCENE3D_API Ogre::Vector2 convertFromWindowToViewportSpace(
+        const Ogre::Camera& _camera,
         int _renderWindowX,
         int _renderWindowY
     );
@@ -73,9 +73,9 @@ public:
      * @param _screenPos screen position (u, v, w).
      * @return view space coordinates (x, y, z).
      */
-    static VIZ_SCENE3D_API ::Ogre::Vector3 convertScreenSpaceToViewSpace(
-        const ::Ogre::Camera& _camera,
-        const ::Ogre::Vector3& _screenPos
+    static VIZ_SCENE3D_API Ogre::Vector3 convertScreenSpaceToViewSpace(
+        const Ogre::Camera& _camera,
+        const Ogre::Vector3& _screenPos
     );
 
     /**
@@ -84,9 +84,9 @@ public:
      * @param _ndcPos NDC coordinates (3 components).
      * @return the view space coordinates (x, y, z).
      */
-    static VIZ_SCENE3D_API ::Ogre::Vector3 convertNDCToViewSpace(
-        const ::Ogre::Camera& _camera,
-        const ::Ogre::Vector3& _ndcPos
+    static VIZ_SCENE3D_API Ogre::Vector3 convertNDCToViewSpace(
+        const Ogre::Camera& _camera,
+        const Ogre::Vector3& _ndcPos
     );
 };
 

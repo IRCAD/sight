@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,10 +108,10 @@ private:
     void setThreshold(int _threshold);
 
     /// Mask image to perform computation only inside this mask.
-    ::cv::Mat m_cvMaskImage;
+    cv::Mat m_cvMaskImage;
 
     /// Depth image inside the mask to compute the depth difference with the current image.
-    ::cv::Mat m_cvDepthMaskImage;
+    cv::Mat m_cvDepthMaskImage;
 
     /// Threshold value to manage a tolerance when performing the depth difference because of noise in such images.
     int m_threshold {10};

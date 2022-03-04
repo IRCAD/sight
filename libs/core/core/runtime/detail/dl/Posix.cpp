@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
 
 #include "core/runtime/detail/dl/Posix.hpp"
 
@@ -120,4 +120,4 @@ void Posix::unload()
 
 } // namespace sight::core::runtime
 
-#endif // #if defined(linux) || defined(__linux) || defined (__APPLE__)
+#endif // #if defined(__unix__)

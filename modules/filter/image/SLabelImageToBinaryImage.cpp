@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ void SLabelImageToBinaryImage::starting()
 
 void SLabelImageToBinaryImage::updating()
 {
-    typedef typename ::itk::Image<std::uint8_t, 3> ImageType;
+    typedef typename itk::Image<std::uint8_t, 3> ImageType;
 
     const auto labelImage = m_labelImage.lock();
     SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", labelImage);
@@ -116,7 +116,7 @@ void SLabelImageToBinaryImage::updating()
 
     SIGHT_ASSERT(
         "The label image must be a greyscale image with uint8 values.",
-        labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->getNumberOfComponents() == 1
+        labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->numComponents() == 1
     );
 
     LambdaFunctor functor;
@@ -162,10 +162,10 @@ void SLabelImageToBinaryImage::updating()
             });
     }
 
-    typename ImageType::Pointer itkLabelImg = io::itk::itkImageFactory<ImageType>(labelImage.get_shared());
+    typename ImageType::Pointer itkLabelImg = io::itk::moveToItk<ImageType>(labelImage.get_shared());
 
-    ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
-        ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
+    itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
+        itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
 
     labelToMaskFilter->SetFunctor(functor);
     labelToMaskFilter->SetInput(itkLabelImg);
@@ -173,7 +173,7 @@ void SLabelImageToBinaryImage::updating()
 
     typename ImageType::Pointer itkMaskImg = labelToMaskFilter->GetOutput();
 
-    io::itk::itkImageToFwDataImage<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
+    io::itk::moveFromItk<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
     const auto modifiedSig = maskImage->signal<data::Object::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
 
     modifiedSig->asyncEmit();

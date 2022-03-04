@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,11 +38,11 @@ namespace sight::module::ui::base
 /**
  * @brief This action is used to modify the layout configuration.
  */
-class MODULE_UI_BASE_CLASS_API SModifyLayout : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SModifyLayout : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SModifyLayout, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SModifyLayout, sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
@@ -117,7 +117,7 @@ private:
     MoveSrvVectType m_moveSrv;
 
     /// < wid, showState>
-    typedef std::vector<std::pair<std::string, ::boost::logic::tribool> > ShowSrvVectType;
+    typedef std::vector<std::pair<std::string, boost::logic::tribool> > ShowSrvVectType;
     /// map representing wid container and show state
     ShowSrvVectType m_showSrvWid;
 

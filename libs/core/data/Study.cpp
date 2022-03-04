@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,5 +95,33 @@ void Study::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType
 }
 
 //------------------------------------------------------------------------------
+
+bool Study::operator==(const Study& other) const noexcept
+{
+    if(m_instanceUID != other.m_instanceUID
+       || m_studyID != other.m_studyID
+       || m_date != other.m_date
+       || m_time != other.m_time
+       || m_referringPhysicianName != other.m_referringPhysicianName
+       || m_consultingPhysicianName != other.m_consultingPhysicianName
+       || m_description != other.m_description
+       || m_patientAge != other.m_patientAge
+       || m_patientSize != other.m_patientSize
+       || m_patientWeight != other.m_patientWeight
+       || m_patientBodyMassIndex != other.m_patientBodyMassIndex)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Study::operator!=(const Study& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
 
     typedef std::map<std::string, std::string> ObjectIconMapType;
 
-    /// Defines comun header columns used in the tree widget of all created tabs.
+    /// Defines common header columns used in the tree widget of all created tabs.
     enum class ColumnCommunType : int
     {
         ID = 0
@@ -120,7 +120,7 @@ public:
      *
      * It checks if all required data are present in the widget, and create the activity data composite.
      * Then it checks if the activity parameters are accessible from the composite of data (it checks if the object are
-     * accessible from the sesh@ paths.
+     * accessible from the object paths.
      *
      * @return True if data are correct, else false and errorMsg contains detailled error.
      * @param _actSeries activitySeries to fill with the selected data.
@@ -137,7 +137,7 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    MODULE_UI_QT_API data::Object::sptr checkData(size_t _index, std::string& _errorMsg);
+    MODULE_UI_QT_API data::Object::sptr checkData(std::size_t _index, std::string& _errorMsg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
@@ -215,7 +215,7 @@ private:
      * @param index index used to find the associated tree widget.
      * @param _obj object to add in the tree.
      */
-    void addObjectItem(size_t index, const data::Object::csptr& _obj);
+    void addObjectItem(std::size_t index, const data::Object::csptr& _obj);
 
     /// Sets the activity information
     sight::activity::extension::ActivityInfo m_activityInfo;

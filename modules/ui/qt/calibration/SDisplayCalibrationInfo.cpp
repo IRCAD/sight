@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,6 +42,9 @@ namespace sight::module::ui::qt::calibration
 
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
+
+static const std::string s_SINGLE_IMAGE_CONFIG = "singleImageConfig";
+static const std::string s_TWO_IMAGE_CONFIG    = "twoImageConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
@@ -103,7 +106,7 @@ void SDisplayCalibrationInfo::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::displayImage(size_t idx)
+void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 {
     if(!m_configMgr)
     {
@@ -113,24 +116,25 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
 
         const auto calInfo2 = m_calibrationInfo2.lock();
 
-        std::string strConfig = "displayImageConfig";
+        std::string strConfig = std::string(s_ONE_IMAGE_CONFIG);
 
         // Prepare configuration
         service::FieldAdaptorType replaceMap;
 
-        data::Image::sptr img1 = calInfo1->getImage(idx);
-        replaceMap["imageId1"] = img1->getID();
-        data::PointList::sptr pointList1 = calInfo1->getPointList(img1);
+        data::Image::csptr img1 = calInfo1->getImage(idx);
+        replaceMap["imageId1"]        = img1->getID();
+        replaceMap["calibrationData"] = calInfo1->getID();
+        data::PointList::csptr pointList1 = calInfo1->getPointList(img1);
         replaceMap["pointListId1"] = pointList1->getID();
 
         core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
-            strConfig = "displayTwoImagesConfig";
+            strConfig = std::string(s_TWO_IMAGES_CONFIG);
 
-            data::Image::sptr img2 = calInfo2->getImage(idx);
+            data::Image::csptr img2 = calInfo2->getImage(idx);
             replaceMap["imageId2"] = img2->getID();
-            data::PointList::sptr pointList2 = calInfo2->getPointList(img2);
+            data::PointList::csptr pointList2 = calInfo2->getPointList(img2);
             replaceMap["pointListId2"] = pointList2->getID();
         }
 

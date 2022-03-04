@@ -27,7 +27,7 @@ namespace sight::module::io::document
 
 using namespace core::runtime::utils;
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::document::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::document::Plugin");
 
 //-----------------------------------------------------------------------------
 

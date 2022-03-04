@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,11 +42,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class CompositorListener : public ::Ogre::CompositorInstance::Listener
+class CompositorListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    CompositorListener(::Ogre::Viewport*, SCompositorParameter::sptr _adaptor) :
+    CompositorListener(Ogre::Viewport*, SCompositorParameter::sptr _adaptor) :
         m_adaptor(_adaptor)
     {
     }
@@ -57,7 +57,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(Ogre::uint32, Ogre::MaterialPtr& mat)
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
@@ -114,8 +114,8 @@ void SCompositorParameter::starting()
 
     sight::viz::scene3d::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
 
-    ::Ogre::CompositorChain* compChain =
-        ::Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
+    Ogre::CompositorChain* compChain =
+        Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
     this->getRenderService()->makeCurrent();
 
@@ -166,7 +166,7 @@ void SCompositorParameter::setVisible(bool _enable)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::updateValue(::Ogre::MaterialPtr& _mat)
+void SCompositorParameter::updateValue(Ogre::MaterialPtr& _mat)
 {
     this->setMaterial(_mat);
     this->IParameter::updating();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,7 @@ class DicomSeriesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(DicomSeriesTest);
 CPPUNIT_TEST(dicomTest);
+CPPUNIT_TEST(equalityTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,7 @@ public:
     void tearDown();
 
     void dicomTest();
+    void equalityTest();
 
 private:
 

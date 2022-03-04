@@ -25,7 +25,7 @@
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::custom::NoFilter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::custom::NoFilter);
 
 namespace sight::filter::dicom
 {
@@ -38,7 +38,7 @@ const std::string NoFilter::s_FILTER_DESCRIPTION = "No filter.";
 
 //-----------------------------------------------------------------------------
 
-NoFilter::NoFilter(filter::dicom::IFilter::Key key) :
+NoFilter::NoFilter(filter::dicom::IFilter::Key) :
     ICustom()
 {
 }
@@ -67,7 +67,7 @@ std::string NoFilter::getDescription() const
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::Logger::sptr&
 )
 const
 {

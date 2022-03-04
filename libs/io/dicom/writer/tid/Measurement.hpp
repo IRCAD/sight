@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
      * @param[in] image Image data
      */
     IO_DICOM_API Measurement(
-        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const data::Image::csptr& image
     );
@@ -82,7 +82,7 @@ protected:
      * @brief Create a measurement node
      * @param[in] parent Parent node
      * @param[in] pointList Pointlist containing distance points
-     * @param[in] id ID of the ficudial
+     * @param[in] id ID of the fiducial
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createMeasurement(

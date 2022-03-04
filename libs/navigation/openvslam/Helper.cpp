@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,10 @@
 
 #include <fstream>
 
+/**
+ * Do not mark `equirectangular` as incorrect.
+ * cspell:ignore equirectangular
+ */
 namespace sight::navigation::openvslam
 {
 
@@ -41,7 +45,6 @@ namespace sight::navigation::openvslam
     const unsigned int cols = static_cast<unsigned int>(_sightCam.getWidth());
     const unsigned int rows = static_cast<unsigned int>(_sightCam.getHeight());
     const double fps        = static_cast<double>(_sightCam.getMaximumFrameRate());
-
     // Create a perspective camera (equirectangular and fisheye needs additional information).
     const ::openvslam::camera::perspective oVSlamCamera =
         ::openvslam::camera::perspective(
@@ -139,7 +142,7 @@ std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(
     node["Initializer.num_ransac_iterations"]        = _initParams.numRansacIterations;
     node["Initializer.num_min_triangulated_pts"]     = _initParams.minNumTriangulatedPts;
     node["Initializer.parallax_deg_threshold"]       = _initParams.parallaxDegThr;
-    node["Initializer.reprojection_error_threshold"] = _initParams.reprojErrThr;
+    node["Initializer.reprojection_error_threshold"] = _initParams.reprojectionErrThr;
     node["Initializer.num_ba_iterations"]            = _initParams.numBAIterations;
     node["Initializer.scaling_factor"]               = _initParams.scalingFactor;
 
@@ -159,8 +162,8 @@ void Helper::writeOpenvslamConfig(const std::shared_ptr< ::openvslam::config> co
 
 void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _filepath)
 {
-    std::ofstream fout(_filepath);
-    fout << _node;
+    std::ofstream f_out(_filepath);
+    f_out << _node;
 }
 
 //-----------------------------------------------------------------------------

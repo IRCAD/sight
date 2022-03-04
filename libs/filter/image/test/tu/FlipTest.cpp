@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "FlipTest.hpp"
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <filter/image/Flipper.hpp>
@@ -54,15 +54,15 @@ void FlipTest::flipAlongXAxisTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
-    for(size_t i = 0 ; i < size[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(size_t j = 0 ; j < size[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(size_t k = 0 ; k < size[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
                 const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0] - i - 1, j, k);
@@ -91,15 +91,15 @@ void FlipTest::flipAlongYAxisTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
-    for(size_t i = 0 ; i < size[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(size_t j = 0 ; j < size[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(size_t k = 0 ; k < size[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
                 const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(i, size[1] - j - 1, k);
@@ -128,15 +128,15 @@ void FlipTest::flipAlongZAxisTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
-    for(size_t i = 0 ; i < size[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(size_t j = 0 ; j < size[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(size_t k = 0 ; k < size[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
                 const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                 const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, size[2] - k - 1);
@@ -166,15 +166,15 @@ void FlipTest::flipAlongMultipleAxesTest()
         utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
         utestData::generator::Image::randomizeImage(imageIn);
 
-        const auto inDumpLock = imageIn->lock();
+        const auto inDumpLock = imageIn->dump_lock();
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-        const auto outDumpLock = imageOut->lock();
+        const auto outDumpLock = imageOut->dump_lock();
 
-        for(size_t i = 0 ; i < size[0] ; ++i)
+        for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
-            for(size_t j = 0 ; j < size[1] ; ++j)
+            for(std::size_t j = 0 ; j < size[1] ; ++j)
             {
-                for(size_t k = 0 ; k < size[2] ; ++k)
+                for(std::size_t k = 0 ; k < size[2] ; ++k)
                 {
                     const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                     const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0] - i - 1, size[1] - j - 1, k);
@@ -200,15 +200,15 @@ void FlipTest::flipAlongMultipleAxesTest()
         utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
         utestData::generator::Image::randomizeImage(imageIn);
 
-        const auto inDumpLock = imageIn->lock();
+        const auto inDumpLock = imageIn->dump_lock();
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-        const auto outDumpLock = imageOut->lock();
+        const auto outDumpLock = imageOut->dump_lock();
 
-        for(size_t i = 0 ; i < size[0] ; ++i)
+        for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
-            for(size_t j = 0 ; j < size[1] ; ++j)
+            for(std::size_t j = 0 ; j < size[1] ; ++j)
             {
-                for(size_t k = 0 ; k < size[2] ; ++k)
+                for(std::size_t k = 0 ; k < size[2] ; ++k)
                 {
                     const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
                     const uint8_t valueOut = imageOut->at<std::uint8_t>(
@@ -242,12 +242,12 @@ void FlipTest::flipEmptyImageTest()
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    const auto inDumpLock = imageIn->lock();
+    const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->lock();
+    const auto outDumpLock = imageOut->dump_lock();
 
-    const data::Image::Size imageSize    = imageIn->getSize2();
-    const data::Image::Size imageOutSize = imageOut->getSize2();
+    const data::Image::Size imageSize    = imageIn->getSize();
+    const data::Image::Size imageOutSize = imageOut->getSize();
 
     CPPUNIT_ASSERT_EQUAL(imageSize[0], imageOutSize[0]);
     CPPUNIT_ASSERT_EQUAL(imageSize[1], imageOutSize[1]);

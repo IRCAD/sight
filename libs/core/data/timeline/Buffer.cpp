@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace timeline
 Buffer::Buffer(
     core::HiResClock::HiResClockType timestamp,
     BufferDataType buffer,
-    size_t size,
+    std::size_t size,
     DeleterType d
 ) :
     Object(timestamp),
@@ -63,6 +63,31 @@ void Buffer::deepCopy(const data::timeline::Object& other)
 
     const Buffer& otherObject = static_cast<const Buffer&>(other);
     memcpy(m_buffer, otherObject.m_buffer, m_size);
+}
+
+//------------------------------------------------------------------------------
+
+bool Buffer::operator==(const Buffer& other) const noexcept
+{
+    if(m_size != other.m_size)
+    {
+        return false;
+    }
+
+    if(m_buffer != other.m_buffer && std::memcmp(m_buffer, other.m_buffer, m_size) != 0)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Buffer::operator!=(const Buffer& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace timeline

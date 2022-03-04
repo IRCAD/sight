@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
     MODULE_SYNC_API ~SSignalGate() override;
 
     /// Slot: called when one of the signals is called
-    void received(size_t _index);
+    void received(std::size_t _index);
 
 protected:
 

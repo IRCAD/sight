@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,10 +60,11 @@ namespace sight::module::ui::qt::calibration
    @endcode
  * @subsection Input Input
  * - \b calInfo1 [sight::data::CalibrationInfo]: calibration information for first camera.
- * - \b calInfo2 [sight::data::CalibrationInfo] (optionnal): calibration information for optionnal second camera.
+ * - \b calInfo2 [sight::data::CalibrationInfo] (optional): calibration information for optional second camera.
  *
  * @section Slots Slots
- * - \b displayImage(size_t index) : Launchs the configuration to display the calibration image at the given index on
+ * - \b displayImage(std::size_t index): launches the configuration to display the calibration image at the given index
+ * on
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
@@ -103,7 +104,7 @@ private:
     void stopConfig();
 
     /// Slot: Launch an appConfig to display an image on an external window.
-    void displayImage(size_t idx);
+    void displayImage(std::size_t idx);
     /**
      * @}
      */
@@ -111,12 +112,15 @@ private:
     /// AppConfig manager, used to launch the config
     service::IAppConfigManager::sptr m_configMgr;
 
+    static constexpr std::string_view s_ONE_IMAGE_CONFIG {"displayImageConfig"};
+    static constexpr std::string_view s_TWO_IMAGES_CONFIG {"displayTwoImagesConfig"};
+
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 
     static constexpr std::string_view s_CALIBRATION_INFO_1 = "calInfo1";
     static constexpr std::string_view s_CALIBRATION_INFO_2 = "calInfo2";
-    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, s_CALIBRATION_INFO_1, true};
-    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, true};
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, s_CALIBRATION_INFO_1, false};
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, false, true};
 };
 
 } // uiCalibration

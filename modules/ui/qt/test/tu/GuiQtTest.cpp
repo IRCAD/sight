@@ -36,7 +36,7 @@
 #include <QMainWindow>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::ui::qt::ut::GuiQtTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::GuiQtTest);
 
 namespace sight::module::ui::qt
 {
@@ -70,7 +70,7 @@ void GuiQtTest::testDefaultFrame()
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
-    service::IService::sptr srv = service::add("::sight::module::ui::base::SFrame");
+    service::IService::sptr srv = service::add("sight::module::ui::base::SFrame");
     CPPUNIT_ASSERT(srv);
 
     srv->setConfiguration(frameConfig);

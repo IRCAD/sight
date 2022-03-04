@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ public:
      * @brief getOgreRoot
      * @return OgreRoot, if it doesn't exist initialise Ogre Root and default Ogre behavior
      */
-    VIZ_SCENE3D_API static ::Ogre::Root* getOgreRoot();
+    VIZ_SCENE3D_API static Ogre::Root* getOgreRoot();
 
     /**
      * @brief destroy the OgreRoot
@@ -97,13 +97,13 @@ public:
      * @param imageFw The Sight Image to convert
      * @return Ogre image
      */
-    VIZ_SCENE3D_API static ::Ogre::Image convertToOgreImage(const data::Image::csptr imageFw);
+    VIZ_SCENE3D_API static Ogre::Image convertToOgreImage(const data::Image::csptr imageFw);
 
     /**
      * @brief Convert an Ogre texture into a Sight image data
      */
     VIZ_SCENE3D_API static void convertFromOgreTexture(
-        ::Ogre::TexturePtr _texture,
+        Ogre::TexturePtr _texture,
         const data::Image::sptr _imageFw,
         bool flip = false
     );
@@ -113,26 +113,28 @@ public:
      * @param imageFw The Sight Image
      * @return Pixel format of a data::Image
      */
-    VIZ_SCENE3D_API static ::Ogre::PixelFormat getPixelFormatOgre(data::Image::csptr imageFw);
+    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(data::Image::csptr imageFw);
 
     /**
      * @brief set the pixel format of an image from an Ogre pixel format
      * @param _image The Sight Image
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static void setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat _format);
+    VIZ_SCENE3D_API static std::pair<core::tools::Type, data::Image::PixelFormat> getPixelFormatFromOgre(
+        Ogre::PixelFormat _format
+    );
 
     /**
      * @brief loadOgreTexture
      * @param _image The Sight Image to convert
      * @param _texture The target texture
-     * @param _texType Type of the texture (::Ogre::TEX_TYPE_2D, ::Ogre::TEX_TYPE_3D, ...)
+     * @param _texType Type of the texture (Ogre::TEX_TYPE_2D, Ogre::TEX_TYPE_3D, ...)
      * @param _dynamic
      */
     VIZ_SCENE3D_API static void loadOgreTexture(
         const data::Image::csptr& _image,
-        ::Ogre::TexturePtr _texture,
-        ::Ogre::TextureType _texType,
+        Ogre::TexturePtr _texture,
+        Ogre::TextureType _texType,
         bool _dynamic
     );
 
@@ -142,7 +144,7 @@ public:
      * @param[in] _image The Sight Image to convert
      * @return
      */
-    VIZ_SCENE3D_API static void convertImageForNegato(::Ogre::Texture* _texture, const data::Image::sptr& _image);
+    VIZ_SCENE3D_API static void convertImageForNegato(Ogre::Texture* _texture, const data::Image::sptr& _image);
 
     /**
      * @brief allocateTexture
@@ -152,21 +154,21 @@ public:
      * @param[in] _height height of the texture
      * @param[in] _depth depth of the texture
      * @param[in] _format pixel format
-     * @param[in] _texType texture type (::OGRE::TEX_TYPE_2D, TEX_TYPE_3D, ...)
+     * @param[in] _texType texture type (Ogre::TEX_TYPE_2D, TEX_TYPE_3D, ...)
      * @param[in] _dynamic true if the image has to be modified frequently
      * @return
      */
     VIZ_SCENE3D_API static void allocateTexture(
-        ::Ogre::Texture* _texture,
-        size_t _width,
-        size_t _height,
-        size_t _depth,
-        ::Ogre::PixelFormat _format,
-        ::Ogre::TextureType _texType,
+        Ogre::Texture* _texture,
+        std::size_t _width,
+        std::size_t _height,
+        std::size_t _depth,
+        Ogre::PixelFormat _format,
+        Ogre::TextureType _texType,
         bool _dynamic
     );
 
-    VIZ_SCENE3D_API static ::Ogre::OverlaySystem* getOverlaySystem();
+    VIZ_SCENE3D_API static Ogre::OverlaySystem* getOverlaySystem();
 
     /**
      * @brief convertOgreColorToFwColor
@@ -176,18 +178,27 @@ public:
     VIZ_SCENE3D_API static data::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
     /// Creates an ogre matrix from a Sight matrix.
-    VIZ_SCENE3D_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const data::Matrix4::csptr& _tm3d);
+    VIZ_SCENE3D_API static Ogre::Matrix4 convertTM3DToOgreMx(const data::Matrix4::csptr& _tm3d);
 
     /// Copies an ogre matrix to a Sight matrix.
     VIZ_SCENE3D_API static void copyOgreMxToTM3D(
-        const ::Ogre::Matrix4& _mx,
+        const Ogre::Matrix4& _mx,
         const data::Matrix4::sptr& _tm3d
     );
 
     /// Copies the image's spacing and origin into Ogre vectors.
-    VIZ_SCENE3D_API static std::pair< ::Ogre::Vector3, ::Ogre::Vector3> convertSpacingAndOrigin(
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
         const data::Image::csptr& _img
     );
+
+    /// Copies the image's spacing and origin into Ogre vectors.
+    /// Version with const reference of image
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
+        const data::Image& _img
+    );
+
+    /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
+    VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::Image& _image, const Ogre::Vector3& _world);
 
 private:
 
@@ -209,7 +220,7 @@ private:
         const std::filesystem::path& modulePath
     );
 
-    static ::Ogre::OverlaySystem* s_overlaySystem;
+    static Ogre::OverlaySystem* s_overlaySystem;
 
     static viz::scene3d::factory::R2VBRenderable* s_R2VBRenderableFactory;
     static viz::scene3d::factory::Text* s_textFactory;

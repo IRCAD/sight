@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/SelectorDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
 
 namespace sight::ui::base
 {
@@ -51,7 +51,7 @@ SelectorDialog::SelectorDialog(
 )
 {
     create();
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setTitle(title);
@@ -71,7 +71,7 @@ SelectorDialog::SelectorDialog()
 
 void SelectorDialog::create()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -85,7 +85,7 @@ void SelectorDialog::create()
 
 void SelectorDialog::setTitle(std::string title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -100,7 +100,7 @@ std::string SelectorDialog::show()
 {
     std::function<std::string()> f         = std::bind(&ISelectorDialog::show, m_implementation);
     std::shared_future<std::string> future =
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<std::string>(f);
+        core::thread::getDefaultWorker()->postTask<std::string>(f);
     future.wait();
     return future.get();
 }
@@ -109,7 +109,7 @@ std::string SelectorDialog::show()
 
 void SelectorDialog::setSelections(std::vector<std::string> _selections)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -122,7 +122,7 @@ void SelectorDialog::setSelections(std::vector<std::string> _selections)
 
 void SelectorDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -135,7 +135,7 @@ void SelectorDialog::setMessage(const std::string& msg)
 
 void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {

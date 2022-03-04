@@ -1,4 +1,9 @@
-sight_add_target( geometry_data TYPE LIBRARY PCH pchData )
+sight_add_target(
+    geometry_data
+    TYPE LIBRARY
+    PCH pchData
+    WARNINGS_AS_ERRORS OFF
+)
 
 find_package(glm QUIET REQUIRED)
 target_include_directories(geometry_data SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})

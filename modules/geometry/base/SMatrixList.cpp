@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,9 +60,9 @@ SMatrixList::~SMatrixList() noexcept
 void SMatrixList::starting()
 {
     // get inputs
-    const size_t numMatrices = m_inputVector.size();
-    const size_t numSelected = m_selectedVector.size();
-    const size_t numOutput   = m_outputVector.size();
+    const std::size_t numMatrices = m_inputVector.size();
+    const std::size_t numSelected = m_selectedVector.size();
+    const std::size_t numOutput   = m_outputVector.size();
 
     SIGHT_ASSERT(
         "the numbers of matrices, vectors and selected matrices should be the same",
@@ -159,7 +159,7 @@ void SMatrixList::updating()
 
 void SMatrixList::selectMatrix(int index)
 {
-    for(size_t i = 0 ; i < m_inputVector.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
     {
         auto selectedMatrix = m_selectedVector[i].lock();
         auto outputVector   = m_outputVector[i].lock();
@@ -176,7 +176,7 @@ void SMatrixList::removeMatrix(int _index)
 {
     if(m_inputVector.size() > 0)
     {
-        for(size_t i = 0 ; i < m_inputVector.size() ; ++i)
+        for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
             auto outputVector                = m_outputVector[i].lock();
             data::Vector::ContainerType& vec = outputVector->getContainer();

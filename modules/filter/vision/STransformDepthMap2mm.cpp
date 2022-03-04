@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/helper/Array.hpp>
-#include <data/helper/ArrayGetter.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -87,32 +81,25 @@ void STransformDepthMap2mm::updating()
         return;
     }
 
-    const auto size = originFrame->getSize2();
+    const auto size = originFrame->getSize();
 
     auto scaledFrame = m_scaledDepth.lock();
     SIGHT_ASSERT("missing '" << s_SCALED_FRAME_INOUT << "' image", scaledFrame);
 
-    if(size != scaledFrame->getSize2())
+    if(size != scaledFrame->getSize())
     {
         scaledFrame->resize(size, originFrame->getType(), originFrame->getPixelFormat());
 
-        if(scaledFrame->getNumberOfComponents() != originFrame->getNumberOfComponents())
-        {
-            FW_DEPRECATED_MSG("Pixel format is not properly defined.", "sight 22.0");
-            scaledFrame->setNumberOfComponents(originFrame->getNumberOfComponents());
-            scaledFrame->resize();
-        }
-
         const data::Image::Origin origin = {0., 0., 0.};
-        scaledFrame->setOrigin2(origin);
+        scaledFrame->setOrigin(origin);
         const data::Image::Spacing spacing = {1., 1., 1.};
-        scaledFrame->setSpacing2(spacing);
+        scaledFrame->setSpacing(spacing);
         scaledFrame->setWindowWidth(1);
         scaledFrame->setWindowCenter(0);
     }
 
-    const auto origDumpLock   = originFrame->lock();
-    const auto scaledDumpLock = scaledFrame->lock();
+    const auto origDumpLock   = originFrame->dump_lock();
+    const auto scaledDumpLock = scaledFrame->dump_lock();
 
     auto depthBufferInItr     = originFrame->begin<std::uint16_t>();
     const auto depthBufferEnd = originFrame->end<std::uint16_t>();

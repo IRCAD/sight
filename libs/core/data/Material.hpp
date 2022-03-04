@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,36 +27,30 @@
 #include "data/Image.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Material));
-
 namespace sight::data
 {
 
 /**
  * @brief This class defines a material. A material is represented by an ambient color and a diffuse color.
- * @see data::Color
+ * @see Color
  */
 class DATA_CLASS_API Material : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Material, data::Object, data::factory::New<Material>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Material));
+    SIGHT_DECLARE_CLASS(Material, Object, factory::New<Material>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Material(data::Object::Key key);
+    DATA_API Material(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Material();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief returns editable ambient color
@@ -84,8 +78,11 @@ public:
 
     /**
      * @brief returns editable diffuse texture
+     * @{
      */
-    DATA_API Image::sptr getDiffuseTexture() const;
+    DATA_API Image::sptr getDiffuseTexture();
+    DATA_API Image::csptr getDiffuseTexture() const;
+    ///@}
 
     /**
      * @brief Setter for diffuse texture
@@ -111,8 +108,7 @@ public:
     {
         AMBIENT = 0,
         FLAT    = 1,
-        GOURAUD = 2, //FLAT<<1 -> 10
-        PHONG   = 4  //FLAT<<2 -> 100
+        PHONG   = 2
     } ShadingType;
 
     /**
@@ -145,7 +141,7 @@ public:
     } WrappingType;
 
     /** @{
-     *  @brief get/set the shading models(flat, gouraud, phong)
+     *  @brief get/set the shading models(flat, phong)
      */
     ShadingType& getShadingMode();
     const ShadingType& getShadingMode() const;
@@ -189,19 +185,28 @@ public:
      * @{
      */
     /// Type of signal when a texture is added
-    typedef core::com::Signal<void (data::Image::sptr)> AddedTextureSignalType;
+    typedef core::com::Signal<void (Image::sptr)> AddedTextureSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_ADDED_TEXTURE_SIG;
 
     /// Type of signal when a texture is removed
-    typedef core::com::Signal<void (data::Image::sptr)> RemovedTextureSignalType;
+    typedef core::com::Signal<void (Image::sptr)> RemovedTextureSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_REMOVED_TEXTURE_SIG;
 /**
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Material& other) const noexcept;
+    DATA_API bool operator!=(const Material& other) const noexcept;
+    /// @}
+
 protected:
 
-    /// Shading mode (flat, Gouraud, Phong)
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
+    /// Shading mode (flat, Phong)
     ShadingType m_shadingMode;
 
     /// Fill mode (flat, wireframe, point)

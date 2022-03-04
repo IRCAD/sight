@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,10 +119,10 @@ private Q_SLOTS:
 private:
 
     /// Start the configuration for the intrinsic calibration
-    void startIntrinsicConfig(size_t index);
+    void startIntrinsicConfig(std::size_t index);
 
     /// Start the configuration for the extrinsic calibration
-    void startExtrinsicConfig(size_t index);
+    void startExtrinsicConfig(std::size_t index);
 
     /// Adds a Camera in cameraSeries and the CalibrationInfo in the activitySeries
     void addCamera();

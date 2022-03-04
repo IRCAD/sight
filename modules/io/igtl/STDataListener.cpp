@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -83,7 +83,7 @@ void STDataListener::configuring()
 
         for(const auto& m : matrices)
         {
-            const unsigned long index = ::boost::lexical_cast<unsigned long>(m->getAttributeValue("index"));
+            const unsigned long index = boost::lexical_cast<unsigned long>(m->getAttributeValue("index"));
             m_matrixNameIndex[m->getAttributeValue("name")] = index;
         }
     }
@@ -104,15 +104,15 @@ void STDataListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port   = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = ui::base::preferences::getValue(m_hostnameConfig);
+        ui::base::Preferences preferences;
+        const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
+        const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
         if(!m_deviceNamesConfig.empty())
         {
             for(const auto& dn : m_deviceNamesConfig)
             {
-                const std::string dnKey = ui::base::preferences::getValue(dn->getValue());
-                m_client.addAuthorizedDevice(dnKey);
+                m_client.addAuthorizedDevice(preferences.delimited_get<std::string>(dn->getValue()));
             }
 
             m_client.setFilteringByDeviceName(true);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,6 +49,23 @@ void Object::deepCopy(const Object& _source)
 }
 
 //-----------------------------------------------------------------------------
+
+bool Object::operator==(const Object& other) const noexcept
+{
+    if(m_timestamp != other.m_timestamp)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool Object::operator!=(const Object& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace timeline
 

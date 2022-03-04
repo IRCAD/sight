@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,32 +33,34 @@ namespace sight::core::com
 
 //------------------------------------------------------------------------------
 
-template < typename ... A >
-inline std::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (A ...) >::New(
+template<typename ... A>
+inline std::shared_ptr<SlotConnection<void(A ...)> > SlotConnection<void(A ...)>::New(
     const SignalSptrType& signal,
     const SlotRunSptrType& slot
-    )
+)
 {
-    return std::make_shared< SelfType >(signal, slot);
+    return std::make_shared<SelfType>(signal, slot);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline std::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A ...) >::New(
+template<typename ... A>
+inline std::shared_ptr<SlotConnection<void(A ...)> > SlotConnection<void(A ...)>::New(
     const SignalSptrType& signal,
     const SlotBase::sptr& slot,
     const SlotWrapperSptrType& slotWrapper
-    )
+)
 {
-    return std::make_shared< SelfType >(signal, slot, slotWrapper);
+    return std::make_shared<SelfType>(signal, slot, slotWrapper);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType& signal,
-                                                      const SlotRunSptrType& slot) :
+template<typename ... A>
+inline SlotConnection<void(A ...)>::SlotConnection(
+    const SignalSptrType& signal,
+    const SlotRunSptrType& slot
+) :
     m_signal(signal),
     m_connectedSlot(slot),
     m_pair(true, slot.get())
@@ -67,12 +69,12 @@ inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType& sign
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline SlotConnection< void (A ...) >::SlotConnection(
+template<typename ... A>
+inline SlotConnection<void(A ...)>::SlotConnection(
     const SignalSptrType& signal,
     const SlotBase::sptr& slot,
     const SlotWrapperSptrType& slotWrapper
-    ) :
+) :
     m_signal(signal),
     m_connectedSlot(slot),
     m_slotWrapper(slotWrapper),
@@ -82,42 +84,42 @@ inline SlotConnection< void (A ...) >::SlotConnection(
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline SlotConnection< void (A ...) >::~SlotConnection()
+template<typename ... A>
+inline SlotConnection<void(A ...)>::~SlotConnection()
 {
     this->disconnect();
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline void SlotConnection< void (A ...) >::connectNoLock()
+template<typename ... A>
+inline void SlotConnection<void(A ...)>::connectNoLock()
 {
     SignalSptrType sig(m_signal);
-    sig->m_slots.push_back( &m_pair );
+    sig->m_slots.push_back(&m_pair);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline void SlotConnection< void (A ...) >::disconnectSignalNoLock(const SignalSptrType& sig)
+template<typename ... A>
+inline void SlotConnection<void(A ...)>::disconnectSignalNoLock(const SignalSptrType& sig)
 {
-    sig->m_slots.remove( &m_pair );
+    sig->m_slots.remove(&m_pair);
     sig->m_connections.erase(m_connectedSlot);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline void SlotConnection< void (A ...) >::disconnectSlotNoLock(const SlotBase::sptr& slot)
+template<typename ... A>
+inline void SlotConnection<void(A ...)>::disconnectSlotNoLock(const SlotBase::sptr& slot)
 {
     try
     {
-        std::shared_ptr< const SlotConnection< void (A ...) > > thisSptr =
-            std::dynamic_pointer_cast< const SlotConnection< void (A ...) > > ( this->shared_from_this() );
-        slot->m_connections.erase( thisSptr );
+        std::shared_ptr<const SlotConnection<void(A ...)> > thisSptr =
+            std::dynamic_pointer_cast<const SlotConnection<void(A ...)> >(this->shared_from_this());
+        slot->m_connections.erase(thisSptr);
     }
-    catch(const ::boost::bad_weak_ptr&)
+    catch(const boost::bad_weak_ptr&)
     {
         // SlotConnection destruction is under way, no need to remove
         // shared_ptr from connections
@@ -126,8 +128,8 @@ inline void SlotConnection< void (A ...) >::disconnectSlotNoLock(const SlotBase:
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline void SlotConnection< void (A ...) >::disconnect()
+template<typename ... A>
+inline void SlotConnection<void(A ...)>::disconnect()
 {
     core::mt::WriteLock lock(m_mutex);
 
@@ -154,8 +156,8 @@ inline void SlotConnection< void (A ...) >::disconnect()
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline void SlotConnection< void (A ...) >::disconnectWeakLock()
+template<typename ... A>
+inline void SlotConnection<void(A ...)>::disconnectWeakLock()
 {
     core::mt::WriteLock lock(m_mutex);
 
@@ -181,13 +183,13 @@ inline void SlotConnection< void (A ...) >::disconnectWeakLock()
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A ...) >::getBlocker()
+template<typename ... A>
+inline SlotConnectionBase::BlockerSptrType SlotConnection<void(A ...)>::getBlocker()
 {
     core::mt::ReadToWriteLock lock(m_mutex);
 
     SlotConnectionBase::BlockerSptrType blocker(m_weakBlocker.lock());
-    if( !blocker )
+    if(!blocker)
     {
         core::mt::UpgradeToWriteLock writeLock(lock);
 
@@ -196,9 +198,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A ...) >::getBl
         if(!blocker)
         {
             blocker = SlotConnectionBase::BlockerSptrType(
-                (void*)NULL,
-                std::bind( &SlotConnection< void (A ...) >::unblock, this )
-                );
+                (void*) NULL,
+                std::bind(&SlotConnection<void(A ...)>::unblock, this)
+            );
             m_weakBlocker = blocker;
 
             // signal has to be locked : signal got a pointer on m_pair
@@ -207,13 +209,14 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A ...) >::getBl
             m_pair.first = false;
         }
     }
+
     return blocker;
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ... A >
-inline void SlotConnection< void (A ...) >::unblock()
+template<typename ... A>
+inline void SlotConnection<void(A ...)>::unblock()
 {
     core::mt::WriteLock lock(m_mutex);
     // signal has to be locked : signal got a pointer on m_pair

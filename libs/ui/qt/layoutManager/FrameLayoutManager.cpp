@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,9 +100,9 @@ void FrameLayoutManager::createFrame()
     QPoint pos(posX, posY);
     if(!this->isOnScreen(pos))
     {
-        QRect frect(0, 0, sizeX, sizeY);
-        frect.moveCenter(QDesktopWidget().screenGeometry().center());
-        pos = frect.topLeft();
+        QRect frame_rect(0, 0, sizeX, sizeY);
+        frame_rect.moveCenter(QDesktopWidget().screenGeometry().center());
+        pos = frame_rect.topLeft();
     }
 
     m_qtWindow->setGeometry(pos.x(), pos.y(), sizeX, sizeY);
@@ -157,15 +157,15 @@ void FrameLayoutManager::setState(FrameState state)
     // Updates the window state.
     switch(state)
     {
-        case ICONIZED:
+        case FrameState::ICONIZED:
             m_qtWindow->showMinimized();
             break;
 
-        case MAXIMIZED:
+        case FrameState::MAXIMIZED:
             m_qtWindow->showMaximized();
             break;
 
-        case FULL_SCREEN:
+        case FrameState::FULL_SCREEN:
             m_qtWindow->showFullScreen();
             break;
 
@@ -178,19 +178,19 @@ void FrameLayoutManager::setState(FrameState state)
 
 ui::base::layoutManager::IFrameLayoutManager::FrameState FrameLayoutManager::getState()
 {
-    FrameState state(UNKNOWN);
+    FrameState state(FrameState::UNKNOWN);
 
     if(m_qtWindow->isMinimized())
     {
-        state = ICONIZED;
+        state = FrameState::ICONIZED;
     }
     else if(m_qtWindow->isMaximized())
     {
-        state = MAXIMIZED;
+        state = FrameState::MAXIMIZED;
     }
     else if(m_qtWindow->isFullScreen())
     {
-        state = FULL_SCREEN;
+        state = FrameState::FULL_SCREEN;
     }
 
     return state;

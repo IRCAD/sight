@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "geometry/glm/config.hpp"
 
-#include <glm/glm.hpp>
-
 #include <boost/unordered_map.hpp>
+
+#include <glm/glm.hpp>
 
 namespace sight::geometry::glm
 {
@@ -152,15 +152,15 @@ bool isBorderlessSurface(
 )
 {
     typedef std::pair<T, T> Edge; // always Edge.first < Edge.second !!
-    typedef ::boost::unordered_map<Edge, int> EdgeHistogram;
+    typedef boost::unordered_map<Edge, int> EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
-    size_t dataLen   = 0;
-    U* iter          = cellDataOffsetsBegin;
-    U* iter2         = cellDataOffsetsBegin + 1;
-    const U* iterEnd = cellDataOffsetsEnd - 1;
-    V* iterTypes     = cellTypesBegin;
+    std::size_t dataLen = 0;
+    U* iter             = cellDataOffsetsBegin;
+    U* iter2            = cellDataOffsetsBegin + 1;
+    const U* iterEnd    = cellDataOffsetsEnd - 1;
+    V* iterTypes        = cellTypesBegin;
 
     dataLen = *iter2 - *iter;
     for( ;
@@ -184,9 +184,9 @@ bool isBorderlessSurface(
         }
     }
 
-    for(const typename EdgeHistogram::value_type& histo : edgesHistogram)
+    for(const typename EdgeHistogram::value_type& h : edgesHistogram)
     {
-        if(histo.second != 2)
+        if(h.second != 2)
         {
             isBorderless = false;
             break;

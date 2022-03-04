@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExIgtl_AppCfg</id>
         <config>
 
@@ -147,7 +147,7 @@
             </service>
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="objectMeshUid" />
+                <in key="mesh" uid="objectMeshUid" />
                 <config layer="default" transform="meshMatrixTransform" autoresetcamera="false" />
             </service>
 

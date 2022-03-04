@@ -5,7 +5,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto11Picker_AppCfg</id>
         <config>
 
@@ -140,7 +140,7 @@
             </service>
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" />
+                <in key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
@@ -186,11 +186,6 @@
                 <type mode="reader" />
             </service>
 
-            <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
-                <inout key="image" uid="image" />
-            </service>
-
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
@@ -201,7 +196,7 @@
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::module::io::atoms::SWriter" />
+                <addSelection service="sight::module::io::session::SWriter" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -224,7 +219,6 @@
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="medicalImageConverterSrv" />
             <start uid="imageWriterSrv" />
             <start uid="trackballInteractorAdp" />
             <start uid="pickerInteractorAdp" />

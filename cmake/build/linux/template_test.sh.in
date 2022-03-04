@@ -11,7 +11,7 @@ bindir=$(cd "$(dirname "$0")"; pwd)
 rootdir=$(cd "$bindir/.." ; pwd)
 libdir="$rootdir/lib/sight"
 sdkdir="@Sight_LIBRARY_DIR@"
-extdir="@FW_SIGHT_EXTERNAL_LIBRARIES_DIRS@"
+extdir="@FW_SIGHT_EXTERNAL_LIBRARIES_DIR@"
 
 # compute LD_LIBRARY_PATH
 if [ ! -z "${libdir}" -a "${libdir}" != " " ]; then
@@ -28,8 +28,34 @@ fi
 
 export LD_LIBRARY_PATH
 
-if xprop -root &> /dev/null || ! xvfb-run --help &>/dev/null ; then
-    exec "$bindir/@PROJECT_EXECUTABLE@" $@
+require_x="@FWCPPUNITTEST_REQUIRE_X@"
+
+if [ "$require_x" = "ON" ]; then
+    if xprop -root &> /dev/null ; then
+        xvfb_run=""
+    elif xvfb-run --help &>/dev/null ; then
+        xvfb_run="$bindir/safe-xvfb-run"
+    else
+        echo "Warning: This test requires some kind of graphical environment to run, but none was found or could be created. The test will probably fail." >&2
+        xvfb_run=""
+    fi
 else
-    exec "$bindir/safe-xvfb-run" "$bindir/@PROJECT_EXECUTABLE@" $@
+    xvfb_run=""
+    export QT_QPA_PLATFORM="offscreen"
+fi
+
+gdb="@GDB@"
+
+if [ -n "$xvfb_run" ]; then
+    if [ -n "$gdb" ]; then
+        exec $xvfb_run $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $@
+    else
+        exec $xvfb_run "$bindir/@PROJECT_EXECUTABLE@" $@
+    fi
+else
+    if [ -n "$gdb" ]; then
+        exec $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $@
+    else
+        exec "$bindir/@PROJECT_EXECUTABLE@" $@
+    fi
 fi

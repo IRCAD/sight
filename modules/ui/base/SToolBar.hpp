@@ -34,11 +34,11 @@ namespace sight::module::ui::base
 /**
  * @brief   Defines the default toolbar for standard application
  */
-class MODULE_UI_BASE_CLASS_API SToolBar : public ::sight::ui::base::IToolBar
+class MODULE_UI_BASE_CLASS_API SToolBar : public sight::ui::base::IToolBar
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SToolBar, ::sight::ui::base::IToolBar);
+    SIGHT_DECLARE_SERVICE(SToolBar, sight::ui::base::IToolBar);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SToolBar() noexcept;
@@ -78,7 +78,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="ui::base::IToolBar" impl="::sight::module::ui::base::SToolBar"
+       <service uid="toolbar2" type="ui::base::IToolBar" impl="sight::module::ui::base::SToolBar"
      * autoConnect="false"
      *>
            <gui>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #pragma once
 
+#include "data/factory/new.hpp"
 #include "data/GenericTL.hpp"
 #include "data/GenericTL.hxx"
 #include "data/timeline/GenericObject.hpp"
 #include "data/timeline/GenericObject.hxx"
-#include <data/factory/new.hpp>
 
 #include <core/tools/Type.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (FrameTL));
+#include <data/factory/new.hpp>
 
 namespace sight::data
 {
@@ -42,8 +42,7 @@ class DATA_CLASS_API FrameTL : public GenericTL<uint8_t>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(FrameTL, data::TimeLine, data::factory::New<FrameTL>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (FrameTL))
+    SIGHT_DECLARE_CLASS(FrameTL, TimeLine, factory::New<FrameTL>);
 
     /// Frame format
     enum class PixelFormat
@@ -60,52 +59,33 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API FrameTL(data::Object::Key key);
+    DATA_API FrameTL(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~FrameTL();
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
-    /**
-     * @brief Initializes the size of the pool buffer.
-     * @deprecated Use initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat
-     * format,
-     * unsigned int maxElementNum = 1) instead, it will be removed in sight 22.0
-     */
-    [[deprecated("Initialize FrameTL with pixel format instead, it will be removed in sight 22.0")]]
-    DATA_API void initPoolSize(
-        size_t width,
-        size_t height,
-        const core::tools::Type& type,
-        size_t numberOfComponents  = 1,
-        unsigned int maxElementNum = 1
-    );
-
     /// Initializes the size of the pool buffer.
     DATA_API void initPoolSize(
-        size_t width,
-        size_t height,
+        std::size_t width,
+        std::size_t height,
         const core::tools::Type& type,
         const PixelFormat format,
         unsigned int maxElementNum = 1
     );
 
     /// Returns the width of an image in the timeline
-    size_t getWidth() const
+    std::size_t getWidth() const
     {
         return m_width;
     }
 
     /// Returns the height of an image in the timeline
-    size_t getHeight() const
+    std::size_t getHeight() const
     {
         return m_height;
     }
 
     /// Returns the number of components of an image in the timeline
-    size_t getNumberOfComponents() const
+    std::size_t numComponents() const
     {
         return m_numberOfComponents;
     }
@@ -122,19 +102,30 @@ public:
     /// Set the frame pixel format
     void setPixelFormat(PixelFormat format);
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const FrameTL& other) const noexcept;
+    DATA_API bool operator!=(const FrameTL& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
 private:
 
     /// Forbid the use of this inherited method.
     DATA_API void initPoolSize(unsigned int maxElementNum) override;
 
     /// frame width
-    size_t m_width;
+    std::size_t m_width;
 
     /// frame height
-    size_t m_height;
+    std::size_t m_height;
 
     /// number of components
-    size_t m_numberOfComponents;
+    std::size_t m_numberOfComponents;
 
     /// type of frame pixel
     core::tools::Type m_type;

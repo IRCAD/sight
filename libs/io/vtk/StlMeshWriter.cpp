@@ -35,7 +35,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSTLWriter.h>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::StlMeshWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::StlMeshWriter);
 
 namespace sight::io::vtk
 {
@@ -94,7 +94,7 @@ void StlMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string StlMeshWriter::extension()
+std::string StlMeshWriter::extension() const
 {
     return ".stl";
 }

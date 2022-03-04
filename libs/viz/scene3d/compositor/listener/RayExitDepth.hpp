@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace listener
  * @brief Listener used in mixed surface/volume rendering.
  * Creates volume entry point computation techniques for meshes.
  */
-class RayExitDepthListener : public ::Ogre::MaterialManager::Listener
+class RayExitDepthListener : public Ogre::MaterialManager::Listener
 {
 public:
 
@@ -52,12 +52,12 @@ public:
     ~RayExitDepthListener();
 
     /// Called when an entry point scheme isn't found, creates the missing technique.
-    virtual ::Ogre::Technique* handleSchemeNotFound(
+    virtual Ogre::Technique* handleSchemeNotFound(
         unsigned short _schemeIndex,
-        const ::Ogre::String& _schemeName,
-        ::Ogre::Material* _originalMaterial,
+        const Ogre::String& _schemeName,
+        Ogre::Material* _originalMaterial,
         unsigned short _lodIndex,
-        const ::Ogre::Renderable* _renderable
+        const Ogre::Renderable* _renderable
     );
 };
 

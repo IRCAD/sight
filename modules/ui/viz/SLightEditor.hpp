@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/scene3d/ILight.hpp>
-
 #include <ui/base/IEditor.hpp>
+
+#include <viz/scene3d/ILight.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -85,7 +85,7 @@ private:
      * @brief Gets the current light node.
      * @return The node where the current light is attached.
      */
-    ::Ogre::Node* getLightNode() const;
+    Ogre::Node* getLightNode() const;
 
     /**
      * @brief SLOT: sets the current light adaptor to edit.
@@ -98,7 +98,7 @@ private:
      * @param _currentColor the curent light color.
      * @param _title the title of the dialog.
      */
-    ::Ogre::ColourValue editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title);
+    Ogre::ColourValue editColor(const Ogre::ColourValue& _currentColor, const std::string& _title);
 
     /// Contains the name of the light.
     QPointer<QLabel> m_lightNameLabel;

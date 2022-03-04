@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DPacsPreviewConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -51,10 +51,6 @@
             <inout key="target" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
-            <inout key="image" uid="image" />
-        </service>
-
         <service uid="sliderIndexDicomPullerEditor" type="sight::module::io::dimse::SSliceIndexDicomEditor">
             <in key="pacsConfig" uid="${PACS_CONFIGURATION}" />
             <inout key="series" uid="${objectID}" />
@@ -64,7 +60,6 @@
 
         <start uid="mainview" />
         <!-- Deferred start -->
-        <start uid="medicalImgConverter" />
         <start uid="imageDumpLocker" />
         <!-- VTK scene 'gs' -->
         <start uid="pNegatoAdp" />

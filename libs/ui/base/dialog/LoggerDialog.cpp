@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "ui/base/dialog/LoggerDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
@@ -99,7 +98,7 @@ bool LoggerDialog::show()
     if(m_implementation)
     {
         std::function<bool()> func = std::bind(&ILoggerDialog::show, m_implementation);
-        std::shared_future<bool> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<bool>(func);
+        std::shared_future<bool> f = core::thread::getDefaultWorker()->postTask<bool>(func);
         f.wait();
 
         return f.get();

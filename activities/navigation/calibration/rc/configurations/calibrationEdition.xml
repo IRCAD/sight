@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>calibrationEdition</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -169,15 +169,11 @@
             <in key="source" uid="${cameraSeries}" />
             <out key="outTarget" uid="newCameraSeries" />
         </service>
-
-        <service uid="extractCamerasSrv" type="sight::module::data::SExtractObj">
-            <inout key="source" uid="newCameraSeries">
-                <extract from="@cameras.0" />
-                <extract from="@cameras.1" />
-            </inout>
-            <out group="target">
-                <key uid="camera0" />
-                <key uid="camera1" />
+           <service uid="extractCamerasSrv" type="sight::module::data::SGetCamera">
+            <inout key="cameraSeries" uid="newCameraSeries"/>
+            <out group="camera">
+                <key index="0" uid="camera0" />
+                <key index="1" uid="camera1" />
             </out>
         </service>
 

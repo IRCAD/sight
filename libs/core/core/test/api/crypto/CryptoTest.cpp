@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,7 @@ namespace sight::core::crypto
 namespace ut
 {
 
+// cspell: disable
 //------------------------------------------------------------------------------
 
 void CryptoTest::setUp()
@@ -137,6 +138,8 @@ void CryptoTest::base64Test()
     CPPUNIT_ASSERT_EQUAL(encrypted, from_base64);
     CPPUNIT_ASSERT_EQUAL(abc, decrypted);
 }
+
+// cspell: enable
 
 } // namespace ut
 

@@ -1,5 +1,4 @@
 # This script is called at install time
-
 function(findLibsAndModules SEARCH_PATH SUFFIX LIBS_DIRECTORIES EXCLUDE_PATTERN)
     file(GLOB_RECURSE LIBS ${SEARCH_PATH}/*${SUFFIX}*)
     if(${FW_BUILD_EXTERNAL})

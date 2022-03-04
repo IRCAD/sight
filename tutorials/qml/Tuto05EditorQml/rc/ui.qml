@@ -1,6 +1,6 @@
 //import related modules
 import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.2
 // Import Tuto05EditorQml module
 import Tuto05EditorQml 1.0
@@ -52,7 +52,7 @@ ApplicationWindow {
         anchors.fill: parent
         TextArea {
             id: textArea1
-            textColor: "#143bc2"
+            color: "#143bc2"
             Layout.fillWidth: true
             Layout.fillHeight: true
             enabled: false
@@ -66,7 +66,7 @@ ApplicationWindow {
 
         TextArea {
             id: textArea2
-            textColor: "#902190"
+            color: "#902190"
             Layout.fillHeight: true
             enabled: false
 

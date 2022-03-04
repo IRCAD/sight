@@ -1,5 +1,6 @@
 <plugin id="Tuto07SceneQt3DQml" library="true" >
 
     <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qml" />
 
 </plugin>

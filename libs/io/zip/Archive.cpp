@@ -21,6 +21,9 @@
 
 #include "Archive.hpp"
 
+#include <core/exceptionmacros.hpp>
+#include <core/macros.hpp>
+
 #include <mutex>
 #include <set>
 
@@ -31,43 +34,27 @@ namespace sight::io::zip
 static std::set<std::filesystem::path> s_archives;
 static std::mutex s_archives_mutex;
 
-//------------------------------------------------------------------------------
-
-void Archive::lock(const std::filesystem::path& archivePath)
+/// Constructor
+Archive::Archive(const std::filesystem::path& archive_path) :
+    m_archive_path(archive_path.lexically_normal())
 {
-    // Normalize path
-    const std::filesystem::path normalizedPath = archivePath.lexically_normal();
+    std::unique_lock guard(s_archives_mutex);
 
-    // Lock the global archives map
-    std::lock_guard lock(s_archives_mutex);
-    s_archives.insert(archivePath);
+    SIGHT_THROW_IF(
+        "The archive file '" + m_archive_path.string() + "' is already opened.",
+        s_archives.find(m_archive_path) != s_archives.end()
+    );
+
+    // Store the path as long as the archive is opened
+    s_archives.insert(m_archive_path);
 }
 
-//------------------------------------------------------------------------------
-
-void Archive::unlock(const std::filesystem::path& archivePath)
+Archive::~Archive()
 {
-    // Normalize path
-    const std::filesystem::path normalizedPath = archivePath.lexically_normal();
-
-    // Lock the global archives map
-    std::lock_guard lock(s_archives_mutex);
+    std::unique_lock guard(s_archives_mutex);
 
     // Remove completely the archive if not used anymore
-    s_archives.erase(archivePath);
-}
-
-//------------------------------------------------------------------------------
-
-bool Archive::is_locked(const std::filesystem::path& archivePath)
-{
-    // Normalize path
-    const std::filesystem::path normalizedPath = archivePath.lexically_normal();
-
-    // Lock the global archives map
-    std::lock_guard lock(s_archives_mutex);
-
-    return s_archives.find(normalizedPath) != s_archives.end();
+    s_archives.erase(m_archive_path);
 }
 
 } // namespace sight::io::zip

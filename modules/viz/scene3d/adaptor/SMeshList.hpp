@@ -76,7 +76,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMeshList final : public sight::viz::scene3d:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMeshList, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMeshList, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMeshList() noexcept;
@@ -118,11 +118,11 @@ private:
     /// Stores all services and data needed to add a new mesh.
     struct MeshInstance
     {
-        data::Matrix4::sptr m_matrix {nullptr};
-        data::Image::sptr m_image {nullptr};
-        sight::viz::scene3d::IAdaptor::sptr m_transform {nullptr};
-        sight::viz::scene3d::IAdaptor::sptr m_mesh {nullptr};
-        sight::viz::scene3d::IAdaptor::sptr m_texture {nullptr};
+        data::Matrix4::sptr m_matrix;
+        data::Image::sptr m_image;
+        sight::viz::scene3d::IAdaptor::sptr m_transform;
+        sight::viz::scene3d::IAdaptor::sptr m_mesh;
+        sight::viz::scene3d::IAdaptor::sptr m_texture;
         bool m_isEnabled {false}; ///< set to true when the instance has been added once
     };
 

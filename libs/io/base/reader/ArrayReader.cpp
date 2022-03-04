@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <fstream>
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER(::sight::io::base::reader::ArrayReader);
+SIGHT_REGISTER_IO_READER(sight::io::base::reader::ArrayReader);
 
 namespace sight::io::base
 {
@@ -57,10 +57,10 @@ void ArrayReader::read()
 
     data::Array::sptr array = this->getConcreteObject();
 
-    const auto dumpLock = array->lock();
+    const auto dumpLock = array->dump_lock();
 
-    size_t arraySizeInBytes = array->resize(array->getSize());
-    char* buff              = static_cast<char*>(array->getBuffer());
+    std::size_t arraySizeInBytes = array->resize(array->getSize());
+    char* buff                   = static_cast<char*>(array->getBuffer());
 
     std::ifstream fs(file.string().c_str(), std::ios::in | std::ios::binary | std::ios::ate);
 
@@ -71,7 +71,7 @@ void ArrayReader::read()
 
     SIGHT_THROW_IF(
         file << ": Bad file size, expected: " << arraySizeInBytes << ", was: " << fileSize,
-        arraySizeInBytes - static_cast<size_t>(fileSize) != 0
+        arraySizeInBytes - static_cast<std::size_t>(fileSize) != 0
     );
 
     fs.read(buff, static_cast<std::streamsize>(arraySizeInBytes));
@@ -81,7 +81,7 @@ void ArrayReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string ArrayReader::extension()
+std::string ArrayReader::extension() const
 {
     return ".raw";
 }

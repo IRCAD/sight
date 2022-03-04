@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ namespace adaptor
  * @code{.xml}
    <service uid="..." type="sight::module::viz::scene2d::adaptor::SMultipleTF" >
        <in key="viewport" uid="..." />
-       <in key="currentTF" uid="..." optional="true" />
+       <in key="currentTF" uid="..." />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
@@ -323,7 +323,7 @@ private:
     void midButtonClickEvent(sight::viz::scene2d::data::Event& _event);
 
     /**
-     * @brief Update the window/level of the current TF relativly to the mouse movement.
+     * @brief Update the window/level of the current TF relatively to the mouse movement.
      * @param _event the 2D scene event.
      *
      * @pre m_capturedTF must be previously sets.
@@ -412,7 +412,7 @@ private:
     /// Defines the pen used by TF points.
     QPen m_pointsPen;
 
-    /// Defines the opacity used for TF exepted the current one.
+    /// Defines the opacity used for TF except for the current one.
     float m_secondOpacity {0.0f};
 
     /// Sets if interactions are enable or not.
@@ -457,9 +457,10 @@ private:
 
     static constexpr std::string_view s_TF_OUTPUT = "tf";
 
-    ::sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_CURRENT_TF_INPUT};
-    ::sight::data::ptr<sight::data::Composite, sight::data::Access::inout> m_tfPool {this, s_TF_POOL_INOUT};
-    ::sight::data::ptr<sight::data::TransferFunction, sight::data::Access::out> m_tfOut {this, s_TF_OUTPUT};
+    data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
+    data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_CURRENT_TF_INPUT, false, true};
+    data::ptr<sight::data::Composite, sight::data::Access::inout> m_tfPool {this, s_TF_POOL_INOUT};
+    data::ptr<sight::data::TransferFunction, sight::data::Access::out> m_tfOut {this, s_TF_OUTPUT};
 };
 
 } // namespace adaptor

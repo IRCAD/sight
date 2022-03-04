@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "SlotsSignalsStuff.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
-
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
+#include <thread>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::SlotsSignalsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::SlotsSignalsTest);
 //
 namespace sight::service
 {
@@ -62,11 +62,8 @@ void SlotsSignalsTest::basicTest()
     Buffer::sptr buffer  = Buffer::New();
     Buffer::sptr buffer2 = Buffer::New();
 
-    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    activeWorkers->addWorker("test", worker);
+    core::thread::addWorker("test", worker);
 
     SBasicTest::sptr basicTestSrv = service::factory::New<SBasicTest>();
     service::OSR::registerService(basicTestSrv);
@@ -96,23 +93,19 @@ void SlotsSignalsTest::basicTest()
 
     service::OSR::unregisterService(basicTestSrv);
 
-    activeWorkers->clearRegistry();
+    core::thread::removeWorker("test");
 }
 
 //------------------------------------------------------------------------------
 
 void SlotsSignalsTest::comObjectServiceTest()
 {
-    Buffer::sptr buffer = Buffer::New();
-
-    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     core::thread::Worker::sptr worker1 = core::thread::Worker::New();
-    activeWorkers->addWorker("worker1", worker1);
+    core::thread::addWorker("worker1", worker1);
     core::thread::Worker::sptr worker2 = core::thread::Worker::New();
-    activeWorkers->addWorker("worker2", worker2);
+    core::thread::addWorker("worker2", worker2);
 
+    Buffer::sptr buffer = Buffer::New();
     {
         SReaderTest::sptr readerTestSrv = service::factory::New<SReaderTest>();
         service::OSR::registerService(readerTestSrv);
@@ -180,7 +173,9 @@ void SlotsSignalsTest::comObjectServiceTest()
         service::OSR::unregisterService(reader2TestSrv);
         service::OSR::unregisterService(showTestSrv);
     }
-    activeWorkers->clearRegistry();
+
+    core::thread::removeWorker("worker1");
+    core::thread::removeWorker("worker2");
 }
 
 //------------------------------------------------------------------------------
@@ -189,11 +184,8 @@ void SlotsSignalsTest::comServiceToServiceTest()
 {
     Buffer::sptr buffer = Buffer::New();
 
-    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     core::thread::Worker::sptr worker1 = core::thread::Worker::New();
-    activeWorkers->addWorker("worker1", worker1);
+    core::thread::addWorker("worker1", worker1);
 
     SReader2Test::sptr readerTestSrv = service::factory::New<SReader2Test>();
     service::OSR::registerService(readerTestSrv);
@@ -223,7 +215,7 @@ void SlotsSignalsTest::comServiceToServiceTest()
     service::OSR::unregisterService(readerTestSrv);
     service::OSR::unregisterService(showTestSrv);
 
-    activeWorkers->clearRegistry();
+    core::thread::removeWorker("worker1");
 }
 
 //------------------------------------------------------------------------------
@@ -232,11 +224,8 @@ void SlotsSignalsTest::blockConnectionTest()
 {
     Buffer::sptr buffer = Buffer::New();
 
-    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     core::thread::Worker::sptr worker1 = core::thread::Worker::New();
-    activeWorkers->addWorker("worker1", worker1);
+    core::thread::addWorker("worker1", worker1);
 
     SReaderTest::sptr readerTestSrv = service::factory::New<SReaderTest>();
     service::OSR::registerService(readerTestSrv);
@@ -267,7 +256,7 @@ void SlotsSignalsTest::blockConnectionTest()
 
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-    activeWorkers->clearRegistry();
+    core::thread::removeWorker("worker1");
 }
 
 //------------------------------------------------------------------------------

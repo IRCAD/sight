@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ void SCalibrationImagesWriter::updating()
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
-        size_t count(0);
+        std::size_t count(0);
         for(const auto& calibImg : calibInfo->getImageContainer())
         {
             std::ostringstream imageNumber;
@@ -126,7 +126,7 @@ void SCalibrationImagesWriter::updating()
             const std::string filename       = "img_" + imageNumber.str() + m_fileExtension;
             const std::filesystem::path path = this->getFolder() / filename;
 
-            ::cv::Mat cvImg = sight::io::opencv::Image::copyToCv(calibImg);
+            cv::Mat cvImg = sight::io::opencv::Image::copyToCv(calibImg);
 
             if(cvImg.dims == 3)
             {
@@ -139,13 +139,13 @@ void SCalibrationImagesWriter::updating()
                 if(cvImg.type() == CV_8UC3 || cvImg.type() == CV_8UC4)
                 {
                     // convert the image from BGR to RGB
-                    const auto colConvType = cvImg.type() == CV_8UC3 ? ::cv::COLOR_BGR2RGB : ::cv::COLOR_BGRA2RGBA;
-                    ::cv::cvtColor(cvImg, cvImg, colConvType);
+                    const auto colConvType = cvImg.type() == CV_8UC3 ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA;
+                    cv::cvtColor(cvImg, cvImg, colConvType);
                 }
 
-                ::cv::imwrite(path.string(), cvImg);
+                cv::imwrite(path.string(), cvImg);
             }
-            catch(const ::cv::Exception& e)
+            catch(const cv::Exception& e)
             {
                 m_writeFailed = true;
                 sight::ui::base::dialog::MessageDialog::show(

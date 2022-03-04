@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <filter/image/ImageExtruder.hpp>
@@ -80,12 +80,12 @@ void SImageExtruder::updating()
 {
     const auto image = m_image.lock();
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
         // Copy the image into the output.
         {
             const auto imageOut = m_extrudedImage.lock();
-            SIGHT_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
+            SIGHT_ASSERT("The image must be in 3 dimensions", image->numDimensions() == 3);
 
             imageOut->deepCopy(image.get_shared());
 
@@ -113,7 +113,7 @@ void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorT
 {
     const auto imageOut = m_extrudedImage.lock();
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
+    if(data::helper::MedicalImage::checkImageValidity(imageOut.get_shared()))
     {
         for(const data::Reconstruction::csptr reconstruction : _reconstructions)
         {

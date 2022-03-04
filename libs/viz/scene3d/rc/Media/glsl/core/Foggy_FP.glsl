@@ -4,9 +4,9 @@
 #extension GL_GOOGLE_include_directive : enable
 #endif // GLSL_LANG_VALIDATOR
 
-#ifdef PIXEL_LIT
+#if defined(FLAT) || defined(PHONG)
 #include "Lighting.inc.glsl"
-#endif // PIXEL_LIT
+#endif
 
 // Uniforms
 #ifdef DIFFUSE_TEX
@@ -16,7 +16,7 @@ uniform int u_useTextureAlpha;
 // Input semantics
 layout(location = 0) in vec3 v_f3Normal_Ws;
 
-#ifdef PIXEL_LIT
+#if defined(PHONG)
 layout(location = 1) in vec3 v_f3Position_Ws;
  #endif
 
@@ -40,7 +40,7 @@ uniform int u_fog;
 vec4 getFragmentColor()
 {
 
-#ifdef PIXEL_LIT
+#if defined(PHONG)
     vec4 colorOut = lighting(normalize(v_f3Normal_Ws), v_f3Position_Ws) * v_f4Color;
 #else
     vec4 colorOut = v_f4Color;

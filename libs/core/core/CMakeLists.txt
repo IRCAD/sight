@@ -1,13 +1,11 @@
-sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON WARNINGS_AS_ERRORS ON)
+sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON)
 
 find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
 
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC std::filesystem)
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC Boost::date_time Boost::log Boost::log_setup Boost::iostreams)
 
-target_include_directories(${TARGET_OBJECT_LIB} SYSTEM PUBLIC ${CAMP_INCLUDE_DIR} )
-
-target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC ${CAMP_LIBRARIES})
+target_compile_definitions(${TARGET_OBJECT_LIB} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE psapi)
@@ -22,8 +20,13 @@ target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_RC_PREFIX="${SIGH
 target_include_directories(${TARGET_OBJECT_LIB} PUBLIC ${LIBXML2_INCLUDE_DIR})
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC ${LIBXML2_LIBRARIES})
 
-# Include openssl for crypto 
+# Include openssl for crypto
 target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE OpenSSL::Crypto)
+
+if(UNIX)
+    # We use dlopen, dlerror, ...
+    target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE ${CMAKE_DL_LIBS})
+endif()
 
 if(WIN32)
     target_include_directories(${TARGET_OBJECT_LIB} PUBLIC ${Iconv_INCLUDE_DIR})

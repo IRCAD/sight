@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace listener
 
 //-----------------------------------------------------------------------------
 
-class AutoStereoCompositorListener : public ::Ogre::MaterialManager::Listener
+class AutoStereoCompositorListener : public Ogre::MaterialManager::Listener
 {
 public:
 
@@ -48,18 +48,18 @@ public:
     ~AutoStereoCompositorListener();
 
     /// Callback called each time a scheme is not found
-    virtual ::Ogre::Technique* handleSchemeNotFound(
+    virtual Ogre::Technique* handleSchemeNotFound(
         unsigned short _schemeIndex,
-        const ::Ogre::String& _schemeName,
-        ::Ogre::Material* _originalMaterial,
+        const Ogre::String& _schemeName,
+        Ogre::Material* _originalMaterial,
         unsigned short _lodIndex,
-        const ::Ogre::Renderable* _renderable
+        const Ogre::Renderable* _renderable
     );
 
 private:
 
     /// Pair storing techniques together with their material's name.
-    using TechniqueMaterialPair = std::pair< ::Ogre::Technique*, std::string>;
+    using TechniqueMaterialPair = std::pair<Ogre::Technique*, std::string>;
 
     /// list of techniques to be removed from the material when destroying the listener
     std::vector<TechniqueMaterialPair> m_createdTechniques;

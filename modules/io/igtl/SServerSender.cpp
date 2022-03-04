@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <functional>
 
@@ -81,7 +81,9 @@ void SServerSender::starting()
 {
     try
     {
-        const std::uint16_t port = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
+        ui::base::Preferences preferences;
+        const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
+
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));
@@ -127,7 +129,7 @@ void SServerSender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SServerSender::sendObject(const data::Object::csptr& obj, const size_t index)
+void SServerSender::sendObject(const data::Object::csptr& obj, const std::size_t index)
 {
     if(!m_deviceNames[index].empty())
     {

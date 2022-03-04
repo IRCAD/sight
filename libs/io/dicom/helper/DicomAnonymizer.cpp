@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 
+#include "io/base/reader/CsvReader.hpp"
 #include "io/dicom/exception/InvalidTag.hpp"
-#include "io/dicom/helper/CsvIO.hpp"
 #include "io/dicom/helper/DicomSearch.hpp"
 #include "io/dicom/helper/tags.hpp"
 
@@ -56,39 +56,36 @@ namespace helper
 
 const std::string c_MIN_DATE_STRING = "19000101";
 
-::gdcm::UIDGenerator GENERATOR;
+gdcm::UIDGenerator GENERATOR;
 
 DicomAnonymizer::DicomAnonymizer() :
-    m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
+    m_publicDictionary(gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
     m_observer(core::jobs::Observer::New("Anonymization process")),
     m_archiving(false),
     m_fileIndex(0),
-    m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
+    m_referenceDate(boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
-    const std::filesystem::path tagsPathStr = core::runtime::getLibraryResourceFilePath(
+    const std::filesystem::path tagsPath = core::runtime::getLibraryResourceFilePath(
         "io_dicom/tags.csv"
     );
-    std::filesystem::path tagsPath = tagsPathStr;
     SIGHT_ASSERT(
         "File '" + tagsPath.string() + "' must exists",
         std::filesystem::is_regular_file(tagsPath)
     );
-
-    auto csvStream = std::ifstream(tagsPath.string());
-    io::dicom::helper::CsvIO csvReader(csvStream);
-    io::dicom::helper::CsvIO::TokenContainerType tagVec = csvReader.getLine();
+    io::base::reader::CsvReader csvReader(tagsPath);
+    io::base::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
 
     while(!tagVec.empty())
     {
         if(tagVec.size() < 3)
         {
-            const std::string errorMessage = "Error when loading tag '" + ::boost::algorithm::join(tagVec, ", ") + "'";
+            const std::string errorMessage = "Error when loading tag '" + boost::algorithm::join(tagVec, ", ") + "'";
             SIGHT_WARN_IF(errorMessage, tagVec.size() != 4);
             SIGHT_THROW_EXCEPTION(io::dicom::exception::InvalidTag(errorMessage));
         }
 
         const std::string& actionCode = tagVec[0];
-        ::gdcm::Tag tag               = io::dicom::helper::getGdcmTag(tagVec[1], tagVec[2]);
+        gdcm::Tag tag                 = io::dicom::helper::getGdcmTag(tagVec[1], tagVec[2]);
 
         if(actionCode == "D")
         {
@@ -135,7 +132,7 @@ DicomAnonymizer::~DicomAnonymizer()
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::setReferenceDate(const ::boost::gregorian::date& referenceDate)
+void DicomAnonymizer::setReferenceDate(const boost::gregorian::date& referenceDate)
 {
     m_referenceDate = referenceDate;
 }
@@ -195,7 +192,7 @@ void moveDirectory(
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::removeAnonymizeTag(const ::gdcm::Tag& tag)
+void DicomAnonymizer::removeAnonymizeTag(const gdcm::Tag& tag)
 {
     m_actionCodeDTags.erase(tag);
     m_actionCodeZTags.erase(tag);
@@ -317,7 +314,7 @@ unsigned int DicomAnonymizer::getNextIndex()
 void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputStream)
 {
     // File Reader
-    ::gdcm::Reader reader;
+    gdcm::Reader reader;
     reader.SetStream(inputStream);
     SIGHT_THROW_IF("Unable to anonymize (file read failed)", !reader.Read());
 
@@ -325,13 +322,13 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     m_stringFilter.SetFile(reader.GetFile());
 
     // Objects used to scan groups of elements
-    ::gdcm::Tag tag;
-    ::gdcm::DataElement dataElement;
-    const ::gdcm::File& datasetFile = reader.GetFile();
-    ::gdcm::DataSet dataset         = datasetFile.GetDataSet();
+    gdcm::Tag tag;
+    gdcm::DataElement dataElement;
+    const gdcm::File& datasetFile = reader.GetFile();
+    gdcm::DataSet dataset         = datasetFile.GetDataSet();
 
-    std::vector< ::gdcm::DataElement> preservedTags;
-    for(const ::gdcm::Tag& t : m_privateTags)
+    std::vector<gdcm::DataElement> preservedTags;
+    for(const gdcm::Tag& t : m_privateTags)
     {
         if(dataset.FindDataElement(t))
         {
@@ -385,7 +382,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
         this->applyActionCodeU(tag);
     }
 
-    auto applyActionCodeXWithException = [this](const ::gdcm::Tag& tag)
+    auto applyActionCodeXWithException = [this](const gdcm::Tag& tag)
                                          {
                                              if(m_exceptionTagMap.find(tag) == m_exceptionTagMap.end())
                                              {
@@ -396,8 +393,8 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     const auto dataElementSet = dataset.GetDES();
 
     // Curve Data (0x50xx,0xxxxx)
-    auto element = dataElementSet.lower_bound(::gdcm::Tag(0x5000, 0x0));
-    auto end     = dataElementSet.upper_bound(::gdcm::Tag(0x50ff, 0xffff));
+    auto element = dataElementSet.lower_bound(gdcm::Tag(0x5000, 0x0));
+    auto end     = dataElementSet.upper_bound(gdcm::Tag(0x50ff, 0xffff));
     for( ; element != end ; ++element)
     {
         tag = element->GetTag();
@@ -405,8 +402,8 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     }
 
     // Overlay Data (0x60xx,0x3000) && Overlay Comments (0x60xx,0x4000)
-    element = dataElementSet.lower_bound(::gdcm::Tag(0x6000, 0x3000));
-    end     = dataElementSet.upper_bound(::gdcm::Tag(0x60ff, 0x4000));
+    element = dataElementSet.lower_bound(gdcm::Tag(0x6000, 0x3000));
+    end     = dataElementSet.upper_bound(gdcm::Tag(0x60ff, 0x4000));
     for( ; element != end ; ++element)
     {
         tag = element->GetTag();
@@ -418,13 +415,13 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
     m_anonymizer.RemovePrivateTags(); // Private attributes (X)
 
-    for(const ::gdcm::DataElement& de : preservedTags)
+    for(const gdcm::DataElement& de : preservedTags)
     {
         dataset.Insert(de);
     }
 
     // Write file
-    ::gdcm::Writer writer;
+    gdcm::Writer writer;
     writer.SetStream(outputStream);
     writer.SetFile(datasetFile);
 
@@ -435,7 +432,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
 void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const std::string& value)
 {
-    ::gdcm::Tag tag(group, element);
+    gdcm::Tag tag(group, element);
 
     m_exceptionTagMap[tag] = value;
 
@@ -449,7 +446,7 @@ void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const st
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::preservePrivateTag(const ::gdcm::Tag& tag)
+void DicomAnonymizer::preservePrivateTag(const gdcm::Tag& tag)
 {
     const bool found = std::find(m_privateTags.begin(), m_privateTags.end(), tag) != m_privateTags.end();
     SIGHT_WARN_IF("Private tag " << tag.GetGroup() << ", " << tag.GetElement() << " has already been added", !found);
@@ -462,10 +459,10 @@ void DicomAnonymizer::preservePrivateTag(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeD(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeD(const gdcm::Tag& tag)
 {
     // Sequence of Items
-    if(m_publicDictionary.GetDictEntry(tag).GetVR() == ::gdcm::VR::SQ)
+    if(m_publicDictionary.GetDictEntry(tag).GetVR() == gdcm::VR::SQ)
     {
         m_anonymizer.Empty(tag);
     }
@@ -477,24 +474,24 @@ void DicomAnonymizer::applyActionCodeD(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeZ(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeZ(const gdcm::Tag& tag)
 {
     this->applyActionCodeD(tag);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeX(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeX(const gdcm::Tag& tag)
 {
     m_anonymizer.Remove(tag);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeK(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeK(const gdcm::Tag& tag)
 {
     // Sequence of Items
-    if(m_publicDictionary.GetDictEntry(tag).GetVR() == ::gdcm::VR::SQ)
+    if(m_publicDictionary.GetDictEntry(tag).GetVR() == gdcm::VR::SQ)
     {
         m_anonymizer.Empty(tag);
     }
@@ -502,7 +499,7 @@ void DicomAnonymizer::applyActionCodeK(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeC(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeC(const gdcm::Tag& tag)
 {
     SIGHT_FATAL(
         "Basic profile \"C\" is not supported yet: "
@@ -512,7 +509,7 @@ void DicomAnonymizer::applyActionCodeC(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeU(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeU(const gdcm::Tag& tag)
 {
     const std::string oldUID = m_stringFilter.ToString(tag);
     if(!oldUID.empty())
@@ -536,7 +533,7 @@ void DicomAnonymizer::applyActionCodeU(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::addShiftDateTag(const ::gdcm::Tag& tag)
+void DicomAnonymizer::addShiftDateTag(const gdcm::Tag& tag)
 {
     m_actionCodeDTags.erase(tag);
     m_actionCodeZTags.erase(tag);
@@ -550,42 +547,42 @@ void DicomAnonymizer::addShiftDateTag(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionShiftDate(const ::gdcm::Tag& tag)
+void DicomAnonymizer::applyActionShiftDate(const gdcm::Tag& tag)
 {
-    const std::string oldDate           = m_stringFilter.ToString(tag);
-    const ::boost::gregorian::date date = ::boost::gregorian::from_undelimited_string(oldDate);
+    const std::string oldDate         = m_stringFilter.ToString(tag);
+    const boost::gregorian::date date = boost::gregorian::from_undelimited_string(oldDate);
 
     const auto shift = date - m_referenceDate;
 
     //Minimum date
-    const ::boost::gregorian::date min_date = ::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING);
+    const boost::gregorian::date min_date = boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING);
 
     const auto shiftedDate = min_date + shift;
 
-    m_anonymizer.Replace(tag, ::boost::gregorian::to_iso_string(shiftedDate).c_str());
+    m_anonymizer.Replace(tag, boost::gregorian::to_iso_string(shiftedDate).c_str());
 }
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
+void DicomAnonymizer::generateDummyValue(const gdcm::Tag& tag)
 {
     switch(m_publicDictionary.GetDictEntry(tag).GetVR())
     {
-        case ::gdcm::VR::AE:
+        case gdcm::VR::AE:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::AS:
+        case gdcm::VR::AS:
             m_anonymizer.Replace(tag, "000Y");
             break;
 
-        case ::gdcm::VR::AT:
+        case gdcm::VR::AT:
             m_anonymizer.Replace(tag, "00H,00H,00H,00H");
             break;
 
-        case ::gdcm::VR::CS:
+        case gdcm::VR::CS:
             // Patient's sex
-            if(tag == ::gdcm::Tag(0x0010, 0x0040))
+            if(tag == gdcm::Tag(0x0010, 0x0040))
             {
                 m_anonymizer.Replace(tag, "O");
             }
@@ -596,95 +593,95 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
 
             break;
 
-        case ::gdcm::VR::DA:
+        case gdcm::VR::DA:
             m_anonymizer.Replace(tag, c_MIN_DATE_STRING.c_str());
             break;
 
-        case ::gdcm::VR::DS:
+        case gdcm::VR::DS:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::DT:
+        case gdcm::VR::DT:
             m_anonymizer.Replace(tag, std::string(c_MIN_DATE_STRING + "000000.000000").c_str());
             break;
 
-        case ::gdcm::VR::FD:
+        case gdcm::VR::FD:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::FL:
+        case gdcm::VR::FL:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::IS:
+        case gdcm::VR::IS:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::LO:
+        case gdcm::VR::LO:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::LT:
+        case gdcm::VR::LT:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::OB:
+        case gdcm::VR::OB:
             m_anonymizer.Replace(tag, "00H00H");
             break;
 
-        case ::gdcm::VR::OF:
+        case gdcm::VR::OF:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::OW:
+        case gdcm::VR::OW:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::PN:
+        case gdcm::VR::PN:
             m_anonymizer.Replace(tag, "ANONYMIZED^ANONYMIZED");
             break;
 
-        case ::gdcm::VR::SH:
+        case gdcm::VR::SH:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::SL:
+        case gdcm::VR::SL:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::SQ:
+        case gdcm::VR::SQ:
             m_anonymizer.Empty(tag);
             break;
 
-        case ::gdcm::VR::SS:
+        case gdcm::VR::SS:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::ST:
+        case gdcm::VR::ST:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::TM:
+        case gdcm::VR::TM:
             m_anonymizer.Replace(tag, "000000.000000");
             break;
 
-        case ::gdcm::VR::UI:
+        case gdcm::VR::UI:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::UL:
+        case gdcm::VR::UL:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::UN:
+        case gdcm::VR::UN:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 
-        case ::gdcm::VR::US:
+        case gdcm::VR::US:
             m_anonymizer.Replace(tag, "0");
             break;
 
-        case ::gdcm::VR::UT:
+        case gdcm::VR::UT:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
 

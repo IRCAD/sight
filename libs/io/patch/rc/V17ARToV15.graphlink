@@ -1,7 +1,0 @@
-{
-    "context" : "MedicalData",
-    "origin_version" : "V17AR",
-    "target_version" : "V15",
-    "patcher" : "DefaultPatcher",
-    "links" : []
-}

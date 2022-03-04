@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SRenderStats final : public sight::viz::scene
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SRenderStats, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SRenderStats, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SRenderStats() noexcept;
@@ -91,10 +91,10 @@ private:
     sight::viz::scene3d::Text* m_statsText {nullptr};
 
     /// Defines the text's color.
-    ::Ogre::ColourValue m_textColor;
+    Ogre::ColourValue m_textColor;
 
     /// Defines the text's font height in points.
-    size_t m_fontSize {12};
+    std::size_t m_fontSize {12};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};

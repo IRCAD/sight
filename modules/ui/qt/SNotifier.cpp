@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,7 +74,7 @@ void SNotifier::configuring()
 
     if(m_positionMap.find(position) != m_positionMap.end())
     {
-        m_notifcationsPosition = m_positionMap[position];
+        m_notificationsPosition = m_positionMap[position];
     }
     else
     {
@@ -95,15 +95,13 @@ void SNotifier::configuring()
 
 void SNotifier::starting()
 {
-    m_popups.resize(m_maxStackedNotifs);
-
     if(!m_parentContainerID.empty())
     {
-        auto container = ::sight::ui::base::GuiRegistry::getSIDContainer(m_parentContainerID);
+        auto container = sight::ui::base::GuiRegistry::getSIDContainer(m_parentContainerID);
 
         if(!container)
         {
-            container = ::sight::ui::base::GuiRegistry::getWIDContainer(m_parentContainerID);
+            container = sight::ui::base::GuiRegistry::getWIDContainer(m_parentContainerID);
         }
 
         // If we have an SID/WID set the container.
@@ -135,7 +133,7 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
     {
         if(m_positionMap.find(_val) != m_positionMap.end())
         {
-            m_notifcationsPosition = m_positionMap[_val];
+            m_notificationsPosition = m_positionMap[_val];
         }
         else
         {
@@ -173,31 +171,12 @@ void SNotifier::popFailure(std::string _message)
 
 void SNotifier::showNotification(const std::string& _message, sight::ui::base::dialog::INotificationDialog::Type _type)
 {
-    size_t indexOfCurrentNotif = 0;
-    bool foundAPlace           = false;
-
-    // Find the first free place.
-    for(size_t i = 0 ; i < m_popups.size() ; ++i)
+    // If the maximum number of notification is reached, remove the oldest one.
+    if(m_popups.size() >= m_maxStackedNotifs)
     {
-        // No popup or a recently hidden popup.
-        if(m_popups[i] == nullptr || !m_popups[i]->isVisible())
-        {
-            m_popups[i].reset();
-            indexOfCurrentNotif = i;
-            foundAPlace         = true;
-            break;
-        }
-    }
-
-    // No place found, find the oldest (use the indexQueue).
-    if(!foundAPlace)
-    {
-        indexOfCurrentNotif = m_indexQueue.front(); // Oldest index.
-        m_indexQueue.pop();                         // Remove it.
-
-        //Remove the oldest one.
-        m_popups[indexOfCurrentNotif]->close();
-        m_popups[indexOfCurrentNotif].reset();
+        auto notif = m_popups.front();
+        notif->close();
+        this->onNotificationClosed(notif);
     }
 
     std::string messageToShow;
@@ -218,19 +197,31 @@ void SNotifier::showNotification(const std::string& _message, sight::ui::base::d
 
     notif->setMessage(messageToShow);
     notif->setType(_type);
-    notif->setPosition(m_notifcationsPosition);
-    notif->setIndex(static_cast<unsigned int>(indexOfCurrentNotif));
+    notif->setPosition(m_notificationsPosition);
+    notif->setIndex(static_cast<unsigned int>(m_popups.size()));
     notif->setDuration(m_durationInMs);
+    notif->setClosedCallback(std::bind(&SNotifier::onNotificationClosed, this, notif));
     notif->show();
 
-    m_popups[indexOfCurrentNotif] = notif;
+    m_popups.push_back(notif);
+}
 
-    if(m_indexQueue.size() == m_maxStackedNotifs)
+//------------------------------------------------------------------------------
+
+void SNotifier::onNotificationClosed(const sight::ui::base::dialog::NotificationDialog::sptr& _notif)
+{
+    // remove the notification from the container
+    const auto notifItr = std::find(m_popups.begin(), m_popups.end(), _notif);
+    if(notifItr != m_popups.end())
     {
-        m_indexQueue.pop();
-    }
+        m_popups.erase(notifItr);
 
-    m_indexQueue.push(indexOfCurrentNotif);
+        // move all the remaining notifications one index lower
+        for(auto popup : m_popups)
+        {
+            popup->moveDown();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

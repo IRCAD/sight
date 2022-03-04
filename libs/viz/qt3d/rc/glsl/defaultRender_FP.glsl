@@ -10,7 +10,7 @@ flat in vec3 v_out_f3FlatColor;
 out vec4 f_out_f4FragColor;
 
 uniform vec3 u_f3AmbientColCopy;
-uniform int u_iLightingMode; //0=ambient, 1=flat, 2=gouraud, 4=phong.
+uniform int u_iLightingMode; //0=ambient, 1=flat, 2=phong.
 
 // Include functions from another shader called 'lighting.inc.glsl'.
 #pragma include lighting.inc.glsl
@@ -25,10 +25,6 @@ void main()
     else if(u_iLightingMode == 1) //Flat lighting.
     {
         f_out_f4FragColor = vec4(v_out_f3FlatColor, 1.0);
-    }
-    else if(u_iLightingMode == 2) //Gouraud lighting.
-    {
-        f_out_f4FragColor = vec4(v_out_f3Color, 1.0);
     }
     else //Phong lighting.
     {

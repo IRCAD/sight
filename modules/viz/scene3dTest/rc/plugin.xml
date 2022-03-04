@@ -1,2 +1,2 @@
-<plugin id="::sight::module::viz::scene3d::test" library="true" >
+<plugin id="sight::module::viz::scene3d::test" library="true" >
 </plugin>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,19 +59,26 @@ void MaterialTest::tearDown()
 void MaterialTest::methode1()
 {
     //-----------test values
-    data::Color::sptr CAMBIENT = data::Color::New();
-    CAMBIENT->setRGBA(0.5f, 0.5f, 0.5f, 0.5f);
+    data::Color::sptr ambient_color = data::Color::New();
+    ambient_color->setRGBA(0.5f, 0.5f, 0.5f, 0.5f);
 
-    data::Color::sptr CDIFF = data::Color::New();
-    CDIFF->setRGBA(0.8f, 0.2f, 0.5f, 0.4f);
+    data::Color::sptr diffuse_color = data::Color::New();
+    diffuse_color->setRGBA(0.8f, 0.2f, 0.5f, 0.4f);
 
-    data::Material::sptr material = data::Material::New();
+    auto material = data::Material::New();
 
-    material->setAmbient(data::Object::copy(CAMBIENT));
-    material->setDiffuse(data::Object::copy(CDIFF));
+    material->setAmbient(data::Object::copy(ambient_color));
+    material->setDiffuse(data::Object::copy(diffuse_color));
 
-    CPPUNIT_ASSERT_EQUAL(material->ambient()->getRGBA()[0], CAMBIENT->getRGBA()[0]);
-    CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], CDIFF->getRGBA()[0]);
+    CPPUNIT_ASSERT_EQUAL(material->ambient()->getRGBA()[0], ambient_color->getRGBA()[0]);
+    CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], diffuse_color->getRGBA()[0]);
+
+    auto material2 = data::Material::New();
+    CPPUNIT_ASSERT(*material != *material2);
+
+    material2->setAmbient(data::Object::copy(ambient_color));
+    material2->setDiffuse(data::Object::copy(diffuse_color));
+    CPPUNIT_ASSERT(*material == *material2);
 }
 
 } //namespace ut

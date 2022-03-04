@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,10 +37,10 @@ namespace stream
 namespace in
 {
 
-struct HoldCounterStream : ::boost::iostreams::stream< ::boost::iostreams::array_source>
+struct HoldCounterStream : boost::iostreams::stream<boost::iostreams::array_source>
 {
-    HoldCounterStream(char* buf, size_t size, const Buffer::LockType& lock) :
-        ::boost::iostreams::stream< ::boost::iostreams::array_source>(buf, size),
+    HoldCounterStream(char* buf, std::size_t size, const Buffer::LockType& lock) :
+        boost::iostreams::stream<boost::iostreams::array_source>(buf, size),
         m_counter(lock)
     {
     }
@@ -55,7 +55,7 @@ Buffer::LockType noFactory()
     return Buffer::LockType();
 }
 
-Buffer::Buffer(void* buf, size_t size) :
+Buffer::Buffer(void* buf, std::size_t size) :
     m_buf(buf),
     m_size(size),
     m_counterFactory(&noFactory)
@@ -63,7 +63,7 @@ Buffer::Buffer(void* buf, size_t size) :
     SIGHT_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
-Buffer::Buffer(void* buf, size_t size, CounterFactoryType counterFactory) :
+Buffer::Buffer(void* buf, std::size_t size, CounterFactoryType counterFactory) :
     m_buf(buf),
     m_size(size),
     m_counterFactory(counterFactory)

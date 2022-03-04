@@ -42,12 +42,12 @@ public:
 
     SIGHT_DECLARE_CLASS(
         StereoCamera,
-        ::sight::activity::IObjectValidator,
-        ::sight::activity::validator::factory::New<StereoCamera>
+        sight::activity::IObjectValidator,
+        sight::activity::validator::factory::New<StereoCamera>
     )
 
     /// Constructor. Do nothing.
-    MODULE_ACTIVITY_API StereoCamera(::sight::activity::IValidator::Key key);
+    MODULE_ACTIVITY_API StereoCamera(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
     MODULE_ACTIVITY_API virtual ~StereoCamera();

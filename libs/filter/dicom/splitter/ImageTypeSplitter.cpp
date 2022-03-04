@@ -28,7 +28,7 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImageTypeSplitter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::ImageTypeSplitter);
 
 namespace sight::filter::dicom
 {

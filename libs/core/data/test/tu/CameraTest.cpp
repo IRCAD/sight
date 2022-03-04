@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,8 @@
 
 #include <data/Camera.hpp>
 
-#include <utestData/helper/compare.hpp>
-
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::CameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraTest);
 
 namespace sight::data
 {
@@ -69,8 +67,8 @@ data::Camera::sptr initCamera()
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
-    const size_t WIDTH                          = 800;
-    const size_t HEIGHT                         = 800;
+    const std::size_t WIDTH                     = 800;
+    const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
     const float MAXIMUMFRAMERATE                = 30.f;
@@ -118,8 +116,8 @@ void CameraTest::paramTest()
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
-    const size_t WIDTH                          = 800;
-    const size_t HEIGHT                         = 800;
+    const std::size_t WIDTH                     = 800;
+    const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
     const float MAXIMUMFRAMERATE                = 30.f;
@@ -181,7 +179,11 @@ void CameraTest::shallowCopyTest()
     data::Camera::sptr camera  = initCamera();
     data::Camera::sptr camera2 = data::Camera::New();
 
+    CPPUNIT_ASSERT(*camera != *camera2);
+
     camera2->shallowCopy(camera);
+
+    CPPUNIT_ASSERT(*camera == *camera2);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCx(), camera2->getCx(), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCy(), camera2->getCy(), 0.00001);
@@ -217,7 +219,7 @@ void CameraTest::deepCopyTest()
     data::Camera::sptr camera = initCamera();
     data::Camera::sptr camera2;
     camera2 = data::Object::copy(camera);
-    CPPUNIT_ASSERT(utestData::helper::compare(camera, camera2));
+    CPPUNIT_ASSERT(*camera == *camera2);
 }
 
 } //namespace ut

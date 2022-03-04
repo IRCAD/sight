@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3dQt
 
 class Window final :
     public QWindow,
-    public ::Ogre::RenderTargetListener
+    public Ogre::RenderTargetListener
 {
 Q_OBJECT
 
@@ -74,7 +74,7 @@ public:
     void initialize();
 
     /// Returns the Ogre render window.
-    ::Ogre::RenderWindow* getOgreRenderWindow() const;
+    Ogre::RenderWindow* getOgreRenderWindow() const;
 
     /// Gets this window ID.
     int getId() const;

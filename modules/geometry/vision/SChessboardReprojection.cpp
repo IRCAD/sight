@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -36,7 +36,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
@@ -114,8 +114,8 @@ void SChessboardReprojection::updating()
     SIGHT_ASSERT("Missing 'camera'.", camera);
 
     cv::Size imgSize;
-    cv::Mat cameraMx, distortionCoefficents;
-    std::tie(cameraMx, imgSize, distortionCoefficents) = io::opencv::Camera::copyToCv(camera.get_shared());
+    cv::Mat cameraMx, distortionCoefficients;
+    std::tie(cameraMx, imgSize, distortionCoefficients) = io::opencv::Camera::copyToCv(camera.get_shared());
 
     cv::Mat rvec, tvec;
 
@@ -142,7 +142,7 @@ void SChessboardReprojection::updating()
             rvec,
             tvec,
             cameraMx,
-            distortionCoefficents
+            distortionCoefficients
         );
 
         m_errorComputedSig->asyncEmit(rmse);
@@ -157,10 +157,10 @@ void SChessboardReprojection::updating()
     if(videoImage)
     {
         // Reprojected points have a radius equal to 1/3000th of the image's height.
-        int reprojRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
-        reprojRadius = std::max(reprojRadius, 1);
+        int reprojectionRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
+        reprojectionRadius = std::max(reprojectionRadius, 1);
 
-        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage.get_shared()))
+        if(!data::helper::MedicalImage::checkImageValidity(videoImage.get_shared()))
         {
             return;
         }
@@ -178,7 +178,7 @@ void SChessboardReprojection::updating()
             std::vector<cv::Point2f> drawnDetectedPoints;
             if(!m_distortReprojection && camera->getIsCalibrated())
             {
-                cv::undistortPoints(cv::Mat(detectedPointsF), drawnDetectedPoints, cameraMx, distortionCoefficents);
+                cv::undistortPoints(cv::Mat(detectedPointsF), drawnDetectedPoints, cameraMx, distortionCoefficients);
                 for(auto& pt : drawnDetectedPoints)
                 {
                     const auto pt3d = cv::Matx33f(cameraMx) * pt;
@@ -190,10 +190,10 @@ void SChessboardReprojection::updating()
                 drawnDetectedPoints = detectedPointsF;
             }
 
-            const int detectionThickness = reprojRadius < 2 ? 1 : 2;
+            const int detectionThickness = reprojectionRadius < 2 ? 1 : 2;
             for(const auto& pt : drawnDetectedPoints)
             {
-                cv::circle(img, pt, reprojRadius + 3, cv::Scalar(0, 255, 255, 255), detectionThickness);
+                cv::circle(img, pt, reprojectionRadius + 3, cv::Scalar(0, 255, 255, 255), detectionThickness);
             }
         }
 
@@ -201,10 +201,10 @@ void SChessboardReprojection::updating()
         {
             if(m_drawReprojection)
             {
-                std::vector<cv::Point2f> drawnReprojPts;
+                std::vector<cv::Point2f> drawnReprojectedPts;
                 if(m_distortReprojection)
                 {
-                    drawnReprojPts = reprojectedPts;
+                    drawnReprojectedPts = reprojectedPts;
                 }
                 else
                 {
@@ -215,26 +215,26 @@ void SChessboardReprojection::updating()
                         tvec,
                         cameraMx,
                         cv::Mat(),
-                        drawnReprojPts
+                        drawnReprojectedPts
                     );
                 }
 
-                for(const auto& pt : drawnReprojPts)
+                for(const auto& pt : drawnReprojectedPts)
                 {
-                    cv::circle(img, pt, reprojRadius, cv::Scalar(255, 255, 0, 255), cv::FILLED);
+                    cv::circle(img, pt, reprojectionRadius, cv::Scalar(255, 255, 0, 255), cv::FILLED);
                 }
             }
 
             if(m_drawReprojectionError)
             {
-                const auto fontFace              = cv::FONT_HERSHEY_SIMPLEX;
-                const std::string reprojErrorStr = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
-                const int leftPadding            = static_cast<int>(0.05 * imgSize.width);
-                const int topPadding             = static_cast<int>(0.05 * imgSize.height);
+                const auto fontFace                    = cv::FONT_HERSHEY_SIMPLEX;
+                const std::string reprojectionErrorStr = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
+                const int leftPadding                  = static_cast<int>(0.05 * imgSize.width);
+                const int topPadding                   = static_cast<int>(0.05 * imgSize.height);
 
                 cv::putText(
                     img,
-                    reprojErrorStr,
+                    reprojectionErrorStr,
                     cv::Point(leftPadding, topPadding),
                     fontFace,
                     1.,
@@ -273,23 +273,18 @@ void SChessboardReprojection::toggleDistortion()
 void SChessboardReprojection::updateChessboardSize()
 {
     unsigned long width(0), height(0);
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
-    {
-        width = std::stoul(widthStr);
-    }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        height = std::stoul(heightStr);
-    }
-
     double squareSize(0.);
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
+
+    try
     {
-        squareSize = std::stod(squareSizeStr);
+        ui::base::Preferences preferences;
+        width      = preferences.get(m_widthKey, width);
+        height     = preferences.get(m_heightKey, height);
+        squareSize = preferences.get(m_squareSizeKey, squareSize);
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 
     m_chessboardModel.clear();
@@ -298,11 +293,11 @@ void SChessboardReprojection::updateChessboardSize()
 
     for(unsigned long i = 0 ; i < height - 1 ; ++i)
     {
-        const double x = i * squareSize;
+        const double x = double(i) * squareSize;
 
         for(unsigned long j = 0 ; j < width - 1 ; ++j)
         {
-            const double y = j * squareSize;
+            const double y = double(j) * squareSize;
             m_chessboardModel.push_back(cv::Point3d(x, y, 0.));
             chessboardModelPl->pushBack(data::Point::New(x, y, 0.));
         }

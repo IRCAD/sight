@@ -1,6 +1,6 @@
 <plugin id="sight::module::geometry::vision" library="true" >
     <requirement id="sight::module::service"/>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::vision::SChessBoardDetector</service>
          <object key="image">sight::data::Image</object>
@@ -10,12 +10,12 @@
     </extension>
 
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::vision::SChessboardReprojection</service>
          <desc>Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.</desc>
     </extension>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IFilter</type>
          <service>sight::module::geometry::vision::SDistortion</service>
          <object key="camera">sight::data::Camera</object>
@@ -26,39 +26,39 @@
     </extension>
 
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::vision::SMarkerToPoint</service>
          <object>sight::data::PointList</object>
          <desc>This service update a pointlist with the center of the marker (from a matrixTL) when the extractMarker slot is</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::SOpenCVExtrinsic</service>
          <object>sight::data::CameraSeries</object>
          <desc>SOpenCVExtrinsic service that computes extrinsic calibration with openCV.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::SOpenCVIntrinsic</service>
          <object>sight::data::Camera</object>
          <desc>SOpenCVIntrinsic service that computes intrinsic calibration with openCV.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IRegisterer</type>
          <service>sight::module::geometry::vision::SPoseFrom2d</service>
          <desc>SPoseFrom2d Class used to compute the 3d pose of a object using 2d points.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::vision::SReprojectionError</service>
          <desc>SReprojectionError Class used to compute the mean error of reprojection between 3d object points</desc>
     </extension>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IRegisterer</type>
          <service>sight::module::geometry::vision::SSolvePnP</service>
          <object key="pointList2d">sight::data::PointList</object>
@@ -68,7 +68,7 @@
          <desc>This service estimates the object pose given a set of object points, their corresponding image projections,</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::vision::charuco::SCharucoBoardDetector</service>
          <object key="timeline">sight::data::FrameTL</object>
@@ -77,7 +77,7 @@
          <desc>This service updates CalibrationInfo objects with the points detected from charuco board.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::charuco::SOpenCVExtrinsic</service>
          <object key="calibrationInfo1">sight::data::CalibrationInfo</object>
@@ -86,7 +86,7 @@
          <desc>SOpenCVExtrinsic service that computes charuco extrinsic calibration with openCV.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::charuco::SOpenCVIntrinsic</service>
          <object key="calibrationInfo">sight::data::CalibrationInfo</object>

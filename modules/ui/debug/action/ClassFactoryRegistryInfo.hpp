@@ -39,7 +39,7 @@ namespace action
 /**
  * @brief   Implements an action to show services registered in factory
  */
-class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public ::sight::ui::base::IAction
+class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public sight::ui::base::IAction
 {
 public:
 

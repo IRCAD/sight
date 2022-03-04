@@ -38,7 +38,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service id="abscissa" class="::sight::module::viz::scene2d::adaptor::SLine" >
+   <service id="abscissa" class="sight::module::viz::scene2d::adaptor::SLine" >
     <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
    </service>
    @endcode
@@ -58,7 +58,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SLine : public sight::viz::scene2d::IAdaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene2d::IAdaptor);
 
     /// Basic constructor, do nothing.
     MODULE_VIZ_SCENE2D_API SLine() noexcept;

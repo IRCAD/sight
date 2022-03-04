@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,20 +31,20 @@ namespace factory
 
 //-----------------------------------------------------------------------------
 
-::Ogre::String R2VBRenderable::FACTORY_TYPE_NAME = "R2VBRenderable";
+Ogre::String R2VBRenderable::FACTORY_TYPE_NAME = "R2VBRenderable";
 
 //-----------------------------------------------------------------------------
 
-const ::Ogre::String& R2VBRenderable::getType(void) const
+const Ogre::String& R2VBRenderable::getType(void) const
 {
     return FACTORY_TYPE_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::MovableObject* R2VBRenderable::createInstanceImpl(
-    const ::Ogre::String& name,
-    const ::Ogre::NameValuePairList* /*params*/
+Ogre::MovableObject* R2VBRenderable::createInstanceImpl(
+    const Ogre::String& name,
+    const Ogre::NameValuePairList* /*params*/
 )
 {
     return new viz::scene3d::R2VBRenderable(name);
@@ -53,7 +53,7 @@ const ::Ogre::String& R2VBRenderable::getType(void) const
 #if OGRE_VERSION_PATCH < 9
 //------------------------------------------------------------------------------
 
-void R2VBRenderable::destroyInstance(::Ogre::MovableObject* obj)
+void R2VBRenderable::destroyInstance(Ogre::MovableObject* obj)
 {
     delete obj;
 }

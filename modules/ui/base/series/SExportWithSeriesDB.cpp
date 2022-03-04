@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,20 +87,24 @@ void SExportWithSeriesDB::updating()
 {
     sight::ui::base::LockAction lock(this->getSptr());
 
-    const auto series = m_series.lock();
-    SIGHT_ASSERT("The inout key 'series' is not correctly set.", series);
-
     // Create a new SeriesDB
     data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
-    localSeriesDB->getContainer().push_back(series.get_shared());
 
-    /// Create IOSelectorService on the new SeriesDB and execute it.
+    {
+        // Lock only here to avoid a dead lock since IOSelectorService will also lock the data object
+        const auto series = m_series.lock();
+        SIGHT_ASSERT("The inout key 'series' is not correctly set.", series);
+
+        localSeriesDB->getContainer().push_back(series.get_shared());
+    }
+
+    // Create IOSelectorService on the new SeriesDB and execute it.
 
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         m_ioSelectorSrvConfig,
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
     SIGHT_ASSERT(
         "There is no service configuration "

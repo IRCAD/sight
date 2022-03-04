@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(RuntimeTest);
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
 CPPUNIT_TEST(testPosix);
 #elif defined(WIN32)
 CPPUNIT_TEST(testWin32);
@@ -57,7 +57,7 @@ public:
     void setUp();
     void tearDown();
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
     void testPosix();
 #endif
 #if defined(WIN32)

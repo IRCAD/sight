@@ -35,7 +35,8 @@ namespace ut
 class SessionTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SessionTest);
-CPPUNIT_TEST(BasicTest);
+CPPUNIT_TEST(basicArchiveTest);
+CPPUNIT_TEST(basicRawTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,7 +45,8 @@ public:
     void setUp();
     void tearDown();
 
-    void BasicTest();
+    void basicArchiveTest();
+    void basicRawTest();
 };
 
 } // namespace ut

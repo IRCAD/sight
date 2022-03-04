@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExSolvePnP_AppCfg</id>
         <config>
 
@@ -247,7 +247,7 @@
             </service>
 
             <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="cube" />
+                <in key="mesh" uid="cube" />
                 <config layer="default" autoresetcamera="false" />
             </service>
 
@@ -284,7 +284,7 @@
             </service>
 
             <service uid="VRMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="cube" />
+                <in key="mesh" uid="cube" />
                 <config layer="default"/>
             </service>
 
@@ -295,19 +295,17 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
-            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
-                <inout key="source" uid="cameraSeries" >
-                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
-                </inout>
-                <out group="target" >
-                    <key uid="camera" /> <!-- destination -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
+            <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
+                <inout key="cameraSeries" uid="cameraSeries" />
+                <out group="camera" >
+                    <key index="0" uid="camera" />
                 </out>
             </service>
 
             <service uid="meshReaderSrv" type="sight::module::io::vtk::SMeshReader" >
                 <inout key="data" uid="cube" />
-                <resource>ExSolvePnP/plane.vtk</resource>
+                <resource>ExSolvePnP/plane.vtp</resource>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
@@ -332,7 +330,7 @@
                 <in key="pointList3d" uid="3dPoints" />
                 <in key="calibration" uid="camera" />
                 <inout key="matrix" uid="registrationMatrix" />
-                <config inverse="true" />
+                <config inverse="true" shift="true" />
             </service>
 
             <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker" >

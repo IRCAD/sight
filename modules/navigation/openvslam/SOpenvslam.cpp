@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,12 @@
 
 #include "SOpenvslam.hpp"
 
-#include <openvslam/camera/perspective.h>
-#include <openvslam/config.h>
-#include <openvslam/data/landmark.h>
-#include <openvslam/feature/orb_params.h>
-#include <openvslam/publish/frame_publisher.h>
-#include <openvslam/publish/map_publisher.h>
-#include <openvslam/system.h>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 #include <core/Profiling.hpp>
 #include <core/runtime/operations.hpp>
-
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <io/opencv/FrameTL.hpp>
 
@@ -51,6 +40,14 @@
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include <openvslam/camera/perspective.h>
+#include <openvslam/config.h>
+#include <openvslam/data/landmark.h>
+#include <openvslam/feature/orb_params.h>
+#include <openvslam/publish/frame_publisher.h>
+#include <openvslam/publish/map_publisher.h>
+#include <openvslam/system.h>
 
 namespace sight::module::navigation::openvslam
 {
@@ -144,7 +141,7 @@ void SOpenvslam::configuring()
     this->service::ITracker::configuring();
     const ConfigType cfg = this->getConfigTree();
 
-    m_downSampleWidth = cfg.get<size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
+    m_downSampleWidth = cfg.get<std::size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
     const std::string mode = cfg.get<std::string>(s_MODE_CONFIG, "MONO");
 
     // if mode is not set: assuming MONO
@@ -257,8 +254,8 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
         m_ovsMapPublisher   = m_slamSystem->get_map_publisher();
         m_ovsFramePublisher = m_slamSystem->get_frame_publisher();
 
-        SIGHT_ASSERT("Map Publisher souldn't be null", m_ovsMapPublisher);
-        SIGHT_ASSERT("Frame Publisher souldn't be null", m_ovsFramePublisher);
+        SIGHT_ASSERT("Map Publisher shouldn't be null", m_ovsMapPublisher);
+        SIGHT_ASSERT("Frame Publisher shouldn't be null", m_ovsFramePublisher);
 
         if(!_mapFile.empty())
         {
@@ -296,6 +293,7 @@ void SOpenvslam::stopTracking()
             m_saveMapPath.clear();
         }
 
+        //cspell: disable
         // Save trajectories at stop.
         if(m_trajectoriesSavePath)
         {
@@ -328,6 +326,8 @@ void SOpenvslam::stopTracking()
 
         m_ovsMapPublisher.reset();
         m_ovsFramePublisher.reset();
+
+        //cspell: enable
     }
 }
 
@@ -424,9 +424,9 @@ void SOpenvslam::setDoubleParameter(double _val, std::string _key)
     {
         m_initializerParameters.parallaxDegThr = static_cast<float>(_val);
     }
-    else if(_key == "initializer.reprojErrThr")
+    else if(_key == "initializer.reprojectionErrThr")
     {
-        m_initializerParameters.reprojErrThr = static_cast<float>(_val);
+        m_initializerParameters.reprojectionErrThr = static_cast<float>(_val);
     }
     else if(_key == "initializer.scalingFactor")
     {
@@ -581,9 +581,10 @@ void SOpenvslam::saveTrajectories()
     m_trajectoriesSavePath = result;
     defaultDirectory->setFolder(result->getFile().remove_filename());
     dialogFolder.saveDefaultLocation(defaultDirectory);
-    const std::string trajFolder   = result->getFile().remove_filename().string();
-    const std::string trajFilename = result->getFile().filename().replace_extension("").string(); // keep only the
-                                                                                                  // base filename.
+    const std::string trajectories_folder   = result->getFile().remove_filename().string();
+    const std::string trajectories_filename = result->getFile().filename().replace_extension("").string(); // keep only
+                                                                                                           // the
+    // base filename.
     m_trajectoriesFormat = dialogFolder.getCurrentSelection();
 
     const std::unique_lock<std::mutex> lock(m_slamLock);
@@ -591,12 +592,17 @@ void SOpenvslam::saveTrajectories()
     // If openvslam is still alive.
     if(m_slamSystem)
     {
+        //cspell: disable
         // Save frame & keyframes trajectory using choosen folder and basename
-        m_slamSystem->save_frame_trajectory(trajFolder + "/" + trajFilename + "_frames_traj.txt", m_trajectoriesFormat);
         m_slamSystem->save_frame_trajectory(
-            trajFolder + "/" + trajFilename + "_keyframes_traj.txt",
+            trajectories_folder + "/" + trajectories_filename + "_frames_traj.txt",
             m_trajectoriesFormat
         );
+        m_slamSystem->save_frame_trajectory(
+            trajectories_folder + "/" + trajectories_filename + "_keyframes_traj.txt",
+            m_trajectoriesFormat
+        );
+        //cspell: enable
     }
     // If Openvslam is offline we cannot save trajectories anymore.
     else
@@ -869,7 +875,7 @@ void SOpenvslam::updatePointCloud()
 
         pointcloud->clear();
 
-        const auto dumplLock = pointcloud->lock();
+        const auto dumpLock = pointcloud->dump_lock();
 
         unsigned int i = 0;
         if(m_localMap)

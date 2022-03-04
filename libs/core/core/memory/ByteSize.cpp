@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ void ByteSize::setSize(double size, UnitType unit)
         (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
         || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB)
     );
-    m_size = static_cast<SizeType>(size * unit);
+    m_size = static_cast<SizeType>(size * static_cast<double>(unit));
 }
 
 //------------------------------------------------------------------------------
@@ -211,16 +211,16 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
 
 bool ByteSize::parseSize(const std::string& s, SizeType& size)
 {
-    using ::boost::phoenix::ref;
-    using ::boost::spirit::ascii::no_case;
-    using ::boost::spirit::ascii::space;
-    using ::boost::spirit::qi::as;
-    using ::boost::spirit::qi::_1;
-    using ::boost::spirit::qi::double_;
-    using ::boost::spirit::qi::eoi;
-    using ::boost::spirit::qi::phrase_parse;
-    using ::boost::spirit::qi::symbols;
-    using ::boost::spirit::qi::ulong_long;
+    using boost::phoenix::ref;
+    using boost::spirit::ascii::no_case;
+    using boost::spirit::ascii::space;
+    using boost::spirit::qi::as;
+    using boost::spirit::qi::_1;
+    using boost::spirit::qi::double_;
+    using boost::spirit::qi::eoi;
+    using boost::spirit::qi::phrase_parse;
+    using boost::spirit::qi::symbols;
+    using boost::spirit::qi::ulong_long;
 
     std::string::const_iterator first = s.begin();
     std::string::const_iterator last  = s.end();
@@ -280,7 +280,7 @@ bool ByteSize::parseSize(const std::string& s, SizeType& size)
             SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::BadCast, "Bad size : " << floatSize << " < 0");
         }
 
-        size = static_cast<ByteSize::SizeType>(floatSize * multiplier);
+        size = static_cast<ByteSize::SizeType>(floatSize * static_cast<double>(multiplier));
     }
     else
     {
@@ -308,7 +308,7 @@ std::string ByteSize::getSizeAsString(UnitType unit)
     }
     else
     {
-        sstr << (static_cast<double>(m_size) / unit);
+        sstr << (static_cast<double>(m_size) / static_cast<double>(unit));
     }
 
     sstr << " " << unitToString(unit);
@@ -320,9 +320,9 @@ std::string ByteSize::getSizeAsString(UnitType unit)
 
 std::string ByteSize::getHumanReadableSize(StandardType standard)
 {
-    static UnitType si[]           = {Bytes, KB, MB, GB, TB, PB};
-    static UnitType iec[]          = {Bytes, KiB, MiB, GiB, TiB, PiB};
-    const size_t sizeOfStandardSet = 5;
+    static UnitType si[]                = {Bytes, KB, MB, GB, TB, PB};
+    static UnitType iec[]               = {Bytes, KiB, MiB, GiB, TiB, PiB};
+    const std::size_t sizeOfStandardSet = 5;
 
     UnitType* unitSet = iec;
     if(standard == SI)
@@ -330,7 +330,7 @@ std::string ByteSize::getHumanReadableSize(StandardType standard)
         unitSet = si;
     }
 
-    size_t i;
+    std::size_t i;
     for(i = 1 ; i < sizeOfStandardSet ; ++i)
     {
         if(m_size < unitSet[i])

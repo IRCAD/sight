@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include "core/com/util/convert_function_type.hpp"
 #include "core/config.hpp"
 #include "core/thread/Worker.hpp"
+
 #include <core/BaseObject.hpp>
 #include <core/mt/types.hpp>
 #include <core/spyLog.hpp>
@@ -193,7 +194,7 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /**  @} */
 
     /// Returns number of connections.
-    size_t getNumberOfConnections() const
+    std::size_t numConnections() const
     {
         core::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();

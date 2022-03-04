@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "ui/base/dialog/LocationDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
-
 namespace sight::ui::base
 {
 
@@ -34,7 +32,7 @@ namespace dialog
 
 LocationDialog::LocationDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
             {
@@ -57,7 +55,7 @@ core::location::ILocation::sptr LocationDialog::show()
     typedef SPTR(core::location::ILocation) R;
 
     std::function<R()> func = std::bind(&ILocationDialog::show, m_implementation);
-    std::shared_future<R> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
+    std::shared_future<R> f = core::thread::getDefaultWorker()->postTask<R>(func);
 
     f.wait();
     return f.get();

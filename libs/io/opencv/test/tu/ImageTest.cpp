@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <io/opencv/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::ImageTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::ImageTest);
 
 namespace sight::io::opencv
 {
@@ -42,17 +42,17 @@ namespace ut
 template<typename T>
 static data::Image::sptr genImage(
     const std::vector<T>& _imageBuffer,
-    size_t _w,
-    size_t _h,
-    size_t _d,
+    std::size_t _w,
+    std::size_t _h,
+    std::size_t _d,
     std::uint8_t _numChannels
 )
 {
     data::Image::sptr image = data::Image::New();
-    const auto dumpLock     = image->lock();
+    const auto dumpLock     = image->dump_lock();
 
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
-    size_t imageDim = 1;
+    std::size_t imageDim = 1;
     if(_h > 0)
     {
         imageDim++;
@@ -76,10 +76,30 @@ static data::Image::sptr genImage(
         imageSize[2] = _d;
     }
 
-    image->setSize2(imageSize);
-    image->setType(imageType);
-    image->setNumberOfComponents(_numChannels);
-    image->resize();
+    data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
+    switch(_numChannels)
+    {
+        case 1:
+            format = data::Image::PixelFormat::GRAY_SCALE;
+            break;
+
+        case 2:
+            format = data::Image::PixelFormat::RG;
+            break;
+
+        case 3:
+            format = data::Image::PixelFormat::RGB;
+            break;
+
+        case 4:
+            format = data::Image::PixelFormat::RGBA;
+            break;
+
+        default:
+            SIGHT_FATAL("Unhandled OpenCV format");
+    }
+
+    image->resize(imageSize, imageType, format);
 
     auto dstBuffer                = image->begin<std::uint8_t>();
     const std::uint8_t* srcBuffer = reinterpret_cast<const std::uint8_t*>(_imageBuffer.data());
@@ -92,26 +112,26 @@ static data::Image::sptr genImage(
 
 template<typename T>
 static void compareImages(
-    const ::cv::Mat& _cvImage,
+    const cv::Mat& _cvImage,
     const data::Image::csptr& _image,
-    size_t _w,
-    size_t _h,
-    size_t _d,
+    std::size_t _w,
+    std::size_t _h,
+    std::size_t _d,
     std::uint8_t _numChannels
 )
 {
-    const auto dumpLock  = _image->lock();
+    const auto dumpLock  = _image->dump_lock();
     const T* imageBuffer = reinterpret_cast<const T*>(_image->getBuffer());
 
-    std::vector< ::cv::Mat> channels(_numChannels);
-    ::cv::split(_cvImage, channels);
+    std::vector<cv::Mat> channels(_numChannels);
+    cv::split(_cvImage, channels);
 
     if(_d > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->getNumberOfDimensions(), static_cast<size_t>(_cvImage.dims));
-        CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[2]));
-        CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[1]));
-        CPPUNIT_ASSERT_EQUAL(_d, static_cast<size_t>(_cvImage.size[0]));
+        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cvImage.dims));
+        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[2]));
+        CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cvImage.size[1]));
+        CPPUNIT_ASSERT_EQUAL(_d, static_cast<std::size_t>(_cvImage.size[0]));
         for(int k = 0 ; k < _cvImage.size[0] ; ++k)
         {
             for(int j = 0 ; j < _cvImage.size[1] ; ++j)
@@ -120,10 +140,12 @@ static void compareImages(
                 {
                     for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
                     {
-                        const size_t index = static_cast<size_t>(c
-                                                                 + static_cast<size_t>(i) * _numChannels
-                                                                 + static_cast<size_t>(j) * _numChannels * _w
-                                                                 + static_cast<size_t>(k) * _numChannels * _w * _h);
+                        const std::size_t index = static_cast<std::size_t>(c
+                                                                           + static_cast<std::size_t>(i) * _numChannels
+                                                                           + static_cast<std::size_t>(j)
+                                                                           * _numChannels * _w
+                                                                           + static_cast<std::size_t>(k)
+                                                                           * _numChannels * _w * _h);
                         CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(k, j, i));
                     }
                 }
@@ -132,9 +154,9 @@ static void compareImages(
     }
     else if(_h > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->getNumberOfDimensions(), static_cast<size_t>(_cvImage.dims));
-        CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[1]));
-        CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[0]));
+        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cvImage.dims));
+        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[1]));
+        CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cvImage.size[0]));
 
         for(int j = 0 ; j < _cvImage.size[0] ; ++j)
         {
@@ -142,9 +164,9 @@ static void compareImages(
             {
                 for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
                 {
-                    const size_t index = c
-                                         + static_cast<size_t>(i) * _numChannels
-                                         + static_cast<size_t>(j) * _numChannels * _w;
+                    const std::size_t index = c
+                                              + static_cast<std::size_t>(i) * _numChannels
+                                              + static_cast<std::size_t>(j) * _numChannels * _w;
                     CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(j, i));
                 }
             }
@@ -153,14 +175,14 @@ static void compareImages(
     else
     {
         CPPUNIT_ASSERT_EQUAL(2, _cvImage.dims);
-        CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[1]));
+        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[1]));
         CPPUNIT_ASSERT_EQUAL(1, _cvImage.size[0]);
 
         for(int i = 0 ; i < _cvImage.size[1] ; ++i)
         {
             for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
             {
-                const size_t index = static_cast<size_t>(c + i * _numChannels);
+                const std::size_t index = static_cast<std::size_t>(c + i * _numChannels);
                 CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(i));
             }
         }
@@ -170,15 +192,15 @@ static void compareImages(
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testMoveToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
+static void testMoveToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     data::Image::sptr image          = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::cv::Mat cvImage = io::opencv::Image::moveToCv(image);
+    cv::Mat cvImage = io::opencv::Image::moveToCv(image);
 
     // Since we share the same buffer, compare the pointers
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT_EQUAL(image->getBuffer(), static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
@@ -187,16 +209,16 @@ static void testMoveToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
+static void testCopyFromCV(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    const cv::Mat cvImage            = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     data::Image::sptr image = data::Image::New();
     io::opencv::Image::copyFromCv(*image.get(), cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
@@ -205,15 +227,15 @@ static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numCha
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
+static void testCopyToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     data::Image::csptr image         = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::cv::Mat cvImage = io::opencv::Image::copyToCv(image);
+    cv::Mat cvImage = io::opencv::Image::copyToCv(image);
 
     // Since we copy the buffer, ensure the pointers are different
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);

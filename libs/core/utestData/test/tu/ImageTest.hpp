@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include <data/Image.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,10 +52,6 @@ public:
     void generator2DTest();
     void deepCopyTest();
     void stressTest();
-
-private:
-
-    void stressTestWithType(core::tools::Type type, int nbTest);
 };
 
 } //namespace ut

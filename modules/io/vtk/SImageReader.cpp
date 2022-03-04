@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,8 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/location/SingleFolder.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Image.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
 #include <io/base/service/IReader.hpp>
@@ -85,7 +83,7 @@ void SImageReader::openLocationDialog()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(size_t i = 1 ; i < ext.size() ; i++)
+        for(std::size_t i = 1 ; i < ext.size() ; i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }
@@ -217,7 +215,7 @@ bool SImageReader::loadImage(
     bool ok = true;
 
     std::string ext = imgFile.extension().string();
-    ::boost::algorithm::to_lower(ext);
+    boost::algorithm::to_lower(ext);
 
     sight::io::base::reader::IObjectReader::sptr imageReader;
     if(ext == ".vtk")
@@ -239,7 +237,7 @@ bool SImageReader::loadImage(
         sight::io::vtk::BitmapImageReader::getAvailableExtensions(availableExtensions);
 
         /* If we find the current extensions in the available readers, we use it */
-        size_t i = 0;
+        std::size_t i = 0;
         for( ; i < availableExtensions.size() ; i++)
         {
             if(availableExtensions.at(i) == ext)

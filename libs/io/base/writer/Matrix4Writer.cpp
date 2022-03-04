@@ -29,7 +29,7 @@
 #include <iostream>
 #include <vector>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::Matrix4Writer);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::Matrix4Writer);
 
 namespace sight::io::base
 {
@@ -82,7 +82,7 @@ void Matrix4Writer::write()
 
 //------------------------------------------------------------------------------
 
-std::string Matrix4Writer::extension()
+std::string Matrix4Writer::extension() const
 {
     static std::string ext(".trf");
     return ext;

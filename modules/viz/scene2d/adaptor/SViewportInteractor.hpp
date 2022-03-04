@@ -47,7 +47,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SViewportInteractor : public sight::viz::scen
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewportInteractor, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SViewportInteractor, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SViewportInteractor() noexcept;
 

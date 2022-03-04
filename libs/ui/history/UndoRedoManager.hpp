@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,8 +45,8 @@ public:
      * @param[in] maxUndo the maximum number of commands stored by the manager (commands are dumped beyond this point)
      */
     UI_HISTORY_API UndoRedoManager(
-        size_t maxMemory   = std::numeric_limits<size_t>::max(),
-        size_t maxCommands = std::numeric_limits<size_t>::max()
+        std::size_t maxMemory   = std::numeric_limits<std::size_t>::max(),
+        std::size_t maxCommands = std::numeric_limits<std::size_t>::max()
     );
 
     /**
@@ -82,29 +82,29 @@ public:
     UI_HISTORY_API void clear();
 
     /// Get the number of enqueued commands.
-    UI_HISTORY_API size_t getCommandCount() const;
+    UI_HISTORY_API std::size_t getCommandCount() const;
 
     /// Set the maximum number of enqueued commands.
-    UI_HISTORY_API void setCommandCount(size_t cmdCount);
+    UI_HISTORY_API void setCommandCount(std::size_t cmdCount);
 
     /// Returns the amount of memory used by the history.
-    UI_HISTORY_API size_t getHistorySize() const;
+    UI_HISTORY_API std::size_t getHistorySize() const;
 
     /// Set the maximum amount of memory used by the history.
-    UI_HISTORY_API void setHistorySize(size_t histSize);
+    UI_HISTORY_API void setHistorySize(std::size_t histSize);
 
 private:
 
     typedef std::deque<ICommand::sptr> CommandHistoryType;
 
     /// Maximum amount of memory (in bytes) that can be used by the manager.
-    size_t m_maxMemory;
+    std::size_t m_maxMemory;
 
     /// Maximum number of commands stored in the history.
-    size_t m_maxCommands;
+    std::size_t m_maxCommands;
 
     /// Amount of memory currently in use by the command history.
-    size_t m_usedMemory;
+    std::size_t m_usedMemory;
 
     /// Double-ended queue of commands.
     CommandHistoryType m_commandQueue;

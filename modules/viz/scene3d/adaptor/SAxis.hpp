@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SAxis">
-        <config layer="default" transform="transformUID" length="30" label="true" />
+        <config layer="default" transform="transformUID" length="30" label="true" name="A1" />
     </service>
    @endcode
  *
@@ -69,6 +69,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
+ * - \b name (optional, string): displayed name of the axis (default empty).
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SAxis final :
     public sight::viz::scene3d::IAdaptor,
@@ -77,7 +78,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SAxis final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SAxis, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SAxis() noexcept;
@@ -117,7 +118,7 @@ private:
     bool m_enableLabel {true};
 
     /// Contains the origin of the axis.
-    ::Ogre::ManualObject* m_origin {nullptr};
+    Ogre::ManualObject* m_origin {nullptr};
 
     /// Enables the origin visibility.
     bool m_originVisibility {false};
@@ -126,34 +127,39 @@ private:
     std::string m_originColor {"#FFFFFF"};
 
     /// Contains the line along the x axis.
-    ::Ogre::ManualObject* m_xLine {nullptr};
+    Ogre::ManualObject* m_xLine {nullptr};
 
     /// Contains the line along the y axis.
-    ::Ogre::ManualObject* m_yLine {nullptr};
+    Ogre::ManualObject* m_yLine {nullptr};
 
     /// Contains the line along the z axis.
-    ::Ogre::ManualObject* m_zLine {nullptr};
+    Ogre::ManualObject* m_zLine {nullptr};
 
     /// Contains the arrow of the x axis.
-    ::Ogre::ManualObject* m_xCone {nullptr};
+    Ogre::ManualObject* m_xCone {nullptr};
 
     /// Contains the arrow of the y axis.
-    ::Ogre::ManualObject* m_yCone {nullptr};
+    Ogre::ManualObject* m_yCone {nullptr};
 
     /// Contains the arrow of the z axis.
-    ::Ogre::ManualObject* m_zCone {nullptr};
+    Ogre::ManualObject* m_zCone {nullptr};
 
     /// Contains the scene node where all of manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores labels attached to each axis.
     std::array<sight::viz::scene3d::Text*, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
 
+    sight::viz::scene3d::Text* m_axisNameTxt {nullptr};
+
     /// Defines labels font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
+
+    /// Axis name, default empty.
+    std::string m_axisName;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

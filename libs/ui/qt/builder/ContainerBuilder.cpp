@@ -31,8 +31,8 @@
 #include <QWidget>
 
 fwGuiRegisterMacro(
-    ::sight::ui::base::builder::ContainerBuilder,
-    ::sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY
+    sight::ui::base::builder::ContainerBuilder,
+    sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY
 );
 
 namespace sight::ui::base
@@ -43,7 +43,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ContainerBuilder::ContainerBuilder(ui::base::GuiBaseObject::Key key)
+ContainerBuilder::ContainerBuilder(ui::base::GuiBaseObject::Key)
 {
 }
 

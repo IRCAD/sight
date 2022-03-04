@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,13 +49,15 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
+ * - \b updateSlicesFromWorld(double, double, double): updates image slices indexes according to a 3d world point
+ * or landmark.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2D">
         <inout key="image" uid="..." />
-        <inout key="tf" uid="..." optional="true" />
-        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" visible="true" />
+        <inout key="tf" uid="..." />
+        <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
    </service>
    @endcode
  *
@@ -68,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
- * - \b tfalpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): allows to display the plane border.
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
@@ -76,10 +78,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final : public sight::viz::scene3d:
 {
 public:
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato2D, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato2D, sight::viz::scene3d::IAdaptor);
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_SCENE3D_API SNegato2D() noexcept;
@@ -151,6 +153,14 @@ private:
      */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
+    /**
+     * @brief SLOT: Update slices index to match x,y,z world coordinates
+     * @param _x world coordinates in double.
+     * @param _y world coordinates in double.
+     * @param _z world coordinates in double.
+     */
+    void updateSlicesFromWorld(double _x, double _y, double _z);
+
     /// Updates image slice index for the current fragment program.
     void updateShaderSliceIndexParameter();
 
@@ -158,10 +168,10 @@ private:
      * @brief Initializes the planar mesh on which the negato is displayed.
      * @param _spacing spacing of the input image.
      */
-    void createPlane(const ::Ogre::Vector3& _spacing);
+    void createPlane(const Ogre::Vector3& _spacing);
 
     /// Contains the Ogre texture which will be displayed on the negato.
-    ::Ogre::TexturePtr m_3DOgreTexture;
+    Ogre::TexturePtr m_3DOgreTexture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF;
@@ -173,7 +183,7 @@ private:
     bool m_enableAlpha {false};
 
     /// Contains the scene node allowing to move the entire negato.
-    ::Ogre::SceneNode* m_negatoSceneNode {nullptr};
+    Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
@@ -196,8 +206,8 @@ private:
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
 };
 
 //------------------------------------------------------------------------------

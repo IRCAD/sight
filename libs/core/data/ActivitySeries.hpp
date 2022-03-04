@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,34 +22,22 @@
 
 #pragma once
 
+#include "data/Composite.hpp"
 #include "data/config.hpp"
+#include "data/factory/new.hpp"
 #include "data/Series.hpp"
-#include <data/factory/new.hpp>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ActivitySeries))
 
 namespace sight::data
 {
-
-class Composite;
-
-}
-
-namespace sight::data
-{
-
-class Series;
 
 /**
  * @brief Holds activity information.
  */
-class DATA_CLASS_API ActivitySeries : public data::Series
+class DATA_CLASS_API ActivitySeries : public Series
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ActivitySeries, data::Series, data::factory::New<ActivitySeries>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ActivitySeries))
+    SIGHT_DECLARE_CLASS(ActivitySeries, Series, factory::New<ActivitySeries>);
 
     typedef std::string ConfigIdType;
 
@@ -57,7 +45,7 @@ public:
      * @brief Creates the activity series.
      * @param _key private construction key.
      */
-    DATA_API ActivitySeries(data::Object::Key _key);
+    DATA_API ActivitySeries(Object::Key _key);
 
     /// Destroys the activity series.
     DATA_API virtual ~ActivitySeries();
@@ -66,20 +54,16 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the activity container.
-    SPTR(data::Composite) getData() const;
+    Composite::sptr getData();
+
+    /// Gets the activity container.
+    Composite::csptr getData() const;
 
     /// Sets the activity container.
-    void setData(const SPTR(data::Composite)& _val);
+    void setData(const Composite::sptr& _val);
 
     /// Gets the activity configuration ID.
     const ConfigIdType& getActivityConfigId() const;
@@ -87,25 +71,45 @@ public:
     /// Sets the activity configuration ID.
     void setActivityConfigId(const ConfigIdType& _val);
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ActivitySeries& other) const noexcept;
+    DATA_API bool operator!=(const ActivitySeries& other) const noexcept;
+    /// @}
+
 protected:
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Defines the activity configuration ID.
     ConfigIdType m_activityConfigId;
 
     /// Stores the composite used to stores activities.
-    SPTR(data::Composite) m_data;
+    Composite::sptr m_data;
 };
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(data::Composite) ActivitySeries::getData() const
+inline Composite::sptr ActivitySeries::getData()
 {
     return m_data;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ActivitySeries::setData(const SPTR(data::Composite)& _val)
+inline Composite::csptr ActivitySeries::getData() const
+{
+    return m_data;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ActivitySeries::setData(const Composite::sptr& _val)
 {
     m_data = _val;
 }

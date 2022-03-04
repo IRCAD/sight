@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,6 +105,81 @@ void StudyTest::patientAgeTest()
     CPPUNIT_ASSERT(m_study);
     m_study->setPatientAge(age);
     CPPUNIT_ASSERT_EQUAL(age, m_study->getPatientAge());
+}
+
+//------------------------------------------------------------------------------
+
+void StudyTest::equalityTest()
+{
+    auto study1 = data::Study::New();
+    auto study2 = data::Study::New();
+
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setConsultingPhysicianName("1");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setConsultingPhysicianName(study1->getConsultingPhysicianName());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setDate("2");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setDate(study1->getDate());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setDescription("3");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setDescription(study1->getDescription());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setInstanceUID("4");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setInstanceUID(study1->getInstanceUID());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setPatientAge("5");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setPatientAge(study1->getPatientAge());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setPatientBodyMassIndex("6");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setPatientBodyMassIndex(study1->getPatientBodyMassIndex());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setPatientSize("7");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setPatientSize(study1->getPatientSize());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setPatientWeight("8");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setPatientWeight(study1->getPatientWeight());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setReferringPhysicianName("9");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setReferringPhysicianName(study1->getReferringPhysicianName());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setReferringPhysicianName("10");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setReferringPhysicianName(study1->getReferringPhysicianName());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setStudyID("11");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setStudyID(study1->getStudyID());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    study1->setTime("12");
+    CPPUNIT_ASSERT(*study1 != *study2);
+    study2->setTime(study1->getTime());
+    CPPUNIT_ASSERT(*study1 == *study2);
+
+    // Test also deepcopy, just for fun
+    auto Patient3 = data::Study::New();
+    Patient3->deepCopy(study1);
+    CPPUNIT_ASSERT(*study1 == *Patient3);
 }
 
 //------------------------------------------------------------------------------

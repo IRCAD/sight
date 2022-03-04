@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "core/config.hpp"
 #include "core/runtime/ConfigurationElementContainer.hpp"
 #include "core/runtime/RuntimeException.hpp"
+
 #include <core/base.hpp>
 
 #include <map>
@@ -42,7 +43,7 @@ typedef Module Bundle;
 
 /**
  * @brief   Defines the configuration element class.
- * @deprecated use ::boost::property::ptree instead.
+ * @deprecated use boost::property::ptree instead.
  */
 struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContainer,
                                              public std::enable_shared_from_this<ConfigurationElement>
@@ -242,9 +243,9 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
         AttributeContainer m_attributes;
 
         /**
-         * @brief   Assignemet operator.
+         * @brief   Assignment operator.
          *
-         * @remark  Assignement is forbidden for this class.
+         * @remark  Assignment is forbidden for this class.
          */
         void operator=(const ConfigurationElement&) noexcept;
 

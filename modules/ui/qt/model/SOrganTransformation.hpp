@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ protected:
     MODULE_UI_QT_API void starting() override;
     MODULE_UI_QT_API void stopping() override;
     MODULE_UI_QT_API void updating() override;
-    MODULE_UI_QT_API void info(::std::ostream& stream) override;
+    MODULE_UI_QT_API void info(std::ostream& stream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -111,15 +111,15 @@ private Q_SLOTS:
 private:
 
     void refresh();
-    void notitfyTransformationMatrix(data::Matrix4::sptr aTransMat);
+    void notifyTransformationMatrix(data::Matrix4::sptr aTransMat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
     void addMeshTransform();
 
     // ReconstructionMapType
-    typedef ::std::map< ::std::string, data::Reconstruction::sptr> ReconstructionMapType;
-    typedef ::std::map< ::std::string, data::Matrix4::sptr> InnerMatMappingType;
-    typedef ::std::map< ::std::string, InnerMatMappingType> SaveMappingType;
+    typedef std::map<std::string, data::Reconstruction::sptr> ReconstructionMapType;
+    typedef std::map<std::string, data::Matrix4::sptr> InnerMatMappingType;
+    typedef std::map<std::string, InnerMatMappingType> SaveMappingType;
 
     ReconstructionMapType m_reconstructionMap;
     QPointer<QPushButton> m_saveButton;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,12 +85,6 @@ void PointListTest::getterTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0], 10e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1], 10e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2], 10e-6);
-
-    const data::PointList::PointListContainer& ccontainer = pl1->getPoints();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], ccontainer[0]->getCoord()[0], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], ccontainer[0]->getCoord()[1], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], ccontainer[0]->getCoord()[2], 10e-6);
 }
 
 //------------------------------------------------------------------------------
@@ -148,20 +142,20 @@ void PointListTest::pushTest()
 
 void PointListTest::removeTest()
 {
-    const size_t nbPoints    = 42;
-    data::PointList::sptr pl = data::PointList::New();
+    const std::size_t nbPoints = 42;
+    data::PointList::sptr pl   = data::PointList::New();
 
     // Remove first
     {
         // Build a list
-        for(size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < nbPoints ; ++i)
         {
             const auto p = data::Point::New(.0f, .0f, .0f);
             pl->pushBack(p);
         }
 
         // remove the first
-        size_t size = nbPoints;
+        std::size_t size = nbPoints;
         while(pl->getPoints().size())
         {
             pl->remove(0);
@@ -169,43 +163,43 @@ void PointListTest::removeTest()
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), pl->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), pl->getPoints().size());
 
     // Remove last
     {
         // Build a list
-        for(size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < nbPoints ; ++i)
         {
             const auto p = data::Point::New(.0f, .0f, .0f);
             pl->pushBack(p);
         }
 
         // remove the last
-        size_t size = nbPoints;
+        std::size_t size = nbPoints;
         while(pl->getPoints().size())
         {
-            const size_t index = pl->getPoints().size() - 1;
+            const std::size_t index = pl->getPoints().size() - 1;
             pl->remove(index);
             CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), pl->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), pl->getPoints().size());
 
     // Check that the correct one is removed
     {
         // Build a list
-        for(size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < nbPoints ; ++i)
         {
             const auto p = data::Point::New(static_cast<float>(i), .0f, .0f);
             pl->pushBack(p);
         }
 
-        size_t size = nbPoints;
+        std::size_t size = nbPoints;
         while(pl->getPoints().size())
         {
-            const size_t index = size / 2;
-            const auto ref     = pl->getPoints()[index];
+            const std::size_t index = size / 2;
+            const auto ref          = pl->getPoints()[index];
             pl->remove(index);
             CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
             for(const auto& p : pl->getPoints())
@@ -220,15 +214,15 @@ void PointListTest::removeTest()
 
 void PointListTest::clearTest()
 {
-    const size_t nbPoints    = 42;
-    data::PointList::sptr pl = data::PointList::New();
+    const std::size_t nbPoints = 42;
+    data::PointList::sptr pl   = data::PointList::New();
 
     CPPUNIT_ASSERT(pl->getPoints().size() == 0);
     pl->clear();
     CPPUNIT_ASSERT(pl->getPoints().size() == 0);
 
     // Build a list
-    for(size_t i = 0 ; i < nbPoints ; i++)
+    for(std::size_t i = 0 ; i < nbPoints ; i++)
     {
         const auto p = data::Point::New(.0f, .0f, .0f);
         pl->pushBack(p);

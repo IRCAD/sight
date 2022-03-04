@@ -1,6 +1,6 @@
 //import related modules
 import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.15
 
 //window containing the application
 ApplicationWindow {

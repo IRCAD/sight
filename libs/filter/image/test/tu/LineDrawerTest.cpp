@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <core/tools/Type.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
@@ -34,7 +33,7 @@
 #include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::LineDrawerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::LineDrawerTest);
 
 namespace sight::filter::image
 {
@@ -65,11 +64,8 @@ void LineDrawerTest::circleTest()
         const core::tools::Type TYPE       = core::tools::Type::s_INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{20, 20, 20}};
-
-        const data::helper::MedicalImage::Orientation ORIENTATION =
-            data::helper::MedicalImage::Z_AXIS;
-        const double THICKNESS   = 0.0001;
-        const std::int16_t VALUE = 152;
+        const double THICKNESS                                 = 0.0001;
+        const std::int16_t VALUE                               = 152;
 
         data::Image::sptr image = data::Image::New();
 
@@ -82,17 +78,23 @@ void LineDrawerTest::circleTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
-        ImageDiff diff = drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
+        ImageDiff diff = drawer.draw(
+            filter::image::BresenhamLine::Orientation::Z_AXIS,
+            POINT,
+            POINT,
+            val.get(),
+            THICKNESS
+        );
 
         const std::int16_t resValue = image->at<std::int16_t>(POINT[0], POINT[1], POINT[2]);
 
         CPPUNIT_ASSERT_EQUAL(VALUE, resValue);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), diff.numElements());
         data::Image::IndexType index = (POINT[0] + POINT[1] * SIZE[0] + POINT[2] * SIZE[0] * SIZE[1]);
         CPPUNIT_ASSERT_EQUAL(index, diff.getElement(0).m_index);
         CPPUNIT_ASSERT_EQUAL(std::int16_t(0), *reinterpret_cast<std::int16_t*>(diff.getElement(0).m_oldValue));
@@ -107,8 +109,6 @@ void LineDrawerTest::circleTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{20, 20, 20}};
 
-        const data::helper::MedicalImage::Orientation ORIENTATION =
-            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 5;
         const std::int16_t VALUE = 152;
 
@@ -122,13 +122,13 @@ void LineDrawerTest::circleTest()
             TYPE,
             data::Image::PixelFormat::GRAY_SCALE
         );
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
-        drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
+        drawer.draw(filter::image::BresenhamLine::Orientation::Z_AXIS, POINT, POINT, val.get(), THICKNESS);
 
         {
             const std::int16_t resValue = image->at<std::int16_t>(POINT[0], POINT[1], POINT[2]);
@@ -250,8 +250,6 @@ void LineDrawerTest::ellipseTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{50, 50, 50}};
 
-        const data::helper::MedicalImage::Orientation ORIENTATION =
-            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 10;
         const std::int16_t VALUE = 152;
 
@@ -266,12 +264,18 @@ void LineDrawerTest::ellipseTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
-        ImageDiff diff = drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
+        ImageDiff diff = drawer.draw(
+            filter::image::BresenhamLine::Orientation::Z_AXIS,
+            POINT,
+            POINT,
+            val.get(),
+            THICKNESS
+        );
 
         {
             const std::int16_t resValue = image->at<std::int16_t>(POINT[0], POINT[1], POINT[2]);
@@ -286,11 +290,11 @@ void LineDrawerTest::ellipseTest()
                                          static_cast<double>(POINT[2])
             };
 
-            size_t diffIndex = 0;
+            std::size_t diffIndex = 0;
 
-            for(size_t j = 0 ; j < SIZE[1] ; ++j)
+            for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
             {
-                for(size_t i = 0 ; i < SIZE[0] ; ++i)
+                for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
                 {
                     const std::int16_t resValue = image->at<std::int16_t>(i, j, POINT[2]);
 
@@ -306,7 +310,7 @@ void LineDrawerTest::ellipseTest()
                             VALUE,
                             resValue
                         );
-                        CPPUNIT_ASSERT(diffIndex != diff.getNumberOfElements());
+                        CPPUNIT_ASSERT(diffIndex != diff.numElements());
                         const data::Image::IndexType index = i + j * SIZE[0] + POINT[2] * SIZE[0] * SIZE[1];
 
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -354,8 +358,6 @@ void LineDrawerTest::borderTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{45, 3, 20}};
 
-        const data::helper::MedicalImage::Orientation ORIENTATION =
-            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 15;
         const std::int16_t VALUE = 1952;
 
@@ -370,12 +372,12 @@ void LineDrawerTest::borderTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
-        drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
+        drawer.draw(filter::image::BresenhamLine::Orientation::Z_AXIS, POINT, POINT, val.get(), THICKNESS);
 
         {
             const std::int16_t resValue = image->at<std::int16_t>(POINT[0], POINT[1], POINT[2]);
@@ -389,9 +391,9 @@ void LineDrawerTest::borderTest()
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
-            for(size_t i = 0 ; i < SIZE[0] ; ++i)
+            for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
             {
-                for(size_t j = 0 ; j < SIZE[1] ; ++j)
+                for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
                 {
                     const std::int16_t resValue = image->at<std::int16_t>(i, j, POINT[2]);
 
@@ -433,7 +435,7 @@ void LineDrawerTest::roiTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{45, 45, 40}};
 
-        const data::helper::MedicalImage::Orientation ORIENTATION =
+        const data::helper::MedicalImage::orientation_t ORIENTATION =
             data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 15;
         const std::int16_t VALUE = 1952;
@@ -458,7 +460,7 @@ void LineDrawerTest::roiTest()
             data::Image::PixelFormat::GRAY_SCALE
         );
 
-        const auto roiDumpLock = roiImage->lock();
+        const auto roiDumpLock = roiImage->dump_lock();
 
         // draw a cube in ROI
         const data::Image::Size ROI_BEGIN = {{25, 25, 25}};
@@ -466,23 +468,23 @@ void LineDrawerTest::roiTest()
         const std::int16_t ROI_VALUE      = 1;
 
         SPTR(data::Image::BufferType) roiVal =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(roiImage, ROI_VALUE);
+            data::helper::MedicalImage::getPixelInImageSpace(roiImage, ROI_VALUE);
 
-        for(size_t i = ROI_BEGIN[0] ; i < ROI_END[0] ; ++i)
+        for(std::size_t i = ROI_BEGIN[0] ; i < ROI_END[0] ; ++i)
         {
-            for(size_t j = ROI_BEGIN[1] ; j < ROI_END[1] ; ++j)
+            for(std::size_t j = ROI_BEGIN[1] ; j < ROI_END[1] ; ++j)
             {
-                for(size_t k = ROI_BEGIN[2] ; k < ROI_END[2] ; ++k)
+                for(std::size_t k = ROI_BEGIN[2] ; k < ROI_END[2] ; ++k)
                 {
                     data::Image::IndexType index = i + j * SIZE[0] + k * SIZE[0] * SIZE[1];
-                    roiImage->setPixelBuffer(index, roiVal.get());
+                    roiImage->setPixel(index, roiVal.get());
                 }
             }
         }
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::helper::MedicalImage::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, roiImage);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -499,9 +501,9 @@ void LineDrawerTest::roiTest()
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
-            for(size_t i = 0 ; i < SIZE[0] ; ++i)
+            for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
             {
-                for(size_t j = 0 ; j < SIZE[1] ; ++j)
+                for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
                 {
                     const std::int16_t resValue = image->at<std::int16_t>(i, j, POINT[2]);
 

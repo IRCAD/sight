@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include <io/opencv/Image.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -42,12 +42,13 @@
 namespace sight::module::geometry::vision::charuco
 {
 
-const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT             = "checkPoints";
-const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT            = "detectPoints";
-const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT              = "checkPoints";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT             = "detectPoints";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCO_BOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
-const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DETECTED_SIG     = "charucoBoardDetected";
-const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG =
+const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCO_BOARD_DETECTED_SIG =
+    "charucoBoardDetected";
+const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCO_BOARD_NOT_DETECTED_SIG =
     "charucoBoardNotDetected";
 
 // ----------------------------------------------------------------------------
@@ -59,12 +60,12 @@ SCharucoBoardDetector::SCharucoBoardDetector() noexcept :
     m_lastTimestamp(0),
     m_markerSizeInBits(6)
 {
-    m_sigCharucoBoardDetected    = newSignal<CharucoBoardDetectedSignalType>(s_CHARUCOBOARD_DETECTED_SIG);
-    m_sigCharucoBoardNotDetected = newSignal<CharucoBoardNotDetectedSignalType>(s_CHARUCOBOARD_NOT_DETECTED_SIG);
+    m_sigCharucoBoardDetected    = newSignal<CharucoBoardDetectedSignalType>(s_CHARUCO_BOARD_DETECTED_SIG);
+    m_sigCharucoBoardNotDetected = newSignal<CharucoBoardNotDetectedSignalType>(s_CHARUCO_BOARD_NOT_DETECTED_SIG);
 
     newSlot(s_CHECK_POINTS_SLOT, &SCharucoBoardDetector::checkPoints, this);
     newSlot(s_DETECT_POINTS_SLOT, &SCharucoBoardDetector::detectPoints, this);
-    newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SCharucoBoardDetector::updateCharucoBoardSize, this);
+    newSlot(s_UPDATE_CHARUCO_BOARD_SIZE_SLOT, &SCharucoBoardDetector::updateCharucoBoardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -122,8 +123,8 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
         core::HiResClock::HiResClockType lastTimestamp;
         lastTimestamp = std::numeric_limits<core::HiResClock::HiResClockType>::max();
 
-        const size_t numTimeline  = m_timeline.size();
-        const size_t numDetection = m_detection.size();
+        const std::size_t numTimeline  = m_timeline.size();
+        const std::size_t numDetection = m_detection.size();
 
         SIGHT_ERROR_IF(
             "Different number of input timelines and detected point lists.",
@@ -133,7 +134,7 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
         const bool detection = (numDetection > 0) && (numTimeline == numDetection);
 
         // Grab timeline objects
-        for(size_t i = 0 ; i < numTimeline ; ++i)
+        for(std::size_t i = 0 ; i < numTimeline ; ++i)
         {
             auto frameTL = m_timeline[i].lock();
             lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
@@ -141,7 +142,7 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
 
         m_isDetected = true;
 
-        for(size_t i = 0 ; i < numTimeline ; ++i)
+        for(std::size_t i = 0 ; i < numTimeline ; ++i)
         {
             auto tl = m_timeline[i].lock();
 
@@ -151,7 +152,12 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
                 auto tlDetection = m_detection[i].lock();
                 if(!tlDetection->isAllocated())
                 {
-                    tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), core::tools::Type::s_UINT8, 4);
+                    tlDetection->initPoolSize(
+                        tl->getWidth(),
+                        tl->getHeight(),
+                        core::tools::Type::s_UINT8,
+                        data::FrameTL::PixelFormat::RGBA
+                    );
                 }
 
                 charucoBoardPoints = this->detectCharucoBoard(tl.get_shared(), lastTimestamp, tlDetection.get_shared());
@@ -189,8 +195,8 @@ void SCharucoBoardDetector::detectPoints()
 {
     if(m_isDetected)
     {
-        const size_t numInfo = m_calInfo.size();
-        for(size_t i = 0 ; i < numInfo ; ++i)
+        const std::size_t numInfo = m_calInfo.size();
+        for(std::size_t i = 0 ; i < numInfo ; ++i)
         {
             auto calInfo                  = m_calInfo[i].lock();
             const auto frameTL            = m_timeline[i].lock();
@@ -212,34 +218,18 @@ void SCharucoBoardDetector::detectPoints()
 
 void SCharucoBoardDetector::updateCharucoBoardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
+        ui::base::Preferences preferences;
+        m_width            = preferences.get(m_widthKey, m_width);
+        m_height           = preferences.get(m_heightKey, m_height);
+        m_squareSize       = preferences.get(m_squareSizeKey, m_squareSize);
+        m_markerSize       = preferences.get(m_markerSizeKey, m_markerSize);
+        m_markerSizeInBits = preferences.get(m_markerSizeInBitsKey, m_markerSizeInBits);
     }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
+    catch(const ui::base::PreferencesDisabled&)
     {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
-    {
-        m_squareSize = std::stof(squareSizeStr);
-    }
-
-    const std::string markerSizeStr = ui::base::preferences::getPreference(m_markerSizeKey);
-    if(!markerSizeStr.empty())
-    {
-        m_markerSize = std::stof(markerSizeStr);
-    }
-
-    const std::string markerSizeInBitsStr = ui::base::preferences::getPreference(m_markerSizeInBitsKey);
-    if(!markerSizeInBitsStr.empty())
-    {
-        m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
+        // Nothing to do..
     }
 
     try
@@ -259,7 +249,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
         return;
     }
 
-    m_board = ::cv::aruco::CharucoBoard::create(
+    m_board = cv::aruco::CharucoBoard::create(
         static_cast<int>(m_width),
         static_cast<int>(m_height),
         m_squareSize,
@@ -285,7 +275,7 @@ data::Image::sptr SCharucoBoardDetector::createImage(
         data::Image::PixelFormat format = data::Image::PixelFormat::UNDEFINED;
 
         // FIXME: Currently, FrameTL does not contain Pixel format, so we assume that format is GrayScale, RGB or RGBA.
-        switch(tl.getNumberOfComponents())
+        switch(tl.numComponents())
         {
             case 1:
                 format = data::Image::PixelFormat::GRAY_SCALE;
@@ -306,13 +296,13 @@ data::Image::sptr SCharucoBoardDetector::createImage(
         const data::Image::Size size = {tl.getWidth(), tl.getHeight(), 1};
         image->resize(size, tl.getType(), format);
         const data::Image::Origin origin = {0., 0., 0.};
-        image->setOrigin2(origin);
+        image->setOrigin(origin);
         const data::Image::Spacing spacing = {1., 1., 1.};
-        image->setSpacing2(spacing);
+        image->setSpacing(spacing);
         image->setWindowWidth(1);
         image->setWindowCenter(0);
 
-        const auto dumpLock = image->lock();
+        const auto dumpLock = image->dump_lock();
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
         auto itr                      = image->begin<std::uint8_t>();
@@ -342,34 +332,34 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
 
         std::uint8_t* frameBuff = const_cast<std::uint8_t*>(&buffer->getElement(0));
 
-        ::cv::Mat grayImg;
-        const ::cv::Mat img = io::opencv::FrameTL::moveToCv(tl, frameBuff);
-        if(tl->getNumberOfComponents() == 1)
+        cv::Mat grayImg;
+        const cv::Mat img = io::opencv::FrameTL::moveToCv(tl, frameBuff);
+        if(tl->numComponents() == 1)
         {
             grayImg = img;
         }
-        else if(tl->getNumberOfComponents() == 3)
+        else if(tl->numComponents() == 3)
         {
-            ::cv::cvtColor(img, grayImg, ::cv::COLOR_RGB2GRAY);
+            cv::cvtColor(img, grayImg, cv::COLOR_RGB2GRAY);
         }
-        else if(tl->getNumberOfComponents() == 4)
+        else if(tl->numComponents() == 4)
         {
-            ::cv::cvtColor(img, grayImg, ::cv::COLOR_RGBA2GRAY);
+            cv::cvtColor(img, grayImg, cv::COLOR_RGBA2GRAY);
         }
         else
         {
-            SIGHT_FATAL("Wrong type of image (nb of components = " << tl->getNumberOfComponents() << ").");
+            SIGHT_FATAL("Wrong type of image (nb of components = " << tl->numComponents() << ").");
         }
 
-        std::vector<std::vector< ::cv::Point2f> > arucoCorners;
+        std::vector<std::vector<cv::Point2f> > arucoCorners;
         std::vector<int> arucoIds;
 
-        ::cv::aruco::detectMarkers(grayImg, m_dictionary, arucoCorners, arucoIds);
+        cv::aruco::detectMarkers(grayImg, m_dictionary, arucoCorners, arucoIds);
 
         if(arucoIds.size())
         {
-            ::cv::Mat chessBoardCorners, chessBoardIds;
-            ::cv::aruco::interpolateCornersCharuco(
+            cv::Mat chessBoardCorners, chessBoardIds;
+            cv::aruco::interpolateCornersCharuco(
                 arucoCorners,
                 arucoIds,
                 grayImg,
@@ -380,15 +370,15 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
 
             pointlist = data::PointList::New();
             data::PointList::PointListContainer& points = pointlist->getPoints();
-            points.reserve(static_cast<size_t>(chessBoardCorners.size[0]));
+            points.reserve(static_cast<std::size_t>(chessBoardCorners.size[0]));
 
             for(int i = 0 ; i < chessBoardCorners.size[0] ; ++i)
             {
                 data::Point::sptr point =
                     data::Point::New(
-                        (chessBoardCorners.at< ::cv::Point2f>(::cv::Point(0, i))).x,
-                        (chessBoardCorners.at< ::cv::Point2f>(::cv::Point(0, i))).y,
-                        (static_cast<float>(chessBoardIds.at<int>(::cv::Point(0, i))))
+                        (chessBoardCorners.at<cv::Point2f>(cv::Point(0, i))).x,
+                        (chessBoardCorners.at<cv::Point2f>(cv::Point(0, i))).y,
+                        (static_cast<float>(chessBoardIds.at<int>(cv::Point(0, i))))
                     );
                 points.push_back(point);
             }
@@ -397,12 +387,12 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
             {
                 SPTR(data::FrameTL::BufferType) detectionBuffer = tlDetection->createBuffer(timestamp);
                 std::uint8_t* frameDetectionBuffer = detectionBuffer->addElement(0);
-                ::cv::Mat frameDetectionCV         = io::opencv::FrameTL::moveToCv(tlDetection, frameDetectionBuffer);
+                cv::Mat frameDetectionCV           = io::opencv::FrameTL::moveToCv(tlDetection, frameDetectionBuffer);
 
-                ::cv::Mat imgCpy;
+                cv::Mat imgCpy;
                 img.copyTo(imgCpy);
 
-                ::cv::aruco::drawDetectedCornersCharuco(imgCpy, chessBoardCorners, chessBoardIds);
+                cv::aruco::drawDetectedCornersCharuco(imgCpy, chessBoardCorners, chessBoardIds);
 
                 imgCpy.copyTo(frameDetectionCV);
 

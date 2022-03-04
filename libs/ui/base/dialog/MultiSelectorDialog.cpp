@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/MultiSelectorDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
 
 namespace sight::ui::base
 {
@@ -34,7 +34,7 @@ namespace dialog
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [this]
             {
@@ -48,7 +48,7 @@ MultiSelectorDialog::MultiSelectorDialog()
 
 void MultiSelectorDialog::setTitle(std::string title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setTitle(title);
@@ -61,7 +61,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     typedef IMultiSelectorDialog::Selections R;
     std::function<R()> func = std::bind(&IMultiSelectorDialog::show, m_implementation);
-    std::shared_future<R> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
+    std::shared_future<R> f = core::thread::getDefaultWorker()->postTask<R>(func);
 
     f.wait();
     return f.get();
@@ -71,7 +71,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
 void MultiSelectorDialog::setSelections(Selections _selections)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setSelections(_selections);
@@ -82,7 +82,7 @@ void MultiSelectorDialog::setSelections(Selections _selections)
 
 void MultiSelectorDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setMessage(msg);

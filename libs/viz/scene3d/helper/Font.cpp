@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,30 +43,30 @@ namespace helper
 
 Ogre::FontPtr Font::getFont(
     const std::string& _trueTypeFileName,
-    const size_t _size,
+    const std::size_t _size,
     const std::uint32_t _trueTypeResolution
 )
 {
     // Search for ttf extension in the file name.
-    const size_t extPos = _trueTypeFileName.rfind(".ttf");
+    const std::size_t extPos = _trueTypeFileName.rfind(".ttf");
 
     SIGHT_ASSERT(
         _trueTypeFileName + "doesn't seem to be a truetype font (*.ttf) file.",
         _trueTypeFileName.size() > 4 && extPos == _trueTypeFileName.size() - 4
     );
 
-    ::Ogre::FontManager& fontManager = ::Ogre::FontManager::getSingleton();
+    Ogre::FontManager& fontManager = Ogre::FontManager::getSingleton();
 
     const std::string fontName = _trueTypeFileName.substr(0, extPos) + std::to_string(_size)
                                  + "_dpi" + std::to_string(_trueTypeResolution);
 
-    ::Ogre::FontPtr font = fontManager.getByName(fontName, RESOURCE_GROUP);
+    Ogre::FontPtr font = fontManager.getByName(fontName, RESOURCE_GROUP);
 
     if(!font)
     {
         font = fontManager.create(fontName, viz::scene3d::RESOURCE_GROUP);
-        font->setType(::Ogre::FontType::FT_TRUETYPE);
-        font->setTrueTypeSize(static_cast< ::Ogre::Real>(_size));
+        font->setType(Ogre::FontType::FT_TRUETYPE);
+        font->setTrueTypeSize(static_cast<Ogre::Real>(_size));
         font->setTrueTypeResolution(_trueTypeResolution);
         font->setAntialiasColour(false);
         font->setSource(_trueTypeFileName);
@@ -80,8 +80,8 @@ Ogre::FontPtr Font::getFont(
 
 Ogre::TexturePtr Font::getFontMap(const std::string& _fontName)
 {
-    ::Ogre::TexturePtr fontMap =
-        ::Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture", RESOURCE_GROUP);
+    Ogre::TexturePtr fontMap =
+        Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture", RESOURCE_GROUP);
 
     SIGHT_ASSERT("Could not find a font map for " + _fontName + ". Please make sure that the font is loaded.", fontMap);
 
@@ -92,9 +92,9 @@ Ogre::TexturePtr Font::getFontMap(const std::string& _fontName)
 
 Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
 {
-    const std::string mtlName   = _fontName + "TextMtl";
-    ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
-    ::Ogre::MaterialPtr fontMtl = mm.getByName(mtlName, RESOURCE_GROUP);
+    const std::string mtlName = _fontName + "TextMtl";
+    Ogre::MaterialManager& mm = Ogre::MaterialManager::getSingleton();
+    Ogre::MaterialPtr fontMtl = mm.getByName(mtlName, RESOURCE_GROUP);
 
     if(!fontMtl)
     {
@@ -107,13 +107,13 @@ Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
         fontMtl = baseTextMtl->clone(mtlName);
         fontMtl->load(false);
 
-        ::Ogre::TexturePtr fontMap = getFontMap(_fontName);
+        Ogre::TexturePtr fontMap = getFontMap(_fontName);
 
-        ::Ogre::Technique* fontRenderTechnique = fontMtl->getTechnique(0);
+        Ogre::Technique* fontRenderTechnique = fontMtl->getTechnique(0);
         SIGHT_ASSERT("This font's material has no technique.", fontRenderTechnique);
-        ::Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
+        Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
         SIGHT_ASSERT("This font's material has no pass.", fontRenderPass);
-        ::Ogre::TextureUnitState* fontMapTextUnit = fontRenderPass->getTextureUnitState("fontMap");
+        Ogre::TextureUnitState* fontMapTextUnit = fontRenderPass->getTextureUnitState("fontMap");
         SIGHT_ASSERT("This font's pass has no texture unit named 'fontMap'.", fontRenderPass);
         fontMapTextUnit->setTexture(fontMap);
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,6 +55,7 @@ void SThreshold::starting()
 
 void SThreshold::stopping()
 {
+    m_target.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -101,10 +102,12 @@ struct ThresholdFilter
         const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
         data::Image::csptr imageIn     = param.imageIn;
         data::Image::sptr imageOut     = param.imageOut;
-        SIGHT_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3);
+        SIGHT_ASSERT("Sorry, image must be 3D", imageIn->numDimensions() == 3);
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
-        imageOut->resize();                 // Allocate the image buffer
+        imageOut->resize(imageOut->getSize(), imageOut->getType(), imageOut->getPixelFormat());
+        const auto lockin  = imageIn->dump_lock();
+        const auto lockOut = imageOut->dump_lock();
 
         // Get iterators on image buffers
         auto it1          = imageIn->begin<PIXELTYPE>();
@@ -114,7 +117,7 @@ struct ThresholdFilter
 
         const PIXELTYPE maxValue = std::numeric_limits<PIXELTYPE>::max();
 
-        // Fill the target buffer considering the thresholding
+        // Fill the target buffer considering the threshold
         for( ; it1 != it1End && it2 != it2End ; ++it1, ++it2)
         {
             *it2 = (*it1 < thresholdValue) ? 0 : maxValue;
@@ -131,7 +134,7 @@ void SThreshold::updating()
     // retrieve the input object
     auto input = m_source.lock();
 
-    // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
+    // try to dynamic cast to an Image and an ImageSeries to know which type of data we use
     data::ImageSeries::csptr imageSeriesSrc = data::ImageSeries::dynamicConstCast(input.get_shared());
     data::Image::csptr imageSrc             = data::Image::dynamicConstCast(input.get_shared());
     data::Object::sptr output;
@@ -172,17 +175,18 @@ void SThreshold::updating()
      * It invokes the template functor ThresholdFilter using the image type.
      * - template parameters:
      *   - core::tools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
-     *     supportted by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *     supported by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
      *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
      *   - ThresholdFilter: functor struct or class
      * - parameters:
      *   - type: core::tools::Type of the image
      *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
      */
+
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ThresholdFilter>::invoke(type, param);
 
     // register the output image to be accesible by the other service from the XML configuration
-    this->setOutput(s_IMAGE_OUT, output);
+    m_target = output;
 }
 
 //-----------------------------------------------------------------------------

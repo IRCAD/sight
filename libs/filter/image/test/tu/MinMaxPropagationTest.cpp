@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,14 @@
 
 #include "MinMaxPropagationTest.hpp"
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/helper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/MinMaxPropagation.hpp>
 
 #include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::MinMaxPropagationTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MinMaxPropagationTest);
 
 namespace sight::filter::image
 {
@@ -40,9 +39,9 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-static size_t computeOffset(const size_t x, const size_t y, const size_t z, data::Image::sptr image)
+static std::size_t computeOffset(const std::size_t x, const std::size_t y, const std::size_t z, data::Image::sptr image)
 {
-    const data::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize();
     return z * size[0] * size[1] + y * size[0] + x;
 }
 
@@ -50,18 +49,18 @@ static size_t computeOffset(const size_t x, const size_t y, const size_t z, data
 
 static void drawCube(data::Image::sptr image, const std::uint8_t value)
 {
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, value);
+        data::helper::MedicalImage::getPixelInImageSpace(image, value);
 
-    for(size_t x = 10 ; x < 20 ; ++x)
+    for(std::size_t x = 10 ; x < 20 ; ++x)
     {
-        for(size_t y = 10 ; y < 20 ; ++y)
+        for(std::size_t y = 10 ; y < 20 ; ++y)
         {
-            for(size_t z = 10 ; z < 20 ; ++z)
+            for(std::size_t z = 10 ; z < 20 ; ++z)
             {
-                image->setPixelBuffer(computeOffset(x, y, z, image), bufferValue.get());
+                image->setPixel(computeOffset(x, y, z, image), bufferValue.get());
             }
         }
     }
@@ -106,15 +105,15 @@ void MinMaxPropagationTest::minPropagTest()
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    const auto dumpLockIn  = imageIn->lock();
-    const auto dumpLockOut = imageOut->lock();
+    const auto dumpLockIn  = imageIn->dump_lock();
+    const auto dumpLockOut = imageOut->dump_lock();
 
     // Check that the image is not changed because the propagated value is the same
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
@@ -128,11 +127,11 @@ void MinMaxPropagationTest::minPropagTest()
     value = 3;
 
     bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
@@ -153,11 +152,11 @@ void MinMaxPropagationTest::minPropagTest()
     value = 4;
 
     bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
 
@@ -192,15 +191,15 @@ void MinMaxPropagationTest::maxPropagTest()
     std::uint8_t value = 3;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
-    const auto dumpLockIn  = imageIn->lock();
-    const auto dumpLockOut = imageOut->lock();
+    const auto dumpLockIn  = imageIn->dump_lock();
+    const auto dumpLockOut = imageOut->dump_lock();
 
     // Check that the entire image is completely filled with propagated value
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(3), valueOut);
@@ -210,12 +209,12 @@ void MinMaxPropagationTest::maxPropagTest()
     seed  = {{{0, 0, 0}}};
     value = 2;
 
-    bufferValue = data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+    bufferValue = data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
     // Check that the entire image is completely filled with propagated value
-    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
+    for(std::size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
@@ -256,11 +255,11 @@ void MinMaxPropagationTest::radiusTest()
     std::uint8_t value = 3;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 3.5, true, MinMaxPropagation::MIN);
 
-    const auto dumpLockOut = imageOut->lock();
+    const auto dumpLockOut = imageOut->dump_lock();
 
     // Check the voxel at 16,16,12
     std::uint8_t valueOut = imageOut->at<std::uint8_t>(16, 16, 12);

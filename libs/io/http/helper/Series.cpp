@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,7 +91,7 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     // ==================================
     // Number of instances
     // ==================================
-    series->setNumberOfInstances(seriesJson["NumberOfSeriesRelatedInstances"].toInt());
+    series->setNumberOfInstances(static_cast<std::size_t>(seriesJson["NumberOfSeriesRelatedInstances"].toInt()));
 
     // Add series to container
     seriesContainer.push_back(series);

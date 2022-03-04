@@ -30,7 +30,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
+QColor Utils::convertOgreColorToQColor(const Ogre::ColourValue& _ogreColor)
 {
     const int r = static_cast<int>(_ogreColor.r * 255);
     const int g = static_cast<int>(_ogreColor.g * 255);
@@ -42,14 +42,14 @@ QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
 
 //------------------------------------------------------------------------------
 
-::Ogre::ColourValue Utils::convertQColorToOgreColor(const QColor& _qColor)
+Ogre::ColourValue Utils::convertQColorToOgreColor(const QColor& _qColor)
 {
     const float r = static_cast<float>(_qColor.red()) / 255.f;
     const float g = static_cast<float>(_qColor.green()) / 255.f;
     const float b = static_cast<float>(_qColor.blue()) / 255.f;
     const float a = static_cast<float>(_qColor.alpha()) / 255.f;
 
-    return ::Ogre::ColourValue(r, g, b, a);
+    return Ogre::ColourValue(r, g, b, a);
 }
 
 //------------------------------------------------------------------------------

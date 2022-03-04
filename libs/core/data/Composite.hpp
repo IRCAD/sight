@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,25 +38,22 @@ class Composite;
 
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Composite));
-
 namespace sight::data
 {
 
 /**
  * @brief This class defines a composite object.
  *
- * Composite contains a map of data::Object.
+ * Composite contains a map of Object.
  */
 
 class DATA_CLASS_API Composite : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Composite, data::Object, data::factory::New<Composite>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Composite));
+    SIGHT_DECLARE_CLASS(Composite, Object, factory::New<Composite>);
 
-    typedef std::map<std::string, data::Object::sptr> ContainerType;
+    typedef std::map<std::string, Object::sptr> ContainerType;
 
     typedef ContainerType::key_type KeyType;
     typedef ContainerType::mapped_type MappedType;
@@ -82,7 +79,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Composite(data::Object::Key key);
+    DATA_API Composite(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Composite();
@@ -108,7 +105,7 @@ public:
     SizeType count(const KeyType& x) const;
     /// @}
 
-    /// @brief get/set the map of std::string/data::Object
+    /// @brief get/set the map of std::string/Object
     /// @{
     ContainerType& getContainer();
     const ContainerType& getContainer() const;
@@ -118,16 +115,17 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /// Method to initialize a data::Composite from a std::map< string, X >
     template<class DATATYPE>
     void setDataContainer(const std::map<std::string, SPTR(DATATYPE)>& map);
 
     /// Method to get a std::map< string, X > from data::Composite
+    ///@{
     template<class DATATYPE>
-    std::map<std::string, SPTR(DATATYPE)> getDataContainer() const;
+    std::map<std::string, SPTR(DATATYPE)> getDataContainer();
+    template<class DATATYPE>
+    std::map<std::string, CSPTR(DATATYPE)> getDataContainer() const;
+    ///@}
 
     /**
      * @brief Returns object in composite associated with the key.
@@ -170,7 +168,16 @@ public:
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Composite& other) const noexcept;
+    DATA_API bool operator!=(const Composite& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     ContainerType m_container;
 };
@@ -306,13 +313,29 @@ inline void Composite::setDataContainer(const std::map<std::string, SPTR(DATATYP
 //-----------------------------------------------------------------------------
 
 template<class DATATYPE>
-inline std::map<std::string, SPTR(DATATYPE)> Composite::getDataContainer() const
+inline std::map<std::string, SPTR(DATATYPE)> Composite::getDataContainer()
 {
     std::map<std::string, SPTR(DATATYPE)> map;
     SPTR(DATATYPE) castData;
     for(data::Composite::value_type elem : *this)
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(elem.second);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
+        map[elem.first] = castData;
+    }
+
+    return map;
+}
+
+//-----------------------------------------------------------------------------
+
+template<class DATATYPE>
+inline std::map<std::string, CSPTR(DATATYPE)> Composite::getDataContainer() const
+{
+    std::map<std::string, CSPTR(DATATYPE)> map;
+    for(data::Composite::value_type elem : *this)
+    {
+        CSPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>(elem.second);
         SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
         map[elem.first] = castData;
     }

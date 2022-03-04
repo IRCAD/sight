@@ -1,0 +1,5 @@
+if(VCPKG_TARGET_TRIPLET)
+    find_package(OpenIGTLink CONFIG REQUIRED)
+else()
+    find_package(OpenIGTLink QUIET REQUIRED)
+endif()

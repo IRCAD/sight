@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <opencv2/core.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::PointListTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::PointListTest);
 
 namespace sight::io::opencv
 {
@@ -38,7 +38,7 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-static void assert2dPointEquality(const data::Point::csptr& _pt, const ::cv::Point2d& _cvPt)
+static void assert2dPointEquality(const data::Point::csptr& _pt, const cv::Point2d& _cvPt)
 {
     const auto& coords = _pt->getCoord();
     CPPUNIT_ASSERT_EQUAL(coords[0], _cvPt.x);
@@ -62,11 +62,11 @@ void PointListTest::tearDown()
 
 void PointListTest::copyFromCv()
 {
-    std::vector< ::cv::Point2d> cvPointList;
+    std::vector<cv::Point2d> cvPointList;
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        cvPointList.push_back(::cv::Point2d(double(i), double(i * 2 + 3)));
+        cvPointList.push_back(cv::Point2d(double(i), double(i * 2 + 3)));
     }
 
     data::PointList::sptr pl = data::PointList::New();
@@ -94,7 +94,7 @@ void PointListTest::copyToCv()
         pl->getPoints().push_back(point);
     }
 
-    std::vector< ::cv::Point2d> cvPointList;
+    std::vector<cv::Point2d> cvPointList;
     io::opencv::PointList::copyToCv(pl, cvPointList);
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)

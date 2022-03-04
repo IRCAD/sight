@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,6 @@
 
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Mesh.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <igtlImageMessage.h>
 #include <igtlPointMessage.h>
@@ -53,7 +52,7 @@
 #include <algorithm>
 #include <iostream>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::igtl::detail::ut::DataConverterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::igtl::detail::ut::DataConverterTest);
 
 namespace sight::io::igtl::detail
 {
@@ -81,7 +80,7 @@ void DataConverterTest::meshConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     data::Mesh::sptr mesh         = data::Mesh::New();
-    const auto lock               = mesh->lock();
+    const auto lock               = mesh->dump_lock();
     utestData::generator::Mesh::generateMesh(mesh);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
@@ -92,69 +91,83 @@ void DataConverterTest::meshConverterTest()
 
     data::Mesh::sptr mesh2 = data::Mesh::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
-    const auto lock2 = mesh2->lock();
+    const auto lock2 = mesh2->dump_lock();
 
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), mesh2->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), mesh2->numPoints());
+    CPPUNIT_ASSERT_EQUAL(mesh->numCells(), mesh2->numCells());
+    CPPUNIT_ASSERT_EQUAL(mesh->getCellSize(), mesh2->getCellSize());
     CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), mesh2->getDataSizeInBytes());
 
-    CPPUNIT_ASSERT_EQUAL(mesh->hasPointColors(), mesh2->hasPointColors());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasCellColors(), mesh2->hasCellColors());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasPointNormals(), mesh2->hasPointNormals());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasCellNormals(), mesh2->hasCellNormals());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasPointTexCoords(), mesh2->hasPointTexCoords());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasCellTexCoords(), mesh2->hasCellTexCoords());
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::POINT_COLORS>(),
+        mesh2->has<data::Mesh::Attributes::POINT_COLORS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::CELL_COLORS>(),
+        mesh2->has<data::Mesh::Attributes::CELL_COLORS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::POINT_NORMALS>(),
+        mesh2->has<data::Mesh::Attributes::POINT_NORMALS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::CELL_NORMALS>(),
+        mesh2->has<data::Mesh::Attributes::CELL_NORMALS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::POINT_TEX_COORDS>(),
+        mesh2->has<data::Mesh::Attributes::POINT_TEX_COORDS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::CELL_TEX_COORDS>(),
+        mesh2->has<data::Mesh::Attributes::CELL_TEX_COORDS>()
+    );
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
+    using namespace data::iterator;
 
-    auto itrPt  = mesh->begin<data::iterator::ConstPointIterator>();
-    auto itrPt2 = mesh2->begin<data::iterator::ConstPointIterator>();
+    const auto range1 = mesh->czip_range<point::xyz, point::rgba, point::nxyz>();
+    const auto range2 = mesh2->czip_range<point::xyz, point::rgba, point::nxyz>();
 
-    for(unsigned int i = 0 ; i < mesh->getNumberOfPoints() ; ++i)
+    for(const auto& [orig, cur] : boost::combine(range1, range2))
     {
-        CPPUNIT_ASSERT_EQUAL(itrPt->point->x, itrPt2->point->x);
-        CPPUNIT_ASSERT_EQUAL(itrPt->point->y, itrPt2->point->y);
-        CPPUNIT_ASSERT_EQUAL(itrPt->point->z, itrPt2->point->z);
+        const auto& [pt1, c1, n1] = orig;
+        const auto& [pt2, c2, n2] = cur;
 
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->r, itrPt2->rgba->r);
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->g, itrPt2->rgba->g);
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->b, itrPt2->rgba->b);
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->a, itrPt2->rgba->a);
+        CPPUNIT_ASSERT_EQUAL(pt1.x, pt2.x);
+        CPPUNIT_ASSERT_EQUAL(pt1.y, pt2.y);
+        CPPUNIT_ASSERT_EQUAL(pt1.z, pt2.z);
 
-        CPPUNIT_ASSERT_EQUAL(itrPt->normal->nx, itrPt2->normal->nx);
-        CPPUNIT_ASSERT_EQUAL(itrPt->normal->ny, itrPt2->normal->ny);
-        CPPUNIT_ASSERT_EQUAL(itrPt->normal->nz, itrPt2->normal->nz);
+        CPPUNIT_ASSERT_EQUAL(c1.r, c2.r);
+        CPPUNIT_ASSERT_EQUAL(c1.g, c2.g);
+        CPPUNIT_ASSERT_EQUAL(c1.b, c2.b);
+        CPPUNIT_ASSERT_EQUAL(c1.a, c2.a);
 
-        ++itrPt;
-        ++itrPt2;
+        CPPUNIT_ASSERT_EQUAL(n1.nx, n2.nx);
+        CPPUNIT_ASSERT_EQUAL(n1.ny, n2.ny);
+        CPPUNIT_ASSERT_EQUAL(n1.nz, n2.nz);
     }
 
-    auto itrCell  = mesh->begin<data::iterator::ConstCellIterator>();
-    auto itrCell2 = mesh2->begin<data::iterator::ConstCellIterator>();
+    const auto cellRange1 = mesh->czip_range<cell::triangle, cell::rgba, cell::nxyz>();
+    const auto cellRange2 = mesh2->czip_range<cell::triangle, cell::rgba, cell::nxyz>();
 
-    for(unsigned int i = 0 ; i < mesh->getNumberOfCells() ; ++i)
+    for(const auto& [orig, cur] : boost::combine(cellRange1, cellRange2))
     {
-        CPPUNIT_ASSERT_EQUAL(itrCell->nbPoints, itrCell2->nbPoints);
-        CPPUNIT_ASSERT_EQUAL(*itrCell->type, *itrCell2->type);
-        CPPUNIT_ASSERT_EQUAL(*itrCell->offset, *itrCell2->offset);
+        const auto& [cell1, c1, n1] = orig;
+        const auto& [cell2, c2, n2] = cur;
 
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->r, itrCell2->rgba->r);
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->g, itrCell2->rgba->g);
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->b, itrCell2->rgba->b);
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->a, itrCell2->rgba->a);
+        CPPUNIT_ASSERT_EQUAL(cell1.pt[0], cell2.pt[0]);
+        CPPUNIT_ASSERT_EQUAL(cell1.pt[1], cell2.pt[1]);
+        CPPUNIT_ASSERT_EQUAL(cell1.pt[2], cell2.pt[2]);
 
-        CPPUNIT_ASSERT_EQUAL(itrCell->normal->nx, itrCell2->normal->nx);
-        CPPUNIT_ASSERT_EQUAL(itrCell->normal->ny, itrCell2->normal->ny);
-        CPPUNIT_ASSERT_EQUAL(itrCell->normal->nz, itrCell2->normal->nz);
+        CPPUNIT_ASSERT_EQUAL(c1.r, c2.r);
+        CPPUNIT_ASSERT_EQUAL(c1.g, c2.g);
+        CPPUNIT_ASSERT_EQUAL(c1.b, c2.b);
+        CPPUNIT_ASSERT_EQUAL(c1.a, c2.a);
 
-        for(unsigned int j = 0 ; j < itrCell->nbPoints ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL(itrCell->pointIdx[j], itrCell2->pointIdx[j]);
-        }
-
-        ++itrCell;
-        ++itrCell2;
+        CPPUNIT_ASSERT_EQUAL(n1.nx, n2.nx);
+        CPPUNIT_ASSERT_EQUAL(n1.ny, n2.ny);
+        CPPUNIT_ASSERT_EQUAL(n1.nz, n2.nz);
     }
 }
 
@@ -179,26 +192,20 @@ void DataConverterTest::imageConverterTest()
 
     CPPUNIT_ASSERT_MESSAGE("Image is null", image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("array.isOwner");
-    exclude.insert("window_center");
-    exclude.insert("window_width");
-    exclude.insert("spacing.0");
-    exclude.insert("origin.0");
-    exclude.insert("spacing.1");
-    exclude.insert("origin.1");
-    exclude.insert("spacing.2");
-    exclude.insert("origin.2");
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0], image2->getSpacing()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1], image2->getSpacing()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[0], image2->getSpacing2()[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[1], image2->getSpacing2()[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[2], image2->getSpacing2()[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[0], image2->getOrigin()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[1], image2->getOrigin()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[2], image2->getOrigin()[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[0], image2->getOrigin2()[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[1], image2->getOrigin2()[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[2], image2->getOrigin2()[2], epsilon);
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
+    image2->setSpacing(image->getSpacing());
+    image2->setOrigin(image->getOrigin());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
@@ -211,11 +218,11 @@ void DataConverterTest::matrixConverterTest()
     ::igtl::Matrix4x4 igtlMatrix;
 
     matrix = data::Matrix4::New();
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            matrix->setCoefficient(i, j, i + j);
+            matrix->setCoefficient(i, j, static_cast<double>(i + j));
         }
     }
 
@@ -279,7 +286,7 @@ void DataConverterTest::pointListConverterTest()
 
     data::Object::sptr destObj       = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
     data::PointList::sptr pointList2 = data::PointList::dynamicCast(destObj);
-    for(int i = 0 ; i < 2 ; ++i)
+    for(std::size_t i = 0 ; i < 2 ; ++i)
     {
         CPPUNIT_ASSERT(
             std::equal(
@@ -417,11 +424,11 @@ void DataConverterTest::compositeConverterTest()
     data::Composite::sptr composite = data::Composite::New();
     (*composite)["H_marker1_2_polaris"] = matrix;
 
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(size_t j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            matrix->setCoefficient(i, j, i + j);
+            matrix->setCoefficient(i, j, static_cast<double>(i + j));
         }
     }
 
@@ -433,8 +440,8 @@ void DataConverterTest::compositeConverterTest()
                                                         GetPointer())
         );
     CPPUNIT_ASSERT(trackingMsg);
-    const int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
-    CPPUNIT_ASSERT_EQUAL(1, nbTrckingElement);
+    const int nbTrackingElement = trackingMsg->GetNumberOfTrackingDataElements();
+    CPPUNIT_ASSERT_EQUAL(1, nbTrackingElement);
 
     ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
     trackingMsg->GetTrackingDataElement(0, trackElement);
@@ -444,7 +451,7 @@ void DataConverterTest::compositeConverterTest()
 
     ::igtl::Matrix4x4 igtlMatrix;
     trackElement->GetMatrix(igtlMatrix);
-    for(size_t i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
     }
@@ -456,11 +463,11 @@ void DataConverterTest::compositeConverterTest()
     data::Composite::iterator iter = destComposite->find("H_marker1_2_polaris");
     CPPUNIT_ASSERT(iter != destComposite->end());
 
-    data::Matrix4::sptr destMmatrix = data::Matrix4::New();
-    destMmatrix = data::Matrix4::dynamicCast(iter->second);
-    for(size_t i = 0 ; i < 4 ; ++i)
+    data::Matrix4::sptr destMatrix = data::Matrix4::New();
+    destMatrix = data::Matrix4::dynamicCast(iter->second);
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMmatrix->getCoefficients().begin() + i * 4));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMatrix->getCoefficients().begin() + i * 4));
     }
 }
 

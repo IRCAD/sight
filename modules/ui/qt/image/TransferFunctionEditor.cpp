@@ -405,11 +405,15 @@ void TransferFunctionEditor::importTF()
 
     data::helper::Composite compositeHelper(poolTF.get_shared());
 
-    data::TransferFunction::sptr tf = data::TransferFunction::New();
-    auto reader                     = service::add<io::base::service::IReader>("sight::module::io::atoms::SReader");
-
+    const auto tf     = data::TransferFunction::New();
+    const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
     reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
+    service::IService::ConfigType config;
+    config.add("dialog.<xmlattr>.extension", ".tf");
+    config.add("dialog.<xmlattr>.description", "Transfer Function");
+
+    reader->configure(config);
     reader->start();
     reader->openLocationDialog();
     reader->update().wait();
@@ -435,12 +439,14 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    io::base::service::IWriter::sptr writer = service::add<io::base::service::IWriter>(
-        "sight::module::io::atoms::SWriter"
-    );
-
+    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
     writer->setInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
+    service::IService::ConfigType config;
+    config.add("dialog.<xmlattr>.extension", ".tf");
+    config.add("dialog.<xmlattr>.description", "Transfer Function");
+
+    writer->configure(config);
     writer->start();
     writer->openLocationDialog();
     writer->update().wait();
@@ -485,10 +491,8 @@ void TransferFunctionEditor::initTransferFunctions()
             }
         }
 
-        data::TransferFunction::sptr tf         = data::TransferFunction::New();
-        io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-            "::sight::module::io::atoms::SReader"
-        );
+        const auto tf     = data::TransferFunction::New();
+        const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
         reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");

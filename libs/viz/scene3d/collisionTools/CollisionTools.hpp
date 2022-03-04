@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,7 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
+// cspell: disable
 /******************************************************************************************
    MOC - Minimal Ogre Collision v 1.0
    The MIT License
@@ -48,6 +48,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 ******************************************************************************************/
+// cspell: enable
 
 #include "viz/scene3d/config.hpp"
 
@@ -77,7 +78,7 @@ public:
      * @param _sceneMgr The scene manager where launch the ray.
      * @param _queryMask Mask used to query entities with matching flags.
      */
-    VIZ_SCENE3D_API CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
+    VIZ_SCENE3D_API CollisionTools(Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
 
     /// Delete resources.
     VIZ_SCENE3D_API ~CollisionTools();
@@ -109,7 +110,7 @@ public:
      * and the intersected object.
      */
     VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
-        ::Ogre::RenderWindow* _rw,
+        Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
         const Ogre::uint32 _queryMask
@@ -156,10 +157,10 @@ private:
      * origin and the intersection.
      */
     static std::pair<bool, float> intersect(
-        const ::Ogre::Ray& _ray,
-        const ::Ogre::Vector3& _a,
-        const ::Ogre::Vector3& _b,
-        const ::Ogre::Vector3& _c,
+        const Ogre::Ray& _ray,
+        const Ogre::Vector3& _a,
+        const Ogre::Vector3& _b,
+        const Ogre::Vector3& _c,
         const float _closestDistance,
         bool _positiveSide,
         bool _negativeSide

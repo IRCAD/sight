@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@ namespace sight::ui::base
 namespace dialog
 {
 
+static const std::string s_defaultMessage = "Empty message";
+
 const INotificationDialog::FactoryRegistryKeyType INotificationDialog::REGISTRY_KEY =
     "::ui::base::dialog::NotificationDialog";
 
@@ -35,6 +37,8 @@ const INotificationDialog::FactoryRegistryKeyType INotificationDialog::REGISTRY_
 
 INotificationDialog::INotificationDialog()
 {
+    m_message     = s_defaultMessage;
+    m_fullMessage = m_message;
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +51,16 @@ INotificationDialog::~INotificationDialog()
 
 void INotificationDialog::setMessage(const std::string& _msg)
 {
-    m_message = _msg;
+    if(_msg.empty())
+    {
+        SIGHT_ERROR("Cannot set an empty message to notification, using 'Empty Message'");
+        m_message     = s_defaultMessage;
+        m_fullMessage = m_message;
+        return;
+    }
+
+    m_message     = _msg;
+    m_fullMessage = m_message;
 }
 
 //-----------------------------------------------------------------------------

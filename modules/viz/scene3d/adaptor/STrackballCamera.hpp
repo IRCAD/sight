@@ -58,7 +58,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API STrackballCamera final : public sight::viz::s
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STrackballCamera, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STrackballCamera, sight::viz::scene3d::IAdaptor);
 
     /// Constructor.
     MODULE_VIZ_SCENE3D_API STrackballCamera() noexcept;

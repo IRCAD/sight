@@ -15,7 +15,7 @@
 
     You can also launch this configuration as an activity :
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>sequencerActivityName</id>
         <title>Activity title</title>
         <desc>Description of the activity</desc>
@@ -25,7 +25,6 @@
         </requirements>
         <appConfig id="ActivityLauncher">
             <parameters>
-                <parameter replace="seriesDB" by="@values.seriesDB" />
                 <parameter replace="SEQUENCER_CONFIG" by="sequencerServiceConfigName" />
             </parameters>
         </appConfig>
@@ -36,7 +35,7 @@
 
     The SEQUENCER_CONFIG represents the list of the activities to launch, like:
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>sequencerServiceConfigName</id>
         <service>sight::module::ui::qt::activity::SSequencer</service>
         <desc>Configuration for the sequencer</desc>
@@ -60,7 +59,7 @@
     You can override the default activity wizard configuration by adding the parameter:
     <parameter replace="WIZARD_CONFIG" by="activityWizardServiceConfigName" />
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>ActivityLauncher</id>
     <parameters>
         <param name="WID_PARENT" />

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ void CompositeTest::setGetContainerTest()
 
     data::Composite::sptr myDataMap = data::Composite::New();
     myDataMap->setDataContainer(myStdMap);
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), myDataMap->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), myDataMap->size());
 
     std::map<std::string, data::String::sptr> myStdMap2;
     myStdMap2 = myDataMap->getDataContainer<data::String>();

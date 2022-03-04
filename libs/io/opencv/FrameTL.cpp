@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,21 +39,21 @@ static void toCv(
 )
 {
     const auto imageType = _timeline->getType();
-    const auto imageComp = _timeline->getNumberOfComponents();
+    const auto imageComp = _timeline->numComponents();
 
     const auto cvType = io::opencv::Type::toCv(imageType, imageComp);
 
-    ::cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
+    cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
 
     auto buffer = static_cast<void*>(const_cast<data::FrameTL::BufferType::ElementType*>(_buffer));
     if(_copy)
     {
-        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, buffer);
+        cv::Mat mat = cv::Mat(cvSize, cvType, buffer);
         _cvImage = mat.clone();
     }
     else
     {
-        _cvImage = ::cv::Mat(cvSize, cvType, buffer);
+        _cvImage = cv::Mat(cvSize, cvType, buffer);
     }
 }
 
@@ -62,7 +62,7 @@ static void toCv(
 void FrameTL::moveToCv(
     const data::FrameTL::csptr& _timeline,
     data::FrameTL::BufferType::ElementType* _buffer,
-    ::cv::Mat& _cvImage
+    cv::Mat& _cvImage
 )
 {
     toCv(_timeline, _buffer, _cvImage, false);
@@ -75,7 +75,7 @@ const cv::Mat FrameTL::moveToCv(
     const data::FrameTL::BufferType::ElementType* _buffer
 )
 {
-    ::cv::Mat mat;
+    cv::Mat mat;
     toCv(_timeline, _buffer, mat, false);
     return mat;
 }
@@ -85,31 +85,31 @@ const cv::Mat FrameTL::moveToCv(
 void FrameTL::copyFromCv(
     const data::FrameTL::csptr& _timeline,
     data::FrameTL::BufferType::ElementType* _buffer,
-    const ::cv::Mat& _cvImage
+    const cv::Mat& _cvImage
 )
 {
     const auto prevImageType = _timeline->getType();
-    const auto prevImageComp = _timeline->getNumberOfComponents();
+    const auto prevImageComp = _timeline->numComponents();
 
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;
     const auto imageComp   = imageFormat.second;
     SIGHT_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
 
-    std::vector<size_t> cvImageSize;
+    std::vector<std::size_t> cvImageSize;
     for(int i = _cvImage.dims - 1 ; i >= 0 ; --i)
     {
-        cvImageSize.push_back(static_cast<size_t>(_cvImage.size[i]));
+        cvImageSize.push_back(static_cast<std::size_t>(_cvImage.size[i]));
     }
 
-    const std::vector<size_t> imageSize = {{_timeline->getWidth(), _timeline->getHeight()}};
+    const std::vector<std::size_t> imageSize = {{_timeline->getWidth(), _timeline->getHeight()}};
 
     if(prevImageComp != imageComp || prevImageType != imageType || cvImageSize != imageSize)
     {
         SIGHT_ERROR("Cannot copy OpenCV image into this timeline buffer because their format or size differ.");
     }
 
-    const size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.sizeOf();
+    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.sizeOf();
     std::copy(_cvImage.data, _cvImage.data + size, _buffer);
 }
 
@@ -118,7 +118,7 @@ void FrameTL::copyFromCv(
 void FrameTL::copyToCv(
     const data::FrameTL::csptr& _timeline,
     const data::FrameTL::BufferType::ElementType* _buffer,
-    ::cv::Mat& _cvImage
+    cv::Mat& _cvImage
 )
 {
     toCv(_timeline, _buffer, _cvImage, true);

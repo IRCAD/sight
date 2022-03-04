@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,32 +35,32 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 void ManualObject::createCylinder(
-    ::Ogre::ManualObject* _object,
+    Ogre::ManualObject* _object,
     const std::string& _material,
-    const ::Ogre::ColourValue& _color,
+    const Ogre::ColourValue& _color,
     float _radius,
     float _length,
     unsigned int _sample
 )
 {
     // Data to create cylinder in x axis
-    const ::Ogre::Radian delta(::Ogre::Degree(360.f / static_cast<float>(_sample)));
-    const ::Ogre::Quaternion rot(delta, ::Ogre::Vector3::UNIT_X);
-    ::Ogre::Vector3 normal = ::Ogre::Quaternion(delta / 2.f, ::Ogre::Vector3::UNIT_X) * ::Ogre::Vector3::UNIT_Y;
+    const Ogre::Radian delta(Ogre::Degree(360.f / static_cast<float>(_sample)));
+    const Ogre::Quaternion rot(delta, Ogre::Vector3::UNIT_X);
+    Ogre::Vector3 normal = Ogre::Quaternion(delta / 2.f, Ogre::Vector3::UNIT_X) * Ogre::Vector3::UNIT_Y;
 
-    ::Ogre::Vector3 p0(0.f, _radius, 0.f);
-    ::Ogre::Vector3 p1(_length, _radius, 0.f);
-    ::Ogre::Vector3 p2 = rot * p0;
-    ::Ogre::Vector3 p3 = rot * p1;
+    Ogre::Vector3 p0(0.f, _radius, 0.f);
+    Ogre::Vector3 p1(_length, _radius, 0.f);
+    Ogre::Vector3 p2 = rot * p0;
+    Ogre::Vector3 p3 = rot * p1;
 
     // Create cylinder
-    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
+    _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
     // Initial points of the basis
-    _object->position(::Ogre::Vector3::ZERO);
-    _object->normal(::Ogre::Vector3::NEGATIVE_UNIT_X);
-    _object->position(::Ogre::Vector3(_length, 0.f, 0.f));
-    _object->normal(::Ogre::Vector3::UNIT_X);
+    _object->position(Ogre::Vector3::ZERO);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
+    _object->position(Ogre::Vector3(_length, 0.f, 0.f));
+    _object->normal(Ogre::Vector3::UNIT_X);
     for(unsigned int i = 0 ; i < _sample ; ++i)
     {
         // Cylinder
@@ -78,16 +78,16 @@ void ManualObject::createCylinder(
 
         // Basis
         _object->position(p0);
-        _object->normal(::Ogre::Vector3::NEGATIVE_UNIT_X);
+        _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
 
         _object->position(p2);
-        _object->normal(::Ogre::Vector3::NEGATIVE_UNIT_X);
+        _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
 
         _object->position(p1);
-        _object->normal(::Ogre::Vector3(_length, 0.f, 0.f));
+        _object->normal(Ogre::Vector3(_length, 0.f, 0.f));
 
         _object->position(p3);
-        _object->normal(::Ogre::Vector3(_length, 0.f, 0.f));
+        _object->normal(Ogre::Vector3(_length, 0.f, 0.f));
 
         const unsigned int offset = 2 + (i * 8);
         // Cylinder
@@ -108,9 +108,9 @@ void ManualObject::createCylinder(
     _object->end();
 
     _object->setBoundingBox(
-        ::Ogre::AxisAlignedBox(
-            ::Ogre::Vector3(0.f, -_radius, -_radius),
-            ::Ogre::Vector3(_length, _radius, _radius)
+        Ogre::AxisAlignedBox(
+            Ogre::Vector3(0.f, -_radius, -_radius),
+            Ogre::Vector3(_length, _radius, _radius)
         )
     );
 }
@@ -118,33 +118,33 @@ void ManualObject::createCylinder(
 //-----------------------------------------------------------------------------
 
 void ManualObject::createCone(
-    ::Ogre::ManualObject* _object,
+    Ogre::ManualObject* _object,
     const std::string& _material,
-    const ::Ogre::ColourValue& _color,
+    const Ogre::ColourValue& _color,
     float _radius,
     float _length,
     unsigned int _sample
 )
 {
     // Data to create cone in x axis
-    const ::Ogre::Radian delta(::Ogre::Degree(360.f / static_cast<float>(_sample)));
-    const ::Ogre::Quaternion rot(delta, ::Ogre::Vector3::UNIT_X);
-    ::Ogre::Vector3 normal = ::Ogre::Quaternion(delta / 2.f, ::Ogre::Vector3::UNIT_X) * ::Ogre::Vector3::UNIT_Y;
+    const Ogre::Radian delta(Ogre::Degree(360.f / static_cast<float>(_sample)));
+    const Ogre::Quaternion rot(delta, Ogre::Vector3::UNIT_X);
+    Ogre::Vector3 normal = Ogre::Quaternion(delta / 2.f, Ogre::Vector3::UNIT_X) * Ogre::Vector3::UNIT_Y;
 
-    ::Ogre::Vector3 p0(0.f, _radius, 0.f);
-    ::Ogre::Vector3 p1(_length, 0, 0.f);
-    ::Ogre::Vector3 p2 = rot * p0;
+    Ogre::Vector3 p0(0.f, _radius, 0.f);
+    Ogre::Vector3 p1(_length, 0, 0.f);
+    Ogre::Vector3 p2 = rot * p0;
 
     // Compute real normal
-    const ::Ogre::Radian angle(std::atan(_radius / _length));
-    normal = ::Ogre::Quaternion(angle, ::Ogre::Vector3::UNIT_Z) * normal;
+    const Ogre::Radian angle(std::atan(_radius / _length));
+    normal = Ogre::Quaternion(angle, Ogre::Vector3::UNIT_Z) * normal;
 
     // Create cone
-    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
+    _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
     // Initial point of the basis
-    _object->position(::Ogre::Vector3::ZERO);
-    _object->normal(::Ogre::Vector3::NEGATIVE_UNIT_X);
+    _object->position(Ogre::Vector3::ZERO);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
     for(unsigned int i = 0 ; i < _sample ; ++i)
     {
         // Cone
@@ -159,10 +159,10 @@ void ManualObject::createCone(
 
         // Basis
         _object->position(p0);
-        _object->normal(::Ogre::Vector3::NEGATIVE_UNIT_X);
+        _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
 
         _object->position(p2);
-        _object->normal(::Ogre::Vector3::NEGATIVE_UNIT_X);
+        _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
 
         const unsigned int offset = 1 + (i * 5);
         // Cone
@@ -179,9 +179,9 @@ void ManualObject::createCone(
     _object->end();
 
     _object->setBoundingBox(
-        ::Ogre::AxisAlignedBox(
-            ::Ogre::Vector3(0.f, -_radius, -_radius),
-            ::Ogre::Vector3(_length, _radius, _radius)
+        Ogre::AxisAlignedBox(
+            Ogre::Vector3(0.f, -_radius, -_radius),
+            Ogre::Vector3(_length, _radius, _radius)
         )
     );
 }
@@ -189,15 +189,15 @@ void ManualObject::createCone(
 //------------------------------------------------------------------------------
 
 void ManualObject::createCube(
-    ::Ogre::ManualObject* _object,
+    Ogre::ManualObject* _object,
     const std::string& _material,
-    const ::Ogre::ColourValue& _color,
+    const Ogre::ColourValue& _color,
     float _length
 )
 {
     float length = _length / 2.0f;
 
-    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
+    _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
 
     _object->position(-length, -length, length);
@@ -275,7 +275,7 @@ void ManualObject::createCube(
     _object->end();
 
     _object->setBoundingBox(
-        ::Ogre::AxisAlignedBox(
+        Ogre::AxisAlignedBox(
             {-length, -length, -length},
             {length, length, length
             })
@@ -285,19 +285,19 @@ void ManualObject::createCube(
 //------------------------------------------------------------------------------
 
 void ManualObject::createSphere(
-    ::Ogre::ManualObject* _object,
+    Ogre::ManualObject* _object,
     const std::string& _material,
-    const ::Ogre::ColourValue& _color,
+    const Ogre::ColourValue& _color,
     float _radius,
     unsigned int _sample
 )
 {
-    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
+    _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
 
-    const float deltaRing = (static_cast<float>(::Ogre::Math::PI) / static_cast<float>(_sample));
-    const float deltaSeg  = (2 * static_cast<float>(::Ogre::Math::PI) / static_cast<float>(_sample));
-    ::Ogre::uint32 index  = 0;
+    const float deltaRing = (static_cast<float>(Ogre::Math::PI) / static_cast<float>(_sample));
+    const float deltaSeg  = (2 * static_cast<float>(Ogre::Math::PI) / static_cast<float>(_sample));
+    Ogre::uint32 index    = 0;
 
     for(unsigned ring = 0 ; ring <= _sample ; ++ring)
     {
@@ -310,7 +310,7 @@ void ManualObject::createSphere(
             const float z0 = r0 * std::cos(static_cast<float>(seg) * deltaSeg);
 
             _object->position(x0, y0, z0);
-            _object->normal(::Ogre::Vector3(x0, y0, z0).normalisedCopy());
+            _object->normal(Ogre::Vector3(x0, y0, z0).normalisedCopy());
 
             if(ring != _sample)
             {
@@ -328,7 +328,7 @@ void ManualObject::createSphere(
     _object->end();
 
     _object->setBoundingBox(
-        ::Ogre::AxisAlignedBox(
+        Ogre::AxisAlignedBox(
             {-_radius, -_radius, -_radius},
             {_radius, _radius, _radius
             })

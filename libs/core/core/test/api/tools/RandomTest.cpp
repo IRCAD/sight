@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ void RandomTest::randomListTest()
     float minF = 10.f, maxF = 20.f;
     std::vector<float> randF(10);
     core::tools::random::fillContainer(minF, maxF, randF);
-    for(size_t i = 0 ; i < randF.size() ; ++i)
+    for(std::size_t i = 0 ; i < randF.size() ; ++i)
     {
         CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF[i] >= minF && randF[i] <= maxF);
     }
@@ -75,7 +75,7 @@ void RandomTest::randomListTest()
     int minI = 10, maxI = 20;
     std::vector<int> randI(10);
     core::tools::random::fillContainer(minI, maxI, randI);
-    for(size_t i = 0 ; i < randF.size() ; ++i)
+    for(std::size_t i = 0 ; i < randF.size() ; ++i)
     {
         CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randI[i] >= minI && randI[i] <= maxI);
     }
@@ -98,7 +98,7 @@ void RandomTest::seedTest()
     std::vector<int> randI2(10);
     core::tools::random::fillContainer(minI, maxI, randI1, seedVal);
     core::tools::random::fillContainer(minI, maxI, randI2, seedVal);
-    for(size_t i = 0 ; i < randI1.size() ; ++i)
+    for(std::size_t i = 0 ; i < randI1.size() ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(randI1[i], randI2[i]);
     }

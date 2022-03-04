@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,20 +53,20 @@ RayExitDepthListener::~RayExitDepthListener()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
+Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
     unsigned short /*_schemeIndex*/,
-    const ::Ogre::String& _schemeName,
-    ::Ogre::Material* _originalMaterial,
+    const Ogre::String& _schemeName,
+    Ogre::Material* _originalMaterial,
     unsigned short /*_lodIndex*/,
-    const ::Ogre::Renderable* /*_renderable*/
+    const Ogre::Renderable* /*_renderable*/
 )
 {
-    ::Ogre::Technique* newTechnique = nullptr;
-    const auto mtlName              = _originalMaterial->getName();
+    Ogre::Technique* newTechnique = nullptr;
+    const auto mtlName            = _originalMaterial->getName();
 
-    if(_schemeName == "VolumeEntries_FrontFacesMin" && !::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat"))
+    if(_schemeName == "VolumeEntries_FrontFacesMin" && !Ogre::StringUtil::startsWith(mtlName, "RTV_Mat"))
     {
-        auto entryPointsMtl   = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
+        auto entryPointsMtl   = Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
         auto frontFaceMinTech = entryPointsMtl->getTechnique("FrontFacesMin");
 
         newTechnique = viz::scene3d::helper::Technique::copyToMaterial(

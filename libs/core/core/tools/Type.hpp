@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/tools/Stringizer.hpp"
+
 #include <core/base.hpp>
 
 #include <any>
@@ -127,7 +128,7 @@ public:
 
     CORE_API std::string toString(const void*) const;
 
-    template<int SIZEOF, bool SIGNED, bool ISINTEGRAL>
+    template<int SIZEOF, bool SIGNED, bool IS_INTEGRAL>
     static const std::string& traitsToString();
 
     template<typename T>
@@ -283,12 +284,12 @@ CORE_API void Type::setType<std::uint64_t>();
 
 //-----------------------------------------------------------------------------
 
-template<int SIZEOF, bool SIGNED, bool ISINTEGRAL>
+template<int SIZEOF, bool SIGNED, bool IS_INTEGRAL>
 const std::string& Type::traitsToString()
 {
     SIGHT_ERROR(
         "unknown " << (SIGNED ? "signed" : "unsigned")
-        << " " << (ISINTEGRAL ? "integral" : "floating")
+        << " " << (IS_INTEGRAL ? "integral" : "floating")
         << " type with size : " << SIZEOF
     );
     return Type::s_UNSPECIFIED_TYPENAME;
@@ -332,6 +333,6 @@ CORE_API const std::string& Type::traitsToString<8, true, false>();
 namespace std
 {
 
-CORE_API std::ostream& operator<<(std::ostream& os, const ::sight::core::tools::Type& type);
+CORE_API std::ostream& operator<<(std::ostream& os, const sight::core::tools::Type& type);
 
 } // namespace std

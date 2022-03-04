@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void testSaveLoadInr();
     void stressTestInr();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,10 +44,6 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/iterator/ImageIterator.hpp>
-#include <data/iterator/ImageIterator.hxx>
-#include <data/iterator/MeshIterators.hpp>
-#include <data/iterator/MeshIterators.hxx>
 #include <data/Landmarks.hpp>
 #include <data/Line.hpp>
 #include <data/List.hpp>
@@ -83,6 +79,7 @@
 #include <io/dicom/reader/SeriesDB.hpp>
 #include <io/session/detail/SessionDeserializer.hpp>
 #include <io/session/detail/SessionSerializer.hpp>
+#include <io/session/Helper.hpp>
 #include <io/session/SessionReader.hpp>
 #include <io/session/SessionWriter.hpp>
 #include <io/zip/exception/Read.hpp>
@@ -97,7 +94,7 @@
 #include <random>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::session::ut::SessionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::session::ut::SessionTest);
 
 namespace sight::io::session
 {
@@ -189,15 +186,17 @@ inline void _compare(const typename T::csptr& actual, const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void _test(const bool encrypt)
+inline void _test(const bool encrypt, const bool raw)
 {
     static constexpr auto password = "password";
 
+    const auto& test_id = T::leafClassname() + "_" + std::to_string(encrypt) + "_" + std::to_string(raw);
+
     // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder();
+    const auto tmpfolder = core::tools::System::getTemporaryFolder() / UUID::generateUUID();
+    std::filesystem::remove_all(tmpfolder);
     std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / (T::leafClassname() + (encrypt ? "_C" : "") + ".zip");
-    std::filesystem::remove(testPath);
+    const auto testPath = tmpfolder / (test_id + (raw ? ".json" : ".zip"));
 
     static constexpr auto fieldName = "field";
 
@@ -217,13 +216,17 @@ inline void _test(const bool encrypt)
         sessionWriter->setObject(object);
         sessionWriter->setFile(testPath);
 
-        if(encrypt)
+        if(raw)
         {
-            sessionWriter->setPassword(password);
+            sessionWriter->setArchiveFormat(io::zip::Archive::ArchiveFormat::FILESYSTEM);
+        }
+        else if(encrypt)
+        {
+            sessionWriter->set_password(password);
         }
 
         // Write the session
-        sessionWriter->write();
+        CPPUNIT_ASSERT_NO_THROW(sessionWriter->write());
 
         CPPUNIT_ASSERT(std::filesystem::exists(testPath));
     }
@@ -236,13 +239,17 @@ inline void _test(const bool encrypt)
         // Configure the session reader
         sessionReader->setFile(testPath);
 
-        if(encrypt)
+        if(raw)
         {
-            sessionReader->setPassword(password);
+            sessionReader->setArchiveFormat(io::zip::Archive::ArchiveFormat::FILESYSTEM);
+        }
+        else if(encrypt)
+        {
+            sessionReader->set_password(password);
         }
 
         // Read the session
-        sessionReader->read();
+        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
 
         // Test value
         auto object = std::dynamic_pointer_cast<T>(sessionReader->getObject());
@@ -252,6 +259,18 @@ inline void _test(const bool encrypt)
         auto fieldObject = std::dynamic_pointer_cast<T>(object->getField(fieldName));
         _compare<T>(fieldObject, 1);
     }
+
+    std::filesystem::remove_all(tmpfolder);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline void _test_combine()
+{
+    _test<T>(false, false);
+    _test<T>(false, true);
+    _test<T>(true, false);
 }
 
 //------------------------------------------------------------------------------
@@ -266,16 +285,14 @@ inline data::Boolean::sptr _generate<data::Boolean>(const std::size_t variant)
 
 void SessionTest::booleanTest()
 {
-    _test<data::Boolean>(true);
-    _test<data::Boolean>(false);
+    _test_combine<data::Boolean>();
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::integerTest()
 {
-    _test<data::Integer>(true);
-    _test<data::Integer>(false);
+    _test_combine<data::Integer>();
 }
 
 //------------------------------------------------------------------------------
@@ -291,8 +308,7 @@ inline void _compare<data::Float>(const data::Float::csptr& actual, const std::s
 
 void SessionTest::floatTest()
 {
-    _test<data::Float>(true);
-    _test<data::Float>(false);
+    _test_combine<data::Float>();
 }
 
 //------------------------------------------------------------------------------
@@ -307,8 +323,7 @@ inline data::String::sptr _generate<data::String>(const std::size_t)
 
 void SessionTest::stringTest()
 {
-    _test<data::String>(true);
-    _test<data::String>(false);
+    _test_combine<data::String>();
 }
 
 //------------------------------------------------------------------------------
@@ -351,8 +366,7 @@ inline void _compare<data::Composite>(const data::Composite::csptr& actual, cons
 
 void SessionTest::compositeTest()
 {
-    _test<data::Composite>(true);
-    _test<data::Composite>(false);
+    _test_combine<data::Composite>();
 }
 
 //------------------------------------------------------------------------------
@@ -362,7 +376,7 @@ inline data::Mesh::sptr _new<data::Mesh>(const std::size_t variant)
 {
     const auto& object = data::Mesh::New();
     object->deepCopy(_expected<data::Mesh>(variant));
-    object->adjustAllocatedMemory();
+    object->shrinkToFit();
     return object;
 }
 
@@ -379,7 +393,7 @@ inline data::Mesh::sptr _generate<data::Mesh>(const std::size_t)
     geometry::data::Mesh::colorizeMeshCells(object);
     geometry::data::Mesh::generatePointNormals(object);
     geometry::data::Mesh::generateCellNormals(object);
-    object->adjustAllocatedMemory();
+    object->shrinkToFit();
 
     return object;
 }
@@ -394,42 +408,31 @@ inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::siz
     // Retrieve the expected variant
     const auto& expected = _expected<data::Mesh>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getAttributes(), actual->getAttributes());
-    CPPUNIT_ASSERT_EQUAL(expected->getNumberOfCells(), actual->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(expected->getNumberOfPoints(), actual->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(expected->getCellDataSize(), actual->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(expected->numCells(), actual->numCells());
+    CPPUNIT_ASSERT_EQUAL(expected->numPoints(), actual->numPoints());
+    CPPUNIT_ASSERT_EQUAL(expected->getCellSize(), actual->getCellSize());
     CPPUNIT_ASSERT_EQUAL(expected->getDataSizeInBytes(), actual->getDataSizeInBytes());
 
     // This is needed to use iterators
     data::mt::locked_ptr<const data::Mesh> expectedGuard(expected);
     data::mt::locked_ptr<const data::Mesh> actualGuard(actual);
 
-    for(auto expectedIt = expected->begin<data::iterator::PointIterator>(),
-        expectedEnd = expected->end<data::iterator::PointIterator>(),
-        actualIt = actual->begin<data::iterator::PointIterator>(),
-        actualEnd = actual->end<data::iterator::PointIterator>() ;
-        expectedIt != expectedEnd && actualIt != actualEnd ;
-        ++expectedIt, ++actualIt)
-    {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedIt->point->x, actualIt->point->x, FLOAT_EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedIt->point->y, actualIt->point->y, FLOAT_EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedIt->point->z, actualIt->point->z, FLOAT_EPSILON);
+    using namespace data::iterator;
+    const auto expectedRange = expected->czip_range<point::xyz, point::nxyz>();
+    const auto actualRange   = actual->czip_range<point::xyz, point::nxyz>();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            expectedIt->normal->nx,
-            actualIt->normal->nx,
-            FLOAT_EPSILON
-        );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            expectedIt->normal->ny,
-            actualIt->normal->ny,
-            FLOAT_EPSILON
-        );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            expectedIt->normal->nz,
-            actualIt->normal->nz,
-            FLOAT_EPSILON
-        );
+    for(const auto& [orig, cur] : boost::combine(expectedRange, actualRange))
+    {
+        const auto& [p1, n1] = orig;
+        const auto& [p2, n2] = cur;
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1.x, p2.x, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1.y, p2.y, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1.z, p2.z, FLOAT_EPSILON);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(n1.nx, n2.nx, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(n1.ny, n2.ny, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(n1.nz, n2.nz, FLOAT_EPSILON);
     }
 }
 
@@ -437,8 +440,7 @@ inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::siz
 
 void SessionTest::meshTest()
 {
-    _test<data::Mesh>(true);
-    _test<data::Mesh>(false);
+    _test_combine<data::Mesh>();
 }
 
 //------------------------------------------------------------------------------
@@ -469,8 +471,7 @@ inline void _compare<data::Equipment>(const data::Equipment::csptr& actual, cons
 
 void SessionTest::equipmentTest()
 {
-    _test<data::Equipment>(true);
-    _test<data::Equipment>(false);
+    _test_combine<data::Equipment>();
 }
 
 //------------------------------------------------------------------------------
@@ -507,8 +508,7 @@ inline void _compare<data::Patient>(const data::Patient::csptr& actual, const st
 
 void SessionTest::patientTest()
 {
-    _test<data::Patient>(true);
-    _test<data::Patient>(false);
+    _test_combine<data::Patient>();
 }
 
 //------------------------------------------------------------------------------
@@ -559,8 +559,7 @@ inline void _compare<data::Study>(const data::Study::csptr& actual, const std::s
 
 void SessionTest::studyTest()
 {
-    _test<data::Study>(true);
-    _test<data::Study>(false);
+    _test_combine<data::Study>();
 }
 
 //------------------------------------------------------------------------------
@@ -666,8 +665,7 @@ inline void _compare<data::Series>(const data::Series::csptr& actual, const std:
 
 void SessionTest::seriesTest()
 {
-    _test<data::Series>(true);
-    _test<data::Series>(false);
+    _test_combine<data::Series>();
 }
 
 //------------------------------------------------------------------------------
@@ -708,8 +706,7 @@ inline void _compare<data::ActivitySeries>(const data::ActivitySeries::csptr& ac
 
 void SessionTest::activitySeriesTest()
 {
-    _test<data::ActivitySeries>(true);
-    _test<data::ActivitySeries>(false);
+    _test_combine<data::ActivitySeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -718,6 +715,8 @@ template<>
 inline data::Array::sptr _generate<data::Array>(const std::size_t variant)
 {
     auto object = data::Array::New();
+
+    const auto lock = object->dump_lock();
 
     auto fill =
         [&](auto type)
@@ -813,6 +812,9 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
         {
             using T = decltype(type);
 
+            const auto dumpLockExpected = expected->dump_lock();
+            const auto dumpLockActual   = actual->dump_lock();
+
             for(auto expectedIt = expected->begin<T>(),
                 expectedEnd = expected->end<T>(),
                 actualIt = actual->begin<T>(),
@@ -875,8 +877,7 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
 
 void SessionTest::arrayTest()
 {
-    _test<data::Array>(true);
-    _test<data::Array>(false);
+    _test_combine<data::Array>();
 }
 
 //------------------------------------------------------------------------------
@@ -886,14 +887,14 @@ inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
 {
     auto object = data::Image::New();
 
-    const auto lock = object->lock();
+    const auto lock = object->dump_lock();
 
     auto fill =
         [&](auto type)
         {
             using T = decltype(type);
 
-            // Warning: generateImage use atoms that cannot deal with double value (truncated to float max precision),
+            // Warning: generateImage use reflection that cannot deal with double value (truncated to float precision),
             // thus the 0.1 + static_cast<double>(variant)
             utestData::generator::Image::generateImage(
                 object,
@@ -996,24 +997,24 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
     // Retrieve the expected variant
     const auto& expected = _expected<data::Image>(variant);
 
-    const auto& expectedSize = expected->getSize2();
-    const auto& actualSize   = actual->getSize2();
+    const auto& expectedSize = expected->getSize();
+    const auto& actualSize   = actual->getSize();
 
     for(std::size_t i = 0, end = expectedSize.size() ; i < end ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(expectedSize[i], actualSize[i]);
     }
 
-    const auto& expectedSpacing = expected->getSpacing2();
-    const auto& actualSpacing   = actual->getSpacing2();
+    const auto& expectedSpacing = expected->getSpacing();
+    const auto& actualSpacing   = actual->getSpacing();
 
     for(std::size_t i = 0, end = expectedSpacing.size() ; i < end ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedSpacing[i], actualSpacing[i], DOUBLE_EPSILON);
     }
 
-    const auto& expectedOrigin = expected->getOrigin2();
-    const auto& actualOrigin   = actual->getOrigin2();
+    const auto& expectedOrigin = expected->getOrigin();
+    const auto& actualOrigin   = actual->getOrigin();
 
     for(std::size_t i = 0, end = expectedOrigin.size() ; i < end ; ++i)
     {
@@ -1026,6 +1027,9 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
         [&](auto type)
         {
             using T = decltype(type);
+
+            const auto dumpLockExpected = expected->dump_lock();
+            const auto dumpLockActual   = actual->dump_lock();
 
             for(auto expectedIt = expected->begin<T>(),
                 expectedEnd = expected->end<T>(),
@@ -1089,8 +1093,7 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
 
 void SessionTest::imageTest()
 {
-    _test<data::Image>(true);
-    _test<data::Image>(false);
+    _test_combine<data::Image>();
 }
 
 //------------------------------------------------------------------------------
@@ -1130,8 +1133,7 @@ inline void _compare<data::Vector>(const data::Vector::csptr& actual, const std:
 
 void SessionTest::vectorTest()
 {
-    _test<data::Vector>(true);
-    _test<data::Vector>(false);
+    _test_combine<data::Vector>();
 }
 
 //------------------------------------------------------------------------------
@@ -1175,8 +1177,7 @@ inline void _compare<data::Point>(const data::Point::csptr& actual, const std::s
 
 void SessionTest::pointTest()
 {
-    _test<data::Point>(true);
-    _test<data::Point>(false);
+    _test_combine<data::Point>();
 }
 
 //------------------------------------------------------------------------------
@@ -1219,8 +1220,7 @@ inline void _compare<data::PointList>(const data::PointList::csptr& actual, cons
 
 void SessionTest::pointListTest()
 {
-    _test<data::PointList>(true);
-    _test<data::PointList>(false);
+    _test_combine<data::PointList>();
 }
 
 //------------------------------------------------------------------------------
@@ -1265,8 +1265,7 @@ inline void _compare<data::CalibrationInfo>(const data::CalibrationInfo::csptr& 
 
 void SessionTest::calibrationInfoTest()
 {
-    _test<data::CalibrationInfo>(true);
-    _test<data::CalibrationInfo>(false);
+    _test_combine<data::CalibrationInfo>();
 }
 
 //------------------------------------------------------------------------------
@@ -1425,8 +1424,7 @@ inline void _compare<data::Camera>(const data::Camera::csptr& actual, const std:
 
 void SessionTest::cameraTest()
 {
-    _test<data::Camera>(true);
-    _test<data::Camera>(false);
+    _test_combine<data::Camera>();
 }
 
 //------------------------------------------------------------------------------
@@ -1454,7 +1452,7 @@ inline void _compare<data::CameraSeries>(const data::CameraSeries::csptr& actual
 {
     CPPUNIT_ASSERT(actual);
 
-    for(std::size_t i = 0, end = actual->getNumberOfCameras() ; i < end ; ++i)
+    for(std::size_t i = 0, end = actual->numCameras() ; i < end ; ++i)
     {
         _compare<data::Camera>(actual->getCamera(i), variant + i);
     }
@@ -1466,8 +1464,7 @@ inline void _compare<data::CameraSeries>(const data::CameraSeries::csptr& actual
 
 void SessionTest::cameraSeriesTest()
 {
-    _test<data::CameraSeries>(true);
-    _test<data::CameraSeries>(false);
+    _test_combine<data::CameraSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -1502,8 +1499,7 @@ inline void _compare<data::Color>(const data::Color::csptr& actual, const std::s
 
 void SessionTest::colorTest()
 {
-    _test<data::Color>(true);
-    _test<data::Color>(false);
+    _test_combine<data::Color>();
 }
 
 //------------------------------------------------------------------------------
@@ -1538,8 +1534,7 @@ inline void _compare<data::Edge>(const data::Edge::csptr& actual, const std::siz
 
 void SessionTest::edgeTest()
 {
-    _test<data::Edge>(true);
-    _test<data::Edge>(false);
+    _test_combine<data::Edge>();
 }
 
 //------------------------------------------------------------------------------
@@ -1573,8 +1568,7 @@ inline void _compare<data::Port>(const data::Port::csptr& actual, const std::siz
 
 void SessionTest::portTest()
 {
-    _test<data::Port>(true);
-    _test<data::Port>(false);
+    _test_combine<data::Port>();
 }
 
 //------------------------------------------------------------------------------
@@ -1626,8 +1620,7 @@ inline void _compare<data::Node>(const data::Node::csptr& actual, const std::siz
 
 void SessionTest::nodeTest()
 {
-    _test<data::Node>(true);
-    _test<data::Node>(false);
+    _test_combine<data::Node>();
 }
 
 //------------------------------------------------------------------------------
@@ -1670,8 +1663,7 @@ inline void _compare<data::Graph>(const data::Graph::csptr& actual, const std::s
 
 void SessionTest::graphTest()
 {
-    _test<data::Graph>(true);
-    _test<data::Graph>(false);
+    _test_combine<data::Graph>();
 }
 
 //------------------------------------------------------------------------------
@@ -1709,7 +1701,7 @@ inline void _compare<data::Histogram>(const data::Histogram::csptr& actual, cons
     const auto& actualValues   = actual->getValues();
     CPPUNIT_ASSERT_EQUAL(expectedValues.size(), actualValues.size());
 
-    for(size_t i = 0, end = expectedValues.size() ; i < end ; ++i)
+    for(std::size_t i = 0, end = expectedValues.size() ; i < end ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(expectedValues.at(i), actualValues.at(i));
     }
@@ -1723,8 +1715,7 @@ inline void _compare<data::Histogram>(const data::Histogram::csptr& actual, cons
 
 void SessionTest::histogramTest()
 {
-    _test<data::Histogram>(true);
-    _test<data::Histogram>(false);
+    _test_combine<data::Histogram>();
 }
 
 //------------------------------------------------------------------------------
@@ -1782,7 +1773,7 @@ inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, cons
         const auto& actualGroup = actual->getGroup(name);
 
         // Test color
-        for(size_t i = 0, end = expectedGroup.m_color.size() ; i < end ; ++i)
+        for(std::size_t i = 0, end = expectedGroup.m_color.size() ; i < end ; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedGroup.m_color[i], actualGroup.m_color[i], FLOAT_EPSILON);
         }
@@ -1815,8 +1806,7 @@ inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, cons
 
 void SessionTest::landmarksTest()
 {
-    _test<data::Landmarks>(true);
-    _test<data::Landmarks>(false);
+    _test_combine<data::Landmarks>();
 }
 
 //------------------------------------------------------------------------------
@@ -1847,8 +1837,7 @@ inline void _compare<data::Line>(const data::Line::csptr& actual, const std::siz
 
 void SessionTest::lineTest()
 {
-    _test<data::Line>(true);
-    _test<data::Line>(false);
+    _test_combine<data::Line>();
 }
 
 //------------------------------------------------------------------------------
@@ -1888,8 +1877,7 @@ inline void _compare<data::List>(const data::List::csptr& actual, const std::siz
 
 void SessionTest::listTest()
 {
-    _test<data::List>(true);
-    _test<data::List>(false);
+    _test_combine<data::List>();
 }
 
 //------------------------------------------------------------------------------
@@ -1902,7 +1890,6 @@ inline data::Material::sptr _generate<data::Material>(const std::size_t variant)
     data::Material::ShadingType shading[] = {
         data::Material::ShadingType::AMBIENT,
         data::Material::ShadingType::FLAT,
-        data::Material::ShadingType::GOURAUD,
         data::Material::ShadingType::PHONG
     };
 
@@ -1977,8 +1964,7 @@ inline void _compare<data::Material>(const data::Material::csptr& actual, const 
 
 void SessionTest::materialTest()
 {
-    _test<data::Material>(true);
-    _test<data::Material>(false);
+    _test_combine<data::Material>();
 }
 
 //------------------------------------------------------------------------------
@@ -2022,8 +2008,7 @@ inline void _compare<data::Matrix4>(const data::Matrix4::csptr& actual, const st
 
 void SessionTest::matrix4Test()
 {
-    _test<data::Matrix4>(true);
-    _test<data::Matrix4>(false);
+    _test_combine<data::Matrix4>();
 }
 
 //------------------------------------------------------------------------------
@@ -2060,8 +2045,7 @@ inline void _compare<data::Plane>(const data::Plane::csptr& actual, const std::s
 
 void SessionTest::planeTest()
 {
-    _test<data::Plane>(true);
-    _test<data::Plane>(false);
+    _test_combine<data::Plane>();
 }
 
 //------------------------------------------------------------------------------
@@ -2099,8 +2083,7 @@ inline void _compare<data::PlaneList>(const data::PlaneList::csptr& actual, cons
 
 void SessionTest::planeListTest()
 {
-    _test<data::PlaneList>(true);
-    _test<data::PlaneList>(false);
+    _test_combine<data::PlaneList>();
 }
 
 //------------------------------------------------------------------------------
@@ -2137,8 +2120,7 @@ inline void _compare<data::ProcessObject>(const data::ProcessObject::csptr& actu
 
 void SessionTest::processObjectTest()
 {
-    _test<data::ProcessObject>(true);
-    _test<data::ProcessObject>(false);
+    _test_combine<data::ProcessObject>();
 }
 
 //------------------------------------------------------------------------------
@@ -2172,7 +2154,7 @@ inline void _compare<data::Reconstruction>(const data::Reconstruction::csptr& ac
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::Reconstruction>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getIsVisible(), actual->getIsVisible());
@@ -2198,8 +2180,7 @@ inline void _compare<data::Reconstruction>(const data::Reconstruction::csptr& ac
 
 void SessionTest::reconstructionTest()
 {
-    _test<data::Reconstruction>(true);
-    _test<data::Reconstruction>(false);
+    _test_combine<data::Reconstruction>();
 }
 
 //------------------------------------------------------------------------------
@@ -2242,11 +2223,16 @@ inline data::StructureTraits::sptr _generate<data::StructureTraits>(const std::s
     object->setPropertyType(UUID::generateUUID());
 
     // Categories
-    auto& categories = object->getCategories();
+
+    // Reset categories.
+    data::StructureTraits::CategoryContainer categories;
+
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
         categories.push_back(CATEGORIES[(i + variant) % std::size(CATEGORIES)]);
     }
+
+    object->setCategories(categories);
 
     // Color
     object->setColor(_new<data::Color>(variant));
@@ -2261,7 +2247,7 @@ inline void _compare<data::StructureTraits>(const data::StructureTraits::csptr& 
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::StructureTraits>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
@@ -2291,8 +2277,7 @@ inline void _compare<data::StructureTraits>(const data::StructureTraits::csptr& 
 
 void SessionTest::structureTraitsTest()
 {
-    _test<data::StructureTraits>(true);
-    _test<data::StructureTraits>(false);
+    _test_combine<data::StructureTraits>();
 }
 
 //------------------------------------------------------------------------------
@@ -2339,7 +2324,7 @@ inline void _compare<data::StructureTraitsDictionary>(
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::StructureTraitsDictionary>(variant);
 
     for(const auto& name : expected->getStructureTypeNames())
@@ -2381,8 +2366,7 @@ inline void _compare<data::StructureTraitsDictionary>(
 
 void SessionTest::structureTraitsDictionaryTest()
 {
-    _test<data::StructureTraitsDictionary>(true);
-    _test<data::StructureTraitsDictionary>(false);
+    _test_combine<data::StructureTraitsDictionary>();
 }
 
 //------------------------------------------------------------------------------
@@ -2416,7 +2400,7 @@ inline void _compare<data::ReconstructionTraits>(
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::ReconstructionTraits>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
@@ -2435,8 +2419,7 @@ inline void _compare<data::ReconstructionTraits>(
 
 void SessionTest::reconstructionTraitsTest()
 {
-    _test<data::ReconstructionTraits>(true);
-    _test<data::ReconstructionTraits>(false);
+    _test_combine<data::ReconstructionTraits>();
 }
 
 //------------------------------------------------------------------------------
@@ -2469,7 +2452,7 @@ inline void _compare<data::Resection>(const data::Resection::csptr& actual, cons
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::Resection>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getName(), actual->getName());
@@ -2491,8 +2474,7 @@ inline void _compare<data::Resection>(const data::Resection::csptr& actual, cons
 
 void SessionTest::resectionTest()
 {
-    _test<data::Resection>(true);
-    _test<data::Resection>(false);
+    _test_combine<data::Resection>();
 }
 
 //------------------------------------------------------------------------------
@@ -2532,8 +2514,7 @@ inline void _compare<data::ResectionDB>(const data::ResectionDB::csptr& actual, 
 
 void SessionTest::resectionDBTest()
 {
-    _test<data::ResectionDB>(true);
-    _test<data::ResectionDB>(false);
+    _test_combine<data::ResectionDB>();
 }
 
 //------------------------------------------------------------------------------
@@ -2575,8 +2556,7 @@ inline void _compare<data::ROITraits>(const data::ROITraits::csptr& actual, cons
 
 void SessionTest::roiTraitsTest()
 {
-    _test<data::ROITraits>(true);
-    _test<data::ROITraits>(false);
+    _test_combine<data::ROITraits>();
 }
 
 //------------------------------------------------------------------------------
@@ -2613,8 +2593,7 @@ inline void _compare<data::SeriesDB>(const data::SeriesDB::csptr& actual, const 
 
 void SessionTest::seriesDBTest()
 {
-    _test<data::SeriesDB>(true);
-    _test<data::SeriesDB>(false);
+    _test_combine<data::SeriesDB>();
 }
 
 //------------------------------------------------------------------------------
@@ -2638,7 +2617,7 @@ inline void _compare<data::Tag>(const data::Tag::csptr& actual, const std::size_
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::Tag>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
@@ -2651,8 +2630,7 @@ inline void _compare<data::Tag>(const data::Tag::csptr& actual, const std::size_
 
 void SessionTest::tagTest()
 {
-    _test<data::Tag>(true);
-    _test<data::Tag>(false);
+    _test_combine<data::Tag>();
 }
 
 //------------------------------------------------------------------------------
@@ -2703,7 +2681,7 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::TransferFunction>(variant);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getLevel(), actual->getLevel(), DOUBLE_EPSILON);
@@ -2735,8 +2713,7 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
 
 void SessionTest::transferFunctionTest()
 {
-    _test<data::TransferFunction>(true);
-    _test<data::TransferFunction>(false);
+    _test_combine<data::TransferFunction>();
 }
 
 //------------------------------------------------------------------------------
@@ -2796,7 +2773,7 @@ inline void _compare<data::DicomSeries>(const data::DicomSeries::csptr& actual, 
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::DicomSeries>(variant);
 
     // Test inherited attributes
@@ -2821,8 +2798,7 @@ void SessionTest::dicomSeriesTest()
         return;
     }
 
-    _test<data::DicomSeries>(true);
-    _test<data::DicomSeries>(false);
+    _test_combine<data::DicomSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -2861,7 +2837,7 @@ inline void _compare<data::ImageSeries>(const data::ImageSeries::csptr& actual, 
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::ImageSeries>(variant);
 
     // Test inherited attributes
@@ -2896,8 +2872,7 @@ void SessionTest::imageSeriesTest()
         return;
     }
 
-    _test<data::ImageSeries>(true);
-    _test<data::ImageSeries>(false);
+    _test_combine<data::ImageSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -2952,8 +2927,130 @@ void SessionTest::modelSeriesTest()
         return;
     }
 
-    _test<data::ModelSeries>(true);
-    _test<data::ModelSeries>(false);
+    _test_combine<data::ModelSeries>();
+}
+
+//------------------------------------------------------------------------------
+
+inline static void customSerialize(
+    zip::ArchiveWriter&,
+    boost::property_tree::ptree& tree,
+    data::Object::csptr object,
+    std::map<std::string, data::Object::csptr>&,
+    const core::crypto::secure_string& = ""
+)
+{
+    // Cast to the right type
+    const auto string = Helper::safeCast<data::String>(object);
+
+    // Add a version number. Not mandatory, but could help for future release
+    Helper::writeVersion<data::String>(tree, 666);
+
+    Helper::writeString(tree, "custom", string->getValue());
+}
+
+//------------------------------------------------------------------------------
+
+inline static data::String::sptr customDeserialize(
+    zip::ArchiveReader&,
+    const boost::property_tree::ptree& tree,
+    const std::map<std::string, data::Object::sptr>&,
+    data::Object::sptr object,
+    const core::crypto::secure_string& = ""
+)
+{
+    // Create or reuse the object
+    auto string = Helper::safeCast<data::String>(object);
+
+    // Check version number. Not mandatory, but could help for future release
+    Helper::readVersion<data::String>(tree, 0, 666);
+
+    // Assign the value
+    string->setValue(Helper::readString(tree, "custom"));
+
+    return string;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::customSerializerTest()
+{
+    // Create a temporary directory
+    const auto tmpfolder = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(tmpfolder);
+    const auto testPath = tmpfolder / "customSerializerTest.zip";
+    std::filesystem::remove(testPath);
+
+    // Register custom serializers
+    io::session::SessionWriter::setDefaultSerializer(data::String::classname(), customSerialize);
+    io::session::SessionReader::setDefaultDeserializer(data::String::classname(), customDeserialize);
+
+    // Test serialization
+    {
+        // Create the data object
+        auto object = _new<data::String>(0);
+
+        // Create the session writer
+        auto sessionWriter = io::session::SessionWriter::New();
+        CPPUNIT_ASSERT(sessionWriter);
+
+        // Configure the session writer
+        sessionWriter->setObject(object);
+        sessionWriter->setFile(testPath);
+
+        // Write the session
+        CPPUNIT_ASSERT_NO_THROW(sessionWriter->write());
+
+        CPPUNIT_ASSERT(std::filesystem::exists(testPath));
+    }
+
+    // Test deserialization
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+
+        // Configure the session reader
+        sessionReader->setFile(testPath);
+
+        // Read the session
+        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
+
+        // Test value
+        auto object = std::dynamic_pointer_cast<data::String>(sessionReader->getObject());
+        _compare<data::String>(object, 0);
+    }
+
+    // Restore default serializers
+    io::session::SessionWriter::setDefaultSerializer(data::String::classname());
+    io::session::SessionReader::setDefaultDeserializer(data::String::classname());
+
+    // Test again deserialization, it should fail since the deserializer is not the good one
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+
+        // Configure the session reader
+        sessionReader->setFile(testPath);
+
+        // Read the session, since we don't use version 666 anymore, an exception should be raised
+        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
+
+        // Retry with the custom deserializer on deserializer instance
+        sessionReader->setDeserializer(data::String::classname(), customDeserialize);
+        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
+    }
+
+    // Test again deserialization, to be sure the custom instance deserializer is really gone
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+
+        // Configure the session reader
+        sessionReader->setFile(testPath);
+
+        // Read the session, since we don't use version 666 anymore, an exception should be raised
+        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
+    }
 }
 
 } // namespace ut

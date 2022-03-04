@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include <atomic>
 #include <exception>
 #include <iostream>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::thread::ut::WorkerTest);
@@ -307,6 +308,68 @@ void WorkerTest::timerTest()
     }
 
     worker->stop();
+}
+
+//-----------------------------------------------------------------------------
+
+void WorkerTest::registryTest()
+{
+    {
+        CPPUNIT_ASSERT_EQUAL(core::thread::Worker::sptr(), core::thread::getWorker("worker1"));
+
+        auto worker1 = core::thread::Worker::New();
+        core::thread::addWorker("worker1", worker1);
+
+        CPPUNIT_ASSERT_EQUAL(worker1, core::thread::getWorker("worker1"));
+
+        auto worker2 = core::thread::Worker::New();
+        core::thread::addWorker("worker2", worker2);
+
+        auto worker3 = core::thread::Worker::New();
+        core::thread::addWorker("worker3", worker3);
+
+        CPPUNIT_ASSERT_EQUAL(worker1, core::thread::getWorker("worker1"));
+        CPPUNIT_ASSERT_EQUAL(worker2, core::thread::getWorker("worker2"));
+        CPPUNIT_ASSERT_EQUAL(worker3, core::thread::getWorker("worker3"));
+
+        core::thread::removeWorker("worker2");
+        CPPUNIT_ASSERT_EQUAL(worker1, core::thread::getWorker("worker1"));
+        CPPUNIT_ASSERT_EQUAL(core::thread::Worker::sptr(), core::thread::getWorker("worker2"));
+        CPPUNIT_ASSERT_EQUAL(worker3, core::thread::getWorker("worker3"));
+
+        auto worker4 = core::thread::Worker::New();
+        core::thread::addWorker("worker2", worker4);
+        CPPUNIT_ASSERT_EQUAL(worker1, core::thread::getWorker("worker1"));
+        CPPUNIT_ASSERT_EQUAL(worker4, core::thread::getWorker("worker2"));
+        CPPUNIT_ASSERT_EQUAL(worker3, core::thread::getWorker("worker3"));
+
+        core::thread::removeWorker("worker1");
+        core::thread::removeWorker("worker2");
+        core::thread::removeWorker("worker3");
+    }
+
+    {
+        auto initWorker = core::thread::getDefaultWorker();
+        CPPUNIT_ASSERT(initWorker != nullptr);
+    }
+    {
+        auto worker1 = core::thread::Worker::New();
+        core::thread::setDefaultWorker(worker1);
+        CPPUNIT_ASSERT_EQUAL(worker1, core::thread::getDefaultWorker());
+
+        auto worker2 = core::thread::Worker::New();
+
+        // simulates that worker1 is still in use because of its sptr above
+        CPPUNIT_ASSERT_THROW(core::thread::setDefaultWorker(worker2), core::Exception);
+        worker2->stop();
+    }
+    {
+        auto defaultWorker = core::thread::Worker::New();
+        core::thread::setDefaultWorker(defaultWorker);
+        CPPUNIT_ASSERT_EQUAL(defaultWorker, core::thread::getDefaultWorker());
+    }
+
+    CPPUNIT_ASSERT_THROW(core::thread::setDefaultWorker(core::thread::Worker::sptr()), core::Exception);
 }
 
 //-----------------------------------------------------------------------------

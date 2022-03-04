@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,11 +132,11 @@ void SCameraConfigLauncher::starting()
 
     qtContainer->setLayout(layout);
 
-    size_t nbCam;
+    std::size_t nbCam;
     {
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT("Missing cameraSeries.", cameraSeries);
-        nbCam = cameraSeries->getNumberOfCameras();
+        nbCam = cameraSeries->numCameras();
     }
     if(nbCam == 0)
     {
@@ -147,7 +147,7 @@ void SCameraConfigLauncher::starting()
     }
     else
     {
-        for(size_t i = 0 ; i < nbCam ; ++i)
+        for(std::size_t i = 0 ; i < nbCam ; ++i)
         {
             m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
         }
@@ -191,7 +191,7 @@ void SCameraConfigLauncher::onCameraChanged(int index)
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT(
             "Bad index: " << index,
-            index >= 0 && static_cast<size_t>(index) < cameraSeries->getNumberOfCameras()
+            index >= 0 && static_cast<std::size_t>(index) < cameraSeries->numCameras()
         );
     }
 
@@ -207,11 +207,11 @@ void SCameraConfigLauncher::onCameraChanged(int index)
 
     if(m_extrinsicButton->isChecked())
     {
-        this->startExtrinsicConfig(static_cast<size_t>(index));
+        this->startExtrinsicConfig(static_cast<std::size_t>(index));
     }
     else
     {
-        this->startIntrinsicConfig(static_cast<size_t>(index));
+        this->startIntrinsicConfig(static_cast<std::size_t>(index));
     }
 }
 
@@ -229,13 +229,17 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    auto sdb                              = data::SeriesDB::New();
-    service::IService::sptr readerService = service::add("sight::module::io::atoms::SReader");
-    readerService->setInOut(sdb, io::base::service::s_DATA_KEY);
+    auto sdb    = data::SeriesDB::New();
+    auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
+    reader->setInOut(sdb, io::base::service::s_DATA_KEY);
 
     try
     {
-        io::base::service::IReader::sptr reader = io::base::service::IReader::dynamicCast(readerService);
+        service::IService::ConfigType config;
+        config.add("dialog.<xmlattr>.extension", ".cam");
+        config.add("dialog.<xmlattr>.description", "Cameras");
+        reader->configure(config);
+
         reader->start();
         reader->openLocationDialog();
         reader->update();
@@ -252,7 +256,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         throw;
     }
-    service::OSR::unregisterService(readerService);
+    service::OSR::unregisterService(reader);
 
     auto series             = sdb->getContainer();
     auto cameraSeriesVector = std::vector<data::CameraSeries::sptr>();
@@ -277,11 +281,11 @@ void SCameraConfigLauncher::onImportClicked()
     else
     {
         QStringList cameras;
-        std::map<std::string, data::Camera::sptr> map;
+        std::map<std::string, data::Camera::csptr> map;
         for(auto nSeries = 0 ; nSeries != cameraSeriesVector.size() ; ++nSeries)
         {
             auto cameraSeries_ = cameraSeriesVector[nSeries];
-            for(auto nCam = 0 ; nCam != cameraSeries_->getNumberOfCameras() ; ++nCam)
+            for(auto nCam = 0 ; nCam != cameraSeries_->numCameras() ; ++nCam)
             {
                 auto cam      = cameraSeries_->getCamera(nCam);
                 auto cameraID =
@@ -333,7 +337,7 @@ void SCameraConfigLauncher::onImportClicked()
 
 void SCameraConfigLauncher::onRemoveClicked()
 {
-    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
+    const std::size_t index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
     if(index > 0)
     {
         m_cameraComboBox->blockSignals(true);
@@ -354,7 +358,7 @@ void SCameraConfigLauncher::onRemoveClicked()
             const auto activitySeries      = m_activitySeries.lock();
             activitySeries->getData()->getContainer().erase(calibrationInfoKey);
 
-            const size_t nbCam = cameraSeries->getNumberOfCameras();
+            const std::size_t nbCam = cameraSeries->numCameras();
             if(nbCam == 1)
             {
                 m_extrinsicButton->setEnabled(false);
@@ -363,7 +367,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 
             // Renamed all items from 1 to nbCam
             m_cameraComboBox->clear();
-            for(size_t i = 0 ; i < nbCam ; ++i)
+            for(std::size_t i = 0 ; i < nbCam ; ++i)
             {
                 m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
             }
@@ -384,11 +388,11 @@ void SCameraConfigLauncher::onRemoveClicked()
 
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
-    size_t index;
+    std::size_t index;
     {
         const auto cameraSeries = m_cameraSeries.lock();
-        index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-        SIGHT_ASSERT("Bad index: " << index, index < cameraSeries->getNumberOfCameras());
+        index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
+        SIGHT_ASSERT("Bad index: " << index, index < cameraSeries->numCameras());
     }
     if(checked)
     {
@@ -402,7 +406,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
+void SCameraConfigLauncher::startIntrinsicConfig(std::size_t index)
 {
     service::FieldAdaptorType replaceMap;
     {
@@ -427,11 +431,11 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
+void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
 {
     service::FieldAdaptorType replaceMap;
     {
-        const size_t cameraIdx = std::max(index, size_t(1));
+        const std::size_t cameraIdx = std::max(index, std::size_t(1));
 
         const auto cameraSeries = m_cameraSeries.lock();
 
@@ -446,12 +450,12 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
             return;
         }
 
+        // cspell: ignore Extr
         // Add 2 calibration info in ActivitySeries if not exist
-        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + ::boost::lexical_cast<std::string>(cameraIdx);
-        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + ::boost::lexical_cast<std::string>(cameraIdx);
-
-        const auto activitySeries  = m_activitySeries.lock();
-        data::Composite::sptr data = activitySeries->getData();
+        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + boost::lexical_cast<std::string>(cameraIdx);
+        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + boost::lexical_cast<std::string>(cameraIdx);
+        const auto activitySeries       = m_activitySeries.lock();
+        data::Composite::sptr data      = activitySeries->getData();
         data::CalibrationInfo::sptr calibInfo1;
         data::CalibrationInfo::sptr calibInfo2;
         // Get the calibrationInfo from the activity series if it exists or create it.
@@ -485,10 +489,10 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 
 void SCameraConfigLauncher::addCamera()
 {
-    size_t nbCam;
+    std::size_t nbCam;
     {
         const auto cameraSeries = m_cameraSeries.lock();
-        nbCam = cameraSeries->getNumberOfCameras();
+        nbCam = cameraSeries->numCameras();
 
         data::Camera::sptr camera = data::Camera::New();
 

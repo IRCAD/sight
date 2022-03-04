@@ -30,7 +30,7 @@
 #include <service/IService.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 namespace sight::ui::base
 {
@@ -43,6 +43,27 @@ const ILocationDialog::FactoryRegistryKeyType ILocationDialog::REGISTRY_KEY = ":
 const std::string ILocationDialog::SOFTWARE_UI           = "SOFTWARE_UI";
 const std::string ILocationDialog::DLG_DEFAULT_FILE      = "DLG_DEFAULT_FILE";
 const std::string ILocationDialog::DLG_DEFAULT_DIRECTORY = "DLG_DEFAULT_DIRECTORY";
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_frame_key(const std::string& title)
+{
+    return ILocationDialog::SOFTWARE_UI + "." + title;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_file_key(const std::string& title)
+{
+    return get_frame_key(title) + "." + ILocationDialog::DLG_DEFAULT_FILE;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_directory_key(const std::string& title)
+{
+    return get_frame_key(title) + "." + ILocationDialog::DLG_DEFAULT_DIRECTORY;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -81,29 +102,30 @@ void ILocationDialog::setDefaultLocation(core::location::ILocation::sptr loc)
 
 const core::location::ILocation::sptr ILocationDialog::getDefaultLocation()
 {
-    data::Composite::sptr prefUI = this->getPreferenceUI();
     core::location::ILocation::sptr location;
 
-    if(prefUI)
+    try
     {
-        // This code is temporary
-        // @TODO: find a better way to serialize in preferences
-        if(prefUI->find(ILocationDialog::DLG_DEFAULT_FILE) != prefUI->end())
+        ui::base::Preferences preferences;
+
+        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(getTitle()));
+           default_file)
         {
-            const auto stringLocation =
-                data::String::dynamicCast((*prefUI)[ILocationDialog::DLG_DEFAULT_FILE]);
-            const auto& singleFile = std::make_shared<core::location::SingleFile>();
-            singleFile->setFile(stringLocation->getValue());
-            location = singleFile;
+            auto single_file = std::make_shared<core::location::SingleFile>();
+            single_file->setFile(*default_file);
+            location = single_file;
         }
-        else if(prefUI->find(ILocationDialog::DLG_DEFAULT_DIRECTORY) != prefUI->end())
+        else if(const auto& default_directory =
+                    preferences.get_optional<std::filesystem::path>(get_directory_key(getTitle())); default_directory)
         {
-            const auto stringLocation =
-                data::String::dynamicCast((*prefUI)[ILocationDialog::DLG_DEFAULT_DIRECTORY]);
-            const auto& singleDirectory = std::make_shared<core::location::SingleFolder>();
-            singleDirectory->setFolder(stringLocation->getValue());
-            location = singleDirectory;
+            auto single_directory = std::make_shared<core::location::SingleFolder>();
+            single_directory->setFolder(*default_directory);
+            location = single_directory;
         }
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 
     if(!location)
@@ -118,62 +140,26 @@ const core::location::ILocation::sptr ILocationDialog::getDefaultLocation()
 
 void ILocationDialog::saveDefaultLocation(core::location::ILocation::sptr loc)
 {
-    data::Composite::sptr prefUI = this->getPreferenceUI();
-    if(prefUI && loc)
+    if(loc)
     {
-        // This code is temporary
-        // @TODO: find a better way to serialize in preferences
-        auto stringLocation = data::String::New();
+        try
+        {
+            ui::base::Preferences preferences;
 
-        if(auto singleFile = core::location::SingleFile::dynamicCast(loc))
-        {
-            stringLocation->setValue(singleFile->getFile().string());
-            (*prefUI)[ILocationDialog::DLG_DEFAULT_FILE] = stringLocation;
+            if(auto singleFile = core::location::SingleFile::dynamicCast(loc))
+            {
+                preferences.put(get_file_key(getTitle()), singleFile->getFile());
+            }
+            else if(auto singleDirectory = core::location::SingleFolder::dynamicCast(loc))
+            {
+                preferences.put(get_directory_key(getTitle()), singleDirectory->getFolder());
+            }
         }
-        else if(auto singleDirectory = core::location::SingleFolder::dynamicCast(loc))
+        catch(const ui::base::PreferencesDisabled&)
         {
-            stringLocation->setValue(singleDirectory->getFolder().string());
-            (*prefUI)[ILocationDialog::DLG_DEFAULT_DIRECTORY] = stringLocation;
+            // Nothing to do..
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-data::Composite::sptr ILocationDialog::getPreferenceUI()
-{
-    data::Composite::sptr prefUI;
-
-    // Get preferences
-    data::Composite::sptr prefs = ui::base::preferences::getPreferences();
-    if(prefs)
-    {
-        data::Composite::sptr framesUI;
-
-        // Retrieves software UI pref
-        if(prefs->find(ILocationDialog::SOFTWARE_UI) != prefs->end())
-        {
-            framesUI = data::Composite::dynamicCast((*prefs)[ILocationDialog::SOFTWARE_UI]);
-        }
-        else
-        {
-            framesUI                               = data::Composite::New();
-            (*prefs)[ILocationDialog::SOFTWARE_UI] = framesUI;
-        }
-
-        // Retrieves associated dialog UI pref
-        if(framesUI->find(this->getTitle()) != framesUI->end())
-        {
-            prefUI = data::Composite::dynamicCast((*framesUI)[this->getTitle()]);
-        }
-        else
-        {
-            prefUI                        = data::Composite::New();
-            (*framesUI)[this->getTitle()] = prefUI;
-        }
-    }
-
-    return prefUI;
 }
 
 //-----------------------------------------------------------------------------

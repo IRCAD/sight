@@ -1,4 +1,3 @@
-
 # Do not change the indentation of the activate list
 macro(profile_setup PROJECT)
     set(UNIQUE "false")
@@ -38,23 +37,23 @@ macro(profile_setup PROJECT)
 
         # Ensure that we start this module before the "START_BEFORE"
         foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
-            list(FIND START_MODULES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
+            list(FIND START_MODULES ${CURRENT_START_BEFORE} INDEX_START_BEFORE)
             if(NOT ${INDEX_START_BEFORE} EQUAL -1)
-                 list(INSERT START_MODULES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
-                 break()
+                list(INSERT START_MODULES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
+                break()
             endif()
         endforeach()
 
         get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
-        
-        if( "${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
-            
+
+        if("${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
+
             string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
             if(${CURRENT_REQUIREMENT} IN_LIST SIGHT_COMPONENTS)
                 set(REQ "${PROJECT_NAME}::${REQ}")
             endif()
 
-            # check if a moduleParam macro had been used in the CMakeLists.txt
+            # check if a module_param macro had been used in the CMakeLists.txt
             # if yes, get and set module param and values
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
                 set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")
@@ -83,13 +82,16 @@ macro(profile_setup PROJECT)
         set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE}\" />")
     endforeach()
 
-    configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
-                    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}/profile.xml")
+    configure_file(
+        "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
+        "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}/profile.xml"
+    )
 endmacro()
 
-macro(moduleParam MODULE_NAME)
+# Parse module parameters
+macro(module_param MODULE_NAME)
     set(options)
     set(oneValueArgs)
     set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${SIGHT_TARGET}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("${SIGHT_TARGET}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 endmacro()

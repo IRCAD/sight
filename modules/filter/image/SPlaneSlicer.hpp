@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ namespace sight::module::filter::image
  * @subsection Input Input
  * - \b image [sight::data::Image]: Image from which the slice is extracted.
  * - \b imageExtent [sight::data::Image]: Image used to pass the extent.
- * - \b axes [sight::data::Matrix4]: Matrix containing the axes defining the reslicing plane.
+ * - \b axes [sight::data::Matrix4]: Matrix containing axes defining the reslicing plane.
  *
  * @subsection In-Out In-Out
  * - \b slice [sight::data::Image]: Extracted slice.
@@ -114,13 +114,13 @@ private:
     void applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const;
 
     /// Slot: called when the extent image orientation.
-    void updateSliceOrientation(int from, int to);
+    void updateorientation_t(int from, int to);
 
     /// Slot: sets the reslicer default value which is the minimum value of the input image.
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::MedicalImage::Orientation m_orientation;
+    data::helper::MedicalImage::orientation_t m_orientation;
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

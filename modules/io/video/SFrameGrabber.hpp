@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -187,7 +187,7 @@ private:
     unsigned int m_fps;
 
     /// Counter used by the image reader.
-    size_t m_imageCount;
+    std::size_t m_imageCount;
 
     core::thread::Timer::sptr m_timer;
 
@@ -195,7 +195,7 @@ private:
     core::thread::Worker::sptr m_worker;
 
     /// OpenCV video grabber.
-    ::cv::VideoCapture m_videoCapture;
+    cv::VideoCapture m_videoCapture;
 
     /// List of image paths to read.
     ImageFilesType m_imageToRead;
@@ -228,7 +228,7 @@ private:
     unsigned long m_stepChanged;
 
     /// Total number of frames in a video file.
-    size_t m_videoFramesNb;
+    std::size_t m_videoFramesNb;
 
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };

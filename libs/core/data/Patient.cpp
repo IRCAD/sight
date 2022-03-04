@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,5 +81,26 @@ void Patient::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheTy
 }
 
 //------------------------------------------------------------------------------
+
+bool Patient::operator==(const Patient& other) const noexcept
+{
+    if(m_name != other.m_name
+       || m_patientId != other.m_patientId
+       || m_birthdate != other.m_birthdate
+       || m_sex != other.m_sex)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Patient::operator!=(const Patient& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

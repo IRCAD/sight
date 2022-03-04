@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,14 +26,13 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <service/registry/Proxy.hpp>
 
 #include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ProxyTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ProxyTest);
 
 namespace sight::service
 {
@@ -123,11 +122,11 @@ void ProxyTest::basicTest()
     proxy->connect(CHANNEL, slot2);
     proxy->connect(CHANNEL, slot3);
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), sig->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), sig2->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), slot->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), slot2->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), slot3->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), sig->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), sig2->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), slot->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), slot2->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), slot3->numConnections());
     sig->asyncEmit(3, 5);
 
     fwTestWaitMacro(testObject.m_methodSum == 1 && testObject.m_methodSquare == 1 && testObject.m_methodDoNothing == 1);
@@ -150,11 +149,11 @@ void ProxyTest::basicTest()
     proxy->disconnect(CHANNEL, slot2);
     proxy->disconnect(CHANNEL, slot3);
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), sig->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), sig2->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), slot->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), slot2->getNumberOfConnections());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), slot3->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), sig->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), sig2->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), slot->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), slot2->numConnections());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), slot3->numConnections());
     worker->stop();
 }
 

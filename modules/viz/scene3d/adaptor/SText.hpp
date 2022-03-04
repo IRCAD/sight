@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): not really used but it is needed to be bound to a render service.
  * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
- * - \b fontSize (optional, usinged int, default=16): font size in points.
+ * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b hAlign (optional, left|center|right, default="left"): horizontal alignment.
  * - \b vAlign (optional, top|center|bottom, default="bottom"): vertical alignment.
  * - \b text (optional, string, default=""): text to display, only available when no input is set.
@@ -80,7 +80,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SText final : public sight::viz::scene3d::IAd
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SText, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SText, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SText() noexcept;
@@ -125,13 +125,13 @@ private:
     sight::viz::scene3d::Text* m_text {nullptr};
 
     /// Defines the text's color.
-    ::Ogre::ColourValue m_textColor;
+    Ogre::ColourValue m_textColor;
 
     /// Defines the font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     /// Defines the position of the text.
-    ::Ogre::Vector2 m_position {0.f, 0.f};
+    Ogre::Vector2 m_position {0.f, 0.f};
 
     /// Defines the vertical alignment type (top, center or bottom).
     std::string m_verticalAlignment;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVoxelPicker final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVoxelPicker, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVoxelPicker, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SVoxelPicker() noexcept;
@@ -118,7 +118,7 @@ private:
     void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /**
      * @brief SLOT: updates the image slice type.
@@ -138,11 +138,11 @@ private:
      * @param _origin image origin.
      * @param _spacing image spacing.
      */
-    std::pair<bool, ::Ogre::Vector3> computeRayImageIntersection(
-        const ::Ogre::Ray& _ray,
+    std::pair<bool, Ogre::Vector3> computeRayImageIntersection(
+        const Ogre::Ray& _ray,
         const data::Image::csptr _image,
-        const ::Ogre::Vector3& _origin,
-        const ::Ogre::Vector3& _spacing
+        const Ogre::Vector3& _origin,
+        const Ogre::Vector3& _spacing
     );
 
     /// Defines the orientation of the image used to pick on the current slice.

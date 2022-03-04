@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,6 @@
 #include <data/Integer.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Patient.hpp>
-#include <data/reflection/getObject.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
@@ -109,7 +107,7 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
     {
         QDropEvent* dropEvent = static_cast<QDropEvent*>(_event);
 
-        size_t index                    = static_cast<size_t>(this->currentIndex());
+        std::size_t index               = static_cast<std::size_t>(this->currentIndex());
         ActivityRequirement requirement = m_activityInfo.requirements[index];
         QPointer<QTreeWidget> tree      = m_treeWidgets[index];
 
@@ -374,7 +372,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
 
     this->fillInformation(info);
 
-    for(size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
@@ -428,7 +426,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr DataView::checkData(size_t _index, std::string& _errorMsg)
+data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMsg)
 {
     data::Object::sptr object;
 
@@ -529,16 +527,8 @@ data::Object::sptr DataView::checkData(size_t _index, std::string& _errorMsg)
                     data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if(obj && obj->isA(req.type))
                     {
-                        std::string key  = req.keys[i].key;
-                        std::string path = req.keys[i].path;
-                        if(path.empty())
-                        {
-                            (*composite)[key] = obj;
-                        }
-                        else
-                        {
-                            (*composite)[key] = data::reflection::getObject(obj, path);
-                        }
+                        std::string key = req.keys[i].key;
+                        (*composite)[key] = obj;
                     }
                     else
                     {
@@ -583,7 +573,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
     errorMsg += "The required data are not correct:";
 
     // Check if all required data are present
-    for(size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
         std::string msg;
@@ -622,7 +612,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
 
 void DataView::removeSelectedObjects()
 {
-    size_t tabIndex               = static_cast<size_t>(this->currentIndex());
+    std::size_t tabIndex          = static_cast<std::size_t>(this->currentIndex());
     QPointer<QTreeWidget> tree    = m_treeWidgets[tabIndex];
     QList<QTreeWidgetItem*> items = tree->selectedItems();
     for(QTreeWidgetItem* item : items)
@@ -644,7 +634,7 @@ void DataView::removeSelectedObjects()
 
 void DataView::clearTree()
 {
-    size_t tabIndex            = static_cast<size_t>(this->currentIndex());
+    std::size_t tabIndex       = static_cast<std::size_t>(this->currentIndex());
     QPointer<QTreeWidget> tree = m_treeWidgets[tabIndex];
     tree->clear();
 }
@@ -653,7 +643,7 @@ void DataView::clearTree()
 
 void DataView::createNewObject()
 {
-    size_t index = static_cast<size_t>(this->currentIndex());
+    std::size_t index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -681,7 +671,7 @@ void DataView::createNewObject()
 
 void DataView::importObject()
 {
-    const size_t index = static_cast<size_t>(this->currentIndex());
+    const std::size_t index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -712,7 +702,7 @@ void DataView::importObject()
 
 void DataView::importObjectFromSDB()
 {
-    const size_t index = static_cast<size_t>(this->currentIndex());
+    const std::size_t index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -736,7 +726,7 @@ void DataView::importObjectFromSDB()
         SIGHT_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
-        auto obj      = this->readObject("::sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
+        auto obj      = this->readObject("sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
         auto seriesDB = data::SeriesDB::dynamicCast(obj);
         if(seriesDB)
         {
@@ -775,12 +765,12 @@ data::Object::sptr DataView::readObject(
 {
     data::Object::sptr obj;
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("::sight::module::ui::base::io::SSelector");
+    ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
 
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         _ioSelectorSrvConfig,
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
@@ -817,7 +807,7 @@ data::Object::sptr DataView::readObject(
 
 //-----------------------------------------------------------------------------
 
-void DataView::addObjectItem(size_t _index, const data::Object::csptr& _obj)
+void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj)
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
@@ -891,7 +881,7 @@ void DataView::addObjectItem(size_t _index, const data::Object::csptr& _obj)
             std::string patientPosition = imageSeries->getPatientPosition();
             if(!patientPosition.empty())
             {
-                // Code string can contains leading or trailing spaces, we removed it frist.
+                // Code string can contains leading or trailing spaces, we removed it first.
                 const std::string::const_iterator forward =
                     std::remove_if(
                         patientPosition.begin(),
@@ -1153,7 +1143,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         bool conversionOK = false;
                         for(int i = 0 ; i < 16 ; ++i)
                         {
-                            coeffs[size_t(i)] = coeffList[i].toDouble(&conversionOK);
+                            coeffs[std::size_t(i)] = coeffList[i].toDouble(&conversionOK);
                             if(!conversionOK)
                             {
                                 QMessageBox::warning(

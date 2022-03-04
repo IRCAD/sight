@@ -6,13 +6,13 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::Factory" >
+    <extension implements="sight::service::extension::Factory" >
         <type>sight::ui::base::IAction</type>
         <service>Tuto04MeshGeneratorCpp::SMeshModifier</service>
         <object>sight::data::Mesh</object>
     </extension>
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto04MeshGeneratorCpp_AppCfg</id>
         <config>
 
@@ -113,7 +113,7 @@
             </service>
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" />
+                <in key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 

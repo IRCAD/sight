@@ -62,7 +62,7 @@ Detail of the ToolBar
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRegistration_AppCfg</id>
         <config>
 
@@ -208,7 +208,7 @@ Detail of the ToolBar
             </service>
 
             <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato1" />
+                <in key="mesh" uid="meshOnNegato1" />
                 <config layer="default" picker="negato1default" />
             </service>
 
@@ -241,7 +241,7 @@ Detail of the ToolBar
             </service>
 
             <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato2" />
+                <in key="mesh" uid="meshOnNegato2" />
                 <config layer="default" picker="negato2default" />
             </service>
 
@@ -275,12 +275,12 @@ Detail of the ToolBar
             </service>
 
             <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato1" />
+                <in key="mesh" uid="meshOnNegato1" />
                 <config layer="default" />
             </service>
 
             <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="meshOnNegato2" />
+                <in key="mesh" uid="meshOnNegato2" />
                 <config layer="default" transform="registrationMatrix" />
             </service>
 
@@ -302,10 +302,6 @@ Detail of the ToolBar
                 <inout key="referencePL" uid="pointList1" />
                 <inout key="output" uid="registrationMatrix" />
                 <config mode="rigid" />
-            </service>
-
-            <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" >
-                <inout key="image" uid="myImage" />
             </service>
 
             <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
@@ -354,7 +350,6 @@ Detail of the ToolBar
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="medicalImageSrv" />
             <start uid="PLRegistrationSrv" />
             <start uid="addLAndmarksInPL1Srv" />
             <start uid="addLAndmarksInPL2Srv" />

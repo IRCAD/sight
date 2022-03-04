@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ private:
      * @brief method called when the current object is a timeline
      * @note Currently only data::MatrixTL and data::FrameTL are managed
      */
-    void manageTimeline(data::Object::sptr obj, size_t index);
+    void manageTimeline(data::Object::sptr obj, std::size_t index);
 
     /// client socket
     sight::io::igtl::Client m_client;

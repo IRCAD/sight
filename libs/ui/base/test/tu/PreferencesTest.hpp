@@ -40,8 +40,10 @@ class PreferencesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(PreferencesTest);
 CPPUNIT_TEST(runtimeTest);
-CPPUNIT_TEST(helperTest);
-CPPUNIT_TEST(cleanup);
+CPPUNIT_TEST(simpleTest);
+CPPUNIT_TEST(delimeterTest);
+CPPUNIT_TEST(encryptedTest);
+CPPUNIT_TEST(forcedEncryptionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,13 +53,16 @@ public:
     void tearDown();
 
     void runtimeTest();
-    void helperTest();
-    void cleanup();
+    void simpleTest();
+    void delimeterTest();
+    void encryptedTest();
+    void forcedEncryptionTest();
 
 private:
 
     core::runtime::Profile::sptr m_profile;
     std::filesystem::path m_preferencesPath;
+    std::filesystem::path m_encryptedPath;
 };
 
 } //namespace ut

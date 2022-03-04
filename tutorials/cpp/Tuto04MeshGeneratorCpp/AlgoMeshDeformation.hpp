@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ public:
     /// Creates an instance.
     TUTO04MESHGENERATORCPP_API AlgoMeshDeformation() noexcept;
 
-    /// Destroys the intance.
+    /// Destroys the instance.
     TUTO04MESHGENERATORCPP_API ~AlgoMeshDeformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
@@ -74,13 +74,13 @@ private:
 
     unsigned int m_amplitude {40};
 
-    unsigned int m_step {0};
+    int m_step {0};
 
     int m_direction {1};
 
-    size_t m_nbPoints {0};
+    std::size_t m_nbPoints {0};
 
-    size_t m_nbCells {0};
+    std::size_t m_nbCells {0};
 
     float m_yCenter {0};
 

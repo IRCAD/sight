@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,8 @@ public:
  */
     template<class T>
     static void projectPixel(
-        size_t px,
-        size_t py,
+        std::size_t px,
+        std::size_t py,
         T depth,
         T cx,
         T cy,
@@ -71,7 +71,7 @@ public:
  * @tparam T floating point type used for the computation
  * @param[in] x x coordinate of the point
  * @param[in] y y coordinate of the point
- * @param[in] z zcoordinate of the point
+ * @param[in] z z coordinate of the point
  * @param[in] cx X Pixel coordinate of the camera optical center.
  * @param[in] cy Y Pixel coordinate of the camera optical center.
  * @param[in] fx X focal length of the camera.
@@ -91,10 +91,10 @@ public:
         T cy,
         T fx,
         T fy,
-        size_t width,
-        size_t height,
-        size_t& px,
-        size_t& py
+        std::size_t width,
+        std::size_t height,
+        std::size_t& px,
+        std::size_t& py
     );
 };
 
@@ -102,8 +102,8 @@ public:
 
 template<class T>
 void Projection::projectPixel(
-    size_t px,
-    size_t py,
+    std::size_t px,
+    std::size_t py,
     T depth,
     T cx,
     T cy,
@@ -131,10 +131,10 @@ bool Projection::projectPoint(
     T cy,
     T fx,
     T fy,
-    size_t width,
-    size_t height,
-    size_t& px,
-    size_t& py
+    std::size_t width,
+    std::size_t height,
+    std::size_t& px,
+    std::size_t& py
 )
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
@@ -143,13 +143,13 @@ bool Projection::projectPoint(
     T u       = a * fx + cx;
     T v       = b * fy + cy;
 
-    if((v < 1.) || (v > height) || (u < 1.) || (u > width))
+    if((v < 1.) || (v > static_cast<T>(height)) || (u < 1.) || (u > static_cast<T>(width)))
     {
         return false;
     }
 
-    px = static_cast<size_t>(std::lround(u));
-    py = static_cast<size_t>(std::lround(v));
+    px = static_cast<std::size_t>(std::lround(u));
+    py = static_cast<std::size_t>(std::lround(v));
 
     return true;
 }

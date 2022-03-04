@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
-#include <data/reflection/getObject.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::activity
@@ -44,7 +43,7 @@ const
     activity::extension::ActivityInfo info;
     info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
-    data::Composite::sptr composite = activity->getData();
+    data::Composite::csptr composite = activity->getData();
 
     for(activity::extension::ActivityRequirement req : info.requirements)
     {
@@ -52,7 +51,7 @@ const
            || (req.minOccurs == 0 && req.maxOccurs == 0)
            || req.create) // One object is required
         {
-            data::Object::sptr obj = composite->at<data::Object>(req.name);
+            data::Object::csptr obj = composite->at<data::Object>(req.name);
             if(!obj)
             {
                 validation.first   = false;
@@ -75,7 +74,7 @@ const
         }
         else if(req.container == "vector")
         {
-            data::Vector::sptr vector = composite->at<data::Vector>(req.name);
+            data::Vector::csptr vector = composite->at<data::Vector>(req.name);
             if(!vector)
             {
                 validation.first   = false;
@@ -99,7 +98,7 @@ const
                 else
                 {
                     bool isValid = true;
-                    for(data::Object::sptr obj : *vector)
+                    for(data::Object::csptr obj : *vector)
                     {
                         if(!obj)
                         {
@@ -132,7 +131,7 @@ const
         }
         else // container == composite
         {
-            data::Composite::sptr currentComposite = composite->at<data::Composite>(req.name);
+            data::Composite::csptr currentComposite = composite->at<data::Composite>(req.name);
             if(!currentComposite)
             {
                 validation.first   = false;
@@ -187,8 +186,7 @@ const
                                                  + "' must contain valid objects of type '" + req.type + "'.";
                             isValid = false;
                         }
-                        // FIXME We can not validate the type of object extracted with 'camp' path.
-                        else if(reqKey.path.empty() && obj->getClassname() != req.type)
+                        else if(obj->getClassname() != req.type)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name
@@ -207,43 +205,6 @@ const
                         }
                     }
                 }
-            }
-        }
-    }
-
-    return validation;
-}
-
-//------------------------------------------------------------------------------
-
-IValidator::ValidationType IActivityValidator::checkParameters(const data::ActivitySeries::csptr& activity) const
-{
-    IValidator::ValidationType validation;
-    validation.first  = true;
-    validation.second = "";
-
-    activity::extension::ActivityInfo info;
-    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
-
-    data::Composite::sptr composite = activity->getData();
-
-    // Check if all the activity config parameters are present
-    activity::extension::ActivityAppConfig appConfigInfo = info.appConfig;
-    for(auto param : appConfigInfo.parameters)
-    {
-        if(param.isSeshat())
-        {
-            std::string path = param.by;
-            if(path.substr(0, 1) == "!")
-            {
-                path.replace(0, 1, "@");
-            }
-
-            data::Object::sptr obj = data::reflection::getObject(composite, path);
-            if(!obj)
-            {
-                validation.first   = false;
-                validation.second += "\n - invalid sesh@ path : '" + path + "'";
             }
         }
     }

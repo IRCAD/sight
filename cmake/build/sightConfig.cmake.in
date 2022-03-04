@@ -19,7 +19,7 @@ if(NOT SIGHT_CONFIGURED)
 
     if(UNIX)
         configure_file(
-            ${FWCMAKE_RESOURCE_PATH}/install/linux/safe-xvfb-run 
+            ${FWCMAKE_RESOURCE_PATH}/install/linux/safe-xvfb-run
             ${CMAKE_BINARY_DIR}/bin/safe-xvfb-run
             COPYONLY
         )
@@ -41,7 +41,7 @@ if(NOT SIGHT_CONFIGURED)
     file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_RC_PREFIX@" Sight_MODULES_DIR)
     file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
 
-    setExternalLibrariesDir()
+    set_external_libraries_dir()
 
     find_package(CppUnit REQUIRED)
 
@@ -54,6 +54,9 @@ if(NOT SIGHT_CONFIGURED)
         endif()
         list(APPEND SIGHT_COMPONENTS sight::${sight_comp})
     endforeach()
+    
+    set(SIGHT_DEFAULT_PASSWORD "@SIGHT_DEFAULT_PASSWORD@")
+    add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
 endif()
 
 foreach(sight_comp ${sight_FIND_COMPONENTS})

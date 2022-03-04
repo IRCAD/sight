@@ -26,7 +26,6 @@
 
 #include <core/crypto/secure_string.hpp>
 
-#include <mutex>
 #include <ostream>
 
 namespace sight::io::zip
@@ -35,18 +34,19 @@ namespace sight::io::zip
 /// Compression method: STORE (no compression), DEFLATE (standard zip), ZSTD (new fast compression algorithm)
 enum class Method : std::uint8_t
 {
-    STORE = 0,
-    DEFLATE,
-    ZSTD
+    DEFAULT = 0,
+    STORE   = 1,
+    DEFLATE = 2,
+    ZSTD    = 3
 };
 
 /// Compression level. Default is usually a good compromise between speed and compression ratio
 enum class Level : std::uint8_t
 {
     DEFAULT = 0,
-    FAST,
-    BEST,
-    ULTRA
+    FAST    = 1,
+    BEST    = 2,
+    ULTRA   = 3
 };
 
 /**
@@ -60,34 +60,42 @@ public:
     SIGHT_DECLARE_CLASS(ArchiveWriter, Archive);
 
     /// Delete copy constructors and assignment operators, as we don't want to allow resources duplication
+    ArchiveWriter()                                = delete;
     ArchiveWriter(const ArchiveWriter&)            = delete;
     ArchiveWriter(ArchiveWriter&&)                 = delete;
     ArchiveWriter& operator=(const ArchiveWriter&) = delete;
     ArchiveWriter& operator=(ArchiveWriter&&)      = delete;
 
-    /// Shared factory. It uses a cache mechanism to return the same instance for the same archivePath.
-    /// @param archivePath path of the archive file. The file will be kept opened as long as the instance leave.
-    IO_ZIP_API static ArchiveWriter::sptr shared(const std::filesystem::path& archivePath);
+    /// Destructor
+    IO_ZIP_API ~ArchiveWriter() override = default;
+
+    /// Shared factory. It uses a cache mechanism to return the same instance for the same archive_path.
+    /// @param archive_path path of the archive file. The file will be kept opened as long as the instance leave.
+    /// @param format the format of the archive. @see sight::io::zip::Archive::ArchiveFormat
+    IO_ZIP_API static ArchiveWriter::uptr get(
+        const std::filesystem::path& archive_path,
+        const ArchiveFormat format = ArchiveFormat::DEFAULT
+    );
 
     /// Returns an std::ostream to read an archived file
-    /// @param filePath path of the file inside the archive.
+    /// @param file_path path of the file inside the archive.
     /// @param password the password needed to encrypt the file.
     /// @param method the compression algorithm to use.
     /// @param level the compression level to use.
     IO_ZIP_API virtual std::unique_ptr<std::ostream> openFile(
-        const std::filesystem::path& filePath,
+        const std::filesystem::path& file_path,
         const core::crypto::secure_string& password = "",
-        const Method method                         = Method::ZSTD,
+        const Method method                         = Method::DEFAULT,
         const Level level                           = Level::DEFAULT
     )                                               = 0;
+
+    /// Returns true for raw archive
+    IO_ZIP_API virtual bool isRaw() const = 0;
 
 protected:
 
     /// Constructor
-    IO_ZIP_API ArchiveWriter() = default;
-
-    /// Destructor
-    IO_ZIP_API ~ArchiveWriter() override = default;
+    IO_ZIP_API ArchiveWriter(const std::filesystem::path& archive_path);
 };
 
 } // namespace sight::io::zip

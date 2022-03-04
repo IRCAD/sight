@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,13 +85,18 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 
         if(depthBufferObj)
         {
-            const size_t width  = originFrameTL->getWidth();
-            const size_t height = originFrameTL->getHeight();
-            const size_t size   = width * height;
+            const std::size_t width  = originFrameTL->getWidth();
+            const std::size_t height = originFrameTL->getHeight();
+            const std::size_t size   = width * height;
 
             if(scaledFrameTL->getWidth() == 0 || scaledFrameTL->getHeight() == 0)
             {
-                scaledFrameTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
+                scaledFrameTL->initPoolSize(
+                    width,
+                    height,
+                    core::tools::Type::s_UINT16,
+                    data::FrameTL::PixelFormat::GRAY_SCALE
+                );
             }
 
             const std::uint16_t* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
@@ -100,7 +105,7 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 
             std::uint16_t* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
 
-            for(size_t i = 0 ; i < size ; ++i)
+            for(std::size_t i = 0 ; i < size ; ++i)
             {
                 *depthBufferOut++ = static_cast<std::uint16_t>((*depthBufferIn++) * scale);
             }

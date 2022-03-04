@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #include "PreferencesTest.hpp"
 
-#include <core/crypto/secure_string.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Profile.hpp>
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/Composite.hpp>
-#include <data/String.hpp>
+#include <io/zip/ArchiveReader.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
+
+#include <boost/property_tree/json_parser.hpp>
 
 #include <filesystem>
 
@@ -48,94 +48,221 @@ namespace ut
 
 void PreferencesTest::setUp()
 {
+    ui::base::Preferences::set_enabled(true);
+
+    core::runtime::init();
+
+    // Set the profile name
+    const std::string& profileName = core::tools::UUID::generateUUID();
+    core::runtime::getCurrentProfile()->setName(profileName);
+
+    // Compute the expected preferences file path
+    m_preferencesPath = core::tools::os::getUserDataDir("sight", profileName) + "/preferences.json";
+    m_encryptedPath   = core::tools::os::getUserDataDir("sight", profileName) + "/preferences.sight";
 }
 
 //------------------------------------------------------------------------------
 
 void PreferencesTest::tearDown()
 {
+    ui::base::Preferences::set_enabled(false);
+    std::filesystem::remove(m_preferencesPath);
+    std::filesystem::remove(m_encryptedPath);
 }
 
 //------------------------------------------------------------------------------
 
 void PreferencesTest::runtimeTest()
 {
-    core::runtime::init();
+    {
+        // Create the preference file
+        CPPUNIT_ASSERT_NO_THROW(
+            ui::base::Preferences preferences;
 
-    const std::string profileName = core::tools::UUID::generateUUID();
-    auto profile                  = core::runtime::getCurrentProfile();
-    profile->setName(profileName);
+            // This mark the preference as modified so it will be saved
+            preferences.clear();
+        );
+    }
 
-    const std::filesystem::path appPrefDir = core::tools::os::getUserDataDir("sight", profileName);
-    m_preferencesPath = appPrefDir / "preferences.json";
-
-    // Check preference file dir
-    const std::filesystem::path file = ui::base::preferences::getPreferencesFile();
-    CPPUNIT_ASSERT_EQUAL(m_preferencesPath.string(), file.string());
+    // Check if the preference file really exists
+    CPPUNIT_ASSERT(std::filesystem::exists(m_preferencesPath) && std::filesystem::is_regular_file(m_preferencesPath));
 }
 
 //------------------------------------------------------------------------------
 
-void PreferencesTest::helperTest()
+void PreferencesTest::simpleTest()
 {
-    const std::string preferenceKey   = "PREF_KEY_TEST";
-    const std::string preferenceValue = "PREF_VALUE_TEST";
+    const std::string& root_key     = "ROOT";
+    const std::string& string_key   = root_key + ".STRING";
+    const std::string& string_value = core::tools::UUID::generateUUID();
 
-    const auto profile = core::runtime::getCurrentProfile();
+    {
+        ui::base::Preferences preferences;
 
-    const std::filesystem::path appPrefDir = core::tools::os::getUserDataDir("sight", profile->getName());
-    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
+        // Check get value from an empty preferences file
+        CPPUNIT_ASSERT_THROW(preferences.get<std::string>(root_key), boost::property_tree::ptree_error);
+        CPPUNIT_ASSERT_NO_THROW(preferences.get(root_key, string_value));
 
-    //Check preference file dir
-    const std::filesystem::path file = ui::base::preferences::getPreferencesFile();
-    CPPUNIT_ASSERT_EQUAL(prefFile.string(), file.string());
+        const auto& same_value = preferences.get(root_key, string_value);
+        CPPUNIT_ASSERT_EQUAL(string_value, same_value);
 
-    //Check set preference
-    const bool isModified = ui::base::preferences::setPreference(preferenceKey, preferenceValue);
-    CPPUNIT_ASSERT(isModified);
+        // Check set value
+        CPPUNIT_ASSERT_NO_THROW(
+            preferences.put(string_key, string_value);
+        );
+        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        const auto& set_value = preferences.get<std::string>(string_key);
+        CPPUNIT_ASSERT_EQUAL(string_value, set_value);
+    }
 
-    // Check get preference
-    const std::string value = ui::base::preferences::getPreference(preferenceKey);
-    CPPUNIT_ASSERT_EQUAL(preferenceValue, value);
-
-    data::Composite::sptr prefs = ui::base::preferences::getPreferences();
-    CPPUNIT_ASSERT(prefs);
-
-    data::String::sptr prefStr = prefs->at<data::String>(preferenceKey);
-    CPPUNIT_ASSERT_EQUAL(preferenceValue, prefStr->value());
-
-    //Check get value
-    const std::string preferenceKey2        = "PREF_KEY_TEST_2";
-    const std::uint32_t preferenceValueInt2 = 1664;
-    const std::string preferenceValue2      = std::to_string(preferenceValueInt2);
-
-    ui::base::preferences::setPreference(preferenceKey2, preferenceValue2);
-
-    std::string resValue = ui::base::preferences::getValue(preferenceKey2);
-    CPPUNIT_ASSERT_EQUAL(preferenceKey2, resValue);
-
-    std::uint32_t resValueInt = ui::base::preferences::getValue<std::uint32_t>(preferenceValue2);
-    CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
-
-    const char delimiter                = '%';
-    const std::string prefKeySubstitute = delimiter + preferenceKey2 + delimiter;
-
-    resValue = ui::base::preferences::getValue(prefKeySubstitute);
-    CPPUNIT_ASSERT_EQUAL(preferenceValue2, resValue);
-
-    resValueInt = ui::base::preferences::getValue<std::uint32_t>(prefKeySubstitute);
-    CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
+    // The preferences file should have been saved
+    CPPUNIT_ASSERT(std::filesystem::exists(m_preferencesPath) && std::filesystem::is_regular_file(m_preferencesPath));
+    boost::property_tree::ptree from_disk;
+    boost::property_tree::json_parser::read_json(m_preferencesPath.string(), from_disk);
+    const auto& saved_value = from_disk.get<std::string>(string_key);
+    CPPUNIT_ASSERT_EQUAL(string_value, saved_value);
 }
 
 //------------------------------------------------------------------------------
 
-void PreferencesTest::cleanup()
+void PreferencesTest::delimeterTest()
 {
-    // Cleanup
-    std::filesystem::remove(m_preferencesPath);
+    const std::string& root_key      = "ROOT";
+    const std::string& int_key       = root_key + ".INT";
+    const std::string& delimited_key = "%" + int_key + "%";
+    const int int_value              = 1664;
+
+    // Set and test an int value
+    {
+        ui::base::Preferences preferences;
+
+        CPPUNIT_ASSERT_NO_THROW(
+            preferences.put(int_key, int_value);
+        );
+        const auto set_value = preferences.get<int>(int_key);
+        CPPUNIT_ASSERT_EQUAL(int_value, set_value);
+    }
+
+    // Now test the "delimited" getter
+    {
+        ui::base::Preferences preferences;
+
+        // Test without delimiter
+        const auto no_delimiter_value = preferences.delimited_get(std::to_string(int_value), -1);
+        CPPUNIT_ASSERT_EQUAL(int_value, no_delimiter_value);
+
+        // Test with a delimiter
+        const auto delimited_value = preferences.delimited_get(delimited_key, -1);
+        CPPUNIT_ASSERT_EQUAL(int_value, delimited_value);
+    }
 }
 
 //------------------------------------------------------------------------------
+
+void PreferencesTest::encryptedTest()
+{
+    // Setting a password will enable encryption
+    ui::base::Preferences::set_password("password");
+
+    const std::string& root_key     = "ROOT";
+    const std::string& string_key   = root_key + ".STRING";
+    const std::string& string_value = core::tools::UUID::generateUUID();
+
+    {
+        ui::base::Preferences preferences;
+
+        // Check get value from an empty preferences file
+        CPPUNIT_ASSERT_THROW(preferences.get<std::string>(root_key), boost::property_tree::ptree_error);
+        CPPUNIT_ASSERT_NO_THROW(preferences.get(root_key, string_value));
+
+        const auto& same_value = preferences.get(root_key, string_value);
+        CPPUNIT_ASSERT_EQUAL(string_value, same_value);
+
+        // Check set value
+        CPPUNIT_ASSERT_NO_THROW(
+            preferences.put(string_key, string_value);
+        );
+        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        const auto& set_value = preferences.get<std::string>(string_key);
+        CPPUNIT_ASSERT_EQUAL(string_value, set_value);
+    }
+
+    // The preferences file should have been saved but as a .sight file
+    CPPUNIT_ASSERT(std::filesystem::exists(m_encryptedPath) && std::filesystem::is_regular_file(m_encryptedPath));
+
+    // Open the archive that holds the property tree
+    const auto& archive = io::zip::ArchiveReader::get(m_encryptedPath);
+
+    // Create the input stream, with a password, allowing decoding an encrypted file
+    const auto& istream = archive->openFile(
+        "preferences.json",
+        "password"
+    );
+
+    // Read the property tree from the archive
+    boost::property_tree::ptree from_disk;
+    boost::property_tree::read_json(*istream, from_disk);
+
+    // Test the saved string
+    const auto& saved_value = from_disk.get<std::string>(string_key);
+    CPPUNIT_ASSERT_EQUAL(string_value, saved_value);
+
+    // This will reset preferences
+    ui::base::Preferences::set_enabled(false);
+    ui::base::Preferences::set_enabled(true);
+
+    // Set a bad password and see what happens
+    ui::base::Preferences::set_password("Test_password!");
+    CPPUNIT_ASSERT_THROW(ui::base::Preferences(), ui::base::PreferencesDisabled);
+
+    // Setting an empty password will reset to clear json save
+    ui::base::Preferences::set_password("");
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::forcedEncryptionTest()
+{
+    // force the encryption, without a password
+    ui::base::Preferences::set_encryption_policy(core::crypto::PasswordKeeper::EncryptionPolicy::FORCED);
+
+    const std::string& root_key     = "ROOT";
+    const std::string& string_key   = root_key + ".STRING";
+    const std::string& string_value = core::tools::UUID::generateUUID();
+
+    // Write a preference
+    {
+        ui::base::Preferences preferences;
+
+        // Set value
+        CPPUNIT_ASSERT_NO_THROW(
+            preferences.put(string_key, string_value);
+        );
+
+        // check the value
+        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        const auto& set_value = preferences.get<std::string>(string_key);
+        CPPUNIT_ASSERT_EQUAL(string_value, set_value);
+    }
+
+    // The preferences file should have been saved but as a .sight file
+    CPPUNIT_ASSERT(std::filesystem::exists(m_encryptedPath) && std::filesystem::is_regular_file(m_encryptedPath));
+
+    // This will reset preferences
+    ui::base::Preferences::set_enabled(false);
+    ui::base::Preferences::set_enabled(true);
+
+    // Read a preference back
+    {
+        //CPPUNIT_ASSERT_NO_THROW(ui::base::Preferences());
+        ui::base::Preferences preferences;
+
+        // check the value
+        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        const auto& set_value = preferences.get<std::string>(string_key);
+        CPPUNIT_ASSERT_EQUAL(string_value, set_value);
+    }
+}
 
 } //namespace ut
 

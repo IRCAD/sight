@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,11 +33,11 @@ namespace sight::module::activity::validator
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraSeries::MonoCamera);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::CameraSeries::MonoCamera);
 
 //-----------------------------------------------------------------------------
 
-MonoCamera::MonoCamera(sight::activity::IValidator::Key key)
+MonoCamera::MonoCamera(sight::activity::IValidator::Key)
 {
 }
 
@@ -65,9 +65,9 @@ sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Obj
     }
     else
     {
-        if(cameraSeries->getNumberOfCameras() == 1)
+        if(cameraSeries->numCameras() == 1)
         {
-            data::Camera::sptr camera = cameraSeries->getCamera(0);
+            data::Camera::csptr camera = cameraSeries->getCamera(0);
             if(!camera->getIsCalibrated())
             {
                 validation.first  = false;

@@ -4,14 +4,14 @@
     <requirement id="sight::module::memory" />
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::activity" />
-    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::session" />
     <requirement id="sight::module::ui::qt" />
 
     <xi:include href="configurations/SightCalibratorActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/SightCalibratorBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/SightCalibratorSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>SightCalibratorActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for SightCalibrator</desc>
@@ -22,7 +22,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::extension::AppConfigParameters">
+    <extension implements="sight::service::extension::AppConfigParameters">
         <id>SightCalibrator_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="SightCalibrator @PROJECT_VERSION@" />

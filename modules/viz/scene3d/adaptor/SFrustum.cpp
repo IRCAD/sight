@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ void SFrustum::starting()
 
     module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
         this->registerService<module::viz::scene3d::adaptor::SMaterial>(
-            "::sight::module::viz::scene3d::adaptor::SMaterial"
+            "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
@@ -102,7 +102,7 @@ void SFrustum::starting()
     materialAdaptor->update();
 
     // Create camera
-    m_ogreCamera = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + std::string(s_CAMERA_INPUT)));
+    m_ogreCamera = this->getSceneManager()->createCamera(Ogre::String(this->getID() + std::string(s_CAMERA_INPUT)));
     m_ogreCamera->setMaterial(materialAdaptor->getMaterial());
     m_ogreCamera->setVisible(m_isVisible);
 
@@ -121,12 +121,12 @@ void SFrustum::starting()
     this->setOgreCamFromData();
 
     // Set position
-    m_ogreCamera->setPosition(::Ogre::Vector3(0, 0, 0));
-    m_ogreCamera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
+    m_ogreCamera->setPosition(Ogre::Vector3(0, 0, 0));
+    m_ogreCamera->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
 
     // Add camera to ogre scene
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
     transNode->attachObject(m_ogreCamera);
 
     this->requestRender();
@@ -176,7 +176,7 @@ void SFrustum::setOgreCamFromData()
         const float width  = static_cast<float>(camera->getWidth());
         const float height = static_cast<float>(camera->getHeight());
 
-        ::Ogre::Matrix4 m =
+        Ogre::Matrix4 m =
             sight::viz::scene3d::helper::Camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);
 
         m_ogreCamera->setCustomProjectionMatrix(true, m);

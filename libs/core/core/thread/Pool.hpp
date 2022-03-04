@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/base.hpp>
 
 #include <condition_variable>
@@ -53,7 +54,7 @@ public:
     /// this constructor launches as much as possible workers
     CORE_API Pool();
     /// this constructor launches some amount of workers
-    CORE_API Pool(size_t);
+    CORE_API Pool(std::size_t);
     /// the destructor joins all threads
     CORE_API ~Pool();
 

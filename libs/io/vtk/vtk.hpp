@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ IO_VTK_API void fromVTKImage(vtkImageData* _source, data::Image::sptr _destinati
  * @param[in] _pDataImage data::Image::sptr.
  * @param[out] _pImageImport vtkImageImport*.
  */
-IO_VTK_API void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage);
+IO_VTK_API void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _pDataImage);
 
 /*!
  * @brief Convert a data::Matrix4::sptr to a vtkMatrix4x4*.

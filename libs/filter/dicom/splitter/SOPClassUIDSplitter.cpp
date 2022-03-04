@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::SOPClassUIDSplitter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::SOPClassUIDSplitter);
 
 namespace sight::filter::dicom
 {
@@ -99,7 +99,7 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         // Open first instance
         const auto firstItem                             = dicomSeries->getDicomContainer().begin();
         const core::memory::BufferObject::sptr bufferObj = firstItem->second;
-        const size_t buffSize                            = bufferObj->getSize();
+        const std::size_t buffSize                       = bufferObj->getSize();
         const std::string dicomPath                      = bufferObj->getStreamInfo().fsFile.string();
         core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast<char*>(lock.getBuffer());

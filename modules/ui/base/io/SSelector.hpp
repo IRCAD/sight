@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,8 +57,8 @@ namespace io
               <inout key="data" uid="${selection}" />
               <type mode="writer" />
               <selection mode="include" />
-              <addSelection service="::sight::module::io::atoms::SWriter" />
-              <config id="ioAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+              <addSelection service="sight::module::io::session::SWriter" />
+              <config id="SightDataConfig" service="sight::module::io::session::SWriter" />
           </service>
  * @endcode
  *
@@ -156,7 +156,7 @@ private:
     /// Map that specifies a configuration extension for a service
     std::map<std::string, std::string> m_serviceToConfig;
 
-    /// classname of the readed object (used if the data is set as output instead of inout)
+    /// classname of the read object (used if the data is set as output instead of inout)
     std::string m_dataClassname;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;

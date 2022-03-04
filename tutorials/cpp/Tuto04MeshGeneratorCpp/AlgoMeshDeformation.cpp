@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,8 @@ using namespace sight;
 namespace Tuto04MeshGeneratorCpp
 {
 
+using namespace data::iterator;
+
 //-----------------------------------------------------------------------------
 
 AlgoMeshDeformation::AlgoMeshDeformation() noexcept
@@ -56,8 +58,8 @@ void AlgoMeshDeformation::setParam(
     m_amplitude = _amplitude;
     m_direction = 1;
 
-    m_nbPoints = _mesh->getNumberOfPoints();
-    m_nbCells  = _mesh->getNumberOfCells();
+    m_nbPoints = _mesh->numPoints();
+    m_nbCells  = _mesh->numCells();
 }
 
 //-----------------------------------------------------------------------------
@@ -69,9 +71,9 @@ void AlgoMeshDeformation::computeDeformation(
 )
 {
     if(m_mesh.expired()
-       || m_nbPoints != _mesh->getNumberOfPoints()
-       || m_nbCells != _mesh->getNumberOfCells()
-       || !_mesh->hasPointColors())
+       || m_nbPoints != _mesh->numPoints()
+       || m_nbCells != _mesh->numCells()
+       || !_mesh->has<data::Mesh::Attributes::POINT_COLORS>())
     {
         this->setParam(_mesh, _nbStep, _amplitude);
         this->initSimu();
@@ -90,22 +92,20 @@ void AlgoMeshDeformation::initSimu()
     m_originMesh = data::Object::copy(mesh);
     m_step       = 0;
 
-    if(!m_mesh.lock()->hasPointColors())
+    if(!m_mesh.lock()->has<data::Mesh::Attributes::POINT_COLORS>())
     {
         geometry::data::Mesh::colorizeMeshPoints(mesh);
     }
 
-    const auto dumpLock = mesh->lock();
+    const auto dumpLock = mesh->dump_lock();
 
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    auto pointsItr       = mesh->begin<data::iterator::ConstPointIterator>();
-    const auto pointsEnd = mesh->end<data::iterator::ConstPointIterator>();
     float coord;
-    for( ; pointsItr != pointsEnd ; ++pointsItr)
+    for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
-        coord = pointsItr->point->y;
+        coord = p.y;
         if(coord < min)
         {
             min = coord;
@@ -125,7 +125,7 @@ void AlgoMeshDeformation::initSimu()
 void AlgoMeshDeformation::computeSimu()
 {
     m_step += m_direction;
-    if(m_step == m_nbStep)
+    if(m_step == static_cast<int>(m_nbStep))
     {
         m_direction = -1;
     }
@@ -134,30 +134,32 @@ void AlgoMeshDeformation::computeSimu()
         m_direction = 1;
     }
 
-    const float scale = m_step / (float) m_nbStep;
+    const float scale = static_cast<float>(m_step) / static_cast<float>(m_nbStep);
 
     const auto mesh         = m_mesh.lock();
-    const auto dumpLock     = mesh->lock();
-    const auto origDumpLock = m_originMesh->lock();
+    const auto dumpLock     = mesh->dump_lock();
+    const auto origDumpLock = m_originMesh->dump_lock();
 
-    auto pointsItr       = mesh->begin<data::iterator::PointIterator>();
-    const auto pointsEnd = mesh->end<data::iterator::PointIterator>();
-    auto origPointsItr   = m_originMesh->begin<data::iterator::ConstPointIterator>();
+    const auto origRange = m_originMesh->czip_range<point::xyz, point::rgba>();
+    const auto range     = mesh->zip_range<point::xyz, point::rgba>();
 
-    for( ; pointsItr != pointsEnd ; ++pointsItr, ++origPointsItr)
+    for(const auto& [orig, cur] : boost::combine(origRange, range))
     {
-        pointsItr->point->x = origPointsItr->point->x;
-        if(origPointsItr->point->y - m_yCenter > 0)
+        const auto& [pt1, c1] = orig;
+        auto&& [pt2, c2]      = cur;
+
+        pt2.x = pt1.x;
+        if(pt1.y - m_yCenter > 0)
         {
-            pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;
-            pointsItr->rgba->r  = core::tools::numericRoundCast<data::Mesh::ColorValueType>(255 * scale);
+            pt2.y = pt1.y + (pt1.y - m_yCenter) * scale;
+            c2.r  = core::tools::numericRoundCast<data::Mesh::color_t>(255 * scale);
         }
         else
         {
-            pointsItr->rgba->r = 0;
+            c2.r = 0;
         }
 
-        pointsItr->point->z = origPointsItr->point->z;
+        pt2.z = pt1.z;
     }
 
     geometry::data::Mesh::generatePointNormals(mesh);

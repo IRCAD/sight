@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,12 +28,13 @@ namespace sight::core
 {
 
 //------------------------------------------------------------------------------
+static LogicStamp::LogicStampType globalLogicStamp = 0;
+static core::mt::Mutex globalLogicStampMutex;
+
+//------------------------------------------------------------------------------
 
 void LogicStamp::modified()
 {
-    static LogicStampType globalLogicStamp = 0;
-    static core::mt::Mutex globalLogicStampMutex;
-
     core::mt::ScopedLock lock(globalLogicStampMutex);
 
     m_modifiedLogicalTime = ++globalLogicStamp;

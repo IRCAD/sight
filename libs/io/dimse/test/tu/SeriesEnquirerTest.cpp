@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@
 
 #include <dcmtk/config/osconfig.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dimse::ut::SeriesEnquirerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dimse::ut::SeriesEnquirerTest);
 
 namespace sight::io::dimse
 {
@@ -65,7 +65,7 @@ void SeriesEnquirerTest::setUp()
     // Pacs application port (default 11112)
     char* pacsApplicationPort = std::getenv("FWTEST_PACS_APPLICATION_PORT");
     m_pacsApplicationPort =
-        (pacsApplicationPort) ? (::boost::lexical_cast<unsigned short>(pacsApplicationPort)) : 11112;
+        (pacsApplicationPort) ? (boost::lexical_cast<unsigned short>(pacsApplicationPort)) : 11112;
 
     // Move application title
     char* moveApplicationTitle = std::getenv("FWTEST_MOVE_APPLICATION_TITLE");
@@ -75,7 +75,7 @@ void SeriesEnquirerTest::setUp()
     // Move application port (default 11110)
     char* moveApplicationPort = std::getenv("FWTEST_MOVE_APPLICATION_PORT");
     m_moveApplicationPort =
-        (moveApplicationPort) ? (::boost::lexical_cast<unsigned short>(moveApplicationPort)) : 11110;
+        (moveApplicationPort) ? (boost::lexical_cast<unsigned short>(moveApplicationPort)) : 11110;
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ void SeriesEnquirerTest::pushSeries()
     // Retrieve DICOM instances
     const std::filesystem::path path =
         utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
-    const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+    const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + path.string() + "' does not exist",
@@ -147,10 +147,10 @@ void SeriesEnquirerTest::pushSeries()
 
     std::vector<std::filesystem::path> filenames;
     io::dicom::helper::DicomSearch::searchRecursively(path, filenames, false);
-    CPPUNIT_ASSERT_EQUAL(size_t(129), filenames.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(129), filenames.size());
 
     std::vector<std::filesystem::path> paths;
-    for(const auto file : filenames)
+    for(const auto& file : filenames)
     {
         paths.push_back(file.string());
     }

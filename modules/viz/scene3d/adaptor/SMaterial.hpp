@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SMaterial">
         <inout key="material" uid="..." />
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
-                shadingMode="gouraud" normalLength="0.1" representationMode="SURFACE" />
+                shadingMode="phong" normalLength="0.1" representationMode="SURFACE" />
     </service>
    @endcode
  *
@@ -79,11 +79,11 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
  * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
- *      ::sight::module::viz::scene3d:SMesh or a ::sight::module::viz::scene3d:SModelSeries to this material;
+ *      sight::module::viz::scene3d:SMesh or a sight::module::viz::scene3d:SModelSeries to this material;
  *      simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
  *      reference a texture managed by an another module::viz::scene3d::adaptor::STexture.
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong): name of the used shading mode.
+ *  - \b shadingMode (optional, none/flat/phong, default=phong): name of the used shading mode.
  *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::Material.
@@ -93,7 +93,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMaterial final : public sight::viz::scene3d:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMaterial, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::scene3d::IAdaptor);
 
     /**
      * @name Slots API
@@ -119,7 +119,7 @@ public:
     MODULE_VIZ_SCENE3D_API ~SMaterial() noexcept override;
 
     /// Gets Ogre associated material.
-    MODULE_VIZ_SCENE3D_API ::Ogre::MaterialPtr getMaterial();
+    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();
 
     /// Gets material name.
     MODULE_VIZ_SCENE3D_API std::string getMaterialName() const;
@@ -200,7 +200,7 @@ private:
     std::string m_materialName;
 
     /// Defines the default template name, given by xml configuration.
-    /// It must refer an existing Ogre material which will be used in order to instanciate m_material
+    /// It must refer an existing Ogre material which will be used in order to instantiate m_material
     std::string m_materialTemplateName {sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
     /// Contains the texture adaptor the material adaptor is listening to.
@@ -235,9 +235,9 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::MaterialPtr SMaterial::getMaterial()
+inline Ogre::MaterialPtr SMaterial::getMaterial()
 {
-    return ::Ogre::MaterialManager::getSingleton().getByName(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
+    return Ogre::MaterialManager::getSingleton().getByName(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
 }
 
 //------------------------------------------------------------------------------

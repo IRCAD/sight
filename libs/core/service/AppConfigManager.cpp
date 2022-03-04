@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
-#include "core/thread/ActiveWorkers.hpp"
 #include "core/runtime/Convert.hpp"
 #include "service/registry/Proxy.hpp"
 #include "service/extension/Config.hpp"
@@ -65,7 +64,7 @@ AppConfigManager::AppConfigManager() :
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
 
-    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::getDefaultWorker();
     core::com::HasSlots::m_slots.setWorker(defaultWorker);
 }
 
@@ -394,7 +393,7 @@ void AppConfigManager::stopStartedServices()
         futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -417,6 +416,10 @@ void AppConfigManager::destroyCreatedServices()
         service::OSR::unregisterService(srv);
     }
     m_createdSrv.clear();
+    service::helper::Config::clearKeyProps();
+
+    std::for_each(m_createdWorkers.begin(), m_createdWorkers.end(), [](auto& x){core::thread::removeWorker(x);});
+    m_createdWorkers.clear();
 }
 
 // ------------------------------------------------------------------------
@@ -468,7 +471,7 @@ void AppConfigManager::processStartItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -517,7 +520,7 @@ void AppConfigManager::processUpdateItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -593,7 +596,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
                 std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
                     obj->getClassname(),
-                    "::sight::service::IXMLParser"
+                    "sight::service::IXMLParser"
                 );
 
                 service::IService::sptr srv = srvFactory->create(srvImpl);
@@ -696,13 +699,12 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
 
     if(!srvConfig.m_worker.empty())
     {
-        core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
-        core::thread::Worker::sptr worker;
-        worker = activeWorkers->getWorker(srvConfig.m_worker);
+        core::thread::Worker::sptr worker = core::thread::getWorker(srvConfig.m_worker);
         if(!worker)
         {
             worker = core::thread::Worker::New();
-            activeWorkers->addWorker(srvConfig.m_worker, worker);
+            core::thread::addWorker(srvConfig.m_worker, worker);
+            m_createdWorkers.push_back(worker);
         }
 
         srv->setWorker(worker);

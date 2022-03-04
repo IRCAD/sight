@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void SStarter::stopping()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
-    for(VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices))
+    for(VectPairIDActionType::value_type serviceUid : boost::adaptors::reverse(m_uuidServices))
     {
         bool srv_exists = core::tools::fwID::exist(serviceUid.first);
         if(srv_exists && (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()))
@@ -75,7 +75,7 @@ void SStarter::stopping()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
     this->actionServiceStopping();
 }
@@ -91,7 +91,7 @@ void SStarter::info(std::ostream& _sstream)
 
 void SStarter::updating()
 {
-    for(size_t i = 0 ; i < m_uuidServices.size() ; i++)
+    for(std::size_t i = 0 ; i < m_uuidServices.size() ; i++)
     {
         ActionType action = m_uuidServices.at(i).second;
         IDSrvType uid     = m_uuidServices.at(i).first;
@@ -123,7 +123,7 @@ void SStarter::updating()
 
         if(action != DO_NOTHING)
         {
-            ::sight::ui::base::LockAction lock(this->getSptr());
+            sight::ui::base::LockAction lock(this->getSptr());
 
             service::IService::sptr service = service::get(uid);
             SIGHT_ASSERT("service not found", service);
@@ -208,10 +208,10 @@ void SStarter::updating()
         }
         else
         {
-            ::sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Service unavailable",
                 "The service is unavailable.",
-                ::sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::base::dialog::IMessageDialog::WARNING
             );
 
             SIGHT_INFO("Do nothing for Service " << m_uuidServices.at(i).first);

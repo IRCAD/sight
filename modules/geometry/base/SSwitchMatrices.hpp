@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ public:
     typedef core::com::Slot<void ()> SwitchSlotType;
 
     MODULE_GEOMETRY_BASE_API static const core::com::Slots::SlotKeyType s_SWITCH_TO_SLOT;
-    typedef core::com::Slot<void (size_t)> SwitchToSlotType;
+    typedef core::com::Slot<void (std::size_t)> SwitchToSlotType;
 
 protected:
 
@@ -99,13 +99,13 @@ protected:
     MODULE_GEOMETRY_BASE_API void switchMatrix();
 
     /// Switch to Matrix "index"
-    MODULE_GEOMETRY_BASE_API void switchToMatrix(size_t index);
+    MODULE_GEOMETRY_BASE_API void switchToMatrix(std::size_t index);
 
     MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
-    size_t m_indexOfDesiredMatrix;
+    std::size_t m_indexOfDesiredMatrix;
 
     static constexpr std::string_view s_MATRIX_INPUT  = "matrix";
     static constexpr std::string_view s_MATRIX_OUTPUT = "output";

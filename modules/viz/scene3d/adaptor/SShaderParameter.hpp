@@ -62,12 +62,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b technique (optional, string, default=""): name of the technique, default to the first in the material
  * - \b shaderType (optional, vertex/geometry/fragment, default=vertex): the type of the shader.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SShaderParameter final : public ::sight::viz::scene3d::IParameter
+class MODULE_VIZ_SCENE3D_CLASS_API SShaderParameter final : public sight::viz::scene3d::IParameter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SShaderParameter, ::sight::viz::scene3d::IParameter);
+    SIGHT_DECLARE_SERVICE(SShaderParameter, sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SShaderParameter() noexcept;

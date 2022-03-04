@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,28 +29,25 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ResectionDB));
-
 namespace sight::data
 {
 
 /**
  * @brief   This class defines a resection container.
  *
- * @see     data::Resection
+ * @see     Resection
  */
 class DATA_CLASS_API ResectionDB : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ResectionDB, data::Object, data::factory::New<ResectionDB>);
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ResectionDB));
+    SIGHT_DECLARE_CLASS(ResectionDB, Object, factory::New<ResectionDB>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API ResectionDB(data::Object::Key key);
+    DATA_API ResectionDB(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~ResectionDB();
@@ -58,20 +55,17 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
-    typedef std::vector<data::Resection::sptr> ResectionContainerType;
+    typedef std::vector<Resection::sptr> ResectionContainerType;
 
     /**
      * @brief Get the number of resections
      */
-    DATA_API ResectionContainerType::size_type getNumberOfResections() const;
+    DATA_API ResectionContainerType::size_type numResections() const;
 
     /**
      * @brief add resection
      */
-    DATA_API void addResection(const data::Resection::sptr& resection);
+    DATA_API void addResection(const Resection::sptr& resection);
 
     /**
      * @{
@@ -85,9 +79,9 @@ public:
      * @{
      * @brief Get/Set value of the safe resection.
      */
-    data::Resection::sptr getSafeResection();
-    data::Resection::csptr getSafeResection() const;
-    void setSafeResection(const data::Resection::sptr& _safeResection);
+    Resection::sptr getSafeResection();
+    Resection::csptr getSafeResection() const;
+    void setSafeResection(const Resection::sptr& _safeResection);
     /// @}
 
     /***
@@ -107,13 +101,22 @@ public:
     /// Key in m_signals map of signal m_sigResectionAdded
     DATA_API static const core::com::Signals::SignalKeyType s_RESECTION_ADDED_SIG;
 
-/**
- * @}
- */
+    /**
+     * @}
+     */
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ResectionDB& other) const noexcept;
+    DATA_API bool operator!=(const ResectionDB& other) const noexcept;
+    /// @}
 
 protected:
 
-    data::Resection::sptr m_safeResection;
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
+    Resection::sptr m_safeResection;
 
     ResectionContainerType m_resections;
 
@@ -142,21 +145,21 @@ inline void ResectionDB::setResections(const ResectionDB::ResectionContainerType
 
 //-----------------------------------------------------------------------------
 
-inline data::Resection::sptr ResectionDB::getSafeResection()
+inline Resection::sptr ResectionDB::getSafeResection()
 {
     return m_safeResection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline data::Resection::csptr ResectionDB::getSafeResection() const
+inline Resection::csptr ResectionDB::getSafeResection() const
 {
     return m_safeResection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ResectionDB::setSafeResection(const data::Resection::sptr& _safeResection)
+inline void ResectionDB::setSafeResection(const Resection::sptr& _safeResection)
 {
     m_safeResection = _safeResection;
 }

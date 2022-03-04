@@ -26,10 +26,12 @@
 
 #include <ui/qml/QmlEngine.hpp>
 
-namespace sight::Tuto06GuiQml
+namespace Tuto06GuiQml
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::Tuto06GuiQml::Plugin");
+using namespace sight;
+
+SIGHT_REGISTER_PLUGIN("Tuto06GuiQml::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -77,4 +79,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::Tuto06GuiQml
+} // namespace Tuto06GuiQml

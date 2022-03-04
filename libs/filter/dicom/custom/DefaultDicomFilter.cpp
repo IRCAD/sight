@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::custom::DefaultDicomFilter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::custom::DefaultDicomFilter);
 
 namespace sight::filter::dicom
 {
@@ -47,7 +47,7 @@ const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filt
 
 //-----------------------------------------------------------------------------
 
-DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key key) :
+DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key) :
     ICustom()
 {
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -64,13 +64,13 @@ void ImageTransparency::starting()
         this->getContainer()
     );
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
+    QHBoxLayout* h_layout = new QHBoxLayout();
 
     QLabel* staticText = new QLabel(QObject::tr("Transparency: "));
-    hLayout->addWidget(staticText, 0, Qt::AlignVCenter);
+    h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
 
     m_valueSlider = new QSlider(Qt::Horizontal);
-    hLayout->addWidget(m_valueSlider, 1, Qt::AlignVCenter);
+    h_layout->addWidget(m_valueSlider, 1, Qt::AlignVCenter);
     m_valueSlider->setRange(0, 100);
     m_valueSlider->setMinimumWidth(100);
 
@@ -83,9 +83,9 @@ void ImageTransparency::starting()
     }
 
     m_valueCheckBox->addAction(m_action);
-    hLayout->addWidget(m_valueCheckBox, 0, Qt::AlignVCenter);
+    h_layout->addWidget(m_valueCheckBox, 0, Qt::AlignVCenter);
 
-    qtContainer->setLayout(hLayout);
+    qtContainer->setLayout(h_layout);
 
     QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
@@ -128,7 +128,7 @@ void ImageTransparency::updating()
     const auto img = m_image.lock();
     SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", img);
 
-    bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared());
+    bool imageIsValid = data::helper::MedicalImage::checkImageValidity(img.get_shared());
     m_valueSlider->setEnabled(imageIsValid);
     m_valueCheckBox->setEnabled(imageIsValid);
     if(imageIsValid)

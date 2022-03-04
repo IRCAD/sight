@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,12 +106,12 @@ class MODULE_VIZ_SCENE3D_CLASS_API SPointList final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPointList, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SPointList, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SPointList() noexcept;
 
-    /// Destoyes Ogre resource.
+    /// Destroys Ogre resource.
     MODULE_VIZ_SCENE3D_API ~SPointList() noexcept override;
 
 protected:
@@ -178,12 +178,12 @@ private:
     void updateMaterialAdaptor();
 
     /**
-     * @brief Attachs a node in the scene graph.
+     * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(::Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* _node);
 
-    /// Detachs and destroy @ref m_entity from the scene graph.
+    /// Detaches and destroy @ref m_entity from the scene graph.
     void detachAndDestroyEntity();
 
     /**
@@ -202,7 +202,7 @@ private:
     bool m_customMaterial {false};
 
     /// Contains the node in the scene graph.
-    ::Ogre::Entity* m_entity {nullptr};
+    Ogre::Entity* m_entity {nullptr};
 
     /// Contains the material attached to the mesh.
     module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
@@ -213,7 +213,7 @@ private:
     /// Defines the attached material's name.
     std::string m_materialTemplateName {"Billboard_Default"};
 
-    /// Definees the attached texture adaptor UID.
+    /// Defines the attached texture adaptor UID.
     std::string m_textureName;
 
     /// Contains the mesh support used to render the pointlist.
@@ -229,22 +229,22 @@ private:
     data::Color::sptr m_labelColor {nullptr};
 
     /// Defines the mask for picking requests.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Stores label of each point.
     std::vector<sight::viz::scene3d::Text*> m_labels;
 
     /// Stores label points nodes.
-    std::vector< ::Ogre::SceneNode*> m_nodes;
+    std::vector<Ogre::SceneNode*> m_nodes;
 
     /// Contains the scene node where all of our manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.
-    size_t m_fontSize {16};
+    std::size_t m_fontSize {16};
 
     static constexpr std::string_view s_POINTLIST_INPUT = "pointList";
     static constexpr std::string_view s_MESH_INPUT      = "mesh";

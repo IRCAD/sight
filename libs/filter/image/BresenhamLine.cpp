@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,26 +30,26 @@ namespace sight::filter::image
 //------------------------------------------------------------------------------
 
 BresenhamLine::PathType BresenhamLine::draw(
-    const data::helper::MedicalImage::Orientation orientation,
+    const Orientation orientation,
     const CoordinatesType& startCoord,
     const CoordinatesType& endCoord
 )
 {
-    size_t dim0 = 0, dim1 = 1;
+    std::size_t dim0 = 0, dim1 = 1;
 
     switch(orientation)
     {
-        case data::helper::MedicalImage::X_AXIS:
+        case Orientation::X_AXIS:
             dim0 = 1;
             dim1 = 2;
             break;
 
-        case data::helper::MedicalImage::Y_AXIS:
+        case Orientation::Y_AXIS:
             dim0 = 0;
             dim1 = 2;
             break;
 
-        case data::helper::MedicalImage::Z_AXIS:
+        case Orientation::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
             break;

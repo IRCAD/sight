@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "Plugin.hpp"
 
 #include <core/runtime/profile/Profile.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
@@ -32,7 +31,7 @@ namespace sight::module::ui::console
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::console::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::console::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -44,9 +43,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    m_worker = core::thread::Worker::New();
-    core::thread::ActiveWorkers::setDefaultWorker(m_worker);
-
     core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
@@ -54,24 +50,18 @@ void Plugin::start()
 
 void Plugin::stop() noexcept
 {
-    if(m_worker)
-    {
-        m_worker->stop();
-    }
 }
 
 //-----------------------------------------------------------------------------
 
 int Plugin::run() noexcept
 {
-    m_worker->post([](){core::runtime::getCurrentProfile()->setup();});
-    m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
+    auto worker = core::thread::getDefaultWorker();
+    worker->post([](){core::runtime::getCurrentProfile()->setup();});
+    worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
     core::runtime::getCurrentProfile()->cleanup();
-    const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
-
-    core::thread::ActiveWorkers::getDefault()->clearRegistry();
-    m_worker.reset();
+    const int result = std::any_cast<int>(worker->getFuture().get());
 
     return result;
 }

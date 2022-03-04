@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,6 +40,7 @@ namespace sight
 namespace data
 {
 
+class ActivitySeries;
 class Vector;
 
 }
@@ -57,7 +58,7 @@ namespace activity
 namespace extension
 {
 
-typedef ::boost::property_tree::ptree ConfigType;
+typedef boost::property_tree::ptree ConfigType;
 
 struct ACTIVITY_CLASS_API ActivityAppConfigParam
 {
@@ -69,7 +70,7 @@ struct ACTIVITY_CLASS_API ActivityAppConfigParam
 
     //------------------------------------------------------------------------------
 
-    bool isSeshat() const
+    bool isObjectPath() const
     {
         return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
     }
@@ -78,10 +79,10 @@ struct ACTIVITY_CLASS_API ActivityAppConfigParam
     std::string by;
 };
 
+using ActivityAppConfigParamsType = std::vector<ActivityAppConfigParam>;
+
 struct ACTIVITY_CLASS_API ActivityAppConfig
 {
-    typedef std::vector<ActivityAppConfigParam> ActivityAppConfigParamsType;
-
     ActivityAppConfig()
     {
     }
@@ -101,7 +102,6 @@ struct ACTIVITY_CLASS_API ActivityRequirementKey
     ACTIVITY_API ActivityRequirementKey(const ConfigType& config);
 
     std::string key;
-    std::string path;
 };
 
 struct ACTIVITY_CLASS_API ActivityRequirement
@@ -158,11 +158,11 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  *   - \b parameters : parameters required by the AppConfig
  *     - \b parameter : defined an AppConfig parameter
  *       - replace : parameter name to replace in AppConfig
- *       - by : value to use for replacement (can be a string or sesh@ path)
+ *       - by : value to use for replacement (can be a string or object path)
  *
  * Example of activity configuration:
  * @code{.xml}
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>3DVisualization</id>
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
@@ -191,7 +191,6 @@ struct ACTIVITY_CLASS_API ActivityRequirement
         </validators>
         <appConfig id="3DVisualization">
             <parameters>
-                <parameter replace="registeredImageUid" by="@values.param1" />
                 <parameter replace="orientation" by="frontal" />
                 <!--# ...-->
             </parameters>
@@ -301,6 +300,17 @@ public:
      * @note This method is thread safe.
      */
     ACTIVITY_API void clearRegistry();
+
+    ACTIVITY_API std::tuple<ActivityInfo, std::map<std::string, std::string> > getInfoAndReplacementMap(
+        const data::ActivitySeries& activitySeries,
+        const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
+    ) const;
+
+    ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
+        const data::ActivitySeries& activitySeries,
+        const ActivityInfo& info,
+        const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
+    ) const;
 
 protected:
 

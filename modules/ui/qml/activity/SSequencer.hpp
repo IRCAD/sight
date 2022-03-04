@@ -94,7 +94,7 @@ Q_PROPERTY(QStringList activityIds MEMBER m_qActivityIds)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSequencer, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SSequencer();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
      * @name Elapsed time
      * @brief These methods return the cumulated elapsed running time of the timer
      * the timer is running when start() has been invoked and stop running on
-     * stop() or reset() invokation.
+     * stop() or reset() calls.
      * @{ */
 
     /**
@@ -105,7 +105,7 @@ private:
      */
     core::HiResClock::HiResClockType m_endTimeInMicroSec;
     /**
-     * @brief cummulated running time.
+     * @brief accumulated running time.
      */
     core::HiResClock::HiResClockType m_cumulTimeInMicroSec;
     /**

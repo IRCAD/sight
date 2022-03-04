@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,8 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/helper/Composite.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/helper/SeriesDB.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
@@ -104,7 +104,7 @@ void SSliceIndexDicomEditor::configuring()
     std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
     if(success)
     {
-        m_delay = ::boost::lexical_cast<std::size_t>(delayStr);
+        m_delay = boost::lexical_cast<std::size_t>(delayStr);
     }
 }
 
@@ -121,7 +121,7 @@ void SSliceIndexDicomEditor::starting()
 
     const auto dicomSeries = m_dicomSeries.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
-    m_numberOfSlices = dicomSeries->getNumberOfInstances();
+    m_numberOfSlices = dicomSeries->numInstances();
 
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);
@@ -166,7 +166,7 @@ void SSliceIndexDicomEditor::starting()
 
     m_dicomReader = dicomReader;
 
-    // Image Indecies
+    // Image Indexes
     m_axialIndex    = data::Integer::New(0);
     m_frontalIndex  = data::Integer::New(0);
     m_sagittalIndex = data::Integer::New(0);
@@ -216,7 +216,7 @@ void SSliceIndexDicomEditor::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::changeSliceIndex(int value)
+void SSliceIndexDicomEditor::changeSliceIndex(int)
 {
     // Update text
     std::stringstream ss;
@@ -236,8 +236,8 @@ void SSliceIndexDicomEditor::triggerNewSlice()
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value())
-                                + dicomSeries->getFirstInstanceNumber();
+    std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value())
+                                     + dicomSeries->getFirstInstanceNumber();
 
     SIGHT_ERROR_IF(
         "There is no instance available for selected slice index.",
@@ -287,8 +287,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
-    const char* buffer = static_cast<char*>(lockerDest.getBuffer());
-    const size_t size  = bufferObj->getSize();
+    const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
+    const std::size_t size = bufferObj->getSize();
 
     const std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);
@@ -328,13 +328,26 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     if(imageSeries)
     {
         data::Image::sptr newImage      = imageSeries->getImage();
-        const data::Image::Size newSize = newImage->getSize2();
+        const data::Image::Size newSize = newImage->getSize();
 
-        newImage->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
-        newImage->setField(data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
-        newImage->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            m_axialIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::FRONTAL,
+            m_frontalIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::SAGITTAL,
+            m_sagittalIndex->value()
+        );
 
         this->setOutput(s_IMAGE, newImage);
     }

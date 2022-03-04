@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Histogram));
-
 namespace sight::data
 {
 
@@ -38,9 +36,7 @@ class DATA_CLASS_API Histogram : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Histogram, data::Object, data::factory::New<Histogram>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Histogram));
+    SIGHT_DECLARE_CLASS(Histogram, Object, factory::New<Histogram>);
 
     typedef std::vector<long> fwHistogramValues;
 
@@ -48,16 +44,13 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Histogram(data::Object::Key key);
+    DATA_API Histogram(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Histogram();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Add the given pixel value into the histogram.
@@ -90,7 +83,7 @@ public:
     DATA_API void initialize(float min, float max, float binsWidth);
 
     /**
-     * @brief Return true if the given pixel value is set within histogram's boudaries.
+     * @brief Return true if the given pixel value is set within histogram's boundaries.
      *
      * @param _pixel the pixel value
      *
@@ -102,7 +95,7 @@ public:
      *  @brief Get/Set bins width
      *  @{
      */
-    const float getBinsWidth() const;
+    float getBinsWidth() const;
     void setBinsWidth(float _binsWidth);
     /// @}
 
@@ -133,7 +126,16 @@ public:
     void setMaxValue(float _maxValue);
     /// @}
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Histogram& other) const noexcept;
+    DATA_API bool operator!=(const Histogram& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Histogram values.
     fwHistogramValues m_values;
@@ -150,7 +152,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const float Histogram::getBinsWidth() const
+inline float Histogram::getBinsWidth() const
 {
     return m_binsWidth;
 }

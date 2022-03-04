@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,35 +23,30 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/Equipment.hpp"
+#include "data/factory/new.hpp"
+#include "data/Object.hpp"
+#include "data/Patient.hpp"
+#include "data/Study.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Series))
 
 namespace sight::data
 {
 
-class Patient;
-class Study;
-class Equipment;
-
 /**
  * @brief Holds series information.
  */
-class DATA_CLASS_API Series : public data::Object
+class DATA_CLASS_API Series : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Series, data::Object, data::factory::New<Series>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Series))
+    SIGHT_DECLARE_CLASS(Series, Object, factory::New<Series>);
 
     /**
      * @brief Creates the series.
      * @param _key private construction key.
      */
-    DATA_API Series(data::Object::Key _key);
+    DATA_API Series(Object::Key _key);
 
     /// Destroys the series.
     DATA_API virtual ~Series();
@@ -60,32 +55,34 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the referring patient.
-    SPTR(data::Patient) getPatient() const;
+    /// @{
+    Patient::sptr getPatient();
+    Patient::csptr getPatient() const;
+    /// @}
 
     /// Sets the referring patient.
-    void setPatient(const SPTR(data::Patient)& _val);
+    void setPatient(const Patient::sptr& _val);
 
     /// Gets the referring study.
-    SPTR(data::Study) getStudy() const;
+    /// @{
+    Study::sptr getStudy();
+    Study::csptr getStudy() const;
+    /// @}
 
     /// Sets the referring study.
-    void setStudy(const SPTR(data::Study)& _val);
+    void setStudy(const Study::sptr& _val);
 
     /// Gets the related equipment.
-    SPTR(data::Equipment) getEquipment() const;
+    /// @{
+    Equipment::sptr getEquipment();
+    Equipment::csptr getEquipment() const;
+    /// @}
 
     /// Sets the related equipment.
-    void setEquipment(const SPTR(data::Equipment)& _val);
+    void setEquipment(const Equipment::sptr& _val);
 
     /// Gets the type of equipment that originally acquired the data used to create this series.
     const DicomValueType& getModality() const;
@@ -201,16 +198,33 @@ public:
     /// Sets the user-defined comments on the performed procedure step.
     void setPerformedProcedureComments(const DicomValueType& _va);
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Series& other) const noexcept;
+    DATA_API bool operator!=(const Series& other) const noexcept;
+    /// @}
+
+    /// initialize a series from another series using deep copy. This allows subclasses to share initialization code
+    /// @param source the source series to copy into this one.
+    DATA_API void from_series(const Series& source);
+
 protected:
 
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+
     /// Stores the referring patient.
-    SPTR(Patient) m_patient;
+    Patient::sptr m_patient;
 
     /// Stores the referring study.
-    SPTR(Study) m_study;
+    Study::sptr m_study;
 
     /// Stores the related equipment.
-    SPTR(Equipment) m_equipment;
+    Equipment::sptr m_equipment;
 
     /// Defines the modality.
     DicomValueType m_modality;
@@ -221,7 +235,7 @@ protected:
     /// Defines the series number.
     DicomValueType m_number;
 
-    /// Defines the lateriality of body part examined (L, R).
+    /// Defines the laterality of body part examined (L, R).
     DicomValueType m_laterality;
 
     /// Defines the date.
@@ -272,42 +286,63 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(data::Patient) Series::getPatient() const
+inline Patient::sptr Series::getPatient()
 {
     return m_patient;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setPatient(const SPTR(data::Patient)& _val)
+inline Patient::csptr Series::getPatient() const
+{
+    return m_patient;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPatient(const Patient::sptr& _val)
 {
     m_patient = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(data::Study) Series::getStudy() const
+inline Study::sptr Series::getStudy()
 {
     return m_study;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setStudy(const SPTR(data::Study)& _val)
+inline Study::csptr Series::getStudy() const
+{
+    return m_study;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setStudy(const Study::sptr& _val)
 {
     m_study = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(data::Equipment) Series::getEquipment() const
+inline Equipment::sptr Series::getEquipment()
 {
     return m_equipment;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setEquipment(const SPTR(data::Equipment)& _val)
+inline Equipment::csptr Series::getEquipment() const
+{
+    return m_equipment;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setEquipment(const Equipment::sptr& _val)
 {
     m_equipment = _val;
 }
@@ -577,7 +612,5 @@ inline void Series::setPerformedProcedureComments(const DicomValueType& _val)
 {
     m_performedProcedureComments = _val;
 }
-
-//-----------------------------------------------------------------------------
 
 } // Namespace fwMedData.

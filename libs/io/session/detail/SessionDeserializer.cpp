@@ -70,12 +70,10 @@
 #include <data/Integer.hpp>
 #include <data/mt/locked_ptr.hpp>
 
-#include <io/zip/ArchiveReader.hpp>
-
 #include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
 
 #include <memory>
+#include <shared_mutex>
 
 namespace sight::io::session
 {
@@ -83,18 +81,15 @@ namespace sight::io::session
 namespace detail
 {
 
-// The deserializer function signature
-using deserializer = std::function<data::Object::sptr(
-                                       zip::ArchiveReader&,
-                                       const boost::property_tree::ptree&,
-                                       const std::map<std::string, data::Object::sptr>&,
-                                       data::Object::sptr,
-                                       const core::crypto::secure_string&
-                                   )>;
+using core::crypto::PasswordKeeper;
+using core::crypto::secure_string;
+using sight::io::zip::Archive;
 
-// Serializer registry
-// No concurrency protection as the map is statically initialized
-static const std::unordered_map<std::string, deserializer> s_deserializers = {
+// To protect deserializers map
+static std::shared_mutex s_deserializers_mutex;
+
+// Default serializer registry
+static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializers = {
     {data::ActivitySeries::classname(), &ActivitySeries::deserialize},
     {data::Array::classname(), &Array::deserialize},
     {data::Boolean::classname(), &Helper::deserialize<data::Boolean>},
@@ -143,33 +138,43 @@ static const std::unordered_map<std::string, deserializer> s_deserializers = {
     {data::Vector::classname(), &Vector::deserialize}
 };
 
-// Return a deserializer from a data object class name
-inline static deserializer findDeserializer(const std::string& classname)
-{
-    const auto& it = s_deserializers.find(classname);
+// Serializer registry
+static std::unordered_map<std::string, deserializer_t> s_deserializers = s_defaultDeserializers;
 
-    if(it != s_deserializers.cend())
+//------------------------------------------------------------------------------
+
+deserializer_t SessionDeserializer::findDeserializer(const std::string& classname) const
+{
+    // First try to find in the customized serializer map
+    if(const auto& customIt = m_customDeserializers.find(classname); customIt != m_customDeserializers.cend())
     {
-        // Return the found deserializer
-        return it->second;
+        // Return the found serializer
+        return customIt->second;
+    }
+    else
+    {
+        // Protect deserializers map
+        std::shared_lock guard(s_deserializers_mutex);
+
+        if(const auto& it = s_deserializers.find(classname); it != s_deserializers.cend())
+        {
+            // Return the found deserializer
+            return it->second;
+        }
     }
 
-    SIGHT_THROW("There is no deserializer registered for class '" << classname << "'.");
+    SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
 }
 
-/// Deserializes recursively an initialized archive to a data::Object using an opened property tree
-/// @param cache object cache
-/// @param archive initialized archive
-/// @param tree property tree used to retrieve object index
-/// @param password password to use for optional encryption. Empty password means no encryption
-/// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
-inline static data::Object::sptr deepDeserialize(
+//------------------------------------------------------------------------------
+
+data::Object::sptr SessionDeserializer::deepDeserialize(
     std::map<std::string, data::Object::sptr>& cache,
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
-    const core::crypto::secure_string& password,
+    const secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
-)
+) const
 {
     const auto& treeIt = tree.begin();
 
@@ -237,13 +242,13 @@ inline static data::Object::sptr deepDeserialize(
             objectTree,
             children,
             object,
-            ISession::pickle(password, core::crypto::secure_string(uuid), encryptionPolicy)
+            ISession::pickle(password, secure_string(uuid), encryptionPolicy)
         );
 
         if(newObject != object)
         {
             // This should not happen normally, only if the serializer doesn't reuse object
-            newObject->setUUID(uuid);
+            newObject->setUUID(uuid, true);
             cache[uuid] = newObject;
         }
 
@@ -269,30 +274,100 @@ inline static data::Object::sptr deepDeserialize(
 
 //------------------------------------------------------------------------------
 
+void SessionDeserializer::setDeserializer(const std::string& className, deserializer_t deserializer)
+{
+    if(deserializer)
+    {
+        // Set the serializer for this class name
+        m_customDeserializers[className] = deserializer;
+    }
+    else
+    {
+        // Reset the serializer for this class name
+        m_customDeserializers.erase(className);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionDeserializer::setDefaultDeserializer(const std::string& className, deserializer_t deserializer)
+{
+    // Protect serializers map
+    std::unique_lock guard(s_deserializers_mutex);
+
+    if(deserializer)
+    {
+        // Set the serializer for this class name
+        s_deserializers[className] = deserializer;
+    }
+    else if(const auto& it = s_deserializers.find(className); it != s_deserializers.cend())
+    {
+        if(const auto& defaultIt = s_defaultDeserializers.find(className); defaultIt != s_defaultDeserializers.cend())
+        {
+            // The serializer was found in the default map, use it
+            s_deserializers[className] = defaultIt->second;
+        }
+        else
+        {
+            // The deserializer was not found in the default map. Remove it completely
+            s_deserializers.erase(it);
+        }
+    }
+    else
+    {
+        SIGHT_THROW("There is no deserializer registered for class '" << className << "'.");
+    }
+}
+
+//------------------------------------------------------------------------------
+
 data::Object::sptr SessionDeserializer::deserialize(
     const std::filesystem::path& archive_path,
-    const core::crypto::secure_string& password,
+    const Archive::ArchiveFormat archiveFormat,
+    const secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
-    // Initialize the object cache
-    std::map<std::string, data::Object::sptr> cache;
-
-    // Create the archive that contain everything
-    const auto& archive = zip::ArchiveReader::shared(archive_path);
-
-    // Create the tree used to store everything and read the index.json from the archive
+    zip::ArchiveReader::uptr archive;
     boost::property_tree::ptree tree;
+
+    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
     {
+        // Throw an exception in debug, but just report an error in release when encryption is not supported, but asked
+        if(!password.empty())
+        {
+            const std::string& message =
+                "Archive format '"
+                + std::string(Archive::archiveFormatToString(archiveFormat))
+                + "' doesn't support encryption.";
+
+            SIGHT_ASSERT(message, false);
+            SIGHT_ERROR(message);
+        }
+
+        // Create the archive that contain everything
+        archive = zip::ArchiveReader::get(archive_path.parent_path(), archiveFormat);
+
+        // Create the tree used to store everything and read the json archive.
+        boost::property_tree::read_json(archive_path.string(), tree);
+    }
+    else
+    {
+        // Create the archive that contain everything
+        archive = zip::ArchiveReader::get(archive_path, archiveFormat);
+
         // istream must be closed after this, since archive could only open files one by one
-        const auto istream = archive->openFile(getIndexFilePath(), password);
-        boost::property_tree::read_json(*istream, tree);
+        // Create the tree used to store everything and read the index.json from the archive
+        boost::property_tree::read_json(*archive->openFile(getIndexFilePath(), password), tree);
     }
 
     SIGHT_THROW_IF(
-        "Empty '" << getIndexFilePath() << "' from archive '" << archive_path << "'.",
+        "Empty tree from archive '" << archive_path << "'.",
         tree.empty()
     );
+
+    // Initialize the object cache
+    std::map<std::string, data::Object::sptr> cache;
 
     return deepDeserialize(cache, *archive, tree, password, encryptionPolicy);
 }

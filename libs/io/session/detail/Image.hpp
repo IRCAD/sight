@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Image.hpp>
 
@@ -52,7 +52,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto image = Helper::safeCast<data::Image>(object);
+    auto image = Helper::safeCast<data::Image>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Image>(tree, 1);
@@ -74,9 +74,7 @@ inline static void serialize(
     // Create the output file inside the archive
     const auto& ostream = archive.openFile(
         std::filesystem::path(image->getUUID() + s_image),
-        password,
-        zip::Method::ZSTD,
-        zip::Level::BEST
+        password
     );
 
     // Write back to the archive
@@ -110,13 +108,13 @@ inline static data::Image::sptr deserialize(
     const std::string content {std::istreambuf_iterator<char>(*istream), std::istreambuf_iterator<char>()};
 
     // Create the vtk reader
-    const auto& vtkReader = vtkSmartPointer<vtkXMLImageDataReader>::New();
-    vtkReader->ReadFromInputStringOn();
-    vtkReader->SetInputString(content);
-    vtkReader->Update();
+    const auto& vtk_reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
+    vtk_reader->ReadFromInputStringOn();
+    vtk_reader->SetInputString(content);
+    vtk_reader->Update();
 
     // Convert from VTK
-    io::vtk::fromVTKImage(vtkReader->GetOutput(), image);
+    io::vtk::fromVTKImage(vtk_reader->GetOutput(), image);
 
     return image;
 }

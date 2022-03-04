@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,5 +83,23 @@ void Matrix4::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& ca
 }
 
 //------------------------------------------------------------------------------
+
+bool Matrix4::operator==(const Matrix4& other) const noexcept
+{
+    if(!core::tools::is_equal(m_vCoefficients, other.m_vCoefficients))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Matrix4::operator!=(const Matrix4& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

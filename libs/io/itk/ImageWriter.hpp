@@ -53,7 +53,7 @@ public:
 
     IO_ITK_API void write() override;
 
-    IO_ITK_API std::string extension() override;
+    IO_ITK_API std::string extension() const override;
 };
 
 } // namespace sight::io::itk

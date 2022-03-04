@@ -27,7 +27,7 @@
 namespace sight::module::ui::qt::calibration
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::qt::calibration::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::calibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {

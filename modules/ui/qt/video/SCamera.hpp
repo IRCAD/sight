@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,6 +77,7 @@ namespace video
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>true</videoSupport>
+        <useAbsolutePath>false</useAbsolutePath>
         <label>Video source: </label>
     </service>
    @endcode
@@ -87,6 +88,8 @@ namespace video
  *
  * @subsection Configuration Configuration
  * - \b videoSupport (optional, default="false"): if we can open a video file in addition with cameras.
+ * - \b useAbsolutePath (optional, default="false"): when using a file input, tells if the path should be stored as
+ * absolute or relative to the video preferences directory.
  * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
  * - \b label (optional, default="Video source: "): label of the selector.
@@ -150,7 +153,10 @@ private:
     bool m_bVideoSupport {false};
 
     /// Number of cameras to create when using a camera series as input.
-    size_t m_numCreateCameras {0};
+    std::size_t m_numCreateCameras {0};
+
+    // Sets the file path as absolute ones
+    bool m_useAbsolutePath {false};
 
     /// Signal emitted when the cameraSeries has been configured.
     ConfiguredSignalType::sptr m_sigConfiguredCameras;
@@ -161,8 +167,8 @@ private:
     static constexpr std::string_view s_CAMERA        = "camera";
     static constexpr std::string_view s_CAMERA_SERIES = "cameraSeries";
 
-    data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, true};
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, true};
+    data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, false, true};
+    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, false, true};
 };
 
 } // video

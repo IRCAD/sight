@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <io/opencv/Matrix.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -41,7 +41,7 @@
 namespace sight::module::geometry::vision::charuco
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCO_BOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
@@ -54,7 +54,7 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_markerSizeInBits(6)
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
-    newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
+    newSlot(s_UPDATE_CHARUCO_BOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -104,20 +104,21 @@ void SOpenCVIntrinsic::updating()
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point2f> > cornersPoints;
+        std::vector<std::vector<cv::Point2f> > cornersPoints;
         std::vector<std::vector<int> > ids;
 
         {
-            for(data::PointList::sptr capture : calInfo->getPointListContainer())
+            for(data::PointList::csptr capture : calInfo->getPointListContainer())
             {
-                std::vector< ::cv::Point2f> cdst;
+                // cspell: disable
+                std::vector<cv::Point2f> cdst;
                 std::vector<int> idst;
 
                 for(data::Point::csptr point : capture->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
                     cdst.push_back(
-                        ::cv::Point2f(
+                        cv::Point2f(
                             static_cast<float>(point->getCoord()[0]),
                             static_cast<float>(point->getCoord()[1])
                         )
@@ -127,18 +128,19 @@ void SOpenCVIntrinsic::updating()
 
                 cornersPoints.push_back(cdst);
                 ids.push_back(idst);
+                //cspell: enable
             }
         }
 
-        data::Image::sptr img = calInfo->getImageContainer().front();
+        data::Image::csptr img = calInfo->getImageContainer().front();
 
-        ::cv::Mat cameraMatrix;
+        cv::Mat cameraMatrix;
         std::vector<double> distCoeffs;
-        std::vector< ::cv::Mat> rvecs;
-        std::vector< ::cv::Mat> tvecs;
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
+        std::vector<cv::Mat> rvecs;
+        std::vector<cv::Mat> tvecs;
+        cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
-        double err = ::cv::aruco::calibrateCameraCharuco(
+        double err = cv::aruco::calibrateCameraCharuco(
             cornersPoints,
             ids,
             m_board,
@@ -156,7 +158,7 @@ void SOpenCVIntrinsic::updating()
         {
             poseCamera->getContainer().clear();
 
-            for(size_t index = 0 ; index < rvecs.size() ; ++index)
+            for(std::size_t index = 0 ; index < rvecs.size() ; ++index)
             {
                 data::Matrix4::sptr mat3D = data::Matrix4::New();
 
@@ -179,8 +181,8 @@ void SOpenCVIntrinsic::updating()
         cam->setCy(cameraMatrix.at<double>(1, 2));
         cam->setFx(cameraMatrix.at<double>(0, 0));
         cam->setFy(cameraMatrix.at<double>(1, 1));
-        cam->setWidth(img->getSize2()[0]);
-        cam->setHeight(img->getSize2()[1]);
+        cam->setWidth(img->getSize()[0]);
+        cam->setHeight(img->getSize()[1]);
         cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
 
         cam->setIsCalibrated(true);
@@ -198,34 +200,18 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateCharucoBoardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
+        ui::base::Preferences preferences;
+        m_width            = preferences.get(m_widthKey, m_width);
+        m_height           = preferences.get(m_heightKey, m_height);
+        m_squareSize       = preferences.get(m_squareSizeKey, m_squareSize);
+        m_markerSize       = preferences.get(m_markerSizeKey, m_markerSize);
+        m_markerSizeInBits = preferences.get(m_markerSizeInBitsKey, m_markerSizeInBits);
     }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
+    catch(const ui::base::PreferencesDisabled&)
     {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
-    {
-        m_squareSize = std::stof(squareSizeStr);
-    }
-
-    const std::string markerSizeStr = ui::base::preferences::getPreference(m_markerSizeKey);
-    if(!markerSizeStr.empty())
-    {
-        m_markerSize = std::stof(markerSizeStr);
-    }
-
-    const std::string markerSizeInBitsStr = ui::base::preferences::getPreference(m_markerSizeInBitsKey);
-    if(!markerSizeInBitsStr.empty())
-    {
-        m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
+        // Nothing to do..
     }
 
     try
@@ -242,7 +228,7 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
         return;
     }
 
-    m_board = ::cv::aruco::CharucoBoard::create(
+    m_board = cv::aruco::CharucoBoard::create(
         static_cast<int>(m_width),
         static_cast<int>(m_height),
         m_squareSize,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,8 @@ ClippingBoxInteractor::ClippingBoxInteractor(
     Layer::sptr _layer,
     bool _layerOrderDependant,
     const std::string& _id,
-    ::Ogre::SceneNode* _parentSceneNode,
-    const ::Ogre::Matrix4& _clippingMatrix,
+    Ogre::SceneNode* _parentSceneNode,
+    const Ogre::Matrix4& _clippingMatrix,
     const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
     const std::string& _boxMtlName,
     const std::string& _handleMtlName
@@ -153,21 +153,21 @@ void ClippingBoxInteractor::setBoxVisibility(bool _visibility)
 
 //------------------------------------------------------------------------------
 
-::Ogre::AxisAlignedBox ClippingBoxInteractor::getClippingBox() const
+Ogre::AxisAlignedBox ClippingBoxInteractor::getClippingBox() const
 {
     return m_widget.getClippingBox();
 }
 
 //------------------------------------------------------------------------------
 
-::Ogre::Matrix4 ClippingBoxInteractor::getClippingTransform() const
+Ogre::Matrix4 ClippingBoxInteractor::getClippingTransform() const
 {
     return m_widget.getClippingTransform();
 }
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::updateFromTransform(const ::Ogre::Matrix4& _clippingTrf)
+void ClippingBoxInteractor::updateFromTransform(const Ogre::Matrix4& _clippingTrf)
 {
     m_widget.updateFromTransform(_clippingTrf);
 }

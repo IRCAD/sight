@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::vtk::ut::ImageTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::ImageTest);
 
 namespace sight::io::vtk
 {
@@ -78,11 +78,11 @@ void compareImageAttributes(
 )
 {
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<size_t>(expDim),
-        static_cast<size_t>(dim)
+        static_cast<std::size_t>(expDim),
+        static_cast<std::size_t>(dim)
     );
 
-    for(size_t i = 0 ; i < static_cast<size_t>(dim) ; ++i)
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>(dim) ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
             static_cast<data::Image::Spacing::value_type>(expSpacing[i]),
@@ -103,7 +103,7 @@ void compareImageAttributes(
 
 //------------------------------------------------------------------------------
 
-void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
+void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtk_types)
 {
     const data::Image::Size size       = {10, 15, 23};
     const data::Image::Spacing spacing = {0.85, 2.6, 1.87};
@@ -121,7 +121,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
         data::Image::PixelFormat::GRAY_SCALE
     );
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
     io::vtk::toVTKImage(image, vtkImage);
@@ -130,7 +130,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
         size,
         spacing,
         origin,
-        image->getNumberOfDimensions(),
+        image->numDimensions(),
 
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
@@ -139,7 +139,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 
     );
 
-    std::set<int> types = vtktypes;
+    std::set<int> types = vtk_types;
     CPPUNIT_ASSERT_MESSAGE("Test failed for type " + imgtype, types.find(vtkImage->GetScalarType()) != types.end());
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
@@ -184,15 +184,15 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     );
 
     compareImageAttributes(
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions(),
 
-        image2->getSize2(),
-        image2->getSpacing2(),
-        image2->getOrigin2(),
-        image2->getNumberOfDimensions()
+        image2->getSize(),
+        image2->getSpacing(),
+        image2->getOrigin(),
+        image2->numDimensions()
     );
 }
 
@@ -218,7 +218,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
     data::Image::sptr image = data::Image::New();
     io::vtk::fromVTKImage(vtkImage, image);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
 
     compareImageAttributes(
         vtkImage->GetDimensions(),
@@ -226,10 +226,10 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
         vtkImage->GetOrigin(),
         vtkImage->GetDataDimension(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions()
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions()
     );
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + imagename + "> Failed ", core::tools::Type(type), image->getType());
@@ -258,10 +258,10 @@ void testVtkReader(std::string imagetype)
     reader->setFile(testFile);
     reader->read();
 
-    vtkSmartPointer<vtkGenericDataObjectReader> vtkreader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
-    vtkreader->SetFileName(testFile.string().c_str());
-    vtkreader->Update();
-    vtkSmartPointer<vtkImageData> vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());
+    vtkSmartPointer<vtkGenericDataObjectReader> vtk_reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
+    vtk_reader->SetFileName(testFile.string().c_str());
+    vtk_reader->Update();
+    vtkSmartPointer<vtkImageData> vtkImage = vtkImageData::SafeDownCast(vtk_reader->GetOutput());
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
         "test on <" "sight/image/vtk/img-" + imagetype + ".vtk" "> Failed ",
         core::tools::Type(imagetype),
@@ -269,10 +269,10 @@ void testVtkReader(std::string imagetype)
     );
 
     compareImageAttributes(
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions(),
 
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
@@ -349,10 +349,10 @@ void ImageTest::testFromVtk()
     data::Image::sptr image = data::Image::New();
     io::vtk::fromVTKImage(vtkImage, image);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
-        static_cast<size_t>(image->getNumberOfComponents())
+        static_cast<std::size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
+        static_cast<std::size_t>(image->numComponents())
     );
     compareImageAttributes(
         vtkImage->GetDimensions(),
@@ -360,10 +360,10 @@ void ImageTest::testFromVtk()
         vtkImage->GetOrigin(),
         vtkImage->GetDataDimension(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions()
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions()
     );
     CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + type + "> Failed ", core::tools::Type(type), image->getType());
 
@@ -393,21 +393,21 @@ void fromToTest(data::Image::PixelFormat format)
     data::Image::sptr image2 = data::Image::New();
     io::vtk::fromVTKImage(vtkImage, image2);
 
-    CPPUNIT_ASSERT_EQUAL(image->getSize2()[0], image2->getSize2()[0]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize2()[1], image2->getSize2()[1]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize2()[2], image2->getSize2()[2]);
+    CPPUNIT_ASSERT_EQUAL(image->getSize()[0], image2->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(image->getSize()[1], image2->getSize()[1]);
+    CPPUNIT_ASSERT_EQUAL(image->getSize()[2], image2->getSize()[2]);
     CPPUNIT_ASSERT_EQUAL(image->getType(), image2->getType());
-    CPPUNIT_ASSERT_EQUAL(image->getNumberOfComponents(), image2->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(image->numComponents(), image2->numComponents());
     CPPUNIT_ASSERT_EQUAL(image->getPixelFormat(), image2->getPixelFormat());
 
-    const auto imageDumpLock  = image->lock();
-    const auto image2DumpLock = image2->lock();
+    const auto imageDumpLock  = image->dump_lock();
+    const auto image2DumpLock = image2->dump_lock();
 
     auto itr       = image->begin<TYPE>();
     auto itr2      = image2->begin<TYPE>();
     const auto end = image->end<TYPE>();
 
-    size_t count = 0;
+    std::size_t count = 0;
     for( ; itr != end ; ++itr, ++itr2, ++count)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("[" + type.string() + "] pixel[" + std::to_string(count) + "]", *itr, *itr2);
@@ -468,10 +468,10 @@ void ImageTest::mhdReaderTest()
         bostonTeapotOrigin,
         bostonTeapotSize.size(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions()
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions()
     );
 }
 
@@ -559,10 +559,10 @@ void ImageTest::vtiReaderTest()
         bostonTeapotOrigin,
         bostonTeapotSize.size(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions()
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions()
     );
 }
 
@@ -608,10 +608,10 @@ void ImageTest::vtkReaderTest()
         vtkOrigin,
         3,
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
-        image->getNumberOfDimensions()
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
+        image->numDimensions()
     );
 
     testVtkReader(std::string("int8"));

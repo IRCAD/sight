@@ -40,6 +40,6 @@ add_dependencies(myTarget viz_scene2d ... )
 
 ### Implementation
 
-Define your specific scened2D class as an extension of the IAdaptor class. 
+Define your specific scene2D class as an extension of the IAdaptor class. 
 
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <opencv2/core.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::CameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::CameraTest);
 
 namespace sight::io::opencv
 {
@@ -62,8 +62,8 @@ void CameraTest::copyToCv()
     sightCam->setHeight(8640);
     sightCam->setDistortionCoefficient(2., 3., 5., 8., 13.);
 
-    ::cv::Mat intrinsic, distCoeffs;
-    ::cv::Size imgSize;
+    cv::Mat intrinsic, distCoeffs;
+    cv::Size imgSize;
 
     std::tie(intrinsic, imgSize, distCoeffs) = io::opencv::Camera::copyToCv(sightCam);
 
@@ -101,8 +101,8 @@ void CameraTest::copyToCv()
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(sightCam->getWidth(), static_cast<size_t>(imgSize.width));
-    CPPUNIT_ASSERT_EQUAL(sightCam->getHeight(), static_cast<size_t>(imgSize.height));
+    CPPUNIT_ASSERT_EQUAL(sightCam->getWidth(), static_cast<std::size_t>(imgSize.width));
+    CPPUNIT_ASSERT_EQUAL(sightCam->getHeight(), static_cast<std::size_t>(imgSize.height));
 
     CPPUNIT_ASSERT_EQUAL(5, distCoeffs.size[0]);
 

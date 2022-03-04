@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,6 +38,9 @@ class FILTER_IMAGE_CLASS_API BresenhamLine
 {
 public:
 
+    /// Image orientation.
+    typedef data::helper::MedicalImage::orientation_t Orientation;
+
     /// Voxel coordinate type.
     typedef std::array<data::Image::IndexType, 3> CoordinatesType;
 
@@ -46,7 +49,7 @@ public:
 
     /// Computes a Bresenham line in a 3D image slice.
     FILTER_IMAGE_API static PathType draw(
-        const data::helper::MedicalImage::Orientation orientation,
+        const Orientation orientation,
         const CoordinatesType& startCoord,
         const CoordinatesType& endCoord
     );

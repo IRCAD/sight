@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 
 #include <data/helper/Composite.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <service/macros.hpp>
 
@@ -291,12 +289,12 @@ void SMultipleTF::destroyTFPoints()
 SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr _tf, int _zIndex)
 {
     sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::ObjectReadLock viewportLock(viewport);
+    const data::mt::locked_ptr viewportLock(viewport);
 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
 
-    // Computes point size in screen space and keep the smallest size (relativly to width or height).
+    // Computes point size in screen space and keep the smallest size (relatively to width or height).
     double pointSize = sceneWidth * m_pointSize;
     if(pointSize > sceneHeight * m_pointSize)
     {
@@ -316,7 +314,7 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
 
     subTF->m_zIndex = _zIndex;
 
-    const data::mt::ObjectReadLock tfLock(_tf);
+    const data::mt::locked_ptr tfLock(_tf);
 
     // Gets window/level informations to change TF value from TF space to window/level space.
     const data::TransferFunction::TFValuePairType minMaxValues = _tf->getMinMaxTFValues();
@@ -374,7 +372,7 @@ void SMultipleTF::createTFPolygons()
     // Iterates over all subTF to create polygons.
     for(SubTF* const subTF : m_subTF)
     {
-        const data::mt::ObjectReadLock tfLock(subTF->m_tf);
+        const data::mt::locked_ptr tfLock(subTF->m_tf);
         this->createTFPolygon(subTF);
     }
 }
@@ -384,7 +382,7 @@ void SMultipleTF::createTFPolygons()
 void SMultipleTF::createTFPolygon(SubTF* const _subTF)
 {
     const sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::ObjectReadLock viewportLock(viewport);
+    const data::mt::locked_ptr viewportLock(viewport);
 
     QVector<QPointF> position;
     QLinearGradient grad;
@@ -392,7 +390,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     const std::pair<Point2DType, QGraphicsEllipseItem*>& firstTFPoint = _subTF->m_TFPoints.front();
     const std::pair<Point2DType, QGraphicsEllipseItem*>& lastTFPoint  = _subTF->m_TFPoints.back();
 
-    const QGraphicsEllipseItem* const firtsPoint = firstTFPoint.second;
+    const QGraphicsEllipseItem* const firstPoint = firstTFPoint.second;
 
     double xBegin = firstTFPoint.first.first;
     double xEnd   = lastTFPoint.first.first;
@@ -420,7 +418,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
         }
     }
 
-    grad.setColorAt(0, firtsPoint->brush().color());
+    grad.setColorAt(0, firstPoint->brush().color());
 
     grad.setStart(xBegin, 0);
     grad.setFinalStop(xEnd, 0);
@@ -649,7 +647,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
 
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
-    // If it's a resize event, all the scene must be recompted.
+    // If it's a resize event, all the scene must be recomputed.
     if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
     {
         this->updating();
@@ -779,7 +777,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
         return;
     }
 
-    // If midlle button is pressed, select the current TF to adjust the window/level.
+    // If middle button is pressed, select the current TF to adjust the window/level.
     if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
        && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
@@ -854,7 +852,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                             // The first point is the same a the real but with an infinite lower value.
                             const sight::viz::scene2d::data::Viewport::csptr viewport =
                                 this->getScene2DRender()->getViewport();
-                            const data::mt::ObjectReadLock viewportLock(viewport);
+                            const data::mt::locked_ptr viewportLock(viewport);
                             tfPoint1 = std::make_pair(viewport->getX(), tfPoint2.second);
                         }
                     }
@@ -872,7 +870,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                             // The last point is the same a the real but with an infinite upper value.
                             const sight::viz::scene2d::data::Viewport::csptr viewport =
                                 this->getScene2DRender()->getViewport();
-                            const data::mt::ObjectReadLock viewportLock(viewport);
+                            const data::mt::locked_ptr viewportLock(viewport);
                             tfPoint2 = std::make_pair(viewport->getX() + viewport->getWidth(), tfPoint1.second);
                         }
                     }
@@ -1058,7 +1056,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     this->buildLayer();
 
     // Updates the TF with the new point position.
-    size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
     // If the window is negative, the TF point list is reversed compared to the TF data.
     if(_subTF->m_tf->getWindow() < 0)
@@ -1067,7 +1065,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     }
 
     const data::TransferFunction::sptr tf = _subTF->m_tf;
-    const data::mt::ObjectWriteLock tfLock(tf);
+    const data::mt::locked_ptr tfLock(tf);
 
     // Retrieves the TF point.
     const data::TransferFunction::TFDataType tfData = tf->getTFData();
@@ -1153,11 +1151,11 @@ void SMultipleTF::rightButtonClickOnPointEvent(
     auto pointIt =
         std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), _TFPoint);
     SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
-    size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
+    std::size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
     const data::TransferFunction::sptr tf = _subTF->m_tf;
     {
-        const data::mt::ObjectWriteLock tfLock(tf);
+        const data::mt::locked_ptr tfLock(tf);
 
         // If the window is negative, the TF point list is reversed compared to the TF data.
         const double window = tf->getWindow();
@@ -1253,11 +1251,11 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(
         auto pointIt =
             std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), _TFPoint);
         SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
-        size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
+        std::size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
         const data::TransferFunction::sptr tf = _subTF->m_tf;
         {
-            const data::mt::ObjectWriteLock tfLock(tf);
+            const data::mt::locked_ptr tfLock(tf);
 
             // If the window is negative, the TF point list is reversed compared to the TF data.
             if(tf->getWindow() < 0)
@@ -1338,7 +1336,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
             }));
     const data::TransferFunction::sptr tf = currentSubTF->m_tf;
     {
-        const data::mt::ObjectWriteLock tfLock(tf);
+        const data::mt::locked_ptr tfLock(tf);
 
         // Gets window/level informations to change TF value from TF space to window/level space.
         const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
@@ -1375,7 +1373,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
                 -newCoord.getY()
             );
         }
-        // Gets an interpolate color since the new point is between two ohers.
+        // Gets an interpolate color since the new point is between two others.
         else
         {
             newColor   = tf->getInterpolatedColor(tfValue);
@@ -1477,7 +1475,7 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const sight::viz::scene2d::data::Event& 
     // Updates the TF.
     const data::TransferFunction::sptr tf = m_capturedTF.first;
     {
-        const data::mt::ObjectWriteLock tfLock(tf);
+        const data::mt::locked_ptr tfLock(tf);
         tf->setWindow(tf->getWindow() - windowDelta);
         tf->setLevel(tf->getLevel() + levelDelta);
 

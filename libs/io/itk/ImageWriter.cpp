@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,14 +35,14 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::itk::ImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::itk::ImageWriter);
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
 
-ImageWriter::ImageWriter(io::base::writer::IObjectWriter::Key key)
+ImageWriter::ImageWriter(io::base::writer::IObjectWriter::Key)
 {
 }
 
@@ -68,12 +68,6 @@ struct ITKSaverFunctor
     {
         SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::tools::Type::create<PIXELTYPE>().string());
 
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
-        // ne permet pas de l'atteindre
-        // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
-        // reader (voir *3*)
-
         // Reader IO (*1*)
         typename ::itk::ImageIOBase::Pointer imageIOWrite = ::itk::ImageIOFactory::CreateImageIO(
             param.m_filename.c_str(),
@@ -92,7 +86,7 @@ struct ITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::itkImageFactory<itkImageType>(param.m_dataImage);
+        typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(param.m_dataImage);
 
         writer->SetFileName(param.m_filename.c_str());
         writer->SetInput(itkImage);
@@ -124,7 +118,7 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ImageWriter::extension()
+std::string ImageWriter::extension() const
 {
     if(getFile().empty() || (getFile().string().find(".inr.gz") != std::string::npos))
     {

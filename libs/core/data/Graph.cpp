@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -316,14 +316,14 @@ std::vector<data::Node::sptr> Graph::getNodes(
 
 //------------------------------------------------------------------------------
 
-size_t Graph::getNbNodes() const
+std::size_t Graph::getNbNodes() const
 {
     return m_nodes.size();
 }
 
 //------------------------------------------------------------------------------
 
-size_t Graph::getNbEdges() const
+std::size_t Graph::getNbEdges() const
 {
     return m_connections.size();
 }
@@ -404,5 +404,24 @@ void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 }
 
 //------------------------------------------------------------------------------
+
+bool Graph::operator==(const Graph& other) const noexcept
+{
+    if(!core::tools::is_equal(m_nodes, other.m_nodes)
+       || !core::tools::is_equal(m_connections, other.m_connections))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Graph::operator!=(const Graph& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

@@ -24,14 +24,14 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro(::sight::ui::qt::ActionCallback, ::sight::ui::base::ActionCallbackBase::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::ActionCallback, sight::ui::base::ActionCallbackBase::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
 
 //-----------------------------------------------------------------------------
 
-ActionCallback::ActionCallback(ui::base::GuiBaseObject::Key key)
+ActionCallback::ActionCallback(ui::base::GuiBaseObject::Key)
 {
 }
 
@@ -44,7 +44,7 @@ ActionCallback::~ActionCallback()
 //-----------------------------------------------------------------------------
 
 // if action is checkable, executeQt is executed after checkQt
-void ActionCallback::executeQt(bool checked)
+void ActionCallback::executeQt(bool)
 {
     this->execute();
 }

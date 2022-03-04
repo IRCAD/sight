@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,29 +176,29 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 
             const std::uint8_t* imageBuffer = &buffer->getElement(0);
 
-            ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*) imageBuffer, ::cv::Mat::AUTO_STEP);
+            cv::Mat image(cv::Size(width, height), m_imageType, (void*) imageBuffer, cv::Mat::AUTO_STEP);
 
-            const size_t time = static_cast<size_t>(timestamp);
+            const std::size_t time = static_cast<std::size_t>(timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
             const std::filesystem::path path = this->getFolder() / filename;
 
             if(image.type() == CV_8UC3)
             {
                 // convert the read image from BGR to RGB
-                ::cv::Mat imageRgb;
-                ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGR2RGB);
-                ::cv::imwrite(path.string(), imageRgb);
+                cv::Mat imageRgb;
+                cv::cvtColor(image, imageRgb, cv::COLOR_BGR2RGB);
+                cv::imwrite(path.string(), imageRgb);
             }
             else if(image.type() == CV_8UC4)
             {
                 // convert the read image from BGRA to RGBA
-                ::cv::Mat imageRgb;
-                ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGRA2RGBA);
-                ::cv::imwrite(path.string(), imageRgb);
+                cv::Mat imageRgb;
+                cv::cvtColor(image, imageRgb, cv::COLOR_BGRA2RGBA);
+                cv::imwrite(path.string(), imageRgb);
             }
             else
             {
-                ::cv::imwrite(path.string(), image);
+                cv::imwrite(path.string(), image);
             }
         }
     }
@@ -228,19 +228,19 @@ void SFrameWriter::startRecord()
             frameTL
         );
 
-        if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
+        if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
+        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 1)
+        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_8UC1;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->getNumberOfComponents() == 1)
+        else if(frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
@@ -248,7 +248,7 @@ void SFrameWriter::startRecord()
         {
             SIGHT_ERROR(
                 "This type of frame : " + frameTL->getType().string() + " with "
-                + std::to_string(frameTL->getNumberOfComponents()) + " is not supported"
+                + std::to_string(frameTL->numComponents()) + " is not supported"
             );
             return;
         }

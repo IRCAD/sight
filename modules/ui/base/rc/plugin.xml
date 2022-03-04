@@ -1,145 +1,125 @@
 <plugin id="sight::module::ui::base" library="true" >
     <requirement id="sight::module::service"/>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SConfigLauncher</service>
          <desc>This action starts/stops a template configuration.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SDefaultAction</service>
          <desc>Defines the default action to have a simple action button.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IFrame</type>
          <service>sight::module::ui::base::SFrame</service>
          <desc>Defines the default frame for standard application.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IDialogEditor</type>
          <service>sight::module::ui::base::SJobBar</service>
          <desc>Service displaying a progress bar.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IMenu</type>
          <service>sight::module::ui::base::SMenu</service>
          <desc>Defines the default menu for standard application</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IMenuBar</type>
          <service>sight::module::ui::base::SMenuBar</service>
          <desc>Defines the default menubar for standard application</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SModifyLayout</service>
          <desc>This action is used to modify the layout configuration.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
-         <type>sight::ui::base::preferences::IPreferences</type>
-         <service>sight::module::ui::base::SPreferences</service>
-         <object>sight::data::Composite</object>
-         <desc>Service to load and save preferences.</desc>
-    </extension>
-
-    <extension implements="::sight::service::extension::Factory">
-         <type>sight::ui::base::IAction</type>
-         <service>sight::module::ui::base::SPushField</service>
-         <desc>To add or remove an object in composite with specific key.</desc>
-    </extension>
-
-    <extension implements="::sight::service::extension::Factory">
-         <type>sight::ui::base::IAction</type>
-         <service>sight::module::ui::base::SPushObject</service>
-         <object>sight::data::Composite</object>
-         <desc>To add or remove an object in composite with specific key.</desc>
-    </extension>
-
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SQuit</service>
          <desc>This action tries to close the window and reset root object.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IToolBar</type>
          <service>sight::module::ui::base::SToolBar</service>
          <desc>Defines the default toolbar for standard application</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::view::IView</type>
          <service>sight::module::ui::base::SView</service>
          <desc>Defines the generic layout for application.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::com::SBooleanSlotCaller</service>
          <desc>This action runs a slot given by HasSlot id and slot key with a boolean in paramter representing the action</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::com::SSignal</service>
          <desc>Action that sends a signal when it is triggered</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::com::SSlotCaller</service>
          <desc>Run a slot given by HasSlot id and slot key.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::com::SStarter</service>
          <desc>Apply an action (start, stop, ...) on a service specify by uid.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::com::STimestampSlotCaller</service>
          <object>sight::data::Object</object>
          <desc>Runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::io::SFolderSelector</service>
          <object>sight::data::Object</object>
          <desc>Raise a pop-up dialog to select a directory, then send it via a signal.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IDialogEditor</type>
          <service>sight::module::ui::base::io::SSelector</service>
          <object>sight::data::Object</object>
          <desc>This service displays a list of available readers or writers and lets you select one to load or save a data.</desc>
     </extension>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::metrics::SAddDistance</service>
          <object key="image">sight::data::Image</object>
          <desc>This action adds distances on an image field.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::metrics::SRemoveDistance</service>
          <object key="image">sight::data::Image</object>
          <desc>This action removes distances from the image field.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::metrics::SShowDistance</service>
          <object key="image">sight::data::Image</object>
@@ -147,56 +127,56 @@
     </extension>
 
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::series::SDBMerger</service>
          <object>sight::data::SeriesDB</object>
          <desc>This action allows to load a new SeriesDB and merge it with the current SeriesDB</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::series::SExport</service>
          <object>sight::data::SeriesDB</object>
          <desc>This action allows to export the series specified in config to the SeriesDB.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::series::SExportWithSeriesDB</service>
          <object>sight::data::Object</object>
          <desc>This action allows to export the current series using a temporary seriesDB.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
         <type>sight::ui::base::IAction</type>
         <service>sight::module::ui::base::series::SPushSelection</service>
         <object>sight::data::Vector</object>
         <desc>Push Series to SeriesDB</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::ui::base::video::SImagePicker</service>
          <object>sight::data::PointList</object>
          <desc>This service listens to a picking interaction and fills the clicked point list.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::viz::CrossTypeAction</service>
          <object>sight::data::Image</object>
          <desc>This action allows change the cross type</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::viz::SSnapshot</service>
          <object>sight::data::Object</object>
          <desc>This action allows to snapshot a generic scene</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
         <type>sight::service::IController</type>
         <service>sight::module::ui::base::com::SRecurrentSignal</service>
     </extension>

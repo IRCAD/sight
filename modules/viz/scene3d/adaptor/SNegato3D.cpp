@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/tools/Color.hpp>
@@ -50,10 +49,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT       = "newImage";
-static const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT      = "sliceType";
-static const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT     = "sliceIndex";
-static const core::com::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT = "updateOpacity";
+static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT            = "newImage";
+static const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT           = "sliceType";
+static const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT          = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
+static const core::com::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT      = "updateOpacity";
 
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
@@ -82,6 +82,7 @@ SNegato3D::SNegato3D() noexcept :
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
+    newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato3D::updateSlicesFromWorld, this);
 
     m_pickedVoxelSignal = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
 }
@@ -161,18 +162,18 @@ void SNegato3D::starting()
     m_gpuTF->createTexture(this->getID());
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Negato3DTexture",
         sight::viz::scene3d::RESOURCE_GROUP,
         true
     );
 
     // Scene node's instantiation
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
     m_negatoSceneNode = transformNode->createChildSceneNode();
 
-    // Instanciation of the planes
+    // Instantiation of the planes
     int orientationNum {0};
     for(auto& plane : m_planes)
     {
@@ -201,19 +202,19 @@ void SNegato3D::starting()
         this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
-        const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName(
+        const auto basicAmbientMat = Ogre::MaterialManager::getSingleton().getByName(
             "BasicAmbient",
             sight::viz::scene3d::RESOURCE_GROUP
         );
         auto crossMat = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
-        crossMat->setAmbient(::Ogre::ColourValue::Red);
-        crossMat->setDiffuse(::Ogre::ColourValue::Red);
+        crossMat->setAmbient(Ogre::ColourValue::Red);
+        crossMat->setDiffuse(Ogre::ColourValue::Red);
         crossMat->setDepthCheckEnabled(false);
         m_pickingCross->estimateVertexCount(4);
-        m_pickingCross->begin(crossMat, ::Ogre::RenderOperation::OT_LINE_LIST);
+        m_pickingCross->begin(crossMat, Ogre::RenderOperation::OT_LINE_LIST);
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
-            m_pickingCross->position(::Ogre::Vector3::ZERO);
+            m_pickingCross->position(Ogre::Vector3::ZERO);
         }
 
         m_pickingCross->end();
@@ -289,12 +290,12 @@ void SNegato3D::stopping()
     if(m_pickingCross)
     {
         auto crossMtl = m_pickingCross->getSection(0)->getMaterial();
-        ::Ogre::MaterialManager::getSingleton().remove(crossMtl);
+        Ogre::MaterialManager::getSingleton().remove(crossMtl);
 
         this->getSceneManager()->destroyManualObject(m_pickingCross);
     }
 
-    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
+    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
 
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
@@ -304,7 +305,7 @@ void SNegato3D::stopping()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin)
+void SNegato3D::createPlanes(const Ogre::Vector3& _spacing, const Ogre::Vector3& _origin)
 {
     // Fits the planes to the new texture
     for(const auto& plane : m_planes)
@@ -331,7 +332,7 @@ void SNegato3D::newImage()
         const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
-        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+        if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
         {
             return;
         }
@@ -342,27 +343,11 @@ void SNegato3D::newImage()
         this->createPlanes(spacing, origin);
 
         // Update Slice
-        const auto imgSize       = image->getSize2();
-        const auto axialIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_axialSliceIndexId
-        );
-        SIGHT_INFO_IF("Axial Idx field missing", !axialIdxField);
-        axialIdx = axialIdxField
-                   ? static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2] / 2);
+        namespace imHelper = data::helper::MedicalImage;
 
-        const auto frontalIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_frontalSliceIndexId
-        );
-        SIGHT_INFO_IF("Frontal Idx field missing", !frontalIdxField);
-        frontalIdx = frontalIdxField
-                     ? static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1] / 2);
-
-        const auto sagittalIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_sagittalSliceIndexId
-        );
-        SIGHT_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
-        sagittalIdx = sagittalIdxField
-                      ? static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0] / 2);
+        axialIdx    = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0)));
+        frontalIdx  = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)));
+        sagittalIdx = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)));
     }
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
@@ -397,7 +382,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 {
     const auto image = m_image.lock();
 
-    auto imgSize = image->getSize2();
+    auto imgSize = image->getSize();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].
@@ -406,7 +391,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
     imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
 
-    const ::Ogre::Vector3 sliceIndices = {
+    const Ogre::Vector3 sliceIndices = {
         static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
         static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
         static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
@@ -609,7 +594,7 @@ void SNegato3D::moveSlices(int _x, int _y)
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
         pickedPt                     = (pickedPt - origin) / spacing;
 
-        const ::Ogre::Vector3i pickedPtI(pickedPt);
+        const Ogre::Vector3i pickedPtI(pickedPt);
         const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
                              (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
         sig->asyncEmit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
@@ -618,9 +603,33 @@ void SNegato3D::moveSlices(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
+void SNegato3D::updateSlicesFromWorld(double _x, double _y, double _z)
+{
+    const auto image = m_image.lock();
+
+    Ogre::Vector3 point = {static_cast<float>(_x), static_cast<float>(_y), static_cast<float>(_z)};
+    Ogre::Vector3i slice_idx;
+    try
+    {
+        slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
+    }
+    catch(core::Exception& _e)
+    {
+        SIGHT_WARN("Cannot update slice index: " << _e.what());
+        return;
+    }
+
+    const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
+                         (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
+
+    sig->asyncEmit(slice_idx[2], slice_idx[1], slice_idx[0]);
+}
+
+//------------------------------------------------------------------------------
+
 void SNegato3D::pickIntensity(int _x, int _y)
 {
-    if(m_pickedVoxelSignal->getNumberOfConnections() > 0)
+    if(m_pickedVoxelSignal->numConnections() > 0)
     {
         const auto pickedPos = this->getPickedSlices(_x, _y);
 
@@ -628,23 +637,27 @@ void SNegato3D::pickIntensity(int _x, int _y)
         {
             const auto image = m_image.lock();
 
-            if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+            if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
             {
                 return;
             }
 
-            const auto imageBufferLock = image->lock();
+            const auto imageBufferLock = image->dump_lock();
 
             const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
             const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
 
             this->updatePickingCross(pickedPos.value(), origin);
 
-            const auto& imgSize = image->getSize2();
+            const auto& imgSize = image->getSize();
             data::Image::Size pickedVoxel;
             for(std::uint8_t i = 0 ; i < pickedVoxel.size() ; ++i)
             {
-                pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t {0}, imgSize[i] - 1);
+                pickedVoxel[i] = std::clamp(
+                    static_cast<std::size_t>(pickedPosImageSpace[i]),
+                    std::size_t {0},
+                    imgSize[i] - 1
+                );
             }
 
             const auto intensity   = image->getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);
@@ -661,7 +674,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-std::optional< ::Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
+std::optional<Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
     SIGHT_ASSERT("Scene manager not created yet.", sceneManager);
@@ -689,7 +702,7 @@ std::optional< ::Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin)
+void SNegato3D::updatePickingCross(const Ogre::Vector3& _pickedPos, const Ogre::Vector3& _imgOrigin)
 {
     const float h = m_pickedPlane->getHeight();
     const float w = m_pickedPlane->getWidth();

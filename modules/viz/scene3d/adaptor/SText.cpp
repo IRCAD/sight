@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ void SText::configuring()
     m_textString = config.get<std::string>(s_TEXT_CONFIG, "");
 
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
     m_horizontalAlignment = config.get<std::string>(s_H_ALIGN_CONFIG, "left");
     SIGHT_ASSERT(
@@ -107,7 +107,7 @@ void SText::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
+    Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
 
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
@@ -149,7 +149,7 @@ void SText::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* const sm = this->getLayer()->getSceneManager();
+    Ogre::SceneManager* const sm = this->getLayer()->getSceneManager();
     m_text->detachFromParent();
     sm->destroyMovableObject(m_text);
     m_text = nullptr;
@@ -172,10 +172,10 @@ void SText::setText(std::string str)
 
 void SText::updatePositionFromAlignment()
 {
-    const std::map<std::string, ::Ogre::TextAreaOverlayElement::Alignment> stringToHorizAlignmentMap {
-        {"left", ::Ogre::TextAreaOverlayElement::Left},
-        {"center", ::Ogre::TextAreaOverlayElement::Center},
-        {"right", ::Ogre::TextAreaOverlayElement::Right}
+    const std::map<std::string, Ogre::TextAreaOverlayElement::Alignment> stringToHorizAlignmentMap {
+        {"left", Ogre::TextAreaOverlayElement::Left},
+        {"center", Ogre::TextAreaOverlayElement::Center},
+        {"right", Ogre::TextAreaOverlayElement::Right}
     };
 
     const std::map<std::string, float> horizAlignToX {
@@ -184,10 +184,10 @@ void SText::updatePositionFromAlignment()
         {"right", 1.f - m_position.x}
     };
 
-    const std::map<std::string, ::Ogre::GuiVerticalAlignment> stringToVertAlignmentMap {
-        {"bottom", ::Ogre::GVA_BOTTOM},
-        {"center", ::Ogre::GVA_CENTER},
-        {"top", ::Ogre::GVA_TOP}
+    const std::map<std::string, Ogre::GuiVerticalAlignment> stringToVertAlignmentMap {
+        {"bottom", Ogre::GVA_BOTTOM},
+        {"center", Ogre::GVA_CENTER},
+        {"top", Ogre::GVA_TOP}
     };
 
     const std::map<std::string, float> vertAlignToY {

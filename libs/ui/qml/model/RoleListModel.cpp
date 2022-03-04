@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ QVariant RoleListModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    // Check boudaries
+    // Check boundaries
     if(index.column() < 0
        || index.row() < 0
        || rowCount() <= index.row())

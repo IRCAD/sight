@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <Eigen/Geometry>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::eigen::ut::EigenToolsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::eigen::ut::EigenToolsTest);
 
 namespace sight::geometry::eigen
 {
@@ -144,11 +144,11 @@ void EigenToolsTest::f4sToEigen()
 
 void EigenToolsTest::eigenMatToRvecTvec()
 {
-    ::Eigen::Matrix4d m        = ::Eigen::Matrix4d::Identity();
-    ::Eigen::AngleAxisd rotVec = ::Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
+    Eigen::Matrix4d m        = Eigen::Matrix4d::Identity();
+    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
 
-    ::Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
-    ::Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
+    Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
+    Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
 
     m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
@@ -183,11 +183,11 @@ void EigenToolsTest::eigenMatToRvecTvec()
 
 void EigenToolsTest::f4sMatToRvecTvec()
 {
-    ::Eigen::Matrix4d m        = ::Eigen::Matrix4d::Identity();
-    ::Eigen::AngleAxisd rotVec = ::Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
+    Eigen::Matrix4d m        = Eigen::Matrix4d::Identity();
+    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
 
-    ::Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
-    ::Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
+    Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
+    Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
 
     m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
@@ -231,7 +231,7 @@ void EigenToolsTest::float16ToEigen()
     }
     };
 
-    ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> mat;
+    Eigen::Matrix<double, 4, 4, Eigen::RowMajor> mat;
 
     mat = geometry::eigen::helper::toEigen(mat16);
 

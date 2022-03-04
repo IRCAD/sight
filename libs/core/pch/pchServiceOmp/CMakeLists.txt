@@ -1,11 +1,10 @@
-sight_add_target( pchServiceOmp TYPE LIBRARY )
-
-# include first to be taken into account in the PCH compile flags
+# This needs to be done before declaring the target to be defined in the PCH (MSVC)
 find_package(OpenMP QUIET)
 
-if (OPENMP_CXX_FOUND)
-    target_compile_options(pchServiceOmp PUBLIC ${OpenMP_CXX_FLAGS})
+if(OPENMP_CXX_FOUND)
+    add_compile_options(${OpenMP_CXX_FLAGS})
 endif()
 
+sight_add_target(pchServiceOmp TYPE LIBRARY)
 
 target_link_libraries(pchServiceOmp PUBLIC service)

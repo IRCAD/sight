@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::viz::scene3d
 /**
  * @brief Represents and manages a tranfer function from a GPU point of view
  */
-class VIZ_SCENE3D_CLASS_API TransferFunction : public ::boost::noncopyable
+class VIZ_SCENE3D_CLASS_API TransferFunction : public boost::noncopyable
 {
 public:
 
@@ -49,7 +49,7 @@ public:
     VIZ_SCENE3D_API virtual ~TransferFunction();
 
     /// Initialize the textures attributes.
-    VIZ_SCENE3D_API void createTexture(const ::Ogre::String& _parentId);
+    VIZ_SCENE3D_API void createTexture(const Ogre::String& _parentId);
 
     /// Destroy the texture.
     VIZ_SCENE3D_API void removeTexture();
@@ -58,7 +58,7 @@ public:
     VIZ_SCENE3D_API void updateTexture(const data::TransferFunction::csptr& _tf);
 
     /// Return the TF texture.
-    VIZ_SCENE3D_API ::Ogre::TexturePtr getTexture() const;
+    VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
 
     /// Set the sample distance.
     VIZ_SCENE3D_API void setSampleDistance(const float& _sampleDistance);
@@ -66,16 +66,16 @@ public:
     /// Bind the texture and the uniforms in a given pass
     template<class GPU_PARAMETERS>
     void bind(
-        const ::Ogre::Pass* const _ogrePass,
+        const Ogre::Pass* const _ogrePass,
         const std::string& _texUnitName,
-        ::Ogre::SharedPtr<GPU_PARAMETERS> _params,
+        Ogre::SharedPtr<GPU_PARAMETERS> _params,
         const std::string& _uniform = "u_f2TFWindow"
     ) const;
 
 private:
 
     /// Texture containing the interpolated nodes of the transfer function.
-    ::Ogre::TexturePtr m_texture;
+    Ogre::TexturePtr m_texture;
 
     /// Current sample distance used in the VR renderer.
     float m_sampleDistance {1.f};
@@ -89,7 +89,7 @@ private:
     bool m_isClamped {false};
 
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
-    ::Ogre::Vector2 m_tfWindow;
+    Ogre::Vector2 m_tfWindow;
 
     static std::uint32_t TEXTURE_SIZE;
     static std::uint32_t TEXTURE_PIXEL_COUNT;
@@ -98,7 +98,7 @@ private:
 //-----------------------------------------------------------------------------
 // Inline functions
 
-inline ::Ogre::TexturePtr TransferFunction::getTexture() const
+inline Ogre::TexturePtr TransferFunction::getTexture() const
 {
     return m_texture;
 }
@@ -114,9 +114,9 @@ inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
 
 template<class GPU_PARAMETERS>
 inline void TransferFunction::bind(
-    const ::Ogre::Pass* const _pass,
+    const Ogre::Pass* const _pass,
     const std::string& _texUnitName,
-    ::Ogre::SharedPtr<GPU_PARAMETERS> _params,
+    Ogre::SharedPtr<GPU_PARAMETERS> _params,
     const std::string& _uniform
 ) const
 {
@@ -131,18 +131,18 @@ inline void TransferFunction::bind(
         texUnitState->setTexture(m_texture);
     }
 
-    texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
 
     // Beware, "clamped" here means the border color is black (see data::TransferFunction), otherwise use the
     // last value, which corresponds to the "clamp" texture address mode
     if(m_isClamped)
     {
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_BORDER);
-        texUnitState->setTextureBorderColour(::Ogre::ColourValue::Black);
+        texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+        texUnitState->setTextureBorderColour(Ogre::ColourValue::Black);
     }
     else
     {
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
     }
 
     _params->setNamedConstant(_uniform, m_tfWindow);

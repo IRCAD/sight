@@ -328,14 +328,13 @@ bool IAction::confirmAction()
     {
         ui::base::dialog::MessageDialog dialog;
         dialog.setTitle("Confirmation");
-        std::stringstream ss;
-        ss << "Do you really want to execute this action ? ";
-        if(!m_confirmMessage.empty())
+        std::string message = m_confirmMessage;
+        if(message.empty())
         {
-            ss << std::endl << m_confirmMessage;
+            message = "Do you really want to execute this action ?";
         }
 
-        dialog.setMessage(ss.str());
+        dialog.setMessage(message);
 
         if(m_defaultButton == "true")
         {

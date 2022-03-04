@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 namespace sight::module::io::dicomweb
 {
@@ -97,16 +97,24 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    ui::base::Preferences preferences;
+
+    try
     {
-        m_serverHostname = hostname;
+        m_serverPort = preferences.delimited_get(m_serverPortKey, m_serverPort);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    try
     {
-        m_serverPort = std::stoi(port);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
     const auto selectedSeries = m_selectedSeries.lock();
@@ -152,24 +160,24 @@ void SSeriesPusher::pushSeries()
     const std::vector<data::DicomSeries::sptr> dataVector = seriesVector->getDataContainer<data::DicomSeries>();
 
     // Connect to PACS
-    const size_t seriesVectorSize = seriesVector->size();
-    size_t nbSeriesSuccess        = 0;
+    const std::size_t seriesVectorSize = seriesVector->size();
+    std::size_t nbSeriesSuccess        = 0;
     for(const auto& dicomSeries : dataVector)
     {
         nbSeriesSuccess++;
 
         data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
-        const size_t dicomContainerSize                      = dicomContainer.size();
+        const std::size_t dicomContainerSize                 = dicomContainer.size();
 
-        size_t nbInstanceSuccess = 0;
+        std::size_t nbInstanceSuccess = 0;
         try
         {
             for(const auto& item : dicomContainer)
             {
                 const core::memory::BufferObject::sptr bufferObj = item.second;
                 const core::memory::BufferObject::Lock lockerDest(bufferObj);
-                const char* buffer = static_cast<char*>(lockerDest.getBuffer());
-                const size_t size  = bufferObj->getSize();
+                const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
+                const std::size_t size = bufferObj->getSize();
 
                 const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
 

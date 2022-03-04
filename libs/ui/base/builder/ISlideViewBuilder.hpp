@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace builder
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <slideView vAlign="top" hAlign="left" widht="50%" height="15" opacity="1.0" >
+    <slideView vAlign="top" hAlign="left" width="50%" height="15" opacity="1.0" >
         <styleSheet>color: blue; background-color: yellow</styleSheet>
     </slideView>
    @endcode
@@ -103,7 +103,7 @@ public:
     /// Creates the container.
     UI_BASE_API virtual void createContainer(ui::base::container::fwContainer::sptr _parent) = 0;
 
-    /// Destoyes the container.
+    /// Destroys the container.
     UI_BASE_API virtual void destroyContainer() = 0;
 
 protected:

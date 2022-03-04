@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,9 @@
 #include <data/PointList.hpp>
 
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::CalibrationInfoTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CalibrationInfoTest);
 
 namespace sight::data
 {
@@ -76,29 +75,29 @@ void CalibrationInfoTest::calibrationInfoTest()
 
     //Testing values
 
-    data::CalibrationInfo::ImageContainerType imgList = calInfo->getImageContainer();
+    const auto imgList = calInfo->getImageContainer();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), imgList.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), imgList.size());
     CPPUNIT_ASSERT_EQUAL(img, imgList.front());
 
-    data::CalibrationInfo::PointListContainerType plList = calInfo->getPointListContainer();
+    const auto plList = calInfo->getPointListContainer();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), plList.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), plList.size());
     CPPUNIT_ASSERT_EQUAL(pl, plList.front());
 
-    data::PointList::sptr pl1 = calInfo->getPointList(imgList.front());
-    CPPUNIT_ASSERT_EQUAL(pl, pl1);
+    data::PointList::csptr pl1 = calInfo->getPointList(imgList.front());
+    CPPUNIT_ASSERT_EQUAL(data::PointList::csptr(pl), pl1);
 
-    data::Image::sptr img1 = calInfo->getImage(plList.front());
-    CPPUNIT_ASSERT_EQUAL(img, img1);
+    data::Image::csptr img1 = calInfo->getImage(plList.front());
+    CPPUNIT_ASSERT_EQUAL(data::Image::csptr(img), img1);
 
     calInfo->removeRecord(0);
 
-    data::PointList::sptr pl2 = calInfo->getPointList(img);
-    CPPUNIT_ASSERT_EQUAL(data::PointList::sptr(), pl2);
+    data::PointList::csptr pl2 = calInfo->getPointList(img);
+    CPPUNIT_ASSERT_EQUAL(data::PointList::csptr(), pl2);
 
-    data::Image::sptr img2 = calInfo->getImage(pl);
-    CPPUNIT_ASSERT_EQUAL(data::Image::sptr(), img2);
+    data::Image::csptr img2 = calInfo->getImage(pl);
+    CPPUNIT_ASSERT_EQUAL(data::Image::csptr(), img2);
 
     CPPUNIT_ASSERT(calInfo->getImageContainer().empty());
     CPPUNIT_ASSERT(calInfo->getPointListContainer().empty());
@@ -154,6 +153,10 @@ void CalibrationInfoTest::deepCopyTest()
     calInfo->addRecord(img, pl);
 
     data::CalibrationInfo::sptr calInfo2 = data::CalibrationInfo::New();
+
+    // == operator test
+    CPPUNIT_ASSERT(*calInfo != *calInfo2);
+
     calInfo2->deepCopy(calInfo);
 
     CPPUNIT_ASSERT_EQUAL(calInfo2->getImageContainer().size(), calInfo2->getPointListContainer().size());
@@ -161,11 +164,11 @@ void CalibrationInfoTest::deepCopyTest()
     CPPUNIT_ASSERT_EQUAL(calInfo->getImageContainer().size(), calInfo2->getImageContainer().size());
     CPPUNIT_ASSERT_EQUAL(calInfo->getPointListContainer().size(), calInfo2->getPointListContainer().size());
 
-    data::CalibrationInfo::ImageContainerType::const_iterator iterImg1, iterImg2;
+    std::list<data::Image::sptr>::const_iterator iterImg1, iterImg2;
     iterImg1 = calInfo->getImageContainer().begin();
     iterImg2 = calInfo2->getImageContainer().begin();
 
-    data::CalibrationInfo::PointListContainerType::const_iterator iterPl1, iterPl2;
+    std::list<data::PointList::sptr>::const_iterator iterPl1, iterPl2;
     iterPl1 = calInfo->getPointListContainer().begin();
     iterPl2 = calInfo2->getPointListContainer().begin();
 
@@ -174,8 +177,8 @@ void CalibrationInfoTest::deepCopyTest()
         CPPUNIT_ASSERT(*iterImg1 != *iterImg2);
         CPPUNIT_ASSERT(*iterPl1 != *iterPl2);
 
-        CPPUNIT_ASSERT(utestData::helper::compare(*iterImg1, *iterImg2));
-        CPPUNIT_ASSERT(utestData::helper::compare(*iterPl1, *iterPl2));
+        CPPUNIT_ASSERT(**iterImg1 == **iterImg2);
+        CPPUNIT_ASSERT(**iterPl1 == **iterPl2);
 
         ++iterPl1;
         ++iterPl2;
@@ -183,6 +186,9 @@ void CalibrationInfoTest::deepCopyTest()
         ++iterImg1;
         ++iterImg2;
     }
+
+    // == operator test
+    CPPUNIT_ASSERT(*calInfo == *calInfo2);
 }
 
 //------------------------------------------------------------------------------

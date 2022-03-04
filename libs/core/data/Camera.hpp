@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,18 +23,19 @@
 #pragma once
 
 #include "data/config.hpp"
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
+#include "data/factory/new.hpp"
+#include "data/Object.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
+
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 #include <array>
 #include <filesystem>
 #include <string>
 #include <utility>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Camera));
 
 namespace sight::data
 {
@@ -42,12 +43,11 @@ namespace sight::data
 /**
  * @brief   This class defines a camera object.
  */
-class DATA_CLASS_API Camera : public data::Object
+class DATA_CLASS_API Camera : public Object
 {
 public:
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Camera));
-    SIGHT_DECLARE_CLASS(Camera, data::Object, data::factory::New<Camera>);
+    SIGHT_DECLARE_CLASS(Camera, Object, factory::New<Camera>);
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;
@@ -102,13 +102,13 @@ public:
     /// Default constructor.
     DATA_API Camera();
 
-    DATA_API Camera(const data::Camera& _cam);
+    DATA_API Camera(const Camera& _cam);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Camera(data::Object::Key key);
+    DATA_API Camera(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Camera() noexcept;
@@ -118,10 +118,7 @@ public:
     DATA_API static std::string getPixelFormatName(PixelFormat format);
 
     /// Defines shallow copy
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /**@name Signals API
      * @{
@@ -184,25 +181,25 @@ public:
     }
 
     /// @return camera resolution in pixels
-    size_t getWidth() const
+    std::size_t getWidth() const
     {
         return m_width;
     }
 
     /// Sets camera resolution in pixels
-    void setWidth(size_t w)
+    void setWidth(std::size_t w)
     {
         m_width = w;
     }
 
     /// @return camera resolution in pixels
-    size_t getHeight() const
+    std::size_t getHeight() const
     {
         return m_height;
     }
 
     /// Sets camera resolution in pixels
-    void setHeight(size_t h)
+    void setHeight(std::size_t h)
     {
         m_height = h;
     }
@@ -363,17 +360,26 @@ public:
     /**
      * @brief getIndex returns index of the device as Qt give us in module::ui::qt::video::CameraDeviceDlg.
      * The index is the first character of m_description. (ex: "1. Microsoft HD Camera")
-     * @return an integer of the index, -1 if unvalid (if SourceType isn't DECVICE)
+     * @return an integer of the index, -1 if invalid (if SourceType isn't DEVICES)
      */
     int getIndex() const;
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Camera& other) const noexcept;
+    DATA_API bool operator!=(const Camera& other) const noexcept;
+    /// @}
+
 protected:
 
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
     //! Width video resolution
-    size_t m_width;
+    std::size_t m_width;
 
     //! Height video resolution
-    size_t m_height;
+    std::size_t m_height;
 
     /// Intrinsic parameters [fx, fy, cx, cy]
     IntrinsecType m_intrinsic;
@@ -389,10 +395,13 @@ protected:
 
     //! Human-readable description of the camera.
     std::string m_description;
+
     //! Device name of the camera, unique ID to identify the camera and may not be human-readable.
     std::string m_cameraID;
+
     //! Maximum frame rate in frames per second.
     float m_maxFrameRate;
+
     //! Color format of a video frame.
     PixelFormat m_pixelFormat;
 

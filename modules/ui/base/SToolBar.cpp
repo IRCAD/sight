@@ -66,7 +66,7 @@ void SToolBar::updating()
 
 //-----------------------------------------------------------------------------
 
-void SToolBar::info(std::ostream& _sstream)
+void SToolBar::info(std::ostream&)
 {
 }
 

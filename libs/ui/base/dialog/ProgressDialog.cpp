@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/ProgressDialog.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <functional>
 
@@ -36,7 +36,7 @@ namespace dialog
 
 ProgressDialog::ProgressDialog(const std::string& title, const std::string& message)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IProgressDialog::REGISTRY_KEY);
@@ -53,7 +53,7 @@ ProgressDialog::ProgressDialog(const std::string& title, const std::string& mess
 
 ProgressDialog::~ProgressDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation.reset();
@@ -64,7 +64,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::setTitle(const std::string& title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -78,7 +78,7 @@ void ProgressDialog::setTitle(const std::string& title)
 
 void ProgressDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -92,7 +92,7 @@ void ProgressDialog::setMessage(const std::string& msg)
 
 void ProgressDialog::operator()(float percent, std::string msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -106,7 +106,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
 void ProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -127,7 +127,7 @@ void ProgressDialog::cancelPressed()
 
 void ProgressDialog::hideCancelButton()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->hideCancelButton();

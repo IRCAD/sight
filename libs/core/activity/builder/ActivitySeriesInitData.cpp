@@ -35,7 +35,7 @@ namespace builder
 
 fwActivitiesBuilderRegisterMacro(
     activity::builder::ActivitySeriesInitData,
-    "::sight::activity::builder::ActivitySeriesInitData"
+    "sight::activity::builder::ActivitySeriesInitData"
 );
 
 //-----------------------------------------------------------------------------

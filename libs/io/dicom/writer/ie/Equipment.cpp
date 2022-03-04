@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Equipment::Equipment(
-    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Equipment::csptr& equipment,
     const core::log::Logger::sptr& logger,
@@ -63,7 +63,7 @@ Equipment::~Equipment()
 void Equipment::writeGeneralEquipmentModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Manufacturer - Type 2 (Type 1 for EnhancedGeneralEquipmentModule)
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0070>("Sight", dataset);
@@ -77,7 +77,7 @@ void Equipment::writeGeneralEquipmentModule()
     const std::string softwareVersion = profile ? profile->getName() + " " + profile->getVersion() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one
-    ::gdcm::Attribute<0x0018, 0x1020> attribute;
+    gdcm::Attribute<0x0018, 0x1020> attribute;
     attribute.SetNumberOfValues(1);
     attribute.SetValue(softwareVersion);
     dataset.Insert(attribute.GetAsDataElement());
@@ -88,7 +88,7 @@ void Equipment::writeGeneralEquipmentModule()
 void Equipment::writeEnhancedGeneralEquipmentModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+    gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Manufacturer's Model Name - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1090>("Sight_FWGDCMIO", dataset);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ static std::stringstream spiritDebugStream;
 #include "io/base/reader/DictionaryReader.hpp"
 #include "io/base/reader/registry/macros.hpp"
 
-SIGHT_REGISTER_IO_READER(::sight::io::base::reader::DictionaryReader);
+SIGHT_REGISTER_IO_READER(sight::io::base::reader::DictionaryReader);
 
 namespace sight::io::base
 {
@@ -77,7 +77,7 @@ struct line
     double green;
     double blue;
     double alpha;
-    std::string catgegory;
+    std::string category;
     std::string organClass;
     std::string attachment;
     std::string nativeExp;
@@ -96,7 +96,7 @@ BOOST_FUSION_ADAPT_STRUCT(
         (double, green)
         (double, blue)
         (double, alpha)
-        (std::string, catgegory)
+        (std::string, category)
         (std::string, organClass)
         (std::string, attachment)
         (std::string, nativeExp)
@@ -110,7 +110,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 inline std::string trim(std::string& s)
 {
-    return ::boost::algorithm::trim_copy(s);
+    return boost::algorithm::trim_copy(s);
 }
 
 //------------------------------------------------------------------------------
@@ -118,9 +118,9 @@ inline std::string trim(std::string& s)
 /// Reformat string in the following way :first letter is uppercase and the rest is lowercase).
 std::string reformatString(std::string& expr)
 {
-    std::string trimStr = ::boost::algorithm::trim_copy(expr);
-    std::string result  = ::boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
-                          + ::boost::algorithm::to_lower_copy(trimStr.substr(1));
+    std::string trimStr = boost::algorithm::trim_copy(expr);
+    std::string result  = boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
+                          + boost::algorithm::to_lower_copy(trimStr.substr(1));
     return result;
 }
 
@@ -306,14 +306,14 @@ void DictionaryReader::read()
     const auto length = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    buf.resize(static_cast<size_t>(length));
+    buf.resize(static_cast<std::size_t>(length));
     char* buffer = &buf[0];
 
     file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
-    std::vector<io::base::line> dicolines;
-    std::pair<bool, std::string> result = parse(buf, dicolines);
+    std::vector<io::base::line> dico_lines;
+    std::pair<bool, std::string> result = parse(buf, dico_lines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
     SIGHT_THROW_IF(error, !result.first);
@@ -321,7 +321,7 @@ void DictionaryReader::read()
     // File the dictionary Structure
     data::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
-    for(io::base::line line : dicolines)
+    for(io::base::line line : dico_lines)
     {
         data::StructureTraits::sptr newOrgan = data::StructureTraits::New();
         newOrgan->setType(line.type);
@@ -345,7 +345,7 @@ void DictionaryReader::read()
             )
         );
         std::vector<std::string> categorylist;
-        ::boost::algorithm::split(categorylist, line.catgegory, ::boost::algorithm::is_any_of(","));
+        boost::algorithm::split(categorylist, line.category, boost::algorithm::is_any_of(","));
         data::StructureTraits::CategoryContainer categories;
         for(std::string category : categorylist)
         {
@@ -376,7 +376,7 @@ void DictionaryReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string DictionaryReader::extension()
+std::string DictionaryReader::extension() const
 {
     return ".dic";
 }

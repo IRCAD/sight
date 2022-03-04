@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <service/registry/ObjectService.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::dimse::ut::IoPacsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::dimse::ut::IoPacsTest);
 
 namespace sight::module::io::dimse
 {
@@ -59,12 +59,12 @@ void IoPacsTest::tearDown()
 
 void IoPacsTest::pacsConfigurationInitializer()
 {
-    // Pacs Conifguration
+    // Pacs Configuration
     sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
         sight::io::dimse::data::PacsConfiguration::New();
 
     // Create service
-    service::IService::sptr srv = service::add("::sight::module::io::dimse::SPacsConfigurationInitializer");
+    service::IService::sptr srv = service::add("sight::module::io::dimse::SPacsConfigurationInitializer");
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration

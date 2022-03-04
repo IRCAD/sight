@@ -36,8 +36,8 @@
 #include <QtCore>
 
 fwGuiRegisterMacro(
-    ::sight::ui::qml::dialog::PulseProgressDialog,
-    ::sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
+    sight::ui::qml::dialog::PulseProgressDialog,
+    sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
 );
 
 namespace sight::ui::qml
@@ -113,7 +113,7 @@ void PulseProgressDialog::show()
 
 //------------------------------------------------------------------------------
 
-bool PulseProgressDialog::eventFilter(QObject* watched, QEvent* event)
+bool PulseProgressDialog::eventFilter(QObject*, QEvent* event)
 {
     if(event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride)
     {

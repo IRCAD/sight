@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include <algorithm>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::FrameTLTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::FrameTLTest);
 
 namespace sight::data
 {
@@ -57,161 +57,99 @@ void FrameTLTest::tearDown()
 void FrameTLTest::initTest()
 {
     {
-        // deprecated
-        data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(10, 20, core::tools::Type::s_UINT16, 1);
-
-        CPPUNIT_ASSERT_EQUAL(size_t(20), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(10), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), timeline->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT16, timeline->getType());
-        CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::GRAY_SCALE, timeline->getPixelFormat());
-
-        data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
-        CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
-        CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
-        CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
-    }
-    {
-        // deprecated
-        data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(12, 22, core::tools::Type::s_UINT8, 3);
-
-        CPPUNIT_ASSERT_EQUAL(size_t(22), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(12), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(3), timeline->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
-        CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGB, timeline->getPixelFormat());
-
-        data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
-        CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
-        CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
-        CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
-    }
-    {
-        // deprecated
-        data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(112, 122, core::tools::Type::s_UINT8, 4);
-
-        CPPUNIT_ASSERT_EQUAL(size_t(122), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(112), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(4), timeline->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
-        CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGBA, timeline->getPixelFormat());
-
-        data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
-        CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
-        CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
-        CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
-    }
-    {
-        // deprecated
-        data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(11, 23, core::tools::Type::s_UINT8, 2);
-
-        CPPUNIT_ASSERT_EQUAL(size_t(23), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(11), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(2), timeline->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
-        CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::UNDEFINED, timeline->getPixelFormat());
-
-        data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
-        CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
-        CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
-        CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
-        CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
-    }
-    {
         data::FrameTL::sptr timeline = data::FrameTL::New();
         timeline->initPoolSize(100, 200, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::GRAY_SCALE);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(200), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(100), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(1), timeline->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), timeline->numComponents());
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_FLOAT, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::GRAY_SCALE, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
         CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
         CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
         timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGB);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(200), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(100), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(3), timeline->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), timeline->numComponents());
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGB, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
         CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
         CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
         timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::BGR);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(200), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(100), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(3), timeline->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), timeline->numComponents());
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::BGR, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
         CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
         CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
         timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGBA);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(200), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(100), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(4), timeline->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(4), timeline->numComponents());
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGBA, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
         CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
         CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
         timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::BGRA);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(200), timeline->getHeight());
-        CPPUNIT_ASSERT_EQUAL(size_t(100), timeline->getWidth());
-        CPPUNIT_ASSERT_EQUAL(size_t(4), timeline->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(4), timeline->numComponents());
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::BGRA, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
         CPPUNIT_ASSERT_EQUAL(timeline->getHeight(), timeline2->getHeight());
         CPPUNIT_ASSERT_EQUAL(timeline->getWidth(), timeline2->getWidth());
-        CPPUNIT_ASSERT_EQUAL(timeline->getNumberOfComponents(), timeline2->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
 }
 
@@ -222,9 +160,9 @@ void FrameTLTest::pushTest()
     data::FrameTL::sptr timeline = data::FrameTL::New();
     timeline->initPoolSize(10, 20, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGB);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(20), timeline->getHeight());
-    CPPUNIT_ASSERT_EQUAL(size_t(10), timeline->getWidth());
-    CPPUNIT_ASSERT_EQUAL(size_t(3), timeline->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(20), timeline->getHeight());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(10), timeline->getWidth());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), timeline->numComponents());
     CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
     CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGB, timeline->getPixelFormat());
 
@@ -275,9 +213,9 @@ void FrameTLTest::copyTest()
     data::FrameTL::sptr timeline = data::FrameTL::New();
     timeline->initPoolSize(11, 22, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGBA);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(22), timeline->getHeight());
-    CPPUNIT_ASSERT_EQUAL(size_t(11), timeline->getWidth());
-    CPPUNIT_ASSERT_EQUAL(size_t(4), timeline->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(22), timeline->getHeight());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(11), timeline->getWidth());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4), timeline->numComponents());
     CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
     CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGBA, timeline->getPixelFormat());
 
@@ -312,7 +250,7 @@ void FrameTLTest::copyTest()
     const core::tools::Type::UInt8Type* copiedBuffData = &copiedBuff->getElement(0);
     const core::tools::Type::UInt8Type* buffData       = &buff->getElement(0);
 
-    for(size_t i = 0 ; i < 10 * 20 * 4 ; ++i)
+    for(std::size_t i = 0 ; i < 10 * 20 * 4 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(buffData[i], copiedBuffData[i]);
     }

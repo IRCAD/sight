@@ -1,21 +1,22 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig">
     <id>VolumeRendering</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="image" />
+        <param name="imageSeries" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
+        <object uid="image" type="sight::data::Image" src="deferred" />
         <object uid="TF" type="sight::data::TransferFunction" src="deferred" />
         <object uid="TFPool" type="sight::data::Composite" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -26,30 +27,30 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="imageScene" start="true" />
-                <view sid="tfm" start="true" />
-                <toolBar sid="toolBarView" start="true" />
+                <view sid="imageScene" />
+                <view sid="tfm" />
+                <toolBar sid="toolBarView" start="true"/>
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="importAct" start="true" />
+                <menuItem sid="importAct" />
             </registry>
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="sight::module::ui::base::io::SSelector" >
-            <inout key="data" uid="${image}" />
+        <service uid="importAct" type="sight::module::ui::base::io::SSelector">
+            <inout key="data" uid="image" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::vtk::SImageReader" />
+            <addSelection service="sight::module::io::vtk::SImageReader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -63,28 +64,39 @@
             </scene>
         </service>
 
-        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
             <config layer="default" priority="0" />
         </service>
 
         <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
-            <inout key="image" uid="${image}" autoConnect="true" />
+            <inout key="image" uid="image" autoConnect="true" />
             <inout key="tf" uid="TF" />
-            <config layer="default" widgets="false" dynamic="true" preintegration="false" />
+            <config layer="default" widgets="false" preintegration="false" autoresetcamera="true" />
         </service>
 
-        <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction" >
-            <inout key="tfPool" uid="TFPool" autoConnect="true"/>
+        <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
+            <inout key="tfPool" uid="TFPool" autoConnect="true" />
             <out key="tf" uid="TF" />
+        </service>
+
+        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
+            <in key="imageSeries" uid="${imageSeries}" />
+            <out key="image" uid="image" />
         </service>
 
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
+        <start uid="extractImageSrv" />
+        <start uid="imageScene" />
         <start uid="cameraInteractorAdaptor" />
         <start uid="volumeRender" />
+        <start uid="tfm" />
+        <start uid="importAct" />
 
         <!-- ******************************* Update services ***************************************** -->
+
+        <update uid="extractImageSrv" />
 
     </config>
 </extension>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,6 +138,29 @@ void ROITraits::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& 
     m_evaluatedExp    = other->m_evaluatedExp;
     m_maskOpNode      = data::Object::copy(other->m_maskOpNode, cache);
     m_structureTraits = data::Object::copy(other->m_structureTraits, cache);
+}
+
+//------------------------------------------------------------------------------
+
+bool ROITraits::operator==(const ROITraits& other) const noexcept
+{
+    if(m_identifier != other.m_identifier
+       || m_evaluatedExp != other.m_evaluatedExp
+       || !core::tools::is_equal(m_maskOpNode, other.m_maskOpNode)
+       || !core::tools::is_equal(m_structureTraits, other.m_structureTraits))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ROITraits::operator!=(const ROITraits& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

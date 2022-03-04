@@ -10,7 +10,7 @@ Example:
     <parameter replace="WID_PARENT" by="..." />
 </service>
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -48,15 +48,15 @@ Example:
         </service>
 
         <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
-        <service uid="fieldMgr" type="sight::module::ui::base::SPushField">
-            <inout key="source" uid="${image}" />
-            <out key="destination" uid="TFSet" />
-            <push field="m_transferFunctionCompositeId" />
+        <service uid="fieldMgr" type="sight::module::data::SManage">
+            <inout key="object" uid="TFSet" />
+            <inout key="container" uid="${image}" />
+            <field>m_transferFunctionCompositeId</field>
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="true"/>
-            <in key="currentTF" uid="${transferFunctionOutput}" optional="true"/>
+            <in key="currentTF" uid="${transferFunctionOutput}"/>
             <out key="tf" uid="${transferFunctionOutput}" />
             <config useDefaultPath="false">
                 <path>${TFPath}</path>
@@ -94,7 +94,7 @@ Example:
 
         <connect>
             <signal>${image}/modified</signal>
-            <slot>fieldMgr/update</slot>
+            <slot>fieldMgr/addOrSwap</slot>
         </connect>
 
         <start uid="tfEditor" />

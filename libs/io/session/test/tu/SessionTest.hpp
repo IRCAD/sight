@@ -83,6 +83,8 @@ public:
     CPPUNIT_TEST(imageSeriesTest);
     CPPUNIT_TEST(modelSeriesTest);
 
+    CPPUNIT_TEST(customSerializerTest);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -138,6 +140,8 @@ public:
     void dicomSeriesTest();
     void imageSeriesTest();
     void modelSeriesTest();
+
+    void customSerializerTest();
 };
 
 } // namespace ut

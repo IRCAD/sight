@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,19 +25,6 @@
 #include "core/config.hpp"
 #include "core/memory/BufferObject.hpp"
 
-namespace sight::data
-{
-
-namespace mt
-{
-
-template<class DATATYPE>
-class locked_ptr;
-
-}
-
-}
-
 namespace sight::core::memory
 {
 
@@ -46,17 +33,21 @@ namespace sight::core::memory
  */
 class CORE_CLASS_API IBuffered
 {
+public:
+
+    /// Convenience method to avoid declaring a vector of locks
+    [[nodiscard]] inline std::vector<core::memory::BufferObject::Lock> dump_lock() const
+    {
+        std::vector<core::memory::BufferObject::Lock> locks;
+        dump_lock_impl(locks);
+        return locks;
+    }
+
 protected:
 
-    template<class DATATYPE>
-    friend class data::mt::locked_ptr;
-
-    /**
-     * @brief Must allocate a core::memory::BufferObject::Lock and store it into the vector parameter
-     *
-     * This allow locking of complex object with several BufferObject
-     */
-    CORE_API virtual void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const = 0;
+    /// Implementation of the interface must allocate a core::memory::BufferObject::Lock and store it into the parameter
+    /// @param locks The vector of locks to store the new lock
+    CORE_API virtual void dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const = 0;
 };
 
 }

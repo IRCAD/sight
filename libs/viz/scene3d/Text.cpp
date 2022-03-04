@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@
 namespace sight::viz::scene3d
 {
 
-class ResizeListener : public ::Ogre::Viewport::Listener
+class ResizeListener : public Ogre::Viewport::Listener
 {
 public:
 
@@ -55,7 +55,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void viewportDimensionsChanged(::Ogre::Viewport*)
+    virtual void viewportDimensionsChanged(Ogre::Viewport*)
     {
         m_text.resize();
     }
@@ -69,12 +69,12 @@ private:
 
 Text* Text::New(
     const std::string& _id,
-    ::Ogre::SceneManager* _sm,
-    ::Ogre::OverlayContainer* _parent,
+    Ogre::SceneManager* _sm,
+    Ogre::OverlayContainer* _parent,
     const std::string& _fontSource,
-    size_t _fontSize,
+    std::size_t _fontSize,
     float _fontResolution,
-    ::Ogre::Camera* _cam
+    Ogre::Camera* _cam
 )
 {
     const auto& factoryName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
@@ -103,10 +103,10 @@ Text* Text::New(
 
 Text* Text::New(
     const std::string& _id,
-    ::Ogre::SceneManager* _sm,
-    ::Ogre::OverlayContainer* _parent,
-    ::Ogre::FontPtr _font,
-    ::Ogre::Camera* _cam
+    Ogre::SceneManager* _sm,
+    Ogre::OverlayContainer* _parent,
+    Ogre::FontPtr,
+    Ogre::Camera* _cam
 )
 {
     const auto& factoryName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
@@ -127,10 +127,10 @@ Text* Text::New(
 //------------------------------------------------------------------------------
 
 Text::Text(const std::string& _id) :
-    ::Ogre::MovableObject(_id)
+    Ogre::MovableObject(_id)
 {
-    auto& overlayManager = ::Ogre::OverlayManager::getSingleton();
-    m_overlayText = dynamic_cast< ::Ogre::TextAreaOverlayElement*>(
+    auto& overlayManager = Ogre::OverlayManager::getSingleton();
+    m_overlayText = dynamic_cast<Ogre::TextAreaOverlayElement*>(
         overlayManager.createOverlayElement("TextArea", _id + "TextArea"));
 }
 
@@ -140,9 +140,9 @@ Text::~Text()
 {
     auto material = m_overlayText->getMaterial();
     m_parentContainer->removeChild(m_overlayText->getName());
-    ::Ogre::OverlayManager::getSingleton().destroyOverlayElement(m_overlayText);
+    Ogre::OverlayManager::getSingleton().destroyOverlayElement(m_overlayText);
 
-    ::Ogre::MaterialManager::getSingleton().remove(material);
+    Ogre::MaterialManager::getSingleton().remove(material);
 
     if(m_listener)
     {
@@ -162,13 +162,13 @@ void Text::setText(const std::string& _text)
 
 void Text::setPosition(float _x, float _y)
 {
-    m_position = ::Ogre::Vector2(_x, _y);
+    m_position = Ogre::Vector2(_x, _y);
 
     // Ogre doesn't handle vertical alignment for text elements so we have to do it ourselves ..
     const float textHeight = this->getTextHeight();
     const auto vAlign      = m_overlayText->getVerticalAlignment();
-    const float alignedY   = vAlign == ::Ogre::GVA_BOTTOM ? _y - textHeight
-                                                          : vAlign == ::Ogre::GVA_CENTER ? _y - textHeight * 0.5f : _y;
+    const float alignedY   = vAlign == Ogre::GVA_BOTTOM ? _y - textHeight
+                                                        : vAlign == Ogre::GVA_CENTER ? _y - textHeight * 0.5f : _y;
 
     m_overlayText->setPosition(_x, alignedY);
 }
@@ -210,7 +210,7 @@ void Text::setDotsPerInch(float _dpi)
     {
         auto newFont = helper::Font::getFont(
             m_font->getSource(),
-            static_cast<size_t>(std::round(fontSize)),
+            static_cast<std::size_t>(std::round(fontSize)),
             fontRes
         );
         this->setFont(newFont);
@@ -232,12 +232,12 @@ void Text::setTextColor(const Ogre::ColourValue& _color)
 
     auto material = m_overlayText->getMaterial();
     SIGHT_ASSERT("No material set for this Text.", material);
-    ::Ogre::Technique* fontRenderTechnique = material->getTechnique(0);
+    Ogre::Technique* fontRenderTechnique = material->getTechnique(0);
     SIGHT_ASSERT("This Text's material has no technique.", fontRenderTechnique);
-    ::Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
+    Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
     SIGHT_ASSERT("This Text's material has no pass.", fontRenderPass);
 
-    ::Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
+    Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
     SIGHT_ASSERT("The Text's material pass has no fragment shader attached.", passParams);
 
     passParams->setNamedConstant("u_textColor", m_textColor);
@@ -256,18 +256,18 @@ void Text::setVisible(bool _visible)
         m_overlayText->hide();
     }
 
-    this->::Ogre::MovableObject::setVisible(_visible);
+    this->Ogre::MovableObject::setVisible(_visible);
 }
 
 //------------------------------------------------------------------------------
 
 void Text::setTextAlignment(
-    const ::Ogre::TextAreaOverlayElement::Alignment _hAlignement,
-    const ::Ogre::GuiVerticalAlignment _vAlignement
+    const Ogre::TextAreaOverlayElement::Alignment _hAlignment,
+    const Ogre::GuiVerticalAlignment _vAlignment
 )
 {
-    m_overlayText->setVerticalAlignment(_vAlignement);
-    m_overlayText->setAlignment(_hAlignement);
+    m_overlayText->setVerticalAlignment(_vAlignment);
+    m_overlayText->setAlignment(_hAlignment);
 }
 
 //------------------------------------------------------------------------------
@@ -295,16 +295,16 @@ Ogre::Real Text::getBoundingRadius() const
 
 void Text::_updateRenderQueue(Ogre::RenderQueue*)
 {
-    ::Ogre::Node* parentNode = this->getParentNode();
+    Ogre::Node* parentNode = this->getParentNode();
 
     if(parentNode != nullptr)
     {
-        const ::Ogre::Vector3& pos = parentNode->_getDerivedPosition();
+        const Ogre::Vector3& pos = parentNode->_getDerivedPosition();
 
         const auto viewProjMx = m_camera->getProjectionMatrixWithRSDepth() * m_camera->getViewMatrix();
         const auto projPos    = viewProjMx * pos;
 
-        const ::Ogre::Vector2 screenPos(0.5f + projPos.x / 2.f, 0.5f - projPos.y / 2.f);
+        const Ogre::Vector2 screenPos(0.5f + projPos.x / 2.f, 0.5f - projPos.y / 2.f);
         this->setPosition(screenPos.x, screenPos.y);
 
         // Clipping test.
@@ -327,17 +327,17 @@ void Text::visitRenderables(Ogre::Renderable::Visitor*, bool)
 
 //------------------------------------------------------------------------------
 
-void Text::setFont(::Ogre::FontPtr _font)
+void Text::setFont(Ogre::FontPtr _font)
 {
     m_font = _font;
     m_overlayText->setFontName(_font->getName());
 
     // Clone the font material, thereby allowing each text object to have its own color.
-    const ::Ogre::MaterialPtr& fontMtl = viz::scene3d::helper::Font::getFontMtl(_font->getName());
+    const Ogre::MaterialPtr& fontMtl = viz::scene3d::helper::Font::getFontMtl(_font->getName());
 
-    const auto ttfRes           = m_font->getTrueTypeResolution();
-    const auto& textMtlName     = this->getName() + "_TextMaterial_dpi" + std::to_string(ttfRes);
-    ::Ogre::MaterialPtr textMtl = ::Ogre::MaterialManager::getSingleton().getByName(textMtlName, RESOURCE_GROUP);
+    const auto ttfRes         = m_font->getTrueTypeResolution();
+    const auto& textMtlName   = this->getName() + "_TextMaterial_dpi" + std::to_string(ttfRes);
+    Ogre::MaterialPtr textMtl = Ogre::MaterialManager::getSingleton().getByName(textMtlName, RESOURCE_GROUP);
     if(!textMtl)
     {
         textMtl = fontMtl->clone(textMtlName);

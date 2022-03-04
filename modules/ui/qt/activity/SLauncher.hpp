@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,14 +41,14 @@ namespace activity
 {
 
 /**
- * @brief This action launchs an activity according to the selected data
+ * @brief This action launches an activity according to the selected data
  *
  * This action works on a data::Vector. It proposes all the available activity according to the selected data and
  * the given configuration. And then, send a signal with all the activity information.
  *
  * This action should be followed by the service '::module::ui::qt::editor::SDynamicView' : this service listens the
  * action
- * signals and launchs the activity in a new tab.
+ * signals and launches the activity in a new tab.
  *
  * @section Slots Slots
  * - \b launchSeries(data::Series::sptr) : This slot allows to launch the series. If series is an
@@ -71,11 +71,10 @@ namespace activity
         <in key="series" uid="..." />
         <config>
             <!-- SLauncher mode : immediate or message(default)
-                 Immediate mode starts and stop immediatly the activity's config -->
+                 Immediate mode starts and stop immediately the activity's config -->
             <mode>immediate</mode>
             <parameters>
                 <parameter replace="SERIESDB" by="medicalData" />
-                <parameter replace="IMAGE" by="@values.ImageSeries.image" />
             </parameters>
 
             <!-- Filter mode 'include' allows all given activity id-s.
@@ -97,7 +96,7 @@ namespace activity
     </service>
         @endcode
  * @subsection Input Input
- * - \b series [sight::data::Vector]: vector containg series inherited from data::Series
+ * - \b series [sight::data::Vector]: vector containing series inherited from data::Series
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
@@ -110,9 +109,7 @@ namespace activity
  *   AppConfig associated to the activity.
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
- *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
- *          frontal) or define a sesh@ path (ex. \@values.myImage). The root object of the sesh@ path if the
- *          composite contained in the ActivitySeries.
+ *        - \b by: defines the string that will replace the parameter name. It shall be a simple string (ex. frontal)
  * - \b filter (optional): it allows to filter the activity that can be proposed.
  *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
  *      (exclude).
@@ -122,19 +119,12 @@ namespace activity
  *    - \b association: allows to associate an activity to launch with a type of series
  *       - \b type: type of series (data::ImageSeries, data::ModelSeries, ....)
  *       - \b id: identifier of the activity.
- *
- *
- * @note A sesh@ path is a path used to browse an object (and sub-object) using the introspection (see fwDataCamp).
- *       The path begins with a '@' or a '!'.
- *          - '@' : the returned string is the fwID of the sub-object defined by the path.
- *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
- *            Boolean object.
  */
-class MODULE_UI_QT_CLASS_API SLauncher : public ::sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SLauncher : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLauncher, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SLauncher, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLauncher() noexcept;
@@ -191,7 +181,7 @@ protected:
      */
     void configuring() override;
 
-    typedef sight::activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef sight::activity::extension::ActivityAppConfigParamsType ParametersType;
 
     typedef std::vector<std::string> KeysType;
 
@@ -199,11 +189,6 @@ protected:
 
     //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
-
-    /**
-     * @brief Interpret configuration parameters.
-     */
-    ParametersType translateParameters(const ParametersType& parameters);
 
 private:
 

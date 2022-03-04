@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,16 +84,16 @@ QVariant OrganListModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    const auto reconsctructions = m_modelSeries->getReconstructionDB();
-    const size_t nbRec          = reconsctructions.size();
-    const size_t idx            = static_cast<size_t>(index.row());
+    const auto reconstructions = m_modelSeries->getReconstructionDB();
+    const std::size_t nbRec    = reconstructions.size();
+    const std::size_t idx      = static_cast<size_t>(index.row());
 
     if(idx >= nbRec)
     {
         return QVariant();
     }
 
-    const auto& rec = reconsctructions[idx];
+    const auto& rec = reconstructions[idx];
     switch(role)
     {
         case VisibilityRole:

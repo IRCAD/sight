@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,18 +20,9 @@
  *
  ***********************************************************************/
 
-#define CAMP_COMPILATION
-
 #include "core/memory/BufferObject.hpp"
 
 namespace scm = sight::core::memory;
-
-SIGHT_IMPLEMENT_REFLECTION((sight) (core) (memory) (BufferObject))
-{
-    builder.tag("buffer")
-    .function("classname", &scm::BufferObject::className)
-    .function("is_a", (bool (scm::BufferObject::*)(const std::string&) const) & scm::BufferObject::isA);
-}
 
 namespace sight::core::memory
 {
@@ -138,6 +129,21 @@ void BufferObject::setIStreamFactory(
     m_size        = size;
     m_allocPolicy = policy;
     m_bufferManager->setIStreamFactory(&m_buffer, factory, size, sourceFile, format, policy).get();
+}
+
+//------------------------------------------------------------------------------
+
+bool BufferObject::operator==(const BufferObject& other) const noexcept
+{
+    return m_buffer == other.m_buffer
+           || (m_size == other.m_size && std::memcmp(m_buffer, other.m_buffer, m_size) == 0);
+}
+
+//------------------------------------------------------------------------------
+
+bool BufferObject::operator!=(const BufferObject& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } //namespace sight::core::memory

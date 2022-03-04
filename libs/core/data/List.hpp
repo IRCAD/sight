@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,23 +28,19 @@
 
 #include <list>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (List));
-
 namespace sight::data
 {
 
 /**
  * @brief This class defines a list of objects.
  *
- * List contains a list of data::Object.
+ * List contains a list of Object.
  */
 class DATA_CLASS_API List : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(List, data::Object, data::factory::New<List>);
-
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (List));
+    SIGHT_DECLARE_CLASS(List, Object, factory::New<List>);
 
     typedef std::list<Object::sptr> ContainerType;
 
@@ -61,7 +57,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API List(data::Object::Key key);
+    DATA_API List(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~List();
@@ -96,7 +92,7 @@ public:
     ConstReferenceType back() const;
     /// @}
 
-    /// @brief get/set the list of data::Object
+    /// @brief get/set the list of Object
     /// @{
     ContainerType& getContainer();
     const ContainerType& getContainer() const;
@@ -106,10 +102,16 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const List& other) const noexcept;
+    DATA_API bool operator!=(const List& other) const noexcept;
+    /// @}
 
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     ContainerType m_container;
 };
@@ -229,7 +231,7 @@ inline const List::ContainerType& List::getContainer() const
 //-----------------------------------------------------------------------------
 
 inline void List::setContainer(const List::ContainerType& val)
-{ \
+{
     m_container = val;
 }
 

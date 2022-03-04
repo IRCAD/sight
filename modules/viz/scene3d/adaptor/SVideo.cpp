@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,9 +65,9 @@ static const std::string s_QUERY_CONFIG             = "queryFlags";
 static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
 static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 
-static const std::string s_VIDEO_MATERIAL_NAME            = "Video";
-static const std::string s_VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
-static const std::string s_VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
+static const std::string s_VIDEO_MATERIAL_NAME             = "Video";
+static const std::string s_VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
+static const std::string s_VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
@@ -249,11 +249,11 @@ void SVideo::updating()
         {
             if(type == core::tools::Type::s_FLOAT || type == core::tools::Type::s_DOUBLE)
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
             else
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
         }
         else
@@ -292,7 +292,7 @@ void SVideo::updating()
         m_previousType = type;
     }
 
-    const data::Image::Size size = imageSight->getSize2();
+    const data::Image::Size size = imageSight->getSize();
     sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, Ogre::TEX_TYPE_2D, true);
 
     const auto layer                     = this->getLayer();
@@ -432,13 +432,13 @@ void SVideo::updatePL()
     data::PointList::PointListContainer& outPoints = m_pointList->getPoints();
     outPoints.clear();
 
-    for(size_t i = 0 ; i < inPoints.size() ; ++i)
+    for(std::size_t i = 0 ; i < inPoints.size() ; ++i)
     {
         const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
         outPoints.push_back(
             data::Point::New(
-                point[0] - static_cast<double>(image->getSize2()[0]) * 0.5,
-                -(point[1] - static_cast<double>(image->getSize2()[1]) * 0.5),
+                point[0] - static_cast<double>(image->getSize()[0]) * 0.5,
+                -(point[1] - static_cast<double>(image->getSize()[1]) * 0.5),
                 point[2]
             )
         );

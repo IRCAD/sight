@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ static std::vector<data::Array::sptr> memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
+void MemoryConsumption::pushNewArray(std::size_t memorySizeInBytes)
 {
     try
     {
@@ -118,8 +118,8 @@ void MemoryConsumption::configuring()
 
     if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))
     {
-        std::string value = consumptionCfg->getAttributeValue("value");
-        size_t sizeInMo   = ::boost::lexical_cast<size_t>(value);
+        std::string value    = consumptionCfg->getAttributeValue("value");
+        std::size_t sizeInMo = boost::lexical_cast<std::size_t>(value);
         m_memorySizeInBytes = sizeInMo * 1024 * 1024;
     }
 }

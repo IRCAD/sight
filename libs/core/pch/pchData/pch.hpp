@@ -20,9 +20,6 @@
  *
  ***********************************************************************/
 
-#ifndef __PCHDATA_PCH_HPP__
-#define __PCHDATA_PCH_HPP__
-
 #ifndef _WIN32
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
@@ -34,5 +31,3 @@
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
-
-#endif // __PCHDATA_PCH_HPP__

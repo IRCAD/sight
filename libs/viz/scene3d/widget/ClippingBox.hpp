@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,10 +57,10 @@ public:
      */
     VIZ_SCENE3D_API ClippingBox(
         const std::string& id,
-        ::Ogre::SceneNode* parentSceneNode,
-        ::Ogre::Camera* camera,
-        ::Ogre::SceneManager* sceneManager,
-        const ::Ogre::Matrix4& clippingMatrix,
+        Ogre::SceneNode* parentSceneNode,
+        Ogre::Camera* camera,
+        Ogre::SceneManager* sceneManager,
+        const Ogre::Matrix4& clippingMatrix,
         const ClippingUpdateCallbackType& clippingUpdateCallback,
         const std::string& boxMtlName    = "BasicAmbient",
         const std::string& handleMtlName = "BasicPhong"
@@ -70,7 +70,7 @@ public:
     VIZ_SCENE3D_API virtual ~ClippingBox();
 
     /// Find out if a movable object belongs to this widget.
-    bool belongsToWidget(const ::Ogre::MovableObject* const _object) const;
+    bool belongsToWidget(const Ogre::MovableObject* const _object) const;
 
     /**
      * @brief Drags a widget toward a screen position.
@@ -81,7 +81,7 @@ public:
      * @param _screenX cursor's horizontal position.
      * @param _screenY cursor's vertical position.
      */
-    VIZ_SCENE3D_API void widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY);
+    VIZ_SCENE3D_API void widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY);
 
     /// Drops the currently selected widget.
     VIZ_SCENE3D_API void widgetReleased();
@@ -116,13 +116,13 @@ public:
     VIZ_SCENE3D_API void setVisibility(bool visibility);
 
     /// Returns the axis aligned coordinates of the clipping widget in volume image space.
-    VIZ_SCENE3D_API ::Ogre::AxisAlignedBox getClippingBox() const;
+    VIZ_SCENE3D_API Ogre::AxisAlignedBox getClippingBox() const;
 
     /// Returns the clipping box transform in world space.
-    VIZ_SCENE3D_API ::Ogre::Matrix4 getClippingTransform() const;
+    VIZ_SCENE3D_API Ogre::Matrix4 getClippingTransform() const;
 
     /// Sets the clipping cube from the input transform.
-    VIZ_SCENE3D_API void updateFromTransform(const ::Ogre::Matrix4& _clippingMx);
+    VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clippingMx);
 
 private:
 
@@ -135,13 +135,13 @@ private:
     } m_selectionMode {NONE};
 
     /// Get the face's image positions.
-    std::array< ::Ogre::Vector3, 4> getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
+    std::array<Ogre::Vector3, 4> getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    ::Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
+    Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
-    std::array< ::Ogre::Vector3, 8> getClippingBoxPositions() const;
+    std::array<Ogre::Vector3, 8> getClippingBoxPositions() const;
 
     /// Creates the widget objects and scene nodes.
     void initWidgets();
@@ -156,56 +156,56 @@ private:
     void deselectFace();
 
     /// Computes the axis aligned clipping box positions from the input transform.
-    void applyTransform(const ::Ogre::Matrix4& _clippingMx);
+    void applyTransform(const Ogre::Matrix4& _clippingMx);
 
     /// ID of the service using this widget.
     const std::string m_id;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager* m_sceneManager {nullptr};
+    Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Camera too which the volume is rendered.
-    ::Ogre::Camera* m_camera {nullptr};
+    Ogre::Camera* m_camera {nullptr};
 
     /// Parent node containing the volume.
-    ::Ogre::SceneNode* m_volumeSceneNode {nullptr};
+    Ogre::SceneNode* m_volumeSceneNode {nullptr};
 
     /// Node holding widget objects.
-    ::Ogre::SceneNode* m_widgetSceneNode {nullptr};
+    Ogre::SceneNode* m_widgetSceneNode {nullptr};
 
     /// Maps widget objects to their scene node and to a cube face.
-    std::map<const ::Ogre::MovableObject*,
-             std::pair<vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode*> > m_widgets;
+    std::map<const Ogre::MovableObject*,
+             std::pair<vr::IVolumeRenderer::CubeFace, Ogre::SceneNode*> > m_widgets;
 
     /// Axis aligned clipping cube.
-    std::array< ::Ogre::Vector3, 2> m_clippingCube {{::Ogre::Vector3::ZERO, ::Ogre::Vector3::UNIT_SCALE}};
+    std::array<Ogre::Vector3, 2> m_clippingCube {{Ogre::Vector3::ZERO, Ogre::Vector3::UNIT_SCALE}};
 
     /// Object used to display the clipping box.
-    ::Ogre::ManualObject* m_boundingBox {nullptr};
+    Ogre::ManualObject* m_boundingBox {nullptr};
 
     /// Oject holding the highlighted face geometry.
-    ::Ogre::ManualObject* m_selectedFace {nullptr};
+    Ogre::ManualObject* m_selectedFace {nullptr};
 
     /// Widget currently being dragged.
-    ::Ogre::Entity* m_selectedWidget {nullptr};
+    Ogre::Entity* m_selectedWidget {nullptr};
 
     /// Picked box point.
-    ::Ogre::Vector3 m_pickedBoxPoint;
+    Ogre::Vector3 m_pickedBoxPoint;
 
     /// Material applied to the pickable spheres.
-    ::Ogre::MaterialPtr m_handleMtl;
+    Ogre::MaterialPtr m_handleMtl;
 
     /// Material applied to a sphere when it is selected.
-    ::Ogre::MaterialPtr m_handleHightlightMtl;
+    Ogre::MaterialPtr m_handleHightlightMtl;
 
     /// Material displaying the edges of the box.
-    ::Ogre::MaterialPtr m_boxMtl;
+    Ogre::MaterialPtr m_boxMtl;
 
     /// Material displaying the edges when user is interacting with the widget.
-    ::Ogre::MaterialPtr m_boxHighlightMtl;
+    Ogre::MaterialPtr m_boxHighlightMtl;
 
     /// Material displaying the currently selected face.
-    ::Ogre::MaterialPtr m_boxFaceMtl;
+    Ogre::MaterialPtr m_boxFaceMtl;
 
     /// Called when the clipping box is modified through interaction.
     ClippingUpdateCallbackType m_clippingUpdateCallback;

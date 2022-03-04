@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include "core/memory/FileFormat.hpp"
 #include "core/memory/FileHolder.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
+
 #include <core/LogicStamp.hpp>
 #include <core/macros.hpp>
 
@@ -37,7 +38,7 @@ namespace sight::core::memory
 
 struct CORE_CLASS_API BufferInfo
 {
-    typedef size_t SizeType;
+    typedef std::size_t SizeType;
     typedef WPTR(void) CounterType;
 
     CORE_API BufferInfo();

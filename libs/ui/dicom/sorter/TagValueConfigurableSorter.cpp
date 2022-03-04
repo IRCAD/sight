@@ -35,7 +35,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwDicomIOFilterRegisterMacro(::sight::ui::dicom::sorter::TagValueConfigurableSorter);
+fwDicomIOFilterRegisterMacro(sight::ui::dicom::sorter::TagValueConfigurableSorter);
 
 namespace sight::ui::dicom
 {

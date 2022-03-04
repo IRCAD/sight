@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,6 +176,135 @@ void SeriesTest::attrDescriptionTest()
 }
 
 //------------------------------------------------------------------------------
+
+void SeriesTest::equalityTest()
+{
+    auto series1 = data::Series::New();
+    auto series2 = data::Series::New();
+
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setModality("1");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setModality(series1->getModality());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setInstanceUID("2");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setInstanceUID(series1->getInstanceUID());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setNumber("3");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setNumber(series1->getNumber());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setLaterality("4");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setLaterality(series1->getLaterality());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setDate("5");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setDate(series1->getDate());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setTime("6");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setTime(series1->getTime());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformingPhysiciansName({"7", "8", "9"});
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformingPhysiciansName(series1->getPerformingPhysiciansName());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setProtocolName("10");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setProtocolName(series1->getProtocolName());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setDescription("11");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setDescription(series1->getDescription());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setBodyPartExamined("12");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setBodyPartExamined(series1->getBodyPartExamined());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPatientPosition("13");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPatientPosition(series1->getPatientPosition());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setAnatomicalOrientationType("14");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setAnatomicalOrientationType(series1->getAnatomicalOrientationType());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureStepID("15");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureStepID(series1->getPerformedProcedureStepID());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureStepStartDate("16");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureStepStartDate(series1->getPerformedProcedureStepStartDate());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureStepStartTime("17");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureStepStartTime(series1->getPerformedProcedureStepStartTime());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureStepEndDate("18");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureStepEndDate(series1->getPerformedProcedureStepEndDate());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureStepEndTime("19");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureStepEndTime(series1->getPerformedProcedureStepEndTime());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureStepDescription("20");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureStepDescription(series1->getPerformedProcedureStepDescription());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    series1->setPerformedProcedureComments("21");
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPerformedProcedureComments(series1->getPerformedProcedureComments());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    auto patient = data::Patient::New();
+    patient->setPatientId("22");
+    series1->setPatient(patient);
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setPatient(series1->getPatient());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    auto study = data::Study::New();
+    study->setInstanceUID("23");
+    series1->setStudy(study);
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setStudy(series1->getStudy());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    auto equipment = data::Equipment::New();
+    equipment->setInstitutionName("24");
+    series1->setEquipment(equipment);
+    CPPUNIT_ASSERT(*series1 != *series2);
+    series2->setEquipment(series1->getEquipment());
+    CPPUNIT_ASSERT(*series1 == *series2);
+
+    // Test also deepcopy, just for fun
+    auto series3 = data::Series::New();
+    series3->deepCopy(series1);
+    CPPUNIT_ASSERT(*series1 == *series3);
+}
 
 } //namespace ut
 

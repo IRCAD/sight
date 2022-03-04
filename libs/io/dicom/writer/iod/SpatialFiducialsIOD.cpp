@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <core/spyLog.hpp>
 
 #include <data/Equipment.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Patient.hpp>
@@ -81,13 +81,11 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
     // Retrieve image
     data::Image::csptr image = imageSeries->getImage();
 
-    data::Vector::sptr distances = image->getField<data::Vector>(
-        data::fieldHelper::Image::m_imageDistancesId
-    );
+    const data::Vector::sptr distances = data::helper::MedicalImage::getDistances(*image);
     SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
-    SPTR(::gdcm::Writer) writer = std::make_shared< ::gdcm::Writer>();
+    SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());

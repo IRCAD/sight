@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (String));
-
 namespace sight::data
 {
 
@@ -49,8 +47,6 @@ public:
         return GenericFieldFactory<String>(val);
     }
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (String));
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -64,6 +60,8 @@ public:
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
+
+protected:
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

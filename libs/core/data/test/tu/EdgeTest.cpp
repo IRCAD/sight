@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void EdgeTest::methode1()
     const std::string STR1 = "foo";
     const std::string STR2 = "bar";
     const std::string STR3 = data::Edge::NATURE_FLOW;
-    data::Edge::sptr edge  = data::Edge::New();
+    auto edge              = data::Edge::New();
 
     edge->setIdentifiers(STR1, STR2);
     edge->setNature(STR3);
@@ -69,6 +69,13 @@ void EdgeTest::methode1()
     CPPUNIT_ASSERT_EQUAL(edge->getFromPortID(), STR1);
     CPPUNIT_ASSERT_EQUAL(edge->getToPortID(), STR2);
     CPPUNIT_ASSERT_EQUAL(edge->getNature(), STR3);
+
+    auto edge2 = data::Edge::New();
+    CPPUNIT_ASSERT(*edge != *edge2);
+
+    edge2->setIdentifiers(STR1, STR2);
+    edge2->setNature(STR3);
+    CPPUNIT_ASSERT(*edge == *edge2);
 }
 
 } //namespace ut

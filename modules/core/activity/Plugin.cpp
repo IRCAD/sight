@@ -27,7 +27,7 @@
 namespace sight::module::activity
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::activity::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::activity::Plugin");
 
 Plugin::~Plugin() noexcept
 {

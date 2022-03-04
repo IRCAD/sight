@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <service/macros.hpp>
@@ -135,7 +134,7 @@ void IGuiContainer::create()
     ui::base::container::fwContainer::sptr parent = m_viewRegistry->getParent();
     SIGHT_ASSERT("Parent container is unknown.", parent);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         [this, &parent]
         {
             SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
@@ -157,7 +156,7 @@ void IGuiContainer::create()
             {
                 if(m_hasToolBar)
                 {
-                    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                    core::thread::getDefaultWorker()->postTask<void>(
                         [&]
                     {
                         m_toolBarBuilder->createToolBar(parent);
@@ -166,7 +165,7 @@ void IGuiContainer::create()
                     m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
-                core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                core::thread::getDefaultWorker()->postTask<void>(
                     [&]
                 {
                     m_viewLayoutManager->createLayout(container);
@@ -177,7 +176,7 @@ void IGuiContainer::create()
                 for(const auto& slideBuilder : m_slideViewBuilders)
                 {
                     SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
-                    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                    core::thread::getDefaultWorker()->postTask<void>(
                         [&]
                     {
                         slideBuilder->createContainer(container);
@@ -203,7 +202,7 @@ void IGuiContainer::destroy()
             m_viewRegistry->unmanageToolBar();
             SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-            core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            core::thread::getDefaultWorker()->postTask<void>(
                 [&]
                 {
                     m_toolBarBuilder->destroyToolBar();
@@ -213,7 +212,7 @@ void IGuiContainer::destroy()
         m_viewRegistry->unmanage();
         SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             [&]
             {
                 m_viewLayoutManager->destroyLayout();
@@ -223,7 +222,7 @@ void IGuiContainer::destroy()
     for(const auto& slideBuilder : m_slideViewBuilders)
     {
         SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        core::thread::getDefaultWorker()->postTask<void>(
             [&]
             {
                 slideBuilder->destroyContainer();
@@ -309,7 +308,7 @@ ui::base::container::fwContainer::sptr IGuiContainer::getContainer()
 
 void IGuiContainer::setParent(std::string wid)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [this, &wid]
         {

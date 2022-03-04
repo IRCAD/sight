@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace adaptor
    @code{.xml}
    <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="true">
        <in key="histogram" uid="..." />
-       <inout key="point" uid="..." optional="true" />
+       <inout key="point" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" borderColor="lightGray" innerColor="gray"
                opacity="0.25" zValue="6" borderWidth="2.0" />
    </service>
@@ -132,7 +132,7 @@ private:
 
     Points cubicInterpolation(const Point _p0, const Point _p1, const Point _p2, const Point _p3);
 
-    // Map the absciss of the points to the corresponding length within the path.
+    // Map the abscissa of the points to the corresponding length within the path.
     std::map<double, double> m_positionsToPathLength;
 
     /// Color used for graphic histogram's border color
@@ -168,7 +168,7 @@ private:
     static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
 
     sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
+    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point", false, true};
 };
 
 } // namespace adaptor

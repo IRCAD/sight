@@ -9,20 +9,14 @@ macro(win_package PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
     get_target_property(TYPE ${PRJ_NAME} SIGHT_TARGET_TYPE)
+    set(CPACK_LAUNCHER_PATH "bin\\\\${PRJ_NAME}.bat")
     if("${TYPE}" STREQUAL "APP")
-        set(LAUNCHER "sightrun.exe")
-        set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
-        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${SIGHT_TARGET}\\\\profile.xml")
-
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" "${Sight_BINARY_DIR}/sightlog.exe" DESTINATION "bin")
         endif()
     elseif("${TYPE}" STREQUAL "EXECUTABLE")
-        set(CPACK_LAUNCHER_PATH "bin\\\\${PRJ_NAME}.exe")
-        set(CPACK_PROFILE_PATH "")
-    elseif()
-        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${TYPE})")
+
     endif()
 
     if(CMAKE_CL_64)
@@ -34,6 +28,7 @@ macro(win_package PRJ_NAME)
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD/sight")
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
+    get_last_git_tag(${PRJ_NAME})
     get_platform_package_suffix()
 
     set(CPACK_GENERATOR NSIS)
@@ -42,8 +37,12 @@ macro(win_package PRJ_NAME)
     set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
     set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
     set(CPACK_PACKAGE_VENDOR "IRCAD")
+    set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
-    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
+
+    # Look inside install dir for packaging
+    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.")
+
     set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
     set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}")
@@ -55,7 +54,7 @@ macro(win_package PRJ_NAME)
     set(CPACK_PRE_BUILD_SCRIPTS ${FWCMAKE_RESOURCE_PATH}/install/pre_package.cmake)
 
     set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
-    
+
     # Clear variables otherwise they are not evaluated when we modify PROJECTS_TO_INSTALL
     unset(CPACK_PACKAGE_ICON CACHE)
     unset(CPACK_NSIS_WELCOMEFINISH_IMAGE CACHE)
@@ -63,21 +62,22 @@ macro(win_package PRJ_NAME)
     unset(CPACK_NSIS_MUI_UNIICON CACHE)
     unset(CPACK_RESOURCE_FILE_LICENSE CACHE)
 
-    find_file(CPACK_PACKAGE_ICON "banner_nsis.bmp" PATHS
-                "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
-                NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_NSIS_WELCOMEFINISH_IMAGE "dialog_nsis.bmp" PATHS
-                "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
-                NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_NSIS_MUI_ICON "${ICON_FILENAME}" "app.ico" PATHS
-                "${CMAKE_CURRENT_SOURCE_DIR}/rc/" ${DEFAULT_NSIS_RC_PATH}
-                NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_NSIS_MUI_UNIICON "${ICON_FILENAME}" "app.ico" PATHS
-                "${CMAKE_CURRENT_SOURCE_DIR}/rc/" ${DEFAULT_NSIS_RC_PATH}
-                NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_RESOURCE_FILE_LICENSE "license.rtf" PATHS
-                "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
-                NO_SYSTEM_ENVIRONMENT_PATH)
+    find_file(CPACK_PACKAGE_ICON "banner_nsis.bmp" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
+              NO_SYSTEM_ENVIRONMENT_PATH
+    )
+    find_file(CPACK_NSIS_WELCOMEFINISH_IMAGE "dialog_nsis.bmp" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/"
+                                                                     ${DEFAULT_NSIS_RC_PATH} NO_SYSTEM_ENVIRONMENT_PATH
+    )
+    find_file(CPACK_NSIS_MUI_ICON "${ICON_FILENAME}" "app.ico" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/"
+                                                                     ${DEFAULT_NSIS_RC_PATH} NO_SYSTEM_ENVIRONMENT_PATH
+    )
+    find_file(CPACK_NSIS_MUI_UNIICON "${ICON_FILENAME}" "app.ico" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/"
+                                                                        ${DEFAULT_NSIS_RC_PATH}
+              NO_SYSTEM_ENVIRONMENT_PATH
+    )
+    find_file(CPACK_RESOURCE_FILE_LICENSE "license.rtf" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/"
+                                                              ${DEFAULT_NSIS_RC_PATH} NO_SYSTEM_ENVIRONMENT_PATH
+    )
 
     # Extract the icon found for the installer and use it for every shortcut (Start menu, Desktop and Uninstall)
     # The output variable is used in our NSIS.template
@@ -85,8 +85,7 @@ macro(win_package PRJ_NAME)
     string(REPLACE "/" "\\\\" CPACK_SIGHT_MODULE_RC_PREFIX ${CPACK_SIGHT_MODULE_RC_PREFIX})
 
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${CPACK_NSIS_SIGHT_APP_ICON}")
-        install(FILES ${CPACK_NSIS_MUI_ICON}
-                DESTINATION "${CPACK_SIGHT_MODULE_RC_PREFIX}/${CPACK_NSIS_PACKAGE_NAME}")
+        install(FILES ${CPACK_NSIS_MUI_ICON} DESTINATION "${CPACK_SIGHT_MODULE_RC_PREFIX}/${CPACK_NSIS_PACKAGE_NAME}")
     endif()
 
     string(REPLACE "/" "\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON})

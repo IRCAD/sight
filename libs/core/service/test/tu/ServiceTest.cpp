@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>
 
@@ -151,7 +150,7 @@ void ServiceTest::testServiceCreationWithMultipleData()
     // Test getting the service object
     CPPUNIT_ASSERT(srv->getInOut<data::Integer>(dataKey1).lock() == obj1);
 
-    srv->setObject(obj2, dataKey2, 0, data::Access::inout, false, false);
+    srv->setObject(obj2, dataKey2, std::nullopt, data::Access::inout, false, false);
     CPPUNIT_ASSERT(obj2 == srv->getObject(dataKey2, data::Access::inout));
 
     // Test getting the service object
@@ -222,7 +221,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string myUUID2 = "myUUID2";
     const std::string myUUID3 = "myUUID3";
     const std::string dataKey = "data1";
-    size_t nbServices         = 0;
+    std::size_t nbServices    = 0;
 
     data::Integer::sptr obj = data::Integer::New();
     service::IService::sptr service;
@@ -288,16 +287,16 @@ void ServiceTest::testStartStopUpdate()
     CPPUNIT_ASSERT(!service->isStarted());
 
     // Start service
-    service->start();
+    service->start().wait();
     CPPUNIT_ASSERT(service->isStarted());
     CPPUNIT_ASSERT(!service->isStopped());
 
     // Update service
-    service->update();
+    service->update().wait();
     CPPUNIT_ASSERT(service->getIsUpdated());
 
     // Stop service
-    service->stop();
+    service->stop().wait();
     CPPUNIT_ASSERT(service->isStopped());
     CPPUNIT_ASSERT(!service->isStarted());
 
@@ -383,9 +382,6 @@ TestServiceSignals::~TestServiceSignals()
 
 void ServiceTest::testCommunication()
 {
-    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     const std::string EVENT        = "EVENT";
     const std::string dataKey      = "data1";
     const std::string service1UUID = "service1UUID";
@@ -486,8 +482,6 @@ void ServiceTest::testCommunication()
 
     service::OSR::unregisterService(service1);
     service::OSR::unregisterService(service2);
-
-    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -601,15 +595,15 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
     service->setInput(obj[0], service::ut::TestServiceWithData::s_INPUT);
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
-    service->setInOut(obj[0], service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
-    CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
-    service->setInOut(obj[1], service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+    service->setInOut(obj[0], service::ut::TestServiceWithData::s_INOUT_GROUP, true, false, 0);
+    CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
+    service->setInOut(obj[1], service::ut::TestServiceWithData::s_INOUT_GROUP, true, false, 1);
     CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
 
-    service->start();
+    service->start().wait();
     CPPUNIT_ASSERT(service->isStarted());
     CPPUNIT_ASSERT(nullptr != service->getObject(service::ut::TestServiceWithData::s_INPUT, data::Access::in));
-    service->update();
+    service->update().wait();
     CPPUNIT_ASSERT(nullptr != service->getObject(service::ut::TestServiceWithData::s_OUTPUT, data::Access::out));
     data::Object::csptr output = service->getObject(service::ut::TestServiceWithData::s_OUTPUT, data::Access::out);
     CPPUNIT_ASSERT(output);
@@ -624,7 +618,7 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(obj[0]->value(), outInteger2->value());
 
     // Test index access
-    CPPUNIT_ASSERT_EQUAL(size_t(2), service->m_inoutGroup.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), service->m_inoutGroup.size());
     CPPUNIT_ASSERT_EQUAL(obj[0]->value(), service->m_inoutGroup[0].lock()->value());
     CPPUNIT_ASSERT_EQUAL(obj[1]->value(), service->m_inoutGroup[1].lock()->value());
 
@@ -637,7 +631,7 @@ void ServiceTest::testWithInAndOut()
         ++itObj;
     }
 
-    service->stop();
+    service->stop().wait();
 
     auto nullInteger = service->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT);
     CPPUNIT_ASSERT(nullInteger.expired());

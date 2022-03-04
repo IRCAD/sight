@@ -33,8 +33,8 @@
 #include <QGuiApplication>
 
 fwGuiRegisterMacro(
-    ::sight::ui::qml::dialog::MultiSelectorDialog,
-    ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY
+    sight::ui::qml::dialog::MultiSelectorDialog,
+    sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY
 );
 
 namespace sight::ui::qml

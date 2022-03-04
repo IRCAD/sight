@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,8 +81,8 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
         const std::string sopClassUID                                    = *sopClassUIDContainer.begin();
 
         // If the DicomSeries contains an image (ImageSeries)
-        if(::gdcm::MediaStorage::IsImage(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()))
-           && ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != ::gdcm::MediaStorage::SpacialFiducialsStorage)
+        if(gdcm::MediaStorage::IsImage(gdcm::MediaStorage::GetMSType(sopClassUID.c_str()))
+           && gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != gdcm::MediaStorage::SpacialFiducialsStorage)
         {
             // Read the image
             data::ImageSeries::sptr imageSeries = data::dicom::Series::convertToImageSeries(dicomSeries);
@@ -110,8 +110,8 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             result = imageSeries;
         }
         // Get the RT file names (ModelSeries)
-        else if(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())
-                == ::gdcm::MediaStorage::SurfaceSegmentationStorage)
+        else if(gdcm::MediaStorage::GetMSType(sopClassUID.c_str())
+                == gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
             data::ModelSeries::sptr modelSeries = data::dicom::Series::convertToModelSeries(dicomSeries);
             modelSeries->setDicomReference(dicomSeries);
@@ -134,7 +134,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             result = modelSeries;
         }
         // If the DicomSeries contains a Spatial Fiducials
-        else if(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage)
+        else if(gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage)
         {
             // Retrieve referenced image instance
             SPTR(io::dicom::container::DicomInstance) imageInstance =
@@ -170,11 +170,11 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             }
         }
         // If the DicomSeries contains a SR
-        else if(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
-                || ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
+        else if(gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == gdcm::MediaStorage::EnhancedSR
+                || gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == gdcm::MediaStorage::ComprehensiveSR
                 || sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by
-                                                                   // "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())
-                                                                   // == ::gdcm::MediaStorage::Comprehensive3DSR"
+                                                                   // "gdcm::MediaStorage::GetMSType(sopClassUID.c_str())
+                                                                   // == gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
             SPTR(io::dicom::container::DicomInstance) referencedInstance =
@@ -240,8 +240,8 @@ SPTR(io::dicom::container::DicomInstance) Series::getSpatialFiducialsReferencedS
     data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    std::shared_ptr< ::gdcm::Reader> reader =
-        std::shared_ptr< ::gdcm::Reader>(new ::gdcm::Reader);
+    std::shared_ptr<gdcm::Reader> reader =
+        std::shared_ptr<gdcm::Reader>(new gdcm::Reader);
     const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
     const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
@@ -253,18 +253,18 @@ SPTR(io::dicom::container::DicomInstance) Series::getSpatialFiducialsReferencedS
     if(reader->Read())
     {
         // Retrieve dataset
-        const ::gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
+        const gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
 
-        if(datasetRoot.FindDataElement(::gdcm::Tag(0x0008, 0x1115)))
+        if(datasetRoot.FindDataElement(gdcm::Tag(0x0008, 0x1115)))
         {
             // Get the content sequence
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence =
-                datasetRoot.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
+                datasetRoot.GetDataElement(gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
 
             if(sequence->GetNumberOfItems() > 0)
             {
-                ::gdcm::Item referencedSeriesItem                  = sequence->GetItem(1);
-                const ::gdcm::DataSet& referencedSeriesItemDataset = referencedSeriesItem.GetNestedDataSet();
+                gdcm::Item referencedSeriesItem                  = sequence->GetItem(1);
+                const gdcm::DataSet& referencedSeriesItemDataset = referencedSeriesItem.GetNestedDataSet();
 
                 // Series Instance UID - Type 1
                 seriesInstanceUID =
@@ -300,8 +300,8 @@ SPTR(io::dicom::container::DicomInstance) Series::getStructuredReportReferencedS
     data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    std::shared_ptr< ::gdcm::Reader> reader =
-        std::shared_ptr< ::gdcm::Reader>(new ::gdcm::Reader);
+    std::shared_ptr<gdcm::Reader> reader =
+        std::shared_ptr<gdcm::Reader>(new gdcm::Reader);
     const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
     const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
@@ -313,30 +313,30 @@ SPTR(io::dicom::container::DicomInstance) Series::getStructuredReportReferencedS
     if(reader->Read())
     {
         // Retrieve dataset
-        const ::gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
+        const gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
 
         // Pertinent Other Evidence Sequence - Type 1C
-        if(datasetRoot.FindDataElement(::gdcm::Tag(0x0040, 0xa385)))
+        if(datasetRoot.FindDataElement(gdcm::Tag(0x0040, 0xa385)))
         {
             // Get the content sequence
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence =
-                datasetRoot.GetDataElement(::gdcm::Tag(0x0040, 0xa385)).GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
+                datasetRoot.GetDataElement(gdcm::Tag(0x0040, 0xa385)).GetValueAsSQ();
 
             if(sequence->GetNumberOfItems() > 0)
             {
-                ::gdcm::Item studyItem                  = sequence->GetItem(1);
-                const ::gdcm::DataSet& studyItemDataset = studyItem.GetNestedDataSet();
+                gdcm::Item studyItem                  = sequence->GetItem(1);
+                const gdcm::DataSet& studyItemDataset = studyItem.GetNestedDataSet();
 
-                if(studyItemDataset.FindDataElement(::gdcm::Tag(0x0008, 0x1115)))
+                if(studyItemDataset.FindDataElement(gdcm::Tag(0x0008, 0x1115)))
                 {
                     // Get the series sequence
-                    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> seriesSequence =
-                        studyItemDataset.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
+                    gdcm::SmartPointer<gdcm::SequenceOfItems> seriesSequence =
+                        studyItemDataset.GetDataElement(gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
 
                     if(seriesSequence->GetNumberOfItems() > 0)
                     {
-                        ::gdcm::Item seriesItem                  = seriesSequence->GetItem(1);
-                        const ::gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
+                        gdcm::Item seriesItem                  = seriesSequence->GetItem(1);
+                        const gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
                         seriesInstanceUID = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000E>(
                             seriesItemDataset
                         );

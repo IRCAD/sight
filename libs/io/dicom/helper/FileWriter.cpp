@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,14 +37,14 @@ namespace helper
 
 void FileWriter::write(
     const std::filesystem::path& filename,
-    const SPTR(::gdcm::Writer)& writer
+    const SPTR(gdcm::Writer)& writer
 )
 {
     // Set file header
-    ::gdcm::FileMetaInformation& metaInformation = writer->GetFile().GetHeader();
+    gdcm::FileMetaInformation& metaInformation = writer->GetFile().GetHeader();
 
     // Transfer syntax - Type 1
-    metaInformation.SetDataSetTransferSyntax(::gdcm::TransferSyntax::ExplicitVRLittleEndian);
+    metaInformation.SetDataSetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
 
     // Initialize the file
     writer->SetFileName(filename.string().c_str()); // NOTE: Must be called when file is ready to be written

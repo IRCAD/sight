@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -215,7 +215,7 @@ service::IService::KeyConnectionsMap STargeting::getAutoConnections() const
 
 // -----------------------------------------------------------------------------
 
-void STargeting::updateSelectedPoint(std::string name, size_t index)
+void STargeting::updateSelectedPoint(std::string name, std::size_t index)
 {
     m_label            = name;
     m_landmarkSelected = true;
@@ -233,7 +233,7 @@ void STargeting::updatePoint(std::string name)
         const auto landmark = m_landmark.lock();
         SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
 
-        const size_t size = landmark->getGroup(m_label).m_points.size();
+        const std::size_t size = landmark->getGroup(m_label).m_points.size();
         m_index = size - 1;
     }
     this->update();

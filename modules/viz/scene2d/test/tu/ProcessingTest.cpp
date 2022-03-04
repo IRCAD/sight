@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "ProcessingTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
@@ -34,7 +33,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::viz::scene2d::ut::ProcessingTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::viz::scene2d::ut::ProcessingTest);
 
 namespace sight::module::viz::scene2d
 {
@@ -61,21 +60,21 @@ void ProcessingTest::tearDown()
 void ProcessingTest::histogramTest()
 {
     typedef signed short ImageType;
-    const int sizeX     = 50;
-    const int sizeY     = 50;
-    const int sizeZ     = 50;
-    const int imageSize = sizeX * sizeY * sizeZ;
+    const std::size_t sizeX     = 50;
+    const std::size_t sizeY     = 50;
+    const std::size_t sizeZ     = 50;
+    const std::size_t imageSize = sizeX * sizeY * sizeZ;
 
     std::string implementation = "sight::module::viz::scene2d::processing::SComputeHistogram";
 
-    // Configure data hirearchy
+    // Configure data hierarchy
     data::Image::sptr image         = data::Image::New();
     data::Histogram::sptr histogram = data::Histogram::New();
 
     // Create image.
-    image->resize(sizeX, sizeY, sizeZ, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
+    image->resize({sizeX, sizeY, sizeZ}, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
 
-    const auto dumpLock = image->lock();
+    const auto dumpLock = image->dump_lock();
     auto itr            = image->begin<ImageType>();
     const auto itrEnd   = image->end<ImageType>();
 
@@ -119,7 +118,7 @@ void ProcessingTest::histogramTest()
     service::remove(srv);
 
     data::Histogram::fwHistogramValues values = histogram->getValues();
-    CPPUNIT_ASSERT_EQUAL((size_t) 40 - 10 + 1, values.size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 40 - 10 + 1, values.size());
 
     CPPUNIT_ASSERT_EQUAL((float) 10, histogram->getMinValue());
 

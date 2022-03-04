@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 
 #include <core/spyLog.hpp>
-
-#include <data/fieldHelper/Image.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -74,21 +72,21 @@ void SImagesSubstract::updating()
     if(isSameType)
     {
         // test if the both images have the same size.
-        const bool isSameSize = (image1->getSize2() == image2->getSize2());
+        const bool isSameSize = (image1->getSize() == image2->getSize());
         if(isSameSize)
         {
             typedef itk::Image<std::int16_t, 3> ImageType;
 
-            ImageType::Pointer itkImage1 = io::itk::itkImageFactory<ImageType>(image1.get_shared());
+            ImageType::Pointer itkImage1 = io::itk::moveToItk<ImageType>(image1.get_shared());
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
 
-            ImageType::Pointer itkImage2 = io::itk::itkImageFactory<ImageType>(image2.get_shared());
+            ImageType::Pointer itkImage2 = io::itk::moveToItk<ImageType>(image2.get_shared());
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
 
             //Create filter
-            typedef ::itk::SubtractImageFilter<ImageType, ImageType, ImageType> SubtractImageFilterType;
+            typedef itk::SubtractImageFilter<ImageType, ImageType, ImageType> SubtractImageFilterType;
             SubtractImageFilterType::Pointer filter;
             filter = SubtractImageFilterType::New();
             assert(filter);
@@ -98,7 +96,7 @@ void SImagesSubstract::updating()
             filter->Update();
             output = filter->GetOutput();
             assert(output->GetSource());
-            io::itk::dataImageFactory<ImageType>(output, imageResult.get_shared(), true);
+            io::itk::moveFromItk<ImageType>(output, imageResult.get_shared(), true);
 
             auto sig = imageResult->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();

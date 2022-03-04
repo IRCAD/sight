@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,10 +126,6 @@ void SMaterial::starting()
             {
                 shadingMode = data::Material::FLAT;
             }
-            else if(m_shadingMode == "gouraud")
-            {
-                shadingMode = data::Material::GOURAUD;
-            }
 
             // Force the shading mode of the material if it has been set in the configuration of the adaptor
             material->setShadingMode(shadingMode);
@@ -209,7 +205,7 @@ void SMaterial::updating()
 
     if(m_r2vbObject)
     {
-        m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType2());
+        m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType());
     }
 
     // Set up representation mode
@@ -232,8 +228,6 @@ void SMaterial::stopping()
     m_materialFw.reset();
     m_textureConnection.disconnect();
     this->unregisterServices();
-
-    ::Ogre::MaterialManager::getSingleton().remove(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
 
     const auto material = m_materialData.lock();
 
@@ -262,10 +256,10 @@ void SMaterial::createShaderParameterAdaptors()
         if(obj != nullptr)
         {
             const auto shaderType           = std::get<2>(constant);
-            const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex"
-                                                                                       : shaderType
-                                              == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
-                                                                              :
+            const std::string shaderTypeStr = shaderType == Ogre::GPT_VERTEX_PROGRAM ? "vertex"
+                                                                                     : shaderType
+                                              == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
+                                                                            :
                                               "geometry";
             const core::tools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
 
@@ -313,7 +307,7 @@ void SMaterial::setTextureName(const std::string& _textureName)
     else
     {
         auto textureAdaptors =
-            this->getRenderService()->getAdaptors< ::sight::module::viz::scene3d::adaptor::STexture>();
+            this->getRenderService()->getAdaptors<sight::module::viz::scene3d::adaptor::STexture>();
         auto result =
             std::find_if(
                 textureAdaptors.begin(),
@@ -346,6 +340,12 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
                 const auto material = m_materialData.lock();
 
                 data::String::csptr string = data::String::dynamicCast(elt.second);
+                if(string->value() == m_materialTemplateName)
+                {
+                    // Avoid useless update if this is the same template material
+                    continue;
+                }
+
                 this->setMaterialTemplateName(string->getValue());
 
                 m_materialFw->setTemplate(m_materialTemplateName);
@@ -357,6 +357,14 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
             }
             this->createShaderParameterAdaptors();
             this->updating();
+
+            // When resetting the material template, all techniques and passes will be destroyed,
+            // so we need to reset the texture unit states
+            Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
+            if(currentTexture)
+            {
+                m_materialFw->setDiffuseTexture(currentTexture);
+            }
         }
     }
 }
@@ -367,7 +375,7 @@ void SMaterial::swapTexture()
 {
     SIGHT_ASSERT("Missing texture adaptor", m_texAdaptor);
 
-    ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
+    Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
     SIGHT_ASSERT("Texture not set in Texture adaptor", currentTexture);
 
     m_materialFw->setDiffuseTexture(currentTexture);
@@ -430,7 +438,7 @@ void SMaterial::removeTextureAdaptor()
 
     this->getRenderService()->makeCurrent();
 
-    m_materialFw->setDiffuseTexture(::Ogre::TexturePtr());
+    m_materialFw->setDiffuseTexture(Ogre::TexturePtr());
 
     m_textureConnection.disconnect();
     this->unregisterServices("sight::module::viz::scene3d::adaptor::STexture");

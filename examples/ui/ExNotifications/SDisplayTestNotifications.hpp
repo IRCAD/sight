@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,11 @@
 #include <ui/base/dialog/NotificationDialog.hpp>
 #include <ui/base/IAction.hpp>
 
+/**
+ * Do not mark `EXNOTIFICATIONS` as incorrect.
+ * cspell:ignore EXNOTIFICATIONS
+ */
+
 namespace dial = sight::ui::base::dialog;
 
 namespace ExNotifications
@@ -43,11 +48,11 @@ namespace ExNotifications
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
-class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public ::sight::ui::base::IAction
+class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, sight::ui::base::IAction);
 
     /**
      * @name Constructor/Destructor
@@ -90,6 +95,8 @@ private:
     bool m_displayAll {false};
     /// Use centralized Mode.
     bool m_useSNotifier {true};
+    /// To test the "Read more..." option on Notification.
+    bool m_reachMaxCharacters {false};
 };
 
 } // namespace ExNotifications

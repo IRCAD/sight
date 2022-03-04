@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@
 
 #include <random>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::SpheroidExtractionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::SpheroidExtractionTest);
 
 namespace sight::filter::image
 {
@@ -45,7 +45,7 @@ namespace sight::filter::image
 namespace ut
 {
 
-typedef ::itk::Image<std::int16_t, 3> ImageType;
+typedef itk::Image<std::int16_t, 3> ImageType;
 
 //------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ static void makeNoise(
     PIXELTYPE rangeMax = std::numeric_limits<PIXELTYPE>::max()
 )
 {
-    const auto dumpLock = _image->lock();
+    const auto dumpLock = _image->dump_lock();
     auto iter           = _image->begin<PIXELTYPE>();
     const auto end      = _image->end<PIXELTYPE>();
 
@@ -103,7 +103,7 @@ static void plantSphere(ImageType::Pointer _image, const double radius[3], const
 
     imageFilter->Update();
 
-    typedef typename ::itk::OrImageFilter<ImageType, ImageType> OrFilterType;
+    typedef typename itk::OrImageFilter<ImageType, ImageType> OrFilterType;
 
     typename OrFilterType::Pointer orFilter = OrFilterType::New();
     orFilter->SetInput1(_image);
@@ -147,7 +147,7 @@ void SpheroidExtractionTest::extractionTest()
 
     makeNoise<std::int16_t>(image, 0, 128);
 
-    ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(image);
+    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
     const std::vector<std::array<double, 3> > spheroidCenters = {{{16., 16., 16.}},
         {{54., 67., 12.}},
@@ -177,7 +177,7 @@ void SpheroidExtractionTest::extractionTest()
     }
 
     // Rewrite the itk image to the Sight image.
-    io::itk::itkImageToFwDataImage(itkImage, image);
+    io::itk::moveFromItk(itkImage, image);
 
     data::PointList::sptr extractedSpheroids =
         filter::image::SpheroidExtraction::extract(image, 200., 4., 9., 0.8, 1.2);

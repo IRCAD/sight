@@ -10,7 +10,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto09MatrixTransformInGS_AppCfg</id>
         <config>
 
@@ -153,7 +153,7 @@
             </service>
 
             <service uid="mesh0Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" />
+                <in key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
@@ -163,7 +163,7 @@
             </service>
 
             <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" />
+                <in key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform1" />
             </service>
 
@@ -173,7 +173,7 @@
             </service>
 
             <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" />
+                <in key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform2" />
             </service>
 
@@ -183,7 +183,7 @@
             </service>
 
             <service uid="mesh3Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
-                <inout key="mesh" uid="mesh" />
+                <in key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform3" />
             </service>
 

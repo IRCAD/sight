@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ public:
      * Example of configuration
      * @code{.xml}
            <service uid="toolbar2" type="ui::base::IToolBar"
-     * impl="::sight::module::ui::base::SToolBar"
+     * impl="sight::module::ui::base::SToolBar"
      * autoConnect="false" >
                <gui>
                    <layout>
@@ -130,11 +130,11 @@ public:
      *
      * Register the menuItem containers for the associated services. Start the services if start=true.
      *
-     * If a menuItem has attribut start="false", the associated action won't be started and the menuItem will be
+     * If a menuItem has attribute start="false", the associated action won't be started and the menuItem will be
      * disabled.
-     * If a menuItem has attribut start="true", two possibilities: \n
-     *  - the associated action has attribut executable="false" then the menuItem will be disabled.\n
-     *  - the associated action has attribut executable="true" then the menuItem will be enabled.\n
+     * If a menuItem has attribute start="true", two possibilities: \n
+     *  - the associated action has attribute executable="false" then the menuItem will be disabled.\n
+     *  - the associated action has attribute executable="true" then the menuItem will be enabled.\n
      *
      * @warning If the action is present in a toolbar and a menu it must be started only one time.
      * @see ui::base::registry::Menu for more information on interaction between menubar and toolbar.

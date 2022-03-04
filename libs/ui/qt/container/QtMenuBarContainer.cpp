@@ -32,7 +32,7 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtMenuBarContainer::QtMenuBarContainer(ui::base::GuiBaseObject::Key key) noexcept :
+QtMenuBarContainer::QtMenuBarContainer(ui::base::GuiBaseObject::Key) noexcept :
     m_menuBar(0)
 {
 }

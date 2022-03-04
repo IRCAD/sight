@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,14 +50,12 @@ namespace sight::module::ui::qt
 namespace model
 {
 
-class ValueView;
-
 /**
  * @brief Editor displaying the list of the organs in a ModelSeries.
  *
  * It allows to show/hide a Reconstruction when it is associated to a render scene with a Model series adaptor
  * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
- * It also allows to select a Reconstruction: associated to the module::data::updater::SObjFromSlot, the
+ * It also allows to select a Reconstruction: associated to the module::data::SSelectObject, the
  * reconstruction is available to be used by other services.
  * It is mostly associated to module::ui::qt::reconstruction::SOrganMaterialEditor and
  * module::ui::qt::reconstruction::RepresentationEditor to update the reconstrution color, transparency, ....
@@ -75,8 +73,9 @@ class ValueView;
        <inout key="modelSeries" uid="..." autoConnect="true" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
-         <organ_name>@organ_name</organ_name>
-         <volume_cc view="positive" >@volume</volume_cc>
+         <organ_name/>
+         <structure_type/>
+         <volume/>
        </columns>
    </service>
    @endcode
@@ -89,7 +88,7 @@ class ValueView;
  *      displayed in UI.
  * - \b enableDelete (optional, bool, default=false): if 'true', allows to delete models through a single button
  *      displayed in UI.
- * - \b column (optional, string, default=""): defines colums to be shown in reconstruction list. XML child element
+ * - \b column (optional, string, default=""): defines columns to be shown in reconstruction list. XML child element
  *      names follow data::Reconstruction serialization attribute names.
  *      The name of the tag will be used as the column name.
  *      The attribute 'view' is optional and has the following values:
@@ -110,15 +109,15 @@ public:
     MODULE_UI_QT_API SModelSeriesList() noexcept;
 
     /// Cleans ressources.
-    MODULE_UI_QT_API ~SModelSeriesList() noexcept override;
+    MODULE_UI_QT_API ~SModelSeriesList() noexcept final = default;
 
 protected:
 
     /// Configures the editor.
-    void configuring() override;
+    void configuring() final;
 
     /// Creates layouts.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -128,17 +127,17 @@ protected:
      * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
      * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const final;
 
     /**
-     * @brief Refreshs the editor.
+     * @brief Refreshes the editor.
      * @see updateReconstructions().
      * @see refreshVisibility().
      */
-    void updating() override;
+    void updating() final;
 
     /// Disconnects connections.
-    void stopping() override;
+    void stopping() final;
 
 private:
 
@@ -151,7 +150,7 @@ private:
     /// SLOT: Shows (or hide) reconstructions.
     void showReconstructions(bool _show);
 
-    /// Refreshs reconstructions visibility on the editor.
+    /// Refreshes reconstructions visibility on the editor.
     void refreshVisibility();
 
     /**
@@ -205,10 +204,6 @@ private:
     /// Contains the reconstructions tree:
     QPointer<QTreeWidget> m_tree;
 
-    /// Defines informations.
-    typedef std::map<std::string, ValueView*> DisplayedInformation;
-    DisplayedInformation m_displayedInfo;
-
     /// Enables m_showCheckBox.
     bool m_enableHideAll {true};
 
@@ -228,7 +223,7 @@ private:
 
     /// Contains the slot to show (or hide) reconstructions.
     typedef core::com::Slot<void (bool)> ShowReconstructionsSlotType;
-    ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
+    ShowReconstructionsSlotType::sptr m_slotShowReconstructions;
 
     static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
     data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, "modelSeries", true};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ SView::~SView()
 
 void SView::configuring()
 {
-    this->::sight::ui::base::view::IActivityView::configuring();
+    this->sight::ui::base::view::IActivityView::configuring();
 
     const ConfigType configType = this->getConfigTree();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -78,9 +78,9 @@ void SView::configuring()
 
 void SView::starting()
 {
-    this->::sight::ui::base::IGuiContainer::create();
+    this->sight::ui::base::IGuiContainer::create();
 
-    auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -91,11 +91,11 @@ void SView::starting()
     QWidget* widget = new QWidget();
     layout->addWidget(widget);
 
-    auto subContainer = ::sight::ui::qt::container::QtContainer::New();
+    auto subContainer = sight::ui::qt::container::QtContainer::New();
 
     subContainer->setQtContainer(widget);
     m_wid = this->getID() + "_container";
-    ::sight::ui::base::GuiRegistry::registerWIDContainer(m_wid, subContainer);
+    sight::ui::base::GuiRegistry::registerWIDContainer(m_wid, subContainer);
 
     parentContainer->setLayout(layout);
 
@@ -120,8 +120,8 @@ void SView::stopping()
         m_configManager->stopAndDestroy();
     }
 
-    auto subContainer = ::sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
-    ::sight::ui::base::GuiRegistry::unregisterWIDContainer(m_wid);
+    auto subContainer = sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
+    sight::ui::base::GuiRegistry::unregisterWIDContainer(m_wid);
 
     subContainer->destroyContainer();
 
@@ -145,19 +145,17 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             m_configManager->stopAndDestroy();
         }
 
-        sight::activity::extension::ActivityInfo info;
-        info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
+            *activitySeries,
+            m_parameters
+        );
 
-        ReplaceMapType replaceMap;
-        this->translateParameters(m_parameters, replaceMap);
-        this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
-        replaceMap["AS_UID"]     = activitySeries->getID();
-        replaceMap["WID_PARENT"] = m_wid;
-        std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
-        replaceMap["GENERIC_UID"] = genericUidAdaptor;
+        replacementMap["WID_PARENT"]  = m_wid;
+        replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
+
         try
         {
-            m_configManager->setConfig(info.appConfig.id, replaceMap);
+            m_configManager->setConfig(info.appConfig.id, replacementMap);
             m_configManager->launch();
 
             m_sigActivityLaunched->asyncEmit(activitySeries);

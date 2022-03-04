@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ namespace Tuto04MeshGeneratorCpp
  *
  * @subsection Configuration Configuration
  * - \b functor (mandatory, string): the functor name used to generate mesh.
- *  - ShakeMeshPoint: shakes meshe points.
+ *  - ShakeMeshPoint: shakes mesh points.
  *  - ColorizeMeshPoints: colorizes mesh points.
  *  - ColorizeMeshCells: colorizes mesh cells.
  *  - ComputePointNormals: computes point normals.
@@ -56,7 +56,7 @@ namespace Tuto04MeshGeneratorCpp
  *  - ShakeCellNormals: shakes cell normals.
  *  - MeshDeformation: deforms the mesh.
  */
-class SMeshModifier final : public ::sight::ui::base::IAction
+class SMeshModifier final : public sight::ui::base::IAction
 {
 public:
 

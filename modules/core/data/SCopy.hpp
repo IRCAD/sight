@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,9 @@
 
 #pragma once
 
-#include "ICamp.hpp"
-
 #include "modules/data/config.hpp"
 
-#include <core/base.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
+#include <service/IController.hpp>
 
 namespace sight::module::data
 {
@@ -41,24 +36,8 @@ namespace sight::module::data
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::data::SCopy" >
-           <in key="source" uid="..." >
-             <extract from="@path.to.data.0" />
-           </in>
-           <inout key="target" uid="..." />
-           <mode>copyOnStart</mode>
-       </service>
-
-       <service uid="..." type="sight::module::data::SCopy" >
            <in key="source" uid="..." />
            <inout key="target" uid="..." />
-           <mode>copyOnStart</mode>
-       </service>
-
-       <service uid="..." type="sight::module::data::SCopy" >
-           <in key="source" uid="..." >
-             <extract from="@path.to.data.0" />
-           </in>
-           <out key="outTarget" uid="..." />
            <mode>copyOnStart</mode>
        </service>
 
@@ -71,7 +50,6 @@ namespace sight::module::data
  *
  * @subsection Input Input
  * - \b source [sight::data::Object]: define the source object to copy.
- *    - \b extract (optional): define the camp path used to retrieve the object to copy.
  *
  * @subsection In-Out In-Out
  * - \b target [sight::data::Object]: define the target object to update, can't be used with Output.
@@ -83,32 +61,32 @@ namespace sight::module::data
  * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
  * updating ("copyOnUpdate" - default).
  */
-class MODULE_DATA_CLASS_API SCopy final : public module::data::ICamp
+class MODULE_DATA_CLASS_API SCopy final : public service::IController
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCopy, ::sight::module::data::ICamp);
+    SIGHT_DECLARE_SERVICE(SCopy, service::IController);
 
     /// Creates the service.
-    MODULE_DATA_API SCopy();
+    MODULE_DATA_API SCopy() = default;
 
     /// Destroys the service.
-    MODULE_DATA_API ~SCopy();
+    MODULE_DATA_API ~SCopy() final = default;
 
 protected:
 
     //// Configures the service
-    MODULE_DATA_API void configuring() override;
+    MODULE_DATA_API void configuring() final;
 
     /// Calls copy() if the mode if START.
-    MODULE_DATA_API void starting() override;
+    MODULE_DATA_API void starting() final;
 
     /// Calls copy() if the mode if UPDATE.
-    MODULE_DATA_API void updating() override;
+    MODULE_DATA_API void updating() final;
 
     /// Sets the output to null.
-    MODULE_DATA_API void stopping() override;
+    MODULE_DATA_API void stopping() final;
 
 private:
 
@@ -121,14 +99,8 @@ private:
     /// Copies the object to the output.
     void copy();
 
-    /// Defines the sesh@ path for appXml
-    std::string m_path;
-
-    /// Defines if the object to copy is a sesh@ path or an object
-    bool m_hasExtractTag;
-
     /// Determines when the data is copied (start or update)
-    ModeType m_mode;
+    ModeType m_mode {ModeType::UPDATE};
 
     sight::data::ptr<sight::data::Object, sight::data::Access::in> m_source {this, "source"};
     sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_target {this, "target", false, true};

@@ -33,7 +33,7 @@
 #include <limits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::LineFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::LineFunctionsTest);
 
 namespace sight::geometry::data
 {

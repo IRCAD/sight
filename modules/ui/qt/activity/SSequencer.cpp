@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Runtime.hpp>
+#include <core/tools/Os.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
@@ -56,13 +57,14 @@ const core::com::Slots::SlotKeyType s_NEXT_SLOT       = "next";
 const core::com::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
 const core::com::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
 
-static const std::string s_THEME_CONFIG      = "theme";
-static const std::string s_CLEAR_CONFIG      = "clear";
-static const std::string s_ACCENT_CONFIG     = "accent";
-static const std::string s_FOREGROUND_CONFIG = "foreground";
-static const std::string s_BACKGROUND_CONFIG = "background";
-static const std::string s_PRIMARY_CONFIG    = "primary";
-static const std::string s_ELEVATION_CONFIG  = "elevation";
+static const std::string s_CLEAR_ACTIVITIES_CONFIG = "clearActivities";
+static const std::string s_THEME_CONFIG            = "theme";
+static const std::string s_CLEAR_CONFIG            = "clear";
+static const std::string s_ACCENT_CONFIG           = "accent";
+static const std::string s_FOREGROUND_CONFIG       = "foreground";
+static const std::string s_BACKGROUND_CONFIG       = "background";
+static const std::string s_PRIMARY_CONFIG          = "primary";
+static const std::string s_ELEVATION_CONFIG        = "elevation";
 
 //------------------------------------------------------------------------------
 
@@ -101,6 +103,8 @@ void SSequencer::configuring()
         m_activityNames.push_back(it->second.get<std::string>("<xmlattr>.name", ""));
     }
 
+    m_clearActivities = config.get<bool>(s_CLEAR_ACTIVITIES_CONFIG, m_clearActivities);
+
     m_theme      = config.get<std::string>(s_THEME_CONFIG, m_theme);
     m_clear      = config.get<std::string>(s_CLEAR_CONFIG, m_clear);
     m_accent     = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
@@ -134,6 +138,7 @@ void SSequencer::starting()
     if(m_clear.empty())
     {
         clear = parent->palette().color(QPalette::Background);
+
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
         if(!qApp->styleSheet().isEmpty())
@@ -152,6 +157,7 @@ void SSequencer::starting()
     if(theme.isEmpty())
     {
         theme = "light";
+
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
         if(!qApp->styleSheet().isEmpty())
@@ -160,22 +166,31 @@ void SSequencer::starting()
         }
     }
 
-    // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
-    const auto runtimePath = core::runtime::Runtime::getDefault()->getWorkingPath();
-    const auto qmlDir      = runtimePath / "qml";
-    if(std::filesystem::exists(qmlDir))
+#ifdef WIN32
+    // To get Qml initialized properly, we need to find its plugins
+    // This is difficult to do, especially because the location of the deps is different whether
+    // you are executing the application in the build tree or in the install tree
+    // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
+    // This work in all cases when we use VCPkg.
+    std::filesystem::path qt5LibDir              = core::tools::os::getSharedLibraryPath("Qt5Core").remove_filename();
+    const std::filesystem::path qt5QmlPluginsDir = (qt5LibDir.parent_path().parent_path()) / "qml";
+
+    QDir pluginDir(QString::fromStdString(qt5QmlPluginsDir.string()));
+    if(pluginDir.exists())
     {
-        engine->addImportPath(QString::fromStdString(qmlDir.string()));
+        SIGHT_INFO("Load Qml plugins from: " + qt5QmlPluginsDir.string());
+        engine->addImportPath(pluginDir.absolutePath());
     }
     else
     {
-        engine->addImportPath(QML_IMPORT_PATH);
+        SIGHT_ERROR("Could not determine Qml plugins path, tried with: " + qt5QmlPluginsDir.string());
     }
+#endif
 
     QStringList activitiesName;
 
     auto activityReg = sight::activity::extension::Activity::getDefault();
-    for(size_t i = 0 ; i < m_activityIds.size() ; ++i)
+    for(std::size_t i = 0 ; i < m_activityIds.size() ; ++i)
     {
         std::string name = m_activityNames[i];
         if(name.empty())
@@ -268,12 +283,38 @@ void SSequencer::goTo(int index)
     auto seriesDB = m_seriesDB.lock();
     SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
-    if(m_currentActivity >= 0)
+    // Clear activities if go backward.
+    if(m_clearActivities && m_currentActivity > index)
+    {
+        auto dialog = sight::ui::base::dialog::MessageDialog(
+            "Sequencer",
+            "The data will be deleted! \nDo you want to continue?",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
+        dialog.addButton(sight::ui::base::dialog::IMessageDialog::YES_NO);
+        const auto button = dialog.show();
+
+        if((button == sight::ui::base::dialog::IMessageDialog::NO))
+        {
+            return;
+        }
+
+        // Disable all next activities (including current)
+        for(std::size_t i = index + 1 ; i < seriesDB->size() ; ++i)
+        {
+            this->disableActivity(i);
+        }
+
+        // Remove all last activities.
+        this->removeLastActivities(*seriesDB, index);
+    }
+    // Store data otherwise.
+    else if(m_currentActivity >= 0)
     {
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const size_t newIdx = static_cast<size_t>(index);
+    const std::size_t newIdx = static_cast<std::size_t>(index);
 
     data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
 
@@ -311,7 +352,7 @@ void SSequencer::checkNext()
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const size_t nextIdx = static_cast<size_t>(m_currentActivity + 1);
+    const std::size_t nextIdx = static_cast<std::size_t>(m_currentActivity + 1);
     if(nextIdx < m_activityIds.size())
     {
         data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
@@ -358,6 +399,14 @@ void SSequencer::enableActivity(int index)
 {
     QObject* object = m_widget->rootObject();
     QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, index));
+}
+
+//------------------------------------------------------------------------------
+
+void SSequencer::disableActivity(int index)
+{
+    QObject* object = m_widget->rootObject();
+    QMetaObject::invokeMethod(object, "disableActivity", Q_ARG(QVariant, index));
 }
 
 //------------------------------------------------------------------------------

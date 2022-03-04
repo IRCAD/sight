@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,6 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-
-#include <data/mt/ObjectWriteLock.hpp>
-#include <data/reflection/exception/ObjectNotFound.hpp>
-#include <data/reflection/getObject.hpp>
 
 #include <numeric>
 
@@ -72,8 +68,8 @@ void SCommandHistory::configuring()
 {
     service::IService::ConfigType config = this->getConfigTree();
 
-    auto maxCommands = config.get_optional<size_t>("maxCommands");
-    auto maxMemory   = config.get_optional<size_t>("maxMemory");
+    auto maxCommands = config.get_optional<std::size_t>("maxCommands");
+    auto maxMemory   = config.get_optional<std::size_t>("maxMemory");
 
     if(maxCommands.is_initialized())
     {
@@ -90,14 +86,14 @@ void SCommandHistory::configuring()
 
 void SCommandHistory::starting()
 {
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
 
 void SCommandHistory::updating()
 {
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +108,7 @@ void SCommandHistory::stopping()
 void SCommandHistory::enqueue(sight::ui::history::ICommand::sptr command)
 {
     m_undoRedoManager.enqueue(command);
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +116,7 @@ void SCommandHistory::enqueue(sight::ui::history::ICommand::sptr command)
 void SCommandHistory::undo()
 {
     m_undoRedoManager.undo();
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +124,7 @@ void SCommandHistory::undo()
 void SCommandHistory::redo()
 {
     m_undoRedoManager.redo();
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,12 +132,12 @@ void SCommandHistory::redo()
 void SCommandHistory::clear()
 {
     m_undoRedoManager.clear();
-    this->emitModifSig();
+    this->emitModifiedSig();
 }
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::emitModifSig() const
+void SCommandHistory::emitModifiedSig() const
 {
     m_canUndoSig->asyncEmit(m_undoRedoManager.canUndo());
     m_canRedoSig->asyncEmit(m_undoRedoManager.canRedo());
