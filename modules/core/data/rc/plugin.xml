@@ -78,6 +78,13 @@
           <object key="camera">sight::data::Camera</object>
           <desc>This service extracts camera parameters from a camera series</desc>
      </extension>
+     <extension implements="sight::service::extension::Factory">
+        <type>sight::service::IController</type>
+        <service>sight::module::data::SGetMesh</service>
+        <object key="modelSeries">sight::data::ModelSeries</object>
+        <object key="mesh">sight::data::Mesh</object>
+        <desc>This service extracts meshes from a model series</desc>
+    </extension>
 
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>

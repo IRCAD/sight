@@ -352,13 +352,11 @@
                </out>
            </service>
 
-            <!-- Extract model called "Skin" in the model series -->
-            <service uid="extractSkinSrv" type="sight::module::data::SExtractMeshByType" >
-               <inout key="source" uid="modelSeries" >
-                   <extract type="Skin" />
-               </inout>
-               <out group="target" >
-                   <key uid="mesh" />
+            <!-- Extract mesh in the model series -->
+            <service uid="extractSkinSrv" type="sight::module::data::SGetMesh" >
+               <in key="modelSeries" uid="modelSeries" />
+               <out group="mesh" >
+                   <key type="Skin" uid="mesh"/>
                </out>
             </service>
 

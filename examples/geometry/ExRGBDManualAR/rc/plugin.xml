@@ -25,7 +25,7 @@
             <object uid="inverseMat" type="sight::data::Matrix4" />
             <object uid="extrinsic" type="sight::data::Matrix4" src="deferred" />
             <object uid="skinMesh" type="sight::data::Mesh" src="deferred" />
-            <object uid="modelseries" type="sight::data::ModelSeries" src="deferred" />
+            <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -213,7 +213,7 @@
 
             <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="ModelSeriesManagerWindow" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR/app.ico" />
             </service>
 
@@ -259,7 +259,7 @@
                     <adaptor uid="videoAdp" />
 
                     <layer id="default" order="2" />
-                    <adaptor uid="modelseriesAdp" />
+                    <adaptor uid="modelSeriesAdp" />
                     <adaptor uid="cameraAdp" />
 
                     <layer id="foreground" order="3" />
@@ -277,8 +277,8 @@
                 <config layer="foreground" />
             </service>
 
-            <service uid="modelseriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
-                <in key="model" uid="modelseries" />
+            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
+                <in key="model" uid="modelSeries" />
                 <config layer="default" autoresetcamera="false" />
             </service>
 
@@ -321,7 +321,7 @@
             <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
                <in key="seriesDB" uid="seriesDB"/>
                <out group="series" >
-                   <key index="0" uid="modelseries" />
+                   <key index="0" uid="modelSeries" />
                </out>
            </service>
 
@@ -412,12 +412,10 @@
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
-            <service uid="extractSkinSrv" type="sight::module::data::SExtractMeshByType" >
-               <inout key="source" uid="modelseries" >
-                   <extract type="Skin" />
-               </inout>
-               <out group="target" >
-                   <key uid="skinMesh" />
+            <service uid="extractSkinSrv" type="sight::module::data::SGetMesh" >
+               <in key="modelSeries" uid="modelSeries" />
+               <out group="mesh" >
+                   <key type="Skin" uid="skinMesh"/>
                </out>
             </service>
 
@@ -512,7 +510,7 @@
             <start uid="extractSkinSrv" />
             <start uid="extractForegroundSrv" />
             <start uid="videoAdp" />
-            <start uid="modelseriesAdp" />
+            <start uid="modelSeriesAdp" />
             <start uid="cameraAdp" />
             <start uid="foregroundAdp" />
             <start uid="meshOffscreenAdp" />

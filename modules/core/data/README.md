@@ -14,6 +14,7 @@ This module contains contains several interfaces for manager, updater and wrappe
 - **SSelectObject**: registers/unregisters the object given by the slots.
 - **SImageSignalForwarder**: forwards signals from an image to another.
 - **SGetSeries**: extracts series from series database.
+- **SGetMesh**: extracts meshes from model series.
 
 ## CMake
 
