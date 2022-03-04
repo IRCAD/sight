@@ -80,7 +80,7 @@ void RuntimeTest::testPosix()
     const auto path = nativeLibrary->getFullPath();
     CPPUNIT_ASSERT_EQUAL(
         (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX
-         / std::filesystem::path("libsight_module_utest.so.21.0.0")).string(),
+         / std::filesystem::path("libsight_module_utest.so." VERSION)).string(),
         path.string()
     );
 }
