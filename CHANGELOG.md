@@ -1,3 +1,687 @@
+# sight 21.1.0
+
+## Refactor:
+
+### build
+
+*Apply cmake-linter rules.*
+
+### core
+
+*Remove last bits of data reflection based on camp.*
+
+Data reflection based on the camp library was definitely removed from _Sight_. It consisted in removing the files used to declare data reflection and all files that used camp.
+
+Most usages of data reflection was removed in previous merge requests, like serialisation. However, some last services still used data reflection and were modified accordingly:
+
+#### module::ui::qt::model::SModelSeriesList
+
+This service displays reconstructions in a tree widget. It used data reflection to display any model series attribute. However practically, it was only used to display the organ names, structures types and volumes. Those three possibilities were hard-coded instead.
+
+#### module::ui::qt::series::SViewer
+
+`SViewer` shows a preview of data. Normally, it takes input data, but a similar mechanism was in place to allow data extraction like in activities. This was a bit over-designed and practically only used to extract images from image series. The image preview activity was thus modified to extract the image with the new `SGetImage` service.
+
+#### module::data::SCopy
+
+The most annoying service was `SCopy`. Like `SExtractObj`, it was capable of using a path camp to copy sub-objects. It was used abusively in SightViewer, probably to avoid deferred objects. This was bad since model series and images are present multiple times in memory.
+
+Nevertheless, this could not be changed easily. Two new services needed to be written.
+
+- `module`::data::SGetVector`:`very similar to `SGetSeries`, it allows to extract elements of a `sight::data::Vector`.
+- `module`::ui::qt::series::SSelectDialog`:`the intent of this service is to pop-up a dialog to let the user pick a series. Indeed in SightViewer, we may load several series, but only the first one is displayed. So for instance, if we read a CT-scan with 3 different blood times, we can only display the first one. This service also resolves the problem of the type of output. It allows to output the result to different objects according to their type: image or model. With the constraint of time for the incoming release, this service is proposed in the state of a draft. It does not prompt the dialog yet, instead, it takes the first element. This allows at least to keep the same level of functionality in SightViewer. It will be finalized in Sight 22.0
+
+*Remove oldish SPushObject and SPushField, rename SObjFromSlot.*
+
+We are very close to finish the rework we started years ago about clarifying object selection services.
+- `SPushObject` and `SPushField` were outdated, and can be replaced easily by the `SManage` service. So we simply removed them.
+- `SObjFromSlot` does not have a meaningful name. It is renamed as `SSelectObject` and no longer inherits from the also meaningless `IUpdaterSrv` interface, but rather from `IController`.
+
+*Simplify workers management.*
+
+Firstly, this was an intent to add a function to unregister workers, but in the end, this is a complete rework simplification of the `ActiveWorkers` registry.
+
+Here is a summary of the changes.
+
+No longer exposes the ActiveWorkers registry publicly. The only interest would be to have multiple registries... Mmm really? I don't think that's useful. So then if there is only one registry, as a user, I don't care that this is a singleton, I even don't care there is a registry at all. I just want to add and remove workers, right?
+
+Now, people are supposed to add and remove the workers themselves. There is no more "global" cleaning method (formerly `cleanRegistry()` ). Symmetry for the win.
+
+The initialisation phase has changed, which is somehow a breaking and important change. **So please read the following carefully**.
+
+Formerly, no default worker is created by default. It was created either by calling `initRegistry()` (instantiating a `workerAsio` or by calling `setDefaultWorker` (in
+concrete use cases, either a `workerAsio` or a `workerQt`). In most apps (all Qt apps of course), services, and unit tests, a worker was created. But in rare cases, no worker was set, which implies async functions such as `IService::start()`, `IService::stop()`, etc... were in fact executed synchronously.
+
+With this MR, a `workerAsio` is created at the start and set as the default worker. If someones (actually only Qt Apps) want to set a different worker (the `WorkerQt`), it can call `setDefaultWorker()` and the default worker will thus be changed. The initial worker will be removed, but the function will raise an exception to avoid early slots registration with this worker. In clear, `setDefaultWorker()` is intended to be called at the very beginning of an application and only once. Even clearer, this is going to be called only once by the main Qt and Qml plugins. So actually, no one bothers, whereas before, everyone writing a unit-test or an executable app would have to think about it and call it.
+
+Last a `resetDefaultWorker()` had to be implemented, just because QApp doesn't like to be destroyed during static variables cleaning, after the main exits. So this `resetDefaultWorker()` is actually called twice symmetrically with `setDefaultWorker()` in the main Qt and Qml plugins.
+
+*Merge fieldHelper into helper/MedicalImage.*
+
+* all functions are now static and class is replaced by namespace MedicalImage
+* unused functions was removed
+* unit test of MedicalImage was improved to test all helpers methods
+* Update services to use only integer values instead of  pointers for slice indexes
+
+*Rename all getNumberOf*() functions to num*().*
+
+*Clean old deprecated array API.*
+
+*Clean old deprecated image API.*
+
+*Modernize mesh API.*
+
+### io
+
+*Remove module::io::atoms and replace it by module::io::session counterpart.*
+
+All of module`::io::atoms`has been removed and replaced by module`::io::session`counterpart. `Patch` and `Filter` features of atoms have also been removed. io`::session`has been upgraded to support simple JSON on filesystem serialization.
+
+Additionally, a new preference system, using Boost property tree, has been implemented:
+
+# Preference
+The class is thread safe and use RAII mechanism to load and store data from and to the preference file. In a service, the basic usage would be:
+``` c++
+    try
+    {
+        // Load
+        Preferences preferences;
+        std`::string`filename = preferences.get("debug.filename");
+        int level = preferences.get<int>("debug.level");
+        ...
+        // Save
+        Preferences preferences;
+        preferences.put("debug.filename", "log.txt");
+        preferences.put("debug.level", 2);
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
+    }
+
+```
+
+Which will be translated into:
+``` json
+    debug:
+        filename: "log.txt"
+        level: 2
+```
+
+## Configuration
+The configuration is done by static functions:
+
+- set_enabled: Enable or disable preference management as a whoole. All functions, including constructor will throw `PreferencesDisabled` exception if used while "disabled"
+- set_password: Set an harcoded password to be used. It enables defacto the encryption
+- set_password_policy: Defines how and when a password is asked. @see sight`::core::crypto::PasswordKeeper::PasswordPolicy`for possible values.
+  > `NEVER` will never display any message box, but if a password has been set, the resulting preference file will still be encrypted. An `BadPassword` exception will be thrown instead of diplaying a message box, asking to renter the password.
+- set_encryption_policy: Define when the preferences file is encrypted: @see sight`::core::crypto::PasswordKeeper::EncryptionPolicy`for possible values.
+  > `FORCE` will encrypt the file, even if no password is given. In this case a pseudo random password is used, which can be guessed if someone has access to the code. Another option is to use an harcoded password AND EncryptionPolicy::SALTED
+- Module Configuration: All the above can be configured through the module ui_base parameters (@see sight::module::ui::base::Plugin)
+  The preferences are enabled by default, without encryption. An example of configuration would be:
+
+  ``` cmake
+    moduleParam(
+        module_ui_base
+        PARAM_LIST
+            preferences_enabled
+            preferences_password_policy
+            preferences_encryption_policy
+            preferences_password
+        PARAM_VALUES
+            true
+            once
+            salted
+            a_bad_hardcoded_password
+    )
+  ```
+
+# Simple JSON serialization on filesystem
+
+It is now possible to use `SReader` and `SWriter` to serialize a data object into a single JSON file (until the serializer class also store additional files like for Mesh or Image object).
+
+## SReader
+This is achieved withe the `archive` configuration node and its `format` attribute:
+- `filesystem`: Reads files from the filesystem.
+- `archive`: Reads files from an session archive.
+- `default`: uses the builtin default behavior which is `archive`
+
+### XML sample configuration:
+
+```xml
+<service type="sight::module::io::session::SReader">
+    <inout key="data" uid="..." />
+    <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
+    <password policy="once, encryption=salted"/>
+    <archive format="filesystem"/>
+</service>
+```
+
+## SWriter
+This is achieved withe the `archive` configuration node and its `format` attribute:
+- `filesystem`: Use the filesystem to store files.
+- `compatible`: Store files in a ZIP archive, with old deflate algorithm
+- `optimized`: Store files in a ZIP archive, with zstd algorithm
+- `default`: uses the builtin default behavior which is "optimized"
+
+### XML sample configuration:
+
+```xml
+<service type="sight::module::io::session::SWriter">
+    <in key="data" uid="..." />
+    <dialog extension=".sample" description="Sample Sight session file" policy="once"/>
+    <password policy="once", encryption=salted/>
+    <archive format="optimized"/>
+</service>
+```
+
+### ui
+
+*Remove obsolete SSlider, superseded by SParameters.*
+
+## Bug fixes:
+
+### build
+
+*Fix application package.*
+
+* CMake configuration has been modified to ensure that sightlog binaries are always shipped with Sight, even when building a standalone application.
+* Ogre plugins install was not done because of a regression introduced when fixing Qml plugins install.
+* use the .bat instead of .exe to launch app in .lnk
+
+*Add tighter security in get_default_password access.*
+
+Add if def security around the  get_default_password
+Export the SIGHT_DEFAULT_PASSWORD var from sight
+
+*Improve application version in package name.*
+
+*Allow to link with io_igtl from a child project.*
+
+*Prevent whole rebuild each time with CMake >= 3.20.*
+
+This was caused by the new CMake policy CMP0116 about the usage of the DEPFILE argument of add_custom_command. Since we did not succeed to use the NEW behavior yet, we switch back, temporarily, to the OLD behavior.
+
+*Qml applications on Windows.*
+
+Several fixes were brought to fix sight applications using qml on Windows:
+- determine qml plugin path at runtime instead of build time. We use the same strategy for Qt plugins.
+- install qml plugins correctly when building an installer
+- port deprecated QtQuick1 stuff to QtQuick2
+
+*Enable warning as errors on sight_core.*
+
+Warnings as errors were enabled but sight_core, but this library first builds an object library. The flags were not passed to it. This has been fixed and some warnings were fixed as well.
+
+### ci
+
+*Fix sheldon license date check.*
+
+- only build on Ubuntu 21.10
+- fix code coverage html/xml report generation
+
+### core
+
+*Replace assertion when slice index field doesn't exists.*
+
+`getSliceIndex` returns a std`::optional`that needs to be tested to know if field is present or not.
+
+*Object registration is overriden by XML configuration.*
+
+Previously, there was no data prerequisite in a service. One can declare any data in the XML configuration of a service, and use it at runtime with getters. So basically you could configure a service with any data. It was even possible to change the access type dynamically.
+
+Sight 21.0 enforced a prior declaration of data with `sight::data::ptr`. They allow specifying the key name, access type, as well as the auto-connect and the optional attributes. Normally, only declared data this way should be used in services.
+
+However, for back compatibility purposes (especially for the very specific `SConfigController` and `SConfigLauncher` services), it is still possible to register data just from the XML configuration. We discovered that this is actually buggy and the XML configuration overrides the `sight`::data::ptr``declaration. So it is for instance possible to declare input data and finally configure it as an inout. We also realized that the default auto-connect and optional attributes values were not respected with an XML configuration. The actual default values were those of the XML parser.
+
+This merge request first fixes the override of the data declaration with the XML configuration. It also fixes the XML parser to use the default auto-connect and optional attributes values declared in each service type. This required some extra work on group objects.
+
+Indeed, we used to have a minimum and a maximum number of objects. These were actually not really used, and developers misused this feature most of the time. They configured `sight`::data::ptr_vector``with the same signature as `sight`::data::ptr``which led to implicitly converting a true boolean meaning "optional data", in an integer meaning "at least one object". Thus the intent of the developer was actually the opposite of the actual result. The maximum number of objects was never used in real cases and was in fact introduced to solve an internal issue with non-XML apps. This was not a real need for the developer.
+
+In the end, `sight`::data::ptr_vector``now shares the same signature than `sight::data::ptr`. It is still possible to configure in the XML the auto-connect and optional on each member of the group, but this time the default value will be the one declared in the `sight`::data::ptr_vector``declaration.
+
+Last, fixing all of this highlighted some misconfiguration in a few services. These were corrected accordingly.
+
+*Update old "3DSimpleConfig2" by "3DSimpleConfig".*
+
+* ExDicomSegmentation & ExDump impacted
+
+*Remove dead lock and init mesh celltype properly.*
+
+*Attributes arrays not reallocatted on pushPoint and pushCell.*
+
+*Load of dynamic libraries when only versioned files are present.*
+
+On a regular Linux system, libraries are installed with the version in the extension, like libsight_core.so.21.0. The symlink without the version in the extension is only present if the development package is installed. Thus we can not rely on this symlink to load the library like we did since Sight 21.0.
+This commit switches back to the old way, looking for a file name that matches the library name. A cache has been added to avoid the cost of iterating over all library files each time.
+
+*Correct needle calibration.*
+
+Correct point pivot based nbeedle calibration algorithm
+fix header to allow include in external project
+misc: update coding style
+
+*Optimize data::iterator::ImageIterator.*
+
+*Check if service UID is used in signal/slot before collecting UID for parameter replace.*
+
+* parse also menuItem sid="..." attribute before collecting UID for replacements
+
+*Remove useless return after throwing exception.*
+
+*Use sight_core module path to determine the runtime dir.*
+
+*Speed-up image copy in SFrameMatrixSynchronizer.*
+
+The image copy using the image iterator is slow as hell in debug, making some applications unusable. This was replaced by a simple std::memcpy.
+
+*Add sight namespace to profiling macros.*
+
+### doc
+
+*Update README to match Sight 21.0 changes.*
+
+### geometry
+
+*Workarround to get rid of bufferObject assert still locked.*
+
+Force destruction of original buffer object of output image after the unlock of input & output image, doing this avoid the assert of bufferObject still locked.
+
+*Don't shift 2d points on when computing RMSE on calibration.*
+
+* Add option in SSolvePnP to shift points or not (default off)
+* Replace quad mesh plane.vtk by triangular mesh plane.vtp
+
+### io
+
+*Replace deprecated OFIterator in favor of OFListIterator.*
+
+This deprecated container is removed in recent dcmtk versions.
+
+*Remove deprecated VTK types.*
+
+These types were deprecated and unused a long time ago. They are removed in latest VTK releases.
+
+*Extension() getter function in reader/writer made const.*
+
+### test
+
+*Fix ui_qt_test not executing offscreen.*
+
+### ui
+
+*Reduce lock scope to avoid a deadlock.*
+
+*Remove all deprecated QSignalMapper.*
+
+### viz
+
+*Do not snap landmark onto slice plane in 2D negatoscopes.*
+
+Landmarks can now be moved properly as before with drag & drop. An extra correction was made to not snap the landmark onto the image plane in the 2D negatoscope views. This led to weird behavior when you adjust the position of the landmarks in two different orthogonal views. The landmark always snaps to the image plane, thus giving the effect of "jumping" in the other view, and preventing from adjusting the position finely.
+
+*Replace getTransformNode by a pure getter.*
+
+`getTransformNode` was ambiguous since it return the transform node if existing or creates it if it doesn't.
+
+This behaviour is kept but function was rennamed into `getOrCreateTransformNode`.
+A pure getter was also created `getTransformNode()` to return the transform node pointer or nullptr if it doesn't exists.
+
+Add small unit test to test ITransformable functions
+
+All adaptors was updated to call either `getOrCreateTransformNode` or `getTransformNode` regarding the case (creation of the node of getting the pointer). This fixes the crash due to Ogre exception "Node already exists" when trying to get a deleted node.
+
+*Move orientation marker when splitting views.*
+
+The orientation marker in the 3D view of SightViewer remained on the bottom right corner of the view when splitting views. Now it keeps attached to the 3D view.
+
+*Remove extra space in R2VB program preprocessor definitions.*
+
+Remove extra space in R2VB program preprocessor definitions. Sadly, this prevented the preprocessor defines of the R2VB geometry programs to be parsed properly, thus causing rendering issues.
+
+*Crash in Ogre resources loading.*
+
+The list containing the Ogre resources paths was not allocated properly.
+
+*Set texture unit state after changing a material template.*
+
+## Enhancement:
+
+### build
+
+*Update vcpkg pakage hashes to match last build.*
+
+*Add some flags for better performance and debugging.*
+
+*Default to warnings as errors.*
+
+*Forbid link with a module.*
+
+### ci
+
+*Make the code coverage percentage more precise.*
+
+*Use shared scripts to deploy, add SightCalibrator deployment.*
+
+*Remove Ubuntu 20.10 Release target, replace it with Ubuntu 21.04 Debug.*
+
+### core
+
+*Remove redundant internal lock in the Timeline object.*
+
+We removed internal locks in timeline functions. Now, we assume that all timeline objects are accessed by a lock() in the caller.
+
+*Return const pointer when using getters on const data.*
+
+Many getters in data returns shared_pointer, even if the data was const the returned pointer wasn't and underlying data was still modifiable.
+This has been changed to provide const getters that returns const pointer, and non const getter to returns simple shared_pointer.
+Doing so leads to some changes in part of the code that uses const data (usualy input data)
+
+* Use of const_cast as been restricted to 3 cases:
+  * When moving buffer to ITK or VTK
+  * SReconstruction when moving the pointer to data`::Material`to an internal SMesh adaptor.
+* SGetImage, since ImageSeries input is const, when doing a setOutput (non const) with series->getImage, a const_cast is needed to discard const qualifier.
+
+* Changing from inout to input access:
+  * SMesh: mesh is now a const input.
+
+* Use const shared_pointer when possible
+
+*Simplify image fields initialisation, remove unused fields.*
+
+- `MedicalImageSrv` was simply removed.
+- Instead, `data::helper::MedicalImage::check*()` functions are called when reading or creating an image. An image is "always" a medical image, but this does not hurt to have extra fields for non-medical images.
+- `checkLandmarks()` was removed, the point list is now always present.
+- The following used fields were removed: slices count, comment, label.
+
+*Make dispalyCalibrationInfo more scalable.*
+
+*Remove obsolete atoms lib.*
+
+### io
+
+*Move csv reader from io::dicom to io::base.*
+
+### ui
+
+*Enable HiDPI scaling on Qt apps.*
+
+*Move notification stack up/down when oldest notification is closed.*
+
+*Add option to "read more..." when notification message exceeds maximum allowed characters.*
+
+*Upgrade default confirmation message on action.*
+
+*Add fullpath option for camera selection in Scamera.*
+
+style: apply sheldon
+
+style: apply review suggestion
+style: correct variable name
+
+style: apply coding style
+
+style: apply coding style
+
+style: correct comment
+
+### viz
+
+*Make viz::scene3d::vr great again.*
+
+#### Description
+
+`viz::scene3D`::vr``has many feature that either don't work as intended or do not work at all.
+This is mainly due to bad service-library interactions and subtle bugs / flaws in some methods.
+
+Because of that, using this namespace as a base for subclasses requires substantial efforts to workaround those bugs / design problems.
+
+#### Changes
+
+##### Library
+
+**Volume renderer:**
+
+- `IVolumeRenderer`::update``has been introduced to solve the problem of the initial issue (calls to virtual function from constructor). This member is `public` and `virtual`, and `override`n in `RayTracingVolumeRenderer`.
+- Shader source file is now specified upon construction.
+- As `RayTracingVolumeRenderer`::initEntryPoints``must only be called once, there is now a check it has not been called before.
+- New `struct`s wrapping attributes.
+- `createRayTracingMaterial` is now `updateRayTracingMaterial`, and does not take any parameter.
+- Some functions were renamed to something explaining what they actually do.
+- Some integer values are now `unsigned` in order to ease some asserts.
+
+**Volume rendering techniques:**
+
+- RAM leaks and follow the changes in the volume renderer (types).
+
+**Data management:**
+
+- Before this MR, the image resources was managed by **both** the service and the library. This is not the case anymore. The service now knows *almost* nothing about the data. Consequently, what was `weak_ptr` previously in the library are now `shared_ptr` or even `unique_ptr`.
+- The following are now set upon construction:
+    - Raytracing fragment shader source file,
+    - Ambient occlusion parameters,
+    - Preintegration parameters,
+    - Shadows parameters,
+    - SAT parameters,
+- There used to be duplicated attributes in the service and the library, which represented the same flags but where not updated simultaneously. This is not the case anymore. Actually, this was the main cause of - #756, #791 and #792).
+
+##### Module
+
+- Reported changes in the library (argument type changes, etc.)
+- New `struct`s wrapping attributes (config, etc.).
+
+*Improve flat shading by using fragment shader computed normals.*
+
+Flat shading may often be broken if point normals are shared between faces. To overcome this, we chose to compute normals in the fragment shader using eye position derivatives. Doing so, the outdated and never used Gouraud shading mode was removed. This removes a shader combination, which makes maintenance easier.
+
+## New features:
+
+### build
+
+*Forbid module linking, even for tests.*
+
+ - Add a special verification step to forbid linking with a module.
+ - Rename `fw_cppunit_test` to `fw_test`.
+
+*Allow privilege escalation on Windows.*
+
+*Allow to override the downloading of dependencies.*
+
+*Debian package build prevents networking access.*
+
+### ci
+
+*Enable unit-tests report.*
+
+To output unit-tests results in JUnit format will allow us to see the results
+of the unit-tests in the GitLab web interface.
+
+*Attach gdb to running test to have a core file.*
+
+*Add code coverage to unit tests and Ubuntu 21.10 support in CI.*
+
+### core
+
+*Remove sub-object extraction from activities.*
+
+Now, when defining a requirement in an activity, there is no need to define a corresponding `AppConfig` parameter to "replace" it with the corresponding key. In short, the same key is used for the requirement and the parameter, and there is no need to give a complicated object "path":
+
+- Before:
+
+```xml
+    <!-- Activity used to export a model series. -->
+<extension implements="sight::activity::extension::Activity">
+...
+    <requirements>
+        <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+    </requirements>
+    <appConfig id="xxx">
+        <parameters>
+            <parameter replace="model" by="@values.modelSeries" />
+        </parameters>
+    </appConfig
+</extension>
+```
+
+- After:
+
+```xml
+<extension implements="sight::activity::extension::Activity">
+...
+    <requirements>
+        <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+    </requirements>
+    <appConfig id="xxx" />
+</extension>
+```
+
+##### Limitation
+
+However, this simplification implies some limitations:
+
+1. The key must match for both requirement and `AppConfig` parameter. There is no way to "replace" them on the fly like before. We really believe this is fine as the ability to have a different name only complicate both xml (you need to specify the "mapping") and C++ code, with no real added value.
+2. As we can only access to the "required" object, we cannot "walk" through the object hierarchy and extract sub-objects. For example, it is no more possible to have an `Image` as `AppConfig` parameter which is extracted from a required `ImageSeries`. This can be easily adapted with the use of the new extraction services (`SGetImage`, `SGetMesh`, ...) in `AppConfig` code.
+
+*New service sight::module::data::SGetCamera.*
+
+This new service extracts cameras and extrinsic matrices from a camera series.
+
+*New service sight::module::data::SGetSeries.*
+
+This service can be used to extract one or several series from a seriesDB.
+The XML configuration is fairly simple:
+
+```xml
+<service uid="..." type="sight::module::data::SGetSeries" >
+    <in key="seriesDB" uid="..."/>
+    <out group="series" >
+        <key index="4" uid="..." />
+        <key index="2" uid="..." />
+    </out>
+</service>
+```
+
+where:
+- seriesDB is a `sight::data::SeriesDB`
+- series group data are `sight::data::Series`
+
+*Remove core::data::ObjectLock.*
+
+- remove core`::data::ObjectLock`call and use straight locked_ptr in place.
+- rename all "dump" lock() (lock(), bufferLock(), lock_buffer(), ...) to dump_lock() to avoid confusion with "mutex" locks.
+- factorize dump_lock() call in IBuffered.hpp.
+- remove one deprecated TimeLine construct.
+
+*Implement SGetImage Service.*
+
+*Add == operators for all data object.*
+
+#### Description
+Now a data object of the same type can be compared using == like:
+
+```c++
+std::shared_ptr<sight::data::Image> image1 = ...;
+std::shared_ptr<sight::data::Image> image2 = ...;
+
+if(*image1 == *image2)
+{
+...
+}
+```
+
+Floating point values are compared using a scaled epsilon (which gives result similar to [ULP](https://en.wikipedia.org/wiki/Unit_in_the_last_place) comparison). NaN, infinite values are also taken into account.
+
+Templated helpers `core::tools::is_equal()` have been added to ease comparison with containers, pointers and floating point values.
+
+*Encrypted log.*
+
+#### Description
+
+Our logging system is based on [boost::log](https://www.boost.org/doc/libs/1_77_0/libs/log/doc/html/index.html), which works fine, but doesn't provide a way to secure the content of the log file. We choose to use [minizip-ng](https://github.com/zlib-ng/minizip-ng) with built-in AES encryption as the backend to store the log and continue to use boost log as the frontend. We have also improved password management, to allow encryption to be used even without providing a password. The minizip backend runs in a separate and detached child process, so it will always produce a valid zip archive even if the parent process crashes.
+
+#### Additions / Changes
+
+##### CMake
+- Enable log encryption support with new CMake build options: `SIGHT_ENABLE_ENCRYPTED_LOG` (OFF by default)
+- Allow to specify a default hardcoded (but obfuscated) password at compile time, set by `SIGHT_DEFAULT_PASSWORD` CMake definition.
+
+##### Password management
+Password management has been reworked a bit to factorize and unify behaviors.
+
+###### `SIGHT_DEFAULT_PASSWORD`
+It will be used when required (log encryption, preferences, session, ..) by default, until overwritten by user when an input dialog asking the user for a password is shown. It allows to use encryption, without having to ask user for a password. BTW, this is **less** secure, as the password is still hardcoded, even if obfuscated in the binary.
+
+###### User password
+An input dialog asking for a password will be shown when:
+- the log is encrypted and no `SIGHT_DEFAULT_PASSWORD` is set **or** if `sightrun` is launched with `--ask-password` argument.
+- for preferences, if the appropriate `password` and `encryption` `policy` is set in module `ui_base` configuration (take a look at `libs/ui/base/Preferences.hpp`).
+- for session files, if the appropriate `password` and `encryption` `policy` is set in SReader and SWriter service configuration (take a look at `modules/io/session/SReader.hpp` and `modules/io/session/SWriter.hpp`).
+
+In all case, the entered password will be kept (obfuscated) in memory, allowing to only ask the password once, until, of course, it is explicitly configured to not do so.
+
+### Sightlog logger (utils/sightlog/src/sightlog.cpp)
+It is a simple standalone application that read stuff from standard input and write them in a [minizip-ng](https://github.com/zlib-ng/minizip-ng) archive or a raw log file. Alternatively, it can also decrypt the real log from a log archive, which can be useful if a human need to read it back. The logger is started as a standalone detached child process by `Sight` which ensure the integrity of the log archive, even if `Sight` crashes. If `SIGHT_DEFAULT_PASSWORD` password has been used, it is also embedded inside `sightlog` binary, and it should not be necessary to use `-p` option.
+
+###### sightlog usage
+
+```
+Sightlog logger options:
+  -h [ --help ]          Display this help message.
+  -v [ --version ]       Display the version of the program.
+  -i [ --input ] arg     Log archive to extract.
+  -p [ --password ] arg  Password to use for encryption and decryption.
+  -a [ --ask-password ]  Show a popup to enter the password.
+  -d [ --directory ] arg Output directory when extracting a log archive.
+```
+
+For example to extract the log file from archive `/home/bozo/sight/bin/sight.log.0.zip` protected with password `w34r3th3B3st` in directory /home/bozo/logs and  we can use:
+
+```bash
+./sightlog -i /home/bozo/sight/bin/sight.log.0.zip -d /home/bozo/logs -p "w34r3th3B3st"
+```
+
+##### String "obfuscator" (libs/core/core/crypto/obfuscated_string.hpp)
+Allows to define a string literal that will not appears in "clear" text in the final binary. Useful for defining an "hardcoded" password, without being to simple to find and read. This is of course not as secure as a real password entered by a real user.
+
+##### SpyLogger class
+- Doxygen comments..
+- New method `start_logger()` and `start_encrypted_logger` which starts `sightlog` child process.
+- New unit tests `EncryptedLogTest`
+- The file paths in the log file are now trimmed again to not show the full path, but the minimal one to be able to locate a source file: (/home/bozo_the_clown/work/src/sight45/.../.../libs/core/core/spyLog.hpp -> libs/core/core/spyLog.hpp)
+
+*Add an image parser to allow basic initialisation in xml.*
+
+### io
+
+*Allow custom serializers for any object, even when defined outside sight.*
+
+### ui
+
+*Delete sequencer data when going backward.*
+
+Add an option to remove all the data generated when going backward with the sequencer.
+
+### viz
+
+*Update slice indexes when a landmarks is double clicked.*
+
+Update SNegato3d & SNegato2d to move slices to the selected landmark.
+
+* SLandmarks send world position when double clicked (new signal)
+* SNegato3d, SNegato2d listens through a slot if slices indexes needs to be updated regarding a world position (new slot).
+* Conversion between world coordinates and slice index as been implemented in scene3d`::Utils`and a unit test has been added.
+
+Update adaptor`::SLandmarks`to handle double clicks on landmarks and also send the current world coordinates of the point
+
+*Use the mouse wheel to scroll through slices in the negatoscope.*
+
+Before the mouse wheel event was used to zoom in/out the image, it now allows to scroll the slices, like in other software. The Shift key speeds up scrolling.
+
+You can still zoom in/out the image with the mouse wheel, but with the Ctrl key pressed.
+
+*Add optional name to SAxis adaptor.*
+
+
 # sight 21.0.0
 
 ## Bug fixes:
