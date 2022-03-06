@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -301,14 +301,6 @@ void IAction::hide()
 bool IAction::isVisible() const
 {
     return m_isVisible;
-}
-
-//-----------------------------------------------------------------------------
-
-bool IAction::getActiveStateValue() const
-{
-    FW_DEPRECATED_MSG("`getActiveStateValue` is deprecated, please use `isInverted` instead.", "21.0");
-    return this->isInverted();
 }
 
 //-----------------------------------------------------------------------------

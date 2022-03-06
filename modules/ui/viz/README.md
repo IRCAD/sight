@@ -4,8 +4,6 @@ Contains all user interface widgets related to scene3d (Ogre).
 
 ## Services
 
-- **SAddPoint**: adds points in a `data::PointList`
-
 - **SCompositorParameterEditor**: allows to edit shader uniform from a compositor material.
 
 - **SCompositorSelector**: allows to select an Ogre Compositor and apply it to a layer.
@@ -27,7 +25,7 @@ Contains all user interface widgets related to scene3d (Ogre).
 - **SStereoToggler**: enables/disables stereo in an ogre scene layer.
 
 - **STextureSelector**: allows to select a `data::Image` and apply it to the current reconstruction as an Ogre texture.
-    
+
 ## Other classes
 
 - **helper/Utils**: contains functions to convert from Ogre to Qt color format.

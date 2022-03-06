@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -223,48 +223,6 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
     if(styleCfg)
     {
         m_styleSheet = styleCfg->getValue();
-    }
-
-    // Deprecated configuration.
-    int size = 200;
-    if(_config->hasAttribute("size"))
-    {
-        FW_DEPRECATED_MSG("::ui::base::builder::ISlideViewBuilder deprecated attribute 'size'", "21.0");
-        size = std::stoi(_config->getExistingAttributeValue("size"));
-    }
-
-    if(_config->hasAttribute("align"))
-    {
-        FW_DEPRECATED_MSG("::ui::base::builder::ISlideViewBuilder deprecated attribute 'align'", "21.0");
-        const std::string align = _config->getExistingAttributeValue("align");
-        if(align == "top")
-        {
-            m_hAlignment    = LEFT;
-            m_vAlignment    = TOP;
-            m_height        = size;
-            m_percentHeight = false;
-        }
-        else if(align == "bottom")
-        {
-            m_hAlignment    = LEFT;
-            m_vAlignment    = BOTTOM;
-            m_height        = size;
-            m_percentHeight = false;
-        }
-        else if(align == "right")
-        {
-            m_hAlignment   = RIGHT;
-            m_vAlignment   = TOP;
-            m_width        = size;
-            m_percentWidth = false;
-        }
-        else if(align == "left")
-        {
-            m_hAlignment   = LEFT;
-            m_vAlignment   = TOP;
-            m_width        = size;
-            m_percentWidth = false;
-        }
     }
 }
 

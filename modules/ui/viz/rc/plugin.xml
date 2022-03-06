@@ -3,13 +3,6 @@
     <requirement id="sight::module::ui::qt"/>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
-         <service>sight::module::ui::viz::SAddPoint</service>
-         <object>sight::data::PointList</object>
-         <desc>Add points in a data::PointList</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::viz::SCompositorParameterEditor</service>
          <desc>Editor allowing to edit shader uniform from a compositor material.</desc>

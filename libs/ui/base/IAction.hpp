@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -143,10 +143,6 @@ public:
 
     /// Returns true if action is visible
     UI_BASE_API bool isVisible() const;
-
-    /// Return true if action 'check' feedback is inverted.
-    [[deprecated("Removed in sight 21.0, please use isInverted()")]]
-    UI_BASE_API bool getActiveStateValue() const;
 
     /// Return true if the active state should be inverted.
     UI_BASE_API bool isInverted() const;
