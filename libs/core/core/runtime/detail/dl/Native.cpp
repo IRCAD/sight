@@ -65,20 +65,35 @@ const std::filesystem::path Native::getFullPath() const
 
     if(auto it = s_cache.find(m_searchPath); it == s_cache.end())
     {
-        static const std::regex libraryRegex("lib(.*).so\\.?[0-9\\.]*");
-
-        auto& map = s_cache[m_searchPath];
-        for(const auto& p : std::filesystem::directory_iterator(m_searchPath))
         {
-            // Skip the symlinks, this speedups the process, avoid duplicates, and make unit-testing more consistent
-            if(!std::filesystem::is_symlink(p.path()))
-            {
-                const std::filesystem::path filename = p.path().filename();
-                const std::string filename_str       = filename.string();
+            static const std::regex libraryRegex("lib(.*).so(\\.?[0-9\\.]*)?");
 
-                if(std::smatch match; std::regex_match(filename_str, match, libraryRegex))
+            auto& map = s_cache[m_searchPath];
+            for(const auto& p : std::filesystem::directory_iterator(m_searchPath))
+            {
                 {
-                    map[match[1].str()] = filename;
+                    const std::filesystem::path filename = p.path().filename();
+                    const std::string filename_str       = filename.string();
+
+                    if(std::smatch match; std::regex_match(filename_str, match, libraryRegex))
+                    {
+                        const auto library_name = match[1].str();
+                        const auto itFind       = map.find(library_name);
+
+                        if(itFind == map.end())
+                        {
+                            map[library_name] = filename;
+                        }
+                        else
+                        {
+                            const auto extension = itFind->second.extension();
+
+                            if(extension != ".so")
+                            {
+                                map[library_name] = filename;
+                            }
+                        }
+                    }
                 }
             }
         }
