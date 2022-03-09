@@ -79,9 +79,10 @@ void fwID::setID(IDType newID)
 
 void fwID::addIDInDictionary(IDType newID)
 {
+    core::mt::WriteLock lock(s_dictionaryMutex);
+
     SIGHT_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
 
-    core::mt::WriteLock lock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);
     // note we use a static cast for a down cast because we do not use the classical polymorphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
