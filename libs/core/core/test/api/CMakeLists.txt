@@ -10,6 +10,6 @@ endif()
 target_compile_definitions(coreTest PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
 target_compile_definitions(coreTest PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
-add_dependencies(coreTest module_utest sightlog)
+add_dependencies(coreTest utest module_utest sightlog)
 
-target_link_libraries(coreTest PUBLIC core utest)
+target_link_libraries(coreTest PUBLIC core CppUnit)

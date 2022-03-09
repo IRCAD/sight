@@ -20,24 +20,22 @@
  *
  ***********************************************************************/
 
-#include <stdexcept>
+#include <core/log/SpyLogger.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/profile/Profile.hpp>
 
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
 #include <cppunit/TextTestProgressListener.h>
 #include <cppunit/XmlOutputter.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-
-#ifdef MODULE_TEST_PROFILE
 
 #include <filesystem>
 
-#include <core/runtime/operations.hpp>
-#include <core/runtime/profile/Profile.hpp>
-
+#ifdef MODULE_TEST_PROFILE
 class MiniLauncher
 {
 public:
@@ -189,8 +187,44 @@ struct Options
 
 //------------------------------------------------------------------------------
 
+void init_log_output()
+{
+    auto& logger = sight::core::log::SpyLogger::get();
+
+    std::string logFile = "fwTest.log";
+
+    FILE* pFile = fopen(logFile.c_str(), "w");
+    if(pFile == NULL)
+    {
+        std::error_code err;
+        std::filesystem::path sysTmp = std::filesystem::temp_directory_path(err);
+        if(err.value() != 0)
+        {
+            // replace log file appender by stream appender: current dir and temp dir unreachable
+            logger.add_console_log();
+        }
+        else
+        {
+            // creates fwTest.log in temp directory: current dir unreachable
+            sysTmp  = sysTmp / logFile;
+            logFile = sysTmp.string();
+            logger.add_file_log(logFile);
+        }
+    }
+    else
+    {
+        // creates fwTest.log in the current directory
+        fclose(pFile);
+        logger.add_file_log(logFile);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 int main(int argc, char* argv[])
 {
+    init_log_output();
+
     Options options;
 
     const std::string testExecutable = (argc >= 1) ? std::string(argv[0]) : "unknown";
