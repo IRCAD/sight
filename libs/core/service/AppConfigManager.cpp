@@ -121,14 +121,7 @@ void AppConfigManager::startModule()
     if(!m_configId.empty() && !m_isUnitTest)
     {
         std::shared_ptr<core::runtime::Module> module = extension::AppConfig::getDefault()->getModule(m_configId);
-        SIGHT_INFO_IF(
-            "Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
-            module->isStarted()
-        );
-        if(!module->isStarted())
-        {
-            module->start();
-        }
+        module->start();
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,12 +46,6 @@ public:
 
     /// Stops the plugin, does nothing here.
     TUTO01DATASERVICEBASICCPP_API void stop() noexcept override;
-
-    /// Creates the whole application..
-    TUTO01DATASERVICEBASICCPP_API void initialize() override;
-
-    /// Destroys the whole application..
-    TUTO01DATASERVICEBASICCPP_API void uninitialize() override;
 
 private:
 

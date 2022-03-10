@@ -1,8 +1,0 @@
-<profile name="ImageReaderWriterTest" version="0.1">
-
-    <activate id="sight::module::service" version="0.1" />
-    <activate id="sight::module::io::vtk" version="0.1" />
-
-    <start id="sight::module::io::vtk" />
-
-</profile>

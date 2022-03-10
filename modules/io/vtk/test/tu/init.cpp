@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,33 +19,25 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include <core/runtime/operations.hpp>
 
-#include "Tuto06GuiQml/config.hpp"
-
-#include <core/runtime/Plugin.hpp>
-
-namespace Tuto06GuiQml
+namespace sight::module::io::vtk
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-class TUTO06GUIQML_CLASS_API Plugin : public sight::core::runtime::Plugin
+namespace ut
 {
-public:
 
-    /// Constructor.
-    TUTO06GUIQML_API Plugin() noexcept;
-
-    /// Destructor. Do nothing.
-    TUTO06GUIQML_API ~Plugin() noexcept;
-
-    /// Overrides start method. .
-    TUTO06GUIQML_API void start();
-
-    /// Overrides stop method. Do nothing
-    TUTO06GUIQML_API void stop() noexcept;
+struct Initializer
+{
+    Initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::loadModule("sight::module::io::vtk");
+    }
 };
 
-} // namespace Tuto06GuiQml
+static const Initializer init;
+
+} //namespace ut
+
+} //namespace sight::module::io::vtk

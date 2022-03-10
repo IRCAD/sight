@@ -60,12 +60,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     m_appManager = std::unique_ptr<service::AppManager>(new service::AppManager);
     m_appManager->create();
     /* **************************************************************************************
@@ -602,12 +596,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
     auto proxy = service::registry::Proxy::getDefault();
 

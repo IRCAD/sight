@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,8 @@
 
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/profile/Activater.hpp"
-#include "core/runtime/detail/profile/Initializer.hpp"
 #include "core/runtime/detail/profile/Starter.hpp"
 #include "core/runtime/detail/profile/Stopper.hpp"
-#include "core/runtime/detail/profile/Uninitializer.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Extension.hpp"
 
@@ -97,20 +95,6 @@ void Profile::add(SPTR(Stopper)stopper)
 
 //------------------------------------------------------------------------------
 
-void Profile::add(SPTR(Initializer)initializer)
-{
-    m_initializers.push_back(initializer);
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::add(SPTR(Uninitializer)uninitializer)
-{
-    m_uninitializers.push_back(uninitializer);
-}
-
-//------------------------------------------------------------------------------
-
 void Profile::start()
 {
     std::for_each(m_activaters.begin(), m_activaters.end(), Apply<ActivaterContainer::value_type>());
@@ -146,8 +130,6 @@ int Profile::run()
 
 int Profile::defaultRun()
 {
-    this->setup();
-    this->cleanup();
     return 0;
 }
 
@@ -163,24 +145,6 @@ void Profile::setRunCallback(RunCallbackType callback)
 void Profile::stop()
 {
     std::for_each(m_stoppers.rbegin(), m_stoppers.rend(), Apply<StopperContainer::value_type>());
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::setup()
-{
-    InitializerContainer initializers;
-    initializers = m_initializers;
-    m_initializers.clear();
-    std::for_each(initializers.begin(), initializers.end(), Apply<InitializerContainer::value_type>());
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::cleanup()
-{
-    std::for_each(m_uninitializers.rbegin(), m_uninitializers.rend(), Apply<UninitializerContainer::value_type>());
-    m_uninitializers.clear();
 }
 
 //------------------------------------------------------------------------------

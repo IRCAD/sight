@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,12 +46,6 @@ Plugin::~Plugin() noexcept
 //------------------------------------------------------------------------------
 
 void Plugin::start()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
 {
     m_appManager = std::make_unique<service::AppManager>();
     m_appManager->create();
@@ -211,12 +205,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
     m_appManager->destroy();
     m_appManager.reset();

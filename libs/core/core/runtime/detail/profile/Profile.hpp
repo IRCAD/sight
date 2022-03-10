@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,6 @@ namespace profile
 class Activater;
 class Starter;
 class Stopper;
-class Initializer;
-class Uninitializer;
 
 /**
  * @brief   Implements a module set profile.
@@ -85,30 +83,10 @@ public:
     void add(SPTR(Stopper) stopper);
 
     /**
-     * @brief       Adds a new starter.
-     *
-     * @param[in]   initializer a shared pointer to an initializer
-     */
-    void add(SPTR(Initializer) initializer);
-
-    /**
-     * @brief       Adds a new starter.
-     *
-     * @param[in]   uninitializer a shared pointer to an uninitializer
-     */
-    void add(SPTR(Uninitializer) uninitializer);
-
-    /**
      * @brief   Starts the profile.
      */
     void start() final;
     void stop() final;
-
-    /**
-     * @brief   Once started, setup the profile.
-     */
-    void setup() final;
-    void cleanup() final;
 
     /**
      * @brief   Run the profile.
@@ -141,14 +119,10 @@ private:
     typedef std::vector<SPTR(Activater)> ActivaterContainer;
     typedef std::vector<SPTR(Starter)> StarterContainer;
     typedef std::vector<SPTR(Stopper)> StopperContainer;
-    typedef std::vector<SPTR(Initializer)> InitializerContainer;
-    typedef std::vector<SPTR(Uninitializer)> UninitializerContainer;
 
-    ActivaterContainer m_activaters;         ///< all managed activators
-    StarterContainer m_starters;             ///< all managed starters
-    StopperContainer m_stoppers;             ///< all managed stoppers
-    InitializerContainer m_initializers;     ///< all managed initializers
-    UninitializerContainer m_uninitializers; ///< all managed uninitializers
+    ActivaterContainer m_activaters; ///< all managed activators
+    StarterContainer m_starters;     ///< all managed starters
+    StopperContainer m_stoppers;     ///< all managed stoppers
 
     RunCallbackType m_run;
 

@@ -52,13 +52,7 @@ void Plugin::start()
 
 //-----------------------------------------------------------------------------
 
-void Plugin::initialize()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::uninitialize()
+void Plugin::stop() noexcept
 {
     // Clear all service configs
     sight::service::extension::Config::getDefault()->clearRegistry();
@@ -71,12 +65,6 @@ void Plugin::uninitialize()
 
     // Clear all service factories
     sight::service::extension::Factory::getDefault()->clearFactory();
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
 }
 
 //-----------------------------------------------------------------------------

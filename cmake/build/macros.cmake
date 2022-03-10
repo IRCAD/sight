@@ -349,13 +349,25 @@ macro(fw_test SIGHT_TARGET)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
+    string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
+    set(TU_NAME "tu_exec_${DIRNAME}")
+
+    set(BASE_TARGET "${DIRNAME}")
+
+    if(TARGET ${BASE_TARGET})
+        get_target_property(TARGET_TYPE ${BASE_TARGET} SIGHT_TARGET_TYPE)
+        if("${TARGET_TYPE}" STREQUAL "MODULE")
+            string(REPLACE "_" "::" BASE_MODULE ${BASE_TARGET})
+
+            # This variable is used in cppunit_main.cpp to automatically load the module of the test
+            set(TESTED_MODULE "${PROJECT_NAME}::${BASE_MODULE}")
+        endif()
+    endif()
+
     configure_file(
         "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp" IMMEDIATE
         @ONLY
     )
-
-    string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
-    set(TU_NAME "tu_exec_${DIRNAME}")
 
     add_executable(
         ${SIGHT_TARGET}
@@ -390,11 +402,6 @@ macro(fw_test SIGHT_TARGET)
         set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/rc")
     endif()
     if(TEST_RC_DIR)
-        if(EXISTS "${TEST_RC_DIR}/profile.xml")
-            target_compile_definitions(
-                ${SIGHT_TARGET} PRIVATE -DMODULE_TEST_PROFILE=\"${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}/profile.xml\"
-            )
-        endif()
         set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
 
         create_resources_target(${SIGHT_TARGET}_rc "${TEST_RC_DIR}" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
@@ -935,16 +942,23 @@ macro(sight_add_target)
     endif()
 
     if("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
-        if(NOT DEFINED SIGHT_TARGET_UNIQUE)
-            set(SIGHT_TARGET_UNIQUE FALSE)
+        if(NOT SIGHT_TARGET_UNIQUE)
+            set(SIGHT_TARGET_UNIQUE "false")
+        else()
+            set(SIGHT_TARGET_UNIQUE "true")
         endif()
-        set(SIGHT_TARGET_UNIQUE FALSE)
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_UNIQUE "${SIGHT_TARGET_UNIQUE}")
     endif()
 
     if("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE" OR "${SIGHT_TARGET_TYPE}" STREQUAL "APP" AND SIGHT_TARGET_START)
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_START "${SIGHT_TARGET_START}")
     endif()
+
+    if(NOT DEFINED SIGHT_TARGET_PRIORITY)
+        # set default priority
+        set(SIGHT_TARGET_PRIORITY 50)
+    endif()
+    set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_PRIORITY "${SIGHT_TARGET_PRIORITY}")
 
     if(NOT DEFINED SIGHT_TARGET_WARNINGS_AS_ERRORS OR SIGHT_TARGET_WARNINGS_AS_ERRORS)
         get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)

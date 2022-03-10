@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,6 @@ public:
 
     /// Overrides stop method. Do nothing
     MODULE_APPXML_API void stop() noexcept;
-
-    MODULE_APPXML_API void initialize();
-
-    MODULE_APPXML_API void uninitialize() noexcept;
 
 private:
 

@@ -73,16 +73,8 @@ struct ConfigurationElementIdentifierPredicate
 
 //------------------------------------------------------------------------- -----
 
-void init(const std::filesystem::path& directory)
+void init()
 {
-    if(!directory.empty())
-    {
-        FW_DEPRECATED_MSG(
-            "Specifying a directory for Sight installation is now deprecated, the path will be ignored",
-            "22.0"
-        );
-    }
-
     // Load default modules
     core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
@@ -97,6 +89,14 @@ void init(const std::filesystem::path& directory)
     // Read modules
     runtime->addModules(location);
     SIGHT_ASSERT("Couldn't load any module from path: " + location.string(), !runtime->getModules().empty());
+}
+
+//------------------------------------------------------------------------- -----
+
+void shutdown()
+{
+    auto profile = detail::profile::getCurrentProfile();
+    profile->stop();
 }
 
 //------------------------------------------------------------------------------
@@ -304,13 +304,22 @@ std::shared_ptr<Module> loadModule(const std::string& identifier)
     if(module)
     {
         module->setEnable(true);
-        if(!module->isStarted())
-        {
-            module->start();
-        }
+        module->start();
     }
 
     return module;
+}
+
+//------------------------------------------------------------------------------
+
+void unloadModule(const std::string& identifier)
+{
+    auto module = std::dynamic_pointer_cast<detail::Module>(Runtime::get().findModule(identifier));
+
+    if(module)
+    {
+        module->stop();
+    }
 }
 
 //------------------------------------------------------------------------------

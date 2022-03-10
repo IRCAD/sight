@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -50,7 +51,7 @@ public:
     /// Defines the extension container type.
     typedef std::set<SPTR(Extension)> ExtensionContainer;
 
-    virtual ~Module();
+    virtual ~Module() = default;
 
     /**
      * @brief   Retrieves the module identifier.

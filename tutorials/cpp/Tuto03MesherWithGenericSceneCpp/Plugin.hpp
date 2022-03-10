@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,10 +50,6 @@ public:
 
     /// Overrides stop method. Do nothing
     TUTO03MESHERWITHGENERICSCENECPP_API void stop() noexcept;
-
-    TUTO03MESHERWITHGENERICSCENECPP_API void initialize();
-
-    TUTO03MESHERWITHGENERICSCENECPP_API void uninitialize() noexcept;
 
 private:
 

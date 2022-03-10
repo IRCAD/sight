@@ -379,13 +379,6 @@ public:
         return m_started;
     }
 
-    //------------------------------------------------------------------------------
-
-    bool isInitialized()
-    {
-        return m_initialized;
-    }
-
     static std::string getModuleStr(const std::string& identifier);
 
 private:
@@ -408,10 +401,10 @@ private:
     SPTR(IPlugin)  m_plugin;                          ///< a shared pointer to the plugin instance
     SPTR(dl::Library) m_library;                      ///< library that is part of the module
     ParameterContainer m_parameters;                  ///< all parameters
+    unsigned int m_refCount {0};                      ///< counter used to know if a module is in use
 
     bool m_enabled {true}; ///< a boolean telling if the module is enabled or not
     bool m_started {false};
-    bool m_initialized {false};
 
     /**
      * @brief   Assignement operator.
@@ -426,7 +419,7 @@ private:
     void loadLibraries();
 
     /**
-     * @brief   load all requirement needed by the module to work
+     * @brief   loads all requirements needed by the module
      */
     void loadRequirements();
 

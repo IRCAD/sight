@@ -471,16 +471,7 @@ void SLauncher::buildActivity(
 void SLauncher::sendConfig(const ActivityInfo& info)
 {
     // Start module containing the activity if it is not started
-    std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
-    SIGHT_WARN_IF(
-        "Module '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
-        module->isStarted()
-    );
-    if(!module->isStarted())
-    {
-        SIGHT_DEBUG("Start module '" + info.bundleId + "' used by activity '" + info.id + "'");
-        module->start();
-    }
+    core::runtime::startModule(info.bundleId);
 
     const auto selection = m_series.lock();
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);

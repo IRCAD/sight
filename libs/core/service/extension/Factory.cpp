@@ -198,8 +198,6 @@ IService::sptr Factory::create(const std::string& _srvImpl) const
         info.module->start();
         lock.lock();
 
-        core::runtime::getCurrentProfile()->setup();
-
         SIGHT_THROW_EXCEPTION_IF(
             data::Exception(
                 "After loading the module " + info.module->getIdentifier() + " , factory " + srvImpl

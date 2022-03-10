@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,10 +19,25 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
 
-//------------------------------------------------------------------------------
-
-sight::core::runtime::Module::~Module()
+namespace sight::module::activity
 {
-}
+
+namespace ut
+{
+
+struct Initializer
+{
+    Initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::loadModule("sight::module::viz::scene3d::test");
+    }
+};
+
+static const Initializer init;
+
+} //namespace ut
+
+} //namespace sight::module::activity

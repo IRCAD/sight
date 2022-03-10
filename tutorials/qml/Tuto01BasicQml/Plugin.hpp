@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,10 +47,6 @@ public:
 
     /// Overrides stop method. Do nothing
     TUTO01BASICQML_API void stop() noexcept;
-
-    TUTO01BASICQML_API void initialize();
-
-    TUTO01BASICQML_API void uninitialize() noexcept;
 };
 
 } // namespace Tuto01BasicQml

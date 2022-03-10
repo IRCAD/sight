@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/Runtime.hpp"
+
 #include <core/base.hpp>
 
 #include <iostream>
@@ -53,14 +54,7 @@ void Starter::apply()
     SIGHT_FATAL_IF("Unable to start module " + m_identifier + ": not found.", module == nullptr);
     try
     {
-        if(!module->isStarted())
-        {
-            module->start();
-        }
-        else
-        {
-            SIGHT_WARN("module " + m_identifier + " already started");
-        }
+        module->start();
     }
     catch(const std::exception& e)
     {

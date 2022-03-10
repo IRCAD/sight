@@ -108,18 +108,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             m_parameters
         );
 
-        auto module = core::runtime::findModule(info.bundleId);
-
-        if(module->isStarted())
-        {
-            SIGHT_INFO(
-                "Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already started !"
-            );
-        }
-        else
-        {
-            module->start();
-        }
+        core::runtime::startModule(info.bundleId);
 
         // get Activity path, it allows to retrieve the associated Qml file
         const auto path = core::runtime::getModuleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,12 +68,7 @@ void Plugin::start()
     appManager->addService("sight::viz::qt3d::SRender", "genericScene", true, false);
     appManager->addService("sight::module::viz::qt3d::adaptor::SMesh", "meshAdaptor", true, false);
     appManager->addService("sight::module::viz::qt3d::adaptor::SMaterial", "materialAdaptor", true, false);
-}
 
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     auto path = core::runtime::getModuleResourceFilePath("Tuto07SceneQt3DQml", "ui.qml");
@@ -84,12 +79,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
 }
 

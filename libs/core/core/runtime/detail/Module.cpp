@@ -24,7 +24,6 @@
 
 #include "core/runtime/detail/EmptyPlugin.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
-#include "core/runtime/detail/profile/Initializer.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
 #include "core/runtime/detail/profile/Stopper.hpp"
 #include "core/runtime/detail/Runtime.hpp"
@@ -354,7 +353,7 @@ void Module::loadRequirements()
         RequirementContainer::const_iterator iter;
         for(const RequirementContainer::value_type& requirement : m_requirements)
         {
-            auto module = runtime.findModule(requirement);
+            auto module = std::dynamic_pointer_cast<detail::Module>(runtime.findModule(requirement));
 
             // Ensure that a module has been retrieved.
             if(module == nullptr)
@@ -365,14 +364,11 @@ void Module::loadRequirements()
             // Enable the required module if necessary.
             if(!module->isEnabled())
             {
-                std::dynamic_pointer_cast<detail::Module>(module)->setEnable(true);
+                module->setEnable(true);
             }
 
-            // Starts the module (loads its libraries and requirements module).
-            if(!module->isStarted())
-            {
-                module->start();
-            }
+            // Starts the module if necessary (loads its libraries and requirements module).
+            module->start();
         }
     }
     catch(const std::exception& e)
@@ -389,28 +385,30 @@ void Module::loadRequirements()
 
 void Module::start()
 {
-    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " already started.", !m_started);
-    if(m_enabled == false)
+    if(!m_started)
     {
-        throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
-    }
+        if(m_enabled == false)
+        {
+            throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
+        }
 
-    if(m_plugin == nullptr)
-    {
-        loadRequirements();
-        loadLibraries();
-        try
+        if(m_plugin == nullptr)
         {
-            startPlugin();
+            loadRequirements();
+            loadLibraries();
+            try
+            {
+                startPlugin();
+            }
+            catch(std::exception& e)
+            {
+                throw RuntimeException(
+                          getModuleStr(m_identifier)
+                          + ": start plugin error (after load requirement) " + e.what()
+                );
+            }
+            SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
         }
-        catch(std::exception& e)
-        {
-            throw RuntimeException(
-                      getModuleStr(m_identifier)
-                      + ": start plugin error (after load requirement) " + e.what()
-            );
-        }
-        SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
     }
 }
 
@@ -461,8 +459,6 @@ void Module::startPlugin()
             m_plugin = plugin;
             m_plugin->start();
 
-            prof->add(std::make_shared<profile::Initializer>(this->getIdentifier()));
-
             m_started = true;
         }
         catch(std::exception& e)
@@ -476,69 +472,31 @@ void Module::startPlugin()
 
 void Module::stop()
 {
-    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not started.", m_started);
-    SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
-    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not uninitialized.", !m_initialized);
-
-    try
+    if(m_started)
     {
-        m_plugin->stop();
-        m_started = false;
-    }
-    catch(std::exception& e)
-    {
-        throw RuntimeException(getModuleStr(m_identifier) + ": stop plugin error : " + e.what());
-    }
+        SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.unregisterModule(this->shared_from_this());
+        try
+        {
+            m_plugin->stop();
+            m_started = false;
+        }
+        catch(std::exception& e)
+        {
+            throw RuntimeException(getModuleStr(m_identifier) + ": stop plugin error : " + e.what());
+        }
 
-    //Unloads all libraries.
-//    LibraryContainer::iterator curEntry;
-//    LibraryContainer::iterator endEntry = m_libraries.end();
-//    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
-//    {
-//        std::shared_ptr<dl::Library> library(*curEntry);
-//        if(library->isLoaded() == true )
-//        {
-//            library->unload();
-//        }
-//    }
-}
-
-//------------------------------------------------------------------------------
-void Module::initialize()
-{
-    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' not started.", m_started);
-    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' already initialized.", !m_initialized);
-    try
-    {
-        m_initialized = true;
-        m_plugin->initialize();
-    }
-    catch(std::exception& e)
-    {
-        throw RuntimeException(getModuleStr(m_identifier) + ": initialize plugin error : " + e.what());
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Module::uninitialize()
-{
-    SIGHT_ASSERT(
-        "Module '" + getModuleStr(m_identifier) + "' has not been started.",
-        m_plugin != nullptr
-    );
-    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' not initialized.", m_initialized);
-    try
-    {
-        m_plugin->uninitialize();
-        m_initialized = false;
-    }
-    catch(std::exception& e)
-    {
-        throw RuntimeException(getModuleStr(m_identifier) + ": initialize plugin error : " + e.what());
+        //Unloads all libraries.
+        //    LibraryContainer::iterator curEntry;
+        //    LibraryContainer::iterator endEntry = m_libraries.end();
+        //    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
+        //    {
+        //        std::shared_ptr<dl::Library> library(*curEntry);
+        //        if(library->isLoaded() == true )
+        //        {
+        //            library->unload();
+        //        }
+        //    }
     }
 }
 

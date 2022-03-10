@@ -107,20 +107,11 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-void setup()
-{
-    core::runtime::getCurrentProfile()->setup();
-}
-
-//-----------------------------------------------------------------------------
-
 int Plugin::run() noexcept
 {
     auto workerQt = core::thread::getDefaultWorker();
-    workerQt->post(std::bind(&setup));
     workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(workerQt->getFuture().get());
 
     return result;

@@ -57,10 +57,8 @@ void Plugin::stop() noexcept
 int Plugin::run() noexcept
 {
     auto worker = core::thread::getDefaultWorker();
-    worker->post([](){core::runtime::getCurrentProfile()->setup();});
     worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
-    core::runtime::getCurrentProfile()->cleanup();
     const int result = std::any_cast<int>(worker->getFuture().get());
 
     return result;

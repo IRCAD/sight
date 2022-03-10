@@ -3,7 +3,8 @@ sight_add_target(
     TYPE MODULE
     START ON
     WARNINGS_AS_ERRORS OFF
-)
+    PRIORITY 100
+) # we give a high priority because the Qt worker needs to be created first
 
 add_dependencies(module_ui_qt module_ui_base module_data)
 

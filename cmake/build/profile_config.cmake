@@ -5,7 +5,6 @@ macro(profile_setup PROJECT)
 
     #Set the check-single-instance
     get_target_property(UNIQUE ${PROJECT} SIGHT_UNIQUE)
-    string(TOLOWER "${UNIQUE}" UNIQUE)
 
     # set a variable used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
@@ -16,6 +15,7 @@ macro(profile_setup PROJECT)
     get_target_property(START ${PROJECT} SIGHT_START)
     if(START)
         list(APPEND START_MODULES "${PROJECT}")
+        list(APPEND PRIORITY_MODULES "0")
     endif()
 
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
@@ -23,26 +23,38 @@ macro(profile_setup PROJECT)
         get_target_property(START ${CURRENT_REQUIREMENT} SIGHT_START)
         if(START)
             list(APPEND START_MODULES "${CURRENT_REQUIREMENT}")
+
+            get_target_property(PRIORITY ${CURRENT_REQUIREMENT} SIGHT_PRIORITY)
+            list(APPEND PRIORITY_MODULES "${PRIORITY}")
         endif()
     endforeach()
 
-    list(SORT START_MODULES)
+    # Sort modules according to their priority
+    list(LENGTH START_MODULES START_MODULES_LENGTH)
+    math(EXPR START_MODULES_LENGTH "${START_MODULES_LENGTH} - 2")
+    foreach(BUBBLE_SORT_LOOP RANGE 0 ${START_MODULES_LENGTH} 1)
+        foreach(INDEX RANGE 0 ${START_MODULES_LENGTH} 1)
+            list(GET PRIORITY_MODULES ${INDEX} PRIORITY_1)
+            math(EXPR INDEX_PLUS_ONE "${INDEX} + 1")
+            list(GET PRIORITY_MODULES ${INDEX_PLUS_ONE} PRIORITY_2)
+            if(${PRIORITY_2} GREATER ${PRIORITY_1})
+                # Swap in priority list
+                list(REMOVE_AT PRIORITY_MODULES ${INDEX_PLUS_ONE})
+                list(INSERT PRIORITY_MODULES ${INDEX} ${PRIORITY_2})
 
+                # Swap in module list
+                list(GET START_MODULES ${INDEX_PLUS_ONE} MODULE)
+                list(REMOVE_AT START_MODULES ${INDEX_PLUS_ONE})
+                list(INSERT START_MODULES ${INDEX} ${MODULE})
+            endif()
+        endforeach()
+    endforeach()
     list(APPEND ALL_REQUIREMENTS "${PROJECT}")
 
     get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
 
     # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
-
-        # Ensure that we start this module before the "START_BEFORE"
-        foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
-            list(FIND START_MODULES ${CURRENT_START_BEFORE} INDEX_START_BEFORE)
-            if(NOT ${INDEX_START_BEFORE} EQUAL -1)
-                list(INSERT START_MODULES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
-                break()
-            endif()
-        endforeach()
 
         get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
 

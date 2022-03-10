@@ -48,16 +48,6 @@ struct CORE_CLASS_API IPlugin : public IExecutable
     virtual void start() = 0;
 
     /**
-     * @brief   Notifies the plugin about its initialisation.
-     */
-    CORE_API virtual void initialize();
-
-    /**
-     * @brief   Notifies the plugin about its deinitialization.
-     */
-    CORE_API virtual void uninitialize();
-
-    /**
      * @brief   Notifies the plugin about its stop.
      */
     virtual void stop() noexcept = 0;

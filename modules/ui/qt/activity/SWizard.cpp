@@ -251,11 +251,7 @@ void SWizard::createActivity(std::string activityID)
     info = Activity::getDefault()->getInfo(activityID);
 
     // load activity module
-    std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
-    if(!module->isStarted())
-    {
-        module->start();
-    }
+    core::runtime::startModule(info.bundleId);
 
     m_actSeries = data::ActivitySeries::New();
 
@@ -321,11 +317,7 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
     info = Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
-    if(!module->isStarted())
-    {
-        module->start();
-    }
+    core::runtime::startModule(info.bundleId);
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));

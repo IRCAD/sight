@@ -35,49 +35,6 @@
 
 #include <filesystem>
 
-#ifdef MODULE_TEST_PROFILE
-class MiniLauncher
-{
-public:
-
-    MiniLauncher(std::filesystem::path profilePath)
-    {
-        sight::core::runtime::init();
-        const auto& runtime = sight::core::runtime::Runtime::get();
-
-        const std::filesystem::path cwd = runtime.getWorkingPath();
-
-        if(!std::filesystem::exists(profilePath))
-        {
-            profilePath = cwd / profilePath;
-        }
-
-        if(!std::filesystem::exists(profilePath))
-        {
-            throw(std::invalid_argument("<" + profilePath.string() + "> not found."));
-        }
-
-        m_profile = sight::core::runtime::io::ProfileReader::createProfile(profilePath);
-
-        m_profile->setParams(0, nullptr);
-        m_profile->start();
-        m_profile->setup();
-    }
-
-    ~MiniLauncher()
-    {
-        m_profile->cleanup();
-        m_profile->stop();
-        m_profile.reset();
-    }
-
-private:
-
-    sight::core::runtime::Profile::sptr m_profile;
-};
-
-#endif
-
 struct Options
 {
     bool verbose;
@@ -86,18 +43,10 @@ struct Options
     std::string xmlReportFile;
     std::vector<std::string> testsToRun;
 
-#ifdef MODULE_TEST_PROFILE
-    std::string profile;
-#endif
-
     Options() :
         verbose(false),
         xmlReport(false),
         listTests(false)
-#ifdef MODULE_TEST_PROFILE
-        ,
-        profile(MODULE_TEST_PROFILE)
-#endif
     {
     }
 
@@ -129,9 +78,6 @@ struct Options
                 << "    -x,--xml          Output results to a xml file" << std::endl
                 << "    -o FILE           Specify xml file name" << std::endl
                 << "    -l,--list         Lists test names" << std::endl
-#ifdef MODULE_TEST_PROFILE
-                << "    -p,--profile      Profile to launch for module tests" << std::endl
-#endif
                 << "    test1 ... testN   Test names to run" << std::endl
                 << std::endl;
                 return false;
@@ -159,20 +105,6 @@ struct Options
             {
                 this->listTests = true;
             }
-
-#ifdef MODULE_TEST_PROFILE
-            else if(arg == "--profile" || arg == "-p")
-            {
-                args++;
-                if(args >= argsEnd)
-                {
-                    std::cerr << "value for -p/--profile is missing" << std::endl;
-                    return false;
-                }
-
-                this->profile = std::string(*args);
-            }
-#endif
             else
             {
                 this->testsToRun.push_back(arg);
@@ -221,9 +153,36 @@ void init_log_output()
 
 //------------------------------------------------------------------------------
 
+void init_runtime()
+{
+    // This variable is set when configuring this file in the fw_test() CMake macro
+    static const std::string moduleName = "@TESTED_MODULE@";
+    if(!moduleName.empty())
+    {
+        SIGHT_INFO("Automatic loading of module '" + moduleName + "'");
+        sight::core::runtime::init();
+        sight::core::runtime::loadModule(moduleName);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void shutdown_runtime()
+{
+    // This variable is set when configuring this file in the fw_test() CMake macro
+    static const std::string moduleName = "@TESTED_MODULE@";
+    if(!moduleName.empty())
+    {
+        sight::core::runtime::shutdown();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 int main(int argc, char* argv[])
 {
     init_log_output();
+    init_runtime();
 
     Options options;
 
@@ -234,10 +193,6 @@ int main(int argc, char* argv[])
     {
         return 1;
     }
-
-#ifdef MODULE_TEST_PROFILE
-    MiniLauncher miniLauncher(options.profile);
-#endif
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
@@ -299,6 +254,8 @@ int main(int argc, char* argv[])
             return 1;
         }
     }
+
+    shutdown_runtime();
 
     // Print test results in a compiler compatible format.
     CPPUNIT_NS::CompilerOutputter outputter(&result, std::cerr);

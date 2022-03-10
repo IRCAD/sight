@@ -1,7 +1,0 @@
-<profile name="VizScene3dTest" version="0.1">
-
-    <activate id="sight::module::viz::scene3d::test" />
-
-    <start id="sight::module::viz::scene3d::test" />
-
-</profile>

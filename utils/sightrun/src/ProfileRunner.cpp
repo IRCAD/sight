@@ -81,7 +81,6 @@ void signal_handler(int signal)
     try
     {
         const auto& profile = sight::core::runtime::getCurrentProfile();
-        profile->cleanup();
         profile->stop();
     }
     catch(const std::exception& e)

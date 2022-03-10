@@ -42,12 +42,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     m_appManager = std::make_unique<service::AppManager>();
     m_appManager->create();
 
@@ -501,12 +495,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize()
 {
     m_appManager->destroy();
     m_appManager.reset();

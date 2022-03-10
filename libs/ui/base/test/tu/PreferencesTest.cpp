@@ -51,6 +51,7 @@ void PreferencesTest::setUp()
     ui::base::Preferences::set_enabled(true);
 
     core::runtime::init();
+    core::runtime::loadModule("sight::module::ui::base");
 
     // Set the profile name
     const std::string& profileName = core::tools::UUID::generateUUID();

@@ -1,9 +1,4 @@
-sight_add_target(
-    module_io_dimse
-    TYPE MODULE
-    PRIORITY 1
-    WARNINGS_AS_ERRORS OFF
-)
+sight_add_target(module_io_dimse TYPE MODULE WARNINGS_AS_ERRORS OFF)
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 target_link_libraries(module_io_dimse PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets)

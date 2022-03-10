@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,12 +54,7 @@ void Plugin::start()
     {
         m_parametersName = this->getModule()->getParameterValue("parameters");
     }
-}
 
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng);
     SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
@@ -83,12 +78,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
     SIGHT_ASSERT("The OSR is not initialized.", m_appConfigMng);
     m_appConfigMng->stopAndDestroy();

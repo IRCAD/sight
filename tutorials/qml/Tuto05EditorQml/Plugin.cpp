@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,12 +54,7 @@ void Plugin::start()
 {
     qmlRegisterType<AppManager>("Tuto05EditorQml", 1, 0, "AppManager");
     qmlRegisterType<SStringEditor>("Tuto05EditorQml", 1, 0, "SStringEditor");
-}
 
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     auto path = core::runtime::getModuleResourceFilePath("Tuto05EditorQml", "ui.qml");
@@ -70,12 +65,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
 }
 

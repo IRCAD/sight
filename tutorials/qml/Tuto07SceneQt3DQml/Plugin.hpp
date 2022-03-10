@@ -54,12 +54,6 @@ private:
 
     /// Does nothing.
     void stop() noexcept override;
-
-    /// Runs 'ui.qml' containing the scene declaration.
-    void initialize() override;
-
-    /// Does nothing.
-    void uninitialize() noexcept override;
 };
 
 } // namespace Tuto07SceneQt3DQml.

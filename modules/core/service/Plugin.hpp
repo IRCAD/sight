@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,12 +37,6 @@ struct Plugin : public core::runtime::Plugin
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
     void start();
-
-    /// Overrides initialize method
-    void initialize();
-
-    /// Overrides uninitialize method
-    void uninitialize();
 
     /// Overrides stop method. Do nothing
     void stop() noexcept;

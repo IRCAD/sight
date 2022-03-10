@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,12 +47,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     // get the qml engine
     auto engine = sight::ui::qml::QmlEngine::getDefault();
 
@@ -66,12 +60,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
 }
 

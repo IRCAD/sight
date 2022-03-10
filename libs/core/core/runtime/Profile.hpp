@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -56,12 +57,6 @@ public:
 
     ///  Stops the profile.
     CORE_API virtual void stop() = 0;
-
-    /// Setup the profile
-    CORE_API virtual void setup() = 0;
-
-    /// Cleanup the profile
-    CORE_API virtual void cleanup() = 0;
 
     /// Run the profile.
     CORE_API virtual int run() = 0;
