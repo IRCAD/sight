@@ -30,6 +30,7 @@
 
 #include <core/runtime/Profile.hpp>
 #include <core/spyLog.hpp>
+#include <core/tools/Os.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/helper/MedicalImage.hpp>
@@ -181,7 +182,13 @@ Ogre::Root* Utils::getOgreRoot()
             SIGHT_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
-        const auto absPath    = core::runtime::getCurrentProfile()->getFilePath().remove_filename();
+#if defined(WIN32) && defined(DEBUG)
+        const std::string libName = "OgreMain_d";
+#else
+        const std::string libName = "OgreMain";
+#endif
+
+        const auto absPath    = core::tools::os::getSharedLibraryPath(libName).remove_filename();
         const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin, absPath);
 
         pluginCfg.close();

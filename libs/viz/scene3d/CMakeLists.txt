@@ -11,11 +11,6 @@ target_link_libraries(viz_scene3d PUBLIC OgreOverlay)
 find_package(OpenGL QUIET REQUIRED)
 target_link_libraries(viz_scene3d PRIVATE ${OPENGL_LIBRARIES})
 
-# This is a hack to copy plugins inside the build directory
-# Most developers executes apps inside the build directory so this is done as a convenience
-
-copy_ogre_plugins()
-
 set(FWPROJECT_FULLNAME viz_scene3d)
 
 configure_file(

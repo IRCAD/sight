@@ -1289,31 +1289,6 @@ function(order_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
     set(SIGHT_ORDERED_COMPONENTS ${ordered_components} PARENT_SCOPE)
 endfunction()
 
-# Copy Ogre plugins in the build folder.
-# It is necessary for applications to run from the build directory.
-# For packaged applications, we use install_plugins.cmake
-macro(copy_ogre_plugins)
-    # Fixup VCPKG paths
-    if(WIN32)
-        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
-                get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
-            endif()
-        endif()
-
-        file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*RenderSystem*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-             "${OGRE_PLUGIN_DIR}/*Plugin_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-             "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        )
-
-        set(FW_OGRE_PLUGINS_DIR "${CMAKE_BINARY_DIR}/ogreplugins/")
-
-        # This copies the plugins into the build directory
-        file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
-        message(STATUS "Copying Ogre Plugins ['${OGRE_PLUGINS}'] to: '${FW_OGRE_PLUGINS_DIR}'")
-    endif()
-endmacro()
-
 # Check if something links against a module
 function(sight_forbid_module_link _targets)
     foreach(_target ${_targets})
