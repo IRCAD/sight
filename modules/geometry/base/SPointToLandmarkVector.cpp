@@ -158,9 +158,7 @@ void SPointToLandmarkVector::updating()
 
 service::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT}};
 }
 
 // -----------------------------------------------------------------------------

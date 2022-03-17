@@ -67,16 +67,10 @@ SFrameUpdater::~SFrameUpdater() noexcept
 
 service::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(
-        "frameTL",
-        data::TimeLine::s_OBJECT_PUSHED_SIG,
-        module::sync::SFrameUpdater::s_UPDATE_FRAME_SLOT
-    );
-    connections.push("frameTL", data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT);
-
-    return connections;
+    return {
+        {"frameTL", data::TimeLine::s_OBJECT_PUSHED_SIG, module::sync::SFrameUpdater::s_UPDATE_FRAME_SLOT},
+        {"frameTL", data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------

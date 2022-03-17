@@ -270,14 +270,13 @@ void SAutomaticRegistration::stopping()
 
 service::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TARGET_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_REFERENCE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_TARGET_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_REFERENCE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

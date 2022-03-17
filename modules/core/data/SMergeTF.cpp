@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,11 +60,11 @@ void SMergeTF::starting()
 
 service::IService::KeyConnectionsMap SMergeTF::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_TF_POOL_INPUT, sight::data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INPUT, sight::data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INPUT, sight::data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_TF_POOL_INPUT, sight::data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_TF_POOL_INPUT, sight::data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT},
+        {s_TF_POOL_INPUT, sight::data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

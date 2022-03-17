@@ -135,10 +135,10 @@ void SSeriesSignal::updating()
 
 service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INPUT, sight::data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);
-    connections.push(s_SERIES_DB_INPUT, sight::data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_SERIES_DB_INPUT, sight::data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT},
+        {s_SERIES_DB_INPUT, sight::data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

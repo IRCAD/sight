@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,11 +114,7 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
 service::IService::KeyConnectionsMap ITracker::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT);
-
-    return connections;
+    return {{s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

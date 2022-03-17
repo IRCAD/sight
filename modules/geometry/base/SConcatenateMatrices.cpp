@@ -115,9 +115,7 @@ void SConcatenateMatrices::updating()
 
 service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 // ----------------------------------------------------------------------------

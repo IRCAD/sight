@@ -60,9 +60,7 @@ void SDecomposeMatrix::stopping()
 
 service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_SOURCE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_SOURCE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 // ----------------------------------------------------------------------------

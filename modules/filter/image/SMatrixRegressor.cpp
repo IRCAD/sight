@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,15 +102,14 @@ void SMatrixRegressor::stopping()
 
 service::IService::KeyConnectionsMap SMatrixRegressor::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_LIST_IN, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_LIST_IN, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_LIST_IN, data::Vector::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINT_LIST_IN, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINT_LIST_IN, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINT_LIST_IN, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_MATRIX_LIST_IN, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT},
+        {s_MATRIX_LIST_IN, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT},
+        {s_MATRIX_LIST_IN, data::Vector::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_POINT_LIST_IN, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT},
+        {s_POINT_LIST_IN, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT},
+        {s_POINT_LIST_IN, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 } // namespace sight::module::filter::image.

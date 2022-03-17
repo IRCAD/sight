@@ -134,11 +134,7 @@ void STransformDepthTL2mm::updating()
 
 service::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT);
-
-    return connections;
+    return {{s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

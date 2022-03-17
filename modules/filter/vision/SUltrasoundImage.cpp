@@ -99,10 +99,7 @@ void SUltrasoundImage::configuring()
 
 service::IService::KeyConnectionsMap SUltrasoundImage::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_ULTRASOUND_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {{s_ULTRASOUND_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 // -----------------------------------------------------------------------------

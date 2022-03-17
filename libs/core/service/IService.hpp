@@ -480,6 +480,20 @@ public:
     {
     public:
 
+        using KeyConnectionsMapType = std::map<std::string_view, KeyConnectionsType>;
+
+        KeyConnectionsMap() = default;
+        KeyConnectionsMap(
+            std::initializer_list<std::tuple<const std::string_view, core::com::Signals::SignalKeyType,
+                                             core::com::Slots::SlotKeyType> > init
+        )
+        {
+            for(const auto& [key, sig, slot] : init)
+            {
+                m_keyConnectionsMap[key].push_back(std::make_pair(sig, slot));
+            }
+        }
+
         //------------------------------------------------------------------------------
 
         void push(
@@ -490,8 +504,6 @@ public:
         {
             m_keyConnectionsMap[key].push_back(std::make_pair(sig, slot));
         }
-
-        typedef std::map<std::string_view, KeyConnectionsType> KeyConnectionsMapType;
 
         //------------------------------------------------------------------------------
 

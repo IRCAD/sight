@@ -313,13 +313,12 @@ void SChessboardReprojection::updateChessboardSize()
 
 service::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_DETECTED_CHESSBOARD_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_DETECTED_CHESSBOARD_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT},
+        {s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------

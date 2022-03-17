@@ -256,18 +256,17 @@ public:
 
     IService::KeyConnectionsMap getAutoConnections() const override
     {
-        KeyConnectionsMap connections;
-        connections.push("data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data3", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data4", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data5", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("dataGroup", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("dataGroup0", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-
-        return connections;
+        return {
+            {"data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data3", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data4", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data5", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"dataGroup", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"dataGroup0", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT}
+        };
     }
 
 //-------------------------------------------------------------------------
@@ -337,10 +336,10 @@ public:
 
     IService::KeyConnectionsMap getAutoConnections() const override
     {
-        KeyConnectionsMap connections;
-        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
-        return connections;
+        return {
+            {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data2", data::Object::s_MODIFIED_SIG, s_SLOT_1},
+        };
     }
 
 private:
@@ -397,11 +396,11 @@ public:
 
     IService::KeyConnectionsMap getAutoConnections() const override
     {
-        KeyConnectionsMap connections;
-        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
-        connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
-        return connections;
+        return {
+            {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data2", data::Object::s_MODIFIED_SIG, s_SLOT_1},
+            {"data3", data::Object::s_MODIFIED_SIG, s_SLOT_1},
+        };
     }
 
 private:

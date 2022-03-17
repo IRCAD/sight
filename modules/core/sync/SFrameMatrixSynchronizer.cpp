@@ -71,11 +71,11 @@ SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
 
 service::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT);
-    connections.push(s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT},
+        {s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT},
+        {s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 // ----------------------------------------------------------------------------

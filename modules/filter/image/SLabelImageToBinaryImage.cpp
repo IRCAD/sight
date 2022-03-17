@@ -191,10 +191,10 @@ void SLabelImageToBinaryImage::stopping()
 
 service::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_LABEL_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_LABEL_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

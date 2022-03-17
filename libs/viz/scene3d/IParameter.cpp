@@ -105,10 +105,7 @@ const std::string& IParameter::getParamName() const
 
 service::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {{s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 //------------------------------------------------------------------------------
