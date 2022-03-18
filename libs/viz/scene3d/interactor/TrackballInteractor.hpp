@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,13 +119,13 @@ private:
     void updateCameraFocalLength();
 
     /// Current distance from the camera to the point of interest.
-    float m_lookAtZ;
+    float m_lookAtZ {1.f};
 
     /// Scale applied to mouse events.
-    float m_mouseScale;
+    float m_mouseScale {1.f};
 
     /// Current zoom factor.
-    float m_zoom;
+    float m_zoom {1.f};
 
     /// Default mouse scale factor (used to move the camera)
     static constexpr int MOUSE_SCALE_FACTOR = 200;

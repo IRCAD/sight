@@ -262,7 +262,7 @@
 
         <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
             <in key="model" uid="${modelSeries}" />
-            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="false" />
+            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="true" />
         </service>
 
         <service uid="extrudedMeshesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
@@ -723,7 +723,7 @@
         <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
-        
+
         <start uid="axialNegatoSlicerSrv" />
         <start uid="frontalNegatoSlicerSrv" />
         <start uid="sagittalNegatoSlicerSrv" />

@@ -477,7 +477,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Extract the model or the image from the series -->
-            <service uid="extractImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
+            <service uid="extractSeriesSrv" type="sight::module::ui::qt::series::SSelectDialog" >
                 <in key="seriesDB" uid="seriesDB"/>
                 <out key="modelSeries" uid="modelSeries" />
                 <out key="image" uid="image" />
@@ -582,12 +582,12 @@
 
             <connect>
                 <signal>seriesDB/modified</signal>
-                <slot>extractImageSrv/update</slot>
+                <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
                 <signal>seriesDB/addedSeries</signal>
-                <slot>extractImageSrv/update</slot>
+                <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
@@ -596,13 +596,13 @@
             </connect>
 
             <connect>
-                <signal>modelSeries/modified</signal>
+                <signal>extractSeriesSrv/modelSelected</signal>
                 <slot>meshVisibilityAct/setExecutable</slot>
                 <slot>meshVisibilityAct/activate</slot>
             </connect>
 
             <connect>
-                <signal>extractImageSrv/updated</signal>
+                <signal>extractSeriesSrv/imageSelected</signal>
                 <signal>extractPacsImageSrv/updated</signal>
                 <slot>volumeVisibilityAct/setExecutable</slot>
                 <slot>volumeVisibilityAct/activate</slot>
@@ -695,7 +695,7 @@
             <start uid="ogreGenericSceneCfg" />
             <start uid="organManagerCfg" />
             <start uid="extrudedMeshesManagerCfg" />
-            <start uid="extractImageSrv" />
+            <start uid="extractSeriesSrv" />
             <start uid="extractPacsImageSrv" />
             <start uid="computeHistogramSrv" />
             <start uid="lightSelectorSrv" />
