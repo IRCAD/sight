@@ -40,6 +40,10 @@ namespace sight::module::ui::qt::series
  *
  * The output objects must be marked as "deferred" in the XML configuration.
  *
+ * @section Signals Signals
+ * - \b imageSelected(): Emitted when an image is selected.
+ * - \b modelSelected(): Emitted when a model is selected.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -62,10 +66,16 @@ class MODULE_UI_QT_CLASS_API SSelectDialog : public service::IController
 {
 public:
 
+    /// Type of signal sent when a screen is selected.
+    using SelectedSignalType = core::com::Signal<void ()>;
+
+    static const core::com::Signals::SignalKeyType s_IMAGE_SELECTED_SIG;
+    static const core::com::Signals::SignalKeyType s_MODEL_SELECTED_SIG;
+
     SIGHT_DECLARE_SERVICE(SSelectDialog, service::IController);
 
     /// Constructor
-    MODULE_UI_QT_API SSelectDialog() = default;
+    MODULE_UI_QT_API SSelectDialog();
 
     /// Destructor
     MODULE_UI_QT_API ~SSelectDialog() override = default;

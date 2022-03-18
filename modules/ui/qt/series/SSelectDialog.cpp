@@ -21,8 +21,21 @@
 
 #include "SSelectDialog.hpp"
 
+#include <core/com/Signal.hxx>
+
 namespace sight::module::ui::qt::series
 {
+
+const core::com::Signals::SignalKeyType SSelectDialog::s_IMAGE_SELECTED_SIG = "imageSelected";
+const core::com::Signals::SignalKeyType SSelectDialog::s_MODEL_SELECTED_SIG = "modelSelected";
+
+//------------------------------------------------------------------------------
+
+SSelectDialog::SSelectDialog()
+{
+    newSignal<SelectedSignalType>(s_IMAGE_SELECTED_SIG);
+    newSignal<SelectedSignalType>(s_MODEL_SELECTED_SIG);
+}
 
 //------------------------------------------------------------------------------
 
@@ -64,6 +77,8 @@ void SSelectDialog::updating()
         if(modelSeries)
         {
             m_modelSeries = modelSeries;
+            auto sig = this->signal<data::Object::ModifiedSignalType>(s_MODEL_SELECTED_SIG);
+            sig->asyncEmit();
         }
         else
         {
@@ -74,7 +89,7 @@ void SSelectDialog::updating()
                 auto image = imageSeries->getImage();
 
                 m_image = image;
-                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = this->signal<data::Object::ModifiedSignalType>(s_IMAGE_SELECTED_SIG);
                 sig->asyncEmit();
             }
         }
