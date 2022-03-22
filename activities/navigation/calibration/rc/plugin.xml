@@ -12,9 +12,6 @@
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calibrationCharuco.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/toolCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension::Activity">
@@ -46,17 +43,6 @@
             </requirement>
         </requirements>
         <appConfig id="calibrationEdition" />
-    </extension>
-    <extension implements="sight::activity::extension::Activity">
-        <id>CalibrationCharuco</id>
-        <title>Calibration Charuco</title>
-        <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
-        <icon>sight::module::ui::flaticons/YellowCamera.svg</icon>
-        <requirements>
-            <requirement name="cameraSeries" type="sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
-        </requirements>
-        <builder>sight::activity::builder::ActivitySeriesInitData</builder>
-        <appConfig id="calibrationCharuco" />
     </extension>
 
     <extension implements="sight::activity::extension::Activity">

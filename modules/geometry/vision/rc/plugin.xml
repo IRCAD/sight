@@ -68,31 +68,4 @@
          <desc>This service estimates the object pose given a set of object points, their corresponding image projections,</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
-         <service>sight::module::geometry::vision::charuco::SCharucoBoardDetector</service>
-         <object key="timeline">sight::data::FrameTL</object>
-         <object key="calInfo">sight::data::CalibrationInfo</object>
-         <object key="detection">sight::data::PointList</object>
-         <desc>This service updates CalibrationInfo objects with the points detected from charuco board.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::geometry::vision::ICalibration</type>
-         <service>sight::module::geometry::vision::charuco::SOpenCVExtrinsic</service>
-         <object key="calibrationInfo1">sight::data::CalibrationInfo</object>
-         <object key="calibrationInfo2">sight::data::CalibrationInfo</object>
-         <object key="camera">sight::data::CameraSeries</object>
-         <desc>SOpenCVExtrinsic service that computes charuco extrinsic calibration with openCV.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::geometry::vision::ICalibration</type>
-         <service>sight::module::geometry::vision::charuco::SOpenCVIntrinsic</service>
-         <object key="calibrationInfo">sight::data::CalibrationInfo</object>
-         <object key="camera">sight::data::Camera</object>
-         <object key="poseVector">sight::data::Vector</object>
-         <desc>SOpenCVIntrinsic service that computes intrinsic charuco calibration with openCV.</desc>
-    </extension>
-
 </plugin>

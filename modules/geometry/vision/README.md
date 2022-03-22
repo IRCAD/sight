@@ -13,9 +13,6 @@ Contains services that implement some computer vision algorithms, notably to cal
 - **SPoseFrom2d**: computes the 3d pose of a, object using 2d points.
 - **SReprojectionError**: computes the mean error of reprojection between 3d object points.
 - **SSolvePnP**: estimates the object pose given a set of object points, their corresponding image projections.
-- **charuco::SCharucoBoardDetector**: updates CalibrationInfo objects with the points detected from [charuco](https://docs.opencv.org/master/df/d4a/tutorial_charuco_detection.html) boards.
-- **charuco::SOpenCVExtrinsic**: computes [charuco](https://docs.opencv.org/master/df/d4a/tutorial_charuco_detection.html) extrinsic calibration with openCV.
-- **charuco::SOpenCVIntrinsic**: computes intrinsic [charuco](https://docs.opencv.org/master/df/d4a/tutorial_charuco_detection.html) calibration with openCV.
 
 ## How to use it
 

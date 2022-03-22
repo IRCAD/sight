@@ -51,7 +51,6 @@
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>
-                <id>CalibrationCharuco</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
                 <id>ToolCalibration</id>

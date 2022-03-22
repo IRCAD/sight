@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,6 @@ CPPUNIT_TEST(reprojectionRealDatasetTest1);
 CPPUNIT_TEST(reprojectionRealDatasetTest2);
 CPPUNIT_TEST(toolCalibrationBasic);
 CPPUNIT_TEST(toolCalibration);
-CPPUNIT_TEST(generateCharucoDict);
 CPPUNIT_TEST(chessboardDetectionTest);
 CPPUNIT_TEST(chessboardDetectionScaleTest);
 CPPUNIT_TEST_SUITE_END();
@@ -54,7 +53,6 @@ public:
     void reprojectionIdentity();
     void toolCalibrationBasic();
     void toolCalibration();
-    void generateCharucoDict();
     void chessboardDetectionTest();
     void chessboardDetectionScaleTest();
 };
