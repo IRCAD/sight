@@ -52,6 +52,9 @@ public:
 
 private:
 
+    /// Allows to postpone the launch of the application of the main worker
+    void run();
+
     std::string m_configurationName;
     std::string m_parametersName;
     service::AppConfigManager::sptr m_appConfigMng;

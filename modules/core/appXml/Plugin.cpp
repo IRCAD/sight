@@ -48,6 +48,14 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
+    auto worker = core::thread::getDefaultWorker();
+    worker->post(std::bind(&Plugin::run, this));
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::run()
+{
     SIGHT_FATAL_IF("Module appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
     m_configurationName = this->getModule()->getParameterValue("config");
     if(this->getModule()->hasParameter("parameters"))
