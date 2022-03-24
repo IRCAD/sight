@@ -108,43 +108,43 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {core::tools::Type::create("int8"), VTK_CHAR},
-    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR},
-    {core::tools::Type::create("int16"), VTK_SHORT},
-    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT},
-    {core::tools::Type::create("int32"), VTK_INT},
-    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT},
-    {core::tools::Type::create("int64"), VTK_LONG_LONG},
-    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG_LONG},
-    {core::tools::Type::create("float"), VTK_FLOAT},
-    {core::tools::Type::create("double"), VTK_DOUBLE}
+    {core::Type::INT8, VTK_CHAR},
+    {core::Type::UINT8, VTK_UNSIGNED_CHAR},
+    {core::Type::INT16, VTK_SHORT},
+    {core::Type::UINT16, VTK_UNSIGNED_SHORT},
+    {core::Type::INT32, VTK_INT},
+    {core::Type::UINT32, VTK_UNSIGNED_INT},
+    {core::Type::INT64, VTK_LONG_LONG},
+    {core::Type::UINT64, VTK_UNSIGNED_LONG_LONG},
+    {core::Type::FLOAT, VTK_FLOAT},
+    {core::Type::DOUBLE, VTK_DOUBLE}
 };
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")},
-    {VTK_CHAR, core::tools::Type::create("int8")},
-    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")},
-    {VTK_SHORT, core::tools::Type::create("int16")},
-    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")},
-    {VTK_INT, core::tools::Type::create("int32")},
-    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")},
-    {VTK_FLOAT, core::tools::Type::create("float")},
-    {VTK_DOUBLE, core::tools::Type::create("double")},
-    {VTK_LONG_LONG, core::tools::Type::create("int64")},
-    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")},
+    {VTK_SIGNED_CHAR, core::Type::INT8},
+    {VTK_CHAR, core::Type::INT8},
+    {VTK_UNSIGNED_CHAR, core::Type::UINT8},
+    {VTK_SHORT, core::Type::INT16},
+    {VTK_UNSIGNED_SHORT, core::Type::UINT16},
+    {VTK_INT, core::Type::INT32},
+    {VTK_UNSIGNED_INT, core::Type::UINT32},
+    {VTK_FLOAT, core::Type::FLOAT},
+    {VTK_DOUBLE, core::Type::DOUBLE},
+    {VTK_LONG_LONG, core::Type::INT64},
+    {VTK_UNSIGNED_LONG_LONG, core::Type::UINT64},
 
 #if (INT_MAX < LONG_MAX)
     {
-        VTK_LONG, core::tools::Type::create("int64")
+        VTK_LONG, core::Type::INT64
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")}
+    {VTK_UNSIGNED_LONG, core::Type::UINT64}
 #else
     {
-        VTK_LONG, core::tools::Type::create("int32")
+        VTK_LONG, core::Type::INT32
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")}
+    {VTK_UNSIGNED_LONG, core::Type::UINT32}
 #endif
 };
 
@@ -175,7 +175,7 @@ void* newBuffer(std::size_t size)
     {
         SIGHT_ERROR(
             "No enough memory to allocate an image of type "
-            << core::tools::Type::create<IMAGETYPE>().string()
+            << core::Type::get<IMAGETYPE>().name()
             << " and of size " << size << "." << std::endl
             << e.what()
         );

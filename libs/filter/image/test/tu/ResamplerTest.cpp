@@ -59,7 +59,7 @@ void ResamplerTest::identityTest()
     // TODO: make it work with an anisotropic spacing.
     const data::Image::Spacing SPACING = {{0.5, 0.5, 0.5}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+    const core::Type TYPE              = core::Type::INT16;
 
     data::Image::sptr imageIn = data::Image::New();
 
@@ -110,7 +110,7 @@ void ResamplerTest::translateTest()
     const data::Image::Size SIZE       = {{16, 16, 16}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
+    const core::Type TYPE              = core::Type::UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
@@ -178,7 +178,7 @@ void ResamplerTest::rotateTest()
     const data::Image::Size SIZE       = {{64, 64, 64}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_FLOAT;
+    const core::Type TYPE              = core::Type::FLOAT;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();

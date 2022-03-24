@@ -23,7 +23,6 @@
 #include "filter/image/ImageExtruder.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <glm/gtx/intersect.hpp>
 #include <glm/vec2.hpp>
@@ -42,7 +41,7 @@ void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::c
     param.m_mesh  = _mesh;
 
     // We use a dispatcher because we can't retrieve the image type without a DynamicType.
-    core::tools::Type type = _image->getType();
+    core::Type type = _image->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ImageExtruder>::invoke(type, param);
 }
 

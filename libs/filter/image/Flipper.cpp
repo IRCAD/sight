@@ -23,7 +23,6 @@
 #include "filter/image/Flipper.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -124,7 +123,7 @@ void Flipper::flip(
         params.i_flipAxes = _inFlipAxes;
         params.o_image    = _outImage;
 
-        const core::tools::Type type = _inImage->getType();
+        const core::Type type = _inImage->getType();
         core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, FlippingDimensionExtractor>::invoke(
             type,
             params

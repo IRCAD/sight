@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "core/tools/Stringizer.hpp"
 #include "core/tools/TypeMapping.hpp"
 
 #include <core/macros.hpp>
@@ -30,7 +29,9 @@
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/if.hpp>
+#include <boost/mpl/push_back.hpp>
 #include <boost/mpl/pop_front.hpp>
+#include <boost/mpl/vector.hpp>
 
 #include <stdexcept>
 
@@ -52,7 +53,7 @@ struct EndTypeListAction
     template<class KeyType>
     static void invoke(const KeyType& keytype)
     {
-        std::string msg = core::tools::getString(keytype)
+        std::string msg = keytype.name()
                           + " : KeyType value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
@@ -62,7 +63,7 @@ struct EndTypeListAction
     static void invoke(const KeyType& keytype, const Parameter& param)
     {
         SIGHT_NOT_USED(param);
-        std::string msg = core::tools::getString(keytype)
+        std::string msg = keytype.name()
                           + " : KeyType value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
@@ -71,7 +72,7 @@ struct EndTypeListAction
     template<class BaseClass, class KeyType>
     static BaseClass* instantiate(const KeyType& keytype)
     {
-        std::string msg = core::tools::getString(keytype)
+        std::string msg = keytype.name()
                           + " : KeyType value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
         return NULL;
@@ -183,4 +184,25 @@ struct Dispatcher
         }
 };
 
+typedef boost::mpl::vector<
+        std::int8_t,
+        std::uint8_t,
+        std::int16_t,
+        std::uint16_t,
+        std::int32_t,
+        std::uint32_t
+#ifndef DEBUG
+        , std::int64_t,
+        std::uint64_t
+#endif
+>::type IntegerTypes;
+
+#ifdef DEBUG
+typedef boost::mpl::push_back<IntegerTypes, float>::type IntrinsicTypes;
+#else
+typedef boost::mpl::push_back<boost::mpl::push_back<IntegerTypes, float>::type, double>::type IntrinsicTypes;
+#endif
+
 } //end namespace sight::core::tools
+
+#include <core/tools/TypeKeyTypeMapping.hpp>

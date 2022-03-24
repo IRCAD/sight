@@ -75,7 +75,7 @@ void STransformDepthMap2mm::updating()
     SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", originFrame);
 
     const auto type = originFrame->getType();
-    if(type != core::tools::Type::s_UINT16)
+    if(type != core::Type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;

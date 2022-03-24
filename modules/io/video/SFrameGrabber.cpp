@@ -27,7 +27,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
@@ -474,7 +474,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
                     frameTL->initPoolSize(
                         w,
                         h,
-                        core::tools::Type::s_UINT8,
+                        core::Type::UINT8,
                         sight::data::FrameTL::PixelFormat::GRAY_SCALE
                     );
                     break;
@@ -483,7 +483,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
                     frameTL->initPoolSize(
                         w,
                         h,
-                        core::tools::Type::s_UINT8,
+                        core::Type::UINT8,
                         sight::data::FrameTL::PixelFormat::RGB
                     );
                     break;
@@ -492,7 +492,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
                     frameTL->initPoolSize(
                         w,
                         h,
-                        core::tools::Type::s_UINT8,
+                        core::Type::UINT8,
                         sight::data::FrameTL::PixelFormat::RGBA
                     );
                     break;
@@ -501,7 +501,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
                     frameTL->initPoolSize(
                         w,
                         h,
-                        core::tools::Type::s_UINT16,
+                        core::Type::UINT16,
                         sight::data::FrameTL::PixelFormat::GRAY_SCALE
                     );
                     break;
@@ -619,7 +619,7 @@ void SFrameGrabber::grabVideo()
                         frameTL->initPoolSize(
                             width,
                             height,
-                            core::tools::Type::s_UINT8,
+                            core::Type::UINT8,
                             sight::data::FrameTL::PixelFormat::GRAY_SCALE
                         );
                         break;
@@ -628,7 +628,7 @@ void SFrameGrabber::grabVideo()
                         frameTL->initPoolSize(
                             width,
                             height,
-                            core::tools::Type::s_UINT8,
+                            core::Type::UINT8,
                             sight::data::FrameTL::PixelFormat::RGB
                         );
                         break;
@@ -637,7 +637,7 @@ void SFrameGrabber::grabVideo()
                         frameTL->initPoolSize(
                             width,
                             height,
-                            core::tools::Type::s_UINT8,
+                            core::Type::UINT8,
                             sight::data::FrameTL::PixelFormat::RGBA
                         );
                         break;
@@ -646,7 +646,7 @@ void SFrameGrabber::grabVideo()
                         frameTL->initPoolSize(
                             width,
                             height,
-                            core::tools::Type::s_UINT16,
+                            core::Type::UINT16,
                             sight::data::FrameTL::PixelFormat::GRAY_SCALE
                         );
                         break;

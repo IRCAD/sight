@@ -28,7 +28,7 @@
 #include "data/timeline/GenericObject.hpp"
 #include "data/timeline/GenericObject.hxx"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/factory/new.hpp>
 
@@ -67,7 +67,7 @@ public:
     DATA_API void initPoolSize(
         std::size_t width,
         std::size_t height,
-        const core::tools::Type& type,
+        const core::Type& type,
         const PixelFormat format,
         unsigned int maxElementNum = 1
     );
@@ -91,7 +91,7 @@ public:
     }
 
     /// Returns the type of the frame pixel
-    core::tools::Type getType() const
+    core::Type getType() const
     {
         return m_type;
     }
@@ -128,7 +128,7 @@ private:
     std::size_t m_numberOfComponents;
 
     /// type of frame pixel
-    core::tools::Type m_type;
+    core::Type m_type;
 
     /// Frame format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};

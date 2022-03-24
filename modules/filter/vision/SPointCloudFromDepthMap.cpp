@@ -200,7 +200,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     SIGHT_INFO("Input RGB map was empty, skipping colors");
 
     const auto type = depthMap->getType();
-    if(type != core::tools::Type::s_UINT16)
+    if(type != core::Type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
@@ -259,7 +259,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     SIGHT_INFO("Input RGB map was supplied, including colors");
 
     const auto type = depthMap->getType();
-    if(type != core::tools::Type::s_UINT16)
+    if(type != core::Type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
@@ -271,7 +271,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const std::size_t height = size[1];
 
     const auto rgbType = colorMap->getType();
-    if(rgbType != core::tools::Type::s_UINT8)
+    if(rgbType != core::Type::UINT8)
     {
         SIGHT_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
         return;

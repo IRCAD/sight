@@ -84,7 +84,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 void FrameTL::initPoolSize(
     std::size_t width,
     std::size_t height,
-    const core::tools::Type& type,
+    const core::Type& type,
     const PixelFormat format,
     unsigned int maxElementNum
 )
@@ -113,7 +113,7 @@ void FrameTL::initPoolSize(
             m_numberOfComponents = 1;
     }
 
-    std::size_t size = width * height * m_numberOfComponents * type.sizeOf();
+    std::size_t size = width * height * m_numberOfComponents * type.size();
 
     SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 

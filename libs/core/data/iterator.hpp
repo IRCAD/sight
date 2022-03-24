@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ namespace sight::data
  * Example:
  * @code{.cpp}
     data::Image::sptr img = data::Image::New();
-    img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, data::Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 0, core::Type::UINT8, data::Image::PixelFormat::RGBA);
     auto iter    = img->begin<RGBA>();
     const auto iterEnd = img->end<RGBA>();
 

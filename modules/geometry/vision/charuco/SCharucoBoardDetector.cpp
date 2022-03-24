@@ -155,7 +155,7 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
                     tlDetection->initPoolSize(
                         tl->getWidth(),
                         tl->getHeight(),
-                        core::tools::Type::s_UINT8,
+                        core::Type::UINT8,
                         data::FrameTL::PixelFormat::RGBA
                     );
                 }
@@ -328,7 +328,10 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
     if(buffer)
     {
         const auto pixType = tl->getType();
-        SIGHT_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
+        SIGHT_ASSERT(
+            "Expected 8bit pixel components, have " << 8 * pixType.size(),
+            pixType.size() == 1
+        );
 
         std::uint8_t* frameBuff = const_cast<std::uint8_t*>(&buffer->getElement(0));
 

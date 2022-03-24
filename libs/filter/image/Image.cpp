@@ -22,9 +22,7 @@
 
 #include "Image.hpp"
 
-#include <core/tools/Combinatory.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 namespace sight::filter::image
 {

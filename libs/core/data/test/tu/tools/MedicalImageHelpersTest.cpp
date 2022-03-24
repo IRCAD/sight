@@ -98,8 +98,6 @@ struct typeToPixelFormat<std::array<double, 3> >
 
 sight::data::Image::sptr generateImage()
 {
-    typedef std::uint8_t Type;
-
     data::Image::sptr image = data::Image::New();
 
     const data::Image::Size size       = {256, 150, 100};
@@ -110,7 +108,7 @@ sight::data::Image::sptr generateImage()
         size,
         spacing,
         origin,
-        core::tools::Type::create<Type>(),
+        core::Type::UINT8,
         data::Image::PixelFormat::GRAY_SCALE
     );
 
@@ -153,7 +151,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             size,
             spacing,
             origin,
-            core::tools::Type::create<Type>(),
+            core::Type::get<Type>(),
             data::Image::PixelFormat::GRAY_SCALE
         );
 
@@ -194,7 +192,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             size,
             spacing,
             origin,
-            core::tools::Type::create<Type>(),
+            core::Type::get<Type>(),
             data::Image::PixelFormat::GRAY_SCALE
         );
 
@@ -247,7 +245,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             size,
             spacing,
             origin,
-            core::tools::Type::create<Type>(),
+            core::Type::get<Type>(),
             data::Image::PixelFormat::GRAY_SCALE
         );
 
@@ -283,7 +281,7 @@ data::Image::sptr createImageFromPixelBuffer()
     // Create a new image
     auto image             = data::Image::New();
     data::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
-    image->resize(size, core::tools::Type::create<SubPixel>(), typeToPixelFormat<P>::value);
+    image->resize(size, core::Type::get<SubPixel>(), typeToPixelFormat<P>::value);
     image->setSpacing({1., 1., 1.});
     image->setOrigin({0., 0., 0.});
 

@@ -52,7 +52,7 @@ void Image::createConfig(core::tools::Object::sptr _obj)
         // Initialize with a dummy 4x4 black image
         image->setSpacing({1, 1, 1});
         image->setOrigin({0, 0, 0});
-        image->resize({4, 4, 1}, core::tools::Type::s_UINT8, data::Image::RGBA);
+        image->resize({4, 4, 1}, core::Type::UINT8, data::Image::RGBA);
 
         const auto dumpLock = image->dump_lock();
         auto itr            = image->begin<sight::data::iterator::rgba>();

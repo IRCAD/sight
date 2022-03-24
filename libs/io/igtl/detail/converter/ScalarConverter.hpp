@@ -30,7 +30,6 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 

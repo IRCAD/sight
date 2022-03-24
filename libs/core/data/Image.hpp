@@ -30,12 +30,14 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/memory/IBuffered.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/iterator.hpp>
 
+#include <boost/range/iterator_range_core.hpp>
 #include <boost/shared_array.hpp>
 
+#include <array>
 #include <filesystem>
 #include <vector>
 
@@ -50,7 +52,8 @@ class PointList;
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
  *
- * The buffer type is defined by core::tools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
+ * The buffer type is defined by core::Type that provides the basic types ([u]int8, [u]int16, [u]int32,
+ *[u]int64,
  * float and double).
  *
  * The image size is a 3D std::size_t array but the third dimension can be 0 for a 2D image.
@@ -66,7 +69,7 @@ class PointList;
  * You can get the allocated size using getSizeInBytes() and getAllocatedSizeInBytes().
  *
  * To resize the image, you must pass the Type ([u]int[8|16|32|64], double, float), the size and the pixel
- * format of the buffer when calling resize(const Size& size, const core::tools::Type& type, PixelFormat format).
+ * format of the buffer when calling resize(const Size& size, const core::Type& type, PixelFormat format).
  *
  * @section Access Buffer access
  *
@@ -123,7 +126,7 @@ class PointList;
  * \b Example :
  * @code{.cpp}
     Image::sptr img = Image::New();
-    img->resize(1920, 1080, 1, core::tools::Type::s_UINT8, Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 1, core::Type::UINT8, Image::PixelFormat::RGBA);
     auto iter    = img->begin<Color>();
     const auto iterEnd = img->end<Color>();
 
@@ -254,7 +257,7 @@ public:
     std::size_t numComponents() const;
 
     /// Get image type
-    DATA_API core::tools::Type getType() const;
+    DATA_API core::Type getType() const;
 
     /// Get pixel format
     PixelFormat getPixelFormat() const;
@@ -274,7 +277,7 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& size, const core::tools::Type& type, PixelFormat format);
+    DATA_API std::size_t resize(const Size& size, const core::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
@@ -364,7 +367,7 @@ public:
      * Example:
      * @code{.cpp}
         Image::sptr img = Image::New();
-        img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, Image::PixelFormat::RGBA);
+        img->resize(1920, 1080, 0, core::Type::UINT8, Image::PixelFormat::RGBA);
         Image::iterator< Color > iter    = img->begin< Color >();
         const Image::iterator< Color > iterEnd = img->end< Color >();
 
@@ -438,7 +441,7 @@ public:
     DATA_API void setBuffer(
         void* buf,
         bool takeOwnership,
-        const core::tools::Type& type,
+        const core::Type& type,
         const Image::Size& size,
         PixelFormat format,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
@@ -551,7 +554,7 @@ private:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t _resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc);
+    DATA_API std::size_t _resize(const Size& size, const core::Type& type, PixelFormat format, bool realloc);
     /// @}
 
     /**
@@ -587,7 +590,7 @@ private:
     std::size_t m_numComponents {1};
 
     //! type of image pixel
-    core::tools::Type m_type {core::tools::Type::s_UNSPECIFIED_TYPE};
+    core::Type m_type {core::Type::UINT8};
 
     //! image format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};

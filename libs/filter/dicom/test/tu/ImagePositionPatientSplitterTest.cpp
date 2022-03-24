@@ -30,8 +30,6 @@
 
 #include <utestData/Data.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <filesystem>
 
 // Registers the fixture into the 'registry'

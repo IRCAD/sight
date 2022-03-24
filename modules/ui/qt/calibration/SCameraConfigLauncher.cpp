@@ -22,10 +22,7 @@
 
 #include "modules/ui/qt/calibration/SCameraConfigLauncher.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <data/CalibrationInfo.hpp>
@@ -36,14 +33,14 @@
 #include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/base.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -256,7 +253,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         throw;
     }
-    service::OSR::unregisterService(reader);
+    service::remove(reader);
 
     auto series             = sdb->getContainer();
     auto cameraSeriesVector = std::vector<data::CameraSeries::sptr>();

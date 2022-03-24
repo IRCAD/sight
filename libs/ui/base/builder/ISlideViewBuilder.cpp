@@ -22,8 +22,6 @@
 
 #include "ui/base/builder/ISlideViewBuilder.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 namespace sight::ui::base
 {
 

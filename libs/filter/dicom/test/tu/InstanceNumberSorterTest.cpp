@@ -30,8 +30,6 @@
 
 #include <utestData/Data.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <gdcmScanner.h>
 
 #include <filesystem>

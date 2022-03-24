@@ -29,7 +29,7 @@
 #include <core/location/SingleFile.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Matrix4.hpp>
 
@@ -249,7 +249,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
         colorTimeline->initPoolSize(
             colorStreamW,
             colorStreamH,
-            core::tools::Type::s_UINT8,
+            core::Type::UINT8,
             data::FrameTL::PixelFormat::RGBA
         );
         colorTimeline->setMaximumSize(50);
@@ -262,7 +262,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
             depthTimeline->initPoolSize(
                 depthStreamW,
                 depthStreamH,
-                core::tools::Type::s_UINT16,
+                core::Type::UINT16,
                 data::FrameTL::PixelFormat::GRAY_SCALE
             );
             depthTimeline->setMaximumSize(50);

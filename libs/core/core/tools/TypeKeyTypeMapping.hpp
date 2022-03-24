@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,19 +23,21 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/tools/Type.hpp"
 #include "core/tools/TypeMapping.hpp"
+#include "core/Type.hpp"
+
+#include <boost/mpl/vector.hpp>
 
 namespace sight::core::tools
 {
 
 /**
- * @name Type mapping used for Dispatcher
+ * @name numeric mapping used for Dispatcher
  * @{
  */
 
 /**
- * @brief   Template specialization for defining KeyType mapping ( here Type) with their value.
+ * @brief   Template specialization for defining KeyType mapping ( here numeric) with their value.
  *
  * Header declare function already specialized while src provide definition
  * @warning isMapping does not need to be exported since fwTools Library is builded as static

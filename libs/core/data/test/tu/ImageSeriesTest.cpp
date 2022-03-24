@@ -22,7 +22,7 @@
 
 #include "ImageSeriesTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -58,7 +58,7 @@ void ImageSeriesTest::imageTest()
     CPPUNIT_ASSERT(m_series);
 
     auto img = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img, core::tools::Type("float"));
+    utestData::generator::Image::generateRandomImage(img, core::Type::FLOAT);
     CPPUNIT_ASSERT(img);
 
     m_series->setImage(img);
@@ -197,7 +197,7 @@ void ImageSeriesTest::equalityTest()
     CPPUNIT_ASSERT(*series1 == *series2);
 
     auto image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type("float"));
+    utestData::generator::Image::generateRandomImage(image, core::Type::FLOAT);
     series1->setImage(image);
     CPPUNIT_ASSERT(*series1 != *series2);
     series2->setImage(image);

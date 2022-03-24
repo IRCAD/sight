@@ -22,7 +22,7 @@
 
 #include "ImageTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <filter/image/Image.hpp>
 
@@ -54,15 +54,10 @@ void ImageTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeName)
+void TestRoiApply(const core::Type imageType, const core::Type roiType)
 {
-    std::stringstream ss;
-    ss
-    << "Test failed with types : img : " << imageTypeName
-    << ", roi : " << roiTypeName;
-    const std::string message = ss.str();
-    const core::tools::Type imageType(imageTypeName);
-    const core::tools::Type roiType(roiTypeName);
+    const std::string message = "Test failed with types : img : " + imageType.name()
+                                + ", roi : " + roiType.name();
     data::Image::sptr imageRef;
     data::Image::sptr image = data::Image::New();
     data::Image::sptr roi   = data::Image::New();
@@ -104,47 +99,42 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
 
 void ImageTest::roiApplyTest()
 {
-    TestRoiApply("int8", "int8");
-    TestRoiApply("int8", "int16");
-    TestRoiApply("int8", "int32");
-    TestRoiApply("int8", "uint8");
-    TestRoiApply("int8", "uint16");
-    TestRoiApply("int8", "uint32");
-
-    TestRoiApply("int16", "int8");
-    TestRoiApply("int16", "int16");
-    TestRoiApply("int16", "int32");
-    TestRoiApply("int16", "uint8");
-    TestRoiApply("int16", "uint16");
-    TestRoiApply("int16", "uint32");
-
-    TestRoiApply("int32", "int8");
-    TestRoiApply("int32", "int16");
-    TestRoiApply("int32", "int32");
-    TestRoiApply("int32", "uint8");
-    TestRoiApply("int32", "uint16");
-    TestRoiApply("int32", "uint32");
-
-    TestRoiApply("uint8", "int8");
-    TestRoiApply("uint8", "int16");
-    TestRoiApply("uint8", "int32");
-    TestRoiApply("uint8", "uint8");
-    TestRoiApply("uint8", "uint16");
-    TestRoiApply("uint8", "uint32");
-
-    TestRoiApply("uint16", "int8");
-    TestRoiApply("uint16", "int16");
-    TestRoiApply("uint16", "int32");
-    TestRoiApply("uint16", "uint8");
-    TestRoiApply("uint16", "uint16");
-    TestRoiApply("uint16", "uint32");
-
-    TestRoiApply("uint32", "int8");
-    TestRoiApply("uint32", "int16");
-    TestRoiApply("uint32", "int32");
-    TestRoiApply("uint32", "uint8");
-    TestRoiApply("uint32", "uint16");
-    TestRoiApply("uint32", "uint32");
+    TestRoiApply(core::Type::INT8, core::Type::INT8);
+    TestRoiApply(core::Type::INT8, core::Type::INT16);
+    TestRoiApply(core::Type::INT8, core::Type::INT32);
+    TestRoiApply(core::Type::INT8, core::Type::UINT8);
+    TestRoiApply(core::Type::INT8, core::Type::UINT16);
+    TestRoiApply(core::Type::INT8, core::Type::UINT32);
+    TestRoiApply(core::Type::INT16, core::Type::INT8);
+    TestRoiApply(core::Type::INT16, core::Type::INT16);
+    TestRoiApply(core::Type::INT16, core::Type::INT32);
+    TestRoiApply(core::Type::INT16, core::Type::UINT8);
+    TestRoiApply(core::Type::INT16, core::Type::UINT16);
+    TestRoiApply(core::Type::INT16, core::Type::UINT32);
+    TestRoiApply(core::Type::INT32, core::Type::INT8);
+    TestRoiApply(core::Type::INT32, core::Type::INT16);
+    TestRoiApply(core::Type::INT32, core::Type::INT32);
+    TestRoiApply(core::Type::INT32, core::Type::UINT8);
+    TestRoiApply(core::Type::INT32, core::Type::UINT16);
+    TestRoiApply(core::Type::INT32, core::Type::UINT32);
+    TestRoiApply(core::Type::UINT8, core::Type::INT8);
+    TestRoiApply(core::Type::UINT8, core::Type::INT16);
+    TestRoiApply(core::Type::UINT8, core::Type::INT32);
+    TestRoiApply(core::Type::UINT8, core::Type::UINT8);
+    TestRoiApply(core::Type::UINT8, core::Type::UINT16);
+    TestRoiApply(core::Type::UINT8, core::Type::UINT32);
+    TestRoiApply(core::Type::UINT16, core::Type::INT8);
+    TestRoiApply(core::Type::UINT16, core::Type::INT16);
+    TestRoiApply(core::Type::UINT16, core::Type::INT32);
+    TestRoiApply(core::Type::UINT16, core::Type::UINT8);
+    TestRoiApply(core::Type::UINT16, core::Type::UINT16);
+    TestRoiApply(core::Type::UINT16, core::Type::UINT32);
+    TestRoiApply(core::Type::UINT32, core::Type::INT8);
+    TestRoiApply(core::Type::UINT32, core::Type::INT16);
+    TestRoiApply(core::Type::UINT32, core::Type::INT32);
+    TestRoiApply(core::Type::UINT32, core::Type::UINT8);
+    TestRoiApply(core::Type::UINT32, core::Type::UINT16);
+    TestRoiApply(core::Type::UINT32, core::Type::UINT32);
 
 // float and double disabled : randomization generate some <nan>
 

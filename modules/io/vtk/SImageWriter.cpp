@@ -161,7 +161,7 @@ bool SImageWriter::saveImage(
     else if(ext == ".bmp" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".tiff")
     {
         // Get image information
-        std::string type = image->getType().string();
+        std::string type = image->getType().name();
         std::size_t noc  = image->numComponents();
 
         // Check type.

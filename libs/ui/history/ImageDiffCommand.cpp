@@ -25,7 +25,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 namespace sight::ui::history
 {

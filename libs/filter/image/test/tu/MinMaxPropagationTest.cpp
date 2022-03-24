@@ -86,7 +86,7 @@ void MinMaxPropagationTest::minPropagTest()
     const data::Image::Size SIZE       = {{32, 32, 32}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
+    const core::Type TYPE              = core::Type::UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
@@ -172,7 +172,7 @@ void MinMaxPropagationTest::maxPropagTest()
     const data::Image::Size SIZE       = {{32, 32, 32}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
+    const core::Type TYPE              = core::Type::UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
@@ -239,7 +239,7 @@ void MinMaxPropagationTest::radiusTest()
     const data::Image::Size SIZE       = {{33, 33, 33}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
+    const core::Type TYPE              = core::Type::UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();

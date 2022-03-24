@@ -127,8 +127,8 @@ void SDepthImageMasking::setBackground()
     const auto depthImage = m_depthImage.lock();
     SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
 
-    if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE)
-       && (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
+    if(maskImage && depthImage && (maskImage->getType() != core::Type::NONE)
+       && (depthImage->getType() != core::Type::NONE))
     {
         const cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
         m_cvMaskImage = io::opencv::Image::moveToCv(maskImage.get_shared());

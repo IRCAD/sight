@@ -24,10 +24,10 @@
 
 #include "io/igtl/Exception.hpp"
 
-#include <core/tools/Stringizer.hpp>
-
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <mutex>
 

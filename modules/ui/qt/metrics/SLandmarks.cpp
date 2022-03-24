@@ -28,7 +28,6 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/tools/NumericRoundCast.hxx>
 
 #include <geometry/data/Matrix4.hpp>
 

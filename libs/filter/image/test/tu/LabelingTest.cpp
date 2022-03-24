@@ -57,7 +57,7 @@ void LabelingTest::computeCentroids()
     // Initial image creation
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const core::Type type                 = core::Type::UINT8;
     const data::Image::Size imgSize       = {256, 256, 256};
     const data::Image::Spacing imgSpacing = {1., 1., 1.};
     const data::Image::Origin imgOrigin   = {0., 0., 0.};

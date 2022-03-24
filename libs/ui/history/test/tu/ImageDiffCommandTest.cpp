@@ -54,7 +54,7 @@ void ImageDiffCommandTest::undoredoTest()
     const data::Image::Size SIZE          = {{32, 32, 32}};
     const data::Image::Spacing SPACING    = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::tools::Type TYPE          = core::tools::Type::s_UINT8;
+    const core::Type TYPE                 = core::Type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
 
     data::Image::sptr image = data::Image::New();
@@ -63,7 +63,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     const auto dumpLock = image->dump_lock();
 
-    filter::image::ImageDiff diff(image->getType().sizeOf());
+    filter::image::ImageDiff diff(image->getType().size());
 
     std::uint8_t NEWVALUE = 1;
 
@@ -123,7 +123,7 @@ void ImageDiffCommandTest::getSizeTest()
     const data::Image::Size SIZE          = {{32, 32, 32}};
     const data::Image::Spacing SPACING    = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::tools::Type TYPE          = core::tools::Type::s_UINT8;
+    const core::Type TYPE                 = core::Type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
 
     data::Image::sptr image = data::Image::New();
@@ -132,7 +132,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     const auto dumpLock = image->dump_lock();
 
-    filter::image::ImageDiff diff(image->getType().sizeOf() * 64);
+    filter::image::ImageDiff diff(image->getType().size() * 64);
 
     std::uint8_t NEWVALUE = 1;
 

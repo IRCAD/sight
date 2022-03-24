@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "data/config.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <stdint.h>
 
@@ -62,7 +62,7 @@ public:
     DATA_API virtual ~Image();
 
     /// Find Image Type
-    DATA_API core::tools::Type findImageTypeFromMinMaxValues() const;
+    DATA_API core::Type findImageTypeFromMinMaxValues() const;
 
 protected:
 

@@ -26,7 +26,6 @@
 
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/NumericRoundCast.hxx>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
@@ -357,7 +356,7 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(
 {
     typename PixelCastAndSetFunctor<T>::Param param(value);
 
-    core::tools::Type type = image->getType();
+    core::Type type = image->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, PixelCastAndSetFunctor<T> >::invoke(type, param);
     return param.res;
 }
@@ -475,7 +474,7 @@ void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max
 {
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 
-    core::tools::Type type = _img->getType();
+    core::Type type = _img->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, MinMaxFunctor<MINMAXTYPE> >::invoke(type, param);
 }
 

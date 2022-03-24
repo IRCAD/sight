@@ -25,7 +25,7 @@
 #include "utestData/config.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Image.hpp>
 
@@ -56,14 +56,14 @@ public:
         data::Image::Size size,
         data::Image::Spacing spacing,
         data::Image::Origin origin,
-        core::tools::Type type,
+        core::Type type,
         data::Image::PixelFormat format
     );
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
     UTESTDATA_API static void generateRandomImage(
         data::Image::sptr image,
-        core::tools::Type type,
+        core::Type type,
         std::uint32_t seed = 0
     );
 
@@ -72,13 +72,6 @@ public:
 
     /// Fill array with random value
     UTESTDATA_API static void randomizeArray(data::Array::sptr array, std::uint32_t seed = 0);
-
-    /// Creates an Array with the given type and size and fills buffer with random values.
-    UTESTDATA_API static data::Array::sptr createRandomizedArray(
-        const std::string& type,
-        data::Array::SizeType sizes,
-        std::uint32_t seed = 0
-    );
 };
 
 } // namespace generator

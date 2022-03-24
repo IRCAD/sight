@@ -24,17 +24,10 @@
 
 #include "modules/viz/scene2d/processing/ComputeHistogramFunctor.hxx"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
-
-#include <service/macros.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 namespace sight::module::viz::scene2d
 {
@@ -85,7 +78,7 @@ void SComputeHistogram::updating()
         param.histogram = histogram.get_shared();
         param.binsWidth = m_binsWidth;
 
-        core::tools::Type type = image->getType();
+        core::Type type = image->getType();
         core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ComputeHistogramFunctor>::invoke(
             type,
             param

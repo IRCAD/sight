@@ -23,7 +23,7 @@
 #include "DicomReaderTest.hpp"
 
 #include <core/tools/dateAndTime.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Equipment.hpp>
 #include <data/Image.hpp>
@@ -215,7 +215,7 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::ImageSeries::sptr& series)
     CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
-    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8);
+    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().size() * 8);
     //(0028,0102) US 15                                                 # 2,1 High Bit
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
     CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", false, img->getType().isSigned());
@@ -429,7 +429,7 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::ImageSeries::sptr& 
     CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
-    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8);
+    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().size() * 8);
     //(0028,0102) US 15                                                 # 2,1 High Bit
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
     CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", false, img->getType().isSigned());

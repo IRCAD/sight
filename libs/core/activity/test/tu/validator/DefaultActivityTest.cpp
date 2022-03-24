@@ -209,7 +209,7 @@ void DefaultActivityTest::objectTest()
     data::Image::sptr img1 = data::Image::New();
     data::Image::sptr img2 = data::Image::New();
     data::Image::sptr img3 = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img1, core::Type::UINT8);
     utestData::generator::Image::generateImage(
         img2,
         img1->getSize(),
@@ -218,7 +218,7 @@ void DefaultActivityTest::objectTest()
         img1->getType(),
         data::Image::PixelFormat::GRAY_SCALE
     );
-    utestData::generator::Image::generateRandomImage(img3, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img3, core::Type::UINT8);
 
     data::Vector::sptr vector = data::Vector::New();
     vector->getContainer().push_back(img1);
@@ -290,7 +290,7 @@ void DefaultActivityTest::validatorTest()
     data::Composite::sptr modelCompo     = data::Composite::New();
 
     data::Image::sptr img = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img, core::Type::UINT8);
     imageSeries->setImage(img);
 
     {
@@ -429,8 +429,8 @@ void DefaultActivityTest::bigActivityTest()
     data::Image::sptr img1 = data::Image::New();
     data::Image::sptr img2 = data::Image::New();
     data::Image::sptr img3 = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
-    utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img1, core::Type::UINT8);
+    utestData::generator::Image::generateRandomImage(img2, core::Type::UINT8);
     utestData::generator::Image::generateImage(
         img3,
         img2->getSize(),

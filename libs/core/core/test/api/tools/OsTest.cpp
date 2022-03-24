@@ -76,10 +76,10 @@ void Os::getSharedLibraryPath()
     }
 
     // Test that a call with a not loaded library throws an error
-    CPPUNIT_ASSERT_THROW(core::tools::os::getSharedLibraryPath("foo"), core::tools::Exception);
+    CPPUNIT_ASSERT_THROW(core::tools::os::getSharedLibraryPath("foo"), core::Exception);
 
     // Test that a call with a not loaded library throws an error
-    CPPUNIT_ASSERT_THROW(core::tools::os::getSharedLibraryPath("Qt5Core"), core::tools::Exception);
+    CPPUNIT_ASSERT_THROW(core::tools::os::getSharedLibraryPath("Qt5Core"), core::Exception);
 
     // Now load that library and check that we find it
 #if defined(WIN32)

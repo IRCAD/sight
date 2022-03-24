@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "INetwork.hpp"
 
 #include "io/igtl/Exception.hpp"
-
-#include <core/tools/Stringizer.hpp>
 
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>

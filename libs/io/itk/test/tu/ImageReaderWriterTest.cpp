@@ -61,7 +61,7 @@ void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
     this->checkSaveLoadInr(image);
 }
 
@@ -69,40 +69,40 @@ void ImageReaderWriterTest::testSaveLoadInr()
 
 void ImageReaderWriterTest::stressTestInr()
 {
-    core::tools::Type type = core::tools::Type::create<std::int8_t>();
+    core::Type type = core::Type::INT8;
 //    this->stressTestInrWithType(type, 5);
 
-    type = core::tools::Type::create<std::uint8_t>();
+    type = core::Type::UINT8;
     this->stressTestInrWithType(type, 5);
 
-    type = core::tools::Type::create<std::int16_t>();
+    type = core::Type::INT16;
     this->stressTestInrWithType(type, 5);
 
-    type = core::tools::Type::create<std::uint16_t>();
+    type = core::Type::UINT16;
     this->stressTestInrWithType(type, 5);
 
-    type = core::tools::Type::create<std::int32_t>();
+    type = core::Type::INT32;
     this->stressTestInrWithType(type, 5);
 
-    type = core::tools::Type::create<std::uint32_t>();
+    type = core::Type::UINT32;
     this->stressTestInrWithType(type, 5);
 
-//    type = core::tools::Type::create< std::int64_t >();
+//    type = core::Type::INT64;
 //    this->stressTestInrWithType(type, 5);
 
-//    type = core::tools::Type::create< std::uint64_t >();
+//    type = core::Type::UINT64;
 //    this->stressTestInrWithType(type, 5);
 
-    type = core::tools::Type::create<float>();
+    type = core::Type::FLOAT;
     this->stressTestInrWithType(type, 5);
 
-//    type = core::tools::Type::create< double >();
+//    type = core::Type::DOUBLE;
 //    this->stressTestInrWithType(type, 5);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::stressTestInrWithType(core::tools::Type type, int nbTest)
+void ImageReaderWriterTest::stressTestInrWithType(core::Type type, int nbTest)
 {
     for(int nb = 0 ; nb < nbTest ; ++nb)
     {

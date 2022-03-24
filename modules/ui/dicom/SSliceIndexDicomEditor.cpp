@@ -41,6 +41,8 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>

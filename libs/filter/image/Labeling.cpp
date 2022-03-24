@@ -29,7 +29,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -80,7 +79,7 @@ data::Image::sptr labeling(data::Image::sptr image, unsigned int numLabels)
     params.m_outputImage = outputImage;
     params.m_numLabels   = numLabels;
 
-    const core::tools::Type type = image->getType();
+    const core::Type type = image->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, LabelingFilter>::invoke(type, params);
 
     // Notify image
@@ -227,7 +226,7 @@ void computeCentroids(
     }
 
     // Call the ITK operator
-    const core::tools::Type type = image->getType();
+    const core::Type type = image->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, LabelImageFilter>::invoke(type, params);
 }
 

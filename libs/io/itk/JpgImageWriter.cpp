@@ -27,7 +27,6 @@
 
 #include <core/base.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -83,7 +82,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::tools::Type::create<PIXELTYPE>().string());
+        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
 
         data::Image::csptr image = param.m_dataImage;
 

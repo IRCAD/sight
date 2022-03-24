@@ -247,7 +247,7 @@ void SVideo::updating()
         Ogre::MaterialPtr defaultMat;
         if(tf)
         {
-            if(type == core::tools::Type::s_FLOAT || type == core::tools::Type::s_DOUBLE)
+            if(type == core::Type::FLOAT || type == core::Type::DOUBLE)
             {
                 defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }

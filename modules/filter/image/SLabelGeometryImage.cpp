@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/String.hpp>

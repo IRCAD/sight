@@ -134,7 +134,7 @@ void SpheroidExtractionTest::extractionTest()
 
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+    const core::Type TYPE              = core::Type::INT16;
 
     utestData::generator::Image::generateImage(
         image,

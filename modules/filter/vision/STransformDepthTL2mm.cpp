@@ -94,7 +94,7 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
                 scaledFrameTL->initPoolSize(
                     width,
                     height,
-                    core::tools::Type::s_UINT16,
+                    core::Type::UINT16,
                     data::FrameTL::PixelFormat::GRAY_SCALE
                 );
             }

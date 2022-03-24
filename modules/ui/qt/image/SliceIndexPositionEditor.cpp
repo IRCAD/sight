@@ -44,7 +44,6 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>

@@ -22,7 +22,7 @@
 
 #include "ModelSeriesTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>

@@ -22,7 +22,7 @@
 
 #include "ImageDiffTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -188,7 +188,7 @@ void ImageDiffTest::undoRedoTest()
     const data::Image::Size SIZE          = {{32, 32, 32}};
     const data::Image::Spacing SPACING    = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::tools::Type TYPE          = core::tools::Type::s_UINT8;
+    const core::Type TYPE                 = core::Type::UINT8;
     const data::Image::PixelFormat FORMAT = data::Image::PixelFormat::GRAY_SCALE;
 
     data::Image::sptr image = data::Image::New();
@@ -197,7 +197,7 @@ void ImageDiffTest::undoRedoTest()
 
     const auto dumpLock = image->dump_lock();
 
-    ImageDiff diff(image->getType().sizeOf());
+    ImageDiff diff(image->getType().size());
 
     std::uint8_t NEWVALUE = 1;
 

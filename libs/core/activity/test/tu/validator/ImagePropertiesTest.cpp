@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,8 +76,8 @@ void ImagePropertiesTest::propertiesTest()
     {
         data::Image::sptr img1 = data::Image::New();
         data::Image::sptr img2 = data::Image::New();
-        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
-        utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img1, core::Type::UINT8);
+        utestData::generator::Image::generateRandomImage(img2, core::Type::UINT8);
 
         data::Vector::sptr vector = data::Vector::New();
         vector->getContainer().push_back(img1);
@@ -100,7 +100,7 @@ void ImagePropertiesTest::propertiesTest()
         data::Image::sptr img1 = data::Image::New();
         data::Image::sptr img2 = data::Image::New();
 
-        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img1, core::Type::UINT8);
 
         utestData::generator::Image::generateImage(
             img2,

@@ -41,8 +41,8 @@ namespace sight::io::vtk
 
 struct TypeTranslator
 {
-    typedef std::map<core::tools::Type, int> fwToolsToVtkMap;
-    typedef std::map<int, core::tools::Type> VtkTofwToolsMap;
+    typedef std::map<core::Type, int> fwToolsToVtkMap;
+    typedef std::map<int, core::Type> VtkTofwToolsMap;
 
     IO_VTK_API static fwToolsToVtkMap::mapped_type translate(const fwToolsToVtkMap::key_type& key);
     IO_VTK_API static VtkTofwToolsMap::mapped_type translate(const VtkTofwToolsMap::key_type& key);

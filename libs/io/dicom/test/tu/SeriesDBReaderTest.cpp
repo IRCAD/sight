@@ -523,7 +523,7 @@ void SeriesDBReaderTest::readCTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT16, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::Type::INT16, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
@@ -591,7 +591,7 @@ void SeriesDBReaderTest::readMRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2000), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::Type::DOUBLE, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
@@ -658,7 +658,7 @@ void SeriesDBReaderTest::readOTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);

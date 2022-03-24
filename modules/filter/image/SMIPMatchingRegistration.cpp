@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "SMIPMatchingRegistration.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
@@ -84,7 +83,7 @@ void SMIPMatchingRegistration::updating()
     params.moving    = moving.get_shared();
     params.transform = transform.get_shared();
 
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch>
     ::invoke(type, params);
 

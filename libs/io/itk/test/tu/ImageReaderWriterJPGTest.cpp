@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ void ImageReaderWriterJPGTest::testImageWriter()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     // save image in inr
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";

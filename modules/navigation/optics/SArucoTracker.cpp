@@ -30,6 +30,7 @@
 #include <io/opencv/Image.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <opencv2/core.hpp>

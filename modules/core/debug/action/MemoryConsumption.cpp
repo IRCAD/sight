@@ -51,7 +51,7 @@ void MemoryConsumption::pushNewArray(std::size_t memorySizeInBytes)
     {
         data::Array::sptr buffer = data::Array::New();
         data::Array::SizeType size(1, memorySizeInBytes);
-        buffer->resize(size, core::tools::Type::s_UINT8_TYPENAME, true);
+        buffer->resize(size, core::Type::UINT8, true);
 
         SIGHT_INFO("Creating a data::array consuming " << memorySizeInBytes / (1024 * 1024) << " Mo ");
 

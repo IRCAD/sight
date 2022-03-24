@@ -109,7 +109,7 @@ void FrameTL::copyFromCv(
         SIGHT_ERROR("Cannot copy OpenCV image into this timeline buffer because their format or size differ.");
     }
 
-    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.sizeOf();
+    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.size();
     std::copy(_cvImage.data, _cvImage.data + size, _buffer);
 }
 

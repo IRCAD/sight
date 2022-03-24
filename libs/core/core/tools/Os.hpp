@@ -23,7 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/tools/Exception.hpp"
+#include "core/Exception.hpp"
 
 #include <filesystem>
 #include <string>
@@ -80,7 +80,7 @@ CORE_API std::string getUserDataDir(
  * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
  * the platform and the build type.
  * @return path to the library on the filesystem
- * @throw core::tools::Exception if the library could not be found (not loaded for instance)
+ * @throw core::Exception if the library could not be found (not loaded for instance)
  */
 CORE_API std::filesystem::path getSharedLibraryPath(const std::string& _libName);
 

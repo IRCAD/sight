@@ -65,7 +65,7 @@ inline static void serialize(
     tree.add_child(s_Sizes, sizesTree);
 
     // type, isBufferOwner
-    tree.put(s_Type, array->getType().string());
+    tree.put(s_Type, array->getType().name());
     tree.put(s_IsBufferOwner, array->getIsBufferOwner());
 
     // Create the output file inside the archive

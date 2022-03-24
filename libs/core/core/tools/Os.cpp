@@ -150,7 +150,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         std::stringstream err;
         err << "Could not find shared library path, see error below." << std::endl;
         err << "GetModuleHandle failed, error = " << ret << std::endl;
-        SIGHT_THROW_EXCEPTION(core::tools::Exception(err.str()));
+        SIGHT_THROW_EXCEPTION(core::Exception(err.str()));
     }
 
     if(GetModuleFileName(hm, path, sizeof(path)) == NULL)
@@ -159,7 +159,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         std::stringstream err;
         err << "Could not get shared library path, see error below." << std::endl;
         err << "GetModuleFileName failed, error = " << ret << std::endl;
-        SIGHT_THROW_EXCEPTION(core::tools::Exception(err.str()));
+        SIGHT_THROW_EXCEPTION(core::Exception(err.str()));
     }
 
     return path;
@@ -205,7 +205,7 @@ std::filesystem::path getSharedLibraryPath(const std::string& _libName)
     if(functor.s_location.empty())
     {
         SIGHT_THROW_EXCEPTION(
-            core::tools::Exception(
+            core::Exception(
                 std::string("Could not find shared library path for ")
                 + _libName
             )

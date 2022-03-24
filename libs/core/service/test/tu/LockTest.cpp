@@ -241,7 +241,7 @@ void LockTest::testDumpLock()
 {
     data::Image::sptr image = data::Image::New();
 
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_UINT8);
+    utestData::generator::Image::generateRandomImage(image, core::Type::UINT8);
 
     // Add the service
     service::IService::sptr lockedService = service::add("sight::service::ut::LockedService");

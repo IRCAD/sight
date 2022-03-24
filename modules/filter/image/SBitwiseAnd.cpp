@@ -24,8 +24,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/IntegerTypes.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <io/itk/itk.hpp>
 

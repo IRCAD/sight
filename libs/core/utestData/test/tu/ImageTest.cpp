@@ -22,7 +22,7 @@
 
 #include "ImageTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Image.hpp>
 
@@ -57,7 +57,7 @@ void ImageTest::generator3DTest()
     const data::Image::Size size       = {10, 15, 23};
     const data::Image::Spacing spacing = {0.85, 2.6, 1.87};
     const data::Image::Origin origin   = {-45.6, 25.97, -53.9};
-    core::tools::Type type             = core::tools::Type::create<std::int32_t>();
+    core::Type type                    = core::Type::INT32;
 
     utestData::generator::Image::generateImage(
         image,
@@ -71,7 +71,7 @@ void ImageTest::generator3DTest()
     CPPUNIT_ASSERT(image->getSize() == size);
     CPPUNIT_ASSERT(image->getSpacing() == spacing);
     CPPUNIT_ASSERT(image->getOrigin() == origin);
-    CPPUNIT_ASSERT_EQUAL(type.string(), image->getType().string());
+    CPPUNIT_ASSERT_EQUAL(type, image->getType());
 }
 
 //------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void ImageTest::generator2DTest()
     const data::Image::Size size       = {10, 15, 0};
     const data::Image::Spacing spacing = {0.85, 2.6, 0.};
     const data::Image::Origin origin   = {-45.6, 25.97, 0.};
-    core::tools::Type type             = core::tools::Type::create<std::int16_t>();
+    core::Type type                    = core::Type::INT16;
 
     utestData::generator::Image::generateImage(
         image,
@@ -95,7 +95,7 @@ void ImageTest::generator2DTest()
     CPPUNIT_ASSERT(image->getSize() == size);
     CPPUNIT_ASSERT(image->getSpacing() == spacing);
     CPPUNIT_ASSERT(image->getOrigin() == origin);
-    CPPUNIT_ASSERT_EQUAL(type.string(), image->getType().string());
+    CPPUNIT_ASSERT_EQUAL(type, image->getType());
 }
 
 //------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ void ImageTest::deepCopyTest()
 {
     data::Image::sptr image = data::Image::New();
     data::Image::sptr image2;
-    core::tools::Type type = core::tools::Type::create<std::int32_t>();
+    core::Type type = core::Type::INT32;
     utestData::generator::Image::generateRandomImage(image, type);
 
     image2 = data::Object::copy(image);
@@ -113,7 +113,7 @@ void ImageTest::deepCopyTest()
 
 //------------------------------------------------------------------------------
 
-inline static void stressTestWithType(core::tools::Type type, int nbTest)
+inline static void stressTestWithType(core::Type type, int nbTest)
 {
     for(int nb = 0 ; nb < nbTest ; ++nb)
     {
@@ -130,34 +130,34 @@ inline static void stressTestWithType(core::tools::Type type, int nbTest)
 
 void ImageTest::stressTest()
 {
-    core::tools::Type type = core::tools::Type::create<std::int8_t>();
+    core::Type type = core::Type::INT8;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::uint8_t>();
+    type = core::Type::UINT8;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::int16_t>();
+    type = core::Type::INT16;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::uint16_t>();
+    type = core::Type::UINT16;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::int32_t>();
+    type = core::Type::INT32;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::uint32_t>();
+    type = core::Type::UINT32;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::int64_t>();
+    type = core::Type::INT64;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<std::uint64_t>();
+    type = core::Type::UINT64;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<float>();
+    type = core::Type::FLOAT;
     stressTestWithType(type, 10);
 
-    type = core::tools::Type::create<double>();
+    type = core::Type::DOUBLE;
     stressTestWithType(type, 10);
 }
 

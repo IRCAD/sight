@@ -216,7 +216,7 @@ void SMeshList::add()
             const auto image        = textureAdp->getInput<data::Image>("image").lock();
             const auto textureInput = m_texture.lock();
 
-            if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
+            if(m_generateAlpha && textureInput->getType() == core::Type::UINT8
                && (textureInput->getPixelFormat() == data::Image::PixelFormat::GRAY_SCALE
                    || textureInput->numComponents() == 1))
             {
@@ -243,7 +243,7 @@ void SMeshList::add()
                     itr->a = *inItr;
                 }
             }
-            else if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
+            else if(m_generateAlpha && textureInput->getType() == core::Type::UINT8
                     && (textureInput->getPixelFormat() == data::Image::PixelFormat::RGB
                         || textureInput->numComponents() == 3))
             {

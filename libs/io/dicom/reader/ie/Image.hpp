@@ -109,7 +109,7 @@ protected:
      */
     char* readImageBuffer(
         const std::vector<unsigned int>& dimensions,
-        const core::tools::Type imageType,
+        const core::Type imageType,
         const unsigned short bitsAllocated,
         const unsigned short newBitsAllocated,
         const bool performRescale

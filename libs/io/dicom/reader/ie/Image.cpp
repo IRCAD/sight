@@ -35,6 +35,7 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
@@ -280,7 +281,7 @@ void Image::readImagePixelModule()
     // Compute final image type
     data::dicom::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
-    core::tools::Type imageType         = imageHelper.findImageTypeFromMinMaxValues();
+    core::Type imageType                = imageHelper.findImageTypeFromMinMaxValues();
     gdcm::PixelFormat targetPixelFormat = io::dicom::helper::DicomDataTools::getPixelType(imageType);
 
     if(targetPixelFormat == gdcm::PixelFormat::UNKNOWN)
@@ -390,7 +391,7 @@ void Image::readImagePixelModule()
 
 char* Image::readImageBuffer(
     const std::vector<unsigned int>& dimensions,
-    const core::tools::Type imageType,
+    const core::Type imageType,
     const unsigned short bitsAllocated,
     const unsigned short newBitsAllocated,
     const bool performRescale

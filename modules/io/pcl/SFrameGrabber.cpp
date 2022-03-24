@@ -223,7 +223,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         if(width != 0 && height != 0)
         {
             const auto frameTL = m_frame.lock();
-            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::RGB);
+            frameTL->initPoolSize(width, height, core::Type::FLOAT, data::FrameTL::PixelFormat::RGB);
         }
         else
         {

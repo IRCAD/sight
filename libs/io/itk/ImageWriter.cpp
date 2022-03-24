@@ -27,7 +27,6 @@
 
 #include <core/base.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
 
@@ -66,7 +65,7 @@ struct ITKSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::tools::Type::create<PIXELTYPE>().string());
+        SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
 
         // Reader IO (*1*)
         typename ::itk::ImageIOBase::Pointer imageIOWrite = ::itk::ImageIOFactory::CreateImageIO(

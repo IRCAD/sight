@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,21 +54,21 @@ Image::~Image()
 
 //-----------------------------------------------------------------------------
 
-core::tools::Type Image::findImageTypeFromMinMaxValues() const
+core::Type Image::findImageTypeFromMinMaxValues() const
 {
-    core::tools::Type result = core::tools::Type::s_UNSPECIFIED_TYPE;
+    core::Type result = core::Type::NONE;
 
     // Bool & Monochrome values
     if(m_bitsAllocated == 1 && m_pixelRepresentation == 0)
     {
-        result = core::tools::Type::s_INT8;
+        result = core::Type::INT8;
     }
     else
     {
         // Double
         if(m_rescaleSlope != (int) m_rescaleSlope || m_rescaleIntercept != (int) m_rescaleIntercept)
         {
-            result = core::tools::Type::s_DOUBLE;
+            result = core::Type::DOUBLE;
         }
         else
         {
@@ -84,15 +84,15 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             {
                 if(max <= std::numeric_limits<uint8_t>::max())
                 {
-                    result = core::tools::Type::s_UINT8;
+                    result = core::Type::UINT8;
                 }
                 else if(max <= std::numeric_limits<uint16_t>::max())
                 {
-                    result = core::tools::Type::s_UINT16;
+                    result = core::Type::UINT16;
                 }
                 else if(max <= std::numeric_limits<uint32_t>::max())
                 {
-                    result = core::tools::Type::s_UINT32;
+                    result = core::Type::UINT32;
                 }
                 else
                 {
@@ -104,15 +104,15 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             {
                 if(max <= std::numeric_limits<int8_t>::max() && min >= std::numeric_limits<int8_t>::min())
                 {
-                    result = core::tools::Type::s_INT8;
+                    result = core::Type::INT8;
                 }
                 else if(max <= std::numeric_limits<int16_t>::max() && min >= std::numeric_limits<int16_t>::min())
                 {
-                    result = core::tools::Type::s_INT16;
+                    result = core::Type::INT16;
                 }
                 else if(max <= std::numeric_limits<int32_t>::max() && min >= std::numeric_limits<int32_t>::min())
                 {
-                    result = core::tools::Type::s_INT32;
+                    result = core::Type::INT32;
                 }
                 else
                 {

@@ -98,7 +98,7 @@ void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     imageSeries->setImage(image);
@@ -128,7 +128,7 @@ void IoItkTest::testImageWriterJPG()
 {
     // Create Image
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     // Create path
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageJPG";
@@ -161,7 +161,7 @@ double tolerance(double num)
 void IoItkTest::testSaveLoadInr()
 {
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
@@ -211,7 +211,7 @@ void IoItkTest::ImageSeriesInrTest()
 {
     data::Image::sptr image             = data::Image::New();
     data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     imageSeries->setImage(image);
 
@@ -307,7 +307,7 @@ void IoItkTest::SeriesDBInrTest()
 
     data::Image::sptr image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
-    CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().string());
+    CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().name());
     CPPUNIT_ASSERT(size == image->getSize());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
@@ -320,7 +320,7 @@ void IoItkTest::SeriesDBInrTest()
 
     image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
-    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().string());
+    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().name());
     CPPUNIT_ASSERT(size == image->getSize());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);

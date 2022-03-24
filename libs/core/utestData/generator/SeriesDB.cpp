@@ -26,7 +26,7 @@
 #include "utestData/generator/Mesh.hpp"
 
 #include <core/tools/random/Generator.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
@@ -190,7 +190,7 @@ data::ImageSeries::sptr SeriesDB::createImageSeries()
     SeriesDB::generateSeriesInformation(imgSeries);
 
     data::Image::sptr image = data::Image::New();
-    Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    Image::generateRandomImage(image, core::Type::INT16);
 
     imgSeries->setImage(image);
 
@@ -259,7 +259,7 @@ void SeriesDB::generateReconstruction(data::Reconstruction::sptr rec, int index)
     rec->setStructureType("Liver");
 
     data::Image::sptr img = data::Image::New();
-    Image::generateRandomImage(img, core::tools::Type::create("uint16"));
+    Image::generateRandomImage(img, core::Type::UINT16);
     rec->setImage(img);
 
     data::Material::sptr material = data::Material::New();

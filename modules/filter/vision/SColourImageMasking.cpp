@@ -28,8 +28,7 @@
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
 
-#include <service/macros.hpp>
-
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
 namespace sight::module::filter::vision
@@ -301,7 +300,7 @@ void SColourImageMasking::setBackground()
     videoMaskTL->initPoolSize(
         videoTL->getWidth(),
         videoTL->getHeight(),
-        core::tools::Type::s_UINT8,
+        core::Type::UINT8,
         data::FrameTL::PixelFormat::RGBA
     );
 }

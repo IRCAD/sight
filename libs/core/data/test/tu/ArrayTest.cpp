@@ -62,7 +62,7 @@ void ArrayTest::allocation()
 
     data::Array::SizeType size = {10, 100};
 
-    array->resize(size, core::tools::Type::s_UINT32, true);
+    array->resize(size, core::Type::UINT32, true);
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
     CPPUNIT_ASSERT(!array->empty());
 
@@ -74,14 +74,14 @@ void ArrayTest::allocation()
         data::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT32, array->getType());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), array->getType().sizeOf());
+    CPPUNIT_ASSERT_EQUAL(core::Type::UINT32, array->getType());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getType().size());
 
     array->clear();
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), array->getSizeInBytes());
     CPPUNIT_ASSERT(array->empty());
     CPPUNIT_ASSERT(array->getBuffer() == nullptr);
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UNSPECIFIED_TYPE, array->getType());
+    CPPUNIT_ASSERT_EQUAL(core::Type::NONE, array->getType());
 
     std::uint16_t* buffer = new std::uint16_t[1000];
 
@@ -90,7 +90,7 @@ void ArrayTest::allocation()
         buffer[i] = i;
     }
 
-    array->setBuffer(buffer, false, size, core::tools::Type::s_UINT16, core::memory::BufferNewPolicy::New());
+    array->setBuffer(buffer, false, size, core::Type::UINT16, core::memory::BufferNewPolicy::New());
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 10 * 100), array->getSizeInBytes());
@@ -119,7 +119,7 @@ void ArrayTest::resize()
 
     data::Array::SizeType size {10, 100};
 
-    array->resize(size, core::tools::Type::s_UINT32, true);
+    array->resize(size, core::Type::UINT32, true);
     auto lock = array->dump_lock();
 
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
@@ -184,7 +184,7 @@ void ArrayTest::resize()
 
     newSize = {2, 10, 100};
 
-    array->resize(newSize, core::tools::Type::s_UINT16, false);
+    array->resize(newSize, core::Type::UINT16, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 100 * 10 * 2), array->getSizeInBytes());
@@ -208,7 +208,7 @@ void ArrayTest::reallocate()
 
     data::Array::SizeType size = {10, 100};
 
-    array->resize(size, core::tools::Type::s_UINT32, true);
+    array->resize(size, core::Type::UINT32, true);
     auto lock = array->dump_lock();
 
     std::uint32_t count = 0;
@@ -248,7 +248,7 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(value2, array->at<std::uint32_t>({99, 99}));
 
     newSize = {2, 100, 100};
-    array->resize(newSize, core::tools::Type::s_UINT32, true);
+    array->resize(newSize, core::Type::UINT32, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4 * 2 * 100 * 100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
@@ -286,7 +286,7 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 
     newSize = {2, 10, 100};
-    array->resize(newSize, core::tools::Type::s_UINT16, true);
+    array->resize(newSize, core::Type::UINT16, true);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2 * 10 * 100 * 2), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
@@ -318,7 +318,7 @@ void ArrayTest::copy()
 
     data::Array::SizeType size = {10, 100};
 
-    array->resize(size, core::tools::Type::s_UINT32, true);
+    array->resize(size, core::Type::UINT32, true);
     auto arrayLock = array->dump_lock();
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
@@ -405,7 +405,7 @@ void ArrayTest::dumpLockTest()
 {
     data::Array::SizeType size = {10, 100};
     data::Array::sptr array    = data::Array::New();
-    array->resize({12, 15}, core::tools::Type::s_INT16, true);
+    array->resize({12, 15}, core::Type::INT16, true);
 
     CPPUNIT_ASSERT_THROW(array->getBuffer(), data::Exception);
 
@@ -422,7 +422,7 @@ void ArrayTest::bufferAccessTest()
 
     data::Array::SizeType size = {10, 100};
 
-    array->resize(size, core::tools::Type::s_UINT32, true);
+    array->resize(size, core::Type::UINT32, true);
 
     {
         CPPUNIT_ASSERT_THROW(array->getBuffer(), core::Exception);
@@ -509,7 +509,7 @@ void ArrayTest::constArrayTest()
 
     data::Array::SizeType size = {10, 100};
 
-    array->resize(size, core::tools::Type::s_UINT32, true);
+    array->resize(size, core::Type::UINT32, true);
     auto lock = array->dump_lock();
 
     std::uint32_t count = 0;
@@ -552,7 +552,7 @@ void ArrayTest::constArrayTest()
 void ArrayTest::emptyIteratorTest()
 {
     data::Array::sptr array = data::Array::New();
-    array->resize({10, 100}, core::tools::Type::s_UINT32);
+    array->resize({10, 100}, core::Type::UINT32);
     auto lock = array->dump_lock();
 
     std::uint32_t count = 0;
@@ -593,7 +593,7 @@ void ArrayTest::equalityTest()
     // Fill array1
     const data::Array::SizeType size {10, 10};
 
-    array1->resize(size, core::tools::Type::s_UINT32, true);
+    array1->resize(size, core::Type::UINT32, true);
     auto lock = array1->dump_lock();
 
     std::uint32_t count = 0;
@@ -605,7 +605,7 @@ void ArrayTest::equalityTest()
     CPPUNIT_ASSERT(*array1 != *array2);
 
     // Fill array2
-    array2->resize(size, core::tools::Type::s_UINT32, true);
+    array2->resize(size, core::Type::UINT32, true);
     auto lock2 = array2->dump_lock();
 
     count = 666;

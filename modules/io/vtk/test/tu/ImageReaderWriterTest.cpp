@@ -184,7 +184,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
+    core::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
@@ -239,7 +239,7 @@ void ImageReaderWriterTest::testMhdImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
+    core::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
@@ -301,7 +301,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
 void ImageReaderWriterTest::testBitmapImageWriter()
 {
     // Data to write
-    const core::tools::Type type         = core::tools::Type::s_UINT8;
+    const core::Type type                = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 0};
 
     // Use standard information for spacing and origin
@@ -381,7 +381,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -446,7 +446,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    core::tools::Type type  = core::tools::Type::s_FLOAT;
+    core::Type type         = core::Type::FLOAT;
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateRandomImage(image, type);
 
@@ -473,7 +473,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -537,7 +537,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -601,7 +601,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21

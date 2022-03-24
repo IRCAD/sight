@@ -139,14 +139,14 @@ void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-std::size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
+std::size_t Image::resize(const Size& size, const core::Type& type, PixelFormat format)
 {
     return this->_resize(size, type, format, true);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc)
+std::size_t Image::_resize(const Size& size, const core::Type& type, PixelFormat format, bool realloc)
 {
     m_size          = size;
     m_type          = type;
@@ -178,7 +178,7 @@ std::size_t Image::_resize(const Size& size, const core::tools::Type& type, Pixe
 
 //------------------------------------------------------------------------------
 
-core::tools::Type Image::getType() const
+core::Type Image::getType() const
 {
     return m_type;
 }
@@ -229,7 +229,7 @@ std::size_t Image::getSizeInBytes() const
         size = std::accumulate(
             m_size.begin(),
             m_size.begin() + dims,
-            static_cast<std::size_t>(m_type.sizeOf()) * m_numComponents,
+            static_cast<std::size_t>(m_type.size()) * m_numComponents,
             std::multiplies<std::size_t>()
         );
     }
@@ -276,7 +276,7 @@ const void* Image::getBuffer() const
 
 void* Image::getPixel(IndexType index)
 {
-    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
+    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
     BufferType* buf                  = static_cast<BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
@@ -286,7 +286,7 @@ void* Image::getPixel(IndexType index)
 
 const void* Image::getPixel(IndexType index) const
 {
-    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
+    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
     const BufferType* buf            = static_cast<const BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
@@ -296,7 +296,7 @@ const void* Image::getPixel(IndexType index) const
 
 void Image::setPixel(IndexType index, Image::BufferType* pixBuf)
 {
-    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
+    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
     BufferType* buf                  = static_cast<BufferType*>(this->getPixel(index));
 
     std::copy(pixBuf, pixBuf + imagePixelSize, buf);
@@ -375,7 +375,7 @@ std::size_t Image::numElements() const
 void Image::setBuffer(
     void* buf,
     bool takeOwnership,
-    const core::tools::Type& type,
+    const core::Type& type,
     const data::Image::Size& size,
     PixelFormat format,
     core::memory::BufferAllocationPolicy::sptr policy

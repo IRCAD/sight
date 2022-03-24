@@ -52,7 +52,7 @@ void TypeTest::tearDown()
 template<typename _T, std::size_t _NUM_COMPONENTS>
 void testToCv(std::int32_t _expectedType)
 {
-    core::tools::Type type = core::tools::Type::create<_T>();
+    core::Type type        = core::Type::get<_T>();
     const auto imageFormat = io::opencv::Type::toCv(type, _NUM_COMPONENTS);
     CPPUNIT_ASSERT_EQUAL(_expectedType, imageFormat);
 }
@@ -62,10 +62,10 @@ void testToCv(std::int32_t _expectedType)
 template<typename _EXPECTED_T, uint8_t _EXPECTED_NUM_COMPONENTS>
 void testFromCv(std::int32_t _cvType)
 {
-    core::tools::Type expectedType = core::tools::Type::create<_EXPECTED_T>();
-    const auto format              = io::opencv::Type::fromCv(_cvType);
-    const auto type                = format.first;
-    const auto comp                = format.second;
+    core::Type expectedType = core::Type::get<_EXPECTED_T>();
+    const auto format       = io::opencv::Type::fromCv(_cvType);
+    const auto type         = format.first;
+    const auto comp         = format.second;
 
     CPPUNIT_ASSERT_EQUAL(expectedType, type);
     CPPUNIT_ASSERT_EQUAL(_EXPECTED_NUM_COMPONENTS, comp);

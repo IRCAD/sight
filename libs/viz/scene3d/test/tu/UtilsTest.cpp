@@ -164,7 +164,7 @@ void UtilsTest::worldToSliceTest()
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
-        core::tools::Type::s_UINT8,
+        core::Type::UINT8,
         data::Image::PixelFormat::GRAY_SCALE
     );
 

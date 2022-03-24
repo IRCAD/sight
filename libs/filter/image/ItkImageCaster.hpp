@@ -23,7 +23,6 @@
 #pragma once
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
 

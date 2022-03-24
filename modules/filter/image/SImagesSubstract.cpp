@@ -60,7 +60,7 @@ void SImagesSubstract::stopping()
 
 void SImagesSubstract::updating()
 {
-    core::tools::Type REQUESTED_TYPE = core::tools::Type::create("int16");
+    core::Type REQUESTED_TYPE = core::Type::INT16;
 
     const auto image1 = m_image1.lock();
     const auto image2 = m_image2.lock();

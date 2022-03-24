@@ -46,7 +46,7 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
 {
     CPPUNIT_ASSERT(_numChannels == 1 || _numChannels == 3 || _numChannels == 4);
 
-    const core::tools::Type type = core::tools::Type::create<T>();
+    const core::Type type = core::Type::get<T>();
 
     data::FrameTL::sptr frameTL = data::FrameTL::New();
     frameTL->initPoolSize(

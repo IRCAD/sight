@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -169,17 +168,17 @@ void SThreshold::updating()
     param.thresholdValue = m_threshold;
 
     // get image type
-    core::tools::Type type = param.imageIn->getType();
+    core::Type type = param.imageIn->getType();
 
     /* The dispatcher allows to apply the filter on any type of image.
      * It invokes the template functor ThresholdFilter using the image type.
      * - template parameters:
      *   - core::tools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
-     *     supported by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *     supported by core::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
      *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
      *   - ThresholdFilter: functor struct or class
      * - parameters:
-     *   - type: core::tools::Type of the image
+     *   - type: core::Type of the image
      *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
      */
 

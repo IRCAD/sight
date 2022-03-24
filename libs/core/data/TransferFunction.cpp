@@ -26,7 +26,7 @@
 #include "data/registry/macros.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 SIGHT_REGISTER_DATA(sight::data::TransferFunction)
 
@@ -201,9 +201,12 @@ void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
 TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _value) const
 {
     SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-    const std::pair<double, double> minMax = core::tools::Type::s_DOUBLE.minMax<double>();
-    double previousValue                   = minMax.first;
-    double nextValue                       = minMax.second;
+    const std::pair<double, double> minMax = {
+        std::numeric_limits<double>::lowest(),
+        std::numeric_limits<double>::max()
+    };
+    double previousValue = minMax.first;
+    double nextValue     = minMax.second;
 
     TFValueType val;
     for(const TFDataType::value_type& data : m_tfData)

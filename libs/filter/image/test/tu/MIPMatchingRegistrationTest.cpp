@@ -25,7 +25,6 @@
 #include "helper.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Matrix4.hpp>
@@ -79,7 +78,7 @@ void MIPMatchingRegistrationTest::identityTest()
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = data::Matrix4::New();
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
 
     for(std::size_t i = 0 ; i != 3 ; ++i)
@@ -111,7 +110,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = data::Matrix4::New();
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
@@ -178,7 +177,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     params.fixed     = resampledF4sFixed;
     params.moving    = moving;
     params.transform = data::Matrix4::New();
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {

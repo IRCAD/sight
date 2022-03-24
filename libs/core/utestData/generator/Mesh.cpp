@@ -22,7 +22,6 @@
 
 #include "utestData/generator/Mesh.hpp"
 
-#include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/random/Generator.hpp>
 
 #include <cstdlib>

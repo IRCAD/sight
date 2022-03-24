@@ -410,97 +410,97 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
 
 Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
 {
-    const core::tools::Type pixelType   = imageFw->getType();
+    const core::Type pixelType          = imageFw->getType();
     const std::size_t numberOfComponent = imageFw->numComponents();
 
     if(numberOfComponent == 1)
     {
-        if(pixelType == core::tools::Type::s_UINT8)
+        if(pixelType == core::Type::UINT8)
         {
             // uint8
             return Ogre::PF_L8;
         }
-        else if(pixelType == core::tools::Type::s_INT16)
+        else if(pixelType == core::Type::INT16)
         {
             // int16
             return Ogre::PF_L16;
         }
-        else if(pixelType == core::tools::Type::s_UINT16)
+        else if(pixelType == core::Type::UINT16)
         {
             // uint16
             return Ogre::PF_R16_UINT;
         }
-        else if(pixelType == core::tools::Type::s_FLOAT)
+        else if(pixelType == core::Type::FLOAT)
         {
             // float
             return Ogre::PF_FLOAT32_R;
         }
-        else if(pixelType == core::tools::Type::s_INT32)
+        else if(pixelType == core::Type::INT32)
         {
             // int32
             return Ogre::PF_R32_SINT;
         }
 
-        SIGHT_THROW("Format '" + pixelType.string() + "' not handled");
+        SIGHT_THROW("Format '" + pixelType.name() + "' not handled");
     }
 
     if(numberOfComponent == 2)
     {
-        if(pixelType == core::tools::Type::s_UINT8)
+        if(pixelType == core::Type::UINT8)
         {
             // uint8
             return Ogre::PF_RG8;
         }
-        else if(pixelType == core::tools::Type::s_INT8)
+        else if(pixelType == core::Type::INT8)
         {
             // int16
             return Ogre::PF_R8G8_SNORM;
         }
-        else if(pixelType == core::tools::Type::s_FLOAT)
+        else if(pixelType == core::Type::FLOAT)
         {
             // float
             return Ogre::PF_FLOAT32_GR;
         }
 
-        SIGHT_THROW("Format '" + pixelType.string() + "' not handled");
+        SIGHT_THROW("Format '" + pixelType.name() + "' not handled");
     }
 
     // PixelFormat in little endian
-    if(pixelType == core::tools::Type::s_UINT8)
+    if(pixelType == core::Type::UINT8)
     {
         // uint8
         return numberOfComponent == 3 ? Ogre::PF_BYTE_RGB : Ogre::PF_BYTE_RGBA;
     }
-    else if(pixelType == core::tools::Type::s_UINT16)
+    else if(pixelType == core::Type::UINT16)
     {
         // uint16
         return numberOfComponent == 3 ? Ogre::PF_R16G16B16_UINT : Ogre::PF_R16G16B16A16_UINT;
     }
-    else if(pixelType == core::tools::Type::s_UINT32)
+    else if(pixelType == core::Type::UINT32)
     {
         // uint32
         return numberOfComponent == 3 ? Ogre::PF_R32G32B32_UINT : Ogre::PF_R32G32B32A32_UINT;
     }
-    else if(pixelType == core::tools::Type::s_INT8)
+    else if(pixelType == core::Type::INT8)
     {
         // int8
         return numberOfComponent == 3 ? Ogre::PF_R8G8B8_SINT : Ogre::PF_R8G8B8A8_SINT;
     }
-    else if(pixelType == core::tools::Type::s_INT16)
+    else if(pixelType == core::Type::INT16)
     {
         // int16
         return numberOfComponent == 3 ? Ogre::PF_R16G16B16_SINT : Ogre::PF_R16G16B16A16_SINT;
     }
-    else if(pixelType == core::tools::Type::s_INT32)
+    else if(pixelType == core::Type::INT32)
     {
         // int32
         return numberOfComponent == 3 ? Ogre::PF_R32G32B32_SINT : Ogre::PF_R32G32B32A32_SINT;
     }
-    else if(pixelType == core::tools::Type::s_FLOAT)
+    else if(pixelType == core::Type::FLOAT)
     {
         return numberOfComponent == 3 ? Ogre::PF_FLOAT32_RGB : Ogre::PF_FLOAT32_RGBA;
     }
-    else if(pixelType == core::tools::Type::s_DOUBLE)
+    else if(pixelType == core::Type::DOUBLE)
     {
         SIGHT_FATAL("Pixel format not handled.");
     }
@@ -511,7 +511,7 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
 
 //------------------------------------------------------------------------------
 
-std::pair<core::tools::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Ogre::PixelFormat _format)
+std::pair<core::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Ogre::PixelFormat _format)
 {
     data::Image::PixelFormat pixelFormat = data::Image::PixelFormat::UNDEFINED;
 
@@ -562,7 +562,7 @@ std::pair<core::tools::Type, data::Image::PixelFormat> Utils::getPixelFormatFrom
             SIGHT_FATAL("Pixel format " << _format << " not found.");
     }
 
-    core::tools::Type pixelType;
+    core::Type pixelType;
     switch(_format)
     {
         case Ogre::PF_L8:
@@ -575,49 +575,49 @@ std::pair<core::tools::Type, data::Image::PixelFormat> Utils::getPixelFormatFrom
         case Ogre::PF_X8B8G8R8:
         case Ogre::PF_BYTE_RGB:
         case Ogre::PF_BYTE_RGBA:
-            pixelType = core::tools::Type::s_UINT8;
+            pixelType = core::Type::UINT8;
             break;
 
         case Ogre::PF_R8G8_SNORM:
         case Ogre::PF_R8G8B8_SINT:
         case Ogre::PF_R8G8B8A8_SINT:
-            pixelType = core::tools::Type::s_INT8;
+            pixelType = core::Type::INT8;
             break;
 
         case Ogre::PF_L16:
         case Ogre::PF_R16G16B16_UINT:
         case Ogre::PF_R16_UINT:
         case Ogre::PF_R16G16B16A16_UINT:
-            pixelType = core::tools::Type::s_UINT16;
+            pixelType = core::Type::UINT16;
             break;
 
         case Ogre::PF_SHORT_RGB:
         case Ogre::PF_SHORT_RGBA:
         case Ogre::PF_R16G16B16_SINT:
         case Ogre::PF_R16G16B16A16_SINT:
-            pixelType = core::tools::Type::s_INT16;
+            pixelType = core::Type::INT16;
             break;
 
         case Ogre::PF_R32G32B32_UINT:
         case Ogre::PF_R32G32B32A32_UINT:
-            pixelType = core::tools::Type::s_UINT32;
+            pixelType = core::Type::UINT32;
             break;
 
         case Ogre::PF_R32G32B32_SINT:
         case Ogre::PF_R32_SINT:
         case Ogre::PF_R32G32B32A32_SINT:
-            pixelType = core::tools::Type::s_INT32;
+            pixelType = core::Type::INT32;
             break;
 
         case Ogre::PF_FLOAT32_R:
         case Ogre::PF_FLOAT32_RGB:
         case Ogre::PF_FLOAT32_RGBA:
-            pixelType = core::tools::Type::s_FLOAT;
+            pixelType = core::Type::FLOAT;
             break;
 
         default:
             SIGHT_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
-            pixelType = core::tools::Type::s_UINT8;
+            pixelType = core::Type::UINT8;
     }
 
     return std::make_pair(pixelType, pixelFormat);
@@ -733,15 +733,15 @@ void Utils::convertImageForNegato(Ogre::Texture* _texture, const data::Image::sp
 
     // Fill the texture buffer.
     const auto srcType = _image->getType();
-    if(srcType == core::tools::Type::s_INT16)
+    if(srcType == core::Type::INT16)
     {
         copyNegatoImage<std::int16_t, std::int16_t>(_texture, _image);
     }
-    else if(srcType == core::tools::Type::s_INT32)
+    else if(srcType == core::Type::INT32)
     {
         copyNegatoImage<std::int32_t, std::int16_t>(_texture, _image);
     }
-    else if(srcType == core::tools::Type::s_UINT8)
+    else if(srcType == core::Type::UINT8)
     {
         copyNegatoImage<std::uint8_t, std::int16_t>(_texture, _image);
     }

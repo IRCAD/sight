@@ -54,7 +54,7 @@ public:
 
 private:
 
-    void stressTestInrWithType(core::tools::Type type, int nbTest);
+    void stressTestInrWithType(core::Type type, int nbTest);
     void checkSaveLoadInr(data::Image::sptr image);
 };
 

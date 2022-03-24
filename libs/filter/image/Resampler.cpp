@@ -23,7 +23,6 @@
 #include "Resampler.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <io/itk/helper/Transform.hpp>
 #include <io/itk/itk.hpp>
@@ -147,7 +146,7 @@ void Resampler::resample(
     params.i_trf        = transf.GetPointer();
     params.i_parameters = parameters;
 
-    const core::tools::Type type = _inImage->getType();
+    const core::Type type = _inImage->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, Resampling>::invoke(type, params);
 }
 

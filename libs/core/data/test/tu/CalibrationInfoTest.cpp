@@ -23,7 +23,7 @@
 #include "CalibrationInfoTest.hpp"
 
 #include <core/spyLog.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Point.hpp>
@@ -59,7 +59,7 @@ void CalibrationInfoTest::calibrationInfoTest()
     data::CalibrationInfo::sptr calInfo = data::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(img, core::Type::INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 
@@ -110,7 +110,7 @@ void CalibrationInfoTest::shallowCopyTest()
     data::CalibrationInfo::sptr calInfo = data::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(img, core::Type::INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 
@@ -138,7 +138,7 @@ void CalibrationInfoTest::deepCopyTest()
     data::CalibrationInfo::sptr calInfo = data::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(img, core::Type::INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 

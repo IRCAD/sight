@@ -64,7 +64,7 @@ sight::data::Array::sptr PointList::computeDistance(
     const std::size_t size                                   = points1.size();
 
     sight::data::Array::sptr outputArray = sight::data::Array::New();
-    outputArray->resize({size}, sight::core::tools::Type::s_DOUBLE);
+    outputArray->resize({size}, sight::core::Type::DOUBLE);
     const auto dumpLock   = outputArray->dump_lock();
     auto distanceArrayItr = outputArray->begin<double>();
 

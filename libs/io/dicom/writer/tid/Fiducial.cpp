@@ -31,8 +31,6 @@
 #include "io/dicom/container/sr/DicomSRUIDRefNode.hpp"
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <core/tools/Stringizer.hpp>
-
 #include <data/helper/MedicalImage.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
@@ -118,7 +116,7 @@ void Fiducial::createFiducial(
                 "Fiducial ID"
             ),
             "HAS PROPERTIES",
-            core::tools::getString(id)
+            std::to_string(id)
         );
     rootNode->addSubNode(idNode);
 

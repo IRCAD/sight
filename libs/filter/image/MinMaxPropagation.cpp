@@ -23,7 +23,6 @@
 #include "filter/image/MinMaxPropagation.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -217,7 +216,7 @@ public:
             reinterpret_cast<const data::Image::BufferType*>(
                 m_roi->getPixel(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
 
-        return !data::helper::MedicalImage::isBufNull(roiVal, m_roi->getType().sizeOf());
+        return !data::helper::MedicalImage::isBufNull(roiVal, m_roi->getType().size());
     }
 
 private:
@@ -286,7 +285,7 @@ struct MinMaxPropagator
 
         const auto dumpLock = params.outputImage->dump_lock();
 
-        const std::uint8_t outImgPixelSize = params.outputImage->getType().sizeOf()
+        const std::uint8_t outImgPixelSize = params.outputImage->getType().size()
                                              * static_cast<std::uint8_t>(params.outputImage->numComponents());
 
         for( ; !iter.IsAtEnd() ; ++iter)
@@ -330,8 +329,8 @@ ImageDiff MinMaxPropagation::propagate(
     const Mode mode
 )
 {
-    const core::tools::Type type        = m_inImage->getType();
-    const std::size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->numComponents();
+    const core::Type type               = m_inImage->getType();
+    const std::size_t outImagePixelSize = m_outImage->getType().size() * m_outImage->numComponents();
 
     MinMaxPropagator::Parameters params;
     params.inputImage  = m_inImage;

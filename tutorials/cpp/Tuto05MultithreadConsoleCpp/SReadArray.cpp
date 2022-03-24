@@ -62,7 +62,7 @@ void SReadArray::updating()
     // Initialize the array size and type.
     const int arraySize = 10;
     sight::data::Array::SizeType size(1, arraySize);
-    array->resize(size, sight::core::tools::Type::s_UINT32);
+    array->resize(size, sight::core::Type::UINT32);
 
     // Fill the array values.
     const auto dumpLock = array->dump_lock();

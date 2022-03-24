@@ -27,7 +27,6 @@
 #include "geometry/data/Matrix4.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/random/Generator.hpp>
 
 #include <geometry/data/MeshFunctions.hpp>
@@ -150,7 +149,7 @@ void generateRegionCellNormals(
                         n += v;
                     }
 
-                    n /= core::tools::numericRoundCast<float>(4);
+                    n /= 4.f;
                     n.normalize();
                     normal.nx = n.x;
                     normal.ny = n.y;
@@ -405,7 +404,7 @@ void regionShakeNormals(T normals, const sight::data::Mesh::cell_t regionMin, co
 void Mesh::shakeNormals(sight::data::Array::sptr array)
 {
     if(array
-       && array->getType() == core::tools::Type::create<float>()
+       && array->getType() == core::Type::FLOAT
        && !array->empty()
        && array->numDimensions() == 2)
     {

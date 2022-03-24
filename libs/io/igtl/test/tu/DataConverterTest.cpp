@@ -22,7 +22,7 @@
 
 #include "DataConverterTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Composite.hpp>
 #include <data/Float.hpp>
@@ -179,7 +179,7 @@ void DataConverterTest::imageConverterTest()
     data::Image::sptr image       = data::Image::New();
     data::Image::sptr image2      = data::Image::New();
 
-    core::tools::Type type = core::tools::Type::create<std::int32_t>();
+    core::Type type = core::Type::INT32;
     utestData::generator::Image::generateRandomImage(image, type);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(image);

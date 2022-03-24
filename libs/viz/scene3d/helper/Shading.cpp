@@ -359,7 +359,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({2}, core::tools::Type::s_FLOAT);
+            arrayObject->resize({2}, core::Type::FLOAT);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -374,7 +374,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({3}, core::tools::Type::s_FLOAT);
+            arrayObject->resize({3}, core::Type::FLOAT);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -410,7 +410,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({2}, core::tools::Type::s_INT32);
+            arrayObject->resize({2}, core::Type::INT32);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -425,7 +425,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({3}, core::tools::Type::s_INT32);
+            arrayObject->resize({3}, core::Type::INT32);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -441,7 +441,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({4}, core::tools::Type::s_INT32);
+            arrayObject->resize({4}, core::Type::INT32);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -466,7 +466,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
+            arrayObject->resize({2}, core::Type::DOUBLE);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -481,7 +481,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
+            arrayObject->resize({3}, core::Type::DOUBLE);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -497,7 +497,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize({4}, core::tools::Type::s_DOUBLE);
+            arrayObject->resize({4}, core::Type::DOUBLE);
 
             const auto dumpLock = arrayObject->dump_lock();
 

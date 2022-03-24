@@ -24,7 +24,6 @@
 #include "filter/image/SpheroidExtraction.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <io/itk/itk.hpp>
 

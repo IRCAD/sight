@@ -25,7 +25,6 @@
 #include "io/dicom/helper/Encoding.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/IntrinsicTypes.hpp>
 
 #include <gdcmGlobal.h>
 #include <gdcmPhotometricInterpretation.h>
@@ -39,25 +38,25 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-typedef std::map<core::tools::Type, gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
+typedef std::map<core::Type, gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
-    {core::tools::Type::create("uint8"), gdcm::PixelFormat::UINT8},
-    {core::tools::Type::create("int8"), gdcm::PixelFormat::INT8},
-    // {core::tools::Type::create("XXX")    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
-    // {core::tools::Type::create("XXX")    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
-    {core::tools::Type::create("uint16"), gdcm::PixelFormat::UINT16},
-    {core::tools::Type::create("int16"), gdcm::PixelFormat::INT16},
-    {core::tools::Type::create("uint32"), gdcm::PixelFormat::UINT32},
-    {core::tools::Type::create("int32"), gdcm::PixelFormat::INT32},
-    // { core::tools::Type::create("XXX")   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
-    {core::tools::Type::create("float"), gdcm::PixelFormat::FLOAT32},
-    {core::tools::Type::create("double"), gdcm::PixelFormat::FLOAT64}
+    {core::Type::UINT8, gdcm::PixelFormat::UINT8},
+    {core::Type::INT8, gdcm::PixelFormat::INT8},
+    // {core::Type::XXX    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
+    // {core::Type::XXX    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
+    {core::Type::UINT16, gdcm::PixelFormat::UINT16},
+    {core::Type::INT16, gdcm::PixelFormat::INT16},
+    {core::Type::UINT32, gdcm::PixelFormat::UINT32},
+    {core::Type::INT32, gdcm::PixelFormat::INT32},
+    // { core::Type::XXX   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
+    {core::Type::FLOAT, gdcm::PixelFormat::FLOAT32},
+    {core::Type::DOUBLE, gdcm::PixelFormat::FLOAT64}
 };
 
 //------------------------------------------------------------------------------
 
-const gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& type)
+const gdcm::PixelFormat DicomDataTools::getPixelType(const core::Type& type)
 {
     auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())

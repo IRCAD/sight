@@ -89,25 +89,25 @@ void ImageTest::testGetterSetter()
 
 void ImageTest::testAllocation()
 {
-    const core::tools::Type TYPE     = core::tools::Type::create("int16");
+    const core::Type type            = core::Type::INT16;
     const data::Image::Size IMG_SIZE = {14, 15, 26};
     const std::size_t NB_ELTS        = 14 * 15 * 26;
-    const std::size_t SIZE           = NB_ELTS * TYPE.sizeOf();
+    const std::size_t SIZE           = NB_ELTS * type.size();
 
     // process
     data::Image::sptr img1 = data::Image::New();
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), img1->numElements());
 
-    img1->resize(IMG_SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
+    img1->resize(IMG_SIZE, type, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(NB_ELTS, img1->numElements());
-    CPPUNIT_ASSERT(img1->getType() == TYPE);
+    CPPUNIT_ASSERT(img1->getType() == type);
 
     data::Image::sptr img3 = data::Image::New();
-    img3->resize(IMG_SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
+    img3->resize(IMG_SIZE, type, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(SIZE, img3->getSizeInBytes());
-    CPPUNIT_ASSERT(img1->getType() == TYPE);
+    CPPUNIT_ASSERT(img1->getType() == type);
     CPPUNIT_ASSERT_EQUAL(data::Image::PixelFormat::GRAY_SCALE, img3->getPixelFormat());
 }
 
@@ -115,18 +115,18 @@ void ImageTest::testAllocation()
 
 void ImageTest::testReallocation()
 {
-    const core::tools::Type TYPE1     = core::tools::Type::create("int16");
-    const core::tools::Type TYPE2     = core::tools::Type::create("int64");
-    const core::tools::Type TYPE3     = core::tools::Type::create("uint8");
+    const core::Type TYPE1            = core::Type::INT16;
+    const core::Type TYPE2            = core::Type::INT64;
+    const core::Type TYPE3            = core::Type::UINT8;
     const data::Image::Size IMG_SIZE1 = {10, 10, 10};
     const data::Image::Size IMG_SIZE2 = {20, 20, 20};
     const data::Image::Size IMG_SIZE3 = {5, 5, 5};
     const data::Image::Size IMG_SIZE5 = {0, 0, 0};
     const data::Image::Size IMG_SIZE6 = {42, 20};
-    const std::size_t SIZE1           = 10 * 10 * 10 * TYPE1.sizeOf();
-    const std::size_t SIZE2           = 20 * 20 * 20 * TYPE2.sizeOf();
-    const std::size_t SIZE3           = 5 * 5 * 5 * TYPE3.sizeOf();
-    const std::size_t SIZE4           = 5 * 5 * 5 * 4 * TYPE3.sizeOf();
+    const std::size_t SIZE1           = 10 * 10 * 10 * TYPE1.size();
+    const std::size_t SIZE2           = 20 * 20 * 20 * TYPE2.size();
+    const std::size_t SIZE3           = 5 * 5 * 5 * TYPE3.size();
+    const std::size_t SIZE4           = 5 * 5 * 5 * 4 * TYPE3.size();
     const std::size_t SIZE5           = 0;
     const std::size_t SIZE6           = 42 * 20;
     const std::size_t SIZE7           = 42 * 20 * 3;
@@ -169,7 +169,7 @@ void ImageTest::testSetGetPixel()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_INT16;
+    const core::Type TYPE        = core::Type::INT16;
     const data::Image::Size SIZE = {10, 20, 30};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
@@ -290,7 +290,7 @@ void ImageTest::testSetGetPixelRGBA()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_UINT8;
+    const core::Type TYPE        = core::Type::UINT8;
     const data::Image::Size SIZE = {6, 5, 3};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGBA);
@@ -435,7 +435,7 @@ void ImageTest::testIterator()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_INT16;
+    const core::Type TYPE        = core::Type::INT16;
     const data::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
@@ -504,7 +504,7 @@ void ImageTest::testRGBIterator()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_UINT8;
+    const core::Type TYPE        = core::Type::UINT8;
     const data::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGB);
@@ -568,7 +568,7 @@ void ImageTest::testBGRIterator()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_UINT8;
+    const core::Type TYPE        = core::Type::UINT8;
     const data::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::BGR);
@@ -619,7 +619,7 @@ void ImageTest::testBGRAIterator()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_UINT8;
+    const core::Type TYPE        = core::Type::UINT8;
     const data::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::BGRA);
@@ -675,7 +675,7 @@ void ImageTest::testRGBAIterator()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE = core::tools::Type::s_UINT16;
+    const core::Type TYPE        = core::Type::UINT16;
     const data::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGBA);
@@ -733,7 +733,7 @@ void ImageTest::benchmarkIterator()
 {
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type TYPE     = core::tools::Type::s_UINT16;
+    const core::Type TYPE            = core::Type::UINT16;
     constexpr data::Image::Size SIZE = {200, 100, 100};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGBA);
@@ -742,7 +742,7 @@ void ImageTest::benchmarkIterator()
         utestData::generator::Image::randomizeImage(img);
     }
 
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * TYPE.sizeOf(), allocatedSize);
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * TYPE.size(), allocatedSize);
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img->numElements());
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, img->getSizeInBytes());
 
@@ -830,7 +830,7 @@ void ImageTest::imageDeepCopy()
         const data::Image::Size size {32, 32, 32};
         const data::Image::Origin origin {0.2, 123.4, 999.666};
         const data::Image::Spacing spacing {0.6, 0.6, 1.8};
-        const auto type   = core::tools::Type::s_UINT8;
+        const auto type   = core::Type::UINT8;
         const auto format = data::Image::PixelFormat::RGB;
 
         {
@@ -862,7 +862,7 @@ void ImageTest::imageDeepCopy()
         const data::Image::Size size {156, 126, 0};
         const data::Image::Origin origin {1., 1., 0.};
         const data::Image::Spacing spacing {10., 10., 0.};
-        const auto type   = core::tools::Type::s_FLOAT;
+        const auto type   = core::Type::FLOAT;
         const auto format = data::Image::PixelFormat::GRAY_SCALE;
 
         {
@@ -894,7 +894,7 @@ void ImageTest::imageDeepCopy()
 void ImageTest::emptyIteratorTest()
 {
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     const auto dumpLock = image->dump_lock();
 

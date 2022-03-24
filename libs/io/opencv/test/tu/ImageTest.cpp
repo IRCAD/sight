@@ -63,8 +63,8 @@ static data::Image::sptr genImage(
         imageDim++;
     }
 
-    const core::tools::Type imageType = core::tools::Type::create<T>();
-    data::Image::Size imageSize       = {0, 0, 0};
+    const core::Type imageType  = core::Type::get<T>();
+    data::Image::Size imageSize = {0, 0, 0};
     imageSize[0] = _w;
     if(_h > 0)
     {

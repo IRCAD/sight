@@ -160,8 +160,8 @@ service::IService::ConfigType ParameterEditor::createConfig(
         {
             std::string strSize = std::to_string(numComponents);
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT
-               || arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            if(arrayObject->getType() == core::Type::FLOAT
+               || arrayObject->getType() == core::Type::DOUBLE)
             {
                 _connections.connect(
                     _paramSrv,
@@ -175,7 +175,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
                 const auto dumpLock = arrayObject->dump_lock();
 
                 double defaultValue;
-                if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+                if(arrayObject->getType() == core::Type::FLOAT)
                 {
                     defaultValue = static_cast<double>(arrayObject->at<float>(0));
                 }
@@ -195,7 +195,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
                 paramConfig.add("<xmlattr>.min", min);
                 paramConfig.add("<xmlattr>.max", max);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_INT32)
+            else if(arrayObject->getType() == core::Type::INT32)
             {
                 _connections.connect(
                     _paramSrv,

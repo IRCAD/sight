@@ -139,11 +139,11 @@ void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 std::size_t Array::resize(
     const SizeType& size,
-    const core::tools::Type& type,
+    const core::Type& type,
     bool reallocate
 )
 {
-    const std::size_t bufSize = computeSize(type.sizeOf(), size);
+    const std::size_t bufSize = computeSize(type.size(), size);
 
     if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
     {
@@ -166,7 +166,7 @@ std::size_t Array::resize(
         );
     }
 
-    m_strides = computeStrides(size, type.sizeOf());
+    m_strides = computeStrides(size, type.size());
     m_type    = type;
     m_size    = size;
 
@@ -177,8 +177,6 @@ std::size_t Array::resize(
 
 std::size_t Array::resize(const SizeType& size, bool reallocate)
 {
-    SIGHT_ASSERT("Type should have been set by a previous resize() call", !m_type.isOfType<void>());
-
     return this->resize(size, m_type, reallocate);
 }
 
@@ -194,7 +192,7 @@ void Array::clear()
         }
 
         m_strides.clear();
-        m_type = core::tools::Type();
+        m_type = core::Type::NONE;
         m_size.clear();
     }
 }
@@ -210,7 +208,7 @@ bool Array::empty() const
 
 std::size_t Array::getElementSizeInBytes() const
 {
-    return m_type.sizeOf();
+    return m_type.size();
 }
 
 //------------------------------------------------------------------------------
@@ -224,7 +222,7 @@ std::size_t Array::numElements() const
 
 std::size_t Array::getSizeInBytes() const
 {
-    return computeSize(m_type.sizeOf(), m_size);
+    return computeSize(m_type.size(), m_size);
 }
 
 //------------------------------------------------------------------------------
@@ -264,7 +262,7 @@ bool Array::getIsBufferOwner() const
 
 //------------------------------------------------------------------------------
 
-core::tools::Type Array::getType() const
+core::Type Array::getType() const
 {
     return m_type;
 }
@@ -348,7 +346,7 @@ void Array::setBuffer(
     void* buf,
     bool takeOwnership,
     const data::Array::SizeType& size,
-    const core::tools::Type& type,
+    const core::Type& type,
     core::memory::BufferAllocationPolicy::sptr policy
 )
 {

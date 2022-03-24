@@ -53,7 +53,7 @@ public:
      * @param[in] type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static const gdcm::PixelFormat getPixelType(const core::tools::Type& type);
+    IO_DICOM_API static const gdcm::PixelFormat getPixelType(const core::Type& type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.

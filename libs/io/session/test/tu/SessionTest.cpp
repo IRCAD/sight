@@ -726,26 +726,26 @@ inline data::Array::sptr _generate<data::Array>(const std::size_t variant)
             object->resize(
                 {variant + 2, variant + 2},
                 std::is_same<T, double>::value
-                ? core::tools::Type::s_DOUBLE
+                ? core::Type::DOUBLE
                 : std::is_same<T, float>::value
-                ? core::tools::Type::s_FLOAT
+                ? core::Type::FLOAT
                 : std::is_same<T, std::uint8_t>::value
-                ? core::tools::Type::s_UINT8
+                ? core::Type::UINT8
                 : std::is_same<T, std::uint16_t>::value
-                ? core::tools::Type::s_UINT16
+                ? core::Type::UINT16
                 : std::is_same<T, std::uint32_t>::value
-                ? core::tools::Type::s_UINT32
+                ? core::Type::UINT32
                 : std::is_same<T, std::uint64_t>::value
-                ? core::tools::Type::s_UINT64
+                ? core::Type::UINT64
                 : std::is_same<T, std::int8_t>::value
-                ? core::tools::Type::s_INT8
+                ? core::Type::INT8
                 : std::is_same<T, std::int16_t>::value
-                ? core::tools::Type::s_INT16
+                ? core::Type::INT16
                 : std::is_same<T, std::int32_t>::value
-                ? core::tools::Type::s_INT32
+                ? core::Type::INT32
                 : std::is_same<T, std::int64_t>::value
-                ? core::tools::Type::s_INT64
-                : core::tools::Type::s_UNSPECIFIED_TYPE,
+                ? core::Type::INT64
+                : core::Type::NONE,
                 true
             );
 
@@ -910,26 +910,26 @@ inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
                     0.6 + static_cast<double>(variant)
                 },
                 std::is_same<T, double>::value
-                ? core::tools::Type::s_DOUBLE
+                ? core::Type::DOUBLE
                 : std::is_same<T, float>::value
-                ? core::tools::Type::s_FLOAT
+                ? core::Type::FLOAT
                 : std::is_same<T, std::uint8_t>::value
-                ? core::tools::Type::s_UINT8
+                ? core::Type::UINT8
                 : std::is_same<T, std::uint16_t>::value
-                ? core::tools::Type::s_UINT16
+                ? core::Type::UINT16
                 : std::is_same<T, std::uint32_t>::value
-                ? core::tools::Type::s_UINT32
+                ? core::Type::UINT32
                 : std::is_same<T, std::uint64_t>::value
-                ? core::tools::Type::s_UINT64
+                ? core::Type::UINT64
                 : std::is_same<T, std::int8_t>::value
-                ? core::tools::Type::s_INT8
+                ? core::Type::INT8
                 : std::is_same<T, std::int16_t>::value
-                ? core::tools::Type::s_INT16
+                ? core::Type::INT16
                 : std::is_same<T, std::int32_t>::value
-                ? core::tools::Type::s_INT32
+                ? core::Type::INT32
                 : std::is_same<T, std::int64_t>::value
-                ? core::tools::Type::s_INT64
-                : core::tools::Type::s_UNSPECIFIED_TYPE,
+                ? core::Type::INT64
+                : core::Type::NONE,
 
                 std::is_same<T, double>::value
                 ? data::Image::PixelFormat::GRAY_SCALE

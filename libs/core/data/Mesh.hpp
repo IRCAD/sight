@@ -34,6 +34,8 @@
 #include <boost/range/combine.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
+#include <array>
+
 namespace sight::data
 {
 

@@ -57,7 +57,7 @@ void moveFromItk(
     _dataImage->setOrigin(vOrigin);
     _dataImage->setSpacing(vSpacing);
 
-    const auto pixelType = core::tools::Type::create<typename ITKIMAGE::PixelType>();
+    const auto pixelType = core::Type::get<typename ITKIMAGE::PixelType>();
     const auto dumpLock  = _dataImage->dump_lock();
     if(_bufferManagerIsDataImage)
     {
@@ -94,7 +94,7 @@ void moveFromItk(
     }
 
     // Post Condition correct PixelType
-    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE);
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::Type::NONE);
 }
 
 //------------------------------------------------------------------------------

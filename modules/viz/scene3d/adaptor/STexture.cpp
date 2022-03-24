@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Image.hpp>
 #include <data/Material.hpp>

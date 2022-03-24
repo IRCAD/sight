@@ -40,7 +40,7 @@ void ImageConversionTest::stressTestForAType()
     for(unsigned char k = 0 ; k < 5 ; k++)
     {
         data::Image::sptr image = data::Image::New();
-        utestData::generator::Image::generateRandomImage(image, core::tools::Type::create<TYPE>());
+        utestData::generator::Image::generateRandomImage(image, core::Type::get<TYPE>());
 
         typedef ::itk::Image<TYPE, 3> ImageType;
         typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);

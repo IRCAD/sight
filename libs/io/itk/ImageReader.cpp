@@ -29,8 +29,6 @@
 
 #include <core/base.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/IntrinsicTypes.hpp>
-#include <core/tools/TypeInfoKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
 
@@ -60,6 +58,23 @@ ImageReader::~ImageReader()
 
 //------------------------------------------------------------------------------
 
+static const std::map<::itk::ImageIOBase::IOComponentType, core::Type> s_fromItkType =
+{
+    {::itk::ImageIOBase::UNKNOWNCOMPONENTTYPE, core::Type::NONE},
+    {::itk::ImageIOBase::UCHAR, core::Type::UINT8},
+    {::itk::ImageIOBase::CHAR, core::Type::INT8},
+    {::itk::ImageIOBase::USHORT, core::Type::UINT16},
+    {::itk::ImageIOBase::SHORT, core::Type::INT16},
+    {::itk::ImageIOBase::UINT, core::Type::UINT32},
+    {::itk::ImageIOBase::INT, core::Type::INT32},
+    {::itk::ImageIOBase::ULONG, core::Type::UINT32},
+    {::itk::ImageIOBase::LONG, core::Type::INT32},
+    {::itk::ImageIOBase::ULONGLONG, core::Type::UINT64},
+    {::itk::ImageIOBase::LONGLONG, core::Type::INT64},
+    {::itk::ImageIOBase::FLOAT, core::Type::FLOAT},
+    {::itk::ImageIOBase::DOUBLE, core::Type::DOUBLE}
+};
+
 struct ITKLoaderFunctor
 {
     struct Parameter
@@ -76,7 +91,7 @@ struct ITKLoaderFunctor
     {
         SIGHT_INFO(
             "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "
-            << core::tools::Type::create<PIXELTYPE>().string()
+            << core::Type::get<PIXELTYPE>().name()
         );
 
         // Reader IO (*1*)
@@ -103,7 +118,7 @@ struct ITKLoaderFunctor
     }
 
     //// get pixel type from Header
-    static const std::type_info& getImageType(const std::string& imageFileName)
+    static const core::Type& getImageType(const std::string& imageFileName)
     {
         ::itk::ImageIOBase::Pointer imageIO = ::itk::ImageIOFactory::CreateImageIO(
             imageFileName.c_str(),
@@ -121,7 +136,9 @@ struct ITKLoaderFunctor
 
         imageIO->SetFileName(imageFileName.c_str());
         imageIO->ReadImageInformation();
-        return imageIO->GetComponentTypeInfo();
+        auto type = imageIO->GetComponentType();
+
+        return s_fromItkType.at(type);
     }
 };
 
@@ -134,21 +151,21 @@ void ImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const std::type_info& ti = ITKLoaderFunctor::getImageType(file.string());
+    const core::Type type = ITKLoaderFunctor::getImageType(file.string());
 
     ITKLoaderFunctor::Parameter param;
     param.m_filename  = file.string();
     param.m_dataImage = this->getConcreteObject();
     param.m_fwReader  = this->getSptr();
 
-    core::tools::Dispatcher<core::tools::IntrinsicTypes, ITKLoaderFunctor>::invoke(ti, param);
+    core::tools::Dispatcher<core::tools::IntrinsicTypes, ITKLoaderFunctor>::invoke(type, param);
 
     SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(
         "Image has an unspecified type",
-        getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE
+        getConcreteObject()->getType() != core::Type::NONE
     );
 }
 

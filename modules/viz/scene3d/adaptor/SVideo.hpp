@@ -180,7 +180,7 @@ private:
     int m_previousViewportHeight {0};
 
     /// Defines the previous image type.
-    core::tools::Type m_previousType;
+    core::Type m_previousType;
 
     /// Contains the pointlist in the video space coordinates.
     data::PointList::sptr m_pointList {nullptr};

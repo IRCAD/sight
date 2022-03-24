@@ -30,9 +30,11 @@
 
 #include <core/memory/BufferObject.hpp>
 #include <core/memory/IBuffered.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/iterator.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::data
 {
@@ -58,8 +60,8 @@ namespace sight::data
  * memory.
  *
  * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
- * use setType(const core::tools::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
- * resize(const SizeType& size, const core::tools::Type& type, bool reallocate).
+ * use setType(const core::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
+ * resize(const SizeType& size, const core::Type& type, bool reallocate).
  *
  * @section Access Buffer access
  *
@@ -117,7 +119,7 @@ namespace sight::data
 /**
  * @code{.cpp}
     Array::sptr array = Array::New();
-    array->resize({1920, 1080}, core::tools::Type::s_INT16);
+    array->resize({1920, 1080}, core::Type::INT16);
     auto iter          = array->begin<std::int16_t>();
     const auto iterEnd = array->end<std::int16_t>();
 
@@ -198,7 +200,7 @@ public:
      *
      * @throw Exception
      */
-    DATA_API std::size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
+    DATA_API std::size_t resize(const SizeType& size, const core::Type& type, bool reallocate = true);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -298,7 +300,7 @@ public:
      *
      * @return Type of array
      */
-    DATA_API core::tools::Type getType() const;
+    DATA_API core::Type getType() const;
 
     /**
      * @brief Compute strides for given parameters
@@ -408,7 +410,7 @@ public:
         void* buf,
         bool takeOwnership,
         const Array::SizeType& size,
-        const core::tools::Type& type,
+        const core::Type& type,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
     );
 
@@ -467,7 +469,7 @@ public:
      * Example :
      * @code{.cpp}
         Array::sptr array = Array::New();
-        array->resize({1920, 1080}, core::tools::Type::s_INT16);
+        array->resize({1920, 1080}, core::Type::INT16);
         auto iter          = array->begin<std::int16_t>();
         const auto iterEnd = array->end<std::int16_t>();
 
@@ -540,7 +542,7 @@ protected:
 private:
 
     OffsetType m_strides {0};
-    core::tools::Type m_type;
+    core::Type m_type;
     core::memory::BufferObject::sptr m_bufferObject;
     SizeType m_size;
     bool m_isBufferOwner {true};

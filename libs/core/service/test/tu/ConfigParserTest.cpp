@@ -139,7 +139,7 @@ void ConfigParserTest::testImageParser()
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(objectUUID, image->getID());
     CPPUNIT_ASSERT_EQUAL(sight::data::Image::RGBA, image->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(sight::core::tools::Type::s_UINT8, image->getType());
+    CPPUNIT_ASSERT_EQUAL(sight::core::Type::UINT8, image->getType());
 
     // We only test the image content, we do not really care about the image size and other attributes for now
     const auto dumpLock = image->dump_lock();

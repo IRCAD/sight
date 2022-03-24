@@ -337,24 +337,24 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         {
             const auto dumpLock = arrayObject->dump_lock();
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            if(arrayObject->getType() == core::Type::FLOAT)
             {
                 const float* floatValue = static_cast<const float*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            else if(arrayObject->getType() == core::Type::DOUBLE)
             {
                 const double* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_INT32)
+            else if(arrayObject->getType() == core::Type::INT32)
             {
                 const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, intValue, 1, numComponents);
             }
             else
             {
-                SIGHT_ERROR("Array type not handled: " << arrayObject->getType());
+                SIGHT_ERROR("Array type not handled: " << arrayObject->getType().name());
             }
         }
         else
@@ -473,7 +473,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 
             if(arrayObject->empty())
             {
-                arrayObject->resize({2}, core::tools::Type::s_INT32);
+                arrayObject->resize({2}, core::Type::INT32);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
@@ -499,7 +499,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
 
             if(arrayObject->empty())
             {
-                arrayObject->resize({3}, core::tools::Type::s_INT32);
+                arrayObject->resize({3}, core::Type::INT32);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
@@ -545,18 +545,17 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
             SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
             if(arrayObject->empty())
             {
-                core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
-                arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
+                arrayObject->resize({2}, core::Type::DOUBLE);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            if(arrayObject->getType() == core::Type::FLOAT)
             {
                 arrayObject->at<float>(0) = static_cast<float>(value1);
                 arrayObject->at<float>(1) = static_cast<float>(value2);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            else if(arrayObject->getType() == core::Type::DOUBLE)
             {
                 arrayObject->at<double>(0) = value1;
                 arrayObject->at<double>(1) = value2;
@@ -582,19 +581,18 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
 
             if(arrayObject->empty())
             {
-                core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
-                arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
+                arrayObject->resize({3}, core::Type::DOUBLE);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            if(arrayObject->getType() == core::Type::FLOAT)
             {
                 arrayObject->at<float>(0) = static_cast<float>(value1);
                 arrayObject->at<float>(1) = static_cast<float>(value2);
                 arrayObject->at<float>(2) = static_cast<float>(value3);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            else if(arrayObject->getType() == core::Type::DOUBLE)
             {
                 arrayObject->at<double>(0) = value1;
                 arrayObject->at<double>(1) = value2;

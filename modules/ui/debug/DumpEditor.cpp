@@ -29,10 +29,6 @@
 #include <core/memory/ByteSize.hpp>
 #include <core/memory/IPolicy.hpp>
 #include <core/memory/tools/MemoryMonitorTools.hpp>
-#include <core/tools/fwID.hpp>
-#include <core/tools/Stringizer.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/IMessageDialog.hpp>
@@ -644,14 +640,14 @@ void DumpEditor::onBufferInfo()
         bool isLock = dumpBuffInfo.lockCount() > 0;
         if(isLock)
         {
-            lockStatus = "locked(" + core::tools::getString(dumpBuffInfo.lockCount()) + ")";
+            lockStatus = "locked(" + std::to_string(dumpBuffInfo.lockCount()) + ")";
         }
         else
         {
             lockStatus = "unlocked";
         }
 
-        date = core::tools::getString(dumpBuffInfo.lastAccess.getLogicStamp());
+        date = std::to_string(dumpBuffInfo.lastAccess.getLogicStamp());
 
         QTableWidgetItem* currentSizeItem = new SizeTableWidgetItem(getHumanReadableSize(dumpBuffInfo.size));
         currentSizeItem->setData(Qt::UserRole, (qulonglong) dumpBuffInfo.size);
