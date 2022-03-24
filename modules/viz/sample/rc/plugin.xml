@@ -1,4 +1,4 @@
-<plugin id="sight::module::viz::sample" library="true" >
+<plugin id="sight::module::viz::sample" library="true" autostart="true">
     <requirement id="sight::module::ui::qt"/>
     <requirement id="sight::module::viz::scene3d"/>
     <requirement id="sight::module::viz::scene3dQt"/>

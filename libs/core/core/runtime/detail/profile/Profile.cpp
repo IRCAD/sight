@@ -24,8 +24,6 @@
 
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/profile/Activater.hpp"
-#include "core/runtime/detail/profile/Starter.hpp"
-#include "core/runtime/detail/profile/Stopper.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Extension.hpp"
 
@@ -42,26 +40,9 @@ namespace detail
 namespace profile
 {
 
-namespace
-{
-
-template<typename E>
-struct Apply
-{
-    //------------------------------------------------------------------------------
-
-    void operator()(E e)
-    {
-        e->apply();
-    }
-};
-
-}
-
 //------------------------------------------------------------------------------
 
-Profile::Profile() :
-    m_checkSingleInstance(false)
+Profile::Profile()
 {
     m_run = std::bind(&Profile::defaultRun, this);
 }
@@ -81,23 +62,25 @@ void Profile::add(SPTR(Activater)activater)
 
 //------------------------------------------------------------------------------
 
-void Profile::add(SPTR(Starter)starter)
+void Profile::addStarter(const std::string& identifier)
 {
-    m_starters.push_back(starter);
+    detail::Runtime& runtime = detail::Runtime::get();
+    auto module              = std::dynamic_pointer_cast<detail::Module>(runtime.findModule(identifier));
+    m_starters.insert({module->priority(), identifier});
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add(SPTR(Stopper)stopper)
+void Profile::addStopper(const std::string& identifier, int priority)
 {
-    m_stoppers.push_back(stopper);
+    m_stoppers.insert({priority, identifier});
 }
 
 //------------------------------------------------------------------------------
 
 void Profile::start()
 {
-    std::for_each(m_activaters.begin(), m_activaters.end(), Apply<ActivaterContainer::value_type>());
+    std::for_each(m_activaters.begin(), m_activaters.end(), [](auto& activater){activater->apply();});
 
     // Check validity of extension
 
@@ -113,7 +96,23 @@ void Profile::start()
         );
     }
 
-    std::for_each(m_starters.begin(), m_starters.end(), Apply<StarterContainer::value_type>());
+    std::for_each(
+        m_starters.begin(),
+        m_starters.end(),
+        [](auto& s)
+                {
+                    auto identifier = s.second;
+                    auto module     = detail::Runtime::get().findEnabledModule(identifier);
+                    SIGHT_FATAL_IF("Unable to start module " + identifier + ": not found.", module == nullptr);
+                    try
+                    {
+                        module->start();
+                    }
+                    catch(const std::exception& e)
+                    {
+                        SIGHT_FATAL("Unable to start module " + identifier + ". " + e.what());
+                    }
+                });
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +143,27 @@ void Profile::setRunCallback(RunCallbackType callback)
 
 void Profile::stop()
 {
-    std::for_each(m_stoppers.rbegin(), m_stoppers.rend(), Apply<StopperContainer::value_type>());
+    std::for_each(
+        m_stoppers.rbegin(),
+        m_stoppers.rend(),
+        [](auto& s)
+                {
+                    auto identifier = s.second;
+                    auto module     = detail::Runtime::get().findEnabledModule(identifier);
+                    SIGHT_FATAL_IF(
+                        "Unable to stop module " + identifier + ". Not found.",
+                        module == nullptr
+                    );
+                    try
+                    {
+                        SIGHT_INFO("Stopping module : " + identifier);
+                        module->stop();
+                    }
+                    catch(const std::exception& e)
+                    {
+                        SIGHT_ERROR("Unable to stop module " + identifier + ". " + e.what());
+                    }
+                });
 }
 
 //------------------------------------------------------------------------------

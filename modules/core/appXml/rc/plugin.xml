@@ -1,4 +1,5 @@
-<plugin id="sight::module::appXml" library="true" >
+<plugin id="sight::module::appXml" library="true" autostart="true" priority="100">
+    <!-- we give the lowest priority because the AppXml needs to be launched last -->
 
     <requirement id="sight::module::service" />
 

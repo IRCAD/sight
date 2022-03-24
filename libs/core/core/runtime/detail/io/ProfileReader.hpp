@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,6 @@ namespace profile
 
 class Activater;
 class Profile;
-class Starter;
 
 }
 
@@ -76,7 +75,7 @@ public:
      * @return      a shared pointer to the created profile
      */
     static std::shared_ptr<core::runtime::detail::profile::Profile> processProfile(xmlNodePtr node);
-    static std::shared_ptr<core::runtime::detail::profile::Starter> processStarter(xmlNodePtr node);
+    static std::string processStarter(xmlNodePtr node);
 
     /**
      * @brief       Processes the given xml node as an activater.

@@ -25,14 +25,6 @@
 #include "modules/ui/qml/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
-
-namespace sight::core::thread
-{
-
-class Worker;
-
-} //namespace thread
-
 namespace sight::module::ui::qml
 {
 

@@ -1,5 +1,4 @@
-<plugin id="sight::module::memory" library="true" >
-
+<plugin id="sight::module::memory" library="true" autostart="true">
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
@@ -14,4 +13,5 @@
          <object>sight::data::Object</object>
          <desc></desc>
     </extension>
+
 </plugin>

@@ -1,9 +1,4 @@
-sight_add_target(
-    module_ui_qml
-    TYPE MODULE
-    START ON
-    PRIORITY 100
-) # we give a high priority because the Qt worker needs to be created first
+sight_add_target(module_ui_qml TYPE MODULE)
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Quick Qml QuickControls2 REQUIRED)
 target_link_libraries(module_ui_qml PUBLIC Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml Qt5::QuickControls2)

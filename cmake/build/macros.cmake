@@ -879,8 +879,6 @@ macro(sight_add_target)
     set(oneValueArgs
         TYPE
         PCH
-        START
-        PRIORITY
         CONSOLE
         OBJECT_LIBRARY
         WARNINGS_AS_ERRORS
@@ -949,16 +947,6 @@ macro(sight_add_target)
         endif()
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_UNIQUE "${SIGHT_TARGET_UNIQUE}")
     endif()
-
-    if("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE" OR "${SIGHT_TARGET_TYPE}" STREQUAL "APP" AND SIGHT_TARGET_START)
-        set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_START "${SIGHT_TARGET_START}")
-    endif()
-
-    if(NOT DEFINED SIGHT_TARGET_PRIORITY)
-        # set default priority
-        set(SIGHT_TARGET_PRIORITY 50)
-    endif()
-    set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_PRIORITY "${SIGHT_TARGET_PRIORITY}")
 
     if(NOT DEFINED SIGHT_TARGET_WARNINGS_AS_ERRORS OR SIGHT_TARGET_WARNINGS_AS_ERRORS)
         get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)

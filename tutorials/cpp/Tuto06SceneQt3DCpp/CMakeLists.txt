@@ -1,4 +1,4 @@
-sight_add_target(Tuto06SceneQt3DCpp TYPE APP START ON)
+sight_add_target(Tuto06SceneQt3DCpp TYPE APP)
 
 add_dependencies(
     Tuto06SceneQt3DCpp

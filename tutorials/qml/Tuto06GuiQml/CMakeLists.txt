@@ -1,4 +1,4 @@
-sight_add_target(Tuto06GuiQml TYPE APP START ON)
+sight_add_target(Tuto06GuiQml TYPE APP)
 
 add_dependencies(Tuto06GuiQml data module_service module_ui_base module_ui_qml)
 

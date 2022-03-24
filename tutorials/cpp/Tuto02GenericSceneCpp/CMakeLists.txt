@@ -1,4 +1,4 @@
-sight_add_target(Tuto02GenericSceneCpp TYPE APP START ON)
+sight_add_target(Tuto02GenericSceneCpp TYPE APP)
 
 add_dependencies(
     Tuto02GenericSceneCpp

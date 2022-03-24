@@ -1,4 +1,6 @@
-<plugin id="sight::module::ui::qml" library="true" >
+<plugin id="sight::module::ui::qml" library="true" autostart="true" priority="-100">
+     <!-- we give a lower priority because the Qt worker needs to be created first -->
+
     <requirement id="sight::module::ui::base"/>
 
     <extension implements="sight::service::extension::Factory">

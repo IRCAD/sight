@@ -83,7 +83,8 @@ public:
     Module(
         const std::filesystem::path& location,
         const std::string& id,
-        const std::string& pluginClass = ""
+        const std::string& pluginClass = "",
+        int priority                   = 0
     );
 
     /**
@@ -374,9 +375,16 @@ public:
     void addParameter(const std::string& identifier, const std::string& value);
     //@}
 
-    bool isStarted()
+    bool isStarted() const
     {
         return m_started;
+    }
+
+    //------------------------------------------------------------------------------
+
+    int priority() const
+    {
+        return m_priority;
     }
 
     static std::string getModuleStr(const std::string& identifier);
@@ -401,10 +409,10 @@ private:
     SPTR(IPlugin)  m_plugin;                          ///< a shared pointer to the plugin instance
     SPTR(dl::Library) m_library;                      ///< library that is part of the module
     ParameterContainer m_parameters;                  ///< all parameters
-    unsigned int m_refCount {0};                      ///< counter used to know if a module is in use
 
     bool m_enabled {true}; ///< a boolean telling if the module is enabled or not
     bool m_started {false};
+    int m_priority; ///< start order, lower is more favorable
 
     /**
      * @brief   Assignement operator.

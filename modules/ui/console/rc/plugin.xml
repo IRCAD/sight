@@ -1,4 +1,1 @@
-<plugin id="sight::module::ui::console" library="true" >
-
-
-</plugin>
+<plugin id="sight::module::ui::console" library="true" autostart="true" />

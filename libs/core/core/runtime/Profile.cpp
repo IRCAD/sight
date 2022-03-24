@@ -24,8 +24,6 @@
 #include "core/runtime/Profile.hpp"
 
 #include "core/runtime/detail/profile/Activater.hpp"
-#include "core/runtime/detail/profile/Starter.hpp"
-#include "core/runtime/detail/profile/Stopper.hpp"
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/Module.hpp"
 #include "core/runtime/Runtime.hpp"

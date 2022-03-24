@@ -1,4 +1,4 @@
-sight_add_target(module_viz_sample TYPE MODULE START ON)
+sight_add_target(module_viz_sample TYPE MODULE)
 
 add_dependencies(module_viz_sample module_viz_scene3d module_viz_scene3dQt module_ui_qt)
 

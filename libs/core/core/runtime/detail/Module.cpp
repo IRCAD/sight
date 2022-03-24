@@ -25,7 +25,6 @@
 #include "core/runtime/detail/EmptyPlugin.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
-#include "core/runtime/detail/profile/Stopper.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/ExecutableFactory.hpp"
 #include "core/runtime/Extension.hpp"
@@ -61,11 +60,13 @@ SPTR(Module) Module::getLoadingModule()
 Module::Module(
     const std::filesystem::path& location,
     const std::string& id,
-    const std::string& c
+    const std::string& c,
+    int priority
 ) :
     m_resourcesLocation(location.lexically_normal()),
     m_identifier(id),
-    m_class(c)
+    m_class(c),
+    m_priority(priority)
 {
     // Post-condition.
     SIGHT_ASSERT("Invalid module location.", m_resourcesLocation.is_absolute() == true);
@@ -454,7 +455,7 @@ void Module::startPlugin()
         try
         {
             auto prof = std::dynamic_pointer_cast<detail::profile::Profile>(core::runtime::getCurrentProfile());
-            prof->add(std::make_shared<profile::Stopper>(this->getIdentifier()));
+            prof->addStopper(this->getIdentifier(), this->priority());
 
             m_plugin = plugin;
             m_plugin->start();

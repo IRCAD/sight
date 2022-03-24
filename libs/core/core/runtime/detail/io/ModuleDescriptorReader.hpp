@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,21 +156,6 @@ public:
      * @return  a string containing the requirement's value
      */
     static const std::string processRequirement(xmlNodePtr node);
-
-private:
-
-    static std::string CLASS;           ///< Defines the class XML element name.
-    static std::string EXTENSION;       ///< Defines the extension XML element name.
-    static std::string EXTENSION_POINT; ///< Defines the extension-point XML element name.
-    static std::string ID;              ///< Defines the id XML element name.
-    static std::string IMPLEMENTS;      ///< Defines the implements XML element name.
-    static std::string NAME;            ///< Defines the name XML element name.
-    static std::string LIBRARY;         ///< Defines the library XML element name.
-    static std::string PLUGIN;          ///< Defines the plugin XML element name.
-    static std::string REQUIREMENT;     ///< Defines the requirement XML element name.
-    static std::string SCHEMA;          ///< Defines the schema XML element name.
-    static std::string VERSION;         ///< Defines the version XML element name.
-    static std::string POINT;           ///< Defines the version XML element name.
 };
 
 } // namespace io

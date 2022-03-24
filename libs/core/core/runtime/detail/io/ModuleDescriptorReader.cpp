@@ -50,17 +50,18 @@ namespace detail
 namespace io
 {
 
-std::string ModuleDescriptorReader::CLASS("class");
-std::string ModuleDescriptorReader::EXTENSION("extension");
-std::string ModuleDescriptorReader::EXTENSION_POINT("extension-point");
-std::string ModuleDescriptorReader::ID("id");
-std::string ModuleDescriptorReader::IMPLEMENTS("implements");
-std::string ModuleDescriptorReader::LIBRARY("library");
-std::string ModuleDescriptorReader::NAME("name");
-std::string ModuleDescriptorReader::PLUGIN("plugin");
-std::string ModuleDescriptorReader::REQUIREMENT("requirement");
-std::string ModuleDescriptorReader::SCHEMA("schema");
-std::string ModuleDescriptorReader::POINT("point");
+static const std::string CLASS("class");
+static const std::string EXTENSION("extension");
+static const std::string EXTENSION_POINT("extension-point");
+static const std::string ID("id");
+static const std::string IMPLEMENTS("implements");
+static const std::string LIBRARY("library");
+static const std::string NAME("name");
+static const std::string PLUGIN("plugin");
+static const std::string PRIORITY("priority");
+static const std::string REQUIREMENT("requirement");
+static const std::string SCHEMA("schema");
+static const std::string POINT("point");
 
 //------------------------------------------------------------------------------
 
@@ -366,7 +367,6 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(
     // Processes all plugin attributes.
     xmlAttrPtr curAttr;
     std::string moduleIdentifier;
-    std::string pluginClass;
     for(curAttr = node->properties ; curAttr != 0 ; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
@@ -384,33 +384,39 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(
         return module;
     }
 
+    bool createLibrary = false;
+    int priority       = 0;
     for(curAttr = node->properties ; curAttr != 0 ; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) LIBRARY.c_str()) == 0)
         {
-            if(xmlStrcmp(curAttr->children->content, (const xmlChar*) "true") == 0)
-            {
-                // Deduce the library name from the plugin name
-                std::string libname = boost::algorithm::replace_all_copy(moduleIdentifier, "::", "_");
-                boost::algorithm::trim_left_if(libname, [](auto x){return x == '_';});
+            createLibrary = (xmlStrcmp(curAttr->children->content, (const xmlChar*) "true") == 0);
+        }
 
-                SIGHT_INFO("Plugin " + moduleIdentifier + " holds library " + libname);
-
-                // Creates the library
-                // If we have a library, deduce the plugin name
-                pluginClass = moduleIdentifier + "::Plugin";
-
-                module = std::make_shared<Module>(location, moduleIdentifier, pluginClass);
-
-                auto library = std::make_shared<dl::Library>(libname);
-                module->setLibrary(library);
-
-                break;
-            }
+        if(xmlStrcmp(curAttr->name, (const xmlChar*) PRIORITY.c_str()) == 0)
+        {
+            priority = std::atoi((const char*) curAttr->children->content);
         }
     }
 
-    if(module == nullptr)
+    if(createLibrary)
+    {
+        // Deduce the library name from the plugin name
+        std::string libname = boost::algorithm::replace_all_copy(moduleIdentifier, "::", "_");
+        boost::algorithm::trim_left_if(libname, [](auto x){return x == '_';});
+
+        SIGHT_INFO("Plugin " + moduleIdentifier + " holds library " + libname);
+
+        // Creates the library
+        // If we have a library, deduce the plugin name
+        const std::string pluginClass = moduleIdentifier + "::Plugin";
+
+        module = std::make_shared<Module>(location, moduleIdentifier, pluginClass, priority);
+
+        auto library = std::make_shared<dl::Library>(libname);
+        module->setLibrary(library);
+    }
+    else
     {
         module = std::make_shared<Module>(location, moduleIdentifier);
     }

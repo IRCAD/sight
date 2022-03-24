@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "core/runtime/detail/io/Validator.hpp"
 #include "core/runtime/detail/profile/Activater.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
-#include "core/runtime/detail/profile/Starter.hpp"
 #include "core/runtime/operations.hpp"
 #include "core/runtime/profile/Profile.hpp"
 #include "core/runtime/Runtime.hpp"
@@ -157,7 +156,7 @@ std::shared_ptr<profile::Profile> ProfileReader::processProfile(xmlNodePtr node)
 
         if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(START.c_str())) == 0)
         {
-            profile->add(processStarter(curChild));
+            profile->addStarter(processStarter(curChild));
             continue;
         }
     }
@@ -167,7 +166,7 @@ std::shared_ptr<profile::Profile> ProfileReader::processProfile(xmlNodePtr node)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<profile::Starter> ProfileReader::processStarter(xmlNodePtr node)
+std::string ProfileReader::processStarter(xmlNodePtr node)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -188,10 +187,7 @@ std::shared_ptr<profile::Starter> ProfileReader::processStarter(xmlNodePtr node)
         }
     }
 
-    // Creates the activater object.
-    using detail::profile::Starter;
-    std::shared_ptr<Starter> starter(new Starter(identifier));
-    return starter;
+    return identifier;
 }
 
 //------------------------------------------------------------------------------

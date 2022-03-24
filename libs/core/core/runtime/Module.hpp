@@ -122,9 +122,9 @@ public:
      *
      * @remark  The module must be enabled to be able to start.
      */
-    CORE_API virtual void start()     = 0;
-    CORE_API virtual void stop()      = 0;
-    CORE_API virtual bool isStarted() = 0;
+    CORE_API virtual void start()           = 0;
+    CORE_API virtual void stop()            = 0;
+    CORE_API virtual bool isStarted() const = 0;
     /**
      * @brief   Tells if the module is enabled.
      */

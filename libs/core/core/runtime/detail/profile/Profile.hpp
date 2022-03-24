@@ -27,8 +27,8 @@
 
 #include <filesystem>
 #include <functional>
+#include <map>
 #include <vector>
-
 namespace sight::core::runtime
 {
 
@@ -40,7 +40,6 @@ namespace profile
 
 class Activater;
 class Starter;
-class Stopper;
 
 /**
  * @brief   Implements a module set profile.
@@ -73,14 +72,14 @@ public:
      *
      * @param[in]   starter a shared pointer to a starter
      */
-    void add(SPTR(Starter) starter);
+    void addStarter(const std::string& identifier);
 
     /**
      * @brief       Adds a new stopper.
      *
      * @param[in]   stopper a shared pointer to a stopper
      */
-    void add(SPTR(Stopper) stopper);
+    void addStopper(const std::string& identifier, int priority);
 
     /**
      * @brief   Starts the profile.
@@ -117,8 +116,8 @@ public:
 private:
 
     typedef std::vector<SPTR(Activater)> ActivaterContainer;
-    typedef std::vector<SPTR(Starter)> StarterContainer;
-    typedef std::vector<SPTR(Stopper)> StopperContainer;
+    typedef std::multimap<int, std::string> StarterContainer;
+    typedef std::multimap<int, std::string> StopperContainer;
 
     ActivaterContainer m_activaters; ///< all managed activators
     StarterContainer m_starters;     ///< all managed starters
@@ -126,7 +125,7 @@ private:
 
     RunCallbackType m_run;
 
-    bool m_checkSingleInstance;
+    bool m_checkSingleInstance {false};
 };
 
 /**
