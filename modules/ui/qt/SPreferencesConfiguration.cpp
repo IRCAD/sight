@@ -70,6 +70,8 @@ void SPreferencesConfiguration::configuring()
 {
     this->initialize();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     core::runtime::ConfigurationElementContainer config = m_configuration->findAllConfigurationElement("preference");
     for(const auto& elt : config.getElements())
     {
@@ -150,21 +152,25 @@ void SPreferencesConfiguration::configuring()
            || pref.m_type == PreferenceType::FILE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
+            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::CHECKBOX)
         {
             pref.m_checkBox = new QCheckBox();
             pref.m_checkBox->setChecked(pref.m_defaultValue == "true");
+            pref.m_checkBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::U_INT)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QIntValidator(pref.m_iMinMax.first, pref.m_iMinMax.second));
+            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::DOUBLE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QDoubleValidator(pref.m_dMinMax.first, pref.m_dMinMax.second, 6));
+            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
@@ -176,6 +182,7 @@ void SPreferencesConfiguration::configuring()
             const boost::tokenizer<boost::char_separator<char> > tokens {s, sep};
 
             pref.m_comboBox = new QComboBox();
+            pref.m_comboBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
             for(const std::string& value : tokens)
             {
                 pref.m_comboBox->addItem(QString::fromStdString(value));
@@ -219,7 +226,10 @@ void SPreferencesConfiguration::starting()
 
 void SPreferencesConfiguration::updating()
 {
-    QPointer<QDialog> dialog     = new QDialog();
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
+    QPointer<QDialog> dialog = new QDialog();
+    dialog->setObjectName(serviceID);
     QPointer<QGridLayout> layout = new QGridLayout();
 
     int index = 0;
@@ -320,7 +330,9 @@ void SPreferencesConfiguration::updating()
     }
 
     QPointer<QPushButton> cancelButton = new QPushButton("Cancel");
-    QPointer<QPushButton> okButton     = new QPushButton("OK");
+    cancelButton->setObjectName(serviceID + '/' + cancelButton->text());
+    QPointer<QPushButton> okButton = new QPushButton("OK");
+    okButton->setObjectName(serviceID + '/' + okButton->text());
     okButton->setDefault(true);
 
     QPointer<QHBoxLayout> buttonLayout = new QHBoxLayout();

@@ -120,7 +120,10 @@ void SCamera::starting()
         layout->addWidget(sourceLabel);
     }
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     m_devicesComboBox = new QComboBox();
+    m_devicesComboBox->setObjectName(serviceID);
     layout->addWidget(m_devicesComboBox);
 
     m_devicesComboBox->addItem("Device...", "device");
@@ -134,7 +137,10 @@ void SCamera::starting()
 
     qtContainer->setLayout(layout);
 
-    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onApply);
+    oldIndex = m_devicesComboBox->currentIndex();
+
+    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onActivated);
+    QObject::connect(m_devicesComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SCamera::onApply);
 
     // Create camera data if necessary
     auto cameraSeries = m_cameraSeries.lock();
@@ -201,6 +207,20 @@ void SCamera::onApply(int _index)
             this->onChooseStream();
             break;
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::onActivated(int _index)
+{
+    // If the current index did change, onCurrentIndexChanged will be called, we wouldn't want onApply to be called
+    // twice
+    if(oldIndex == _index)
+    {
+        onApply(_index);
+    }
+
+    oldIndex = _index;
 }
 
 //------------------------------------------------------------------------------

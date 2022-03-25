@@ -208,19 +208,20 @@ void SRender::starting()
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
     if(m_offScreen)
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer(nullptr, m_fullscreen);
+        m_interactorManager->createContainer(nullptr, m_fullscreen, serviceID);
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer(this->getContainer(), m_fullscreen);
+        m_interactorManager->createContainer(this->getContainer(), m_fullscreen, serviceID);
     }
 
     // Initialize resources to load overlay scripts.

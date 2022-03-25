@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,8 +58,11 @@ void SCameraInformationEditor::configuring()
 
 void SCameraInformationEditor::starting()
 {
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -67,11 +70,13 @@ void SCameraInformationEditor::starting()
     QGridLayout* gridLayout = new QGridLayout();
     QLabel* desc            = new QLabel("description: ");
     m_description = new QLabel();
+    m_description->setObjectName(serviceID + "/description");
     gridLayout->addWidget(desc, 0, 0);
     gridLayout->addWidget(m_description, 0, 1);
 
     QBoxLayout* titleLayout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_isCalibrated = new QLabel();
+    m_isCalibrated->setObjectName(serviceID + "/isCalibrated");
     titleLayout->addWidget(m_isCalibrated);
 
     QGridLayout* infoLayout = new QGridLayout;
@@ -81,18 +86,30 @@ void SCameraInformationEditor::starting()
     mainLayout->addLayout(titleLayout);
     mainLayout->addLayout(infoLayout);
 
-    m_width  = new QLabel();
+    m_width = new QLabel();
+    m_width->setObjectName(serviceID + "/width");
     m_height = new QLabel();
-    m_cx     = new QLabel();
-    m_cy     = new QLabel();
-    m_fx     = new QLabel();
-    m_fy     = new QLabel();
-    m_k1     = new QLabel();
-    m_k2     = new QLabel();
-    m_p1     = new QLabel();
-    m_p2     = new QLabel();
-    m_k3     = new QLabel();
-    m_skew   = new QLabel();
+    m_height->setObjectName(serviceID + "/height");
+    m_cx = new QLabel();
+    m_cx->setObjectName(serviceID + "/cx");
+    m_cy = new QLabel();
+    m_cy->setObjectName(serviceID + "/cy");
+    m_fx = new QLabel();
+    m_fx->setObjectName(serviceID + "/fx");
+    m_fy = new QLabel();
+    m_fy->setObjectName(serviceID + "/fy");
+    m_k1 = new QLabel();
+    m_k1->setObjectName(serviceID + "/k1");
+    m_k2 = new QLabel();
+    m_k2->setObjectName(serviceID + "/k2");
+    m_p1 = new QLabel();
+    m_p1->setObjectName(serviceID + "/p1");
+    m_p2 = new QLabel();
+    m_p2->setObjectName(serviceID + "/p2");
+    m_k3 = new QLabel();
+    m_k3->setObjectName(serviceID + "/k3");
+    m_skew = new QLabel();
+    m_skew->setObjectName(serviceID + "/skew");
 
     infoLayout->addWidget(m_width, 0, 0);
     infoLayout->addWidget(m_height, 0, 1);

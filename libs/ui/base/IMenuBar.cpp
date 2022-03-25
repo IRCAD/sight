@@ -82,11 +82,13 @@ void IMenuBar::create()
     ui::base::container::fwMenuBar::sptr menuBar = m_registry->getParent();
     SIGHT_ASSERT("Parent menuBar is unknown.", menuBar);
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(menuBar);
+            m_layoutManager->createLayout(menuBar, serviceID);
         })
     ).wait();
 

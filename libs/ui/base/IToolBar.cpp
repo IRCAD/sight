@@ -99,11 +99,13 @@ void IToolBar::create()
     SIGHT_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(toolBar);
+            m_layoutManager->createLayout(toolBar, serviceID);
         })
     ).wait();
 

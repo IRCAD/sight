@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,12 +59,15 @@ MenuLayoutManager::~MenuLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent)
+void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent, const std::string& id)
 {
     m_parent = ui::qt::container::QtMenuContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);
 
+    const QString qId = QString::fromStdString(id);
+
     QMenu* menu = m_parent->getQtMenu();
+    menu->setObjectName(qId);
 
     QActionGroup* actionGroup  = 0;
     unsigned int menuItemIndex = 0;
@@ -73,6 +76,7 @@ void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent)
         ui::qt::container::QtMenuItemContainer::sptr menuItem = ui::qt::container::QtMenuItemContainer::New();
 
         QAction* action = menu->addAction(QString::fromStdString(actionInfo.m_name));
+        action->setObjectName(qId + '/' + actionInfo.m_name.c_str());
 
         action->setSeparator(actionInfo.m_isSeparator);
 

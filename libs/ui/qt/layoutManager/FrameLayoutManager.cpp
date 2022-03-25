@@ -64,6 +64,7 @@ void FrameLayoutManager::createFrame()
 
     ui::qt::QtMainFrame* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
+    m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
 
     ui::qt::QtMainFrame::CloseCallback fct = std::bind(&ui::qt::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);

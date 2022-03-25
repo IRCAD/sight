@@ -1,0 +1,1 @@
+sight_add_target(sightCalibratorGuiTest TYPE GUI_TEST)

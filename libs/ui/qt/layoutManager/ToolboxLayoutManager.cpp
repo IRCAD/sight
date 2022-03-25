@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,10 +57,12 @@ ToolboxLayoutManager::~ToolboxLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
+void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id)
 {
+    const QString qId                                    = QString::fromStdString(id);
     ui::qt::container::QtContainer::sptr parentContainer =
         ui::qt::container::QtContainer::dynamicCast(parent);
+    parentContainer->getQtContainer()->setObjectName(qId);
 
     QVBoxLayout* layout = new QVBoxLayout();
     parentContainer->setLayout(layout);
@@ -93,6 +95,7 @@ void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
         }
 
         QWidget* panel = new QWidget();
+        panel->setObjectName(qId + '/' + viewInfo.m_caption.c_str());
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
         if(!viewInfo.m_backgroundColor.empty())

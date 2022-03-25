@@ -83,7 +83,7 @@ void OffScreenWindowInteractor::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwContainer::sptr, bool)
+void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwContainer::sptr, bool, const std::string&)
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 

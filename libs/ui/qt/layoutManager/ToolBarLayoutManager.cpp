@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,12 +63,15 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr parent)
+void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr parent, const std::string& id)
 {
     m_parent = ui::qt::container::QtToolBarContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwToolBar to QtToolBarContainer failed", m_parent);
 
+    const QString qId = QString::fromStdString(id);
+
     QToolBar* toolBar = m_parent->getQtToolBar();
+    toolBar->setObjectName(qId);
 
     if(m_style == "ToolButtonTextOnly")
     {
@@ -100,6 +103,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             if(actionInfo.m_size > 0)
             {
                 QWidget* widget = new QWidget(toolBar);
+                widget->setObjectName(qId + '/' + actionInfo.m_name.c_str());
                 widget->setMinimumWidth(actionInfo.m_size);
                 toolBar->addWidget(widget);
             }
@@ -124,6 +128,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             menu->setQtMenu(qtMenu);
 
             QToolButton* toolButton = new QToolButton(toolBar);
+            toolButton->setObjectName(qId + '/' + actionInfo.m_name.c_str());
             if(toolBar->orientation() == Qt::Horizontal)
             {
                 toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -136,6 +141,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             toolButton->setMenu(qtMenu);
             toolButton->setPopupMode(QToolButton::InstantPopup);
             toolButton->setText(QString::fromStdString(actionInfo.m_name));
+            toolButton->setObjectName(qId + '/' + actionInfo.m_name.c_str());
 
             if(!actionInfo.m_icon.empty())
             {
@@ -152,6 +158,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         {
             ui::qt::container::QtContainer::sptr container = ui::qt::container::QtContainer::New();
             QWidget* widget                                = new QWidget(toolBar);
+            widget->setObjectName(qId + '/' + actionInfo.m_name.c_str());
             container->setQtContainer(widget);
 
             if(toolBar->orientation() == Qt::Horizontal)
@@ -198,6 +205,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
                 action = toolBar->addAction(QString::fromStdString(actionInfo.m_name));
             }
 
+            action->setObjectName(qId + '/' + actionInfo.m_name.c_str());
             action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
 
             if(actionInfo.m_isRadio)

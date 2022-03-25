@@ -107,7 +107,11 @@ void SModelSeriesList::configuring()
 void SModelSeriesList::starting()
 {
     this->create();
+
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     QVBoxLayout* layout       = new QVBoxLayout;
     QHBoxLayout* layoutButton = new QHBoxLayout;
@@ -122,15 +126,18 @@ void SModelSeriesList::starting()
     {
         // check box "show"
         m_showCheckBox = new QCheckBox(tr("Hide all organs"));
+        m_showCheckBox->setObjectName(serviceID + "/" + m_showCheckBox->text());
         m_showCheckBox->setToolTip(tr("Show or hide all organs"));
         layoutButton->addWidget(m_showCheckBox, 0);
         QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this, &SModelSeriesList::onShowReconstructions);
 
         m_checkAllButton = new QPushButton(tr("Check all"));
+        m_checkAllButton->setObjectName(serviceID + "/" + m_checkAllButton->text());
         layoutButton->addWidget(m_checkAllButton, 0);
         QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &SModelSeriesList::onCheckAllCheckBox);
 
         m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+        m_unCheckAllButton->setObjectName(serviceID + "/" + m_unCheckAllButton->text());
         layoutButton->addWidget(m_unCheckAllButton, 0);
         QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &SModelSeriesList::onUnCheckAllCheckBox);
     }
@@ -138,6 +145,7 @@ void SModelSeriesList::starting()
     if(m_enableDelete)
     {
         m_deleteAllButton = new QPushButton(tr("Delete all"));
+        m_deleteAllButton->setObjectName(serviceID + "/" + m_deleteAllButton->text());
         layoutButton->addWidget(m_deleteAllButton, 0);
         QObject::connect(m_deleteAllButton, &QPushButton::clicked, this, &SModelSeriesList::onDeleteAllCheckBox);
     }

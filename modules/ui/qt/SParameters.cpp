@@ -126,7 +126,10 @@ void SParameters::starting()
 {
     this->create();
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(QString::fromStdString(serviceID));
 
     QGridLayout* layout = new QGridLayout();
 
@@ -932,9 +935,11 @@ void SParameters::onResetDoubleMapped(QWidget* widget)
 
 //-----------------------------------------------------------------------------
 
-QPushButton* SParameters::createResetButton()
+QPushButton* SParameters::createResetButton(const std::string& key)
 {
-    QPushButton* resetButton = new QPushButton("R");
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+    QPushButton* resetButton    = new QPushButton("R");
+    resetButton->setObjectName(QString::fromStdString(serviceID + "/Reset " + key));
     resetButton->setFocusPolicy(Qt::NoFocus);
     resetButton->setToolTip("Reset to the default value.");
     resetButton->setMaximumWidth(20);
@@ -969,7 +974,7 @@ void SParameters::createBoolWidget(
     // Reset button
     if(resetButton)
     {
-        QPushButton* resetButton = this->createResetButton();
+        QPushButton* resetButton = this->createResetButton(key);
 
         layout.addWidget(resetButton, row, 5);
 
@@ -1025,7 +1030,7 @@ void SParameters::createColorWidget(
     // Reset button
     if(resetButton)
     {
-        QPushButton* resetButton = this->createResetButton();
+        QPushButton* resetButton = this->createResetButton(key);
 
         layout.addWidget(resetButton, row, 5);
 
@@ -1099,7 +1104,7 @@ void SParameters::createDoubleWidget(
     // Reset button
     if(resetButton)
     {
-        QPushButton* resetButton = this->createResetButton();
+        QPushButton* resetButton = this->createResetButton(key);
 
         layout.addWidget(resetButton, row, 5);
 
@@ -1191,7 +1196,7 @@ void SParameters::createDoubleSliderWidget(
     // Reset button
     if(resetButton)
     {
-        QPushButton* resetButton = this->createResetButton();
+        QPushButton* resetButton = this->createResetButton(key);
 
         layout.addWidget(resetButton, row, 5);
 
@@ -1275,7 +1280,7 @@ void SParameters::createIntegerSliderWidget(
     // Reset button
     if(resetButton)
     {
-        QPushButton* resetButton = this->createResetButton();
+        QPushButton* resetButton = this->createResetButton(key);
 
         layout.addWidget(resetButton, row, 5);
 
@@ -1335,7 +1340,7 @@ void SParameters::createIntegerSpinWidget(
     // Reset button
     if(resetButton)
     {
-        QPushButton* resetButton = this->createResetButton();
+        QPushButton* resetButton = this->createResetButton(key);
 
         layout.addWidget(resetButton, row, 5);
 

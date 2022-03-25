@@ -161,7 +161,8 @@ public:
     /// Creates an interactor and installs it in window.
     VIZ_SCENE3D_API virtual void createContainer(
         ui::base::container::fwContainer::sptr _parent,
-        bool fullscreen
+        bool fullscreen,
+        const std::string& id
     ) = 0;
 
     /// Connects widget and SRender signals and slots.

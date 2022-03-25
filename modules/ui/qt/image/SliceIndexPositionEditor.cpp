@@ -84,10 +84,13 @@ void SliceIndexPositionEditor::starting()
         this->getContainer()
     );
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     QVBoxLayout* layout = new QVBoxLayout();
 
     m_sliceSelectorPanel = new sight::ui::qt::SliceSelector();
     m_sliceSelectorPanel->setEnable(false);
+    m_sliceSelectorPanel->setObjectName(serviceID);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeIndexCallback;
     changeIndexCallback = std::bind(&SliceIndexPositionEditor::sliceIndexNotification, this, std::placeholders::_1);

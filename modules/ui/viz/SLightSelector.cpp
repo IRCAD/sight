@@ -85,21 +85,31 @@ void SLightSelector::starting()
 {
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
-    m_layersBox       = new QComboBox();
-    m_lightsList      = new QListWidget();
-    m_addLightBtn     = new QPushButton("Add light");
-    m_removeLightBtn  = new QPushButton("Remove light");
+    m_layersBox = new QComboBox();
+    m_layersBox->setObjectName(serviceID + "/layersBox");
+    m_lightsList = new QListWidget();
+    m_lightsList->setObjectName(serviceID + "/lightsList");
+    m_addLightBtn = new QPushButton("Add light");
+    m_addLightBtn->setObjectName(serviceID + "/" + m_addLightBtn->text());
+    m_removeLightBtn = new QPushButton("Remove light");
+    m_removeLightBtn->setObjectName(serviceID + "/" + m_removeLightBtn->text());
     m_ambientColorBtn = new QPushButton("Scene ambient color");
+    m_ambientColorBtn->setObjectName(serviceID + "/" + m_ambientColorBtn->text());
 
     QHBoxLayout* layoutButton = new QHBoxLayout;
     m_checkAllButton = new QPushButton(tr("Check all"));
+    m_checkAllButton->setObjectName(serviceID + "/" + m_checkAllButton->text());
     layoutButton->addWidget(m_checkAllButton, 0);
 
     m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+    m_unCheckAllButton->setObjectName(serviceID + "/" + m_unCheckAllButton->text());
     layoutButton->addWidget(m_unCheckAllButton, 0);
 
     QVBoxLayout* layout = new QVBoxLayout();

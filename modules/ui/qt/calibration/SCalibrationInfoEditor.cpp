@@ -141,12 +141,16 @@ void SCalibrationInfoEditor::starting()
     QLabel* label = new QLabel("nb captures:");
     nbItemsHBox->addWidget(label);
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     m_nbCapturesLabel = new QLabel("-");
+    m_nbCapturesLabel->setObjectName(serviceID + "/nbCapturesLabel");
     nbItemsHBox->addWidget(m_nbCapturesLabel);
     nbItemsHBox->addStretch();
 
     //   The ListWidget
     m_capturesListWidget = new QListWidget();
+    m_capturesListWidget->setObjectName(serviceID + "/capturesListWidget");
     QObject::connect(
         m_capturesListWidget,
         SIGNAL(itemDoubleClicked(QListWidgetItem*)),

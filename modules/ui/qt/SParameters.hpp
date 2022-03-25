@@ -238,7 +238,7 @@ private:
     bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Snippet to create the reset button
-    QPushButton* createResetButton();
+    QPushButton* createResetButton(const std::string& key);
 
     /// Create a widget associated with a boolean type
     void createBoolWidget(

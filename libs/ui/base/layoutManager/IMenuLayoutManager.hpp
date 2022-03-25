@@ -156,7 +156,7 @@ public:
     /**
      * @brief Instantiate actions with parent menu.
      */
-    UI_BASE_API virtual void createLayout(ui::base::container::fwMenu::sptr parent) = 0;
+    UI_BASE_API virtual void createLayout(ui::base::container::fwMenu::sptr parent, const std::string& id) = 0;
 
     /**
      * @brief Destroy local actions.

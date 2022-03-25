@@ -131,13 +131,15 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     file(GLOB_RECURSE HEADERS "${PRJ_SOURCE_DIR}/*.hpp" "${PRJ_SOURCE_DIR}/*.h" "${PRJ_SOURCE_DIR}/*.hxx")
     file(GLOB_RECURSE SOURCES "${PRJ_SOURCE_DIR}/*.cpp" "${PRJ_SOURCE_DIR}/*.c" "${PRJ_SOURCE_DIR}/*.cxx")
 
-    if(NOT "${PRJ_TYPE}" STREQUAL "TEST")
+    if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/api")
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
         list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
         list(FILTER HEADERS EXCLUDE REGEX "/test/api")
         list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
         list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/ui")
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -335,8 +337,8 @@ macro(fw_exec SIGHT_TARGET)
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "exec")
 endmacro()
 
-# Create a test target
-macro(fw_test SIGHT_TARGET)
+# Generic operations for a test based on the CppUnit framework
+macro(sight_generic_test SIGHT_TARGET)
     set(options)
     set(oneValueArgs REQUIRE_X)
     set(multiValueArgs)
@@ -447,20 +449,6 @@ macro(fw_test SIGHT_TARGET)
             WORLD_EXECUTE
     )
 
-    # Set test command
-    if(TESTS_XML_OUTPUT)
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    else()
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    endif()
-
-    # Cleanup
-    unset(SIGHT_TEST_SCRIPT)
-
     # Adds project into folder test
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "test")
 
@@ -481,6 +469,61 @@ macro(fw_test SIGHT_TARGET)
             target_compile_options(${SIGHT_TARGET} PRIVATE "-fPIC")
         endif()
     endif()
+endmacro()
+
+# Create a GUI test
+macro(sight_gui_test SIGHT_TARGET)
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON)
+    target_link_libraries(${SIGHT_TARGET} PUBLIC guiTest)
+
+    # Set test command
+    if(UNIX)
+        set(SCRIPT_SUFFIX "sh")
+    else()
+        set(SCRIPT_SUFFIX "bat")
+    endif()
+    add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.${SCRIPT_SUFFIX}
+                                                 ${SIGHT_TEST_SCRIPT} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+    unset(SCRIPT_SUFFIX)
+    unset(SIGHT_TEST_SCRIPT)
+endmacro()
+
+# Create a unit test
+macro(fw_test SIGHT_TARGET)
+    set(options)
+    set(oneValueArgs
+        TYPE
+        PCH
+        START
+        PRIORITY
+        CONSOLE
+        OBJECT_LIBRARY
+        WARNINGS_AS_ERRORS
+        UNIQUE
+        FAST_DEBUG
+        REQUIRE_X
+    )
+    set(multiValueArgs)
+    cmake_parse_arguments(SIGHT_CPPUNIT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(EXISTS "${${SIGHT_TARGET}_DIR}/ui")
+        list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
+        list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
+    endif()
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X})
+
+    # Set test command
+    if(TESTS_XML_OUTPUT)
+        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
+                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+    else()
+        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
+                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+    endif()
+    unset(SIGHT_TEST_SCRIPT)
 endmacro()
 
 # Create a library target
@@ -931,15 +974,14 @@ macro(sight_add_target)
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
         fw_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
+    elseif("${SIGHT_TARGET_TYPE}" STREQUAL "GUI_TEST")
+        sight_gui_test(${SIGHT_TARGET} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         if(${SIGHT_TARGET_REQUIRE_ADMIN})
             fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} ON)
         else()
             fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
         endif()
-    endif()
-
-    if("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         if(NOT SIGHT_TARGET_UNIQUE)
             set(SIGHT_TARGET_UNIQUE "false")
         else()

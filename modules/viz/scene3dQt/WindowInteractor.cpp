@@ -48,6 +48,27 @@ fwRenderOgreRegisterMacro(
 
 //-----------------------------------------------------------------------------
 
+EventDispatcher::EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch) :
+    m_dispatchedTo(dispatchedTo),
+    m_eventsToDispatch(eventsToDispatch)
+{
+}
+
+//------------------------------------------------------------------------------
+
+bool EventDispatcher::eventFilter(QObject*, QEvent* event)
+{
+    if(m_eventsToDispatch.contains(event->type()))
+    {
+        m_dispatchedTo->event(event);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 namespace sight::module::viz::scene3dQt
 {
 
@@ -89,7 +110,8 @@ void WindowInteractor::requestRender()
 
 void WindowInteractor::createContainer(
     sight::ui::base::container::fwContainer::sptr _parent,
-    bool _fullscreen
+    bool _fullscreen,
+    const std::string& id
 )
 {
     SIGHT_ASSERT("Invalid parent.", _parent);
@@ -113,6 +135,13 @@ void WindowInteractor::createContainer(
 #endif
 
     m_windowContainer = QWidget::createWindowContainer(m_qOgreWidget);
+    m_windowContainer->setObjectName(QString::fromStdString(id));
+    m_windowContainer->installEventFilter(
+        new EventDispatcher(
+            m_qOgreWidget,
+            {QEvent::MouseButtonPress, QEvent::MouseButtonRelease, QEvent::Enter, QEvent::MouseMove, QEvent::Leave
+            })
+    );
     layout->addWidget(m_windowContainer);
     m_windowContainer->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     m_windowContainer->setMouseTracking(true);

@@ -165,10 +165,12 @@ void IGuiContainer::create()
                     m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
+                const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
                 core::thread::getDefaultWorker()->postTask<void>(
                     [&]
                 {
-                    m_viewLayoutManager->createLayout(container);
+                    m_viewLayoutManager->createLayout(container, serviceID);
                 }).wait();
 
                 std::vector<ui::base::container::fwContainer::sptr> views = m_viewLayoutManager->getSubViews();

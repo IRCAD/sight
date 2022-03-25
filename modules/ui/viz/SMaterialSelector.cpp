@@ -72,13 +72,17 @@ void SMaterialSelector::starting()
 {
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     // Selection
     QLabel* currentMaterial = new QLabel();
     currentMaterial->setText("Current material : ");
 
     m_materialBox = new QComboBox();
+    m_materialBox->setObjectName(serviceID + "/materialBox");
 
     std::pair<std::string, std::string> elt;
     Ogre::ResourceManager::ResourceMapIterator iter = Ogre::MaterialManager::getSingleton().getResourceIterator();
@@ -99,6 +103,7 @@ void SMaterialSelector::starting()
 
     // Reload
     m_reloadButton = new QPushButton("Reload");
+    m_reloadButton->setObjectName(serviceID + "/" + m_reloadButton->text());
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addLayout(labelLayout);

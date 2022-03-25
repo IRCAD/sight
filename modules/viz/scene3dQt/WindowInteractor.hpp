@@ -46,6 +46,22 @@ class QtContainer;
 
 }
 
+class EventDispatcher : public QObject
+{
+Q_OBJECT
+
+public:
+
+    EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch);
+
+    bool eventFilter(QObject* obj, QEvent* event);
+
+private:
+
+    QObject* m_dispatchedTo;
+    QList<QEvent::Type> m_eventsToDispatch;
+};
+
 namespace sight::module::viz::scene3dQt
 {
 
@@ -79,7 +95,8 @@ public:
      */
     MODULE_VIZ_SCENE3DQT_API void createContainer(
         ui::base::container::fwContainer::sptr _parent,
-        bool _fullscreen
+        bool _fullscreen,
+        const std::string& serviceID
     ) final;
 
     /// Connects the widget and the SRender signals and slots.

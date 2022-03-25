@@ -19,6 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+// cspell:ignore qgetenv
 
 #include "ui/qt/dialog/LocationDialog.hpp"
 
@@ -65,6 +66,7 @@ core::location::ILocation::sptr LocationDialog::show()
     dialog.setDirectory(path);
     dialog.setNameFilter(filter);
     dialog.setWindowTitle(caption);
+    dialog.setOption(QFileDialog::Option::DontUseNativeDialog, !qgetenv("GUI_TESTS_ARE_RUNNING").isEmpty());
 
     if(m_style & ui::base::dialog::ILocationDialog::READ || m_type == ui::base::dialog::ILocationDialog::FOLDER)
     {

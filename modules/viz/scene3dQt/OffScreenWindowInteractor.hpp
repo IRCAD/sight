@@ -63,7 +63,8 @@ public:
     MODULE_VIZ_SCENE3DQT_API void requestRender() override;
 
     /// Creates the render window in the global OpenGL context, @see module::viz::scene3dQt::OpenGLContext.
-    MODULE_VIZ_SCENE3DQT_API void createContainer(ui::base::container::fwContainer::sptr, bool) override;
+    MODULE_VIZ_SCENE3DQT_API void createContainer(ui::base::container::fwContainer::sptr, bool,
+                                                  const std::string&) override;
 
     /// Does nothing.
     MODULE_VIZ_SCENE3DQT_API void connectToContainer() override;

@@ -126,29 +126,41 @@ void SLandmarks::starting()
 {
     this->sight::ui::base::IGuiContainer::create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     QVBoxLayout* const layout     = new QVBoxLayout();
     QGridLayout* const gridLayout = new QGridLayout();
 
     m_visibilityCheckbox = new QCheckBox();
     QLabel* const visibilityLabel = new QLabel(QString("Visibility"));
+    m_visibilityCheckbox->setObjectName(serviceID + "/" + visibilityLabel->text());
     m_sizeSlider = new QSlider(Qt::Horizontal);
     m_sizeSlider->setMinimum(1);
     m_sizeSlider->setMaximum(100);
     QLabel* const sizeLabel = new QLabel(QString("Size"));
+    m_sizeSlider->setObjectName(serviceID + "/" + sizeLabel->text());
     m_opacitySlider = new QSlider(Qt::Horizontal);
     QLabel* const opacityLabel = new QLabel("Opacity");
+    m_opacitySlider->setObjectName(serviceID + "/" + opacityLabel->text());
     m_shapeSelector = new QComboBox();
     m_shapeSelector->addItem(QString("Cube"));
     m_shapeSelector->addItem(QString("Sphere"));
     QLabel* const shapeLabel = new QLabel("Shape");
+    m_shapeSelector->setObjectName(serviceID + "/" + shapeLabel->text());
 
-    m_newGroupButton = m_advancedMode ? new QPushButton("New Group") : nullptr;
+    if(m_advancedMode)
+    {
+        m_newGroupButton = new QPushButton("New Group");
+        m_newGroupButton->setObjectName(serviceID + "/" + m_newGroupButton->text());
+    }
 
     m_removeButton = new QPushButton("Delete");
+    m_removeButton->setObjectName(serviceID + "/" + m_removeButton->text());
     m_removeButton->setShortcut(QKeySequence::Delete);
 
     gridLayout->addWidget(visibilityLabel, 0, 0);

@@ -95,9 +95,12 @@ void SStatus::starting()
         layout = new QVBoxLayout();
     }
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     for(std::size_t i = 0 ; i < m_count ; ++i)
     {
         QPointer<QLabel> indicator = new QLabel();
+        indicator->setObjectName(serviceID + "/" + QString::number(i));
         indicator->setFixedWidth(static_cast<int>(m_width));
         indicator->setFixedHeight(static_cast<int>(m_height));
         m_indicator.push_back(indicator);

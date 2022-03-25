@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "SShaderParameterEditor.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
@@ -31,6 +29,8 @@
 #include <service/op/Add.hpp>
 
 #include <ui/base/GuiRegistry.hpp>
+
+#include <viz/scene3d/IAdaptor.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
 
@@ -62,7 +62,10 @@ void SShaderParameterEditor::starting()
 
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);

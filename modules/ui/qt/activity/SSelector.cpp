@@ -146,8 +146,10 @@ void SSelector::starting()
     const int numRows       = static_cast<int>(std::floor(rows));
     numCols = 2 * numCols + 1;
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     QWidget* const container = qtContainer->getQtContainer();
-    container->setObjectName("activities");
+    container->setObjectName(serviceID);
     const std::string styleGrid("QGridLayout#activities {"
                                 "border-width: 4px;"
                                 "}");
@@ -162,7 +164,7 @@ void SSelector::starting()
     font.setPointSize(12);
     font.setBold(true);
 
-    std::string style("QPushButton#activityButton {"
+    std::string style("* {"
                       "padding: 16px;"
                       "text-align:bottom"
                       "}");
@@ -175,7 +177,7 @@ void SSelector::starting()
         QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));
         button->setIconSize(QSize(80, 80));
-        button->setObjectName("activityButton");
+        button->setObjectName(serviceID + '/' + info.title.c_str());
         button->setFont(font);
 
         button->setStyleSheet(QString::fromUtf8(style.c_str()));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,58 +58,73 @@ RepresentationEditor::~RepresentationEditor() noexcept
 void RepresentationEditor::starting()
 {
     this->create();
+
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     QVBoxLayout* layout = new QVBoxLayout();
 
-    QGroupBox* groupBox         = new QGroupBox(tr("Representation"));
+    QGroupBox* groupBox = new QGroupBox(tr("Representation"));
+    groupBox->setObjectName(serviceID + "/" + groupBox->title());
     QVBoxLayout* layoutGroupBox = new QVBoxLayout();
     groupBox->setLayout(layoutGroupBox);
 
     m_buttonGroup = new QButtonGroup(groupBox);
+    m_buttonGroup->setObjectName(serviceID + "/buttonGroup");
 
     QRadioButton* buttonSurface = new QRadioButton(tr("Surface"), groupBox);
+    buttonSurface->setObjectName(serviceID + "/" + buttonSurface->text());
     buttonSurface->setMinimumSize(buttonSurface->sizeHint());
     m_buttonGroup->addButton(buttonSurface, 0);
     layoutGroupBox->addWidget(buttonSurface);
     buttonSurface->setChecked(true);
 
     QRadioButton* buttonPoint = new QRadioButton(tr("Point"), groupBox);
+    buttonPoint->setObjectName(serviceID + "/" + buttonPoint->text());
     buttonPoint->setMinimumSize(buttonPoint->sizeHint());
     m_buttonGroup->addButton(buttonPoint, 1);
     layoutGroupBox->addWidget(buttonPoint);
 
     QRadioButton* buttonWireframe = new QRadioButton(tr("Wireframe"), groupBox);
+    buttonWireframe->setObjectName(serviceID + "/" + buttonWireframe->text());
     buttonWireframe->setMinimumSize(buttonWireframe->sizeHint());
     m_buttonGroup->addButton(buttonWireframe, 2);
     layoutGroupBox->addWidget(buttonWireframe);
 
     QRadioButton* buttonEdge = new QRadioButton(tr("Edge"), groupBox);
+    buttonEdge->setObjectName(serviceID + "/" + buttonEdge->text());
     buttonEdge->setMinimumSize(buttonEdge->sizeHint());
     m_buttonGroup->addButton(buttonEdge, 3);
     layoutGroupBox->addWidget(buttonEdge);
 
     // Shading group box
-    QGroupBox* groupBoxShading         = new QGroupBox(tr("Shading"));
+    QGroupBox* groupBoxShading = new QGroupBox(tr("Shading"));
+    groupBoxShading->setObjectName(serviceID + "/" + groupBoxShading->title());
     QVBoxLayout* layoutGroupBoxShading = new QVBoxLayout();
     groupBoxShading->setLayout(layoutGroupBoxShading);
     m_buttonGroupShading = new QButtonGroup(groupBoxShading);
+    m_buttonGroupShading->setObjectName(serviceID + "/buttonGroupShading");
 
     QRadioButton* buttonAmbient = new QRadioButton(tr("Ambient"), groupBoxShading);
+    buttonAmbient->setObjectName(serviceID + "/" + buttonAmbient->text());
     buttonAmbient->setMinimumSize(buttonAmbient->sizeHint());
     m_buttonGroupShading->addButton(buttonAmbient, 0);
     layoutGroupBoxShading->addWidget(buttonAmbient);
     buttonAmbient->setChecked(true);
 
     QRadioButton* buttonFlat = new QRadioButton(tr("Flat"), groupBoxShading);
+    buttonFlat->setObjectName(serviceID + "/" + buttonFlat->text());
     buttonFlat->setMinimumSize(buttonFlat->sizeHint());
     m_buttonGroupShading->addButton(buttonFlat, 1);
     layoutGroupBoxShading->addWidget(buttonFlat);
     buttonFlat->setChecked(true);
 
     QRadioButton* buttonPhong = new QRadioButton(tr("Phong"), groupBoxShading);
+    buttonPhong->setObjectName(serviceID + "/" + buttonPhong->text());
     buttonPhong->setMinimumSize(buttonPhong->sizeHint());
     m_buttonGroupShading->addButton(buttonPhong, 2);
     layoutGroupBoxShading->addWidget(buttonPhong);
@@ -117,12 +132,17 @@ void RepresentationEditor::starting()
     layout->addWidget(groupBox);
     layout->addWidget(groupBoxShading);
 
-    QGroupBox* groupBoxNormals         = new QGroupBox(tr("Normals"));
+    QGroupBox* groupBoxNormals = new QGroupBox(tr("Normals"));
+    groupBoxNormals->setObjectName(serviceID + "/" + groupBoxNormals->title());
     QVBoxLayout* layoutGroupBoxNormals = new QVBoxLayout(groupBoxNormals);
     m_normalsRadioBox = new QButtonGroup();
+    m_normalsRadioBox->setObjectName(serviceID + "/normalsRadioBox");
     QRadioButton* pointNormalsButton = new QRadioButton(tr("Show point normals"));
-    QRadioButton* cellNormalsButton  = new QRadioButton(tr("Show cell normals"));
-    QRadioButton* hideNormalsButton  = new QRadioButton(tr("Hide normals"));
+    pointNormalsButton->setObjectName(serviceID + "/" + pointNormalsButton->text());
+    QRadioButton* cellNormalsButton = new QRadioButton(tr("Show cell normals"));
+    cellNormalsButton->setObjectName(serviceID + "/" + cellNormalsButton->text());
+    QRadioButton* hideNormalsButton = new QRadioButton(tr("Hide normals"));
+    hideNormalsButton->setObjectName(serviceID + "/" + hideNormalsButton->text());
 
     m_normalsRadioBox->addButton(pointNormalsButton, 1);
     m_normalsRadioBox->addButton(cellNormalsButton, 2);

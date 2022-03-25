@@ -80,7 +80,10 @@ void SView::starting()
 {
     this->sight::ui::base::IGuiContainer::create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    parentContainer->getQtContainer()->setObjectName(serviceID);
 
     QVBoxLayout* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -90,6 +93,7 @@ void SView::starting()
 
     QWidget* widget = new QWidget();
     layout->addWidget(widget);
+    widget->setObjectName(serviceID + "/container");
 
     auto subContainer = sight::ui::qt::container::QtContainer::New();
 

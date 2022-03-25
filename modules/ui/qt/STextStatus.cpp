@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,8 +46,6 @@ STextStatus::STextStatus()
 {
     m_labelStaticText = new QLabel();
     m_labelStaticText->setStyleSheet("font-weight: bold;");
-    m_labelValue = new QLabel();
-    m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &STextStatus::setDoubleParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &STextStatus::setIntParameter, this);
@@ -65,6 +63,12 @@ STextStatus::~STextStatus()
 
 void STextStatus::configuring()
 {
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
+    m_labelValue = new QLabel();
+    m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
+    m_labelValue->setObjectName(serviceID);
+
     this->initialize();
 
     const auto txtCfg = m_configuration->findConfigurationElement("label");

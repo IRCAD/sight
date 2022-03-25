@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,10 +56,11 @@ TabLayoutManager::~TabLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
+void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id)
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    m_parentContainer->getQtContainer()->setObjectName(QString::fromStdString(id));
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     m_parentContainer->setLayout(layout);

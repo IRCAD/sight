@@ -53,6 +53,8 @@ lint:sheldon:
     # Clone sight-data.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/.build/sight-data
+    - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
+    - mkdir -p $IMAGE_OUTPUT_PATH
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j4 --output-junit junit.xml
     # Build documentation if needed
@@ -86,6 +88,7 @@ lint:sheldon:
       - .build/packages/*.tar.zst
       - .build/coverage
       - .build/bin/*.core
+      - .build/testImages
     reports:
       junit: .build/junit.xml
 
@@ -214,6 +217,8 @@ deploy_manual:apps-linux-release:
     # Clone sight-data.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
+    - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
+    - md "${env:IMAGE_OUTPUT_PATH}"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
     - |
@@ -236,6 +241,7 @@ deploy_manual:apps-linux-release:
       - build/fwTest.log
       - build/packages/*.exe
       - build/packages/sight-*.zip
+      - build/testImages
     reports:
       junit: build/junit.xml
 

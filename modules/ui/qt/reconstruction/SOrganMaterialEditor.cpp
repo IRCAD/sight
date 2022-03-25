@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,18 +80,26 @@ void SOrganMaterialEditor::configuring()
 void SOrganMaterialEditor::starting()
 {
     this->create();
+
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     m_diffuseColourButton = new QPushButton(tr("Diffuse"));
+    m_diffuseColourButton->setObjectName(serviceID + "/" + m_diffuseColourButton->text());
     m_diffuseColourButton->setToolTip(tr("Selected organ's diffuse color"));
     m_diffuseColourButton->setMinimumSize(m_diffuseColourButton->sizeHint());
 
     m_ambientColourButton = new QPushButton(tr("Ambient"));
+    m_ambientColourButton->setObjectName(serviceID + "/" + m_ambientColourButton->text());
     m_ambientColourButton->setToolTip(tr("Selected organ's ambient color"));
     m_ambientColourButton->setMinimumSize(m_ambientColourButton->sizeHint());
 
-    QLabel* const transparencyLabel = new QLabel(tr("Transparency : "));
+    const char* transparency        = "Transparency";
+    QLabel* const transparencyLabel = new QLabel(tr((std::string(transparency) + " : ").c_str()));
     m_opacitySlider = new QSlider(Qt::Horizontal);
+    m_opacitySlider->setObjectName(serviceID + "/" + transparency);
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
     m_opacitySlider->setRange(0, 100);
     m_opacitySlider->setTickInterval(20);
@@ -99,6 +107,7 @@ void SOrganMaterialEditor::starting()
     m_opacitySlider->setMinimumSize(m_opacitySlider->sizeHint());
 
     m_transparencyValue = new QLabel("");
+    m_transparencyValue->setObjectName(serviceID + "/transparencyValue");
     m_transparencyValue->setMinimumSize(m_transparencyValue->sizeHint());
 
     QVBoxLayout* const mainLayout = new QVBoxLayout();

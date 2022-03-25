@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -143,16 +143,19 @@ bool LoggerDialog::show()
 
     // Create OK button
     QPushButton* okButton = new QPushButton(tr("Ok"));
+    okButton->setObjectName(okButton->text());
     okButton->setSizePolicy(policy);
     buttonLayout->addWidget(okButton);
 
     // Create CANCEL button
     QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+    cancelButton->setObjectName(cancelButton->text());
     cancelButton->setSizePolicy(policy);
     buttonLayout->addWidget(cancelButton);
 
     // Create a checkbox to display the logs
-    QCheckBox* checkbox      = new QCheckBox("Details");
+    QCheckBox* checkbox = new QCheckBox("Details");
+    checkbox->setObjectName(checkbox->text());
     const auto detailshidden = core::runtime::getLibraryResourceFilePath("fwGuiQt/details-hidden.png").string();
     const auto detailsshown  = core::runtime::getLibraryResourceFilePath("fwGuiQt/details-shown.png").string();
     std::string styleSheet;

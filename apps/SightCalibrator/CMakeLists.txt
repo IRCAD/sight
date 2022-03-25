@@ -39,3 +39,7 @@ module_param(
 module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES SightCalibrator_AppCfg SightCalibrator_AppCfgParam)
 
 sight_generate_profile(SightCalibrator)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test)
+endif()

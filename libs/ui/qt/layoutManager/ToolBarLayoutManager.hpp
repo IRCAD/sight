@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    UI_QT_API void createLayout(ui::base::container::fwToolBar::sptr parent) override;
+    UI_QT_API void createLayout(ui::base::container::fwToolBar::sptr parent, const std::string& id) override;
 
     /**
      * @brief Destroy local toolBars.

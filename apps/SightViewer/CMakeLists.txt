@@ -34,3 +34,7 @@ module_param(
 module_param(module_appXml PARAM_LIST config PARAM_VALUES SightViewer_AppCfg)
 
 sight_generate_profile(SightViewer)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test)
+endif(SIGHT_BUILD_TESTS)

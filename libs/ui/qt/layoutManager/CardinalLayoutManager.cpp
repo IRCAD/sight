@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,10 +58,12 @@ CardinalLayoutManager::~CardinalLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
+void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id)
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    const QString qId = QString::fromStdString(id);
+    m_parentContainer->getQtContainer()->setObjectName(qId);
 
     m_qtWindow = new QMainWindow();
 
@@ -85,6 +87,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
             if(viewInfo.m_caption.first)
             {
                 QGroupBox* groupbox = new QGroupBox(m_qtWindow);
+                groupbox->setObjectName(qId + '/' + viewInfo.m_caption.second.c_str());
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 insideWidget = groupbox;
             }
@@ -179,6 +182,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
             if(viewInfo.m_caption.first)
             {
                 dockWidget->setWindowTitle(QString::fromStdString(viewInfo.m_caption.second));
+                dockWidget->setObjectName(qId + '/' + viewInfo.m_caption.second.c_str());
                 dockWidget->setMinimumSize(0, 0);
             }
             else

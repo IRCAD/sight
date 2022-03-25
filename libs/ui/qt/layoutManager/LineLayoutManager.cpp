@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,10 +57,12 @@ LineLayoutManager::~LineLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
+void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id)
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    const QString qId = QString::fromStdString(id);
+    m_parentContainer->getQtContainer()->setObjectName(qId);
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_parentContainer->setLayout(layout);
@@ -108,6 +110,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
             if(viewInfo.m_caption.first)
             {
                 QGroupBox* groupbox = new QGroupBox();
+                groupbox->setObjectName(qId + '/' + viewInfo.m_caption.second.c_str());
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 panel         = groupbox;
                 leftBorder   += groupbox->style()->pixelMetric(QStyle::PM_LayoutLeftMargin);

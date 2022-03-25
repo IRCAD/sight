@@ -97,11 +97,13 @@ void IMenu::create()
     SIGHT_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->setCallbacks(callbacks);
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(menu);
+            m_layoutManager->createLayout(menu, serviceID);
         })
     ).wait();
 

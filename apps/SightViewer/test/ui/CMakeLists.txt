@@ -1,0 +1,1 @@
+sight_add_target(sightViewerGuiTest TYPE GUI_TEST)

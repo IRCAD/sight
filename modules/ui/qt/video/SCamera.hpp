@@ -117,6 +117,12 @@ protected Q_SLOTS:
      */
     void onApply(int _index);
 
+    /**
+     * @brief Calls when user select another device.
+     * @param _index the index of the selected device.
+     */
+    void onActivated(int _index);
+
 private:
 
     /// Type of the 'configured' signal.
@@ -169,6 +175,8 @@ private:
 
     data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, false, true};
     data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, false, true};
+
+    int oldIndex;
 };
 
 } // video

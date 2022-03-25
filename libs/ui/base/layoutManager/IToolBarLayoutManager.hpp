@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -163,7 +163,7 @@ public:
     /**
      * @brief Instantiate actions with parent toolBar.
      */
-    UI_BASE_API virtual void createLayout(ui::base::container::fwToolBar::sptr parent) = 0;
+    UI_BASE_API virtual void createLayout(ui::base::container::fwToolBar::sptr parent, const std::string& id) = 0;
 
     /**
      * @brief Destroy local actions.
