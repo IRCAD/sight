@@ -84,11 +84,7 @@ void Os::getSharedLibraryPath()
     // Now load that library and check that we find it
 #if defined(WIN32)
     const auto lib = "zstd";
-    #if defined(_DEBUG)
-    const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstdd.dll");
-    #else
     const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstd.dll");
-    #endif
 #else
     const auto lib     = "boost_date_time";
     const auto libPath = fs::path(BOOST_LIB_DIR) / "libboost_date_time.so.1.74.0";

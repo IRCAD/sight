@@ -27,10 +27,12 @@ endif()
 
 mark_as_advanced(SIGHT_ARCH)
 
-# Add a global definition to silence a windows warning when using boost, saying _WIN32_WINNT is not defined.
 if(MSVC)
-    add_compile_definitions(WINVER=0x0A00)
-    add_compile_definitions(_WIN32_WINNT=0x0A00)
+    # Add a global definition to silence a windows warning when using boost, saying _WIN32_WINNT is not defined.
+    # Beware this must match the value used to compile BOOST, otherwise libraries that uses Boost::Log will NOT link.
+    add_compile_definitions(WINVER=0x0601)
+    add_compile_definitions(_WIN32_WINNT=0x0601)
+    add_compile_definitions(BOOST_USE_WINAPI_VERSION=0x0601)
 endif()
 
 # Add a global compile definition to help strip __FILE__ to show a relative file path

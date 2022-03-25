@@ -29,6 +29,7 @@
 #include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/pop_front.hpp>
 #include <boost/mpl/size.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/static_assert.hpp>
 
 #include <iterator>
