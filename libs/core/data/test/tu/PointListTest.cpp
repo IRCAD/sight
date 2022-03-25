@@ -76,15 +76,15 @@ void PointListTest::getterTest()
 
     data::Point::sptr point2 = pl1->getPoints()[0];
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], point2->getCoord()[0], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], point2->getCoord()[1], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], point2->getCoord()[2], 10e-6);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[0], point2->getCoord()[0]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[1], point2->getCoord()[1]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[2], point2->getCoord()[2]);
 
     data::PointList::PointListContainer& container = pl1->getPoints();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2], 10e-6);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void PointListTest::setterTest()
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i], 10e-6);
+            CPPUNIT_ASSERT_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i]);
         }
     }
 }
@@ -133,7 +133,7 @@ void PointListTest::pushTest()
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i], 10e-6);
+            CPPUNIT_ASSERT_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i]);
         }
     }
 }

@@ -91,25 +91,25 @@ void MeshTest::insertion()
         CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(6), mesh->numCells());
 
         auto it = mesh->cbegin<data::iterator::point::xyz>();
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(10.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(30.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(10.f, it->x);
+        CPPUNIT_ASSERT_EQUAL(20.f, it->y);
+        CPPUNIT_ASSERT_EQUAL(30.f, it->z);
         it += 2;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(21.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(10.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(20.f, it->x);
+        CPPUNIT_ASSERT_EQUAL(21.f, it->y);
+        CPPUNIT_ASSERT_EQUAL(10.f, it->z);
         it += 5;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(27.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(83.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(52.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(27.f, it->x);
+        CPPUNIT_ASSERT_EQUAL(83.f, it->y);
+        CPPUNIT_ASSERT_EQUAL(52.f, it->z);
         --it;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(63.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(17.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(20.f, it->x);
+        CPPUNIT_ASSERT_EQUAL(63.f, it->y);
+        CPPUNIT_ASSERT_EQUAL(17.f, it->z);
         it -= 2;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(15.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(35.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(15.f, it->x);
+        CPPUNIT_ASSERT_EQUAL(20.f, it->y);
+        CPPUNIT_ASSERT_EQUAL(35.f, it->z);
 
         auto cell_it = mesh->cbegin<data::iterator::cell::triangle>();
         CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
@@ -153,9 +153,9 @@ void MeshTest::insertion()
         mesh->setPoint(4, 45, 59, 48);
         auto itPt = mesh->begin<data::iterator::point::xyz>();
         itPt += 4;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(45), itPt->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(59), itPt->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(48), itPt->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), itPt->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), itPt->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), itPt->z);
     }
 
     {
@@ -455,9 +455,9 @@ void MeshTest::copy()
 
         for( ; pointItr != pointEnd ; ++pointItr, ++pointItrCopyMesh)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->x, pointItrCopyMesh->x, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->y, pointItrCopyMesh->y, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->z, pointItrCopyMesh->z, EPSILON);
+            CPPUNIT_ASSERT_EQUAL(pointItr->x, pointItrCopyMesh->x);
+            CPPUNIT_ASSERT_EQUAL(pointItr->y, pointItrCopyMesh->y);
+            CPPUNIT_ASSERT_EQUAL(pointItr->z, pointItrCopyMesh->z);
         }
 
         const sight::data::Mesh::csptr mesh3 = mesh; // copy into a const pointer to explicit test const begin()
@@ -1163,35 +1163,35 @@ void MeshTest::iteratorCopyTest()
             const auto& [p2, n2, c2, uv2, cell2, cn2, cc2, cuv2] = pt2;
 
             // point
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.x, p2.x, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.y, p2.y, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.z, p2.z, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.x, p2.x);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.y, p2.y);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.z, p2.z);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.r, c2.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.g, c2.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.b, c2.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.a, c2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v);
 
             // cell
             CPPUNIT_ASSERT_EQUAL(cell1.pt, cell2.pt);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nx, cn2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.ny, cn2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nz, cn2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cn1.nx, cn2.nx);
+            CPPUNIT_ASSERT_EQUAL(cn1.ny, cn2.ny);
+            CPPUNIT_ASSERT_EQUAL(cn1.nz, cn2.nz);
 
             CPPUNIT_ASSERT_EQUAL(cc1.r, cc2.r);
             CPPUNIT_ASSERT_EQUAL(cc1.g, cc2.g);
             CPPUNIT_ASSERT_EQUAL(cc1.b, cc2.b);
             CPPUNIT_ASSERT_EQUAL(cc1.a, cc2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.u, cuv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.v, cuv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cuv1.u, cuv2.u);
+            CPPUNIT_ASSERT_EQUAL(cuv1.v, cuv2.v);
 
             ++count;
         }
@@ -1224,35 +1224,35 @@ void MeshTest::iteratorCopyTest()
         for(const auto& [p1, n1, c1, uv1, cell1, cn1, cc1, cuv1] : range)
         {
             // point
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.x, p2.x, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.y, p2.y, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.z, p2.z, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.x, p2.x);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.y, p2.y);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.z, p2.z);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.r, c2.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.g, c2.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.b, c2.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.a, c2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v);
 
             // cell
             CPPUNIT_ASSERT_EQUAL(cell1.pt, cell2.pt);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nx, cn2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.ny, cn2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nz, cn2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cn1.nx, cn2.nx);
+            CPPUNIT_ASSERT_EQUAL(cn1.ny, cn2.ny);
+            CPPUNIT_ASSERT_EQUAL(cn1.nz, cn2.nz);
 
             CPPUNIT_ASSERT_EQUAL(cc1.r, cc2.r);
             CPPUNIT_ASSERT_EQUAL(cc1.g, cc2.g);
             CPPUNIT_ASSERT_EQUAL(cc1.b, cc2.b);
             CPPUNIT_ASSERT_EQUAL(cc1.a, cc2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.u, cuv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.v, cuv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cuv1.u, cuv2.u);
+            CPPUNIT_ASSERT_EQUAL(cuv1.v, cuv2.v);
 
             ++count;
         }

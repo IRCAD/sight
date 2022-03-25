@@ -199,7 +199,7 @@ void FrameTLTest::pushTest()
     CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
     core::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, time2Pushed);
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
@@ -256,7 +256,7 @@ void FrameTLTest::copyTest()
     }
 
     const core::HiResClock::HiResClockType copiedTime2 = copiedTimeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, copiedTime2, 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, copiedTime2);
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
@@ -264,7 +264,7 @@ void FrameTLTest::copyTest()
 
     CSPTR(data::timeline::Object) copiedData2 = copiedTimeline->getClosestBuffer(time2);
     CPPUNIT_ASSERT(copiedData2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, copiedData2->getTimestamp(), 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, copiedData2->getTimestamp());
 
     copiedTimeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj2 = timeline->getNewerObject();

@@ -213,18 +213,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(286) = MAX;
 
         medImHelper::getMinMax(image, resMin, resMax);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-            "min values are not equal",
-            static_cast<double>(MIN),
-            static_cast<double>(resMin),
-            0.00001
-        );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-            "max values are not equal",
-            static_cast<double>(MAX),
-            static_cast<double>(resMax),
-            0.00001
-        );
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", MAX, resMax);
     }
 
     {
@@ -318,12 +308,7 @@ void getPixelTestHelper(const P& pixelValue)
     {
         for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "Pixel values are not equal",
-                static_cast<double>(pixelValue[i]),
-                static_cast<double>(value[i]),
-                0.00001
-            );
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
     }
     else
@@ -388,12 +373,7 @@ void setPixelTestHelper(P& pixelValue)
     {
         for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "Pixel values are not equal",
-                static_cast<double>(pixelValue[i]),
-                static_cast<double>(value[i]),
-                0.00001
-            );
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
     }
     else
@@ -502,7 +482,7 @@ void MedicalImageHelpersTest::testLandmarks()
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p->getCoord()[i], point->getCoord()[i], std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_EQUAL(p->getCoord()[i], point->getCoord()[i]);
     }
 }
 

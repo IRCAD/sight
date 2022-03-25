@@ -76,8 +76,6 @@ void UtilsTest::convertOgreMatrixToTM3D()
     rng.seed(std::random_device()());
     std::uniform_real_distribution<float> dist(-10., 10.);
 
-    const double epsilon = 1e-7; // matrices are cast from double to float meaning that some precision could be lost.
-
     // Convert from Sight to ogre and back to Sight.
     {
         data::Matrix4::sptr mat0 = data::Matrix4::New();
@@ -93,7 +91,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(mat0->getCoefficient(l, c), ogreMat0[l][c], epsilon);
+                CPPUNIT_ASSERT_EQUAL(mat0->getCoefficient(l, c), double(ogreMat0[l][c]));
             }
         }
 
@@ -106,8 +104,8 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(mat0->getCoefficient(l, c), mat0Copy->getCoefficient(l, c), epsilon);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat0[l][c], mat0Copy->getCoefficient(l, c), epsilon);
+                CPPUNIT_ASSERT_EQUAL(mat0->getCoefficient(l, c), mat0Copy->getCoefficient(l, c));
+                CPPUNIT_ASSERT_EQUAL(double(ogreMat0[l][c]), mat0Copy->getCoefficient(l, c));
             }
         }
     }
@@ -130,7 +128,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat1[l][c], mat1Copy->getCoefficient(l, c), epsilon);
+                CPPUNIT_ASSERT_EQUAL(double(ogreMat1[l][c]), mat1Copy->getCoefficient(l, c));
             }
         }
 
@@ -140,8 +138,8 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c], epsilon);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(mat1Copy->getCoefficient(l, c), ogreMat1Copy[l][c], epsilon);
+                CPPUNIT_ASSERT_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c]);
+                CPPUNIT_ASSERT_EQUAL(mat1Copy->getCoefficient(l, c), double(ogreMat1Copy[l][c]));
             }
         }
     }

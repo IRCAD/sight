@@ -176,8 +176,8 @@ void Matrix4Test::getterSetterByMatrix()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(matrix4x4[i][j], mat2[i][j], 10e-8);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(matrix4x4[i][j], mat->getCoefficient(i, j), 10e-8);
+            CPPUNIT_ASSERT_EQUAL(matrix4x4[i][j], mat2[i][j]);
+            CPPUNIT_ASSERT_EQUAL(matrix4x4[i][j], mat->getCoefficient(i, j));
         }
     }
 
@@ -196,7 +196,7 @@ void Matrix4Test::getterSetterByMatrix()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(coefs[i * 4 + j], matFromCoefs[i][j], 10e-8);
+            CPPUNIT_ASSERT_EQUAL(coefs[i * 4 + j], matFromCoefs[i][j]);
         }
     }
 }

@@ -82,13 +82,12 @@ void EigenToolsTest::eigenToF4s()
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Elements differ at (" + std::to_string(r) + "," + std::to_string(
                     c
                 ) + ")",
                 mat(r, c),
-                f4sRes->getCoefficient(r, c),
-                0.0000000001
+                f4sRes->getCoefficient(r, c)
             );
         }
     }

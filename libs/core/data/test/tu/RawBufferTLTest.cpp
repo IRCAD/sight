@@ -82,15 +82,15 @@ void RawBufferTLTest::pushTest()
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
     float* buffData = buff->getBuffer<float>();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.2, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.5, buffData[2], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(1.0f, buffData[0]);
+    CPPUNIT_ASSERT_EQUAL(5.2f, buffData[1]);
+    CPPUNIT_ASSERT_EQUAL(7.5f, buffData[2]);
 
     CSPTR(data::timeline::Object) dataPushed2Bis = timeline->getNewerObject();
     CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
     core::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, time2Pushed);
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
@@ -334,9 +334,9 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(buff1);
     CPPUNIT_ASSERT_EQUAL(buff1, deepTimeline->getBuffer(time1));
     float* buffData1 = buff1->getBuffer<float>();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData1[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.2, buffData1[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.5, buffData1[2], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(1.0f, buffData1[0]);
+    CPPUNIT_ASSERT_EQUAL(5.2f, buffData1[1]);
+    CPPUNIT_ASSERT_EQUAL(7.5f, buffData1[2]);
 
     CSPTR(data::timeline::Object) deepDataPushed2 = deepTimeline->getObject(time2);
     CPPUNIT_ASSERT(deepDataPushed2);
@@ -345,9 +345,9 @@ void RawBufferTLTest::copyTest()
         std::dynamic_pointer_cast<const data::timeline::RawBuffer>(deepDataPushed2);
     CPPUNIT_ASSERT(buff2);
     float* buffData2 = buff2->getBuffer<float>();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, buffData2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0, buffData2[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(66., buffData2[2], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(8.0f, buffData2[0]);
+    CPPUNIT_ASSERT_EQUAL(9.0f, buffData2[1]);
+    CPPUNIT_ASSERT_EQUAL(66.f, buffData2[2]);
 }
 
 } //namespace ut

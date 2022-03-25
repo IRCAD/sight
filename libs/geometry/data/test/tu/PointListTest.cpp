@@ -478,9 +478,9 @@ void PointListTest::removeClosestPointNominal()
         const auto pRes =
             geometry::data::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[0], p->getCoord()[0], std::numeric_limits<float>::min());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[1], p->getCoord()[1], std::numeric_limits<float>::min());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[2], p->getCoord()[2], std::numeric_limits<float>::min());
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[0], p->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[1], p->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[2], p->getCoord()[2]);
     }
 }
 
@@ -522,9 +522,9 @@ void PointListTest::removeClosestPointExtreme()
         const auto pRes =
             geometry::data::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[0], p->getCoord()[0], i + std::numeric_limits<float>::max());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[1], p->getCoord()[1], i + std::numeric_limits<float>::max());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[2], p->getCoord()[2], i + std::numeric_limits<float>::max());
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[0], p->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[1], p->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[2], p->getCoord()[2]);
     }
 }
 

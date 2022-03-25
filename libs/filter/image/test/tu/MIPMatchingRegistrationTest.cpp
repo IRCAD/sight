@@ -83,11 +83,10 @@ void MIPMatchingRegistrationTest::identityTest()
 
     for(std::size_t i = 0 ; i != 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Translation value is not equal to '0' ",
             0.,
-            params.transform->getCoefficient(i, 3),
-            1e-8
+            params.transform->getCoefficient(i, 3)
         );
     }
 }

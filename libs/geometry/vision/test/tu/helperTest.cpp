@@ -76,7 +76,7 @@ static inline void compareChessboards(
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoords[0], detectedCoords[0], 0.01);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoords[1], detectedCoords[1], 0.01);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, detectedCoords[2], 0.0);
+        CPPUNIT_ASSERT_EQUAL(0.0, detectedCoords[2]);
     }
 }
 

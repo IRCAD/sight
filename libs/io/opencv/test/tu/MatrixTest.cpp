@@ -64,13 +64,12 @@ void MatrixTest::copyFromCvFloat()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]"
                 ,
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j),
-                1e-8
+                fwMat->getCoefficient(i, j)
             );
         }
     }
@@ -102,12 +101,11 @@ void MatrixTest::copyFromCvFloat()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j),
-                1e-8
+                fwMat->getCoefficient(i, j)
             );
         }
     }
@@ -177,13 +175,12 @@ void MatrixTest::copyFromCvDouble()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]"
                 ,
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j),
-                1e-8
+                fwMat->getCoefficient(i, j)
             );
         }
     }
@@ -215,12 +212,11 @@ void MatrixTest::copyFromCvDouble()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j),
-                1e-8
+                fwMat->getCoefficient(i, j)
             );
         }
     }
@@ -240,13 +236,12 @@ void MatrixTest::copyToCvDouble()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]"
                 ,
                 fwMat->getCoefficient(i, j),
-                static_cast<double>(cvMat(i, j)),
-                1e-8
+                static_cast<double>(cvMat(i, j))
             );
         }
     }
@@ -266,12 +261,11 @@ void MatrixTest::copyToCvDouble()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j),
-                1e-8
+                fwMat->getCoefficient(i, j)
             );
         }
     }
@@ -291,13 +285,12 @@ void MatrixTest::copyFromCvMat()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]"
                 ,
                 fwMat->getCoefficient(i, j),
-                cvMat.at<double>(i, j),
-                1e-8
+                cvMat.at<double>(i, j)
             );
         }
     }
@@ -316,13 +309,12 @@ void MatrixTest::copyFromCvMat()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]"
                 ,
                 fwMat->getCoefficient(i, j),
-                cvMat.at<double>(i, j),
-                1e-8
+                cvMat.at<double>(i, j)
             );
         }
     }
@@ -342,13 +334,12 @@ void MatrixTest::copyToCvMat()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]"
                 ,
                 fwMat->getCoefficient(i, j),
-                cvMat.at<double>(i, j),
-                1e-8
+                cvMat.at<double>(i, j)
             );
         }
     }
@@ -368,12 +359,11 @@ void MatrixTest::copyToCvMat()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i)
                 + " ; " + std::to_string(j) + "]",
                 cvMat.at<double>(i, j),
-                fwMat->getCoefficient(i, j),
-                1e-8
+                fwMat->getCoefficient(i, j)
             );
         }
     }

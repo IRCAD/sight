@@ -145,18 +145,18 @@ void CameraTest::paramTest()
     camera->setStreamUrl(STREAMURL);
     camera->setScale(SCALE);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CX, camera->getCx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CY, camera->getCy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(FX, camera->getFx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(FY, camera->getFy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(SKEW, camera->getSkew(), 0.00001);
+    CPPUNIT_ASSERT_EQUAL(CX, camera->getCx());
+    CPPUNIT_ASSERT_EQUAL(CY, camera->getCy());
+    CPPUNIT_ASSERT_EQUAL(FX, camera->getFx());
+    CPPUNIT_ASSERT_EQUAL(FY, camera->getFy());
+    CPPUNIT_ASSERT_EQUAL(SKEW, camera->getSkew());
 
     data::Camera::DistArrayType dist = camera->getDistortionCoefficient();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(K1, dist[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(K2, dist[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(P1, dist[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(P2, dist[3], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(K3, dist[4], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(K1, dist[0]);
+    CPPUNIT_ASSERT_EQUAL(K2, dist[1]);
+    CPPUNIT_ASSERT_EQUAL(P1, dist[2]);
+    CPPUNIT_ASSERT_EQUAL(P2, dist[3]);
+    CPPUNIT_ASSERT_EQUAL(K3, dist[4]);
 
     CPPUNIT_ASSERT_EQUAL(IS_CALIBRATED, camera->getIsCalibrated());
     CPPUNIT_ASSERT_EQUAL(DESC, camera->getDescription());
@@ -184,19 +184,19 @@ void CameraTest::shallowCopyTest()
 
     CPPUNIT_ASSERT(*camera == *camera2);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCx(), camera2->getCx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCy(), camera2->getCy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getFx(), camera2->getFx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getFy(), camera2->getFy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getSkew(), camera2->getSkew(), 0.00001);
+    CPPUNIT_ASSERT_EQUAL(camera->getCx(), camera2->getCx());
+    CPPUNIT_ASSERT_EQUAL(camera->getCy(), camera2->getCy());
+    CPPUNIT_ASSERT_EQUAL(camera->getFx(), camera2->getFx());
+    CPPUNIT_ASSERT_EQUAL(camera->getFy(), camera2->getFy());
+    CPPUNIT_ASSERT_EQUAL(camera->getSkew(), camera2->getSkew());
 
     data::Camera::DistArrayType dist  = camera->getDistortionCoefficient();
     data::Camera::DistArrayType dist2 = camera2->getDistortionCoefficient();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], dist2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], dist2[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[2], dist2[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[3], dist2[3], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[4], dist2[4], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(dist[0], dist2[0]);
+    CPPUNIT_ASSERT_EQUAL(dist[1], dist2[1]);
+    CPPUNIT_ASSERT_EQUAL(dist[2], dist2[2]);
+    CPPUNIT_ASSERT_EQUAL(dist[3], dist2[3]);
+    CPPUNIT_ASSERT_EQUAL(dist[4], dist2[4]);
 
     CPPUNIT_ASSERT_EQUAL(camera->getIsCalibrated(), camera2->getIsCalibrated());
     CPPUNIT_ASSERT_EQUAL(camera->getDescription(), camera2->getDescription());

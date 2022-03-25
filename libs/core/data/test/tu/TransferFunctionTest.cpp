@@ -64,8 +64,8 @@ void TransferFunctionTest::constructorTest()
 
     data::TransferFunction::csptr tf = data::TransferFunction::New();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow());
 
     CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
     CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
@@ -133,8 +133,8 @@ void TransferFunctionTest::classicGetSetTest()
     // Test getTFValues()
     const TransferFunction::TFValueVectorType values = tf->getTFValues();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey1, values[0], 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey2, values[1], 0.0);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong key value", expectedKey1, values[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong key value", expectedKey2, values[1]);
 
     // Test getTFColors()
     const TransferFunction::TFColorVectorType colors = tf->getTFColors();
@@ -145,7 +145,7 @@ void TransferFunctionTest::classicGetSetTest()
     // Test erase
     tf->eraseTFValue(1.0);
     CPPUNIT_ASSERT_EQUAL((std::size_t) 1, tf->getTFData().size());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey1, tf->getTFValues()[0], 0.0);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong key value", expectedKey1, tf->getTFValues()[0]);
 
     // Test clear()
     tf->clear();

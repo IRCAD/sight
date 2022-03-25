@@ -359,7 +359,7 @@ void LandmarksTest::pointsTest()
 
     data::Landmarks::PointType& point = landmarks->getPoint(GROUP1, 0);
     point[2] = 18.6;
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(18.6, landmarks->getPoint(GROUP1, 0)[2], 0.000001);
+    CPPUNIT_ASSERT_EQUAL(18.6, landmarks->getPoint(GROUP1, 0)[2]);
 
     // check clear points
     CPPUNIT_ASSERT_NO_THROW(landmarks->clearPoints(GROUP1));
