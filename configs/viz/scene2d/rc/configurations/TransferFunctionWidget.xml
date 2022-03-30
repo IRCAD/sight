@@ -105,7 +105,7 @@ Example:
                 <adaptor uid="TFAbscissaAdp" />
                 <adaptor uid="TFOrdinateAdp" />
                 <adaptor uid="TFMaxOpacityAdp" />
-                <adaptor uid="TFCurvedHistogramAdp" />
+                <adaptor uid="TFHistogramAdp" />
                 <adaptor uid="TFHistogramCursorAdp" />
                 <adaptor uid="TFHistogramValueAdp" />
                 <adaptor uid="TFAdp" />
@@ -133,7 +133,7 @@ Example:
             <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
-        <service uid="TFCurvedHistogramAdp" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="true">
+        <service uid="TFHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="true">
             <in key="histogram" uid="${histogram}" />
             <inout key="point" uid="histogramPoint" />
             <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
@@ -200,7 +200,7 @@ Example:
         <start uid="TFAbscissaAdp" />
         <start uid="TFOrdinateAdp" />
         <start uid="TFMaxOpacityAdp" />
-        <start uid="TFCurvedHistogramAdp" />
+        <start uid="TFHistogramAdp" />
         <start uid="TFHistogramCursorAdp" />
         <start uid="TFHistogramValueAdp" />
         <start uid="TFAdp" />

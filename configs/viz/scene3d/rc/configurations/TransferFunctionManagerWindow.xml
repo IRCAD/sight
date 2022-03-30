@@ -99,7 +99,7 @@
                 <adaptor uid="TFAbscissaAdp" />
                 <adaptor uid="TFOrdinateAdp" />
                 <adaptor uid="TFMaxOpacityAdp" />
-                <adaptor uid="TFCurvedHistogramAdp" />
+                <adaptor uid="TFHistogramAdp" />
                 <adaptor uid="TFHistogramCursorAdp" />
                 <adaptor uid="TFHistogramValueAdp" />
                 <adaptor uid="TFMultipleTFAdp" />
@@ -160,7 +160,7 @@
             <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="6" />
         </service>
 
-        <service uid="TFCurvedHistogramAdp" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="true">
+        <service uid="TFHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="true">
             <in key="histogram" uid="${histogram}" />
             <inout key="point" uid="histogramPoint" />
             <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="#B66F00" innerColor="#FFC66D" opacity="0.9" zValue="5" borderWidth="2.0" />
@@ -263,7 +263,7 @@
         <start uid="TFAbscissaAdp" />
         <start uid="TFOrdinateAdp" />
         <start uid="TFMaxOpacityAdp" />
-        <start uid="TFCurvedHistogramAdp" />
+        <start uid="TFHistogramAdp" />
         <start uid="TFHistogramCursorAdp" />
         <start uid="TFHistogramValueAdp" />
         <start uid="TFMultipleTFAdp" />

@@ -9,8 +9,6 @@ The services are implementations of the IAdaptor present in libs/viz/scene2D
   Renders an axis on the scene2d
 - **SComputeHistogram**
   Computes the histogram of the image.
-- **SCurvedHistogram**
-  Displays the curve of the histogram of the image
 - **SGrid2D**
   Renders a grid on the scene2d
 - **SHistogram**

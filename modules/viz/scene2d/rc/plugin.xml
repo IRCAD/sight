@@ -9,12 +9,6 @@
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SCurvedHistogram</service>
-         <desc>IAdaptor implementation for histogram data.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SGrid2D</service>
          <desc>Render grid on the scene2d.</desc>
     </extension>
@@ -22,7 +16,7 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SHistogram</service>
-         <desc>IAdaptor implementation for histogram data.</desc>
+         <desc>Displays the histogram of an image.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
