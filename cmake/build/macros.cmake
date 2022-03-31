@@ -307,7 +307,7 @@ macro(fw_exec SIGHT_TARGET)
                        "rem Check if we have elevated privileges\n"
                        "whoami /all | findstr S-1-16-12288 > nul\n"
                        "rem if we do not have those, restart the script as Admin\n"
-                       "if %errorlevel%==1 (powershell start -verb runas '%0' & exit /b)\n"
+                       "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
             )
         endif()
 
@@ -820,7 +820,7 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                            "rem Check if we have elevated privileges\n"
                            "whoami /all | findstr S-1-16-12288 > nul\n"
                            "rem if we do not have those, restart the script as Admin\n"
-                           "if %errorlevel%==1 (powershell start -verb runas '%0' & exit /b)\n"
+                           "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
                 )
             endif()
 
