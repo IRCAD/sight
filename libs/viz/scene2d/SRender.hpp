@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -133,8 +133,12 @@ public:
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
     VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event);
 
-    /// Returns the viewport coordinate point mapped to scene coordinates.
-    VIZ_SCENE2D_API scene2d::data::Coord mapToScene(const scene2d::data::Coord& coord) const;
+    /** @brief Compute the viewport coordinates mapped to scene coordinates.
+     * @param coord input viewport coordinates
+     * @param clip clip the returned coordinates to the size of the scene
+     * @return scene coordinates
+     */
+    VIZ_SCENE2D_API scene2d::data::Coord mapToScene(const scene2d::data::Coord& coord, bool clip = false) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     VIZ_SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;

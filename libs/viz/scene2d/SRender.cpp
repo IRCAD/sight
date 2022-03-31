@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -144,11 +144,22 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-scene2d::data::Coord SRender::mapToScene(const scene2d::data::Coord& coord) const
+scene2d::data::Coord SRender::mapToScene(const scene2d::data::Coord& coord, bool clip) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
     const QPoint qp(static_cast<int>(coord.getX()), static_cast<int>(coord.getY()));
-    const QPointF qps = m_view->mapToScene(qp);
+    QPointF qps = m_view->mapToScene(qp);
+    if(clip)
+    {
+        QRectF rect = m_view->sceneRect();
+        if(!rect.contains(qps))
+        {
+            // Keep the item inside the scene rect.
+            qps.setX(qMin(rect.right(), qMax(qps.x(), rect.left())));
+            qps.setY(qMin(rect.bottom(), qMax(qps.y(), rect.top())));
+        }
+    }
+
     return scene2d::data::Coord(qps.x(), qps.y());
 }
 

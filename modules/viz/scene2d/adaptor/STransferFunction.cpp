@@ -585,7 +585,7 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     const double nextPointXCoord     = nextPoint->first.first;
 
     // Gets the actual mouse point coordinates.
-    sight::viz::scene2d::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord(), true);
 
     // Clamps new y coord between -1 and 0.
     if(newCoord.getY() > 0)

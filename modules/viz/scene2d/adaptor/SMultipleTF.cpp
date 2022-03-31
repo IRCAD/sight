@@ -999,7 +999,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     const double nextPointXCoord     = nextPoint->first.first;
 
     // Gets the actual mouse point coordinates.
-    sight::viz::scene2d::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord(), true);
 
     // Clamps new y coord between -1 and 0.
     if(newCoord.getY() > 0)
