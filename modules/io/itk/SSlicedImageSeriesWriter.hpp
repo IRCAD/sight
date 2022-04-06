@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::module::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="sight::module::io::itk::SJpgImageSeriesWriter">
+   <service type="sight::module::io::itk::SSlicedImageSeriesWriter">
        <in key="data" uid="..." />
        <folder>...</folder>
    </service>
@@ -53,15 +53,15 @@ namespace sight::module::io::itk
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class MODULE_IO_ITK_CLASS_API SJpgImageSeriesWriter : public sight::io::base::service::IWriter
+class MODULE_IO_ITK_CLASS_API SSlicedImageSeriesWriter : public sight::io::base::service::IWriter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SJpgImageSeriesWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SSlicedImageSeriesWriter, sight::io::base::service::IWriter);
 
-    MODULE_IO_ITK_API SJpgImageSeriesWriter() noexcept;
+    MODULE_IO_ITK_API SSlicedImageSeriesWriter() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SJpgImageSeriesWriter() noexcept;
+    MODULE_IO_ITK_API virtual ~SSlicedImageSeriesWriter() noexcept;
 
 protected:
 

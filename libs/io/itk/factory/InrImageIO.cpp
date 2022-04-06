@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "itkInrImageIO.hpp"
+#include "InrImageIO.hpp"
 
 #include <core/Exception.hpp>
 #include <core/spyLog.hpp>

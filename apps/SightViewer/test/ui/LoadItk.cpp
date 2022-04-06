@@ -50,7 +50,7 @@ void LoadItk::test()
         {
             openFile(
                 tester,
-                "SeriesDB Inrimage Reader (ITK)",
+                "SeriesDB image Reader (ITK)",
                 utestData::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 

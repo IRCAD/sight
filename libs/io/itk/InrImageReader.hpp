@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,31 +29,29 @@
 
 #include <data/Image.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/base/reader/GenericObjectReader.hpp>
 
 namespace sight::io::itk
 {
 
-class ImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                    public core::location::SingleFile,
-                    public core::tools::ProgressAdviser
+class InrImageReader : public base::reader::GenericObjectReader<data::Image>,
+                       public core::location::SingleFile,
+                       public core::tools::ProgressAdviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        ImageWriter,
-        io::base::writer::GenericObjectWriter<data::Image>,
-        io::base::writer::factory::New<ImageWriter>
+        InrImageReader,
+        io::base::reader::GenericObjectReader<data::Image>,
+        io::base::reader::factory::New<InrImageReader>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API ImageWriter(io::base::writer::IObjectWriter::Key key);
+    IO_ITK_API InrImageReader(io::base::reader::IObjectReader::Key key);
 
-    IO_ITK_API ~ImageWriter();
+    IO_ITK_API ~InrImageReader();
 
-    IO_ITK_API void write() override;
-
-    IO_ITK_API std::string extension() const override;
+    IO_ITK_API void read() override;
 };
 
 } // namespace sight::io::itk

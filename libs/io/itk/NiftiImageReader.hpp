@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,42 +21,36 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "io/itk/config.hpp"
 
-namespace sight::module::io::itk
+#include <core/location/SingleFile.hpp>
+#include <core/tools/ProgressAdviser.hpp>
+
+#include <data/Image.hpp>
+
+#include <io/base/reader/GenericObjectReader.hpp>
+
+namespace sight::io::itk
 {
 
-namespace ut
+class NiftiImageReader : public base::reader::GenericObjectReader<data::Image>,
+                         public core::location::SingleFile,
+                         public core::tools::ProgressAdviser
 {
-
-/**
- * @brief Test many methods to create mesh.
- */
-class IoItkTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(IoItkTest);
-CPPUNIT_TEST(testImageSeriesWriterJPG);
-CPPUNIT_TEST(testSaveLoadInr);
-CPPUNIT_TEST(testSaveLoadNifti);
-CPPUNIT_TEST(ImageSeriesInrTest);
-CPPUNIT_TEST(ImageSeriesNiftiTest);
-CPPUNIT_TEST(SeriesDBInrTest);
-CPPUNIT_TEST_SUITE_END();
-
 public:
 
-    // interface
-    void setUp();
-    void tearDown();
+    SIGHT_DECLARE_CLASS(
+        NiftiImageReader,
+        io::base::reader::GenericObjectReader<data::Image>,
+        io::base::reader::factory::New<NiftiImageReader>
+    );
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    void testImageSeriesWriterJPG();
-    void testSaveLoadInr();
-    void testSaveLoadNifti();
-    void ImageSeriesInrTest();
-    void ImageSeriesNiftiTest();
-    void SeriesDBInrTest();
+    IO_ITK_API NiftiImageReader(io::base::reader::IObjectReader::Key key);
+
+    IO_ITK_API ~NiftiImageReader();
+
+    IO_ITK_API void read() override;
 };
 
-} //namespace ut
-
-} //namespace sight::module::io::itk
+} // namespace sight::io::itk

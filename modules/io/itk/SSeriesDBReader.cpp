@@ -20,7 +20,9 @@
  *
  ***********************************************************************/
 
-#include "SInrSeriesDBReader.hpp"
+#include "SSeriesDBReader.hpp"
+
+#include "modules/io/itk/SImageReader.hpp"
 
 #include <core/base.hpp>
 #include <core/location/MultipleFiles.hpp>
@@ -36,9 +38,6 @@
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
 
-#include <io/base/service/IReader.hpp>
-#include <io/itk/ImageReader.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -53,40 +52,41 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SInrSeriesDBReader::SInrSeriesDBReader() noexcept
+SSeriesDBReader::SSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SInrSeriesDBReader::~SInrSeriesDBReader() noexcept
+SSeriesDBReader::~SSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SInrSeriesDBReader::getIOPathType() const
+sight::io::base::service::IOPathType SSeriesDBReader::getIOPathType() const
 {
     return sight::io::base::service::FILES;
 }
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::configuring()
+void SSeriesDBReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::openLocationDialog()
+void SSeriesDBReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("Inrimage", "*.inr.gz");
+    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialogFile.addFilter("Nifti (.nii)", "*.nii");
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
@@ -111,46 +111,7 @@ void SInrSeriesDBReader::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-bool SInrSeriesDBReader::createImage(const std::filesystem::path inrFile, data::Image::sptr image)
-{
-    auto myLoader = sight::io::itk::ImageReader::New();
-    bool ok       = true;
-
-    myLoader->setObject(image);
-    myLoader->setFile(inrFile);
-
-    try
-    {
-        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myLoader->addHandler(progressMeterGUI);
-        myLoader->read();
-    }
-    catch(const std::exception& e)
-    {
-        std::stringstream ss;
-        ss << "Warning during loading : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show(
-            "Warning",
-            ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
-        );
-        ok = false;
-    }
-    catch(...)
-    {
-        sight::ui::base::dialog::MessageDialog::show(
-            "Warning",
-            "Warning during loading",
-            sight::ui::base::dialog::IMessageDialog::WARNING
-        );
-        ok = false;
-    }
-    return ok;
-}
-
-//------------------------------------------------------------------------------
-
-void SInrSeriesDBReader::updating()
+void SSeriesDBReader::updating()
 {
     if(this->hasLocationDefined())
     {
@@ -172,7 +133,7 @@ void SInrSeriesDBReader::updating()
             this->initSeries(imgSeries, instanceUID);
 
             data::Image::sptr image = data::Image::New();
-            if(!this->createImage(path, image))
+            if(!SImageReader::loadImage(path, image))
             {
                 m_readFailed = true;
             }
@@ -196,7 +157,7 @@ void SInrSeriesDBReader::updating()
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::initSeries(data::Series::sptr series, const std::string& instanceUID)
+void SSeriesDBReader::initSeries(data::Series::sptr series, const std::string& instanceUID)
 {
     series->setModality("OT");
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();

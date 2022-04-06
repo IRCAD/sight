@@ -1,7 +1,6 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,44 +19,46 @@
  *
  ***********************************************************************/
 
-#include "io/itk/ImageWriter.hpp"
+#include "io/itk/NiftiImageWriter.hpp"
 
 #include "io/itk/helper/ProgressItkToFw.hpp"
 #include "io/itk/itk.hpp"
 
 #include <core/base.hpp>
 #include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
 
 #include <itkImageFileWriter.h>
+#include <itkNiftiImageIO.h>
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(sight::io::itk::ImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::itk::NiftiImageWriter);
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
 
-ImageWriter::ImageWriter(io::base::writer::IObjectWriter::Key)
+NiftiImageWriter::NiftiImageWriter(io::base::writer::IObjectWriter::Key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-ImageWriter::~ImageWriter()
+NiftiImageWriter::~NiftiImageWriter()
 {
 }
 
-struct ITKSaverFunctor
+struct NiftiSaverFunctor
 {
     struct Parameter
     {
         std::string m_filename;
         data::Image::csptr m_dataImage;
-        io::itk::ImageWriter::sptr m_fwWriter;
+        io::itk::NiftiImageWriter::sptr m_fwWriter;
     };
 
     //------------------------------------------------------------------------------
@@ -68,11 +69,7 @@ struct ITKSaverFunctor
         SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
 
         // Reader IO (*1*)
-        typename ::itk::ImageIOBase::Pointer imageIOWrite = ::itk::ImageIOFactory::CreateImageIO(
-            param.m_filename.c_str(),
-            ::itk::ImageIOFactory::WriteMode
-        );
-        assert(imageIOWrite.IsNotNull());
+        typename ::itk::NiftiImageIO::Pointer imageIOWrite = ::itk::NiftiImageIO::New();
 
         // create writer
         typedef ::itk::Image<PIXELTYPE, 3> itkImageType;
@@ -98,18 +95,18 @@ struct ITKSaverFunctor
 
 //------------------------------------------------------------------------------
 
-void ImageWriter::write()
+void NiftiImageWriter::write()
 {
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    ITKSaverFunctor::Parameter saverParam;
+    NiftiSaverFunctor::Parameter saverParam;
     saverParam.m_filename  = this->getFile().string();
     saverParam.m_dataImage = getConcreteObject();
     saverParam.m_fwWriter  = this->getSptr();
     assert(saverParam.m_dataImage);
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ITKSaverFunctor>::invoke(
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, NiftiSaverFunctor>::invoke(
         saverParam.m_dataImage->getType(),
         saverParam
     );
@@ -117,11 +114,11 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ImageWriter::extension() const
+std::string NiftiImageWriter::extension() const
 {
-    if(getFile().empty() || (getFile().string().find(".inr.gz") != std::string::npos))
+    if(getFile().empty() || (getFile().string().find(".nii") != std::string::npos))
     {
-        return ".inr.gz";
+        return ".nii";
     }
     else
     {

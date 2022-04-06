@@ -116,34 +116,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     // Create and execute service
     executeService(
         imageSeries,
-        "sight::module::io::itk::SJpgImageSeriesWriter",
-        srvCfg,
-        data::Access::in
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void IoItkTest::testImageWriterJPG()
-{
-    // Create Image
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
-
-    // Create path
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageJPG";
-    std::filesystem::create_directories(path);
-
-    // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg    = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr folderCfg = core::runtime::EConfigurationElement::New("folder");
-    folderCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(folderCfg);
-
-    // Create and execute service
-    executeService(
-        image,
-        "sight::module::io::itk::JpgImageWriterService",
+        "sight::module::io::itk::SSlicedImageSeriesWriter",
         srvCfg,
         data::Access::in
     );
@@ -180,7 +153,7 @@ void IoItkTest::testSaveLoadInr()
     // Create and execute service
     executeService(
         image,
-        "sight::module::io::itk::InrImageWriterService",
+        "sight::module::io::itk::SImageWriter",
         srvCfg,
         data::Access::in
     );
@@ -189,7 +162,55 @@ void IoItkTest::testSaveLoadInr()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "sight::module::io::itk::InrImageReaderService",
+        "sight::module::io::itk::SImageReader",
+        srvCfg,
+        data::Access::inout
+    );
+
+    data::Image::Spacing spacing = image2->getSpacing();
+    std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    image2->setSpacing(spacing);
+
+    // check Image
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
+
+    CPPUNIT_ASSERT(*image == *image2);
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::testSaveLoadNifti()
+{
+    data::Image::sptr image = data::Image::New();
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+
+    const data::Image::Origin origin = {0.5f, 0.2f, 1.2f};
+    image->setOrigin(origin);
+
+    // save image in inr
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageNiftiTest/image.nii";
+    std::filesystem::create_directories(path.parent_path());
+
+    // Create Config
+    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
+    fileCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    executeService(
+        image,
+        "sight::module::io::itk::SImageWriter",
+        srvCfg,
+        data::Access::in
+    );
+
+    // load Image
+    data::Image::sptr image2 = data::Image::New();
+    executeService(
+        image2,
+        "sight::module::io::itk::SImageReader",
         srvCfg,
         data::Access::inout
     );
@@ -238,14 +259,68 @@ void IoItkTest::ImageSeriesInrTest()
     );
 
     // load Image
-    data::Image::sptr image2 = data::Image::New();
+    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
     executeService(
-        image2,
-        "sight::module::io::itk::InrImageReaderService",
+        imageSeries2,
+        "sight::module::io::itk::SImageSeriesReader",
         srvCfg,
         data::Access::inout
     );
 
+    data::Image::sptr image2     = imageSeries2->getImage();
+    data::Image::Spacing spacing = image2->getSpacing();
+    std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    image2->setSpacing(spacing);
+
+    // check Image
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
+
+    CPPUNIT_ASSERT(*image == *image2);
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::ImageSeriesNiftiTest()
+{
+    data::Image::sptr image             = data::Image::New();
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+
+    imageSeries->setImage(image);
+
+    // inr only support image origin (0,0,0)
+    const data::Image::Origin origin = {0., 0., 0.};
+    image->setOrigin(origin);
+
+    // save image in inr
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageNiftiTest/imageseries.nii";
+    std::filesystem::create_directories(path.parent_path());
+
+    // Create Config
+    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
+    fileCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    executeService(
+        imageSeries,
+        "sight::module::io::itk::SImageSeriesWriter",
+        srvCfg,
+        data::Access::in
+    );
+
+    // load Image
+    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
+    executeService(
+        imageSeries2,
+        "sight::module::io::itk::SImageSeriesReader",
+        srvCfg,
+        data::Access::inout
+    );
+
+    data::Image::sptr image2     = imageSeries2->getImage();
     data::Image::Spacing spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image2->setSpacing(spacing);
@@ -292,7 +367,7 @@ void IoItkTest::SeriesDBInrTest()
     data::SeriesDB::sptr sdb = data::SeriesDB::New();
     executeService(
         sdb,
-        "sight::module::io::itk::SInrSeriesDBReader",
+        "sight::module::io::itk::SSeriesDBReader",
         srvCfg,
         data::Access::inout
     );

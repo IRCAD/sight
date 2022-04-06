@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,18 @@
  *
  ***********************************************************************/
 
-#include "JpgImageWriterService.hpp"
+#include "SImageWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 
 #include <data/Image.hpp>
 
 #include <io/base/service/IWriter.hpp>
+#include <io/itk/InrImageWriter.hpp>
 #include <io/itk/JpgImageWriter.hpp>
+#include <io/itk/NiftiImageWriter.hpp>
 
 #include <service/macros.hpp>
 
@@ -37,52 +40,53 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 namespace sight::module::io::itk
 {
 
+/**
+ * Do not mark `nifti`  as incorrect.
+ * cspell:ignore nifti
+ */
+
 //------------------------------------------------------------------------------
 
-JpgImageWriterService::JpgImageWriterService() noexcept
+SImageWriter::SImageWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-JpgImageWriterService::~JpgImageWriterService() noexcept
+SImageWriter::~SImageWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType JpgImageWriterService::getIOPathType() const
+sight::io::base::service::IOPathType SImageWriter::getIOPathType() const
 {
-    return sight::io::base::service::FOLDER;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::configuring()
-{
-    sight::io::base::service::IWriter::configuring();
-}
-
-//------------------------------------------------------------------------------
-
-void JpgImageWriterService::openLocationDialog()
+void SImageWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
+    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialogFile.addFilter("NIfTI (.nii)", "*.nifti");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
-    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
     if(result)
     {
-        this->setFolder(result->getFolder());
-        defaultDirectory = result;
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -93,37 +97,75 @@ void JpgImageWriterService::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::starting()
+void SImageWriter::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::stopping()
+void SImageWriter::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::info(std::ostream& _sstream)
+void SImageWriter::configuring()
 {
-    _sstream << "JpgImageWriterService::info";
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(data::Image)& img)
+void SImageWriter::info(std::ostream& _sstream)
 {
-    auto writer = sight::io::itk::JpgImageWriter::New();
-    sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving image... ");
+    _sstream << "SImageWriter::info";
+}
 
-    writer->setFolder(imgPath);
-    writer->setObject(img);
+//------------------------------------------------------------------------------
+
+bool SImageWriter::saveImage(const std::filesystem::path& imgSavePath, const data::Image::csptr& image)
+{
+    sight::io::base::writer::IObjectWriter::sptr myWriter;
+    std::string ext = imgSavePath.extension().string();
+    boost::algorithm::to_lower(ext);
+
+    if(imgSavePath.string().find(".inr.gz") != std::string::npos)
+    {
+        auto inrWriter = sight::io::itk::InrImageWriter::New();
+        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
+        inrWriter->addHandler(progressMeterGUI);
+        inrWriter->setFile(imgSavePath);
+        myWriter = inrWriter;
+    }
+    else if(ext == ".nii")
+    {
+        auto niftiWriter = sight::io::itk::NiftiImageWriter::New();
+        niftiWriter->setFile(imgSavePath);
+        myWriter = niftiWriter;
+    }
+    else if(std::filesystem::is_directory(imgSavePath))
+    {
+        auto jpgWriter = sight::io::itk::JpgImageWriter::New();
+        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
+        jpgWriter->addHandler(progressMeterGUI);
+        jpgWriter->setFolder(imgSavePath);
+        myWriter = jpgWriter;
+    }
+    else
+    {
+        SIGHT_THROW_EXCEPTION(
+            core::tools::Failed(
+                "Unsupported " + ext + " format (Available formats: "
+                + ".inr.gz, .nii, .jpg, .jpeg)"
+            )
+        );
+    }
+
+    myWriter->setObject(image);
 
     try
     {
-        writer->addHandler(progressMeterGUI);
-        writer->write();
+        myWriter->write();
     }
     catch(const std::exception& e)
     {
@@ -134,6 +176,7 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
             ss.str(),
             sight::ui::base::dialog::IMessageDialog::WARNING
         );
+        return false;
     }
     catch(...)
     {
@@ -142,13 +185,16 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
             "Warning during saving",
             sight::ui::base::dialog::IMessageDialog::WARNING
         );
+        return false;
     }
+    return true;
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::updating()
+void SImageWriter::updating()
 {
+    m_writeFailed = true;
     if(this->hasLocationDefined())
     {
         const auto data  = m_data.lock();
@@ -157,12 +203,16 @@ void JpgImageWriterService::updating()
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
-        saveImage(this->getFolder(), image);
+        try
+        {
+            saveImage(this->getFile(), image);
+            m_writeFailed = false;
+        }
+        catch(core::tools::Failed& e)
+        {
+            SIGHT_THROW_EXCEPTION(e);
+        }
         cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
     }
 }
 

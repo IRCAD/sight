@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "SJpgImageSeriesWriter.hpp"
+#include "SSlicedImageSeriesWriter.hpp"
 
-#include "modules/io/itk/JpgImageWriterService.hpp"
+#include "modules/io/itk/SImageWriter.hpp"
 
 #include <core/base.hpp>
 #include <core/location/SingleFolder.hpp>
@@ -44,33 +44,33 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SJpgImageSeriesWriter::SJpgImageSeriesWriter() noexcept
+SSlicedImageSeriesWriter::SSlicedImageSeriesWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SJpgImageSeriesWriter::~SJpgImageSeriesWriter() noexcept
+SSlicedImageSeriesWriter::~SSlicedImageSeriesWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SJpgImageSeriesWriter::getIOPathType() const
+sight::io::base::service::IOPathType SSlicedImageSeriesWriter::getIOPathType() const
 {
     return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::configuring()
+void SSlicedImageSeriesWriter::configuring()
 {
     sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::openLocationDialog()
+void SSlicedImageSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
@@ -116,26 +116,26 @@ void SJpgImageSeriesWriter::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::starting()
+void SSlicedImageSeriesWriter::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::stopping()
+void SSlicedImageSeriesWriter::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::info(std::ostream& _sstream)
+void SSlicedImageSeriesWriter::info(std::ostream& _sstream)
 {
-    _sstream << "SJpgImageSeriesWriter::info";
+    _sstream << "SSlicedImageSeriesWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::updating()
+void SSlicedImageSeriesWriter::updating()
 {
     if(this->hasLocationDefined())
     {
@@ -147,7 +147,7 @@ void SJpgImageSeriesWriter::updating()
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
-        JpgImageWriterService::saveImage(this->getFolder(), imageSeries->getImage());
+        SImageWriter::saveImage(this->getFolder(), imageSeries->getImage());
         cursor.setDefaultCursor();
     }
     else

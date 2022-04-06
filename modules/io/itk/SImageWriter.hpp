@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <io/base/service/IWriter.hpp>
 
 #include <filesystem>
-#include <string>
 
 namespace sight::data
 {
@@ -40,36 +39,33 @@ namespace sight::module::io::itk
 {
 
 /**
- * @brief Write an image to jpg format
+ * @brief Writer for .inr.gz image
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="sight::module::io::itk::JpgImageWriterService">
+   <service type="sight::module::io::itk::SImageWriter">
        <in key="data" uid="..." />
-       <folder>...</folder>
+       <file>...</file>
    </service>
    @endcode
  * @subsection Input Input
  * - \b data [sight::data::Image]: image to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
+ * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class MODULE_IO_ITK_CLASS_API JpgImageWriterService : public sight::io::base::service::IWriter
+class MODULE_IO_ITK_CLASS_API SImageWriter : public sight::io::base::service::IWriter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(JpgImageWriterService, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SImageWriter, sight::io::base::service::IWriter);
 
-    MODULE_IO_ITK_API JpgImageWriterService() noexcept;
+    MODULE_IO_ITK_API SImageWriter() noexcept;
 
-    MODULE_IO_ITK_API virtual ~JpgImageWriterService() noexcept;
+    MODULE_IO_ITK_API virtual ~SImageWriter() noexcept;
 
-    MODULE_IO_ITK_API static void saveImage(
-        const std::filesystem::path& imgPath,
-        const CSPTR(data::Image)& img
-    );
+    MODULE_IO_ITK_API static bool saveImage(const std::filesystem::path& imgFile, const CSPTR(data::Image)& image);
 
 protected:
 
@@ -88,10 +84,10 @@ protected:
     /// Override
     MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
-    /// Configure using GUI.
+    /// configure using GUI.
     MODULE_IO_ITK_API void openLocationDialog() override;
 
-    /// Return managed file type, here FOLDER
+    /// Return managed file type, here FILE
     MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
 };
 

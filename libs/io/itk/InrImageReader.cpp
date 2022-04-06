@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "io/itk/ImageReader.hpp"
+#include "io/itk/InrImageReader.hpp"
 
-#include "inr2itk/itkInrImageIOFactory.hpp"
+#include "factory/InrImageIOFactory.hpp"
 
 #include "io/itk/helper/ProgressItkToFw.hpp"
 #include "io/itk/itk.hpp"
@@ -39,49 +39,32 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_READER(sight::io::itk::ImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::itk::InrImageReader);
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(io::base::reader::IObjectReader::Key)
+InrImageReader::InrImageReader(io::base::reader::IObjectReader::Key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-ImageReader::~ImageReader()
+InrImageReader::~InrImageReader()
 {
 }
 
 //------------------------------------------------------------------------------
 
-static const std::map<::itk::ImageIOBase::IOComponentType, core::Type> s_fromItkType =
-{
-    {::itk::ImageIOBase::UNKNOWNCOMPONENTTYPE, core::Type::NONE},
-    {::itk::ImageIOBase::UCHAR, core::Type::UINT8},
-    {::itk::ImageIOBase::CHAR, core::Type::INT8},
-    {::itk::ImageIOBase::USHORT, core::Type::UINT16},
-    {::itk::ImageIOBase::SHORT, core::Type::INT16},
-    {::itk::ImageIOBase::UINT, core::Type::UINT32},
-    {::itk::ImageIOBase::INT, core::Type::INT32},
-    {::itk::ImageIOBase::ULONG, core::Type::UINT32},
-    {::itk::ImageIOBase::LONG, core::Type::INT32},
-    {::itk::ImageIOBase::ULONGLONG, core::Type::UINT64},
-    {::itk::ImageIOBase::LONGLONG, core::Type::INT64},
-    {::itk::ImageIOBase::FLOAT, core::Type::FLOAT},
-    {::itk::ImageIOBase::DOUBLE, core::Type::DOUBLE}
-};
-
-struct ITKLoaderFunctor
+struct InrLoaderFunctor
 {
     struct Parameter
     {
         data::Image::sptr m_dataImage;
         std::string m_filename;
-        io::itk::ImageReader::sptr m_fwReader;
+        io::itk::InrImageReader::sptr m_fwReader;
     };
 
     //------------------------------------------------------------------------------
@@ -90,7 +73,7 @@ struct ITKLoaderFunctor
     void operator()(Parameter& param)
     {
         SIGHT_INFO(
-            "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "
+            "::io::itk::InrImageReader::InrLoaderFunctor with PIXELTYPE "
             << core::Type::get<PIXELTYPE>().name()
         );
 
@@ -138,27 +121,27 @@ struct ITKLoaderFunctor
         imageIO->ReadImageInformation();
         auto type = imageIO->GetComponentType();
 
-        return s_fromItkType.at(type);
+        return sight::io::itk::ITK_TYPE_CONVERTER.at(type);
     }
 };
 
 //------------------------------------------------------------------------------
 
-void ImageReader::read()
+void InrImageReader::read()
 {
     std::filesystem::path file = getFile();
     SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::Type type = ITKLoaderFunctor::getImageType(file.string());
+    const core::Type type = InrLoaderFunctor::getImageType(file.string());
 
-    ITKLoaderFunctor::Parameter param;
+    InrLoaderFunctor::Parameter param;
     param.m_filename  = file.string();
     param.m_dataImage = this->getConcreteObject();
     param.m_fwReader  = this->getSptr();
 
-    core::tools::Dispatcher<core::tools::IntrinsicTypes, ITKLoaderFunctor>::invoke(type, param);
+    core::tools::Dispatcher<core::tools::IntrinsicTypes, InrLoaderFunctor>::invoke(type, param);
 
     SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
     // produced

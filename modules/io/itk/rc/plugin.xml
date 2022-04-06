@@ -2,44 +2,45 @@
 
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::itk::InrImageReaderService</service>
+        <service>sight::module::io::itk::SImageReader</service>
         <object>sight::data::Image</object>
-        <desc>Inrimage Reader (ITK/Ircad)</desc>
+        <desc>ITK Reader (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::itk::InrImageWriterService</service>
+        <service>sight::module::io::itk::SImageWriter</service>
         <object>sight::data::Image</object>
-        <desc>Inrimage Writer (ITK/Ircad)</desc>
+        <desc>ITK Writer (ITK/Ircad)</desc>
     </extension>
+
 
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::itk::JpgImageWriterService</service>
-        <object>sight::data::Image</object>
-        <desc>Jpeg Writer (ITK)</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::itk::SJpgImageSeriesWriter</service>
+        <service>sight::module::io::itk::SSlicedImageSeriesWriter</service>
         <object>sight::data::ImageSeries</object>
-        <desc>ImageSeries Jpeg Writer (ITK)</desc>
+        <desc>ImageSeries sliced to jpg Writer (ITK)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::itk::SInrSeriesDBReader</service>
+        <service>sight::module::io::itk::SSeriesDBReader</service>
         <object>sight::data::SeriesDB</object>
-        <desc>SeriesDB Inrimage Reader (ITK)</desc>
+        <desc>SeriesDB image Reader (ITK)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IWriter</type>
         <service>sight::module::io::itk::SImageSeriesWriter</service>
         <object>sight::data::ImageSeries</object>
-        <desc>ImageSeries Inr Writer (ITK)</desc>
+        <desc>ImageSeries Writer (ITK)</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::Factory">
+        <type>sight::io::base::service::IWriter</type>
+        <service>sight::module::io::itk::SImageSeriesReader</service>
+        <object>sight::data::ImageSeries</object>
+        <desc>ImageSeries Writer (ITK)</desc>
     </extension>
 
 

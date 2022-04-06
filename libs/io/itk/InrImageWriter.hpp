@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,37 +22,38 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
+#include "io/itk/config.hpp"
+
+#include <core/location/SingleFile.hpp>
+#include <core/tools/ProgressAdviser.hpp>
 
 #include <data/Image.hpp>
 
-#include <service/macros.hpp>
-
-#include <cppunit/extensions/HelperMacros.h>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::itk
 {
 
-namespace ut
+class InrImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                       public core::location::SingleFile,
+                       public core::tools::ProgressAdviser
 {
-
-class ImageReaderWriterJPGTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(ImageReaderWriterJPGTest);
-CPPUNIT_TEST(testImageWriter);
-CPPUNIT_TEST(testImageWriter2);
-CPPUNIT_TEST_SUITE_END();
-
 public:
 
-    // interface
-    void setUp();
-    void tearDown();
+    SIGHT_DECLARE_CLASS(
+        InrImageWriter,
+        io::base::writer::GenericObjectWriter<data::Image>,
+        io::base::writer::factory::New<InrImageWriter>
+    );
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    void testImageWriter();
-    void testImageWriter2();
+    IO_ITK_API InrImageWriter(io::base::writer::IObjectWriter::Key key);
+
+    IO_ITK_API ~InrImageWriter();
+
+    IO_ITK_API void write() override;
+
+    IO_ITK_API std::string extension() const override;
 };
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk

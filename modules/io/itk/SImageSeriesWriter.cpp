@@ -22,7 +22,7 @@
 
 #include "SImageSeriesWriter.hpp"
 
-#include "modules/io/itk/InrImageWriterService.hpp"
+#include "SImageWriter.hpp"
 
 #include <core/base.hpp>
 #include <core/location/SingleFile.hpp>
@@ -32,7 +32,6 @@
 #include <data/ImageSeries.hpp>
 
 #include <io/base/service/IWriter.hpp>
-#include <io/itk/ImageWriter.hpp>
 
 #include <service/macros.hpp>
 
@@ -77,9 +76,10 @@ void SImageSeriesWriter::openLocationDialog()
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("Inrimage", "*.inr.gz");
+    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialogFile.addFilter("Nifti (nii)", "*.nii");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
@@ -132,7 +132,7 @@ void SImageSeriesWriter::updating()
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
-        InrImageWriterService::saveImage(this->getFile(), associatedImage);
+        SImageWriter::saveImage(this->getFile(), associatedImage);
         cursor.setDefaultCursor();
     }
     else

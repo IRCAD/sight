@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,9 @@
 
 #include "modules/io/itk/config.hpp"
 
-#include <io/base/service/IWriter.hpp>
+#include <core/macros.hpp>
+
+#include <io/base/service/IReader.hpp>
 
 #include <filesystem>
 
@@ -39,41 +41,45 @@ namespace sight::module::io::itk
 {
 
 /**
- * @brief Writer for .inr.gz image
+ * @brief Reader for .inr.gz image
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="sight::module::io::itk::InrImageWriterService">
-       <in key="data" uid="..." />
+   <service type="sight::module::io::itk::SImageReader">
+       <inout key="data" uid="..." />
        <file>...</file>
    </service>
    @endcode
- * @subsection Input Input
- * - \b data [sight::data::Image]: image to save.
+ * @subsection In-Out In-Out
+ * - \b data [sight::data::Image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
- * the path.
+ * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
+ * define the path.
  */
-class MODULE_IO_ITK_CLASS_API InrImageWriterService : public sight::io::base::service::IWriter
+class MODULE_IO_ITK_CLASS_API SImageReader : public sight::io::base::service::IReader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(InrImageWriterService, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SImageReader, sight::io::base::service::IReader);
 
-    MODULE_IO_ITK_API InrImageWriterService() noexcept;
+    MODULE_IO_ITK_API SImageReader() noexcept;
 
-    MODULE_IO_ITK_API virtual ~InrImageWriterService() noexcept;
+    MODULE_IO_ITK_API virtual ~SImageReader() noexcept;
 
-    MODULE_IO_ITK_API static void saveImage(const std::filesystem::path& inrFile, const CSPTR(data::Image)& image);
+    MODULE_IO_ITK_API static bool loadImage(const std::filesystem::path& imgFile, const SPTR(data::Image)& img);
 
 protected:
 
     /// Override
-    MODULE_IO_ITK_API void starting() override;
+    void starting() override
+    {
+    }
 
     /// Override
-    MODULE_IO_ITK_API void stopping() override;
+    void stopping() override
+    {
+    }
 
     /// Override
     MODULE_IO_ITK_API void configuring() override;
@@ -84,11 +90,13 @@ protected:
     /// Override
     MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
-    /// configure using GUI.
+    /// Configure using GUI.
     MODULE_IO_ITK_API void openLocationDialog() override;
 
     /// Return managed file type, here FILE
     MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
+
+private:
 };
 
 } // namespace sight::module::io::itk

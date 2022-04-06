@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include <io/base/service/IReader.hpp>
 
 #include <filesystem>
+#include <string>
 
 namespace sight::data
 {
@@ -37,66 +38,78 @@ class Image;
 
 }
 
+namespace sight::data
+{
+
+class Series;
+
+}
+
 namespace sight::module::io::itk
 {
 
 /**
- * @brief Reader for .inr.gz image
+ * @brief Reads inr files and pushes them into SeriesDB.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="sight::module::io::itk::InrImageReaderService">
+   <service type="sight::module::io::itk::SSeriesDBReader">
        <inout key="data" uid="..." />
+       <file>...</file>
+       <file>...</file>
+       <file>...</file>
        <file>...</file>
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::Image]: loaded image.
+ * - \b data [sight::data::SeriesDB]: store the loaded images.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_ITK_CLASS_API InrImageReaderService : public sight::io::base::service::IReader
+class MODULE_IO_ITK_CLASS_API SSeriesDBReader : public sight::io::base::service::IReader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(InrImageReaderService, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SSeriesDBReader, sight::io::base::service::IReader);
 
-    MODULE_IO_ITK_API InrImageReaderService() noexcept;
+    MODULE_IO_ITK_API SSeriesDBReader() noexcept;
 
-    MODULE_IO_ITK_API virtual ~InrImageReaderService() noexcept;
+    MODULE_IO_ITK_API virtual ~SSeriesDBReader() noexcept;
 
 protected:
 
-    /// Override
+    /// Does nothing.
     void starting() override
     {
     }
 
-    /// Override
+    /// Does nothing.
     void stopping() override
     {
     }
 
-    /// Override
-    MODULE_IO_ITK_API void configuring() override;
+    /// Calls base class implementation
+    void configuring() override;
 
-    /// Override
+    /// Reads inr files specified by user (configure or openLocationDialog) and pushes them into SeriesDB.
     MODULE_IO_ITK_API void updating() override;
 
-    /// Override
-    MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
-
-    /// Configure using GUI.
+    /**
+     * @brief Configure the inr files path.
+     *
+     * This method is used to find the inr files path using a files selector.
+     */
     MODULE_IO_ITK_API void openLocationDialog() override;
 
-    /// Return managed file type, here FILE
+    /// Returns managed file type, here FILES
     MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 
-    bool createImage(const std::filesystem::path& inrFileDir, const SPTR(data::Image)& _pImg);
+    /// Initializes Series with dummy values and Study with specified instanceUID.
+    void initSeries(SPTR(data::Series) series, const std::string& instanceUID);
 };
 
 } // namespace sight::module::io::itk

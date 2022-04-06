@@ -39,8 +39,12 @@ namespace ut
 class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
-CPPUNIT_TEST(testSaveLoadInr);
-CPPUNIT_TEST(stressTestInr);
+CPPUNIT_TEST(inrReadWriteTest);
+CPPUNIT_TEST(inrStressTest);
+CPPUNIT_TEST(niftiReadTest);
+CPPUNIT_TEST(niftiWriteTest);
+CPPUNIT_TEST(jpegWriteTest);
+CPPUNIT_TEST(inrReadJpegWriteTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,13 +53,25 @@ public:
     void setUp();
     void tearDown();
 
-    void testSaveLoadInr();
-    void stressTestInr();
+    void inrReadWriteTest();
+    void inrStressTest();
+    void niftiReadTest();
+    void niftiWriteTest();
+    void jpegWriteTest();
+    void inrReadJpegWriteTest();
 
 private:
 
-    void stressTestInrWithType(core::Type type, int nbTest);
-    void checkSaveLoadInr(data::Image::sptr image);
+    void inrStressTestWithType(core::Type type, int nbTest);
+    void inrReadWriteCheck(data::Image::sptr image);
+    void niftiReadCheck(
+        const data::Image::sptr& imageToTest,
+        const core::Type& expectedType,
+        const std::size_t expectedDim,
+        const data::Image::Spacing& expectedSpacing,
+        const data::Image::Origin& expectedOrigin,
+        const data::Image::Size& expectedSize
+    );
 };
 
 } //namespace ut
