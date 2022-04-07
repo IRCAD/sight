@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,29 +57,19 @@ public:
     {
     public:
 
-        ViewInfo() :
-            m_proportion(1),
-            m_border(0),
-            m_minSize(std::make_pair(-1, -1)),
-            m_caption(std::make_pair(false, "")),
-            m_visible(true),
-            m_isSpacer(false),
-            m_useScrollBar(false)
-        {
-        }
-
-        int m_proportion;
-        int m_border;
+        int m_proportion {1};
+        int m_border {0};
         int m_leftBorder {0};
         int m_topBorder {0};
         int m_rightBorder {0};
         int m_bottomBorder {0};
         int m_spacing {-1};
-        std::pair<int, int> m_minSize;
-        std::pair<bool, std::string> m_caption;
-        bool m_visible;
-        bool m_isSpacer;
-        bool m_useScrollBar;
+        std::pair<int, int> m_minSize {-1, -1};
+        std::pair<int, int> m_maxSize {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
+        std::pair<bool, std::string> m_caption {false, ""};
+        bool m_visible {true};
+        bool m_isSpacer {false};
+        bool m_useScrollBar {false};
         std::string m_toolTip;
 
         /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.

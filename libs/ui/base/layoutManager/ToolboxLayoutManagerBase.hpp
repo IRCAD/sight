@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,26 +50,17 @@ public:
     {
     public:
 
-        ViewInfo() :
-            m_border(0),
-            m_minSize(std::make_pair(-1, -1)),
-            m_caption(""),
-            m_visible(true),
-            m_expanded(false),
-            m_useScrollBar(false)
-        {
-        }
-
-        int m_border;
+        int m_border {0};
         int m_leftBorder {0};
         int m_topBorder {0};
         int m_rightBorder {0};
         int m_bottomBorder {0};
-        std::pair<int, int> m_minSize;
+        std::pair<int, int> m_minSize {-1, -1};
+        std::pair<int, int> m_maxSize {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
         std::string m_caption;
-        bool m_visible;
-        bool m_expanded;
-        bool m_useScrollBar;
+        bool m_visible {true};
+        bool m_expanded {false};
+        bool m_useScrollBar {false};
 
         /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
         std::string m_backgroundColor;

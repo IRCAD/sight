@@ -96,6 +96,18 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
             vi.m_minSize.second = boost::lexical_cast<int>(height);
         }
 
+        if(view->hasAttribute("maxWidth"))
+        {
+            const std::string width = view->getExistingAttributeValue("maxWidth");
+            vi.m_maxSize.first = std::stoi(width);
+        }
+
+        if(view->hasAttribute("maxHeight"))
+        {
+            const std::string height = view->getExistingAttributeValue("maxHeight");
+            vi.m_maxSize.second = std::stoi(height);
+        }
+
         if(view->hasAttribute("resizable"))
         {
             const std::string resizable = view->getExistingAttributeValue("resizable");

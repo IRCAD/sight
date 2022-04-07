@@ -36,6 +36,8 @@
 #include <QMainWindow>
 #include <QScrollArea>
 
+// cspell: ignore QWIDGETSIZE_MAX
+
 fwGuiRegisterMacro(
     sight::ui::qt::CardinalLayoutManager,
     sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY
@@ -202,6 +204,10 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                     std::max(viewInfo.m_minSize.first, 0),
                     std::max(viewInfo.m_minSize.second, 0)
                 );
+                dockWidget->setMaximumSize(
+                    std::min(viewInfo.m_maxSize.first, QWIDGETSIZE_MAX),
+                    std::min(viewInfo.m_maxSize.second, QWIDGETSIZE_MAX)
+                );
                 dockWidget->setTitleBarWidget(widget);
             }
 
@@ -244,10 +250,18 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
         if(viewInfo.m_useScrollBar)
         {
             scrollArea->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
+            scrollArea->setMaximumSize(
+                std::min(viewInfo.m_maxSize.first, QWIDGETSIZE_MAX),
+                std::min(viewInfo.m_maxSize.second, QWIDGETSIZE_MAX)
+            );
         }
         else
         {
             insideWidget->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
+            insideWidget->setMaximumSize(
+                std::min(viewInfo.m_maxSize.first, QWIDGETSIZE_MAX),
+                std::min(viewInfo.m_maxSize.second, QWIDGETSIZE_MAX)
+            );
         }
 
         //TODO

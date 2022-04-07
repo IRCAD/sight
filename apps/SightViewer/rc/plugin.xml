@@ -169,11 +169,13 @@
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
+                        <view proportion="0" spacing="0" />
                     </layout>
                 </gui>
                 <registry>
                     <toolBar sid="parameterToolBarView" start="true" />
                     <view sid="volumeParameterView" start="true" />
+                    <view wid="TFParameterView" />
                     <view wid="organsParameterView" />
                     <view sid="landmarksParameterView" start="true" />
                     <view sid="lightParameterView" start="true" />
@@ -185,6 +187,7 @@
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
+                        <menuItem name="Show transfer function editor" icon="sight::module::ui::flaticons/TF1.svg" style="check" />
                         <menuItem name="Show organs manager" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
                         <menuItem name="Show landmarks manager" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
                         <menuItem name="Show light manager" icon="sight::module::ui::flaticons/Light.svg" style="check" />
@@ -195,6 +198,7 @@
                 </gui>
                 <registry>
                     <menuItem sid="volumeManagerAct" start="true" />
+                    <menuItem sid="TFManagerAct" start="true" />
                     <menuItem sid="organsManagerAct" start="true" />
                     <menuItem sid="landmarksManagerAct" start="true" />
                     <menuItem sid="lightManagerAct" start="true" />
@@ -254,8 +258,6 @@
                         <menuItem name="Negato view" icon="sight::module::ui::flaticons/Layers.svg" />
                         <menuItem name="Volume view" icon="sight::module::ui::flaticons/Volume.svg" />
                         <separator/>
-                        <menuItem name="Show/Hide volume TF editor" icon="sight::module::ui::flaticons/TF1.svg" style="check" />
-                        <separator/>
                         <menuItem name="Show/hide mesh" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
                         <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
                         <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/Layers.svg" style="check" />
@@ -277,7 +279,6 @@
                     <menuItem sid="pacsAct" start="true" />
                     <menuItem sid="negatoViewAct" start="true" />
                     <menuItem sid="volumeViewAct" start="true" />
-                    <menuItem sid="volumeTFAct" start="false" />
                     <menuItem sid="meshVisibilityAct" start="true" />
                     <menuItem sid="volumeVisibilityAct" start="true" />
                     <menuItem sid="negato3DVisibilityAct" start="true" />
@@ -316,6 +317,18 @@
             <service uid="volumeManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
+                    <hide wid="TFParameterView" />
+                    <hide wid="organsParameterView" />
+                    <hide sid="landmarksParameterView" />
+                    <hide sid="lightParameterView" />
+                    <hide wid="extrudedMeshesParameterView" />
+                </config>
+            </service>
+
+            <service uid="TFManagerAct" type="sight::module::ui::base::SModifyLayout" >
+                <config>
+                    <hide sid="volumeParameterView" />
+                    <show wid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -326,6 +339,7 @@
             <service uid="organsManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide wid="TFParameterView" />
                     <show wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -336,6 +350,7 @@
             <service uid="landmarksManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide wid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <show sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -346,6 +361,7 @@
             <service uid="lightManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide wid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <show sid="lightParameterView" />
@@ -356,6 +372,7 @@
             <service uid="extrudedMeshesManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide wid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -378,19 +395,6 @@
                     <slot>rightToolbarSliderView/hide</slot>
                 </slots>
                 <state active="true" />
-            </service>
-
-            <!-- TF manager -->
-            <service uid="volumeTFAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="TransferFunctionManagerWindow_AppCfg" />
-                <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
-                <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
-                <inout key="image" uid="image" />
-                <inout key="histogram" uid="histogram" />
-                <inout key="tfPools" uid="volumeTFPools" />
-                <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
-                <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
-                <inout key="mergedTF" uid="volumeTF" />
             </service>
 
             <!-- PACS manager -->
@@ -471,6 +475,18 @@
                 <inout key="volumeTF" uid="volumeTF" />
                 <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
                 <inout key="landmarks" uid="landmarks" />
+            </service>
+
+            <!-- TF manager -->
+            <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
+                <appConfig id="TransferFunctionManager_AppCfg" />
+                <parameter replace="WID_PARENT" by="TFParameterView" />
+                <inout key="image" uid="image" />
+                <inout key="histogram" uid="histogram" />
+                <inout key="tfPools" uid="volumeTFPools" />
+                <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
+                <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
+                <inout key="mergedTF" uid="volumeTF" />
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >
@@ -624,7 +640,6 @@
                 <slot>boxWidgetVisibilityAct/setExecutable</slot>
                 <slot>shapeExtruderAct/setExecutable</slot>
                 <slot>boxWidgetResetAct/setExecutable</slot>
-                <slot>volumeTFAct/setExecutable</slot>
                 <slot>addDistanceAct/setExecutable</slot>
                 <slot>removeDistanceAct/setExecutable</slot>
                 <slot>hideDistanceAct/setExecutable</slot>
@@ -651,6 +666,17 @@
             <connect>
                 <signal>volumeManagerAct/updated</signal>
                 <slot>volumeManagerAct/activate</slot>
+                <slot>TFManagerAct/deactivate</slot>
+                <slot>organsManagerAct/deactivate</slot>
+                <slot>landmarksManagerAct/deactivate</slot>
+                <slot>lightManagerAct/deactivate</slot>
+                <slot>extrudedMeshesManagerAct/deactivate</slot>
+            </connect>
+
+            <connect>
+                <signal>TFManagerAct/updated</signal>
+                <slot>volumeManagerAct/deactivate</slot>
+                <slot>TFManagerAct/activate</slot>
                 <slot>organsManagerAct/deactivate</slot>
                 <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/deactivate</slot>
@@ -660,6 +686,7 @@
             <connect>
                 <signal>organsManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
+                <slot>TFManagerAct/deactivate</slot>
                 <slot>organsManagerAct/activate</slot>
                 <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/deactivate</slot>
@@ -669,6 +696,7 @@
             <connect>
                 <signal>landmarksManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
+                <slot>TFManagerAct/deactivate</slot>
                 <slot>organsManagerAct/deactivate</slot>
                 <slot>landmarksManagerAct/activate</slot>
                 <slot>lightManagerAct/deactivate</slot>
@@ -678,6 +706,7 @@
             <connect>
                 <signal>lightManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
+                <slot>TFManagerAct/deactivate</slot>
                 <slot>organsManagerAct/deactivate</slot>
                 <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/activate</slot>
@@ -687,6 +716,7 @@
             <connect>
                 <signal>extrudedMeshesManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
+                <slot>TFManagerAct/deactivate</slot>
                 <slot>organsManagerAct/deactivate</slot>
                 <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/deactivate</slot>
@@ -706,6 +736,7 @@
 
             <start uid="mainView" />
             <start uid="ogreGenericSceneCfg" />
+            <start uid="TFManagerCfg" />
             <start uid="organManagerCfg" />
             <start uid="extrudedMeshesManagerCfg" />
             <start uid="extractSeriesSrv" />
@@ -716,7 +747,6 @@
             <start uid="addDistanceAct" />
             <start uid="removeDistanceAct" />
             <start uid="hideDistanceAct" />
-            <start uid="volumeTFAct" />
 
             <update uid="volumeManagerAct" />
             <update uid="volumeParameterSrv" />

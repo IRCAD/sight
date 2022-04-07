@@ -131,14 +131,14 @@ void ITest::openFile(
         tester.interact(std::make_unique<sight::ui::test::MouseClick>());
         tester.doubt<QWidget*>("window is closed", [](QWidget* obj) -> bool {return !obj->isVisible();});
 
-        // The Show/Hide volume TF editor button becomes enabled when the image effectively shows up.
+        // The Show/hide volume button becomes enabled when the image effectively shows up.
         tester.take<QWidget*>(
-            "Show/Hide volume TF editor button",
+            "Show/hide volume button",
             [&tester]() -> QWidget*
             {
                 return sight::ui::test::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Show/Hide volume TF editor"
+                        "toolBarView/Show/hide volume"
                     )
                 );
             },
@@ -149,14 +149,14 @@ void ITest::openFile(
     }
     else if(format == "SeriesDB Inrimage Reader (ITK)")
     {
-        // The Show/Hide volume TF editor button becomes enabled when the image is loaded.
+        // The Show/hide volume button becomes enabled when the image is loaded.
         tester.take<QWidget*>(
-            "Show/Hide volume TF editor button",
+            "Show/hide volume button",
             [&tester]() -> QWidget*
             {
                 return sight::ui::test::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Show/Hide volume TF editor"
+                        "toolBarView/Show/hide volume"
                     )
                 );
             },

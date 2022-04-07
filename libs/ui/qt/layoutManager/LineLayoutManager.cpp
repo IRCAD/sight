@@ -35,6 +35,8 @@
 #include <QScrollArea>
 #include <QStyle>
 
+// cspell: ignore QWIDGETSIZE_MAX
+
 fwGuiRegisterMacro(
     sight::ui::qt::LineLayoutManager,
     sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY
@@ -124,6 +126,10 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
             }
 
             panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
+            panel->setMaximumSize(
+                std::min(viewInfo.m_maxSize.first, QWIDGETSIZE_MAX),
+                std::min(viewInfo.m_maxSize.second, QWIDGETSIZE_MAX)
+            );
             panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
             if(!viewInfo.m_toolTip.empty())
             {
