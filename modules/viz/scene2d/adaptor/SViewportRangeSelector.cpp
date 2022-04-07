@@ -50,6 +50,9 @@ void SViewportRangeSelector::configuring()
     this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    m_initialWidth = config.get<double>(s_INITIAL_WIDTH_CONFIG, m_initialWidth);
+
+    m_initialX = config.get<double>(s_INITIAL_POS_CONFIG, m_initialX);
 
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, color, m_opacity);
@@ -62,7 +65,8 @@ service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections(
     return {
         {s_SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT},
         {s_IMAGE_INPUT, sight::data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_INPUT, sight::data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_IMAGE_INPUT, sight::data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_TF_INPUT, sight::data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_SLOT}
     };
 }
 
@@ -70,6 +74,26 @@ service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections(
 
 void SViewportRangeSelector::starting()
 {
+    {
+        const auto sceneViewport = m_viewport.lock();
+
+        const double viewportWidth = sceneViewport->getWidth();
+        const double defaultWidth  = 2. * viewportWidth / 4.;
+
+        if(m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange)
+        {
+            SIGHT_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
+            m_initialWidth = defaultWidth;
+        }
+
+        const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
+        if(m_initialX < sceneViewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
+        {
+            SIGHT_WARN("Set viewport position to a default value since the given one is not correct.");
+            m_initialX = defaultPos;
+        }
+    }
+
     double height = 0.;
     {
         auto viewport = m_viewport.lock();
@@ -128,24 +152,47 @@ void SViewportRangeSelector::stopping()
 
 void SViewportRangeSelector::updating()
 {
-    auto image = m_image.lock();
+    const auto tf    = m_tf.lock();
+    const auto image = m_image.lock();
+
+    m_min = (tf || image) ? std::numeric_limits<double>::max() : m_initialX;
+    m_max = (tf || image) ? std::numeric_limits<double>::lowest() : m_initialX + m_initialWidth;
+
+    if(tf)
+    {
+        std::tie(m_min, m_max) = tf->getWLMinMax();
+    }
+
     if(image)
     {
         sight::data::helper::MedicalImage::getMinMax(image.get_shared(), m_imageMin, m_imageMax);
-        auto viewport = m_viewport.lock();
 
-        viewport->setX(m_imageMin);
-        viewport->setWidth(m_imageMax - m_imageMin);
-        this->getScene2DRender()->getView()->updateFromViewport(*viewport);
-
-        auto sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        {
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
-        }
-
-        m_clickCatchRange = static_cast<int>(m_imageMax - m_imageMin) / 100;
+        m_min = std::min(m_min, m_imageMin);
+        m_max = std::max(m_max, m_imageMax);
     }
+
+    auto viewport = m_viewport.lock();
+
+    viewport->setX(m_min);
+    viewport->setWidth(m_max - m_min);
+    this->getScene2DRender()->getView()->updateFromViewport(*viewport);
+
+    auto sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    {
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
+
+    m_clickCatchRange = static_cast<int>(m_max - m_min) / 100;
+
+    // Fit the shutter from the current range
+    QRectF rect = m_shutter->rect();
+
+    rect.setX(std::max(rect.x(), m_min));
+    rect.setWidth(std::min(rect.width(), m_max - rect.x()));
+    m_shutter->setRect(rect);
+    m_layer->removeFromGroup(m_shutter);
+    m_layer->addToGroup(m_shutter);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -231,8 +278,8 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
         bool update = false; // if a viewport update will be requested
 
         const auto image               = m_image.lock();
-        const double leftSideBoundary  = image ? m_imageMin : sceneRect.x();
-        const double rightSideBoundary = image ? m_imageMax : sceneRect.width() - sceneRect.x();
+        const double leftSideBoundary  = image ? m_min : sceneRect.x();
+        const double rightSideBoundary = image ? m_max : sceneRect.width() - sceneRect.x();
         if(m_isLeftInteracting)
         {
             // Shutter right side position
@@ -327,20 +374,10 @@ void SViewportRangeSelector::updateViewportFromShutter(double _x, double _y, dou
     const Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType(_x, _y));
     const Point2DType pair           = this->mapSceneToAdaptor(Point2DType(_width, _height));
 
+    selectedViewport->setX(fromSceneCoord.first);
     selectedViewport->setY(fromSceneCoord.second);
+    selectedViewport->setWidth(pair.first);
     selectedViewport->setHeight(selectedViewport->getHeight());
-
-    auto image = m_image.lock();
-    if(image)
-    {
-        selectedViewport->setX(std::max(fromSceneCoord.first, m_imageMin));
-        selectedViewport->setWidth(std::min(pair.first, m_imageMax - m_imageMin));
-    }
-    else
-    {
-        selectedViewport->setX(fromSceneCoord.first);
-        selectedViewport->setWidth(pair.first);
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------

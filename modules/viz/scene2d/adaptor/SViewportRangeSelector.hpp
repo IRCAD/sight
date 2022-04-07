@@ -25,6 +25,7 @@
 #include "modules/viz/scene2d/config.hpp"
 
 #include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <viz/scene2d/IAdaptor.hpp>
 
@@ -65,8 +66,11 @@ namespace adaptor
  * - \b viewport [sight::viz::scene2d::data::Viewport]: viewport object used to display this adaptor. If the viewport
  * is not initialized, it will be updated to fit the scene size.
  * - \b selectedviewport [sight::viz::scene2d::data::Viewport]: viewport object whose range is modified.
- * - \b image [sight::data::Image] (optional): if specified, computes the viewport from the image range instead of the
+ * - \b image [sight::data::Image] (optional): if specified, computes \b selectedviewport from the image range instead
+ * of the
  * initialPos and initialWidth parameters.
+ * * @subsection In In
+ * - \b tfPool [sight::data::Composite]: if specified, computes \b viewport viewport from the transfer function range.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration.
@@ -167,18 +171,27 @@ private:
     QPen m_color;
 
     /// Cache the minimum intensity found in an image
-    double m_imageMin {0.};
+    double m_imageMin {std::numeric_limits<double>::max()};
 
     /// Cache the maximum intensity found in an image
-    double m_imageMax {0.};
+    double m_imageMax {std::numeric_limits<double>::lowest()};
+
+    /// Cache the minimum intensity found in an image or in the transfer function
+    double m_min {std::numeric_limits<double>::max()};
+
+    /// Cache the maximum intensity found in an image or in the transfer function
+    double m_max {std::numeric_limits<double>::lowest()};
 
     static constexpr std::string_view s_VIEWPORT_INOUT          = "viewport";
     static constexpr std::string_view s_SELECTED_VIEWPORT_INOUT = "selectedViewport";
     static constexpr std::string_view s_IMAGE_INPUT             = "image";
+    static constexpr std::string_view s_TF_INPUT                = "tf";
 
     data::ptr<s2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT};
-    data::ptr<s2d::data::Viewport, sight::data::Access::inout> m_selectedViewport {this, s_SELECTED_VIEWPORT_INOUT};
+    data::ptr<s2d::data::Viewport, sight::data::Access::inout> m_selectedViewport {this, s_SELECTED_VIEWPORT_INOUT, true
+    };
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
+    data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT, true, true};
 };
 
 } // namespace adaptor

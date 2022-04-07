@@ -337,7 +337,12 @@ void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
         const double histogramBinsWidth = static_cast<double>(m_histogramBinsWidth);
 
         // Event coordinates in scene
-        if(this->getScene2DRender()->contains(_event.getCoord()) && m_entered)
+        sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        const double histIndex                      = sceneCoord.getX();
+        const double index                          = histIndex - histogramMinValue;
+        const size_t nbValues                       = values.size() * m_histogramBinsWidth;
+
+        if(index >= 0.f && index < static_cast<double>(nbValues) && m_entered)
         {
             sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
             const double histIndex                      = sceneCoord.getX();

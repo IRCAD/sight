@@ -175,10 +175,11 @@
             <config x1="-1200" x2="1500" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
-        <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="true">
+        <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector">
             <inout key="viewport"  uid="viewportShutter" />
             <inout key="selectedViewport" uid="viewport"/>
             <in key="image" uid="${image}" />
+            <in key="tf" uid="${mergedTF}" />
             <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="3" />
         </service>
 
