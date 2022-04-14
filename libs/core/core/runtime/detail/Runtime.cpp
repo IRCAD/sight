@@ -59,8 +59,27 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 Runtime::Runtime()
 {
-    // The lib location is 'SIGHT_DIR/lib/sight_core.dll'
-    m_workingPath = boost::dll::this_line_location().parent_path().parent_path().string();
+    // Here we try to find the location of the root of a Sight install
+
+    // In most cases, we can rely on finding sight_core library and then go upward in the filesystem tree
+    // The lib location looks like 'SIGHT_DIR/lib/<arch>/libsight_core.*', where arch is optional
+    const std::string corePath = boost::dll::this_line_location().string();
+    const std::string libPrefix(MODULE_LIB_PREFIX);
+    auto it = std::search(corePath.begin(), corePath.end(), libPrefix.begin(), libPrefix.end());
+
+    if(it == corePath.end())
+    {
+        // But if we link statically, for instance linking with sight_core as an object library, then
+        // boost::dll::this_line_location() will return the location of the current executable
+        // In this case, we know that have to locate the bin directory instead of the library directory
+        const std::string binPrefix(MODULE_BIN_PREFIX);
+        it = std::search(corePath.begin(), corePath.end(), binPrefix.begin(), binPrefix.end());
+        SIGHT_FATAL_IF("Failed to locate Sight runtime. We tried to guess it from: " + corePath, it == corePath.end());
+    }
+
+    const std::filesystem::path libPath(corePath.begin(), it);
+    m_workingPath = libPath.parent_path();
+    SIGHT_INFO("Located Sight runtime in folder: " + m_workingPath.string());
 }
 
 //------------------------------------------------------------------------------

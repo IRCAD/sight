@@ -2,6 +2,7 @@
 sight_add_target(coreDetailTest TYPE TEST PCH core_obj)
 
 # We need this one to test the location
+target_compile_definitions(coreDetailTest PRIVATE MODULE_BIN_PREFIX="${CMAKE_INSTALL_BINDIR}")
 target_compile_definitions(coreDetailTest PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 target_compile_definitions(coreDetailTest PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
 

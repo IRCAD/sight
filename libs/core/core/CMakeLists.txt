@@ -14,6 +14,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 # This is the only place where we should pass these variables to the C++ code
+target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_BIN_PREFIX="${CMAKE_INSTALL_BINDIR}")
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
