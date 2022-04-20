@@ -73,6 +73,11 @@ class VIZ_SCENE3D_CLASS_API Utils
 public:
 
     /**
+     *  @brief Registers Ogre Plugins to load upon root creation.
+     */
+    VIZ_SCENE3D_API static void addPlugins(const std::vector<std::string>& plugins);
+
+    /**
      * @brief Utils::addRessourcesPath
      *        Add a path to load Ogre ressources from a specific module.
      *        You must edit the ressource.cfg file for each module containing specific resources

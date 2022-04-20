@@ -58,11 +58,23 @@ namespace sight::viz::scene3d
 
 static std::list<std::string> s_moduleWithResourcesNames;
 
+static std::set<std::string> s_ogrePlugins;
+
 Ogre::OverlaySystem* Utils::s_overlaySystem                                   = nullptr;
 viz::scene3d::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
 viz::scene3d::factory::Text* Utils::s_textFactory                             = nullptr;
 viz::scene3d::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
 viz::scene3d::compositor::MaterialMgrListener* Utils::s_oitMaterialListener   = nullptr;
+
+//------------------------------------------------------------------------------
+
+void Utils::addPlugins(const std::vector<std::string>& plugins)
+{
+    for(const auto& plugin : plugins)
+    {
+        s_ogrePlugins.insert(plugin);
+    }
+}
 
 //------------------------------------------------------------------------------
 
@@ -173,28 +185,93 @@ Ogre::Root* Utils::getOgreRoot()
 
         const auto tmpPluginCfg = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
 
-        // Set the actual plugin path in the plugin config file.
-        std::ifstream pluginCfg(confPath.string());
-        std::ofstream newPlugin(tmpPluginCfg.string());
-
-        if(!std::filesystem::exists(tmpPluginCfg))
+        // Set the actual plugin path in the plugin config file and add application plugins.
         {
-            SIGHT_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
-        }
+            std::ofstream newPlugin(tmpPluginCfg.string());
+
+            SIGHT_FATAL_IF(
+                "Can't create temporary config file'" + tmpPluginCfg.string() + "'",
+                !std::filesystem::exists(tmpPluginCfg)
+            );
+            SIGHT_FATAL_IF("Failed to open new plugin file", !newPlugin.is_open());
+
+            /*
+             * Intermediate lambda which parses the configuration file and plugins enabled from setOgrePlugins.
+             * @param confPath: path to the initial Ogre configuration file.
+             * @returns std::string holding the actual configuration given to Ogre::Root constructor.
+             */
+            constexpr auto generateOgreConfig =
+                [](const std::filesystem::path& confPath) -> std::string
+                {
+                    std::ifstream in(confPath.string());
+                    std::stringstream plugins;
+                    std::string pluginfolder;
 
 #if defined(WIN32) && defined(DEBUG)
-        const std::string libName = "OgreMain_d";
+                    constexpr auto libName = "OgreMain_d";
 #else
-        const std::string libName = "OgreMain";
+                    constexpr auto libName = "OgreMain";
 #endif
 
-        const auto absPath    = core::tools::os::getSharedLibraryPath(libName).remove_filename();
-        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin, absPath);
+                    constexpr std::string_view pluginFolderToken = "PluginFolder=";
+                    constexpr std::string_view pluginToken       = "Plugin=";
 
-        pluginCfg.close();
-        newPlugin.close();
+                    const std::string module =
+                        core::tools::os::getSharedLibraryPath(libName).remove_filename().string();
 
-        SIGHT_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), !tokenFound);
+                    // First parse config and looks for required plugin and plugin folder
+                    {
+                        for(std::string line ; std::getline(in, line) ; )
+                        {
+                            // Remove all spaces
+                            {
+                                line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
+                            }
+
+                            // Skip comments
+                            if(line.empty() || line.front() == '#')
+                            {
+                                continue;
+                            }
+
+                            // Line starts with a plugin name
+                            if(line.rfind(pluginToken, 0) == 0)
+                            {
+                                plugins << line << std::endl;
+                                SIGHT_DEBUG("Adding " << line << " to Ogre plugins");
+                            }
+
+                            // Line starts with plugin folder path
+                            if(line.rfind(pluginFolderToken, 0) == 0)
+                            {
+                                constexpr std::size_t offset = std::string_view(pluginFolderToken).size();
+
+                                pluginfolder = line;
+                                pluginfolder.insert(offset, module); //Insert the module path after "PluginFolder="
+                            }
+                        }
+                    }
+
+                    // Then, add application plugins
+                    {
+                        for(const auto& plugin : s_ogrePlugins)
+                        {
+                            plugins << pluginToken << plugin << std::endl;
+                        }
+                    }
+
+                    SIGHT_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), pluginfolder.empty());
+                    std::stringstream result;
+                    result << plugins.str() << std::endl << pluginfolder;
+
+                    return result.str();
+                };
+
+            const auto ogreConfig = generateOgreConfig(confPath);
+
+            // Write to the new plugin file
+            newPlugin << ogreConfig << std::endl;
+        }
 
         root = new Ogre::Root(tmpPluginCfg.string().c_str());
 
@@ -218,7 +295,6 @@ Ogre::Root* Utils::getOgreRoot()
 
         renderOrder.push_back("OpenGL");
 
-        //renderOrder.push_back("OpenGL 3+");
         for(Ogre::StringVector::iterator iter = renderOrder.begin() ; iter != renderOrder.end() ; ++iter)
         {
             for(Ogre::RenderSystemList::const_iterator it = rsList.begin() ; it != rsList.end() ; ++it)

@@ -22,6 +22,10 @@
 
 #include "modules/viz/scene3d/Plugin.hpp"
 
+#include "viz/scene3d/Utils.hpp"
+
+#include <boost/tokenizer.hpp>
+
 #include <OgreLogManager.h>
 
 /**
@@ -52,6 +56,27 @@ void Plugin::start()
     m_listener   = new SightOgreListener();
     m_log->addListener(m_listener);
     m_log->setLogDetail(Ogre::LL_BOREME);
+
+    // Ogre plugins to load
+    if(this->getModule()->hasParameter("plugins"))
+    {
+        const std::string pluginsStr = this->getModule()->getParameterValue("plugins");
+        const std::size_t count      = std::count(pluginsStr.begin(), pluginsStr.end(), ' ');
+
+        std::vector<std::string> plugins;
+        plugins.reserve(count);
+
+        // Split the string into individual ones (one per plugin)
+        {
+            using separator = boost::char_separator<std::string::value_type>;
+            using tokenizer = boost::tokenizer<separator>;
+
+            const tokenizer t(pluginsStr, separator {" ", "", boost::drop_empty_tokens});
+            plugins.assign(t.begin(), t.end());
+        }
+
+        sight::viz::scene3d::Utils::addPlugins(plugins);
+    }
 }
 
 //------------------------------------------------------------------------------
