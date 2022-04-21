@@ -174,11 +174,24 @@
                 <registry>
                     <toolBar sid="parameterToolBarView" start="true" />
                     <view sid="volumeParameterView" start="true" />
-                    <view wid="TFParameterView" />
+                    <view sid="TFParameterView" start="true"/>
                     <view wid="organsParameterView" />
                     <view sid="landmarksParameterView" start="true" />
                     <view sid="lightParameterView" start="true" />
                     <view wid="extrudedMeshesParameterView" />
+                </registry>
+            </service>
+
+            <service uid="TFParameterView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="TFCfgParameterView" />
                 </registry>
             </service>
 
@@ -316,7 +329,7 @@
             <service uid="volumeManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
-                    <hide wid="TFParameterView" />
+                    <hide sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -327,7 +340,7 @@
             <service uid="TFManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <show wid="TFParameterView" />
+                    <show sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -338,7 +351,7 @@
             <service uid="organsManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <hide wid="TFParameterView" />
+                    <hide sid="TFParameterView" />
                     <show wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -349,7 +362,7 @@
             <service uid="landmarksManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <hide wid="TFParameterView" />
+                    <hide sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <show sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -360,7 +373,7 @@
             <service uid="lightManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <hide wid="TFParameterView" />
+                    <hide sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <show sid="lightParameterView" />
@@ -371,7 +384,7 @@
             <service uid="extrudedMeshesManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <hide wid="TFParameterView" />
+                    <hide sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -478,8 +491,8 @@
 
             <!-- TF manager -->
             <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="TransferFunctionManager_AppCfg" />
-                <parameter replace="WID_PARENT" by="TFParameterView" />
+                <appConfig id="TransferFunctionManagerCfg" />
+                <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout key="image" uid="image" />
                 <inout key="tfPools" uid="volumeTFPools" />
                 <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />

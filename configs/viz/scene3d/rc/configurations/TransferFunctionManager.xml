@@ -1,5 +1,5 @@
 <extension implements="sight::service::extension::AppConfig" >
-    <id>TransferFunctionManager_AppCfg</id>
+    <id>TransferFunctionManagerCfg</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
@@ -27,10 +27,9 @@
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#3E4453" />
-                    <view proportion="0" backgroundColor="#36393E" maxHeight="400"/>
+                    <view proportion="0" backgroundColor="#3E4453" maxHeight="50"/>
+                    <view proportion="0" backgroundColor="#36393E" minHeight="300" maxHeight="400" />
                     <view proportion="0" backgroundColor="#36393E" maxHeight="100" />
-                    <spacer />
                 </layout>
             </gui>
             <registry>
@@ -58,7 +57,7 @@
 
         <service uid="genericSceneMultipleTF" type="sight::viz::scene2d::SRender">
               <scene>
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" background="#36393E" />
+                <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" background="#36393E" />
 
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -83,7 +82,7 @@
         </service>
 
         <service uid="TFGridAdp" type="sight::module::viz::scene2d::adaptor::SGrid2D" >
-            <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="#565A54" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+            <config xMin="-3100" xMax="3100" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="#565A54" xAxis="xAxis" yAxis="yAxis" zValue="1" />
         </service>
 
         <service uid="TFCenterAbscissaLineAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
@@ -91,7 +90,7 @@
         </service>
 
         <service uid="TFMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
-            <config x1="-1200" y1="1" x2="1500" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+            <config x1="-3100" y1="1" x2="6100" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
         <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
@@ -103,7 +102,7 @@
 
         <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
             <in key="viewport"  uid="viewport" />
-            <config min="-1100" max="1300" interval="10" align="bottom" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" >
+            <config min="-3000" max="3000" interval="10" align="bottom" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" >
                 <labels color="#FFFFFF" fontSize="12"/>
             </config>
         </service>
@@ -135,7 +134,7 @@
 
         <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::SRender">
             <scene>
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" background="#36393E" />
+                <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" background="#36393E" />
 
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -162,7 +161,7 @@
         </service>
 
         <service uid="VSMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
-            <config x1="-1200" x2="1500" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+            <config x1="-3100" x2="3100" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
         <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector">
@@ -199,18 +198,18 @@
         <start uid="transferFunctionEditorSrv" />
         <start uid="tfMergerSvr" />
 
+        <start uid="VSRangeSelectorAdp" />
         <start uid="VSHistogramAdp" />
         <start uid="VSTransferFunctionAdp" />
         <start uid="VSMaxOpacityAdp" />
-        <start uid="VSRangeSelectorAdp" />
 
+        <start uid="TFViewportRangeUpdaterAdp" />
         <start uid="TFGridAdp" />
         <start uid="TFCenterAbscissaLineAdp" />
         <start uid="TFMaxOpacityAdp" />
         <start uid="TFHistogramAdp" />
         <start uid="TFHistogramAxisAdp" />
         <start uid="TFMultipleTFAdp" />
-        <start uid="TFViewportRangeUpdaterAdp" />
         <start uid="TFAxisLeftAdp" />
         <start uid="TFAxisBottomAdp" />
 
