@@ -187,7 +187,7 @@ void STransferFunction::createTFPoints()
         // Creates the color.
         const data::TransferFunction::TFColor tfColor = elt.second;
         const Point2DType valColor(value, tfColor.a);
-        Point2DType coord = this->mapAdaptorToScene(valColor, m_xAxis, m_yAxis);
+        Point2DType coord = this->mapAdaptorToScene((valColor));
 
         // Builds a point item, set its color, pen and zIndex.
         QGraphicsEllipseItem* point = new QGraphicsEllipseItem(
@@ -773,7 +773,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair<Point2DType,
         data::TransferFunction::TFColor tfColor(newColor.red() / 255.,
                                                 newColor.green() / 255.,
                                                 newColor.blue() / 255.,
-                                                newColor.alpha() / 255.);
+                                                oldColor.alpha() / 255.);
         tf->addTFColor(tfValue, tfColor);
 
         // Sends the modification signal.
@@ -786,9 +786,6 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair<Point2DType,
         }
 
         // Updates the displayed TF point.
-        const double newYPos = -newColor.alpha() / 255.;
-        _TFPoint.second->moveBy(0., oldColor.alphaF() + newYPos);
-        _TFPoint.first.second = newYPos;
         newColor.setAlpha(255);
         _TFPoint.second->setBrush(QBrush(newColor));
 

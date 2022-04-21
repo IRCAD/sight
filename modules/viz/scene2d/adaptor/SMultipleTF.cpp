@@ -333,7 +333,7 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
         // Creates the color.
         const data::TransferFunction::TFColor tfColor = elt.second;
         const Point2DType valColor(value, tfColor.a);
-        Point2DType coord = this->mapAdaptorToScene(valColor, m_xAxis, m_yAxis);
+        Point2DType coord = this->mapAdaptorToScene(valColor);
 
         // Builds a point item, set its color, pen and zIndex.
         QGraphicsEllipseItem* point = new QGraphicsEllipseItem(
@@ -1281,7 +1281,7 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(
             data::TransferFunction::TFColor tfColor(newColor.red() / 255.,
                                                     newColor.green() / 255.,
                                                     newColor.blue() / 255.,
-                                                    newColor.alpha() / 255.);
+                                                    oldColor.alpha() / 255.);
             tf->addTFColor(tfValue, tfColor);
         }
 
@@ -1295,9 +1295,6 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(
         }
 
         // Updates the displayed TF point.
-        const double newYPos = -newColor.alpha() / 255.;
-        _TFPoint.second->moveBy(0., oldColor.alphaF() + newYPos);
-        _TFPoint.first.second = newYPos;
         newColor.setAlpha(255);
         _TFPoint.second->setBrush(QBrush(newColor));
 
@@ -1960,10 +1957,10 @@ void SMultipleTF::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
 void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
 {
     // Creates the new TF.
-    data::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
+    data::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_right_ramp_index_counter++);
     while(this->hasTFName(name))
     {
-        name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
+        name = "CT-RightRamp_" + std::to_string(s_right_ramp_index_counter++);
     }
 
     const data::TransferFunction::sptr rightRamp = data::TransferFunction::New();
@@ -1989,10 +1986,10 @@ void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
 void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
 {
     // Creates the new TF.
-    data::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
+    data::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_trapeze_index_counter++);
     while(this->hasTFName(name))
     {
-        name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
+        name = "CT-Trapeze_" + std::to_string(s_trapeze_index_counter++);
     }
 
     const data::TransferFunction::sptr trapeze = data::TransferFunction::New();
