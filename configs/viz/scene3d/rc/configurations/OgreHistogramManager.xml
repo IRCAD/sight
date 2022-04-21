@@ -60,11 +60,6 @@
             <out key="tf" uid="${TF}" />
         </service>
 
-        <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram" worker="COMPUTING_THREAD">
-            <in key="image" uid="${IMAGE}" autoConnect="true" />
-            <inout key="histogram" uid="histogram" />
-            <binsWidth>5.0</binsWidth>
-        </service>
         <!-- *********************************** End services declarations *********************************** -->
 
         <!-- *********************************** Begin start services *********************************** -->

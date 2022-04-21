@@ -87,26 +87,26 @@ private:
     void buildAxis();
 
     ///
-    double getStartVal();
+    double getStartVal() const;
 
     ///
-    double getEndVal();
+    double getEndVal() const;
 
     // Specify where the axis must be aligned: left, right, top or bottom.
     // Left and right side axis are aligned/floating relatively to the view.
     std::string m_align;
 
     /// The required interval between two consecutive values of the axis.
-    float m_interval {1.f};
+    double m_interval {1.};
 
     /// Minimal value of the axis.
-    float m_min {0.f};
+    double m_min {0.};
 
     /// Maximal value of the axis.
-    float m_max {0.f};
+    double m_max {0.};
 
     /// Size of a tick.
-    float m_tickSize {1.0f};
+    double m_tickSize {1.0};
 
     /// Color.
     QPen m_color {Qt::white};

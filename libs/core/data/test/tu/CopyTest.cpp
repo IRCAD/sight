@@ -29,7 +29,6 @@
 #include <data/Edge.hpp>
 #include <data/Float.hpp>
 #include <data/Graph.hpp>
-#include <data/Histogram.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Line.hpp>
@@ -89,7 +88,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(data::Composite);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Float);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Graph);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Histogram);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Image);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Integer);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Line);

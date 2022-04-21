@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,6 @@ public:
     CPPUNIT_TEST(portTest);
     CPPUNIT_TEST(nodeTest);
     CPPUNIT_TEST(graphTest);
-    CPPUNIT_TEST(histogramTest);
     CPPUNIT_TEST(landmarksTest);
     CPPUNIT_TEST(lineTest);
     CPPUNIT_TEST(listTest);
@@ -118,7 +117,6 @@ public:
     void portTest();
     void nodeTest();
     void graphTest();
-    void histogramTest();
     void landmarksTest();
     void lineTest();
     void listTest();

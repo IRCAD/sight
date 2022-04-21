@@ -75,49 +75,53 @@ viz::scene2d::SRender::sptr IAdaptor::getScene2DRender() const
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio() const
+double IAdaptor::getViewSizeRatio() const
 {
-    return ViewSizeRatio(
-        (float) (m_viewInitialSize.first / this->getScene2DRender()->getView()->width()),
-        (float) (m_viewInitialSize.second / this->getScene2DRender()->getView()->height())
-    );
+    return static_cast<double>(this->getScene2DRender()->getView()->width())
+           / static_cast<double>(this->getScene2DRender()->getView()->height());
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio() const
+IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio(const scene2d::data::Viewport& viewport) const
 {
-    const scene2d::data::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
     return ViewportSizeRatio(
-        (float) (m_viewportInitialSize.first / viewport->getWidth()),
-        (float) (m_viewportInitialSize.second / viewport->getHeight())
+        static_cast<double>(viewport.getWidth()),
+        static_cast<double>(viewport.getHeight())
     );
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Scene2DRatio IAdaptor::getRatio() const
+IAdaptor::Point2DType IAdaptor::pixelsToViewport(
+    const IAdaptor::Point2DType& _xy,
+    const scene2d::data::Viewport& viewport
+) const
 {
-    const ViewSizeRatio ratioView         = this->getViewSizeRatio();
-    const ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
+    auto view = this->getScene2DRender()->getView();
 
-    return Scene2DRatio(
-        ratioView.first / ratioViewport.first,
-        ratioView.second / ratioViewport.second
-    );
+    const double viewportHeight = viewport.getHeight();
+    const double viewportWidth  = viewport.getWidth();
+
+    const double viewportViewRatio = viewport.getWidth() / view->width();
+    const double viewportSizeRatio = viewportHeight / viewportWidth;
+    const double viewSizeRatio     = static_cast<double>(view->width()) / static_cast<double>(view->height());
+
+    const double x = _xy.first * viewportViewRatio;
+    const double y = _xy.second * viewportSizeRatio * viewSizeRatio * viewportViewRatio;
+
+    return {x, y};
 }
 
 //-----------------------------------------------------------------------------
 
 IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
-    const Point2DType& _xy,
-    const scene2d::data::Axis::sptr& _xAxis,
-    const scene2d::data::Axis::sptr& _yAxis
+    const Point2DType& _xy
 ) const
 {
     double x, y;
 
-    if(_xAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
         if(_xy.first <= 0.)
@@ -127,16 +131,16 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
         else
         {
             // Apply the x scale and the log to the x value
-            x = _xAxis->getScale() * log10(_xy.first);
+            x = m_xAxis->getScale() * log10(_xy.first);
         }
     }
     else
     {
         // Apply just the x scale to the x value
-        x = _xAxis->getScale() * _xy.first;
+        x = m_xAxis->getScale() * _xy.first;
     }
 
-    if(_yAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_yAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
         if(_xy.second <= 0.)
@@ -146,13 +150,13 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
         else
         {
             // Apply the y scale and the log to the y value
-            y = _yAxis->getScale() * log10(_xy.second);
+            y = m_yAxis->getScale() * log10(_xy.second);
         }
     }
     else
     {
         // Apply just the y scale to the y value
-        y = _yAxis->getScale() * _xy.second;
+        y = m_yAxis->getScale() * _xy.second;
     }
 
     return Point2DType(x, y);
@@ -160,30 +164,26 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(
-    const Point2DType& _xy,
-    const scene2d::data::Axis::sptr& _xAxis,
-    const scene2d::data::Axis::sptr& _yAxis
-) const
+IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
-    if(_xAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
-        x = 10. * exp(_xy.first) / _xAxis->getScale();
+        x = 10. * std::exp(_xy.first) / m_xAxis->getScale();
     }
     else
     {
-        x = (_xy.first) / _xAxis->getScale();
+        x = (_xy.first) / m_xAxis->getScale();
     }
 
-    if(_yAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_yAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
-        y = 10. * (_xy.second) / _yAxis->getScale();
+        y = 10. * std::exp(_xy.second) / m_yAxis->getScale();
     }
     else
     {
-        y = _xy.second / _yAxis->getScale();
+        y = _xy.second / m_yAxis->getScale();
     }
 
     return Point2DType(x, y);
@@ -194,12 +194,6 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(
 void IAdaptor::configureParams()
 {
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-
-    m_viewInitialSize.first  = -1.0f;
-    m_viewInitialSize.second = -1.0f;
-
-    m_viewportInitialSize.first  = -1.0f;
-    m_viewportInitialSize.second = -1.0f;
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if(config.count("xAxis"))
@@ -235,42 +229,7 @@ void IAdaptor::configureParams()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::initializeViewSize()
-{
-    // Initialize the initial width of the view
-    if(m_viewInitialSize.first == -1.0f)
-    {
-        m_viewInitialSize.first = this->getScene2DRender()->getView()->width();
-    }
-
-    // Initialize the initial height of the view
-    if(m_viewInitialSize.second == -1.0f)
-    {
-        m_viewInitialSize.second = this->getScene2DRender()->getView()->height();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void IAdaptor::initializeViewportSize()
-{
-    const scene2d::data::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
-    // Initialize the initial width of the viewport
-    if(m_viewportInitialSize.first == -1.0f)
-    {
-        m_viewportInitialSize.first = viewport->getWidth();
-    }
-
-    // Initialize the initial height of the viewport
-    if(m_viewportInitialSize.second == -1.0f)
-    {
-        m_viewportInitialSize.second = viewport->getHeight();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void IAdaptor::processInteraction(scene2d::data::Event& _event)
+void IAdaptor::processInteraction(scene2d::data::Event&)
 {
 }
 

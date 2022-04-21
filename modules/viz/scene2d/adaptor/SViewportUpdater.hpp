@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
@@ -43,13 +45,19 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="viewportUpdater" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true">
-       <in key="viewport" uid="..." />
+       <in key="image" uid="..." />
+       <inout key="viewport" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="7" />
    </service>
    @endcode
  *
  * @subsection In In
+ * - \b image [sight::data::Image] (optional): scales the viewport range with the values from an image. If provided,
+ *  this will update both the scene view and the viewport passed as argument.
+ *
+ * @subsection In-Out In-Out
  * - \b viewport [sight::viz::scene2d::data::Viewport]: the viewport object this updater takes values from.
+ * If the viewport is not initialized, it will be updated to fit the scene size.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -64,8 +72,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SViewportUpdater : public sight::viz::scene2d
 public:
 
     SIGHT_DECLARE_SERVICE(SViewportUpdater, sight::viz::scene2d::IAdaptor);
-    MODULE_VIZ_SCENE2D_API SViewportUpdater() noexcept;
-    MODULE_VIZ_SCENE2D_API ~SViewportUpdater() noexcept;
+    SViewportUpdater() noexcept = default;
 
 protected:
 
@@ -74,14 +81,13 @@ protected:
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
     MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
-    static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
-
-    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
+    static constexpr std::string_view s_VIEWPORT_INOUT = "viewport";
+    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT
+    };
 };
 
 } // namespace adaptor

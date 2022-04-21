@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,19 +92,20 @@ void SViewportInteractor::processInteraction(sight::viz::scene2d::data::Event& _
     {
         if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
-            sight::viz::scene2d::data::Coord coord                  = _event.getCoord();
-            sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+            sight::viz::scene2d::data::Coord coord = _event.getCoord();
+            const auto viewport                    = m_viewport.lock();
 
-            const float dx     = coord.getX() - m_lastCoordEvent.getX();
-            const float xTrans = dx * sceneViewport->getWidth() / (float) this->getScene2DRender()->getView()->width();
+            const double dx     = coord.getX() - m_lastCoordEvent.getX();
+            const double xTrans = dx * viewport->getWidth() / (double) this->getScene2DRender()->getView()->width();
 
-            const float dy     = coord.getY() - m_lastCoordEvent.getY();
-            const float yTrans = dy * sceneViewport->getHeight()
-                                 / (float) this->getScene2DRender()->getView()->height();
+            const double dy     = coord.getY() - m_lastCoordEvent.getY();
+            const double yTrans = dy * viewport->getHeight()
+                                  / (double) this->getScene2DRender()->getView()->height();
 
-            sceneViewport->setX(sceneViewport->getX() - xTrans);
-            sceneViewport->setY(sceneViewport->getY() - yTrans);
-            this->getScene2DRender()->getView()->updateFromViewport();
+            viewport->setX(viewport->getX() - xTrans);
+            viewport->setY(viewport->getY() - yTrans);
+
+            this->getScene2DRender()->getView()->updateFromViewport(*viewport);
 
             m_lastCoordEvent = coord;
         }
@@ -119,20 +120,20 @@ void SViewportInteractor::processInteraction(sight::viz::scene2d::data::Event& _
 
 void SViewportInteractor::zoom(bool zoomIn)
 {
-    sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+    const auto sceneViewport = m_viewport.lock();
 
-    float y = sceneViewport->getY();
-    float x = sceneViewport->getX();
+    double y = sceneViewport->getY();
+    double x = sceneViewport->getX();
 
-    float width  = sceneViewport->getWidth();
-    float height = sceneViewport->getHeight();
+    double width  = sceneViewport->getWidth();
+    double height = sceneViewport->getHeight();
 
-    const float zoomPercent = 10.f / 100.0f;
-    const float centerX     = x + width / 2.0f;
-    const float centerY     = y + height / 2.0f;
+    const double zoomPercent = 10.f / 100.0f;
+    const double centerX     = x + width / 2.0f;
+    const double centerY     = y + height / 2.0f;
 
-    float newWidth;
-    float newHeight;
+    double newWidth;
+    double newHeight;
     if(zoomIn)
     {
         newWidth  = width * zoomPercent;
@@ -158,7 +159,8 @@ void SViewportInteractor::zoom(bool zoomIn)
     sceneViewport->setY(y);
     sceneViewport->setWidth(width);
     sceneViewport->setHeight(height);
-    this->getScene2DRender()->getView()->updateFromViewport();
+    auto viewportObject = m_viewport.lock();
+    this->getScene2DRender()->getView()->updateFromViewport(*viewportObject);
 }
 
 //-----------------------------------------------------------------------------

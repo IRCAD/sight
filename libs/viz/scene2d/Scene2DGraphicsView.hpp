@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,37 +46,38 @@ public:
 
     /// Events
 
-    VIZ_SCENE2D_API void keyPressEvent(QKeyEvent* _event);
+    VIZ_SCENE2D_API void keyPressEvent(QKeyEvent* _event) override;
 
-    VIZ_SCENE2D_API void keyReleaseEvent(QKeyEvent* _event);
+    VIZ_SCENE2D_API void keyReleaseEvent(QKeyEvent* _event) override;
 
-    VIZ_SCENE2D_API void resizeEvent(QResizeEvent* _event);
+    VIZ_SCENE2D_API void resizeEvent(QResizeEvent* _event) override;
 
-    VIZ_SCENE2D_API void mouseReleaseEvent(QMouseEvent* _event);
+    VIZ_SCENE2D_API void mouseReleaseEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void mousePressEvent(QMouseEvent* _event);
+    VIZ_SCENE2D_API void mousePressEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void mouseMoveEvent(QMouseEvent* _event);
+    VIZ_SCENE2D_API void mouseMoveEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void mouseDoubleClickEvent(QMouseEvent* _event);
+    VIZ_SCENE2D_API void mouseDoubleClickEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event);
+    VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event) override;
 
-    VIZ_SCENE2D_API void updateFromViewport();
+    VIZ_SCENE2D_API void enterEvent(QEvent* event) override;
+    VIZ_SCENE2D_API void leaveEvent(QEvent* event) override;
 
-    VIZ_SCENE2D_API void setViewport(scene2d::data::Viewport::sptr viewport);
+    VIZ_SCENE2D_API QSize sizeHint() const override;
+
+    VIZ_SCENE2D_API void updateFromViewport(const scene2d::data::Viewport& viewport);
 
     VIZ_SCENE2D_API void setSceneRender(SPTR(viz::scene2d::SRender) sceneRender);
 
 protected:
 
-    scene2d::data::Viewport::sptr m_viewport;
+    scene2d::data::Viewport m_viewport;
     WPTR(viz::scene2d::SRender) m_scene2DRender;
 
     scene2d::data::Event::Button getScene2DButtonFromEvent(QMouseEvent* _event);
     scene2d::data::Event::Modifier getScene2DModifierFromEvent(QInputEvent* _event);
-
-    void paintEvent(QPaintEvent* event);
 };
 
 } // namespace sight::viz::scene2d

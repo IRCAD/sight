@@ -25,6 +25,7 @@
 #include <core/tools/random/Generator.hpp>
 
 #include <data/Array.hpp>
+#include <data/helper/Histogram.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
@@ -677,6 +678,100 @@ void MedicalImageHelpersTest::testTransferFunction()
     CPPUNIT_ASSERT(new_tf_pool);
 
     CPPUNIT_ASSERT_EQUAL(tfPool, new_tf_pool);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::computeHistogram()
+{
+    typedef signed short ImageType;
+    const std::size_t sizeX     = 50;
+    const std::size_t sizeY     = 50;
+    const std::size_t sizeZ     = 50;
+    const std::size_t imageSize = sizeX * sizeY * sizeZ;
+
+    // Configure data hierarchy
+    data::Image::sptr image = data::Image::New();
+
+    // Create image.
+    image->resize({sizeX, sizeY, sizeZ}, core::Type::INT16, data::Image::GRAY_SCALE);
+
+    const auto dumpLock = image->dump_lock();
+
+    std::size_t count = 0;
+    for(auto& itr : image->range<ImageType>())
+    {
+        if(count < imageSize / 4)
+        {
+            itr = -1000;
+        }
+        else if(count < imageSize / 2)
+        {
+            itr = 1;
+        }
+        else if(count < 3 * imageSize / 4)
+        {
+            itr = 500;
+        }
+        else if(count < imageSize)
+        {
+            itr = 3000;
+        }
+
+        ++count;
+    }
+
+    data::helper::Histogram histogram(image);
+    histogram.compute();
+    auto values = histogram.sample(1);
+
+    CPPUNIT_ASSERT_EQUAL((std::size_t) (3000 - (-1000) + 1), values.size());
+    CPPUNIT_ASSERT_EQUAL(-1000., histogram.min());
+    CPPUNIT_ASSERT_EQUAL(3000., histogram.max());
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[0], 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[1001], 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[1500], 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[4000], 0.000001);
+
+    values = histogram.sample(1001);
+
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 4, values.size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[0], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 2., values[1], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[2], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[3], 0.0001);
+
+    count = 0;
+    for(auto& itr : image->range<ImageType>())
+    {
+        if(count < imageSize / 4)
+        {
+            itr = -200;
+        }
+        else if(count < imageSize / 2)
+        {
+            itr = 80;
+        }
+        else if(count < 3 * imageSize / 4)
+        {
+            itr = 90;
+        }
+        else if(count < imageSize)
+        {
+            itr = 99;
+        }
+
+        ++count;
+    }
+
+    histogram.compute();
+    values = histogram.sample(100);
+
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 3, values.size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[0], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[1], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3. / 4., values[2], 0.0001);
 }
 
 //------------------------------------------------------------------------------

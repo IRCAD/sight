@@ -42,29 +42,23 @@ public:
 
     SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New<Viewport>);
 
-    /**
-     * @brief Constructor
-     */
-    Viewport(sight::data::Object::Key) :
-        m_x(200.f),
-        m_y(200.f),
-        m_width(400.f),
-        m_height(400.f)
+    Viewport() = default;
+    Viewport(sight::data::Object::Key)
     {
     }
 
     /// Defines shallow copy
     VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& _source) override;
 
-    float getX() const;
-    void setX(float _x);
-    float getY() const;
-    void setY(float _y);
+    double getX() const;
+    void setX(double _x);
+    double getY() const;
+    void setY(double _y);
 
-    float getWidth() const;
-    void setWidth(float _width);
-    float getHeight() const;
-    void setHeight(float _height);
+    double getWidth() const;
+    void setWidth(double _width);
+    double getHeight() const;
+    void setHeight(double _height);
 
     /// Equality comparison operators
     /// @{
@@ -79,61 +73,64 @@ protected:
 
 private:
 
-    float m_x, m_y, m_width, m_height;
+    double m_x {0};
+    double m_y {0};
+    double m_width {0};
+    double m_height {0};
 };
 
 //------------------------------------------------------------------------------
 
-inline float Viewport::getX() const
+inline double Viewport::getX() const
 {
     return m_x;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setX(float _x)
+inline void Viewport::setX(double _x)
 {
     m_x = _x;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Viewport::getY() const
+inline double Viewport::getY() const
 {
     return m_y;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setY(float _y)
+inline void Viewport::setY(double _y)
 {
     m_y = _y;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Viewport::getWidth() const
+inline double Viewport::getWidth() const
 {
     return m_width;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setWidth(float _width)
+inline void Viewport::setWidth(double _width)
 {
     m_width = _width;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Viewport::getHeight() const
+inline double Viewport::getHeight() const
 {
     return m_height;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setHeight(float _height)
+inline void Viewport::setHeight(double _height)
 {
     m_height = _height;
 }

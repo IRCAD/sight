@@ -55,7 +55,7 @@
 
             <service uid="genericSceneSrv" type="sight::viz::scene2d::SRender" >
                 <scene>
-                    <viewport x="-100" y="-100" width="200" height="200" />
+                    <scene x="-100" y="-100" width="200" height="200" />
                     <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
 
                     <adaptor uid="gridAdp" />

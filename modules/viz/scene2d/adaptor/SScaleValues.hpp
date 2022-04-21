@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,10 +71,7 @@ public:
     SIGHT_DECLARE_SERVICE(SScaleValues, sight::viz::scene2d::IAdaptor);
 
     /// Constructor, set the x and y spacing to 10
-    MODULE_VIZ_SCENE2D_API SScaleValues() noexcept;
-
-    /// Basic destructor, do nothing
-    MODULE_VIZ_SCENE2D_API virtual ~SScaleValues() noexcept;
+    MODULE_VIZ_SCENE2D_API SScaleValues() noexcept = default;
 
 protected:
 
@@ -98,8 +95,6 @@ private:
 
     void buildValues();
 
-    void rescaleValues();
-
     double getStartVal();
 
     double getEndVal();
@@ -108,22 +103,23 @@ private:
     void showHideScaleValues();
 
     /// Bounds of the grid and spacing values for each axis.
-    float m_min, m_max;
+    double m_min {0.};
+    double m_max {0.};
 
     /// Interval between 2 consecutive values
-    double m_interval;
+    double m_interval {10.};
 
     /// Tells if the unit of the axis must be displayed.
-    bool m_showUnit;
+    bool m_showUnit {true};
 
     /// The unit of this values as text.
-    QGraphicsSimpleTextItem* m_unit;
+    QGraphicsSimpleTextItem* m_unit {nullptr};
 
     /// The unit  of the axis (as text) that will be displayed.
     std::string m_displayedUnit;
 
     /// The layer.
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer {nullptr};
 
     /// Specify where the axis must be aligned: left, right, top or bottom.
     /// Left and right side axis are aligned/floating relatively to the view.
@@ -143,10 +139,10 @@ private:
 
     /// The step which defines when a value of the axis should be displayed if there is not
     /// enough space to display all the values.
-    int m_step;
+    int m_step {1};
 
     /// Size of the font used for rendering grid values.
-    float m_fontSize;
+    int m_fontSize {8};
 
     static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
     sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};

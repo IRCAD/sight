@@ -40,7 +40,6 @@
 #include <data/Equipment.hpp>
 #include <data/Float.hpp>
 #include <data/Graph.hpp>
-#include <data/Histogram.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
@@ -1664,58 +1663,6 @@ inline void _compare<data::Graph>(const data::Graph::csptr& actual, const std::s
 void SessionTest::graphTest()
 {
     _test_combine<data::Graph>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::Histogram::sptr _generate<data::Histogram>(const std::size_t variant)
-{
-    auto object = data::Histogram::New();
-
-    std::vector<long> values;
-    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
-    {
-        values.push_back(random<long>());
-    }
-
-    object->setValues(values);
-    object->setBinsWidth(random<float>());
-    object->setMaxValue(random<float>());
-    object->setMinValue(random<float>());
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void _compare<data::Histogram>(const data::Histogram::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    // Retrieve the expected variant
-    const auto& expected = _expected<data::Histogram>(variant);
-
-    const auto& expectedValues = expected->getValues();
-    const auto& actualValues   = actual->getValues();
-    CPPUNIT_ASSERT_EQUAL(expectedValues.size(), actualValues.size());
-
-    for(std::size_t i = 0, end = expectedValues.size() ; i < end ; ++i)
-    {
-        CPPUNIT_ASSERT_EQUAL(expectedValues.at(i), actualValues.at(i));
-    }
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getBinsWidth(), actual->getBinsWidth(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getMaxValue(), actual->getMaxValue(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getMinValue(), actual->getMinValue(), FLOAT_EPSILON);
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::histogramTest()
-{
-    _test_combine<data::Histogram>();
 }
 
 //------------------------------------------------------------------------------

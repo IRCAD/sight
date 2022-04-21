@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,8 +131,8 @@ void SGrid2D::draw()
     // Draw the horizontal lines
     for(float yVal = yStartVal ; yVal <= yEndVal ; yVal += m_ySpacing)
     {
-        coord1 = this->mapAdaptorToScene(Point2DType(xStartVal, yVal), m_xAxis, m_yAxis);
-        coord2 = this->mapAdaptorToScene(Point2DType(xEndVal, yVal), m_xAxis, m_yAxis);
+        coord1 = this->mapAdaptorToScene((Point2DType(xStartVal, yVal)));
+        coord2 = this->mapAdaptorToScene((Point2DType(xEndVal, yVal)));
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 
@@ -144,8 +144,8 @@ void SGrid2D::draw()
     // Draw the vertical lines
     for(float xVal = xStartVal ; xVal <= xEndVal ; xVal += m_xSpacing)
     {
-        coord1 = this->mapAdaptorToScene(Point2DType(xVal, yStartVal), m_xAxis, m_yAxis);
-        coord2 = this->mapAdaptorToScene(Point2DType(xVal, yEndVal), m_xAxis, m_yAxis);
+        coord1 = this->mapAdaptorToScene((Point2DType(xVal, yStartVal)));
+        coord2 = this->mapAdaptorToScene((Point2DType(xVal, yEndVal)));
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 

@@ -67,7 +67,6 @@
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
             <object uid="pacsSeriesDB" type="sight::data::SeriesDB" />
             <object uid="image" type="sight::data::Image" src="deferred"/>
-            <object uid="histogram" type="sight::data::Histogram" />
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
             <object uid="landmarks" type="sight::data::Landmarks" />
 
@@ -482,7 +481,6 @@
                 <appConfig id="TransferFunctionManager_AppCfg" />
                 <parameter replace="WID_PARENT" by="TFParameterView" />
                 <inout key="image" uid="image" />
-                <inout key="histogram" uid="histogram" />
                 <inout key="tfPools" uid="volumeTFPools" />
                 <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
                 <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
@@ -515,13 +513,6 @@
             <service uid="extractPacsImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
                 <in key="seriesDB" uid="pacsSeriesDB"/>
                 <out key="image" uid="image" />
-            </service>
-
-            <!-- Compute the image histogram -->
-            <service uid="computeHistogramSrv" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="true" worker="COMPUTING_THREAD" >
-                <in key="image" uid="image" />
-                <inout key="histogram" uid="histogram" />
-                <binsWidth>5.0</binsWidth>
             </service>
 
             <!-- Parameters for the volume rendering -->
@@ -741,14 +732,13 @@
             <start uid="extrudedMeshesManagerCfg" />
             <start uid="extractSeriesSrv" />
             <start uid="extractPacsImageSrv" />
-            <start uid="computeHistogramSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
             <start uid="addDistanceAct" />
             <start uid="removeDistanceAct" />
             <start uid="hideDistanceAct" />
 
-            <update uid="volumeManagerAct" />
+            <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />
 
         </config>

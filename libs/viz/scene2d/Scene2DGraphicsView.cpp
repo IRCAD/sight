@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,24 +40,9 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
         this->setMouseTracking(true);
     }
 
-    /* Change the method used by the scene to index its items:
-     * 'NoIndex' is better than the default method 'BspTreeIndex' (Binary Space Partioning)
-     * which consists in dividing the scene into multiple parts and store them into a tree.
-     * With 'NoIndex', searching an item is faster, especially for scenes with a lot of items
-     * (Histogram for instance) and for scenes which manage moves (ViewportRangeSelector and
-     * ViewportUpdater for instance).
-     */
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    this->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    this->setOptimizationFlags(
-        QGraphicsView::DontSavePainterState
-        | QGraphicsView::DontAdjustForAntialiasing
-    );                                                  // Prevent from rendering artifacts
-    this->setCacheMode(QGraphicsView::CacheBackground); // Activates background cache
     this->setAttribute(Qt::WA_TranslucentBackground, false);
     this->setFrameStyle(0);
 }
@@ -99,7 +84,7 @@ void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
 
 void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 {
-    this->updateFromViewport();
+    this->updateFromViewport(m_viewport);
 
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::Resize);
@@ -122,59 +107,6 @@ void Scene2DGraphicsView::mousePressEvent(QMouseEvent* _event)
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
-}
-
-//-----------------------------------------------------------------------------
-
-scene2d::data::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent(QInputEvent* _event)
-{
-    scene2d::data::Event::Modifier modifier;
-
-    if(_event->modifiers() == Qt::ControlModifier)
-    {
-        modifier = scene2d::data::Event::ControlModifier;
-    }
-    else if(_event->modifiers() == Qt::AltModifier)
-    {
-        modifier = scene2d::data::Event::AltModifier;
-    }
-    else if(_event->modifiers() == Qt::ShiftModifier)
-    {
-        modifier = scene2d::data::Event::ShiftModifier;
-    }
-    else
-    {
-        modifier = scene2d::data::Event::NoModifier;
-    }
-
-    // TODO: add support for combined modifiers
-    return modifier;
-}
-
-//-----------------------------------------------------------------------------
-
-scene2d::data::Event::Button Scene2DGraphicsView::getScene2DButtonFromEvent(QMouseEvent* _event)
-{
-    scene2d::data::Event::Button button;
-
-    if(_event->button() == Qt::LeftButton)
-    {
-        button = scene2d::data::Event::LeftButton;
-    }
-    else if(_event->button() == Qt::RightButton)
-    {
-        button = scene2d::data::Event::RightButton;
-    }
-    else if(_event->button() == Qt::MidButton)
-    {
-        button = scene2d::data::Event::MidButton;
-    }
-    else
-    {
-        button = scene2d::data::Event::NoButton;
-    }
-
-    return button;
 }
 
 //-----------------------------------------------------------------------------
@@ -220,10 +152,10 @@ void Scene2DGraphicsView::mouseMoveEvent(QMouseEvent* _event)
 
 void Scene2DGraphicsView::wheelEvent(QWheelEvent* _event)
 {
-    const bool scrollUp = _event->delta() > 0;
+    const bool scrollUp = _event->angleDelta().y() > 0;
     scene2d::data::Event sceneEvent;
     sceneEvent.setType((scrollUp) ? scene2d::data::Event::MouseWheelUp : scene2d::data::Event::MouseWheelDown);
-    sceneEvent.setCoord(scene2d::data::Coord(_event->pos().x(), _event->pos().y()));
+    sceneEvent.setCoord(scene2d::data::Coord(_event->position().x(), _event->position().y()));
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
@@ -231,35 +163,85 @@ void Scene2DGraphicsView::wheelEvent(QWheelEvent* _event)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::setViewport(scene2d::data::Viewport::sptr viewport)
+void Scene2DGraphicsView::enterEvent(QEvent*)
 {
-    m_viewport = viewport;
+    scene2d::data::Event sceneEvent;
+    sceneEvent.setType(scene2d::data::Event::EnterEvent);
+    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::updateFromViewport()
+void Scene2DGraphicsView::leaveEvent(QEvent*)
 {
-    SIGHT_ASSERT("Viewport is not set", m_viewport);
+    scene2d::data::Event sceneEvent;
+    sceneEvent.setType(scene2d::data::Event::LeaveEvent);
+    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+}
 
+//------------------------------------------------------------------------------
+
+QSize Scene2DGraphicsView::sizeHint() const
+{
+    return this->minimumSizeHint();
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene2DGraphicsView::updateFromViewport(const scene2d::data::Viewport& viewport)
+{
     this->fitInView(
-        m_viewport->getX(),
-        m_viewport->getY(),
-        m_viewport->getWidth(),
-        m_viewport->getHeight(),
+        viewport.getX(),
+        viewport.getY(),
+        viewport.getWidth(),
+        viewport.getHeight(),
         m_scene2DRender.lock()->getAspectRatioMode()
     );
+
+    m_viewport.setX(viewport.getX());
+    m_viewport.setY(viewport.getY());
+    m_viewport.setWidth(viewport.getWidth());
+    m_viewport.setHeight(viewport.getHeight());
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::paintEvent(QPaintEvent* event)
+scene2d::data::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent(QInputEvent* _event)
 {
-    // QGraphicsView optimization
-    QPaintEvent* newEvent = new QPaintEvent(event->region().boundingRect());
-    QGraphicsView::paintEvent(newEvent);
+    switch(_event->modifiers())
+    {
+        case Qt::ControlModifier:
+            return scene2d::data::Event::ControlModifier;
 
-    delete newEvent;
+        case Qt::AltModifier:
+            return scene2d::data::Event::AltModifier;
+
+        case Qt::ShiftModifier:
+            return scene2d::data::Event::ShiftModifier;
+
+        default:
+            return scene2d::data::Event::NoModifier;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+scene2d::data::Event::Button Scene2DGraphicsView::getScene2DButtonFromEvent(QMouseEvent* _event)
+{
+    switch(_event->button())
+    {
+        case Qt::LeftButton:
+            return scene2d::data::Event::LeftButton;
+
+        case Qt::RightButton:
+            return scene2d::data::Event::RightButton;
+
+        case Qt::MiddleButton:
+            return scene2d::data::Event::MidButton;
+
+        default:
+            return scene2d::data::Event::NoButton;
+    }
 }
 
 //-----------------------------------------------------------------------------

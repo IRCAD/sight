@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,6 @@
 #include "Edge.hpp"
 #include "Equipment.hpp"
 #include "Graph.hpp"
-#include "Histogram.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
@@ -103,7 +102,6 @@ static const std::unordered_map<std::string, serializer_t> s_defaultSerializers 
     {data::Equipment::classname(), &Equipment::serialize},
     {data::Float::classname(), &Helper::serialize<data::Float>},
     {data::Graph::classname(), &Graph::serialize},
-    {data::Histogram::classname(), &Histogram::serialize},
     {data::Integer::classname(), &Helper::serialize<data::Integer>},
     {data::Image::classname(), &Image::serialize},
     {data::ImageSeries::classname(), &ImageSeries::serialize},

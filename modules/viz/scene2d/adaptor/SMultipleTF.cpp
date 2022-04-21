@@ -288,8 +288,7 @@ void SMultipleTF::destroyTFPoints()
 
 SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr _tf, int _zIndex)
 {
-    sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::locked_ptr viewportLock(viewport);
+    auto viewport = m_viewport.lock();
 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
@@ -346,7 +345,6 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
                      static_cast<int>(tfColor.g * 255),
                      static_cast<int>(tfColor.b * 255));
         point->setBrush(QBrush(color));
-        point->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         point->setPen(m_pointsPen);
         point->setZValue(subTF->m_zIndex * 2 + 1);
 
@@ -381,8 +379,7 @@ void SMultipleTF::createTFPolygons()
 
 void SMultipleTF::createTFPolygon(SubTF* const _subTF)
 {
-    const sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::locked_ptr viewportLock(viewport);
+    const auto viewport = m_viewport.lock();
 
     QVector<QPointF> position;
     QLinearGradient grad;
@@ -453,11 +450,10 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     // Sets gradient, opacity and pen to the polygon
     poly->setBrush(QBrush(grad));
     poly->setPen(m_polygonsPen);
-    poly->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     poly->setZValue(_subTF->m_zIndex * 2);
 
     // If the z-index is the highest, it's the current one.
-    if(_subTF->m_zIndex == m_subTF.size())
+    if(static_cast<size_t>(_subTF->m_zIndex) == m_subTF.size())
     {
         poly->setOpacity(m_opacity);
     }
@@ -773,7 +769,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
                 });
         m_eventFilter->setSingleShot(true);
         m_eventFilter->start(250);
-        _event.setAccepted(true);
+        // _event.setAccepted(true);
         return;
     }
 
@@ -821,7 +817,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                 m_tfOut = matchingSubTF[0]->m_tf;
             }
         }
-        // Finds the closets one.
+        // Finds the closest one.
         else
         {
             sight::viz::scene2d::data::Coord clickCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
@@ -833,7 +829,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                 // Finds nearest position of the iterate subTF.
                 float localClosestDistance  = std::numeric_limits<float>::max();
                 SubTF* localNewCurrentSubTF = nullptr;
-                for(int i = 0 ; i <= subTF->m_TFPoints.size() ; ++i)
+                for(std::size_t i = 0 ; i <= subTF->m_TFPoints.size() ; ++i)
                 {
                     Point2DType tfPoint1;
                     Point2DType tfPoint2;
@@ -850,9 +846,8 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                         else
                         {
                             // The first point is the same a the real but with an infinite lower value.
-                            const sight::viz::scene2d::data::Viewport::csptr viewport =
-                                this->getScene2DRender()->getViewport();
-                            const data::mt::locked_ptr viewportLock(viewport);
+
+                            const auto viewport = m_viewport.lock();
                             tfPoint1 = std::make_pair(viewport->getX(), tfPoint2.second);
                         }
                     }
@@ -868,9 +863,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                         else
                         {
                             // The last point is the same a the real but with an infinite upper value.
-                            const sight::viz::scene2d::data::Viewport::csptr viewport =
-                                this->getScene2DRender()->getViewport();
-                            const data::mt::locked_ptr viewportLock(viewport);
+                            const auto viewport = m_viewport.lock();
                             tfPoint2 = std::make_pair(viewport->getX() + viewport->getWidth(), tfPoint1.second);
                         }
                     }
@@ -888,7 +881,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     perpendicLine.setAngle(90.f + line.angle());
 
                     QPointF intersectPoint;
-                    line.intersect(perpendicLine, &intersectPoint);
+                    line.intersects(perpendicLine, &intersectPoint);
 
                     const QVector2D origin(static_cast<float>(clickCoord.getX()),
                                            static_cast<float>(clickCoord.getY()));

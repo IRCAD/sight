@@ -1,5 +1,0 @@
-sight_add_target(module_viz_scene2dTest TYPE TEST WARNINGS_AS_ERRORS OFF)
-
-add_dependencies(module_viz_scene2dTest data module_service module_viz_scene2d)
-
-target_link_libraries(module_viz_scene2dTest PUBLIC utestData data service)

@@ -35,24 +35,6 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
-SScaleValues::SScaleValues() noexcept :
-    m_min(0.f),
-    m_max(0.f),
-    m_interval(10.),
-    m_step(1),
-    m_fontSize(8.f),
-    m_showUnit(true),
-    m_unit(nullptr),
-    m_layer(nullptr)
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-SScaleValues::~SScaleValues() noexcept
-{
-}
-
 //---------------------------------------------------------------------------------------------------------------
 
 void SScaleValues::configuring()
@@ -87,7 +69,7 @@ void SScaleValues::configuring()
     // Font size configuration
     if(config.count("fontSize"))
     {
-        m_fontSize = config.get<float>("fontSize");
+        m_fontSize = config.get<int>("fontSize");
     }
 
     // Show unit
@@ -128,8 +110,8 @@ void SScaleValues::buildValues()
     m_values.clear();
 
     double val         = this->getStartVal();
-    const int range    = (int) ceil(this->getEndVal() - val);
-    const int nbValues = (int) (ceil(range / m_interval)) + 1;
+    const int range    = static_cast<int>(std::ceil(this->getEndVal() - val));
+    const int nbValues = static_cast<int>((std::ceil(range / m_interval))) + 1;
 
     std::string format;
 
@@ -153,7 +135,6 @@ void SScaleValues::buildValues()
         text->setText(QString::fromStdString(format).arg(val));
         text->setFont(m_font);
         text->setBrush(m_brush);
-        text->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
         m_values.push_back(text);
     }
@@ -169,7 +150,6 @@ void SScaleValues::buildValues()
     m_unit->setText(QString::fromStdString(m_displayedUnit));
     m_unit->setFont(m_font);
     m_unit->setBrush(m_brush);
-    m_unit->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     // Add it to the items to be displayed if required
     if(m_showUnit)
@@ -195,8 +175,8 @@ void SScaleValues::starting()
     m_brush = QBrush(m_pen.color());
     m_pen.setCosmetic(true);
 
-    m_font.setPointSize(m_fontSize);
-    m_font.setLetterSpacing(QFont::AbsoluteSpacing, 0.25);
+    // We set the point size to 1.f but we will scale the text later according to m_fontSize
+    m_font.setPointSize(1);
     m_font.setKerning(true);
     m_font.setFixedPitch(true);
 
@@ -208,48 +188,22 @@ void SScaleValues::starting()
 
 double SScaleValues::getStartVal()
 {
-    return (int) (m_min / m_interval) * m_interval;
+    return std::floor(m_min / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 double SScaleValues::getEndVal()
 {
-    return (int) (m_max / m_interval) * m_interval;
+    return std::floor(m_max / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 
 void SScaleValues::updating()
 {
-    this->initializeViewSize();
-    this->initializeViewportSize();
+    const auto viewport = m_viewport.lock();
 
-    this->rescaleValues();
-}
-
-//---------------------------------------------------------------------------------------
-
-void SScaleValues::rescaleValues()
-{
-    auto viewport = m_viewport.lock();
-
-    const double viewportX      = viewport->getX();
-    const double viewportWidth  = viewport->getWidth();
-    const double viewportHeight = viewport->getHeight();
-
-    const double viewportSizeRatio    = viewportHeight / viewportWidth;
-    const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
-
-    const Scene2DRatio ratio        = this->getRatio(); // Total ratio
-    const double viewportWidthRatio = this->getViewportSizeRatio().first;
-
-    double scaleX = m_fontSize;
-    double scaleY = m_fontSize * viewportSizeRatio;
-    scaleY /= viewportWidthRatio;
-    scaleY *= viewInitialSizeRatio;
-
-    scaleX = scaleX * ratio.first;
-    scaleY = scaleY * ratio.second;
+    const auto& [scaleX, scaleY] = this->pixelsToViewport({m_fontSize, m_fontSize}, *viewport);
 
     QTransform transform;
     transform.scale(scaleX, scaleY);
@@ -262,13 +216,17 @@ void SScaleValues::rescaleValues()
                                        a lack of sufficient width to display all of them */
 
     const std::size_t valuesSize = m_values.size();
-    float val                    = getStartVal();
+    double val                   = getStartVal();
+
+    const double viewportX      = viewport->getX();
+    const double viewportWidth  = viewport->getWidth();
+    const double viewportHeight = viewport->getHeight();
 
     if(m_align == "left" || m_align == "right")
     {
         const double valueSizeRatio = m_interval / scaleY;
 
-        float coeff = 0.f;
+        double coeff = 0.f;
 
         double textPosX;
 
@@ -286,12 +244,7 @@ void SScaleValues::rescaleValues()
         {
             valueSize = m_values[i]->boundingRect().height();
 
-            size = this->mapAdaptorToScene(
-                Point2DType(m_values[i]->boundingRect().width(), valueSize),
-                m_xAxis,
-                m_yAxis
-            );
-
+            size = this->mapAdaptorToScene(Point2DType(m_values[i]->boundingRect().width(), valueSize));
             step = (int) (valueSize / valueSizeRatio) + 1;
 
             if(step > m_step)
@@ -300,13 +253,13 @@ void SScaleValues::rescaleValues()
                 suggestResampling = true;
             }
 
-            coord = this->mapAdaptorToScene(Point2DType(textPosX, val), m_xAxis, m_yAxis);
+            coord = this->mapAdaptorToScene((Point2DType(textPosX, val)));
 
             m_values[i]->setTransform(transform);
 
             m_values[i]->setPos(
                 coord.first + coeff * size.first * scaleX,
-                coord.second - (m_interval - size.second / 2) * scaleY
+                coord.second - (m_interval) * scaleY
             );
         }
 
@@ -314,7 +267,7 @@ void SScaleValues::rescaleValues()
 
         val = viewportHeight * 0.8f;
 
-        coord = this->mapAdaptorToScene(Point2DType(textPosX, val), m_xAxis, m_yAxis);
+        coord = this->mapAdaptorToScene((Point2DType(textPosX, val)));
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
@@ -337,11 +290,7 @@ void SScaleValues::rescaleValues()
         {
             valueSize = m_values[i]->boundingRect().width();
 
-            size = this->mapAdaptorToScene(
-                Point2DType(valueSize, m_values[i]->boundingRect().height()),
-                m_xAxis,
-                m_yAxis
-            );
+            size = this->mapAdaptorToScene(Point2DType(valueSize, m_values[i]->boundingRect().height()));
 
             step = (int) (valueSize / valueSizeRatio) + 1;
 
@@ -351,11 +300,7 @@ void SScaleValues::rescaleValues()
                 suggestResampling = true;
             }
 
-            coord = this->mapAdaptorToScene(
-                Point2DType(val, textPosY),
-                m_xAxis,
-                m_yAxis
-            );
+            coord = this->mapAdaptorToScene(Point2DType(val, textPosY));
 
             m_values[i]->setTransform(transform);
 
@@ -369,18 +314,8 @@ void SScaleValues::rescaleValues()
 
         val = viewportHeight * 0.8;
 
-        size = this->mapAdaptorToScene(
-            Point2DType(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
-            m_xAxis,
-            m_yAxis
-        );
-
-        coord = this->mapAdaptorToScene(
-            Point2DType(viewportX + viewportWidth / 2, textPosY),
-            m_xAxis,
-            m_yAxis
-        );
-
+        size  = this->mapAdaptorToScene(Point2DType(m_unit->boundingRect().width(), m_unit->boundingRect().height()));
+        coord = this->mapAdaptorToScene(Point2DType(viewportX + viewportWidth / 2, textPosY));
         coeff = (m_align == "left") ? 1 : -1.5;
 
         m_unit->setPos(

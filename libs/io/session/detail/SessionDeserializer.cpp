@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,6 @@
 #include "Edge.hpp"
 #include "Equipment.hpp"
 #include "Graph.hpp"
-#include "Histogram.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
@@ -103,7 +102,6 @@ static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializ
     {data::Equipment::classname(), &Equipment::deserialize},
     {data::Float::classname(), &Helper::deserialize<data::Float>},
     {data::Graph::classname(), &Graph::deserialize},
-    {data::Histogram::classname(), &Histogram::deserialize},
     {data::Integer::classname(), &Helper::deserialize<data::Integer>},
     {data::Image::classname(), &Image::deserialize},
     {data::ImageSeries::classname(), &ImageSeries::deserialize},

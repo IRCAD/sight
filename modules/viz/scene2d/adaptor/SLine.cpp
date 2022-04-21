@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,8 +79,8 @@ void SLine::configuring()
 
 void SLine::draw()
 {
-    const Point2DType pt1 = this->mapAdaptorToScene(Point2DType(m_x1, m_y1), m_xAxis, m_yAxis);
-    const Point2DType pt2 = this->mapAdaptorToScene(Point2DType(m_x2, m_y2), m_xAxis, m_yAxis);
+    const Point2DType pt1 = this->mapAdaptorToScene((Point2DType(m_x1, m_y1)));
+    const Point2DType pt2 = this->mapAdaptorToScene((Point2DType(m_x2, m_y2)));
 
     // Draw the line
     QGraphicsLineItem* line = new QGraphicsLineItem(

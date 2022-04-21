@@ -79,13 +79,6 @@ Scene2DGraphicsView* SRender::getView() const
 
 //-----------------------------------------------------------------------------
 
-scene2d::data::Viewport::sptr SRender::getViewport() const
-{
-    return m_viewport;
-}
-
-//-----------------------------------------------------------------------------
-
 scene2d::data::Axis::sptr SRender::getAxis(const std::string& id) const
 {
     scene2d::data::Axis::sptr axis;
@@ -144,6 +137,19 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
+bool SRender::contains(const scene2d::data::Coord& coord) const
+{
+    /// Returns the viewport coordinate point mapped to scene coordinates.
+    const QPoint qp(static_cast<int>(coord.getX()), static_cast<int>(coord.getY()));
+    QPointF qps = m_view->mapToScene(qp);
+
+    QRectF rect = m_view->sceneRect();
+
+    return rect.contains(qps);
+}
+
+//-----------------------------------------------------------------------------
+
 scene2d::data::Coord SRender::mapToScene(const scene2d::data::Coord& coord, bool clip) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
@@ -179,10 +185,6 @@ void SRender::configuring()
         if((*iter)->getName() == "axis")
         {
             this->configureAxis(*iter);
-        }
-        else if((*iter)->getName() == "viewport")
-        {
-            this->configureViewport(*iter);
         }
         else if((*iter)->getName() == "scene")
         {
@@ -228,8 +230,7 @@ void SRender::stopping()
 
 void SRender::startContext()
 {
-    SPTR(ui::qt::container::QtContainer) qtContainer =
-        ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Convert the background color
     std::uint8_t color[4];
@@ -240,7 +241,6 @@ void SRender::startContext()
     m_scene->setFocus(Qt::MouseFocusReason);
 
     m_view = new Scene2DGraphicsView(m_scene, qtContainer->getQtContainer());
-    m_view->setViewport(m_viewport);
     m_view->setSceneRender(viz::scene2d::SRender::dynamicCast(this->getSptr()));
     m_view->setRenderHint(QPainter::Antialiasing, m_antialiasing);
 
@@ -248,7 +248,12 @@ void SRender::startContext()
     layout->addWidget(m_view);
     qtContainer->setLayout(layout);
 
-    m_view->updateFromViewport();
+    viz::scene2d::data::Viewport initViewport;
+    initViewport.setX(m_sceneStart.getX());
+    initViewport.setY(m_sceneStart.getY());
+    initViewport.setWidth(m_sceneWidth.getX());
+    initViewport.setHeight(m_sceneWidth.getY());
+    m_view->updateFromViewport(initViewport);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,25 +287,6 @@ void SRender::configureAxis(ConfigurationType _conf)
     axis->setScale(std::stof(scale));
     axis->setScaleType(scaleType == "LINEAR" ? scene2d::data::Axis::LINEAR : scene2d::data::Axis::LOG);
     m_axisMap[id] = axis;
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::configureViewport(ConfigurationType _conf)
-{
-    SIGHT_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
-
-    const std::string id     = _conf->getAttributeValue("id");
-    const std::string x      = _conf->getAttributeValue("x");
-    const std::string y      = _conf->getAttributeValue("y");
-    const std::string width  = _conf->getAttributeValue("width");
-    const std::string height = _conf->getAttributeValue("height");
-
-    m_viewport = scene2d::data::Viewport::New();
-    m_viewport->setX(std::stof(x));
-    m_viewport->setY(std::stof(y));
-    m_viewport->setWidth(std::stof(width));
-    m_viewport->setHeight(std::stof(height));
 }
 
 //-----------------------------------------------------------------------------

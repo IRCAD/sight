@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,27 +24,27 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::viz::scene2d
+namespace sight::viz::scene2d
 {
 
 namespace ut
 {
 
-class ProcessingTest : public CPPUNIT_NS::TestFixture
+class ViewportTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ProcessingTest);
-CPPUNIT_TEST(histogramTest);
+CPPUNIT_TEST_SUITE(ViewportTest);
+CPPUNIT_TEST(testParser);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
     void setUp();
     void tearDown();
 
-    void histogramTest();
+    /// test object with services creation from a configuration
+    void testParser();
 };
 
-} // namespace ut
+} //namespace ut
 
-} // namespace sight::module::viz::scene2d
+} //namespace sight::viz::scene2d

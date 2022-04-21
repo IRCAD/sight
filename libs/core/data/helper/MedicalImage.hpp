@@ -31,6 +31,7 @@
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/PointList.hpp>
+#include <data/thread/RegionThreader.hpp>
 #include <data/Vector.hpp>
 
 #include <optional>
@@ -424,29 +425,30 @@ public:
         T& max;
     };
 
-    // ------------------------------------------------------------------------------
+    using result_vector_t = std::vector<T>;
+
+    //------------------------------------------------------------------------------
 
     template<typename IMAGE>
-    void operator()(Param& param)
+    static void getMinMax(
+        const data::Image::const_iterator<IMAGE>& imgBegin,
+        result_vector_t& minRes,
+        result_vector_t& maxRes,
+        std::ptrdiff_t regionMin,
+        std::ptrdiff_t regionMax,
+        std::size_t i
+)
     {
-        const data::Image::csptr image = param.image;
-        const auto dumpLock            = image->dump_lock();
-
-        auto itr       = image->begin<IMAGE>();
-        const auto end = image->end<IMAGE>();
-
-        T& min = param.min;
-        T& max = param.max;
+        const data::Image::const_iterator<IMAGE> begin = imgBegin + regionMin;
+        const data::Image::const_iterator<IMAGE> end   = imgBegin + regionMax;
 
         typedef std::numeric_limits<IMAGE> ImgLimits;
         IMAGE imin = ImgLimits::max();
         IMAGE imax = ImgLimits::lowest();
 
-        IMAGE currentVoxel;
-
-        for( ; itr != end ; ++itr)
+        for(auto itr = begin ; itr != end ; ++itr)
         {
-            currentVoxel = *itr;
+            IMAGE currentVoxel = *itr;
 
             if(currentVoxel < imin)
             {
@@ -459,11 +461,44 @@ public:
         }
 
         typedef std::numeric_limits<T> TLimits;
-        T minT = TLimits::lowest();
-        T maxT = TLimits::max();
+        constexpr T minT = TLimits::lowest();
+        constexpr T maxT = TLimits::max();
 
-        min = (static_cast<T>(imin) < minT) ? minT : static_cast<T>(imin);
-        max = (static_cast<T>(imax) > maxT) ? maxT : static_cast<T>(imax);
+        const T min = (static_cast<T>(imin) < minT) ? minT : static_cast<T>(imin);
+        const T max = (static_cast<T>(imax) > maxT) ? maxT : static_cast<T>(imax);
+
+        minRes[i] = min;
+        maxRes[i] = max;
+    }
+
+    // ------------------------------------------------------------------------------
+
+    template<typename IMAGE>
+    void operator()(Param& param)
+    {
+        const data::Image::csptr image = param.image;
+        const auto dumpLock            = image->dump_lock();
+
+        result_vector_t min_result, max_result;
+
+        sight::data::thread::RegionThreader rt;
+        min_result.resize(rt.numberOfThread());
+        max_result.resize(rt.numberOfThread());
+        rt(
+            std::bind(
+                &MinMaxFunctor::getMinMax<IMAGE>,
+                image->cbegin<IMAGE>(),
+                std::ref(min_result),
+                std::ref(max_result),
+                std::placeholders::_1,
+                std::placeholders::_2,
+                std::placeholders::_3
+            ),
+            image->cend<IMAGE>() - image->cbegin<IMAGE>()
+        );
+
+        param.min = *std::min_element(min_result.begin(), min_result.end());
+        param.max = *std::max_element(max_result.begin(), max_result.end());
     }
 };
 

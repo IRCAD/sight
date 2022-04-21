@@ -266,7 +266,7 @@ QImage* SNegato::createQImage()
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
             qImageOrigin[0]  = origin[1] - 0.5f * spacing[1];
-            qImageOrigin[1]  = -(origin[2] + size[2] * spacing[2] - 0.5f * spacing[2]);
+            qImageOrigin[1]  = -(origin[2] + static_cast<double>(size[2]) * spacing[2] - 0.5 * spacing[2]);
             break;
 
         case orientation_t::Y_AXIS: // frontal
@@ -275,7 +275,7 @@ QImage* SNegato::createQImage()
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
             qImageOrigin[0]  = origin[0] - 0.5f * spacing[0];
-            qImageOrigin[1]  = -(origin[2] + size[2] * spacing[2] - 0.5f * spacing[2]);
+            qImageOrigin[1]  = -(origin[2] + static_cast<double>(size[2]) * spacing[2] - 0.5 * spacing[2]);
             break;
 
         case orientation_t::Z_AXIS: // axial
@@ -283,8 +283,8 @@ QImage* SNegato::createQImage()
             qImageSize[1]    = static_cast<int>(size[1]);
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[1];
-            qImageOrigin[0]  = origin[0] - 0.5f * spacing[0];
-            qImageOrigin[1]  = origin[1] - 0.5f * spacing[1];
+            qImageOrigin[0]  = origin[0] - 0.5 * spacing[0];
+            qImageOrigin[1]  = origin[1] - 0.5 * spacing[1];
             break;
 
         default:
@@ -466,21 +466,21 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
             // get image origin
             QRectF recImage = m_pixmapItem->sceneBoundingRect();
 
-            sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+            const auto sceneViewport = m_viewport.lock();
 
-            float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
-            float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());
+            double sceneWidth  = static_cast<double>(this->getScene2DRender()->getView()->width());
+            double sceneHeight = static_cast<double>(this->getScene2DRender()->getView()->height());
 
-            float ratioYonXimage = recImage.height() / recImage.width();
-            float sceneRatio     = sceneHeight / sceneWidth;
+            double ratioYonXimage = recImage.height() / recImage.width();
+            double sceneRatio     = sceneHeight / sceneWidth;
 
             if(sceneRatio > ratioYonXimage) // used scene ratio
             {
-                float widthViewPortNew  = recImage.width();
-                float heightViewPortNew = widthViewPortNew * sceneRatio;
+                double widthViewPortNew  = recImage.width();
+                double heightViewPortNew = widthViewPortNew * sceneRatio;
 
                 // computes new y origin
-                float newOrigineY = recImage.y() - (heightViewPortNew - recImage.height()) / 2.f;
+                double newOrigineY = recImage.y() - (heightViewPortNew - recImage.height()) / 2.f;
 
                 sceneViewport->setX(recImage.x());
                 sceneViewport->setY(newOrigineY);
@@ -489,11 +489,11 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
             }
             else
             {
-                float heightViewPortNew = recImage.height();
-                float widthViewPortNew  = heightViewPortNew / sceneRatio;
+                double heightViewPortNew = recImage.height();
+                double widthViewPortNew  = heightViewPortNew / sceneRatio;
 
                 // computes new x origin
-                float newOrigineX = recImage.x() - (widthViewPortNew - recImage.width()) / 2.f;
+                double newOrigineX = recImage.x() - (widthViewPortNew - recImage.width()) / 2.f;
 
                 sceneViewport->setX(newOrigineX);
                 sceneViewport->setY(recImage.y());
@@ -501,7 +501,8 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
                 sceneViewport->setHeight(heightViewPortNew);
             }
 
-            this->getScene2DRender()->getView()->updateFromViewport();
+            auto viewportObject = m_viewport.lock();
+            this->getScene2DRender()->getView()->updateFromViewport(*viewportObject);
         }
 
         //image pixel

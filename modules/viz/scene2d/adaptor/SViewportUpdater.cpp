@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "modules/viz/scene2d/adaptor/SViewportUpdater.hpp"
 
-#include <service/macros.hpp>
-
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
 namespace sight::module::viz::scene2d
@@ -31,16 +29,6 @@ namespace sight::module::viz::scene2d
 
 namespace adaptor
 {
-
-SViewportUpdater::SViewportUpdater() noexcept
-{
-}
-
-//-----------------------------------------------------------------------------
-
-SViewportUpdater::~SViewportUpdater() noexcept
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -66,33 +54,30 @@ void SViewportUpdater::stopping()
 
 void SViewportUpdater::updating()
 {
-    sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
-    auto viewportObject                                     = m_viewport.lock();
+    auto viewport = m_viewport.lock();
 
-    Point2DType pairCoord = this->mapAdaptorToScene(
-        Point2DType(viewportObject->getX(), viewportObject->getY()),
-        m_xAxis,
-        m_yAxis
-    );
+    double ySc = viewport->getY();
+    double hSc = viewport->getHeight();
 
-    Point2DType pairSize = this->mapAdaptorToScene(
-        Point2DType(viewportObject->getWidth(), viewportObject->getHeight()),
-        m_xAxis,
-        m_yAxis
-    );
+    // If the viewport Y and height are not set, scale the viewport to the height of the scene
+    if(ySc == 0 && hSc == 0)
+    {
+        auto scene = this->getScene2DRender()->getScene();
 
-    sceneViewport->setX(pairCoord.first);
-    sceneViewport->setY(pairCoord.second);
-    sceneViewport->setWidth(pairSize.first);
-    sceneViewport->setHeight(viewportObject->getHeight());
+        ySc = scene->sceneRect().y();
+        hSc = scene->sceneRect().height();
 
-    this->getScene2DRender()->getView()->updateFromViewport();
-}
+        viewport->setY(ySc);
+        viewport->setHeight(hSc);
+    }
 
-//-----------------------------------------------------------------------------
+    sight::viz::scene2d::data::Viewport sceneViewport;
+    sceneViewport.setX(viewport->getX());
+    sceneViewport.setY(viewport->getY());
+    sceneViewport.setWidth(viewport->getWidth());
+    sceneViewport.setHeight(viewport->getHeight());
 
-void SViewportUpdater::processInteraction(sight::viz::scene2d::data::Event&)
-{
+    this->getScene2DRender()->getView()->updateFromViewport(sceneViewport);
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -100,7 +85,7 @@ void SViewportUpdater::processInteraction(sight::viz::scene2d::data::Event&)
 service::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

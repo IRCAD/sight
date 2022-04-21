@@ -21,18 +21,6 @@
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SHistogramCursor</service>
-         <desc>IAdaptor implementation to show a cursor on histogram pointed by mouse.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SHistogramValue</service>
-         <desc>Defines an adaptor to show the histogram values clicked by mouse.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SLine</service>
          <desc>Line adaptor. Draw a line on the scene2D</desc>
     </extension>
@@ -93,11 +81,5 @@
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SViewportUpdater</service>
          <desc>Adaptor implementation that manages the camera on the view (by updating the viewport object).</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
-         <service>sight::module::viz::scene2d::processing::SComputeHistogram</service>
-         <desc>The SComputeHistogram service computes the histogram of the image.</desc>
     </extension>
 </plugin>

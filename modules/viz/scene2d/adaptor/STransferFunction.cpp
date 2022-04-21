@@ -146,8 +146,7 @@ void STransferFunction::stopping()
 
 void STransferFunction::createTFPoints()
 {
-    sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::locked_ptr viewportLock(viewport);
+    const auto viewport = m_viewport.lock();
 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
@@ -200,7 +199,6 @@ void STransferFunction::createTFPoints()
                      static_cast<int>(tfColor.g * 255),
                      static_cast<int>(tfColor.b * 255));
         point->setBrush(QBrush(color));
-        point->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         point->setPen(m_pointsPen);
         point->setZValue(1);
 
@@ -235,8 +233,7 @@ void STransferFunction::destroyTFPoints()
 
 void STransferFunction::createTFPolygon()
 {
-    const sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const data::mt::locked_ptr viewportLock(viewport);
+    const auto viewport = m_viewport.lock();
 
     QVector<QPointF> position;
     QLinearGradient grad;
@@ -311,7 +308,6 @@ void STransferFunction::createTFPolygon()
     // Sets gradient, opacity and pen to the polygon
     poly->setOpacity(m_opacity);
     poly->setPen(m_polygonsPen);
-    poly->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     poly->setZValue(0);
     poly->setBrush(QBrush(grad));
 

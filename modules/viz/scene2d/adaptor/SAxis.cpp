@@ -25,6 +25,7 @@
 #include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
+#include <viz/scene2d/Scene2DGraphicsView.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -111,13 +112,13 @@ void SAxis::configuring()
 void SAxis::buildAxis()
 {
     m_color.setCosmetic(true);
-    const int nbValues = (m_max - m_min) / m_interval + 1;
+    const int nbValues = static_cast<int>(std::ceil((m_max - m_min) / m_interval)) + 1;
+
     m_layer = new QGraphicsItemGroup();
 
     for(int i = 0 ; i < nbValues ; ++i)
     {
         QGraphicsLineItem* tick = new QGraphicsLineItem(0, 0, 0, 0);
-        tick->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         tick->setPen(m_color);
 
         m_ticks.push_back(tick);
@@ -125,7 +126,6 @@ void SAxis::buildAxis()
     }
 
     m_line = new QGraphicsLineItem();
-    m_line->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     m_line->setPen(m_color);
 
     if(m_showLine)
@@ -143,63 +143,54 @@ void SAxis::buildAxis()
 
 //---------------------------------------------------------------------------------------
 
-double SAxis::getStartVal()
+double SAxis::getStartVal() const
 {
-    return (int) (m_min / m_interval) * m_interval;
+    return std::floor(m_min / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 
-double SAxis::getEndVal()
+double SAxis::getEndVal() const
 {
-    return (int) (m_max / m_interval) * m_interval;
+    return std::ceil(m_max / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void SAxis::updating()
 {
-    this->initializeViewSize();
-    this->initializeViewportSize();
+    const auto viewport = m_viewport.lock();
 
-    const Scene2DRatio ratio = this->getRatio();
+    auto view = this->getScene2DRender()->getView();
 
-    sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const double viewportHeight                        = viewport->getHeight();
-    const double viewportWidth                         = viewport->getWidth();
+    const double viewportHeight = viewport->getHeight();
+    const double viewportWidth  = viewport->getWidth();
 
-    const double viewportSizeRatio    = viewportHeight / viewportWidth;
-    const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
+    const double viewportViewRatio = viewport->getWidth() / view->width();
+    const double viewportSizeRatio = viewportHeight / viewportWidth;
 
-    const double viewportWidthRatio = this->getViewportSizeRatio().first;
-
-    double scaleX = m_tickSize;
-    double scaleY = m_tickSize * viewportSizeRatio;
-    scaleY /= viewportWidthRatio;
-    scaleY *= viewInitialSizeRatio;
-
-    scaleX = scaleX * ratio.first;
-    scaleY = scaleY * ratio.second;
+    double scaleX = viewportViewRatio;
+    double scaleY = viewportSizeRatio * this->getViewSizeRatio() * viewportViewRatio;
 
     const std::size_t nbValues = m_ticks.size();
 
     const double min = this->getStartVal();
     const double max = this->getEndVal();
 
-    float pos;
+    double pos;
     Point2DType tickSize;
     Point2DType tickPos;
 
     if(m_align == "bottom")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene((Point2DType(0, m_tickSize)));
 
         const double tickPosY = viewport->getY();
 
         for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
-            pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
+            pos     = min + static_cast<double>(i) * m_interval;
+            tickPos = this->mapAdaptorToScene((Point2DType(pos, tickPosY)));
             m_ticks.at(i)->setLine(
                 tickPos.first,
                 tickPos.second,
@@ -212,15 +203,14 @@ void SAxis::updating()
     }
     else if(m_align == "top")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene((Point2DType(0, m_tickSize)));
 
         const double tickPosY = viewport->getHeight() * 0.9;
 
         for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
-            pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
-
+            pos     = min + static_cast<double>(i) * m_interval;
+            tickPos = this->mapAdaptorToScene((Point2DType(pos, tickPosY)));
             m_ticks.at(i)->setLine(
                 tickPos.first,
                 tickPos.second,
@@ -233,14 +223,14 @@ void SAxis::updating()
     }
     else if(m_align == "left")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene((Point2DType(m_tickSize, 0)));
 
         const double tickPosX = viewport->getX();
 
         for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
-            pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
+            pos     = min + static_cast<double>(i) * m_interval;
+            tickPos = this->mapAdaptorToScene((Point2DType(tickPosX, pos)));
             m_ticks.at(i)->setLine(
                 tickPos.first,
                 tickPos.second,
@@ -253,16 +243,15 @@ void SAxis::updating()
     }
     else if(m_align == "right")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene((Point2DType(m_tickSize, 0)));
 
         const double tickPosX = viewport->getX() + viewport->getWidth();
 
         for(std::size_t i = 0 ; i < nbValues ; ++i)
         {
-            pos = min + i * m_interval;
+            pos = min + static_cast<double>(i) * m_interval;
 
-            tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
-
+            tickPos = this->mapAdaptorToScene((Point2DType(tickPosX, pos)));
             m_ticks.at(i)->setLine(
                 tickPos.first - tickSize.first * scaleX,
                 tickPos.second,

@@ -64,8 +64,7 @@ namespace adaptor
  * @subsection Input Input
  * - \b viewport [sight::viz::scene2d::data::Viewport]: object listened to update the adaptor.
  * - \b currentTF [sight::data::TransferFunction](optional): current transfer function used to change editor selection.
- * It
- *      should be the same TF as the output.
+ * It should be the same TF as the output.
  *
  * * @subsection In-Out In-Out
  * - \b tfPool [sight::data::Composite]: composite containing all transfer function.
