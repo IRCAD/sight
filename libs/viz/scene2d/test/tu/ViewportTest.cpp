@@ -75,10 +75,10 @@ void ViewportTest::testParser()
     auto viewport = sight::viz::scene2d::data::Viewport::New();
     parser->createConfig(viewport);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-700., viewport->getX(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(.1, viewport->getY(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100., viewport->getWidth(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.3, viewport->getHeight(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-700., viewport->x(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.1, viewport->y(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(100., viewport->width(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.3, viewport->height(), 0.00001);
 }
 
 //------------------------------------------------------------------------------

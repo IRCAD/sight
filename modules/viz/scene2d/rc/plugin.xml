@@ -4,6 +4,7 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SAxis</service>
+         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
          <desc>Render an axis on the scene2d.</desc>
     </extension>
 
@@ -16,6 +17,8 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SHistogram</service>
+         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
+         <object key="image">sight::data::Image</object>
          <desc>Displays the histogram of an image.</desc>
     </extension>
 
@@ -45,12 +48,6 @@
          <type>sight::viz::base::IRender</type>
          <service>sight::viz::scene2d::SRender</service>
          <desc></desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SScaleValues</service>
-         <desc>SScaleValues adaptor. Display values and units on the axis.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">

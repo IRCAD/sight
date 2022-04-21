@@ -61,12 +61,12 @@ namespace adaptor
  *    - \b xAxis (optional): x axis associated to the adaptor
  *    - \b yAxis (optional): y axis associated to the adaptor
  *    - \b zValue (optional, default=0): z value of the layer
- *    - \b cursor (optional, default false): enable the display of a cursor shown on mouse hover
- *    - \b cursorColor (optional, default black): inner color of the cursor shown on mouse hover
- *    - \b cursorBorderColor (optional, default black): border color of the cursor shown on mouse hover
- *    - \b cursorSize (optional, default 6.0): cursor size
- *    - \b cursorTextColor (optional, default="#FFFFFFFF"): color of the cursor text
- *    - \b cursorFontSize (optional, default="8"): size of the font used to display the current cursor value.
+ *    - \b cursor (optional): enable the display of a cursor shown on mouse hover
+ *      - \b color (optional, default black): inner color of the cursor shown on mouse hover
+ *      - \b borderColor (optional, default black): border color of the cursor shown on mouse hover
+ *      - \b size (optional, default 6.0): cursor size
+ *      - \b labelColor (optional, default="#FFFFFFFF"): color of the cursor label
+ *      - \b fontSize (optional, default="8"): size of the font used to display the current cursor value.
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SHistogram : public sight::viz::scene2d::IAdaptor
 {
@@ -128,19 +128,19 @@ private:
     bool m_cursorEnabled {false};
 
     /// Color used for the inner color of the cursor shown on mouse hover
-    QPen m_cursorColor {Qt::red};
+    QPen m_cursorColor;
 
     /// Color used for the border color of the cursor shown on mouse hover
-    QPen m_cursorBorderColor {Qt::gray};
+    QPen m_cursorBorderColor;
 
     /// Point size of the cursor shown on mouse hover
     double m_cursorSize {6.f};
 
     /// Defines the color used for graphic item's inner color.
-    QPen m_cursorTextColor {Qt::white};
+    QPen m_cursorLabelColor;
 
     /// Stores the item which display the current values of the associated histogram pointed by this cursor.
-    QGraphicsSimpleTextItem* m_cursorText {nullptr};
+    QGraphicsSimpleTextItem* m_cursorLabel {nullptr};
 
     /// Defines the size of the font used for rendering the current value of this tracker.
     int m_fontSize {8};

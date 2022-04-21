@@ -22,7 +22,6 @@
 
 #include "Scene2DGraphicsView.hpp"
 
-#include "viz/scene2d/data/Size.hpp"
 #include "viz/scene2d/SRender.hpp"
 
 #include <QMouseEvent>
@@ -90,8 +89,8 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
     sceneEvent.setType(scene2d::data::Event::Resize);
     sceneEvent.setButton(scene2d::data::Event::NoButton);
     sceneEvent.setModifier(scene2d::data::Event::NoModifier);
-    sceneEvent.setSize(scene2d::data::Size(_event->size().width(), _event->size().height()));
-    sceneEvent.setOldSize(scene2d::data::Size(_event->oldSize().width(), _event->oldSize().height()));
+    sceneEvent.setSize(scene2d::vec2d_t(_event->size().width(), _event->size().height()));
+    sceneEvent.setOldSize(scene2d::vec2d_t(_event->oldSize().width(), _event->oldSize().height()));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
@@ -102,7 +101,7 @@ void Scene2DGraphicsView::mousePressEvent(QMouseEvent* _event)
 {
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseButtonPress);
-    sceneEvent.setCoord(scene2d::data::Coord(_event->localPos().x(), _event->localPos().y()));
+    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
     sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
@@ -115,7 +114,7 @@ void Scene2DGraphicsView::mouseDoubleClickEvent(QMouseEvent* _event)
 {
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseButtonDoubleClick);
-    sceneEvent.setCoord(scene2d::data::Coord(_event->localPos().x(), _event->localPos().y()));
+    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
     sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
@@ -128,7 +127,7 @@ void Scene2DGraphicsView::mouseReleaseEvent(QMouseEvent* _event)
 {
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseButtonRelease);
-    sceneEvent.setCoord(scene2d::data::Coord(_event->localPos().x(), _event->localPos().y()));
+    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
     sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
@@ -141,7 +140,7 @@ void Scene2DGraphicsView::mouseMoveEvent(QMouseEvent* _event)
 {
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseMove);
-    sceneEvent.setCoord(scene2d::data::Coord(_event->localPos().x(), _event->localPos().y()));
+    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
     sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
@@ -155,7 +154,7 @@ void Scene2DGraphicsView::wheelEvent(QWheelEvent* _event)
     const bool scrollUp = _event->angleDelta().y() > 0;
     scene2d::data::Event sceneEvent;
     sceneEvent.setType((scrollUp) ? scene2d::data::Event::MouseWheelUp : scene2d::data::Event::MouseWheelDown);
-    sceneEvent.setCoord(scene2d::data::Coord(_event->position().x(), _event->position().y()));
+    sceneEvent.setCoord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
     sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
@@ -191,17 +190,17 @@ QSize Scene2DGraphicsView::sizeHint() const
 void Scene2DGraphicsView::updateFromViewport(const scene2d::data::Viewport& viewport)
 {
     this->fitInView(
-        viewport.getX(),
-        viewport.getY(),
-        viewport.getWidth(),
-        viewport.getHeight(),
+        viewport.x(),
+        viewport.y(),
+        viewport.width(),
+        viewport.height(),
         m_scene2DRender.lock()->getAspectRatioMode()
     );
 
-    m_viewport.setX(viewport.getX());
-    m_viewport.setY(viewport.getY());
-    m_viewport.setWidth(viewport.getWidth());
-    m_viewport.setHeight(viewport.getHeight());
+    m_viewport.setX(viewport.x());
+    m_viewport.setY(viewport.y());
+    m_viewport.setWidth(viewport.width());
+    m_viewport.setHeight(viewport.height());
 }
 
 //-----------------------------------------------------------------------------

@@ -137,10 +137,10 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-bool SRender::contains(const scene2d::data::Coord& coord) const
+bool SRender::contains(const scene2d::vec2d_t& coord) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    const QPoint qp(static_cast<int>(coord.getX()), static_cast<int>(coord.getY()));
+    const QPoint qp(static_cast<int>(coord.x), static_cast<int>(coord.y));
     QPointF qps = m_view->mapToScene(qp);
 
     QRectF rect = m_view->sceneRect();
@@ -150,10 +150,10 @@ bool SRender::contains(const scene2d::data::Coord& coord) const
 
 //-----------------------------------------------------------------------------
 
-scene2d::data::Coord SRender::mapToScene(const scene2d::data::Coord& coord, bool clip) const
+scene2d::vec2d_t SRender::mapToScene(const scene2d::vec2d_t& coord, bool clip) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    const QPoint qp(static_cast<int>(coord.getX()), static_cast<int>(coord.getY()));
+    const QPoint qp(static_cast<int>(coord.x), static_cast<int>(coord.y));
     QPointF qps = m_view->mapToScene(qp);
     if(clip)
     {
@@ -166,7 +166,7 @@ scene2d::data::Coord SRender::mapToScene(const scene2d::data::Coord& coord, bool
         }
     }
 
-    return scene2d::data::Coord(qps.x(), qps.y());
+    return scene2d::vec2d_t(qps.x(), qps.y());
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void SRender::startContext()
     std::uint8_t color[4];
     sight::data::tools::Color::hexaStringToRGBA(m_background, color);
 
-    m_scene = new QGraphicsScene(m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
+    m_scene = new QGraphicsScene(m_sceneStart.x, m_sceneStart.y, m_sceneWidth.x, m_sceneWidth.y);
     m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
     m_scene->setFocus(Qt::MouseFocusReason);
 
@@ -249,10 +249,10 @@ void SRender::startContext()
     qtContainer->setLayout(layout);
 
     viz::scene2d::data::Viewport initViewport;
-    initViewport.setX(m_sceneStart.getX());
-    initViewport.setY(m_sceneStart.getY());
-    initViewport.setWidth(m_sceneWidth.getX());
-    initViewport.setHeight(m_sceneWidth.getY());
+    initViewport.setX(m_sceneStart.x);
+    initViewport.setY(m_sceneStart.y);
+    initViewport.setWidth(m_sceneWidth.x);
+    initViewport.setHeight(m_sceneWidth.y);
     m_view->updateFromViewport(initViewport);
 }
 
@@ -300,10 +300,10 @@ void SRender::configureScene(ConfigurationType _conf)
     const std::string width  = _conf->getAttributeValue("width");
     const std::string height = _conf->getAttributeValue("height");
 
-    m_sceneStart.setX(std::stof(x));
-    m_sceneStart.setY(std::stof(y));
-    m_sceneWidth.setX(std::stof(width));
-    m_sceneWidth.setY(std::stof(height));
+    m_sceneStart.x = std::stof(x);
+    m_sceneStart.y = std::stof(y);
+    m_sceneWidth.x = std::stof(width);
+    m_sceneWidth.y = std::stof(height);
 
     if(_conf->hasAttribute("antialiasing"))
     {
@@ -374,10 +374,10 @@ void SRender::updateSceneSize(float ratioPercent)
         rec.setRect(x, y, w, h);
     }
 
-    m_sceneStart.setX(x);
-    m_sceneStart.setY(y);
-    m_sceneWidth.setX(w);
-    m_sceneWidth.setY(h);
+    m_sceneStart.x = x;
+    m_sceneStart.y = y;
+    m_sceneWidth.x = w;
+    m_sceneWidth.y = h;
 
     m_scene->setSceneRect(rec);
 }

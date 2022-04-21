@@ -70,7 +70,7 @@ protected:
 private:
 
     bool m_viewportIsTranslated;
-    sight::viz::scene2d::data::Coord m_lastCoordEvent;
+    sight::viz::scene2d::vec2d_t m_lastCoordEvent;
 
     sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, "viewport"};
 };

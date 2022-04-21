@@ -6,6 +6,9 @@ set_target_properties(viz_scene2d PROPERTIES AUTOMOC TRUE)
 
 target_link_libraries(viz_scene2d PUBLIC core data ui_base ui_qt viz_base service)
 
+find_package(glm QUIET REQUIRED)
+target_include_directories(viz_scene2d SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
+
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
 endif()

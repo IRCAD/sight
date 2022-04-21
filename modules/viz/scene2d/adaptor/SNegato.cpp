@@ -520,9 +520,9 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
         }
     }
 
-    sight::viz::scene2d::data::Coord coord = this->getScene2DRender()->mapToScene(_event.getCoord());
-    coord.setX(coord.getX() / m_layer->scale());
-    coord.setY(coord.getY() / m_layer->scale());
+    sight::viz::scene2d::vec2d_t coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    coord.x = coord.x / m_layer->scale();
+    coord.y = coord.y / m_layer->scale();
 
     if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
        && _event.getButton() == sight::viz::scene2d::data::Event::RightButton
@@ -536,7 +536,7 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
     {
         if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
-            sight::viz::scene2d::data::Coord newCoord = _event.getCoord();
+            sight::viz::scene2d::vec2d_t newCoord = _event.getCoord();
             this->changeImageMinMaxFromCoord(m_oldCoord, newCoord);
             m_oldCoord = newCoord;
             _event.setAccepted(true);
@@ -553,8 +553,8 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
 //-----------------------------------------------------------------------------
 
 void SNegato::changeImageMinMaxFromCoord(
-    sight::viz::scene2d::data::Coord&,
-    sight::viz::scene2d::data::Coord& newCoord
+    sight::viz::scene2d::vec2d_t&,
+    sight::viz::scene2d::vec2d_t& newCoord
 )
 {
     data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
@@ -563,8 +563,8 @@ void SNegato::changeImageMinMaxFromCoord(
     const double min = tf->getWLMinMax().first;
     const double max = tf->getWLMinMax().second;
 
-    const double window = newCoord.getX() - m_oldCoord.getX();
-    const double level  = newCoord.getY() - m_oldCoord.getY();
+    const double window = newCoord.x - m_oldCoord.x;
+    const double level  = newCoord.y - m_oldCoord.y;
 
     const double imgWindow = max - min;
     const double imgLevel  = min + imgWindow / 2.0;

@@ -77,46 +77,33 @@ viz::scene2d::SRender::sptr IAdaptor::getScene2DRender() const
 
 double IAdaptor::getViewSizeRatio() const
 {
+    SIGHT_ASSERT("Height should be greater than 0.", this->getScene2DRender()->getView()->height() > 0);
+
     return static_cast<double>(this->getScene2DRender()->getView()->width())
            / static_cast<double>(this->getScene2DRender()->getView()->height());
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio(const scene2d::data::Viewport& viewport) const
-{
-    return ViewportSizeRatio(
-        static_cast<double>(viewport.getWidth()),
-        static_cast<double>(viewport.getHeight())
-    );
-}
-
-//-----------------------------------------------------------------------------
-
-IAdaptor::Point2DType IAdaptor::pixelsToViewport(
-    const IAdaptor::Point2DType& _xy,
-    const scene2d::data::Viewport& viewport
-) const
+vec2d_t IAdaptor::viewToViewport(const scene2d::data::Viewport& viewport) const
 {
     auto view = this->getScene2DRender()->getView();
 
-    const double viewportHeight = viewport.getHeight();
-    const double viewportWidth  = viewport.getWidth();
+    const double viewportHeight = viewport.height();
+    const double viewportWidth  = viewport.width();
 
-    const double viewportViewRatio = viewport.getWidth() / view->width();
+    const double viewportViewRatio = viewportWidth / view->width();
     const double viewportSizeRatio = viewportHeight / viewportWidth;
-    const double viewSizeRatio     = static_cast<double>(view->width()) / static_cast<double>(view->height());
+    const double viewSizeRatio     = static_cast<double>(view->width())
+                                     / static_cast<double>(view->height());
 
-    const double x = _xy.first * viewportViewRatio;
-    const double y = _xy.second * viewportSizeRatio * viewSizeRatio * viewportViewRatio;
-
-    return {x, y};
+    return {viewportViewRatio, viewportSizeRatio* viewSizeRatio* viewportViewRatio};
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
-    const Point2DType& _xy
+vec2d_t IAdaptor::mapAdaptorToScene(
+    const vec2d_t& _xy
 ) const
 {
     double x, y;
@@ -124,69 +111,69 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(
     if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
-        if(_xy.first <= 0.)
+        if(_xy.x <= 0.)
         {
             x = 0.;
         }
         else
         {
             // Apply the x scale and the log to the x value
-            x = m_xAxis->getScale() * log10(_xy.first);
+            x = m_xAxis->getScale() * log10(_xy.x);
         }
     }
     else
     {
         // Apply just the x scale to the x value
-        x = m_xAxis->getScale() * _xy.first;
+        x = m_xAxis->getScale() * _xy.x;
     }
 
     if(m_yAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
-        if(_xy.second <= 0.)
+        if(_xy.y <= 0.)
         {
             y = 0.;
         }
         else
         {
             // Apply the y scale and the log to the y value
-            y = m_yAxis->getScale() * log10(_xy.second);
+            y = m_yAxis->getScale() * log10(_xy.y);
         }
     }
     else
     {
         // Apply just the y scale to the y value
-        y = m_yAxis->getScale() * _xy.second;
+        y = m_yAxis->getScale() * _xy.y;
     }
 
-    return Point2DType(x, y);
+    return vec2d_t(x, y);
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy) const
+vec2d_t IAdaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
     if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
-        x = 10. * std::exp(_xy.first) / m_xAxis->getScale();
+        x = 10. * std::exp(_xy.x) / m_xAxis->getScale();
     }
     else
     {
-        x = (_xy.first) / m_xAxis->getScale();
+        x = (_xy.x) / m_xAxis->getScale();
     }
 
     if(m_yAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
-        y = 10. * std::exp(_xy.second) / m_yAxis->getScale();
+        y = 10. * std::exp(_xy.y) / m_yAxis->getScale();
     }
     else
     {
-        y = _xy.second / m_yAxis->getScale();
+        y = _xy.y / m_yAxis->getScale();
     }
 
-    return Point2DType(x, y);
+    return vec2d_t(x, y);
 }
 
 //-----------------------------------------------------------------------------

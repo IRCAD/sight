@@ -24,9 +24,9 @@
 
 #include "viz/scene2d/config.hpp"
 #include "viz/scene2d/data/Axis.hpp"
-#include "viz/scene2d/data/Coord.hpp"
 #include "viz/scene2d/data/Event.hpp"
 #include "viz/scene2d/data/Viewport.hpp"
+#include "viz/scene2d/vec2d.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
@@ -124,14 +124,14 @@ public:
     VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event);
 
     /// Returns true if given coordinates are contained in the view of the scene
-    VIZ_SCENE2D_API bool contains(const scene2d::data::Coord& coord) const;
+    VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& coord) const;
 
     /** @brief Compute the viewport coordinates mapped to scene coordinates.
      * @param coord input viewport coordinates
      * @param clip clip the returned coordinates to the size of the scene
      * @return scene coordinates
      */
-    VIZ_SCENE2D_API scene2d::data::Coord mapToScene(const scene2d::data::Coord& coord, bool clip = false) const;
+    VIZ_SCENE2D_API scene2d::vec2d_t mapToScene(const scene2d::vec2d_t& coord, bool clip = false) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     VIZ_SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
@@ -185,10 +185,10 @@ private:
     ConfigurationType m_sceneConfiguration;
 
     /// Coordinates of the scene top left corner.
-    scene2d::data::Coord m_sceneStart;
+    scene2d::vec2d_t m_sceneStart;
 
     /// Width and height of the scene.
-    scene2d::data::Coord m_sceneWidth;
+    scene2d::vec2d_t m_sceneWidth;
 
     /// The scene.
     QGraphicsScene* m_scene;

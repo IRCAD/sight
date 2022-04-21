@@ -59,7 +59,8 @@ void SHistogram::configuring()
 {
     this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
 
     m_scale = m_yAxis->getScale();
 
@@ -68,30 +69,25 @@ void SHistogram::configuring()
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
-    m_cursorEnabled = config.get<bool>("cursor", m_cursorEnabled);
-
-    if(config.count("cursorColor"))
+    const auto cursorConfig = srvConfig.get_child_optional("config.cursor");
+    if(cursorConfig.has_value())
     {
-        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorColor, config.get<std::string>("cursorColor"));
+        std::string color;
+        m_cursorEnabled = true;
+
+        color = cursorConfig->get<std::string>("<xmlattr>.color", "");
+        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorColor, color);
+
+        color = cursorConfig->get<std::string>("<xmlattr>.borderColor", "");
+        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorBorderColor, color);
+
+        m_cursorSize = cursorConfig->get<double>("<xmlattr>.size", m_cursorSize);
+
+        color = cursorConfig->get<std::string>("<xmlattr>.textColor", "#FFFFFF");
+        sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorLabelColor, color);
+
+        m_fontSize = cursorConfig->get<int>("<xmlattr>.fontSize", m_fontSize);
     }
-
-    if(config.count("cursorBorderColor"))
-    {
-        sight::viz::scene2d::data::InitQtPen::setPenColor(
-            m_cursorBorderColor,
-            config.get<std::string>("cursorBorderColor")
-        );
-    }
-
-    if(config.count("cursorSize"))
-    {
-        m_cursorSize = config.get<double>("cursorSize");
-    }
-
-    const std::string color = config.get<std::string>("cursorTextColor", "#FFFFFF");
-    sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorTextColor, color);
-
-    m_fontSize = config.get<int>("cursorFontSize", m_fontSize);
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -119,11 +115,11 @@ void SHistogram::starting()
         font.setKerning(true);
         font.setFixedPitch(true);
 
-        m_cursorText = new QGraphicsSimpleTextItem();
-        m_cursorText->setBrush(QBrush(m_cursorTextColor.color()));
-        m_cursorText->setFont(font);
-        m_cursorText->setVisible(false);
-        m_cursorLayer->addToGroup(m_cursorText);
+        m_cursorLabel = new QGraphicsSimpleTextItem();
+        m_cursorLabel->setBrush(QBrush(m_cursorLabelColor.color()));
+        m_cursorLabel->setFont(font);
+        m_cursorLabel->setVisible(false);
+        m_cursorLayer->addToGroup(m_cursorLabel);
     }
 
     const auto image = m_image.lock();
@@ -163,15 +159,15 @@ void SHistogram::updating()
             QBrush brush = QBrush(m_color.color());
 
             // Build the graphic items:
-            for(size_t i = 0 ; i < values.size() ; ++i)
+            for(std::size_t i = 0 ; i < values.size() ; ++i)
             {
-                Point2DType pt1 = this->mapAdaptorToScene({min + static_cast<double>(i) * binsWidth, values[i]});
-                Point2DType pt2 = this->mapAdaptorToScene({min + static_cast<double>(i + 1) * binsWidth, values[i]});
+                vec2d_t pt1 = this->mapAdaptorToScene({min + static_cast<double>(i) * binsWidth, values[i]});
+                vec2d_t pt2 = this->mapAdaptorToScene({min + static_cast<double>(i + 1) * binsWidth, values[i]});
 
-                QPainterPath painter(QPointF(pt1.first, 0));
-                painter.lineTo(pt1.first, pt1.second);
-                painter.lineTo(pt2.first, pt1.second);
-                painter.lineTo(pt2.first, 0);
+                QPainterPath painter(QPointF(pt1.x, 0));
+                painter.lineTo(pt1.x, pt1.y);
+                painter.lineTo(pt2.x, pt1.y);
+                painter.lineTo(pt2.x, 0);
 
                 QGraphicsPathItem* item = new QGraphicsPathItem(painter);
                 item->setPath(painter);
@@ -337,56 +333,56 @@ void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
         const double histogramBinsWidth = static_cast<double>(m_histogramBinsWidth);
 
         // Event coordinates in scene
-        sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
-        const double histIndex                      = sceneCoord.getX();
-        const double index                          = histIndex - histogramMinValue;
-        const size_t nbValues                       = values.size() * m_histogramBinsWidth;
+        sight::viz::scene2d::vec2d_t sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        const double histIndex                  = sceneCoord.x;
+        const double index                      = histIndex - histogramMinValue;
+        const std::size_t nbValues              = values.size() * m_histogramBinsWidth;
+
+        const auto viewport       = m_viewport.lock();
+        const auto viewToViewport = this->viewToViewport(*viewport);
 
         if(index >= 0.f && index < static_cast<double>(nbValues) && m_entered)
         {
-            sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
-            const double histIndex                      = sceneCoord.getX();
-            const double index                          = histIndex - histogramMinValue;
+            const double histIndex = sceneCoord.x;
+            const double index     = histIndex - histogramMinValue;
 
-            sight::viz::scene2d::data::Coord coord;
-            coord.setX(sceneCoord.getX());
-            coord.setY(static_cast<double>(values.at(static_cast<size_t>(index / histogramBinsWidth))) * m_scale);
-
-            const auto viewport = m_viewport.lock();
+            sight::viz::scene2d::vec2d_t coord;
+            coord.x = sceneCoord.x;
+            coord.y = static_cast<double>(values.at(static_cast<std::size_t>(index / histogramBinsWidth))) * m_scale;
 
             // Draw the cursor
-            const auto& [diameterH, diameterV] = this->pixelsToViewport({m_cursorSize, m_cursorSize}, *viewport);
+            const vec2d_t diameter = vec2d_t(m_cursorSize, m_cursorSize) * viewToViewport;
 
-            const double x = coord.getX() - diameterH / 2;
-            const double y = coord.getY() - diameterV / 2;
+            const double x = coord.x - diameter.x / 2;
+            const double y = coord.y - diameter.y / 2;
 
-            m_cursorItem->setRect(x, y, diameterH, diameterV);
+            m_cursorItem->setRect(x, y, diameter.x, diameter.y);
             m_cursorItem->setVisible(true);
 
             if(m_isInteracting)
             {
                 // Draw the cursor text
-                const auto& [scaleX, scaleY] = this->pixelsToViewport({m_fontSize, m_fontSize}, *viewport);
+                const vec2d_t scale = vec2d_t(m_fontSize, m_fontSize) * viewToViewport;
 
                 // Event coordinates in scene
-                m_cursorText->setText(QString::number(static_cast<int>((coord.getX()))));
+                m_cursorLabel->setText(QString::number(static_cast<int>((coord.x))));
 
                 QTransform transform;
-                transform.scale(scaleX, scaleY);
+                transform.scale(scale.x, scale.y);
 
-                m_cursorText->setTransform(transform);
-                m_cursorText->setPos(coord.getX() + scaleX * 0.5, coord.getY() - scaleY * 0.5);
-                m_cursorText->setVisible(true);
+                m_cursorLabel->setTransform(transform);
+                m_cursorLabel->setPos(coord.x + scale.x * 0.5, coord.y - scale.y * 0.5);
+                m_cursorLabel->setVisible(true);
             }
             else
             {
-                m_cursorText->setVisible(false);
+                m_cursorLabel->setVisible(false);
             }
         }
         else
         {
             m_cursorItem->setVisible(false);
-            m_cursorText->setVisible(false);
+            m_cursorLabel->setVisible(false);
         }
     }
 }
@@ -396,7 +392,7 @@ void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
 void SHistogram::onImageChange()
 {
     m_histogram->compute();
-    m_histogramBinsWidth = static_cast<size_t>(m_histogram->max() - m_histogram->min()) / 50;
+    m_histogramBinsWidth = static_cast<std::size_t>(m_histogram->max() - m_histogram->min()) / 50;
     this->updating();
 }
 

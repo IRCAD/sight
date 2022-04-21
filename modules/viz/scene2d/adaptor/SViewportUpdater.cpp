@@ -41,7 +41,16 @@ void SViewportUpdater::configuring()
 
 void SViewportUpdater::starting()
 {
-    updating();
+    {
+        // If the viewport Y and height are not set, scale the viewport to the height of the scene
+        auto viewport = m_viewport.lock();
+        auto scene    = this->getScene2DRender()->getScene();
+
+        viewport->setY(viewport->y_or(scene->sceneRect().y()));
+        viewport->setHeight(viewport->height_or(scene->sceneRect().height()));
+    }
+
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -55,29 +64,7 @@ void SViewportUpdater::stopping()
 void SViewportUpdater::updating()
 {
     auto viewport = m_viewport.lock();
-
-    double ySc = viewport->getY();
-    double hSc = viewport->getHeight();
-
-    // If the viewport Y and height are not set, scale the viewport to the height of the scene
-    if(ySc == 0 && hSc == 0)
-    {
-        auto scene = this->getScene2DRender()->getScene();
-
-        ySc = scene->sceneRect().y();
-        hSc = scene->sceneRect().height();
-
-        viewport->setY(ySc);
-        viewport->setHeight(hSc);
-    }
-
-    sight::viz::scene2d::data::Viewport sceneViewport;
-    sceneViewport.setX(viewport->getX());
-    sceneViewport.setY(viewport->getY());
-    sceneViewport.setWidth(viewport->getWidth());
-    sceneViewport.setHeight(viewport->getHeight());
-
-    this->getScene2DRender()->getView()->updateFromViewport(sceneViewport);
+    this->getScene2DRender()->getView()->updateFromViewport(*viewport);
 }
 
 //----------------------------------------------------------------------------------------------------------

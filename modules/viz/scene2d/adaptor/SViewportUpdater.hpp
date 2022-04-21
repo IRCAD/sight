@@ -60,7 +60,7 @@ namespace adaptor
  * If the viewport is not initialized, it will be updated to fit the scene size.
  *
  * @subsection Configuration Configuration:
- * - \b config (mandatory): contains the adaptor configuration
+ * - \b config: contains the adaptor configuration
  *    - \b xAxis (optional): x axis associated to the adaptor
  *    - \b yAxis (optional): y axis associated to the adaptor
  *    - \b zValue (optional, default=0): z value of the layer

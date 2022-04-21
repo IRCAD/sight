@@ -75,9 +75,10 @@ service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections(
 void SViewportRangeSelector::starting()
 {
     {
+        const auto scene         = this->getScene2DRender()->getScene();
         const auto sceneViewport = m_viewport.lock();
 
-        const double viewportWidth = sceneViewport->getWidth();
+        const double viewportWidth = sceneViewport->width_or(scene->sceneRect().width());
         const double defaultWidth  = 2. * viewportWidth / 4.;
 
         if(m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange)
@@ -87,40 +88,33 @@ void SViewportRangeSelector::starting()
         }
 
         const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
-        if(m_initialX < sceneViewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
+        if(m_initialX < sceneViewport->x_or(scene->sceneRect().x()) || (m_initialX + m_initialWidth) > viewportWidth)
         {
             SIGHT_WARN("Set viewport position to a default value since the given one is not correct.");
             m_initialX = defaultPos;
         }
     }
 
-    double height = 0.;
     {
-        auto viewport = m_viewport.lock();
-        height = static_cast<int>(viewport->getHeight());
+        const auto scene = this->getScene2DRender()->getScene();
+        auto viewport    = m_viewport.lock();
 
         // If the viewport Y and height are not set, scale the viewport to the height of the scene
-        if(viewport->getY() == 0 && viewport->getHeight() == 0)
         {
-            auto scene       = this->getScene2DRender()->getScene();
-            const double ySc = scene->sceneRect().y();
-            height = scene->sceneRect().height();
-
-            viewport->setY(ySc);
-            viewport->setHeight(height);
+            viewport->setY(viewport->y_or(scene->sceneRect().y()));
+            viewport->setHeight(viewport->height_or(scene->sceneRect().height()));
         }
     }
 
-    const Point2DType pair = this->mapSceneToAdaptor(Point2DType(m_initialX, 1.0));
+    const vec2d_t pair = this->mapSceneToAdaptor(vec2d_t(m_initialX, 1.0));
 
-    QRectF rect(pair.first, 0, m_initialWidth * m_xAxis->getScale(), pair.second);
+    QRectF rect(pair.x, 0, m_initialWidth * m_xAxis->getScale(), pair.y);
     {
         auto image = m_image.lock();
         if(image)
         {
             sight::data::helper::MedicalImage::getMinMax(image.get_shared(), m_imageMin, m_imageMax);
-            rect.setX(m_imageMin);
-            rect.setWidth(m_imageMax - m_imageMin);
+            rect.setRect(m_imageMin, rect.y(), m_imageMax - m_imageMin, rect.height());
         }
     }
 
@@ -200,12 +194,12 @@ void SViewportRangeSelector::updating()
 void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
     // Event coordinates in scene
-    sight::viz::scene2d::data::Coord coord;
+    sight::viz::scene2d::vec2d_t coord;
     coord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
     // Shutter coordinates in scene
-    const Point2DType shutterCoordPair =
-        this->mapAdaptorToScene(Point2DType(m_shutter->rect().x(), m_shutter->rect().y()));
+    const vec2d_t shutterCoordPair =
+        this->mapAdaptorToScene(vec2d_t(m_shutter->rect().x(), m_shutter->rect().y()));
     const double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
 
     const QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
@@ -231,10 +225,10 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
             this->getScene2DRender()->getView()->setCursor(Qt::ClosedHandCursor);
 
             // Interaction when clicking on the center of the shutter
-            m_isInteracting  = true;
-            m_dragStartPoint = coord;
-            m_dragStartShutterPos.setX(shutterCoordPair.first);
-            m_dragStartShutterPos.setY(shutterCoordPair.second);
+            m_isInteracting         = true;
+            m_dragStartPoint        = coord;
+            m_dragStartShutterPos.x = shutterCoordPair.x;
+            m_dragStartShutterPos.y = shutterCoordPair.y;
         }
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
@@ -285,9 +279,9 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
             // Shutter right side position
             const double rightSide = rect.x() + rect.width();
 
-            if(coord.getX() < rightSide - m_clickCatchRange)
+            if(coord.x < rightSide - m_clickCatchRange)
             {
-                rect.setX(std::max(leftSideBoundary, coord.getX()));
+                rect.setX(std::max(leftSideBoundary, coord.x));
             }
             else
             {
@@ -298,8 +292,8 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
         }
         else if(m_isRightInteracting)
         {
-            const double newWidth        = coord.getX() - shutterCoordPair.first;
-            const double shutterRightPos = shutterCoordPair.first + newWidth;
+            const double newWidth        = coord.x - shutterCoordPair.x;
+            const double shutterRightPos = shutterCoordPair.x + newWidth;
 
             if(newWidth > m_clickCatchRange) // Shutter's width must be greater than the allowed picking range
             {
@@ -309,7 +303,7 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
                 }
                 else
                 {
-                    rect.setWidth(rightSideBoundary - shutterCoordPair.first);
+                    rect.setWidth(rightSideBoundary - shutterCoordPair.x);
                 }
             }
             else
@@ -321,8 +315,8 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
         }
         else if(m_isInteracting)
         {
-            const double offset          = coord.getX() - m_dragStartPoint.getX();
-            const double newX            = m_dragStartShutterPos.getX() + offset;
+            const double offset          = coord.x - m_dragStartPoint.x;
+            const double newX            = m_dragStartShutterPos.x + offset;
             const double shutterRightPos = newX + shutterWidth;
 
             if(newX >= leftSideBoundary && shutterRightPos < rightSideBoundary)
@@ -371,46 +365,44 @@ void SViewportRangeSelector::updateViewportFromShutter(double _x, double _y, dou
 {
     auto selectedViewport = m_selectedViewport.lock();
 
-    const Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType(_x, _y));
-    const Point2DType pair           = this->mapSceneToAdaptor(Point2DType(_width, _height));
+    const vec2d_t fromSceneCoord = this->mapSceneToAdaptor(vec2d_t(_x, _y));
+    const vec2d_t pair           = this->mapSceneToAdaptor(vec2d_t(_width, _height));
 
-    selectedViewport->setX(fromSceneCoord.first);
-    selectedViewport->setY(fromSceneCoord.second);
-    selectedViewport->setWidth(pair.first);
-    selectedViewport->setHeight(selectedViewport->getHeight());
+    selectedViewport->setX(fromSceneCoord.x);
+    selectedViewport->setWidth(pair.x);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool SViewportRangeSelector::mouseOnShutterMiddle(sight::viz::scene2d::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterMiddle(sight::viz::scene2d::vec2d_t _coord)
 {
-    Point2DType shutterCoordPair;
+    vec2d_t shutterCoordPair;
     shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
 
-    return (_coord.getX() > m_shutter->rect().x() + m_clickCatchRange)
-           && (_coord.getX() < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange);
+    return (_coord.x > m_shutter->rect().x() + m_clickCatchRange)
+           && (_coord.x < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool SViewportRangeSelector::mouseOnShutterLeft(sight::viz::scene2d::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterLeft(sight::viz::scene2d::vec2d_t _coord)
 {
-    Point2DType shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
+    vec2d_t shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
 
-    return (_coord.getX() >= shutterCoordPair.first - m_clickCatchRange)
-           && (_coord.getX() <= shutterCoordPair.first + m_clickCatchRange);
+    return (_coord.x >= shutterCoordPair.x - m_clickCatchRange)
+           && (_coord.x <= shutterCoordPair.x + m_clickCatchRange);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool SViewportRangeSelector::mouseOnShutterRight(sight::viz::scene2d::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterRight(sight::viz::scene2d::vec2d_t _coord)
 {
-    const Point2DType shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
+    const vec2d_t shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
 
-    const double shutterRightPos = shutterCoordPair.first + m_shutter->rect().width() * m_xAxis->getScale();
+    const double shutterRightPos = shutterCoordPair.x + m_shutter->rect().width() * m_xAxis->getScale();
 
-    return (_coord.getX() >= shutterRightPos - m_clickCatchRange)
-           && (_coord.getX() <= shutterRightPos + m_clickCatchRange);
+    return (_coord.x >= shutterRightPos - m_clickCatchRange)
+           && (_coord.x <= shutterRightPos + m_clickCatchRange);
 }
 
 //---------------------------------------------------------------------------------------------------------------

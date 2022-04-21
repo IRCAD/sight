@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,8 +60,8 @@ void SSquare::configuring()
     SIGHT_ASSERT("Attribute 'y' is missing", config.count("y"));
     SIGHT_ASSERT("Attribute 'size' is missing", config.count("size"));
 
-    m_coord.setX(config.get<double>("x"));
-    m_coord.setY(config.get<double>("y"));
+    m_coord.x     = config.get<double>("x");
+    m_coord.y     = config.get<double>("y");
     m_size        = config.get<std::uint32_t>("size");
     m_autoRefresh = config.get<bool>("autoRefresh", m_autoRefresh);
     m_interaction = config.get<bool>("interaction", m_interaction);
@@ -78,7 +78,7 @@ void SSquare::starting()
 {
     m_layer = new QGraphicsItemGroup();
 
-    m_rec = new QGraphicsRectItem(m_coord.getX(), m_coord.getY(), m_size, m_size);
+    m_rec = new QGraphicsRectItem(m_coord.x, m_coord.y, m_size, m_size);
     QPen pen;
     pen.setColor(Qt::GlobalColor(Qt::black));
     m_rec->setPen(pen);
@@ -95,7 +95,7 @@ void SSquare::starting()
 
 void SSquare::updating()
 {
-    m_rec->setPos(m_coord.getX(), m_coord.getY());
+    m_rec->setPos(m_coord.x, m_coord.y);
 }
 
 //-----------------------------------------------------------------------------
@@ -137,8 +137,8 @@ void SSquare::processInteraction(sight::viz::scene2d::data::Event& _event)
         }
         else if(m_pointIsCaptured && _event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
-            sight::viz::scene2d::data::Coord newCoord = this->coordViewToCoordItem(_event.getCoord(), m_rec);
-            m_rec->moveBy(newCoord.getX() - m_oldCoord.getX(), newCoord.getY() - m_oldCoord.getY());
+            sight::viz::scene2d::vec2d_t newCoord = this->coordViewToCoordItem(_event.getCoord(), m_rec);
+            m_rec->moveBy(newCoord.x - m_oldCoord.x, newCoord.y - m_oldCoord.y);
             m_oldCoord = newCoord;
             _event.setAccepted(true);
         }
@@ -153,25 +153,25 @@ void SSquare::processInteraction(sight::viz::scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-bool SSquare::coordViewIsInItem(const sight::viz::scene2d::data::Coord& coord, QGraphicsItem* item)
+bool SSquare::coordViewIsInItem(const sight::viz::scene2d::vec2d_t& coord, QGraphicsItem* item)
 {
-    sight::viz::scene2d::data::Coord scenePoint = this->getScene2DRender()->mapToScene(coord);
-    QPointF sp(scenePoint.getX(), scenePoint.getY());
+    sight::viz::scene2d::vec2d_t scenePoint = this->getScene2DRender()->mapToScene(coord);
+    QPointF sp(scenePoint.x, scenePoint.y);
     QPointF ip = item->mapFromScene(sp);
     return item->contains(ip);
 }
 
 //-----------------------------------------------------------------------------
 
-sight::viz::scene2d::data::Coord SSquare::coordViewToCoordItem(
-    const sight::viz::scene2d::data::Coord& coord,
+sight::viz::scene2d::vec2d_t SSquare::coordViewToCoordItem(
+    const sight::viz::scene2d::vec2d_t& coord,
     QGraphicsItem*
 )
 {
-    sight::viz::scene2d::data::Coord scenePoint = this->getScene2DRender()->mapToScene(coord);
-    //QPointF sp ( scenePoint.getX(), scenePoint.getY() );
+    sight::viz::scene2d::vec2d_t scenePoint = this->getScene2DRender()->mapToScene(coord);
+    //QPointF sp ( scenePoint.x, scenePoint.getY() );
     //QPointF ip = item->mapFromScene( sp );
-    //return sight::viz::scene2d::data::Coord( ip.x(), ip.y() );
+    //return sight::viz::scene2d::vec2d_t( ip.x(), ip.y() );
     return scenePoint;
 }
 
@@ -182,11 +182,11 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     this->configureParams();
     if(_key == "X")
     {
-        m_coord.setX(_val);
+        m_coord.x = _val;
     }
     else if(_key == "Y")
     {
-        m_coord.setY(_val);
+        m_coord.y = _val;
     }
     else
     {

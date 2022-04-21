@@ -27,6 +27,8 @@
 #include <data/Exception.hpp>
 #include <data/Object.hpp>
 
+#include <optional>
+
 namespace sight::viz::scene2d
 {
 
@@ -50,14 +52,26 @@ public:
     /// Defines shallow copy
     VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& _source) override;
 
-    double getX() const;
-    void setX(double _x);
-    double getY() const;
-    void setY(double _y);
+    double x() const;
+    double y() const;
 
-    double getWidth() const;
+    double x_or(double) const;
+    double y_or(double) const;
+
+    double width() const;
+    double height() const;
+
+    double width_or(double) const;
+    double height_or(double) const;
+
+    double left() const;
+    double top() const;
+    double right() const;
+    double bottom() const;
+
+    void setX(double _x);
+    void setY(double _y);
     void setWidth(double _width);
-    double getHeight() const;
     void setHeight(double _height);
 
     /// Equality comparison operators
@@ -73,17 +87,93 @@ protected:
 
 private:
 
-    double m_x {0};
-    double m_y {0};
-    double m_width {0};
-    double m_height {0};
+    std::optional<double> m_x;
+    std::optional<double> m_y;
+    std::optional<double> m_width;
+    std::optional<double> m_height;
 };
 
 //------------------------------------------------------------------------------
 
-inline double Viewport::getX() const
+inline double Viewport::x() const
 {
-    return m_x;
+    return *m_x;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::y() const
+{
+    return *m_y;
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::x_or(double x) const
+{
+    return m_x.value_or(x);
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::y_or(double y) const
+{
+    return m_y.value_or(y);
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::width() const
+{
+    return *m_width;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::height() const
+{
+    return *m_height;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::width_or(double width) const
+{
+    return m_width.value_or(width);
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::height_or(double height) const
+{
+    return m_height.value_or(height);
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::left() const
+{
+    return *m_x;
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::top() const
+{
+    return *m_y;
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::right() const
+{
+    return *m_x + *m_width;
+}
+
+//-----------------------------------------------------------------------------
+inline double Viewport::bottom() const
+{
+    return *m_y + *m_height;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,13 +185,6 @@ inline void Viewport::setX(double _x)
 
 //-----------------------------------------------------------------------------
 
-inline double Viewport::getY() const
-{
-    return m_y;
-}
-
-//-----------------------------------------------------------------------------
-
 inline void Viewport::setY(double _y)
 {
     m_y = _y;
@@ -109,23 +192,9 @@ inline void Viewport::setY(double _y)
 
 //-----------------------------------------------------------------------------
 
-inline double Viewport::getWidth() const
-{
-    return m_width;
-}
-
-//-----------------------------------------------------------------------------
-
 inline void Viewport::setWidth(double _width)
 {
     m_width = _width;
-}
-
-//-----------------------------------------------------------------------------
-
-inline double Viewport::getHeight() const
-{
-    return m_height;
 }
 
 //-----------------------------------------------------------------------------

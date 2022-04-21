@@ -79,16 +79,11 @@ void SLine::configuring()
 
 void SLine::draw()
 {
-    const Point2DType pt1 = this->mapAdaptorToScene((Point2DType(m_x1, m_y1)));
-    const Point2DType pt2 = this->mapAdaptorToScene((Point2DType(m_x2, m_y2)));
+    const vec2d_t pt1 = this->mapAdaptorToScene((vec2d_t(m_x1, m_y1)));
+    const vec2d_t pt2 = this->mapAdaptorToScene((vec2d_t(m_x2, m_y2)));
 
     // Draw the line
-    QGraphicsLineItem* line = new QGraphicsLineItem(
-        pt1.first,
-        pt1.second,
-        pt2.first,
-        pt2.second
-    );
+    QGraphicsLineItem* line = new QGraphicsLineItem(pt1.x, pt1.y, pt2.x, pt2.y);
     // Set the line the pen
     line->setPen(m_pen);
 

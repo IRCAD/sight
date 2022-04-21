@@ -92,18 +92,19 @@ void SViewportInteractor::processInteraction(sight::viz::scene2d::data::Event& _
     {
         if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
-            sight::viz::scene2d::data::Coord coord = _event.getCoord();
-            const auto viewport                    = m_viewport.lock();
+            sight::viz::scene2d::vec2d_t coord = _event.getCoord();
+            const auto viewport                = m_viewport.lock();
 
-            const double dx     = coord.getX() - m_lastCoordEvent.getX();
-            const double xTrans = dx * viewport->getWidth() / (double) this->getScene2DRender()->getView()->width();
+            const double dx     = coord.x - m_lastCoordEvent.x;
+            const double xTrans = dx * viewport->width()
+                                  / static_cast<double>(this->getScene2DRender()->getView()->width());
 
-            const double dy     = coord.getY() - m_lastCoordEvent.getY();
-            const double yTrans = dy * viewport->getHeight()
-                                  / (double) this->getScene2DRender()->getView()->height();
+            const double dy     = coord.y - m_lastCoordEvent.y;
+            const double yTrans = dy * viewport->height()
+                                  / static_cast<double>(this->getScene2DRender()->getView()->height());
 
-            viewport->setX(viewport->getX() - xTrans);
-            viewport->setY(viewport->getY() - yTrans);
+            viewport->setX(viewport->x() - xTrans);
+            viewport->setY(viewport->y() - yTrans);
 
             this->getScene2DRender()->getView()->updateFromViewport(*viewport);
 
@@ -122,11 +123,11 @@ void SViewportInteractor::zoom(bool zoomIn)
 {
     const auto sceneViewport = m_viewport.lock();
 
-    double y = sceneViewport->getY();
-    double x = sceneViewport->getX();
+    double y = sceneViewport->y();
+    double x = sceneViewport->x();
 
-    double width  = sceneViewport->getWidth();
-    double height = sceneViewport->getHeight();
+    double width  = sceneViewport->width();
+    double height = sceneViewport->height();
 
     const double zoomPercent = 10.f / 100.0f;
     const double centerX     = x + width / 2.0f;

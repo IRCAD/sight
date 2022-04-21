@@ -70,12 +70,9 @@
                 <adaptor uid="TFMaxOpacityAdp" />
                 <adaptor uid="TFHistogramAdp" />
                 <adaptor uid="TFHistogramAxisAdp" />
-                <adaptor uid="TFHistogramScaleValues" />
                 <adaptor uid="TFMultipleTFAdp" />
                 <adaptor uid="TFViewportRangeUpdaterAdp" />
-                <adaptor uid="TFScaleValuesLeftAdp" />
                 <adaptor uid="TFAxisLeftAdp" />
-                <adaptor uid="TFScaleValuesBottomAdp" />
                 <adaptor uid="TFAxisBottomAdp" />
             </scene>
         </service>
@@ -90,31 +87,25 @@
         </service>
 
         <service uid="TFCenterAbscissaLineAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
-            <config x1="0" x2="0" y1="0" y2="1.1" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+            <config x1="0" y1="0" x2="0" y2="1.1" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
         </service>
 
         <service uid="TFMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
-            <config x1="-1200" x2="1500" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-        </service>
-
-        <service uid="TFScaleValuesLeftAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
-            <in key="viewport"  uid="viewport" />
-            <config min="0.0" max="1.0" interval="0.1" fontSize="12" align="left" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
+            <config x1="-1200" y1="1" x2="1500" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
         <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
              <in key="viewport"  uid="viewport" />
-            <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
-        </service>
-
-        <service uid="TFScaleValuesBottomAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
-            <in key="viewport"  uid="viewport" />
-            <config min="-1100" max="1300" interval="200" fontSize="12" align="bottom" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
+            <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" >
+                <labels color="#FFFFFF" fontSize="12"/>
+            </config>
         </service>
 
         <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
             <in key="viewport"  uid="viewport" />
-            <config min="-1100" max="1300" interval="100" align="bottom" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
+            <config min="-1100" max="1300" interval="10" align="bottom" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" >
+                <labels color="#FFFFFF" fontSize="12"/>
+            </config>
         </service>
 
         <service uid="TFMultipleTFAdp" type="sight::module::viz::scene2d::adaptor::SMultipleTF" >
@@ -128,17 +119,16 @@
         <service uid="TFHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" >
             <in key="image" uid="${image}" autoConnect="true"/>
             <inout key="viewport"  uid="viewport" />
-            <config xAxis="xAxis" yAxis="axeHistogramY" color="#E5FFC66D" zValue="5" borderWidth="2.0" cursor="true" cursorColor="#6897BB" cursorBorderColor="#2E4C64" cursorSize="12" cursorFontSize="16" />
+            <config xAxis="xAxis" yAxis="axeHistogramY" color="#E5FFC66D" zValue="5" borderWidth="2.0">
+                <cursor color="#6897BB" borderColor="#2E4C64" size="12" fontSize="16" />
+            </config>
         </service>
 
         <service uid="TFHistogramAxisAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
             <in key="viewport"  uid="viewport" />
-            <config min="0" max="1" interval="0.1" align="right" tickSize="8" color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="7" />
-        </service>
-
-        <service uid="TFHistogramScaleValues" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
-            <in key="viewport"  uid="viewport" />
-            <config min="0" max="1" interval="0.1" fontSize="12" align="right" color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="7" />
+            <config min="0.0" max="1.0" interval="0.1" align="right" tickSize="8" color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="7" >
+                <labels color="#FFC66D" fontSize="12" />
+            </config>
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -219,12 +209,9 @@
         <start uid="TFMaxOpacityAdp" />
         <start uid="TFHistogramAdp" />
         <start uid="TFHistogramAxisAdp" />
-        <start uid="TFHistogramScaleValues" />
         <start uid="TFMultipleTFAdp" />
         <start uid="TFViewportRangeUpdaterAdp" />
-        <start uid="TFScaleValuesLeftAdp" />
         <start uid="TFAxisLeftAdp" />
-        <start uid="TFScaleValuesBottomAdp" />
         <start uid="TFAxisBottomAdp" />
 
     </config>

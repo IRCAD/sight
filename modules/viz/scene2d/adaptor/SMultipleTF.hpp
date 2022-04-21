@@ -150,7 +150,7 @@ private:
         int m_zIndex {0};
 
         /// Contains a set of graphic point and its coordinates in the window/level space.
-        std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> > m_TFPoints;
+        std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> > m_TFPoints;
 
         /// Contains the graphic gradient.
         QGraphicsPolygonItem* m_TFPolygon;
@@ -270,14 +270,14 @@ private:
      * @param _subTF the selected subTF.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonClickOnPointEvent(SubTF* const _subTF, std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint);
+    void leftButtonClickOnPointEvent(SubTF* const _subTF, std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint);
 
     /**
      * @brief Move @ref m_capturedTFPoint to the new mouse position and update the related TF.
      * @param _event the 2D scene event.
      *
      * @pre m_capturedTFPoint must be previously sets.
-     * @see leftButtonClickOnPointEvent(SubTF* const, std::pair< Point2DType, QGraphicsEllipseItem* >&)
+     * @see leftButtonClickOnPointEvent(SubTF* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
      */
     void mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::scene2d::data::Event& _event);
 
@@ -285,7 +285,7 @@ private:
      * @brief Resets the captured TF point highlighting and sets @ref m_capturedTFPoint to null.
      *
      * @pre m_capturedTFPoint must be previously sets.
-     * @see leftButtonClickOnPointEvent(SubTF* const, std::pair< Point2DType, QGraphicsEllipseItem* >&)
+     * @see leftButtonClickOnPointEvent(SubTF* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
      */
     void leftButtonReleaseEvent();
 
@@ -296,7 +296,7 @@ private:
      */
     void rightButtonClickOnPointEvent(
         SubTF* const _subTF,
-        std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+        std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
     );
 
     /**
@@ -306,7 +306,7 @@ private:
      */
     void leftButtonDoubleClickOnPointEvent(
         SubTF* const _subTF,
-        std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+        std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
     );
 
     /**
@@ -439,12 +439,12 @@ private:
     data::TransferFunction::csptr m_currentTF {nullptr};
 
     /// Stores the captured clicked point.
-    std::pair<Point2DType, QGraphicsEllipseItem*>* m_capturedTFPoint {nullptr};
+    std::pair<vec2d_t, QGraphicsEllipseItem*>* m_capturedTFPoint {nullptr};
 
     /// Stores the captured clicked TF and the current mouse position,
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
-    std::pair<data::TransferFunction::sptr, sight::viz::scene2d::data::Coord> m_capturedTF;
+    std::pair<data::TransferFunction::sptr, sight::viz::scene2d::vec2d_t> m_capturedTF;
 
     /// Stores for each TF id, its unclamped alpha color value map.
     std::map<core::tools::fwID::IDType, data::TransferFunction::TFDataType> m_unclampedTFData;

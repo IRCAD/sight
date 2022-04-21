@@ -129,13 +129,13 @@ private:
     void updateViewportFromShutter(double x, double y, double width, double height);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border.
-    bool mouseOnShutterLeft(sight::viz::scene2d::data::Coord _coord);
+    bool mouseOnShutterLeft(sight::viz::scene2d::vec2d_t _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border.
-    bool mouseOnShutterRight(sight::viz::scene2d::data::Coord _coord);
+    bool mouseOnShutterRight(sight::viz::scene2d::vec2d_t _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part.
-    bool mouseOnShutterMiddle(sight::viz::scene2d::data::Coord _coord);
+    bool mouseOnShutterMiddle(sight::viz::scene2d::vec2d_t _coord);
 
     /// Stores the graphic item that represents the shutter.
     QGraphicsRectItem* m_shutter {nullptr};
@@ -150,10 +150,10 @@ private:
     bool m_isInteracting {false};
 
     /// Sets if there is a dragging interaction.
-    sight::viz::scene2d::data::Coord m_dragStartPoint;
+    sight::viz::scene2d::vec2d_t m_dragStartPoint;
 
     ///  Defines the shutter position when dragging starts.
-    sight::viz::scene2d::data::Coord m_dragStartShutterPos;
+    sight::viz::scene2d::vec2d_t m_dragStartShutterPos;
 
     /// Sets the spacing value for an easier picking onto shutter borders.
     int m_clickCatchRange {1};
@@ -165,7 +165,7 @@ private:
     double m_initialX {0.f};
 
     /// Defines the initial width of the shutter.
-    double m_initialWidth {0.};
+    double m_initialWidth {1.};
 
     /// Defines the color used for graphic item's.
     QPen m_color;

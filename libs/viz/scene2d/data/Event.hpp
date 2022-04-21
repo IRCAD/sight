@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "viz/scene2d/data/Coord.hpp"
-#include "viz/scene2d/data/Size.hpp"
+#include "viz/scene2d/vec2d.hpp"
 
 #include <Qt>
 
@@ -95,8 +94,8 @@ public:
     Button getButton() const;
     void setButton(Button button);
 
-    const Coord& getCoord() const;
-    void setCoord(const Coord& coord);
+    const vec2d_t& getCoord() const;
+    void setCoord(const vec2d_t& coord);
 
     int getKey() const;
     void setKey(int key);
@@ -104,23 +103,23 @@ public:
     Modifier getModifier() const;
     void setModifier(Modifier modifier);
 
-    const Size& getOldSize() const;
-    void setOldSize(const Size& oldSize);
+    const vec2d_t& getOldSize() const;
+    void setOldSize(const vec2d_t& oldSize);
 
-    const Size& getSize() const;
-    void setSize(const Size& size);
+    const vec2d_t& getSize() const;
+    void setSize(const vec2d_t& size);
 
     Type getType() const;
     void setType(Type type);
 
 private:
 
-    Coord m_coord;
+    vec2d_t m_coord;
     Type m_type;
     Button m_button;
     Modifier m_modifier;
-    Size m_size;
-    Size m_oldSize;
+    vec2d_t m_size;
+    vec2d_t m_oldSize;
     bool m_accepted;
     int m_key;
 };
@@ -155,14 +154,14 @@ inline void Event::setButton(Button button)
 
 //------------------------------------------------------------------------------
 
-inline const Coord& Event::getCoord() const
+inline const vec2d_t& Event::getCoord() const
 {
     return m_coord;
 }
 
 //------------------------------------------------------------------------------
 
-inline void Event::setCoord(const Coord& coord)
+inline void Event::setCoord(const vec2d_t& coord)
 {
     m_coord = coord;
 }
@@ -197,28 +196,28 @@ inline void Event::setModifier(Modifier modifier)
 
 //------------------------------------------------------------------------------
 
-inline const Size& Event::getOldSize() const
+inline const vec2d_t& Event::getOldSize() const
 {
     return m_oldSize;
 }
 
 //------------------------------------------------------------------------------
 
-inline void Event::setOldSize(const Size& oldSize)
+inline void Event::setOldSize(const vec2d_t& oldSize)
 {
     m_oldSize = oldSize;
 }
 
 //------------------------------------------------------------------------------
 
-inline const Size& Event::getSize() const
+inline const vec2d_t& Event::getSize() const
 {
     return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-inline void Event::setSize(const Size& size)
+inline void Event::setSize(const vec2d_t& size)
 {
     m_size = size;
 }

@@ -26,10 +26,10 @@
 
 #include <data/helper/Composite.hpp>
 
-#include <service/macros.hpp>
-
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
+
+#include <glm/common.hpp>
 
 #include <QAction>
 #include <QApplication>
@@ -274,7 +274,7 @@ void SMultipleTF::destroyTFPoints()
     // Removes TF point items from the scene and clear the TF point vector of each subTF.
     for(SubTF* const subTF : m_subTF)
     {
-        for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
         {
             this->getScene2DRender()->getScene()->removeItem(tfPoint.second);
             delete tfPoint.second;
@@ -300,8 +300,8 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
         pointSize = sceneHeight * m_pointSize;
     }
 
-    const double viewportWidth  = viewport->getWidth();
-    const double viewportHeight = viewport->getHeight();
+    const double viewportWidth  = viewport->width();
+    const double viewportHeight = viewport->height();
 
     // Computes point size from screen space to viewport space.
     const double pointWidth  = (viewportWidth * pointSize) / sceneWidth;
@@ -331,13 +331,13 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
 
         // Creates the color.
         const data::TransferFunction::TFColor tfColor = elt.second;
-        const Point2DType valColor(value, tfColor.a);
-        Point2DType coord = this->mapAdaptorToScene(valColor);
+        const vec2d_t valColor(value, tfColor.a);
+        vec2d_t coord = this->mapAdaptorToScene(valColor);
 
         // Builds a point item, set its color, pen and zIndex.
         QGraphicsEllipseItem* point = new QGraphicsEllipseItem(
-            coord.first - pointWidth / 2,
-            coord.second - pointHeight / 2,
+            coord.x - pointWidth / 2,
+            coord.y - pointHeight / 2,
             pointWidth,
             pointHeight
         );
@@ -384,13 +384,13 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     QVector<QPointF> position;
     QLinearGradient grad;
 
-    const std::pair<Point2DType, QGraphicsEllipseItem*>& firstTFPoint = _subTF->m_TFPoints.front();
-    const std::pair<Point2DType, QGraphicsEllipseItem*>& lastTFPoint  = _subTF->m_TFPoints.back();
+    const std::pair<vec2d_t, QGraphicsEllipseItem*>& firstTFPoint = _subTF->m_TFPoints.front();
+    const std::pair<vec2d_t, QGraphicsEllipseItem*>& lastTFPoint  = _subTF->m_TFPoints.back();
 
     const QGraphicsEllipseItem* const firstPoint = firstTFPoint.second;
 
-    double xBegin = firstTFPoint.first.first;
-    double xEnd   = lastTFPoint.first.first;
+    double xBegin = firstTFPoint.first.x;
+    double xEnd   = lastTFPoint.first.x;
 
     if(_subTF->m_tf->getIsClamped())
     {
@@ -398,20 +398,20 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     }
     else
     {
-        if(xBegin > viewport->getX())
+        if(xBegin > viewport->x())
         {
-            xBegin = viewport->getX() - 10;
+            xBegin = viewport->x() - 10;
             position.append(QPointF(xBegin, 0));
-            position.append(QPointF(xBegin, firstTFPoint.first.second));
+            position.append(QPointF(xBegin, firstTFPoint.first.y));
         }
         else
         {
             position.append(QPointF(xBegin, 0));
         }
 
-        if(xEnd < viewport->getX() + viewport->getWidth())
+        if(xEnd < viewport->x() + viewport->width())
         {
-            xEnd = viewport->getX() + viewport->getWidth() + 10;
+            xEnd = viewport->x() + viewport->width() + 10;
         }
     }
 
@@ -434,12 +434,12 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
 
     if(!_subTF->m_tf->getIsClamped())
     {
-        if(xEnd == viewport->getX() + viewport->getWidth() + 10)
+        if(xEnd == viewport->x() + viewport->width() + 10)
         {
-            position.append(QPointF(xEnd, lastTFPoint.first.second));
+            position.append(QPointF(xEnd, lastTFPoint.first.y));
         }
 
-        const double lastPointX = lastTFPoint.first.first;
+        const double lastPointX = lastTFPoint.first.x;
         grad.setColorAt((lastPointX - xBegin) / distanceMax, lastTFPoint.second->brush().color());
     }
 
@@ -453,7 +453,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     poly->setZValue(_subTF->m_zIndex * 2);
 
     // If the z-index is the highest, it's the current one.
-    if(static_cast<size_t>(_subTF->m_zIndex) == m_subTF.size())
+    if(static_cast<std::size_t>(_subTF->m_zIndex) == m_subTF.size())
     {
         poly->setOpacity(m_opacity);
     }
@@ -495,11 +495,11 @@ void SMultipleTF::buildLinearPolygons(
     double _distanceMax
 )
 {
-    const std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> >& tfPoints = _subTF->m_TFPoints;
+    const std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> >& tfPoints = _subTF->m_TFPoints;
     for(auto tfPointIt = tfPoints.cbegin() ; tfPointIt != tfPoints.cend() - 1 ; ++tfPointIt)
     {
-        const QPointF p1(tfPointIt->first.first, tfPointIt->first.second);
-        const QPointF p2((tfPointIt + 1)->first.first, (tfPointIt + 1)->first.second);
+        const QPointF p1(tfPointIt->first.x, tfPointIt->first.y);
+        const QPointF p2((tfPointIt + 1)->first.x, (tfPointIt + 1)->first.y);
 
         _position.append(p1);
         _position.append(p2);
@@ -518,11 +518,11 @@ void SMultipleTF::buildNearestPolygons(
     double _distanceMax
 )
 {
-    const std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> >& tfPoints = _subTF->m_TFPoints;
+    const std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> >& tfPoints = _subTF->m_TFPoints;
     for(auto tfPointIt = tfPoints.cbegin() ; tfPointIt != tfPoints.cend() - 1 ; ++tfPointIt)
     {
-        const QPointF p1(tfPointIt->first.first, tfPointIt->first.second);
-        const QPointF p4((tfPointIt + 1)->first.first, (tfPointIt + 1)->first.second);
+        const QPointF p1(tfPointIt->first.x, tfPointIt->first.y);
+        const QPointF p4((tfPointIt + 1)->first.x, (tfPointIt + 1)->first.y);
 
         const QPointF p2(p1.x() + (p4.x() - p1.x()) / 2., p1.y());
         const QPointF p3(p2.x(), p4.y());
@@ -554,7 +554,7 @@ void SMultipleTF::buildLayer()
     // Adds graphics items vectors to the layer.
     for(SubTF* const subTF : m_subTF)
     {
-        for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
         {
             m_layer->addToGroup(tfPoint.second);
         }
@@ -591,7 +591,7 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
     for(SubTF* subTF : m_subTF)
     {
         subTF->m_zIndex = subTF->m_tf == m_currentTF ? static_cast<int>(m_subTF.size()) : zIndex;
-        for(std::pair<Point2DType, QGraphicsEllipseItem*>& point : subTF->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& point : subTF->m_TFPoints)
         {
             point.second->setZValue(subTF->m_zIndex * 2 + 1);
         }
@@ -614,8 +614,8 @@ std::vector<SMultipleTF::SubTF*> SMultipleTF::getMatchingSubTF(const sight::viz:
     // Finds all subTF that match the clicked coord.
     std::vector<SubTF*> matchingSubTF;
     const QPoint scenePos = QPoint(
-        static_cast<int>(_event.getCoord().getX()),
-        static_cast<int>(_event.getCoord().getY())
+        static_cast<int>(_event.getCoord().x),
+        static_cast<int>(_event.getCoord().y)
     );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
@@ -685,15 +685,15 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
     }
 
     const QPoint scenePos = QPoint(
-        static_cast<int>(_event.getCoord().getX()),
-        static_cast<int>(_event.getCoord().getY())
+        static_cast<int>(_event.getCoord().x),
+        static_cast<int>(_event.getCoord().y)
     );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Checks if a point is clicked.
     for(SubTF* const subTF : m_subTF)
     {
-        for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
+        for(std::pair<vec2d_t, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
         {
             // If a point has already been captured.
             if(m_capturedTFPoint == &tfPoint)
@@ -820,7 +820,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
         // Finds the closest one.
         else
         {
-            sight::viz::scene2d::data::Coord clickCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+            sight::viz::scene2d::vec2d_t clickCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
             float closestDistance  = std::numeric_limits<float>::max();
             SubTF* newCurrentSubTF = nullptr;
@@ -831,8 +831,8 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                 SubTF* localNewCurrentSubTF = nullptr;
                 for(std::size_t i = 0 ; i <= subTF->m_TFPoints.size() ; ++i)
                 {
-                    Point2DType tfPoint1;
-                    Point2DType tfPoint2;
+                    vec2d_t tfPoint1;
+                    vec2d_t tfPoint2;
 
                     // Creates the first fictional TF point.
                     if(i == 0)
@@ -841,14 +841,14 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                         if(subTF->m_tf->getIsClamped())
                         {
                             // The first point is the same a the real first but with a zero alpha channel.
-                            tfPoint1 = std::make_pair(tfPoint2.first, 0);
+                            tfPoint1 = vec2d_t(tfPoint2.x, 0);
                         }
                         else
                         {
                             // The first point is the same a the real but with an infinite lower value.
 
                             const auto viewport = m_viewport.lock();
-                            tfPoint1 = std::make_pair(viewport->getX(), tfPoint2.second);
+                            tfPoint1 = vec2d_t(viewport->x(), tfPoint2.y);
                         }
                     }
                     // Creates the last fictional TF point.
@@ -858,13 +858,13 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                         if(subTF->m_tf->getIsClamped())
                         {
                             // The last point is the same a the real last but with a zero alpha channel.
-                            tfPoint2 = std::make_pair(tfPoint1.first, 0);
+                            tfPoint2 = vec2d_t(tfPoint1.x, 0);
                         }
                         else
                         {
                             // The last point is the same a the real but with an infinite upper value.
                             const auto viewport = m_viewport.lock();
-                            tfPoint2 = std::make_pair(viewport->getX() + viewport->getWidth(), tfPoint1.second);
+                            tfPoint2 = vec2d_t(viewport->x() + viewport->width(), tfPoint1.y);
                         }
                     }
                     // Retrieves two TF points.
@@ -875,21 +875,21 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     }
 
                     // Gets a line/point projection.
-                    const QLineF line(tfPoint1.first, tfPoint1.second, tfPoint2.first, tfPoint2.second);
+                    const QLineF line(tfPoint1.x, tfPoint1.y, tfPoint2.x, tfPoint2.y);
 
-                    QLineF perpendicLine(clickCoord.getX(), clickCoord.getY(), clickCoord.getX(), 0);
+                    QLineF perpendicLine(clickCoord.x, clickCoord.y, clickCoord.x, 0);
                     perpendicLine.setAngle(90.f + line.angle());
 
                     QPointF intersectPoint;
                     line.intersects(perpendicLine, &intersectPoint);
 
-                    const QVector2D origin(static_cast<float>(clickCoord.getX()),
-                                           static_cast<float>(clickCoord.getY()));
+                    const QVector2D origin(static_cast<float>(clickCoord.x),
+                                           static_cast<float>(clickCoord.y));
 
                     float distance = std::numeric_limits<float>::max();
 
                     // Checks if the intersection belong the segment.
-                    if(intersectPoint.x() >= tfPoint1.first && intersectPoint.x() <= tfPoint2.first)
+                    if(intersectPoint.x() >= tfPoint1.x && intersectPoint.x() <= tfPoint2.x)
                     {
                         const QVector2D intersect(intersectPoint);
                         const QVector2D projection = origin - intersect;
@@ -899,10 +899,10 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     // Elses the lower distance is between the point and one of the segment edge.
                     else
                     {
-                        const QVector2D firstLine(static_cast<float>(clickCoord.getX() - tfPoint1.first),
-                                                  static_cast<float>(clickCoord.getY() - tfPoint1.second));
-                        const QVector2D secondLine(static_cast<float>(clickCoord.getX() - tfPoint2.first),
-                                                   static_cast<float>(clickCoord.getY() - tfPoint2.second));
+                        const QVector2D firstLine(static_cast<float>(clickCoord.x - tfPoint1.x),
+                                                  static_cast<float>(clickCoord.y - tfPoint1.y));
+                        const QVector2D secondLine(static_cast<float>(clickCoord.x - tfPoint2.x),
+                                                   static_cast<float>(clickCoord.y - tfPoint2.y));
 
                         distance = firstLine.length();
                         if(secondLine.length() < distance)
@@ -940,7 +940,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
 
 void SMultipleTF::leftButtonClickOnPointEvent(
     SubTF* const _subTF,
-    std::pair<Point2DType,
+    std::pair<vec2d_t,
               QGraphicsEllipseItem*>& _TFPoint
 )
 {
@@ -967,7 +967,7 @@ void SMultipleTF::leftButtonClickOnPointEvent(
 void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::scene2d::data::Event& _event)
 {
     // m_capturedTFPoint must be previously sets by
-    // leftButtonClickOnPointEvent(SubTF* const, std::pair< Point2DType, QGraphicsEllipseItem* >&)
+    // leftButtonClickOnPointEvent(SubTF* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
     SIGHT_ASSERT("The captured TF point must exist", m_capturedTFPoint);
 
     const auto pointIt = std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), *m_capturedTFPoint);
@@ -988,60 +988,62 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     }
 
     // Gets position informations of the previous and the next point.
-    const double previousPointXCoord = previousPoint->first.first;
-    const double nextPointXCoord     = nextPoint->first.first;
+    const double previousPointXCoord = previousPoint->first.x;
+    const double nextPointXCoord     = nextPoint->first.x;
 
     // Gets the actual mouse point coordinates.
-    sight::viz::scene2d::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord(), true);
+    sight::viz::scene2d::vec2d_t newCoord = this->getScene2DRender()->mapToScene(_event.getCoord(), true);
 
     // Clamps new y coord between -1 and 0.
-    if(newCoord.getY() > 0)
-    {
-        newCoord.setY(0);
-    }
+    newCoord.y = std::clamp(newCoord.y, -1., 0.);
 
-    if(newCoord.getY() < -1)
+    // Clamps new coord in the viewport.
     {
-        newCoord.setY(-1);
+        auto viewport = m_viewport.lock();
+        newCoord = glm::clamp(
+            newCoord,
+            glm::dvec2(viewport->left(), viewport->top()),
+            glm::dvec2(viewport->right(), viewport->bottom())
+        );
     }
 
     // Clamps new x coord between the previous and the next one.
     const double delta = 1.;
     if(*m_capturedTFPoint == _subTF->m_TFPoints.front())
     {
-        if(newCoord.getX() >= nextPointXCoord)
+        if(newCoord.x >= nextPointXCoord)
         {
-            newCoord.setX(nextPointXCoord - delta);
+            newCoord.x = nextPointXCoord - delta;
         }
     }
     else if(*m_capturedTFPoint == _subTF->m_TFPoints.back())
     {
-        if(newCoord.getX() <= previousPointXCoord)
+        if(newCoord.x <= previousPointXCoord)
         {
-            newCoord.setX(previousPointXCoord + delta);
+            newCoord.x = previousPointXCoord + delta;
         }
     }
     else
     {
-        if(newCoord.getX() <= previousPointXCoord)
+        if(newCoord.x <= previousPointXCoord)
         {
-            newCoord.setX(previousPointXCoord + delta);
+            newCoord.x = previousPointXCoord + delta;
         }
-        else if(newCoord.getX() >= nextPointXCoord)
+        else if(newCoord.x >= nextPointXCoord)
         {
-            newCoord.setX(nextPointXCoord - delta);
+            newCoord.x = nextPointXCoord - delta;
         }
     }
 
     // Moves the selected TF point by the difference between the old coordinates and the new ones.
     m_capturedTFPoint->second->moveBy(
-        newCoord.getX() - m_capturedTFPoint->first.first,
-        newCoord.getY() - m_capturedTFPoint->first.second
+        newCoord.x - m_capturedTFPoint->first.x,
+        newCoord.y - m_capturedTFPoint->first.y
     );
 
     // Stores new coordinates to the captured one.
-    m_capturedTFPoint->first.first  = newCoord.getX();
-    m_capturedTFPoint->first.second = newCoord.getY();
+    m_capturedTFPoint->first.x = newCoord.x;
+    m_capturedTFPoint->first.y = newCoord.y;
 
     // Re-draw the current polygons.
     this->destroyTFPolygon(_subTF);
@@ -1079,17 +1081,17 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
     // Gets new window/level min max value in the window/level space.
-    const double min = _subTF->m_TFPoints.begin()->first.first;
-    const double max = _subTF->m_TFPoints.rbegin()->first.first;
+    const double min = _subTF->m_TFPoints.begin()->first.x;
+    const double max = _subTF->m_TFPoints.rbegin()->first.x;
 
     // Removes the old TF point.
     tf->eraseTFValue(oldTFValue);
 
     // Updates the color alpha channel.
-    tfColor.a = std::abs(newCoord.getY());
+    tfColor.a = std::abs(newCoord.y);
 
     // Computes TF value from window/level space to TF space.
-    data::TransferFunction::TFValueType newTFValue = newCoord.getX();
+    data::TransferFunction::TFValueType newTFValue = newCoord.x;
     newTFValue = (newTFValue - minWL) / window;
     newTFValue = (newTFValue * width) + minMaxValues.first;
 
@@ -1137,7 +1139,7 @@ void SMultipleTF::leftButtonReleaseEvent()
 
 void SMultipleTF::rightButtonClickOnPointEvent(
     SubTF* const _subTF,
-    std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+    std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
 )
 {
     // Updates the TF.
@@ -1177,17 +1179,17 @@ void SMultipleTF::rightButtonClickOnPointEvent(
         }
 
         // Gets new window/level min max value in the window/level space.
-        double min = _subTF->m_TFPoints.begin()->first.first;
-        double max = _subTF->m_TFPoints.rbegin()->first.first;
+        double min = _subTF->m_TFPoints.begin()->first.x;
+        double max = _subTF->m_TFPoints.rbegin()->first.x;
 
         // If the removed point is the last or the first, the min max is wrong and need to be updated.
         if((pointIndex == 0 && window >= 0) || (pointIndex == _subTF->m_TFPoints.size() - 1 && window < 0))
         {
-            min = (_subTF->m_TFPoints.begin() + 1)->first.first;
+            min = (_subTF->m_TFPoints.begin() + 1)->first.x;
         }
         else if((pointIndex == _subTF->m_TFPoints.size() - 1 && window >= 0) || (pointIndex == 0 && window < 0))
         {
-            max = (_subTF->m_TFPoints.rbegin() + 1)->first.first;
+            max = (_subTF->m_TFPoints.rbegin() + 1)->first.x;
         }
 
         // Updates the window/level.
@@ -1224,12 +1226,12 @@ void SMultipleTF::rightButtonClickOnPointEvent(
 
 void SMultipleTF::leftButtonDoubleClickOnPointEvent(
     SubTF* const _subTF,
-    std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+    std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
 )
 {
     // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
     QColor oldColor = _TFPoint.second->brush().color();
-    oldColor.setAlphaF(-_TFPoint.first.second);
+    oldColor.setAlphaF(-_TFPoint.first.y);
 
     QColor newColor = QColorDialog::getColor(
         oldColor,
@@ -1302,18 +1304,9 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(
 
 void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Event& _event)
 {
-    sight::viz::scene2d::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
-    // Clamps new y coord between -1 and 0.
-    if(newCoord.getY() > 0)
-    {
-        newCoord.setY(0);
-    }
-
-    if(newCoord.getY() < -1)
-    {
-        newCoord.setY(-1);
-    }
+    newCoord.y = std::clamp(newCoord.y, -1., 0.);
 
     // Finds the current subTF.
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
@@ -1335,39 +1328,39 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
         const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
         // Computes TF value from window/level space to TF space.
-        data::TransferFunction::TFValueType tfValue = newCoord.getX();
+        data::TransferFunction::TFValueType tfValue = newCoord.x;
         tfValue = (tfValue - minWL) / window;
         tfValue = (tfValue * width) + minMaxValues.first;
 
         data::TransferFunction::TFColor newColor;
 
         // The new coord becomes the new first TF point, get the current first color in the list.
-        if(newCoord.getX() < currentSubTF->m_TFPoints.front().first.first)
+        if(newCoord.x < currentSubTF->m_TFPoints.front().first.x)
         {
             const QColor firstColor = currentSubTF->m_TFPoints.front().second->brush().color();
             newColor = data::TransferFunction::TFColor(
                 firstColor.red() / 255.,
                 firstColor.green() / 255.,
                 firstColor.blue() / 255.,
-                -newCoord.getY()
+                -newCoord.y
             );
         }
         // The new coord becomes the new last TF point, get the current last color in the list.
-        else if(newCoord.getX() > currentSubTF->m_TFPoints.back().first.first)
+        else if(newCoord.x > currentSubTF->m_TFPoints.back().first.x)
         {
             const QColor firstColor = currentSubTF->m_TFPoints.back().second->brush().color();
             newColor = data::TransferFunction::TFColor(
                 firstColor.red() / 255.,
                 firstColor.green() / 255.,
                 firstColor.blue() / 255.,
-                -newCoord.getY()
+                -newCoord.y
             );
         }
         // Gets an interpolate color since the new point is between two others.
         else
         {
             newColor   = tf->getInterpolatedColor(tfValue);
-            newColor.a = -newCoord.getY();
+            newColor.a = -newCoord.y;
         }
 
         // Adds the new TF point.
@@ -1381,16 +1374,16 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
         }
 
         // Gets new window/level min max value in the window/level space.
-        double min = currentSubTF->m_TFPoints.begin()->first.first;
-        double max = currentSubTF->m_TFPoints.rbegin()->first.first;
+        double min = currentSubTF->m_TFPoints.begin()->first.x;
+        double max = currentSubTF->m_TFPoints.rbegin()->first.x;
 
-        if(newCoord.getX() > max)
+        if(newCoord.x > max)
         {
-            max = newCoord.getX();
+            max = newCoord.x;
         }
-        else if(newCoord.getX() < min)
+        else if(newCoord.x < min)
         {
-            min = newCoord.getX();
+            min = newCoord.x;
         }
 
         // Updates the window/level.
@@ -1437,11 +1430,11 @@ void SMultipleTF::midButtonClickEvent(sight::viz::scene2d::data::Event& _event)
     if(matchingIt != matchingSubTF.end())
     {
         this->getScene2DRender()->getView()->setCursor(Qt::ClosedHandCursor);
-        sight::viz::scene2d::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        sight::viz::scene2d::vec2d_t windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
         // Stores the level in window/level space and the window in screen space.
         m_capturedTF = std::make_pair(
             (*matchingIt)->m_tf,
-            sight::viz::scene2d::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY())
+            sight::viz::scene2d::vec2d_t(windowLevelCoord.x, _event.getCoord().y)
         );
         _event.setAccepted(true);
     }
@@ -1454,13 +1447,13 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const sight::viz::scene2d::data::Event& 
     // m_capturedTF must be previously sets by midButtonClickEvent(const sight::viz::scene2d::data::Event& _event)
     SIGHT_ASSERT("The captured subTF must exist", m_capturedTF.first);
 
-    const sight::viz::scene2d::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    const sight::viz::scene2d::vec2d_t windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
     // The level delta is in window/level space.
-    const double levelDelta = windowLevelCoord.getX() - m_capturedTF.second.getX();
+    const double levelDelta = windowLevelCoord.x - m_capturedTF.second.x;
 
     // The window delta is in screen space.
-    const double windowDelta = _event.getCoord().getY() - m_capturedTF.second.getY();
+    const double windowDelta = _event.getCoord().y - m_capturedTF.second.y;
 
     // Updates the TF.
     const data::TransferFunction::sptr tf = m_capturedTF.first;
@@ -1480,7 +1473,7 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const sight::viz::scene2d::data::Event& 
     }
 
     // Stores the level in window/level space and the window in screen space.
-    m_capturedTF.second = sight::viz::scene2d::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY());
+    m_capturedTF.second = sight::viz::scene2d::vec2d_t(windowLevelCoord.x, _event.getCoord().y);
 
     // Re-draw all the scene.
     this->updating();
@@ -1936,9 +1929,9 @@ void SMultipleTF::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
     leftRamp->setLevel(50.);
 
     // Updates the window/level.
-    sight::viz::scene2d::data::Coord newCoord        = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t newCoord            = this->getScene2DRender()->mapToScene(_event.getCoord());
     const data::TransferFunction::TFValueType window = leftRamp->getWindow();
-    data::TransferFunction::TFValueType min          = newCoord.getX() - window / 2.;
+    data::TransferFunction::TFValueType min          = newCoord.x - window / 2.;
     data::TransferFunction::TFValueType max          = min + window;
     leftRamp->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
@@ -1965,9 +1958,9 @@ void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
     rightRamp->setLevel(50.);
 
     // Updates the window/level.
-    sight::viz::scene2d::data::Coord newCoord        = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t newCoord            = this->getScene2DRender()->mapToScene(_event.getCoord());
     const data::TransferFunction::TFValueType window = rightRamp->getWindow();
-    data::TransferFunction::TFValueType min          = newCoord.getX() - window / 2.;
+    data::TransferFunction::TFValueType min          = newCoord.x - window / 2.;
     data::TransferFunction::TFValueType max          = min + window;
     rightRamp->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
@@ -1996,9 +1989,9 @@ void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
     trapeze->setLevel(50.);
 
     // Updates the window/level.
-    sight::viz::scene2d::data::Coord newCoord        = this->getScene2DRender()->mapToScene(_event.getCoord());
+    sight::viz::scene2d::vec2d_t newCoord            = this->getScene2DRender()->mapToScene(_event.getCoord());
     const data::TransferFunction::TFValueType window = trapeze->getWindow();
-    data::TransferFunction::TFValueType min          = newCoord.getX() - window / 2.;
+    data::TransferFunction::TFValueType min          = newCoord.x - window / 2.;
     data::TransferFunction::TFValueType max          = min + window;
     trapeze->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 

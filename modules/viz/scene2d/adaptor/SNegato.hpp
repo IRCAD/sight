@@ -27,7 +27,6 @@
 #include <data/helper/MedicalImage.hpp>
 #include <data/helper/TransferFunction.hpp>
 
-#include <viz/scene2d/data/Coord.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
 #include <QGraphicsItemGroup>
@@ -140,8 +139,8 @@ private:
     void updateBufferFromImage(QImage* _img);
 
     void changeImageMinMaxFromCoord(
-        sight::viz::scene2d::data::Coord& oldCoord,
-        sight::viz::scene2d::data::Coord& newCoord
+        sight::viz::scene2d::vec2d_t& oldCoord,
+        sight::viz::scene2d::vec2d_t& newCoord
     );
 
     static QRgb getQImageVal(
@@ -167,7 +166,7 @@ private:
     bool m_pointIsCaptured;
 
     /// Ref. position when changing image window/level
-    sight::viz::scene2d::data::Coord m_oldCoord;
+    sight::viz::scene2d::vec2d_t m_oldCoord;
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;

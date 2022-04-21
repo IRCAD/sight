@@ -126,15 +126,15 @@ void SGrid2D::draw()
     const float yEndVal   = getYEndVal();   // Allows to start drawing the grid from 0 with the correct step
 
     // Holds the current computed coordinates:
-    Point2DType coord1, coord2;
+    vec2d_t coord1, coord2;
 
     // Draw the horizontal lines
     for(float yVal = yStartVal ; yVal <= yEndVal ; yVal += m_ySpacing)
     {
-        coord1 = this->mapAdaptorToScene((Point2DType(xStartVal, yVal)));
-        coord2 = this->mapAdaptorToScene((Point2DType(xEndVal, yVal)));
+        coord1 = this->mapAdaptorToScene((vec2d_t(xStartVal, yVal)));
+        coord2 = this->mapAdaptorToScene((vec2d_t(xEndVal, yVal)));
 
-        QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
+        QGraphicsLineItem* line = new QGraphicsLineItem(coord1.x, coord1.y, coord2.x, coord2.y);
 
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
@@ -144,10 +144,10 @@ void SGrid2D::draw()
     // Draw the vertical lines
     for(float xVal = xStartVal ; xVal <= xEndVal ; xVal += m_xSpacing)
     {
-        coord1 = this->mapAdaptorToScene((Point2DType(xVal, yStartVal)));
-        coord2 = this->mapAdaptorToScene((Point2DType(xVal, yEndVal)));
+        coord1 = this->mapAdaptorToScene((vec2d_t(xVal, yStartVal)));
+        coord2 = this->mapAdaptorToScene((vec2d_t(xVal, yEndVal)));
 
-        QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
+        QGraphicsLineItem* line = new QGraphicsLineItem(coord1.x, coord1.y, coord2.x, coord2.y);
 
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
