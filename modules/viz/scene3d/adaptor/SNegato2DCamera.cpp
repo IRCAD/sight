@@ -206,7 +206,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
                 static_cast<int>(imHelper::getSliceIndex(*image, m_currentNegatoOrientation).value_or(0));
             const int max_slice = static_cast<int>(image->getSize()[m_currentNegatoOrientation] - 1);
 
-            if(max_slice < 0)
+            if(max_slice <= 0)
             {
                 // Do nothing, image doesn't have slices.
                 return;
