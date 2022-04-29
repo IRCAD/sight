@@ -126,17 +126,24 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     headerMsg->InitPack();
     const int sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
-    if(sizeReceive == -1 || sizeReceive == 0)
+    if(sizeReceive == -1)
     {
-        return ::igtl::MessageHeader::Pointer();
+        // Case 1: Timeout
+        throw sight::io::igtl::Exception("Network timeout");
+    }
+    else if(sizeReceive == 0)
+    {
+        // Case 2: Error
+        throw sight::io::igtl::Exception("Network Error");
+    }
+    else if(sizeReceive != headerMsg->GetPackSize())
+    {
+        // Case 3: mismatch of size
+        throw sight::io::igtl::Exception("Received size error");
     }
     else
     {
-        if(sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
-        {
-            return ::igtl::MessageHeader::Pointer();
-        }
-        else if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+        if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
         {
             const std::string deviceName = headerMsg->GetDeviceName();
 
@@ -174,15 +181,26 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     msg->AllocatePack();
     result = m_socket->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
-    if(result == -1)
+    if(result == -1) // Timeout
     {
-        return ::igtl::MessageBase::Pointer();
+        throw sight::io::igtl::Exception("Network timeout");
     }
-
-    unpackResult = msg->Unpack(1);
-    if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+    else if(result == 0) // Error
     {
-        return msg;
+        throw sight::io::igtl::Exception("Network Error");
+    }
+    else
+    {
+        unpackResult = msg->Unpack();
+        if(unpackResult == 0)
+        {
+            throw sight::io::igtl::Exception("Network Error");
+        }
+
+        if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+        {
+            return msg;
+        }
     }
 
     throw Exception("Body pack is not valid");

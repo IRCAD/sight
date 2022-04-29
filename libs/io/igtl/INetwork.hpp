@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,6 +89,7 @@ public:
 
     /**
      * @brief receive header
+     * @throw igtl::Exception on error (network error or timeout).
      * @return header
      */
 
@@ -97,7 +98,7 @@ public:
     /** @brief receive body pack
      *
      *  @param[in] header msg header
-     *
+     *  @throw igtl::Exception on error (network error or timeout).
      *  @return Message
      */
     IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer header);

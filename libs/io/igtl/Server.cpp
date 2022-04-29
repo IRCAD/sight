@@ -222,35 +222,37 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
         {
             const int sizeReceive = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
-            if(sizeReceive == -1 || sizeReceive == 0)
+            if(sizeReceive == -1)
             {
-                headerMsgs.push_back(::igtl::MessageHeader::Pointer());
+                throw sight::io::igtl::Exception("Network timeout");
             }
-            else
+            else if(sizeReceive == 0)
             {
-                if(sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
-                {
-                    headerMsgs.push_back(::igtl::MessageHeader::Pointer());
-                }
-                else if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
-                {
-                    const std::string deviceName = headerMsg->GetDeviceName();
+                throw sight::io::igtl::Exception("Network error");
+            }
+            else if(sizeReceive != headerMsg->GetPackSize())
+            {
+                throw sight::io::igtl::Exception("Mismatch in received message size");
+            }
 
-                    if(m_filteringByDeviceName)
-                    {
-                        if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
-                        {
-                            headerMsgs.push_back(headerMsg);
-                        }
-                        else
-                        {
-                            headerMsgs.push_back(::igtl::MessageHeader::Pointer());
-                        }
-                    }
-                    else
+            if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+            {
+                const std::string deviceName = headerMsg->GetDeviceName();
+
+                if(m_filteringByDeviceName)
+                {
+                    if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
                     {
                         headerMsgs.push_back(headerMsg);
                     }
+                    else
+                    {
+                        headerMsgs.push_back(::igtl::MessageHeader::Pointer());
+                    }
+                }
+                else
+                {
+                    headerMsgs.push_back(headerMsg);
                 }
             }
         }
