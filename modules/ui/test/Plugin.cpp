@@ -18,25 +18,31 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+// cspell:ignore qputenv
 
-#pragma once
+#include "Plugin.hpp"
 
-#include <ui/test/ITest.hpp>
+#include <QApplication>
 
-namespace sight::sightcalibrator::test::ui
+namespace sight::module::ui::test
 {
 
-class IntrinsicCalibration : public sight::ui::test::ITest
+SIGHT_REGISTER_PLUGIN("sight::module::ui::test::Plugin");
+
+//------------------------------------------------------------------------------
+
+void Plugin::start() noexcept
 {
-CPPUNIT_TEST_SUITE(IntrinsicCalibration);
-CPPUNIT_TEST(test);
-CPPUNIT_TEST_SUITE_END();
+    SIGHT_ASSERT("QApplication must be started for MacroSaver to infect it", qApp);
+    qputenv("GUI_TESTS_ARE_RUNNING", "1");
+    m_macro.infect(qApp);
+}
 
-public:
+//------------------------------------------------------------------------------
 
-    const char* getProfilePath() override;
+void Plugin::stop() noexcept
+{
+    m_macro.save();
+}
 
-    void test();
-};
-
-} // namespace sight::sightcalibrator::test::ui
+} // namespace sight::module::ui::test

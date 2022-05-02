@@ -21,22 +21,25 @@
 
 #pragma once
 
-#include <ui/test/ITest.hpp>
+#include "MacroSaver.hpp"
 
-namespace sight::sightcalibrator::test::ui
+#include "modules/ui/test/config.hpp"
+
+#include <core/runtime/Plugin.hpp>
+
+namespace sight::module::ui::test
 {
 
-class IntrinsicCalibration : public sight::ui::test::ITest
+class MODULE_UI_TEST_CLASS_API Plugin : public core::runtime::Plugin
 {
-CPPUNIT_TEST_SUITE(IntrinsicCalibration);
-CPPUNIT_TEST(test);
-CPPUNIT_TEST_SUITE_END();
-
 public:
 
-    const char* getProfilePath() override;
+    MODULE_UI_TEST_API void start() noexcept override;
+    MODULE_UI_TEST_API void stop() noexcept override;
 
-    void test();
+private:
+
+    MacroSaver m_macro;
 };
 
-} // namespace sight::sightcalibrator::test::ui
+} // namespace sight::module::ui::test

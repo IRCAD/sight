@@ -204,10 +204,14 @@ int main(int argc, char* argv[])
     );
 
     // Hidden options
+    bool macroMode = false;
+
     po::options_description hidden("Hidden options");
     hidden.add_options()
         ("profile", po::value(&profileFile)->default_value("profile.xml"), "Profile file")
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
+        ("macro", po::value(&macroMode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
+        ("no-macro", po::value(&macroMode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
     ;
 
     // Set options
@@ -355,14 +359,23 @@ int main(int argc, char* argv[])
             std::signal(SIGHUP, signal_handler);
             std::signal(SIGQUIT, signal_handler);
 #endif
-
             profile->setParams(profileArgs);
 
             profile->start();
+            if(macroMode)
+            {
+                sight::core::runtime::loadModule("sight::module::ui::test");
+            }
+
             profile->run();
             if(gSignalStatus == 0)
             {
                 profile->stop();
+            }
+
+            if(macroMode)
+            {
+                sight::core::runtime::unloadModule("sight::module::ui::test");
             }
         }
         catch(const std::exception& e)
