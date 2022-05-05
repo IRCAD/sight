@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "io/http/config.hpp"
 
 #include <data/SeriesDB.hpp>
-#include <data/Vector.hpp>
 
 #include <QJsonObject>
 

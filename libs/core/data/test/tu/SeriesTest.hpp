@@ -69,7 +69,7 @@ public:
 
 protected:
 
-    typedef std::vector<SPTR(data::Series)> SeriesVectorType;
+    typedef std::vector<std::shared_ptr<Series> > SeriesVectorType;
 
     SeriesVectorType m_series;
 };

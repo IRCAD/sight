@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 #include "activity/IValidator.hpp"
 
 #include <core/base.hpp>
-
-#include <data/ActivitySeries.hpp>
 
 namespace sight::data
 {

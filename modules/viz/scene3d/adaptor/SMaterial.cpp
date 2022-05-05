@@ -29,6 +29,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/Convert.hpp>
 
+#include <data/Composite.hpp>
 #include <data/helper/Field.hpp>
 #include <data/Matrix4.hpp>
 #include <data/String.hpp>

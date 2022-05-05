@@ -67,7 +67,7 @@ void CompositeTest::methode1()
         std::make_pair("integer", data::Integer::New(value))
     };
 
-    data::Composite::ContainerType stdmap;
+    data::Composite::container_type stdmap;
 
     data::Composite::sptr composite = data::Composite::New();
 
@@ -75,7 +75,7 @@ void CompositeTest::methode1()
 
     for(pair_type p : PAIRS)
     {
-        composite->getContainer()[p.first] = p.second;
+        (*composite)[p.first] = p.second;
     }
 
     stdmap.insert(composite->begin(), composite->end());
@@ -84,7 +84,6 @@ void CompositeTest::methode1()
 
     for(pair_type p : *composite)
     {
-        CPPUNIT_ASSERT(composite->getContainer()[p.first] == (*composite)[p.first]);
         CPPUNIT_ASSERT(stdmap[p.first] == (*composite)[p.first]);
     }
 
@@ -97,32 +96,12 @@ void CompositeTest::methode1()
     const std::string STR  = "string value";
     data::Object::sptr obj = data::Float::New();
 
-    composite->getContainer()[STR] = obj;
+    (*composite)[STR] = obj;
 
     CPPUNIT_ASSERT(composite->begin() != composite->end());
 
     CPPUNIT_ASSERT(composite->find(STR) != composite->end());
-    CPPUNIT_ASSERT_EQUAL(composite->getContainer()[STR], obj);
-}
-
-//------------------------------------------------------------------------------
-
-void CompositeTest::setGetContainerTest()
-{
-    std::map<std::string, data::String::sptr> myStdMap;
-    const std::string key1 = "string value 1";
-    const std::string key2 = "string value 2";
-    myStdMap[key1] = data::String::New("lolo");
-    myStdMap[key2] = data::String::New("lulu");
-
-    data::Composite::sptr myDataMap = data::Composite::New();
-    myDataMap->setDataContainer(myStdMap);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), myDataMap->size());
-
-    std::map<std::string, data::String::sptr> myStdMap2;
-    myStdMap2 = myDataMap->getDataContainer<data::String>();
-    CPPUNIT_ASSERT(myStdMap2[key1] == myStdMap[key1]);
-    CPPUNIT_ASSERT(myStdMap2[key2] == myStdMap[key2]);
+    CPPUNIT_ASSERT_EQUAL((*composite)[STR], obj);
 }
 
 } //namespace ut

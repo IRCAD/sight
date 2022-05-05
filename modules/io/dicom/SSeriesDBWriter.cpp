@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,7 +141,7 @@ void SSeriesDBWriter::updating()
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
         data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
-        for(const data::Object::sptr& object : vector->getContainer())
+        for(const data::Object::sptr& object : *vector)
         {
             data::Series::sptr series = data::Series::dynamicCast(object);
             SIGHT_ASSERT("The container should only contain series.", series);
@@ -215,7 +215,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
-    for(const data::Object::sptr& object : vector->getContainer())
+    for(const data::Object::sptr& object : *vector)
     {
         data::Series::sptr series = data::Series::dynamicCast(object);
         SIGHT_ASSERT("The container should only contain series.", series);

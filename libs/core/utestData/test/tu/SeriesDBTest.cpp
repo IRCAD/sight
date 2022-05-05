@@ -139,7 +139,7 @@ void SeriesDBTest::generationTest()
             data::Composite::sptr composite = activitySeries->getData();
             CPPUNIT_ASSERT(composite);
             CPPUNIT_ASSERT(composite->find("key1") != composite->end());
-            data::String::sptr value = data::String::dynamicCast(composite->getContainer()["key1"]);
+            auto value = data::String::dynamicCast((*composite)["key1"]);
             CPPUNIT_ASSERT(value);
             CPPUNIT_ASSERT_EQUAL(std::string("ValueOfKey1"), value->value());
         }

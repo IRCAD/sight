@@ -210,8 +210,8 @@ void SSeriesPuller::pullSeries()
         DicomSeriesContainerType pullSeriesVector;
         DicomSeriesContainerType selectedSeriesVector;
 
-        data::Vector::ConstIteratorType it = selectedSeries->begin();
-        for( ; it != selectedSeries->end() ; ++it)
+        auto it = selectedSeries->cbegin();
+        for( ; it != selectedSeries->cend() ; ++it)
         {
             data::DicomSeries::sptr series = data::DicomSeries::dynamicCast(*it);
 

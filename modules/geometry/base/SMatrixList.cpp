@@ -112,11 +112,11 @@ void SMatrixList::updating()
                 computedVector = data::Vector::New();
             }
 
-            computedVector->getContainer().push_back(computedMatrix);
+            computedVector->push_back(computedMatrix);
             this->setOutput(s_VECTOR_INOUT, computedVector, i);
-            auto sig = computedVector->signal<data::Vector::AddedObjectsSignalType>
+            auto sig = computedVector->signal<data::Vector::added_signal_t>
                            (data::Vector::s_ADDED_OBJECTS_SIG);
-            sig->asyncEmit(computedVector->getContainer());
+            sig->asyncEmit(computedVector->get_content());
         }
     }
 
@@ -163,7 +163,7 @@ void SMatrixList::selectMatrix(int index)
     {
         auto selectedMatrix = m_selectedVector[i].lock();
         auto outputVector   = m_outputVector[i].lock();
-        selectedMatrix->deepCopy(data::Matrix4::dynamicCast(outputVector->getContainer()[index]));
+        selectedMatrix->deepCopy(data::Matrix4::dynamicCast((*outputVector)[index]));
 
         auto sig = selectedMatrix->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG);
         sig->asyncEmit();
@@ -178,13 +178,12 @@ void SMatrixList::removeMatrix(int _index)
     {
         for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
-            auto outputVector                = m_outputVector[i].lock();
-            data::Vector::ContainerType& vec = outputVector->getContainer();
-            vec.erase(vec.begin() + _index);
+            auto outputVector = m_outputVector[i].lock();
+            outputVector->erase(outputVector->begin() + _index);
 
-            auto sig = outputVector->signal<data::Vector::RemovedObjectsSignalType>
+            auto sig = outputVector->signal<data::Vector::removed_signal_t>
                            (data::Vector::s_REMOVED_OBJECTS_SIG);
-            sig->asyncEmit(outputVector->getContainer());
+            sig->asyncEmit(outputVector->get_content());
         }
 
         this->signal<MatrixRemovedSignalType>(s_MATRIX_REMOVED_SIG)->asyncEmit(_index);

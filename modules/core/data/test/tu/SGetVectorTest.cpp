@@ -74,12 +74,12 @@ void SGetVectorTest::extractsElementFromVector()
 
     CPPUNIT_ASSERT(vector->empty());
 
-    vector->getContainer().push_back(series1);
-    vector->getContainer().push_back(series2);
-    vector->getContainer().push_back(series3);
-    vector->getContainer().push_back(series4);
-    vector->getContainer().push_back(series5);
-    vector->getContainer().push_back(series6);
+    vector->push_back(series1);
+    vector->push_back(series2);
+    vector->push_back(series3);
+    vector->push_back(series4);
+    vector->push_back(series5);
+    vector->push_back(series6);
     CPPUNIT_ASSERT(!vector->empty());
     const std::string index_0ID = "series1";
     const std::string index_3ID = "series4";
@@ -108,7 +108,7 @@ void SGetVectorTest::extractsElementFromVector()
     CPPUNIT_ASSERT_EQUAL(getVector->getOutput<sight::data::Object>("objects", 0).lock()->getID(), index_0ID);
     CPPUNIT_ASSERT_EQUAL(getVector->getOutput<sight::data::Object>("objects", 1).lock()->getID(), index_3ID);
 
-    vector->getContainer().clear();
+    vector->clear();
 
     getVector->update().wait();
 

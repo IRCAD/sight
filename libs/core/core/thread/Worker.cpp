@@ -25,6 +25,7 @@
 #include "core/LazyInstantiator.hpp"
 #include "core/mt/types.hpp"
 
+#include <map>
 namespace sight::core::thread
 {
 

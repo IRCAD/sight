@@ -22,10 +22,12 @@
 #include "SessionSerializer.hpp"
 
 #include "ActivitySeries.hpp"
+#include "ActivitySet.hpp"
 #include "Array.hpp"
 #include "CalibrationInfo.hpp"
 #include "Camera.hpp"
 #include "CameraSeries.hpp"
+#include "CameraSet.hpp"
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
@@ -36,7 +38,6 @@
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
 #include "Line.hpp"
-#include "List.hpp"
 #include "Material.hpp"
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
@@ -56,6 +57,7 @@
 #include "ROITraits.hpp"
 #include "Series.hpp"
 #include "SeriesDB.hpp"
+#include "SeriesSet.hpp"
 #include "String.hpp"
 #include "StructureTraits.hpp"
 #include "StructureTraitsDictionary.hpp"
@@ -66,6 +68,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
+#include <data/IContainer.hxx>
 #include <data/Integer.hpp>
 #include <data/mt/locked_ptr.hpp>
 
@@ -90,10 +93,12 @@ static std::shared_mutex s_serializers_mutex;
 // Serializer registry
 static const std::unordered_map<std::string, serializer_t> s_defaultSerializers = {
     {data::ActivitySeries::classname(), &ActivitySeries::serialize},
+    {data::ActivitySet::classname(), &ActivitySet::serialize},
     {data::Array::classname(), &Array::serialize},
     {data::Boolean::classname(), &Helper::serialize<data::Boolean>},
     {data::Camera::classname(), &Camera::serialize},
     {data::CameraSeries::classname(), &CameraSeries::serialize},
+    {data::CameraSet::classname(), &CameraSet::serialize},
     {data::CalibrationInfo::classname(), &CalibrationInfo::serialize},
     {data::Color::classname(), &Color::serialize},
     {data::Composite::classname(), &Composite::serialize},
@@ -107,7 +112,6 @@ static const std::unordered_map<std::string, serializer_t> s_defaultSerializers 
     {data::ImageSeries::classname(), &ImageSeries::serialize},
     {data::Landmarks::classname(), &Landmarks::serialize},
     {data::Line::classname(), &Line::serialize},
-    {data::List::classname(), &List::serialize},
     {data::Material::classname(), &Material::serialize},
     {data::Matrix4::classname(), &Matrix4::serialize},
     {data::Mesh::classname(), &Mesh::serialize},
@@ -127,6 +131,7 @@ static const std::unordered_map<std::string, serializer_t> s_defaultSerializers 
     {data::ROITraits::classname(), &ROITraits::serialize},
     {data::Series::classname(), &Series::serialize},
     {data::SeriesDB::classname(), &SeriesDB::serialize},
+    {data::SeriesSet::classname(), &SeriesSet::serialize},
     {data::String::classname(), &String::serialize},
     {data::StructureTraits::classname(), &StructureTraits::serialize},
     {data::StructureTraitsDictionary::classname(), &StructureTraitsDictionary::serialize},

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include "ui/base/GuiBaseObject.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
-
-#include <data/Composite.hpp>
 
 #include <filesystem>
 #include <functional>

@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QSlider>
 
+#include <array>
 namespace sight::sightviewer::test::ui
 {
 

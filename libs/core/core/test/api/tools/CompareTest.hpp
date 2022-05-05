@@ -40,6 +40,8 @@ CPPUNIT_TEST(infiniteTest);
 CPPUNIT_TEST(nanTest);
 CPPUNIT_TEST(pointerTest);
 CPPUNIT_TEST(mapTest);
+CPPUNIT_TEST(unorderedSetTest);
+CPPUNIT_TEST(pairTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -58,6 +60,8 @@ public:
 
     void pointerTest();
     void mapTest();
+    void unorderedSetTest();
+    void pairTest();
 };
 
 } //namespace ut

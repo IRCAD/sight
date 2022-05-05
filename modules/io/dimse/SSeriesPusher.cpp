@@ -181,8 +181,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        data::Vector::ConstIteratorType it = seriesVector->begin();
-        for( ; it != seriesVector->end() ; ++it)
+        for(auto it = seriesVector->cbegin() ; it != seriesVector->cend() ; ++it)
         {
             data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(*it);
             SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", series);

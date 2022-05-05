@@ -28,11 +28,13 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/ActivitySeries.hpp>
+#include <data/ActivitySet.hpp>
 #include <data/Array.hpp>
 #include <data/Boolean.hpp>
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
 #include <data/DicomSeries.hpp>
@@ -40,12 +42,12 @@
 #include <data/Equipment.hpp>
 #include <data/Float.hpp>
 #include <data/Graph.hpp>
+#include <data/IContainer.hxx>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/Landmarks.hpp>
 #include <data/Line.hpp>
-#include <data/List.hpp>
 #include <data/Material.hpp>
 #include <data/Matrix4.hpp>
 #include <data/ModelSeries.hpp>
@@ -65,6 +67,7 @@
 #include <data/ROITraits.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/String.hpp>
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsDictionary.hpp>
@@ -330,12 +333,11 @@ void SessionTest::stringTest()
 template<>
 inline data::Composite::sptr _generate<data::Composite>(const std::size_t variant)
 {
-    auto object     = data::Composite::New();
-    auto& container = object->getContainer();
-    container[data::Boolean::classname()] = _new<data::Boolean>(variant);
-    container[data::Integer::classname()] = _new<data::Integer>(variant);
-    container[data::Float::classname()]   = _new<data::Float>(variant);
-    container[data::String::classname()]  = _new<data::String>(variant);
+    auto object = data::Composite::New();
+    (*object)[data::Boolean::classname()] = _new<data::Boolean>(variant);
+    (*object)[data::Integer::classname()] = _new<data::Integer>(variant);
+    (*object)[data::Float::classname()]   = _new<data::Float>(variant);
+    (*object)[data::String::classname()]  = _new<data::String>(variant);
 
     return object;
 }
@@ -347,18 +349,16 @@ inline void _compare<data::Composite>(const data::Composite::csptr& actual, cons
 {
     CPPUNIT_ASSERT(actual);
 
-    const auto& container = actual->getContainer();
-
     _compare<data::Boolean>(
-        std::dynamic_pointer_cast<data::Boolean>(container.at(data::Boolean::classname())),
+        std::dynamic_pointer_cast<data::Boolean>(actual->at(data::Boolean::classname())),
         variant
     );
     _compare<data::Integer>(
-        std::dynamic_pointer_cast<data::Integer>(container.at(data::Integer::classname())),
+        std::dynamic_pointer_cast<data::Integer>(actual->at(data::Integer::classname())),
         variant
     );
-    _compare<data::Float>(std::dynamic_pointer_cast<data::Float>(container.at(data::Float::classname())), variant);
-    _compare<data::String>(std::dynamic_pointer_cast<data::String>(container.at(data::String::classname())), variant);
+    _compare<data::Float>(std::dynamic_pointer_cast<data::Float>(actual->at(data::Float::classname())), variant);
+    _compare<data::String>(std::dynamic_pointer_cast<data::String>(actual->at(data::String::classname())), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -1100,14 +1100,13 @@ void SessionTest::imageTest()
 template<>
 inline data::Vector::sptr _generate<data::Vector>(const std::size_t variant)
 {
-    auto object     = data::Vector::New();
-    auto& container = object->getContainer();
+    auto object = data::Vector::New();
 
-    container.push_back(_new<data::Boolean>(variant));
-    container.push_back(_new<data::Integer>(variant));
-    container.push_back(_new<data::Float>(variant));
-    container.push_back(_new<data::String>(variant));
-    container.push_back(_new<data::ActivitySeries>(variant));
+    object->push_back(_new<data::Boolean>(variant));
+    object->push_back(_new<data::Integer>(variant));
+    object->push_back(_new<data::Float>(variant));
+    object->push_back(_new<data::String>(variant));
+    object->push_back(_new<data::ActivitySeries>(variant));
 
     return object;
 }
@@ -1119,7 +1118,7 @@ inline void _compare<data::Vector>(const data::Vector::csptr& actual, const std:
 {
     CPPUNIT_ASSERT(actual);
 
-    auto it = actual->getContainer().cbegin();
+    auto it = actual->cbegin();
 
     _compare<data::Boolean>(std::dynamic_pointer_cast<data::Boolean>(*it++), variant);
     _compare<data::Integer>(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
@@ -1785,46 +1784,6 @@ inline void _compare<data::Line>(const data::Line::csptr& actual, const std::siz
 void SessionTest::lineTest()
 {
     _test_combine<data::Line>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::List::sptr _generate<data::List>(const std::size_t variant)
-{
-    auto object     = data::List::New();
-    auto& container = object->getContainer();
-
-    container.push_back(_new<data::Boolean>(variant));
-    container.push_back(_new<data::Integer>(variant));
-    container.push_back(_new<data::Float>(variant));
-    container.push_back(_new<data::String>(variant));
-    container.push_back(_new<data::ActivitySeries>(variant));
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void _compare<data::List>(const data::List::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    auto it = actual->getContainer().cbegin();
-
-    _compare<data::Boolean>(std::dynamic_pointer_cast<data::Boolean>(*it++), variant);
-    _compare<data::Integer>(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
-    _compare<data::Float>(std::dynamic_pointer_cast<data::Float>(*it++), variant);
-    _compare<data::String>(std::dynamic_pointer_cast<data::String>(*it++), variant);
-    _compare<data::ActivitySeries>(std::dynamic_pointer_cast<data::ActivitySeries>(*it++), variant);
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::listTest()
-{
-    _test_combine<data::List>();
 }
 
 //------------------------------------------------------------------------------
@@ -2875,6 +2834,114 @@ void SessionTest::modelSeriesTest()
     }
 
     _test_combine<data::ModelSeries>();
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::ActivitySet::sptr _generate<data::ActivitySet>(const std::size_t variant)
+{
+    auto object = data::ActivitySet::New();
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        object->push_back(_new<data::ActivitySeries>(variant + i));
+    }
+
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline void _compare<data::ActivitySet>(const data::ActivitySet::csptr& actual, const std::size_t variant)
+{
+    CPPUNIT_ASSERT(actual);
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        _compare<data::ActivitySeries>(actual->at(i), variant + i);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::activitySetTest()
+{
+    _test_combine<data::ActivitySet>();
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::CameraSet::sptr _generate<data::CameraSet>(const std::size_t variant)
+{
+    auto object = data::CameraSet::New();
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        auto camera = _new<data::Camera>(variant + i);
+        auto matrix = _new<data::Matrix4>(variant + i);
+        object->push_back(std::make_pair(camera, matrix));
+    }
+
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline void _compare<data::CameraSet>(const data::CameraSet::csptr& actual, const std::size_t variant)
+{
+    CPPUNIT_ASSERT(actual);
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        _compare<data::Camera>(actual->at(i).first, variant + i);
+        _compare<data::Matrix4>(actual->at(i).second, variant + i);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::cameraSetTest()
+{
+    _test_combine<data::CameraSet>();
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::SeriesSet::sptr _generate<data::SeriesSet>(const std::size_t variant)
+{
+    auto object = data::SeriesSet::New();
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        object->push_back(_new<data::Series>(variant + i));
+    }
+
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline void _compare<data::SeriesSet>(const data::SeriesSet::csptr& actual, const std::size_t variant)
+{
+    CPPUNIT_ASSERT(actual);
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        _compare<data::Series>(actual->at(i), variant + i);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::seriesSetTest()
+{
+    _test_combine<data::SeriesSet>();
 }
 
 //------------------------------------------------------------------------------

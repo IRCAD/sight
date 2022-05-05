@@ -23,9 +23,12 @@
 
 #include <core/tools/compare.hpp>
 
+#include <array>
 #include <cmath>
 #include <limits>
 #include <list>
+#include <map>
+#include <unordered_set>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::CompareTest);
 
@@ -363,6 +366,40 @@ void CompareTest::mapTest()
     };
 
     CPPUNIT_ASSERT(!tools::is_equal(f, i));
+}
+
+//------------------------------------------------------------------------------
+
+void CompareTest::unorderedSetTest()
+{
+    // Empty set equality test
+    CPPUNIT_ASSERT(tools::is_equal(std::unordered_set<int>(), std::unordered_set<int>()));
+
+    // Same size, same values, but different order
+    const std::unordered_set<double> a {1.0, 2.0, 3.0};
+    const std::unordered_set<double> b {3.0, 1.0, 2.0};
+
+    CPPUNIT_ASSERT(tools::is_equal(a, b));
+
+    // Same size, one different value
+    const std::unordered_set<double> c {0.0, 2.0, 3.0};
+    CPPUNIT_ASSERT(!tools::is_equal(a, c));
+}
+
+//------------------------------------------------------------------------------
+
+void CompareTest::pairTest()
+{
+    const std::pair<int, double> a {1, 1.0};
+    const std::pair<int, double> b {1, 1.0};
+    const std::pair<int, double> c {1, 2.0};
+    const std::pair<int, double> d {2, 1.0};
+    const std::pair<int, double> e {2, 2.0};
+
+    CPPUNIT_ASSERT(tools::is_equal(a, b));
+    CPPUNIT_ASSERT(!tools::is_equal(a, c));
+    CPPUNIT_ASSERT(!tools::is_equal(a, d));
+    CPPUNIT_ASSERT(!tools::is_equal(a, e));
 }
 
 } //namespace ut

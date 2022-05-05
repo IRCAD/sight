@@ -442,7 +442,7 @@ void SFilterSelectionEditor::applyFilters()
         FilterContainertype filterContainer;
 
         // Copy selected DicomSeries
-        for(const data::Object::sptr& obj : selectedDicomSeries->getContainer())
+        for(const data::Object::sptr& obj : *selectedDicomSeries)
         {
             data::DicomSeries::sptr srcDicomSerie = data::DicomSeries::dynamicCast(obj);
             SIGHT_ASSERT("The series should be a DicomSerie.", srcDicomSerie);

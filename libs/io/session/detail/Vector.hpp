@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ inline static void serialize(
     Helper::writeVersion<data::Vector>(tree, 1);
 
     std::size_t index = 0;
-    for(const auto& child : vector->getContainer())
+    for(const auto& child : *vector)
     {
         children[data::Object::classname() + std::to_string(index++)] = child;
     }
@@ -71,10 +71,8 @@ inline static data::Vector::sptr deserialize(
     Helper::readVersion<data::Vector>(tree, 0, 1);
 
     // Deserialize vector
-    auto& objects = vector->getContainer();
-
     // Clearing is required in case the object is reused
-    objects.clear();
+    vector->clear();
 
     for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
     {
@@ -85,7 +83,7 @@ inline static data::Vector::sptr deserialize(
             break;
         }
 
-        objects.push_back(it->second);
+        vector->push_back(it->second);
     }
 
     return vector;

@@ -137,7 +137,7 @@ void Measurement::addDistance(
     const SPTR(data::Point)& point2
 )
 {
-    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*m_object);
+    auto distanceVector = data::helper::MedicalImage::getDistances(*m_object);
 
     if(!distanceVector)
     {
@@ -149,7 +149,7 @@ void Measurement::addDistance(
     pointList->getPoints().push_back(point1);
     pointList->getPoints().push_back(point2);
 
-    distanceVector->getContainer().push_back(pointList);
+    distanceVector->push_back(pointList);
     data::helper::MedicalImage::setDistanceVisibility(*m_object, true);
 }
 

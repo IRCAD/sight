@@ -221,10 +221,7 @@ void calibratePointingTool(
     data::Matrix4::sptr _centerMatrix
 )
 {
-    const data::Vector::ContainerType matrices = _matricesVector->getContainer();
-    const std::size_t nbrMatrices              = matrices.size();
-
-    if(nbrMatrices < 4)
+    if(_matricesVector->size() < 4)
     {
         SIGHT_WARN("Number of points when computing the tool calibration should be more than 5.");
         return;
@@ -235,9 +232,9 @@ void calibratePointingTool(
     Eigen::Vector4d vectorSum;
     vectorSum.fill(0);
 
-    for(std::size_t i = 0 ; i < nbrMatrices ; ++i)
+    for(std::size_t i = 0 ; i < _matricesVector->size() ; ++i)
     {
-        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
+        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
@@ -264,9 +261,9 @@ void calibratePointingTool(
 
     Eigen::Vector3d translation;
     translation.fill(0);
-    for(std::size_t i = 0 ; i < nbrMatrices ; ++i)
+    for(std::size_t i = 0 ; i < _matricesVector->size() ; ++i)
     {
-        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
+        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         const geometry::eigen::helper::EigenMatrix pointMatrix =
             geometry::eigen::helper::toEigen(m1->getCoefficients());
@@ -283,7 +280,7 @@ void calibratePointingTool(
         translation(2) += calibrationMatrix(2, 3);
     }
 
-    translation /= static_cast<double>(nbrMatrices);
+    translation /= static_cast<double>(_matricesVector->size());
 
     _calibrationMatrix->setCoefficient(0, 3, translation(0));
     _calibrationMatrix->setCoefficient(1, 3, translation(1));

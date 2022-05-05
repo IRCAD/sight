@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ IValidator::ValidationType ImageProperties::validate(
         data::Image::Spacing spacing = img0->getSpacing();
         data::Image::Origin origin   = img0->getOrigin();
 
-        data::Vector::ContainerType::const_iterator it;
+        data::Vector::container_type::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(*it);

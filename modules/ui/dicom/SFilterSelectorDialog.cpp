@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Composite.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/String.hpp>
 
 #include <filter/dicom/IFilter.hpp>

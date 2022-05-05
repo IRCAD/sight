@@ -155,7 +155,7 @@ void SOpenCVIntrinsic::updating()
         const auto poseCamera = m_poseVector.lock();
         if(poseCamera)
         {
-            poseCamera->getContainer().clear();
+            poseCamera->clear();
 
             for(std::size_t index = 0 ; index < rvecs.size() ; ++index)
             {
@@ -163,11 +163,11 @@ void SOpenCVIntrinsic::updating()
 
                 io::opencv::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
-                poseCamera->getContainer().push_back(mat3D);
-                auto sig = poseCamera->signal<data::Vector::AddedObjectsSignalType>(
+                poseCamera->push_back(mat3D);
+                auto sig = poseCamera->signal<data::Vector::added_signal_t>(
                     data::Vector::s_ADDED_OBJECTS_SIG
                 );
-                sig->asyncEmit(poseCamera->getContainer());
+                sig->asyncEmit(poseCamera->get_content());
             }
         }
 

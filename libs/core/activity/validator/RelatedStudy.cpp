@@ -70,7 +70,7 @@ IValidator::ValidationType RelatedStudy::validate(
         std::string instanceUIDRef = studyRef->getInstanceUID();
         boost::algorithm::trim(instanceUIDRef);
 
-        data::Vector::ContainerType::const_iterator it;
+        data::Vector::container_type::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
             data::Series::sptr series = data::Series::dynamicCast(*it);

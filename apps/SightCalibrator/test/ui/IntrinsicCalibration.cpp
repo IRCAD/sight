@@ -35,6 +35,8 @@
 
 #include <ui/test/Tester.hpp>
 
+#include <array>
+
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightcalibrator::test::ui::IntrinsicCalibration);
 
 namespace sight::sightcalibrator::test::ui

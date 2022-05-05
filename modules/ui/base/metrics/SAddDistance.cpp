@@ -105,7 +105,7 @@ void SAddDistance::updating()
             data::helper::MedicalImage::setDistances(*image, vectDist);
         }
 
-        vectDist->getContainer().push_back(pl);
+        vectDist->push_back(pl);
 
         const auto sig =
             image->signal<data::Image::DistanceAddedSignalType>(data::Image::s_DISTANCE_ADDED_SIG);

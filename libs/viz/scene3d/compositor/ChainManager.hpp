@@ -26,8 +26,9 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/Composite.hpp>
+#include <data/Object.hpp>
 
+#include <map>
 #include <vector>
 
 namespace Ogre
@@ -124,7 +125,7 @@ private:
     Ogre::Viewport* m_ogreViewport;
 
     /// Map allowing to keep the objects of the created adaptors alive
-    data::Composite::sptr m_adaptorsObjectsOwner;
+    std::map<std::string, data::Object::sptr> m_adaptorsObjectsOwner;
 };
 
 //-----------------------------------------------------------------------------

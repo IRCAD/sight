@@ -45,6 +45,7 @@ public:
      * @brief Creates the activity series.
      * @param _key private construction key.
      */
+    DATA_API ActivitySeries();
     DATA_API ActivitySeries(Object::Key _key);
 
     /// Destroys the activity series.

@@ -201,7 +201,7 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
     SPTR(data::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
-    for(const data::Composite::ContainerType::value_type& elt : obj->getContainer())
+    for(const auto& elt : *obj)
     {
         data::Matrix4::csptr transfoMatrix =
             data::Matrix4::dynamicConstCast(elt.second);

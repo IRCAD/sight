@@ -231,8 +231,8 @@ data::ActivitySeries::sptr SeriesDB::createActivitySeries()
     const std::string CONFIG_ID = "IdOfTheConfig";
     activitySeries->setActivityConfigId(CONFIG_ID);
 
-    data::Composite::sptr data = data::Composite::New();
-    data->getContainer()["key1"] = data::String::New("ValueOfKey1");
+    auto data = data::Composite::New();
+    (*data)["key1"] = data::String::New("ValueOfKey1");
     activitySeries->setData(data);
 
     return activitySeries;

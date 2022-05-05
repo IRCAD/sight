@@ -28,6 +28,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <data/Composite.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>

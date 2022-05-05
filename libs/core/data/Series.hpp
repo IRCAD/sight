@@ -46,6 +46,7 @@ public:
      * @brief Creates the series.
      * @param _key private construction key.
      */
+    DATA_API Series();
     DATA_API Series(Object::Key _key);
 
     /// Destroys the series.

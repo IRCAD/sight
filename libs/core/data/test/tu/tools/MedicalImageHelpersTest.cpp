@@ -593,7 +593,7 @@ void MedicalImageHelpersTest::testDistances()
     pointList->getPoints().push_back(data::Point::New(0., 1., 2.));
     pointList->getPoints().push_back(data::Point::New(10., 11., 12.));
 
-    distances->getContainer().push_back(pointList);
+    distances->push_back(pointList);
 
     medImHelper::setDistances(*image, distances);
 

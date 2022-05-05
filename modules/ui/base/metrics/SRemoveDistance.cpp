@@ -73,7 +73,7 @@ void SRemoveDistance::updating()
 {
     const auto image = m_image.lock();
 
-    data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
+    auto vectDist = data::helper::MedicalImage::getDistances(*image);
 
     if(data::helper::MedicalImage::checkImageValidity(image.get_shared())
        && vectDist)
@@ -84,12 +84,12 @@ void SRemoveDistance::updating()
         if(distToRemove)
         {
             SIGHT_ASSERT("No field image distances id", vectDist);
-            const data::Vector::ConstIteratorType newEnd = std::remove(
+            const auto newEnd = std::remove(
                 vectDist->begin(),
                 vectDist->end(),
                 distToRemove
             );
-            vectDist->getContainer().erase(newEnd, vectDist->end());
+            vectDist->erase(newEnd, vectDist->end());
 
             this->notifyDeleteDistance(image.get_shared(), distToRemove);
         }
@@ -212,8 +212,8 @@ void SRemoveDistance::removeLastDistance()
 
         if(distToRemove)
         {
-            data::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
-            vectDist->getContainer().erase(newEnd, vectDist->end());
+            auto newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
+            vectDist->erase(newEnd, vectDist->end());
             this->notifyDeleteDistance(image.get_shared(), distToRemove);
         }
     }

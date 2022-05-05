@@ -26,9 +26,6 @@
 #include <core/com/Slots.hxx>
 #include <core/HiResClock.hpp>
 
-#include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
-
 #include <regex>
 
 namespace sight::module::ui::base

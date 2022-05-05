@@ -29,7 +29,6 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>

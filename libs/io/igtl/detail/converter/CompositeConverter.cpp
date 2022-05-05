@@ -57,7 +57,7 @@ CompositeConverter::~CompositeConverter()
     ::igtl::TrackingDataMessage::Pointer trackingMsg = ::igtl::TrackingDataMessage::New();
 
     data::Composite::csptr composite = data::Composite::dynamicConstCast(src);
-    for(const data::Composite::ContainerType::value_type& elt : composite->getContainer())
+    for(const auto& elt : *composite)
     {
         data::Matrix4::csptr transfoMatrix =
             data::Matrix4::dynamicConstCast(elt.second);

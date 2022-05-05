@@ -51,7 +51,7 @@ const
            || (req.minOccurs == 0 && req.maxOccurs == 0)
            || req.create) // One object is required
         {
-            data::Object::csptr obj = composite->at<data::Object>(req.name);
+            data::Object::csptr obj = composite->get(req.name);
             if(!obj)
             {
                 validation.first   = false;
@@ -74,7 +74,7 @@ const
         }
         else if(req.container == "vector")
         {
-            data::Vector::csptr vector = composite->at<data::Vector>(req.name);
+            data::Vector::csptr vector = data::Vector::dynamicConstCast(composite->get(req.name));
             if(!vector)
             {
                 validation.first   = false;
@@ -131,7 +131,7 @@ const
         }
         else // container == composite
         {
-            data::Composite::csptr currentComposite = composite->at<data::Composite>(req.name);
+            auto currentComposite = data::Composite::dynamicConstCast(composite->get(req.name));
             if(!currentComposite)
             {
                 validation.first   = false;

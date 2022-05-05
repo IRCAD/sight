@@ -32,8 +32,6 @@
 #include <core/memory/IBuffered.hpp>
 #include <core/Type.hpp>
 
-#include <data/iterator.hpp>
-
 #include <boost/range/iterator_range_core.hpp>
 
 namespace sight::data

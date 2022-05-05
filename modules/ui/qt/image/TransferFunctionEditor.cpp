@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -235,16 +234,18 @@ void TransferFunctionEditor::deleteTF()
             int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
-            data::helper::Composite compositeHelper(poolTF.get_shared());
             SIGHT_ASSERT("TF '" + selectedTFKey + "' missing in pool", this->hasTransferFunctionName(selectedTFKey));
-            compositeHelper.remove(selectedTFKey);
 
             {
-                auto sig = poolTF->signal<data::Composite::RemovedObjectsSignalType>(
+                auto sig = poolTF->signal<data::Composite::removed_signal_t>(
                     data::Composite::s_REMOVED_OBJECTS_SIG
                 );
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                compositeHelper.notify();
+
+                {
+                    const auto scoped_emitter = poolTF->scoped_emit();
+                    poolTF->erase(selectedTFKey);
+                }
             }
 
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
@@ -293,14 +294,12 @@ void TransferFunctionEditor::newTF()
             const auto poolTF = m_tfPool.lock();
             SIGHT_ASSERT("inout '" << s_TF_POOL << "' is not defined.", poolTF);
 
-            data::helper::Composite compositeHelper(poolTF.get_shared());
-            compositeHelper.add(newName, pNewTransferFunction);
+            const auto scoped_emitter = poolTF->scoped_emit();
+            poolTF->insert_or_assign(newName, pNewTransferFunction);
 
             m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
             m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->count() - 1);
             this->updateTransferFunction();
-
-            compositeHelper.notify();
         }
         else
         {
@@ -330,9 +329,10 @@ void TransferFunctionEditor::reinitializeTFPool()
         const auto poolTF = m_tfPool.lock();
         SIGHT_ASSERT("inout '" << s_TF_POOL << "' is not defined.", poolTF);
 
-        data::helper::Composite compositeHelper(poolTF.get_shared());
-        compositeHelper.clear();
-        compositeHelper.notify();
+        {
+            const auto scoped_emitter = poolTF->scoped_emit();
+            poolTF->clear();
+        }
 
         this->initTransferFunctions();
 
@@ -364,10 +364,11 @@ void TransferFunctionEditor::renameTF()
             pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
             pTF->setName(newName);
 
-            data::helper::Composite compositeHelper(poolTF.get_shared());
-            compositeHelper.remove(str);
-            compositeHelper.add(newName, pTF);
-            compositeHelper.notify();
+            {
+                const auto scoped_emitter = poolTF->scoped_emit();
+                poolTF->erase(str);
+                poolTF->insert_or_assign(newName, pTF);
+            }
 
             m_pTransferFunctionPreset->setItemText(m_pTransferFunctionPreset->currentIndex(), QString(newName.c_str()));
             m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->findText(QString(newName.c_str())));
@@ -403,7 +404,7 @@ void TransferFunctionEditor::importTF()
     const auto poolTF = m_tfPool.lock();
     SIGHT_ASSERT("inout '" << s_TF_POOL << "' is not defined.", poolTF);
 
-    data::helper::Composite compositeHelper(poolTF.get_shared());
+    const auto scoped_emitter = poolTF->scoped_emit();
 
     const auto tf     = data::TransferFunction::New();
     const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
@@ -427,11 +428,10 @@ void TransferFunctionEditor::importTF()
             tf->setName(this->createTransferFunctionName(tf->getName()));
         }
 
-        compositeHelper.add(tf->getName(), tf);
+        poolTF->insert_or_assign(tf->getName(), tf);
+
         m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
         this->presetChoice(static_cast<int>((*poolTF).size() - 1));
-
-        compositeHelper.notify();
     }
 }
 
@@ -462,13 +462,13 @@ void TransferFunctionEditor::initTransferFunctions()
     const auto poolTF = m_tfPool.lock();
     SIGHT_ASSERT("inout '" << s_TF_POOL << "' is not defined.", poolTF);
 
-    data::helper::Composite compositeHelper(poolTF.get_shared());
+    const auto scoped_emitter = poolTF->scoped_emit();
 
     const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasTransferFunctionName(defaultTFName))
     {
         data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
-        compositeHelper.add(defaultTFName, defaultTf);
+        poolTF->insert_or_assign(defaultTFName, defaultTf);
     }
 
     // Test if transfer function composite has few TF
@@ -516,7 +516,7 @@ void TransferFunctionEditor::initTransferFunctions()
                     newTF->setName(this->createTransferFunctionName(newTF->getName()));
                 }
 
-                compositeHelper.add(newTF->getName(), newTF);
+                poolTF->insert_or_assign(newTF->getName(), newTF);
             }
 
             tf->initTF();
@@ -524,8 +524,6 @@ void TransferFunctionEditor::initTransferFunctions()
 
         service::OSR::unregisterService(reader);
     }
-
-    compositeHelper.notify();
 
     this->updateTransferFunctionPreset();
 }

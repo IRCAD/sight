@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,8 +48,7 @@ inline static void serialize(
     Helper::writeVersion<data::Composite>(tree, 1);
 
     // Composite is map of child object..
-    const auto& container = composite->getContainer();
-    children = std::map<std::string, data::Object::csptr>(container.cbegin(), container.cend());
+    children = std::map<std::string, data::Object::csptr>(composite->cbegin(), composite->cend());
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +67,7 @@ inline static data::Composite::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Composite>(tree, 0, 1);
 
-    composite->setContainer(children);
+    composite->operator=(children);
 
     return composite;
 }

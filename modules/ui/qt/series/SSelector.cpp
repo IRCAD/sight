@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/helper/SeriesDB.hpp>
-#include <data/helper/Vector.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -324,19 +323,17 @@ void SSelector::onSelectedSeries(
 )
 {
     const auto selectionVector = m_selection.lock();
-    data::helper::Vector vectorHelper(selectionVector.get_shared());
+    const auto notifier        = selectionVector->scoped_emit();
 
     for(data::Series::sptr series : _deselection)
     {
-        vectorHelper.remove(series);
+        selectionVector->remove_all(series);
     }
 
     for(data::Series::sptr series : _selection)
     {
-        vectorHelper.add(series);
+        selectionVector->push_back(series);
     }
-
-    vectorHelper.notify();
 }
 
 //------------------------------------------------------------------------------

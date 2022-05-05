@@ -22,7 +22,6 @@
 
 #include "data/helper/TransferFunction.hpp"
 
-#include "data/helper/Composite.hpp"
 #include "data/helper/MedicalImage.hpp"
 #include "data/Image.hpp"
 
@@ -99,22 +98,20 @@ void TransferFunction::createTransferFunction(data::Image::sptr image)
             tfGreyLevel->setWLMinMax(wlMinMax);
         }
 
-        data::helper::Composite compositeHelper(tfPool);
-        compositeHelper.add(data::TransferFunction::s_DEFAULT_TF_NAME, tfGreyLevel);
-        compositeHelper.notify();
+        const auto scoped_emitter = tfPool->scoped_emit();
+        tfPool->insert_or_assign(data::TransferFunction::s_DEFAULT_TF_NAME, tfGreyLevel);
     }
 
-    if(m_transferFunction.expired())
+    auto transferFunction = m_transferFunction.lock();
+    if(transferFunction && transferFunction->getTFValues().empty())
     {
-        data::TransferFunction::sptr tfGreyLevel =
-            tfPool->at<data::TransferFunction>(data::TransferFunction::s_DEFAULT_TF_NAME);
-        m_transferFunction = tfGreyLevel;
+        auto tfGreyLevel = data::TransferFunction::dynamicCast(tfPool->get(data::TransferFunction::s_DEFAULT_TF_NAME));
+        transferFunction->deepCopy(tfGreyLevel);
     }
-    else if(m_transferFunction.lock()->getTFValues().empty())
+    else
     {
-        data::TransferFunction::sptr tfGreyLevel =
-            tfPool->at<data::TransferFunction>(data::TransferFunction::s_DEFAULT_TF_NAME);
-        m_transferFunction.lock()->deepCopy(tfGreyLevel);
+        auto tfGreyLevel = data::TransferFunction::dynamicCast(tfPool->get(data::TransferFunction::s_DEFAULT_TF_NAME));
+        m_transferFunction = tfGreyLevel;
     }
 }
 

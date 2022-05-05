@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
 
     std::vector<data::DicomSeries::sptr> anonymizedDicomSeriesVector;
 
-    for(const auto& value : _vector.getContainer())
+    for(const auto& value : _vector)
     {
         data::DicomSeries::sptr dicomSeries           = data::DicomSeries::dynamicCast(value);
         data::DicomSeries::sptr anonymizedDicomSeries = data::DicomSeries::New();
@@ -143,7 +143,7 @@ void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
 
     if(!m_cancelled)
     {
-        for(const auto& value : _vector.getContainer())
+        for(const auto& value : _vector)
         {
             data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(value);
             sDBhelper.remove(dicomSeries);

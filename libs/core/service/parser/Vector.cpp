@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#include "service/parser/List.hpp"
+#include "service/parser/Vector.hpp"
 
 #include "service/macros.hpp"
 
-#include <data/List.hpp>
+#include <data/Vector.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -36,7 +36,7 @@ namespace parser
 
 //------------------------------------------------------------------------------
 
-bool List::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement)
+bool Vector::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement)
 {
     bool isOk = true;
 
@@ -46,11 +46,11 @@ bool List::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElem
     {
         std::string subElementName = (*configEltIter)->getName();
         if(subElementName != "service"
-           && subElementName != "serviceList")
+           && subElementName != "serviceVector")
         {
             SIGHT_ERROR(
                 "xml subelement \"" << subElementName
-                << "\" for element object is not supported for the moment when you use a reference on item List."
+                << "\" for element object is not supported for the moment when you use a reference on item Vector."
             );
             isOk = false;
         }
@@ -61,22 +61,22 @@ bool List::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElem
 
 //------------------------------------------------------------------------------
 
-void List::updating()
+void Vector::updating()
 {
     SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
 
-void List::createConfig(core::tools::Object::sptr _obj)
+void Vector::createConfig(core::tools::Object::sptr _obj)
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
     const std::string BUILD_OBJECT      = "new";
     const std::string GET_OBJECT        = "ref";
 
-    data::List::sptr dataList = data::List::dynamicCast(_obj);
-    SIGHT_ASSERT("The passed object must be a data::List", dataList);
+    auto vector = data::Vector::dynamicCast(_obj);
+    SIGHT_ASSERT("The passed object must be a data::Vector", vector);
 
     for(core::runtime::ConfigurationElement::csptr elem : m_cfg->getElements())
     {
@@ -106,8 +106,8 @@ void List::createConfig(core::tools::Object::sptr _obj)
                 data::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SIGHT_ASSERT("A data::List can contain only data::Object", localObj);
-                dataList->getContainer().push_back(localObj);
+                SIGHT_ASSERT("A data::Vector can contain only data::Object", localObj);
+                vector->push_back(localObj);
             }
             else // if( buildMode == GET_OBJECT )
             {
@@ -119,7 +119,7 @@ void List::createConfig(core::tools::Object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-void List::startConfig()
+void Vector::startConfig()
 {
     for(service::IAppConfigManager::sptr ctm : m_ctmContainer)
     {
@@ -129,7 +129,7 @@ void List::startConfig()
 
 //------------------------------------------------------------------------------
 
-void List::updateConfig()
+void Vector::updateConfig()
 {
     for(service::IAppConfigManager::sptr ctm : m_ctmContainer)
     {
@@ -139,7 +139,7 @@ void List::updateConfig()
 
 //------------------------------------------------------------------------------
 
-void List::stopConfig()
+void Vector::stopConfig()
 {
     BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
     {
@@ -149,7 +149,7 @@ void List::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void List::destroyConfig()
+void Vector::destroyConfig()
 {
     BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
     {

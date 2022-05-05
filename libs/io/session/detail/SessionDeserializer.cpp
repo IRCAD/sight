@@ -22,10 +22,12 @@
 #include "SessionDeserializer.hpp"
 
 #include "ActivitySeries.hpp"
+#include "ActivitySet.hpp"
 #include "Array.hpp"
 #include "CalibrationInfo.hpp"
 #include "Camera.hpp"
 #include "CameraSeries.hpp"
+#include "CameraSet.hpp"
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
@@ -36,7 +38,6 @@
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
 #include "Line.hpp"
-#include "List.hpp"
 #include "Material.hpp"
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
@@ -56,6 +57,7 @@
 #include "ROITraits.hpp"
 #include "Series.hpp"
 #include "SeriesDB.hpp"
+#include "SeriesSet.hpp"
 #include "String.hpp"
 #include "StructureTraits.hpp"
 #include "StructureTraitsDictionary.hpp"
@@ -66,6 +68,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
+#include <data/IContainer.hxx>
 #include <data/Integer.hpp>
 #include <data/mt/locked_ptr.hpp>
 
@@ -90,10 +93,12 @@ static std::shared_mutex s_deserializers_mutex;
 // Default serializer registry
 static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializers = {
     {data::ActivitySeries::classname(), &ActivitySeries::deserialize},
+    {data::ActivitySet::classname(), &ActivitySet::deserialize},
     {data::Array::classname(), &Array::deserialize},
     {data::Boolean::classname(), &Helper::deserialize<data::Boolean>},
     {data::Camera::classname(), &Camera::deserialize},
     {data::CameraSeries::classname(), &CameraSeries::deserialize},
+    {data::CameraSet::classname(), &CameraSet::deserialize},
     {data::CalibrationInfo::classname(), &CalibrationInfo::deserialize},
     {data::Color::classname(), &Color::deserialize},
     {data::Composite::classname(), &Composite::deserialize},
@@ -107,7 +112,6 @@ static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializ
     {data::ImageSeries::classname(), &ImageSeries::deserialize},
     {data::Landmarks::classname(), &Landmarks::deserialize},
     {data::Line::classname(), &Line::deserialize},
-    {data::List::classname(), &List::deserialize},
     {data::Material::classname(), &Material::deserialize},
     {data::Matrix4::classname(), &Matrix4::deserialize},
     {data::Mesh::classname(), &Mesh::deserialize},
@@ -127,6 +131,7 @@ static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializ
     {data::ROITraits::classname(), &ROITraits::deserialize},
     {data::Series::classname(), &Series::deserialize},
     {data::SeriesDB::classname(), &SeriesDB::deserialize},
+    {data::SeriesSet::classname(), &SeriesSet::deserialize},
     {data::String::classname(), &String::deserialize},
     {data::StructureTraits::classname(), &StructureTraits::deserialize},
     {data::StructureTraitsDictionary::classname(), &StructureTraitsDictionary::deserialize},

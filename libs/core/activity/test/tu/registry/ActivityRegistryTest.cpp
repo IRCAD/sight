@@ -98,7 +98,7 @@ void ActivityRegistryTest::registryTest()
     activity::extension::Activity::ActivitiesType activities;
 
     // 1 image
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -109,7 +109,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry7"), activities.at(3).id);
 
     // 2 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -119,7 +119,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry6"), activities.at(2).id);
 
     // 3 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -127,7 +127,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
 
     // 4 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -136,7 +136,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry5"), activities.at(1).id);
 
     // 5 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -145,7 +145,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry5"), activities.at(1).id);
 
     // 6 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -154,7 +154,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry5"), activities.at(1).id);
 
     // 7 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -163,7 +163,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry5"), activities.at(1).id);
 
     // 8 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -172,7 +172,7 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry5"), activities.at(1).id);
 
     // 9 images
-    v->getContainer().push_back(data::Image::New());
+    v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
@@ -180,16 +180,16 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
 
     // 9 images, 1 mesh
-    v->getContainer().push_back(data::Mesh::New());
+    v->push_back(data::Mesh::New());
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), activities.size());
 
     // 1 images, 1 mesh
-    v->getContainer().clear();
-    v->getContainer().push_back(data::Image::New());
-    v->getContainer().push_back(data::Mesh::New());
+    v->clear();
+    v->push_back(data::Image::New());
+    v->push_back(data::Mesh::New());
 
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
@@ -199,9 +199,9 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry7"), activities.at(1).id);
 
     // 1 images, 2 mesh, 1 ImageSeries, 1 ModelSeries
-    v->getContainer().push_back(data::Mesh::New());
-    v->getContainer().push_back(data::ImageSeries::New());
-    v->getContainer().push_back(data::ModelSeries::New());
+    v->push_back(data::Mesh::New());
+    v->push_back(data::ImageSeries::New());
+    v->push_back(data::ModelSeries::New());
 
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());

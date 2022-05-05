@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -307,7 +306,7 @@ void SMultipleTF::initializePools()
         const auto tfPools = m_tfPools.lock();
 
         const data::Composite::sptr sTFPools = tfPools.get_shared();
-        data::helper::Composite compositeHelper(sTFPools);
+        const auto notifier                  = sTFPools->scoped_emit();
 
         // Add the default TF if it not exists.
         const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
@@ -315,8 +314,8 @@ void SMultipleTF::initializePools()
         {
             const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
             const data::Composite::sptr defaultComposite = data::Composite::New();
-            defaultComposite->getContainer()[defaultTFName] = defaultTf;
-            compositeHelper.add(defaultTFName, defaultComposite);
+            (*defaultComposite)[defaultTFName] = defaultTf;
+            sTFPools->insert_or_assign(defaultTFName, defaultComposite);
         }
 
         // Test if transfer function composite has few TF
@@ -362,14 +361,14 @@ void SMultipleTF::initializePools()
                                 newTF->setName(this->createPoolName(newTF->getName(), sTFPools));
                             }
 
-                            composite->getContainer()[newTF->getName()] = newTF;
+                            (*composite)[newTF->getName()] = newTF;
 
                             // If it's requested to have one TF per file, add the composite and create a new one.
                             if(!m_tfPerPath)
                             {
                                 if(composite->size() > 0)
                                 {
-                                    compositeHelper.add(newTF->getName(), composite);
+                                    sTFPools->insert_or_assign(newTF->getName(), composite);
                                     composite = data::Composite::New();
                                 }
                             }
@@ -382,7 +381,7 @@ void SMultipleTF::initializePools()
                 {
                     if(composite->size() > 0)
                     {
-                        compositeHelper.add(dirPath.filename().u8string(), composite);
+                        sTFPools->insert_or_assign(dirPath.filename().u8string(), composite);
                         composite = data::Composite::New();
                     }
                 }
@@ -433,7 +432,7 @@ void SMultipleTF::initializePools()
                                 poolName = this->createPoolName(poolName, sTFPools);
                             }
 
-                            compositeHelper.add(poolName, newTFPool);
+                            sTFPools->insert_or_assign(poolName, newTFPool);
                         }
                     }
                 }
@@ -442,9 +441,6 @@ void SMultipleTF::initializePools()
             // Delete the reader.
             service::remove(mulTFReader);
         }
-
-        // Sends signals.
-        compositeHelper.notify();
     }
 
     // Update all presets in the editor.
@@ -544,12 +540,9 @@ void SMultipleTF::deletePool()
 
             // Remove the current TF pool from the Composite.
             const std::string selectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
-            data::helper::Composite compositeHelper(tfPools.get_shared());
+            const auto notifier                 = tfPools->scoped_emit();
 
-            compositeHelper.remove(selectedTFPoolKey);
-
-            // Sends signals.
-            compositeHelper.notify();
+            tfPools->erase(selectedTFPoolKey);
 
             m_tfPoolsPreset->removeItem(m_tfPoolsPreset->findText(QString::fromStdString(selectedTFPoolKey)));
         }
@@ -588,14 +581,13 @@ void SMultipleTF::newPool()
                 // Create the new composite.
                 const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
                 const data::Composite::sptr defaultComposite = data::Composite::New();
-                defaultComposite->getContainer()[newName] = defaultTf;
+                (*defaultComposite)[newName] = defaultTf;
 
                 // Add a new composite.
-                data::helper::Composite compositeHelper(sTFPools);
                 {
-                    compositeHelper.add(newName, defaultComposite);
+                    const auto scoped_emitter = sTFPools->scoped_emit();
+                    sTFPools->insert_or_assign(newName, defaultComposite);
                 }
-                compositeHelper.notify();
 
                 // Creates presets.
                 m_tfPoolsPreset->clear();
@@ -647,11 +639,10 @@ void SMultipleTF::copyPool()
                 SIGHT_ASSERT("inout '" << s_TF_POOLS << "' must contain only Composite.", currentTFPool);
 
                 // Copy the composite.
-                data::helper::Composite compositeHelper(sTFPools);
                 {
-                    compositeHelper.add(newName, data::Object::copy(currentTFPool));
+                    const auto scoped_emitter = sTFPools->scoped_emit();
+                    sTFPools->insert_or_assign(newName, data::Object::copy(currentTFPool));
                 }
-                compositeHelper.notify();
 
                 // Creates presets.
                 m_tfPoolsPreset->clear();
@@ -687,13 +678,9 @@ void SMultipleTF::reinitializePools()
         // Get the composite.
         const auto tfPools = m_tfPools.lock();
 
-        data::helper::Composite compositeHelper(tfPools.get_shared());
-
         // Clear it.
-        compositeHelper.clear();
-
-        // Sends signals.
-        compositeHelper.notify();
+        const auto scoped_emitter = tfPools->scoped_emit();
+        tfPools->clear();
     }
 
     // Initialize pools.
@@ -725,10 +712,9 @@ void SMultipleTF::renamePool()
                 data::Object::sptr object = (*tfPools)[str];
 
                 // Rename the composite.
-                data::helper::Composite compositeHelper(sTFPools);
-                compositeHelper.remove(str);
-                compositeHelper.add(newName, object);
-                compositeHelper.notify();
+                const auto scoped_emitter = sTFPools->scoped_emit();
+                sTFPools->erase(str);
+                sTFPools->insert_or_assign(newName, object);
 
                 // Creates presets.
                 m_tfPoolsPreset->clear();
@@ -790,9 +776,10 @@ void SMultipleTF::importPool()
                 poolName = this->createPoolName(poolName, sTFPools);
             }
 
-            data::helper::Composite compositeHelper(sTFPools);
-            compositeHelper.add(poolName, tfPool);
-            compositeHelper.notify();
+            {
+                const auto scoped_emitter = sTFPools->scoped_emit();
+                sTFPools->insert_or_assign(poolName, tfPool);
+            }
 
             m_tfPoolsPreset->addItem(QString(poolName.c_str()));
             index = static_cast<int>((*tfPools).size() - 1);

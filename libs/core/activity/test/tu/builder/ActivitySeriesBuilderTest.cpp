@@ -73,8 +73,8 @@ void ActivitySeriesBuilderTest::buildDataTest()
     data::Vector::sptr selection                = data::Vector::New();
     data::ImageSeries::sptr imgSeriesSelected   = data::ImageSeries::New();
     data::ModelSeries::sptr modelSeriesSelected = data::ModelSeries::New();
-    selection->getContainer().push_back(imgSeriesSelected);
-    selection->getContainer().push_back(modelSeriesSelected);
+    selection->push_back(imgSeriesSelected);
+    selection->push_back(modelSeriesSelected);
 
     activity::extension::Activity::ActivitiesType activities;
     activities = m_activity->getInfos(selection);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/data/config.hpp"
 
-#include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
+
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <service/IController.hpp>
 

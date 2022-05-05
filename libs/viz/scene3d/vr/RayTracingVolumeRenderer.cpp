@@ -857,7 +857,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
 
         Ogre::Technique* const tech = mat->createTechnique();
 
-        //Tecnique scheme name
+        //Technique scheme name
         {
             tech->setSchemeName("DepthPeeling/depthMap");
         }
@@ -907,7 +907,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                 fpParams->setNamedConstant("u_s3Image", 0);
             }
 
-            //Transfer function and compositior
+            //Transfer function and compositor
             {
                 //GPU TF binding
                 {

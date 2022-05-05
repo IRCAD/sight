@@ -80,7 +80,7 @@ void Measurement::createNodes(
     if(distanceVector)
     {
         unsigned int id = 1;
-        for(data::Object::sptr object : distanceVector->getContainer())
+        for(data::Object::sptr object : *distanceVector)
         {
             data::PointList::sptr pointList = data::PointList::dynamicCast(object);
             if(pointList)

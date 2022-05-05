@@ -1398,7 +1398,7 @@ void AppConfigTest::objectConfigTest()
     auto compo1 = std::dynamic_pointer_cast<data::Composite>(core::tools::fwID::getObject("compo1Id"));
     CPPUNIT_ASSERT(compo1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), compo1->count("dataInComposite"));
-    auto data2 = compo1->at<data::String>("dataInComposite");
+    auto data2 = compo1->get<data::String>("dataInComposite");
     CPPUNIT_ASSERT(data2);
     CPPUNIT_ASSERT_EQUAL(std::string("data2Id"), data2->getID());
     CPPUNIT_ASSERT_EQUAL(std::string("Hello"), data2->value());

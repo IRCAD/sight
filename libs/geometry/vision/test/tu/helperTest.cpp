@@ -324,11 +324,11 @@ void helperTest::reprojectionRealDatasetTest2()
 
 void helperTest::toolCalibrationBasic()
 {
-    const std::uint8_t nbMatrices            = 34;
-    sight::data::Vector::sptr matricesVector = sight::data::Vector::New();
+    const std::uint8_t nbMatrices = 34;
+    auto matricesVector           = sight::data::Vector::New();
 
-    sight::data::Matrix4::sptr resCenterMatrix    = sight::data::Matrix4::New();
-    sight::data::Matrix4::sptr resTransformMatrix = sight::data::Matrix4::New();
+    auto resCenterMatrix    = sight::data::Matrix4::New();
+    auto resTransformMatrix = sight::data::Matrix4::New();
 
     const glm::dvec3 center(0., 0., 0.);
     const double radius = 18;
@@ -356,7 +356,7 @@ void helperTest::toolCalibrationBasic()
         auto mat = sight::data::Matrix4::New();
         geometry::data::setTF3DFromMatrix(*mat, matrix);
 
-        matricesVector->getContainer().push_back(mat);
+        matricesVector->push_back(mat);
     }
 
     geometry::vision::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
@@ -399,11 +399,11 @@ void helperTest::toolCalibrationBasic()
 
 void helperTest::toolCalibration()
 {
-    const std::uint8_t nbMatrices            = 46;
-    sight::data::Vector::sptr matricesVector = sight::data::Vector::New();
+    const std::uint8_t nbMatrices = 46;
+    auto matricesVector           = sight::data::Vector::New();
 
-    sight::data::Matrix4::sptr resCenterMatrix    = sight::data::Matrix4::New();
-    sight::data::Matrix4::sptr resTransformMatrix = sight::data::Matrix4::New();
+    auto resCenterMatrix    = sight::data::Matrix4::New();
+    auto resTransformMatrix = sight::data::Matrix4::New();
 
     const glm::dvec3 center(36., 52., -530.);
     const glm::dvec3 translation(-459.45, 46.6, -88.54);
@@ -428,7 +428,7 @@ void helperTest::toolCalibration()
         sight::data::Matrix4::sptr mat = sight::data::Matrix4::New();
         geometry::data::setTF3DFromMatrix(*mat, matrix);
 
-        matricesVector->getContainer().push_back(mat);
+        matricesVector->push_back(mat);
     }
 
     geometry::vision::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);

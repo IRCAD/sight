@@ -22,6 +22,9 @@
 
 #include "ui/base/dialog/LocationDialog.hpp"
 
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
+
 namespace sight::ui::base
 {
 

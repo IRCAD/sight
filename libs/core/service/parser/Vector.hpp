@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,13 @@
 #pragma once
 
 #include "service/config.hpp"
-#include <service/IAppConfigManager.hpp>
-#include <service/IXMLParser.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
+
+#include <service/IAppConfigManager.hpp>
+#include <service/IXMLParser.hpp>
 
 namespace sight::service
 {
@@ -37,26 +38,26 @@ namespace parser
 {
 
 /**
- * @brief   Specific service for the construction of a List and its associated services from an XML-based description.
+ * @brief   Specific service for the construction of a Vector and its associated services from an XML-based description.
  * @see     service::IXMLParser
  */
-class SERVICE_CLASS_API List : public service::IXMLParser
+class SERVICE_CLASS_API Vector : public service::IXMLParser
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(List, service::IXMLParser);
+    SIGHT_DECLARE_SERVICE(Vector, service::IXMLParser);
 
     /**
      * @brief   Constructor : does nothing.
      */
-    List()
+    Vector()
     {
     }
 
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~List()
+    virtual ~Vector()
     {
     }
 
@@ -73,9 +74,9 @@ public:
 protected:
 
     /**
-     * @brief   Updating method : create List object.
+     * @brief   Updating method : create Vector object.
      *
-     * Parse the List configuration element to configure and add its objects.
+     * Parse the Vector configuration element to configure and add its objects.
      */
     SERVICE_API void updating() override;
 

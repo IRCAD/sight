@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ void SPushSelection::updating()
     std::vector<data::Series::sptr> addedSeries;
 
     // Loop through all selected series
-    for(const data::Object::sptr& obj : selectedSeries->getContainer())
+    for(const data::Object::sptr& obj : *selectedSeries)
     {
         data::Series::sptr series = data::Series::dynamicCast(obj);
 

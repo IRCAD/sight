@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,19 +23,14 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data::tools
+namespace sight::data::ut
 {
 
-namespace ut
+class ActivitySetTest : public CPPUNIT_NS::TestFixture
 {
-
-/**
- * @brief   Test data::helper::Composite methods.
- */
-class CompositeHelperTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(CompositeHelperTest);
-CPPUNIT_TEST(testHelper);
+CPPUNIT_TEST_SUITE(ActivitySetTest);
+CPPUNIT_TEST(nominalTest);
+CPPUNIT_TEST(copyTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,9 +39,8 @@ public:
     void setUp();
     void tearDown();
 
-    void testHelper();
+    void nominalTest();
+    void copyTest();
 };
 
-} //namespace ut
-
-} //namespace sight::data::tools
+} // namespace sight::data::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,12 +24,14 @@
 #include "io/session/config.hpp"
 #include "io/session/Helper.hpp"
 
-#include <data/List.hpp>
+#include <data/Camera.hpp>
+#include <data/CameraSet.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::io::session
 {
 
-namespace detail::List
+namespace detail::CameraSet
 {
 
 //------------------------------------------------------------------------------
@@ -42,21 +44,24 @@ inline static void serialize(
     const core::crypto::secure_string& = ""
 )
 {
-    const auto list = Helper::safeCast<data::List>(object);
+    const auto camera_set = Helper::safeCast<data::CameraSet>(object);
 
     // Add a version number. Not mandatory, but could help for future release
-    Helper::writeVersion<data::List>(tree, 1);
+    Helper::writeVersion<data::CameraSet>(tree, 1);
 
-    std::size_t index = 0;
-    for(const auto& child : list->getContainer())
+    for(std::size_t index = 0, end = camera_set->size() ; index < end ; ++index)
     {
-        children[data::Object::classname() + std::to_string(index++)] = child;
+        const auto& pair = camera_set->at(index);
+
+        const std::string& index_string = std::to_string(index);
+        children[data::CameraSet::classname() + data::Camera::classname() + index_string]  = pair.first;
+        children[data::CameraSet::classname() + data::Matrix4::classname() + index_string] = pair.second;
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline static data::List::sptr deserialize(
+inline static data::CameraSet::sptr deserialize(
     zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
@@ -65,32 +70,53 @@ inline static data::List::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto list = Helper::safeCast<data::List>(object);
+    auto camera_set = Helper::safeCast<data::CameraSet>(object);
 
     // Check version number. Not mandatory, but could help for future release
-    Helper::readVersion<data::List>(tree, 0, 1);
+    Helper::readVersion<data::CameraSet>(tree, 0, 1);
 
-    // Deserialize list
-    auto& objects = list->getContainer();
-
+    // Deserialize vector
     // Clearing is required in case the object is reused
-    objects.clear();
+    camera_set->clear();
 
     for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::Object::classname() + std::to_string(index));
+        const std::string& index_string = std::to_string(index);
 
-        if(it == children.cend())
+        const auto& camera_it = children.find(data::CameraSet::classname() + data::Camera::classname() + index_string);
+
+        if(camera_it == children.cend())
         {
             break;
         }
 
-        objects.push_back(it->second);
+        const auto& camera = std::dynamic_pointer_cast<data::Camera>(camera_it->second);
+
+        if(!camera)
+        {
+            break;
+        }
+
+        const auto& matrix_it = children.find(data::CameraSet::classname() + data::Matrix4::classname() + index_string);
+
+        if(matrix_it == children.cend())
+        {
+            break;
+        }
+
+        const auto& matrix = std::dynamic_pointer_cast<data::Matrix4>(matrix_it->second);
+
+        if(!matrix)
+        {
+            break;
+        }
+
+        camera_set->push_back(std::make_pair(camera, matrix));
     }
 
-    return list;
+    return camera_set;
 }
 
-} // namespace detail::List
+} // namespace detail::CameraSet
 
 } // namespace sight::io

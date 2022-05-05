@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,30 +23,29 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data::tools
+namespace sight::data::tools::ut
 {
 
-namespace ut
+class ContainerNotifierTest : public CPPUNIT_NS::TestFixture
 {
-
-/**
- * @brief   Test data::helper::Vector methods.
- */
-class VectorHelperTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(VectorHelperTest);
-CPPUNIT_TEST(testHelper);
+CPPUNIT_TEST_SUITE(ContainerNotifierTest);
+CPPUNIT_TEST(vectorTest);
+CPPUNIT_TEST(compositeTest);
+CPPUNIT_TEST(seriesSetTest);
+CPPUNIT_TEST(activitySetTest);
+CPPUNIT_TEST(cameraSetTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
     void setUp();
     void tearDown();
 
-    void testHelper();
+    void vectorTest();
+    void compositeTest();
+    void seriesSetTest();
+    void activitySetTest();
+    void cameraSetTest();
 };
 
-} //namespace ut
-
-} //namespace sight::data::tools
+} // namespace sight::data::tools::ut

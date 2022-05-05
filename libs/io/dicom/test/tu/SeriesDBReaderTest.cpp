@@ -821,8 +821,8 @@ void SeriesDBReaderTest::readSRSeries()
     data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
 
     // Verify first distance
-    data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
-    const data::Point::sptr& pointC         = distancePointList->getPoints()[0];
+    auto distancePointList          = data::PointList::dynamicCast((*distanceVector)[0]);
+    const data::Point::sptr& pointC = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), pointC->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointC->getCoord()[2], delta);
@@ -885,8 +885,8 @@ void SeriesDBReaderTest::read3DSRSeries()
     data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
 
     // Verify first distance
-    data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
-    const data::Point::sptr& pointC         = distancePointList->getPoints()[0];
+    auto distancePointList          = data::PointList::dynamicCast((*distanceVector)[0]);
+    const data::Point::sptr& pointC = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), pointC->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(87.26), pointC->getCoord()[2], delta);

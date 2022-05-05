@@ -164,8 +164,8 @@ void SSeriesPuller::pullSeries()
     // Find which selected series must be pulled.
     DicomSeriesContainerType pullSeriesVector;
     DicomSeriesContainerType selectedSeriesVector;
-    data::Vector::ConstIteratorType it          = selectedSeries->begin();
-    const data::Vector::ConstIteratorType itEnd = selectedSeries->end();
+    auto it          = selectedSeries->cbegin();
+    const auto itEnd = selectedSeries->cend();
     for( ; it != itEnd ; ++it)
     {
         // Check that the series is a DICOM series.

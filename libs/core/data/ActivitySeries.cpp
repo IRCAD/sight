@@ -30,6 +30,12 @@ SIGHT_REGISTER_DATA(sight::data::ActivitySeries)
 namespace sight::data
 {
 
+ActivitySeries::ActivitySeries() :
+    Series(),
+    m_data(data::Composite::New())
+{
+}
+
 ActivitySeries::ActivitySeries(data::Object::Key _key) :
     Series(_key),
     m_data(data::Composite::New())

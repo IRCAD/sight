@@ -26,7 +26,6 @@
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/Vector.hpp>
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 #include <data/PointList.hpp>

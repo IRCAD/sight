@@ -28,7 +28,6 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <data/helper/Vector.hpp>
 #include <data/Image.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
@@ -117,7 +116,7 @@ void SImagesSelector::updating()
 
     m_capturesListWidget->clear();
     unsigned int captureIdx = 0;
-    for(data::Object::sptr obj : vector->getContainer())
+    for(data::Object::sptr obj : *vector)
     {
         data::Image::sptr image = data::Image::dynamicCast(obj);
         if(image)
@@ -142,11 +141,10 @@ void SImagesSelector::remove()
     if(idx >= 0)
     {
         const auto vector      = m_selected_image.lock();
-        data::Object::sptr obj = vector->getContainer()[idx];
+        data::Object::sptr obj = (*vector)[std::size_t(idx)];
 
-        data::helper::Vector vectorHelper(vector.get_shared());
-        vectorHelper.remove(obj);
-        vectorHelper.notify();
+        const auto scoped_emitter = vector->scoped_emit();
+        vector->remove_all(obj);
 
         this->updating();
     }
@@ -158,9 +156,8 @@ void SImagesSelector::reset()
 {
     const auto vector = m_selected_image.lock();
 
-    data::helper::Vector vectorHelper(vector.get_shared());
-    vectorHelper.clear();
-    vectorHelper.notify();
+    const auto scoped_emitter = vector->scoped_emit();
+    vector->clear();
 
     m_capturesListWidget->clear();
     m_nbCapturesLabel->setText(QString("0"));
@@ -223,9 +220,8 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     const auto vector = m_selected_image.lock();
 
-    sight::data::helper::Vector vectorHelper(vector.get_shared());
-    vectorHelper.add(image);
-    vectorHelper.notify();
+    const auto scoped_emitter = vector->scoped_emit();
+    vector->push_back(image);
 
     this->updating();
 }

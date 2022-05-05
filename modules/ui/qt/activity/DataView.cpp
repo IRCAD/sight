@@ -376,7 +376,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
-        data::Object::sptr obj = activitySeriesData->at<data::Object>(req.name);
+        auto obj = activitySeriesData->get(req.name);
         if(obj)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0)
@@ -392,7 +392,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
                     data::Vector::sptr vector = data::Vector::dynamicCast(obj);
                     if(vector)
                     {
-                        for(auto subObj : vector->getContainer())
+                        for(auto subObj : *vector)
                         {
                             this->addObjectItem(i, subObj);
                         }
@@ -407,7 +407,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
                     data::Composite::sptr composite = data::Composite::dynamicCast(obj);
                     if(composite)
                     {
-                        for(auto subObj : composite->getContainer())
+                        for(const auto& subObj : *composite)
                         {
                             this->addObjectItem(i, subObj.second);
                         }
@@ -500,7 +500,7 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if(obj && obj->isA(req.type))
                     {
-                        vector->getContainer().push_back(obj);
+                        vector->push_back(obj);
                     }
                     else
                     {

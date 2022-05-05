@@ -157,13 +157,17 @@ void SSeriesPusher::pushSeries()
 
     const auto seriesVector = m_selectedSeries.lock();
 
-    const std::vector<data::DicomSeries::sptr> dataVector = seriesVector->getDataContainer<data::DicomSeries>();
-
     // Connect to PACS
-    const std::size_t seriesVectorSize = seriesVector->size();
-    std::size_t nbSeriesSuccess        = 0;
-    for(const auto& dicomSeries : dataVector)
+    std::size_t nbSeriesSuccess = 0;
+    for(const auto& series : *seriesVector)
     {
+        const auto& dicomSeries = data::DicomSeries::dynamicCast(series);
+
+        if(!dicomSeries)
+        {
+            continue;
+        }
+
         nbSeriesSuccess++;
 
         data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
@@ -199,7 +203,7 @@ void SSeriesPusher::pushSeries()
                 {
                     this->displayMessage(
                         "Upload successful: " + std::to_string(nbSeriesSuccess) + "/"
-                        + std::to_string(seriesVectorSize),
+                        + std::to_string(seriesVector->size()),
                         false
                     );
                 }

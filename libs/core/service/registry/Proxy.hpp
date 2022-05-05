@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include <core/com/SlotBase.hpp>
 #include <core/mt/types.hpp>
 
+#include <map>
 #include <vector>
 
 namespace sight::service

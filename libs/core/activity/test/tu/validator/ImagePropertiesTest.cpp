@@ -80,8 +80,8 @@ void ImagePropertiesTest::propertiesTest()
         utestData::generator::Image::generateRandomImage(img2, core::Type::UINT8);
 
         data::Vector::sptr vector = data::Vector::New();
-        vector->getContainer().push_back(img1);
-        vector->getContainer().push_back(img2);
+        vector->push_back(img1);
+        vector->push_back(img2);
 
         activity::IValidator::ValidationType validation;
 
@@ -112,8 +112,8 @@ void ImagePropertiesTest::propertiesTest()
         );
 
         data::Vector::sptr vector = data::Vector::New();
-        vector->getContainer().push_back(img1);
-        vector->getContainer().push_back(img2);
+        vector->push_back(img1);
+        vector->push_back(img2);
 
         activity::IValidator::ValidationType validation;
 

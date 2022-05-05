@@ -113,10 +113,9 @@ void IActivitySequencer::storeActivityData(
     if(overrides)
     {
         // Do not store overriden requirements
-        auto overridesContainer = overrides->getContainer();
-        for(const auto& elt : composite->getContainer())
+        for(const auto& elt : *composite)
         {
-            if(overridesContainer.count(elt.first) == 0)
+            if(overrides->count(elt.first) == 0)
             {
                 m_requirements[elt.first] = elt.second;
             }
@@ -124,7 +123,7 @@ void IActivitySequencer::storeActivityData(
     }
     else
     {
-        for(const auto& elt : composite->getContainer())
+        for(const auto& elt : *composite)
         {
             m_requirements[elt.first] = elt.second;
         }
@@ -155,15 +154,13 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
             const activity::extension::ActivityInfo& info =
                 activity::extension::Activity::getDefault()->getInfo(activityId);
 
-            auto overridesContainer = overrides->getContainer();
-
             for(const auto& req : info.requirements)
             {
                 if(m_requirements.find(req.name) != m_requirements.end()
-                   || overridesContainer.find(req.name) != m_requirements.end())
+                   || overrides->find(req.name) != m_requirements.end())
                 {
-                    composite->getContainer()[req.name] = overridesContainer.count(req.name) == 0
-                                                          ? m_requirements[req.name] : overridesContainer[req.name];
+                    (*composite)[req.name] = overrides->count(req.name) == 0
+                                             ? m_requirements[req.name] : overrides->get(req.name);
                 }
             }
         }
@@ -177,7 +174,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
             {
                 if(m_requirements.find(req.name) != m_requirements.end())
                 {
-                    composite->getContainer()[req.name] = m_requirements[req.name];
+                    (*composite)[req.name] = m_requirements[req.name];
                 }
             }
         }
@@ -212,29 +209,28 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
         {
             if(overrides)
             {
-                auto overridesContainer = overrides->getContainer();
-                if(overridesContainer.count(req.name) != 0)
+                if(overrides->count(req.name) != 0)
                 {
-                    composite->getContainer()[req.name] = overridesContainer[req.name];
+                    (*composite)[req.name] = overrides->get(req.name);
                 }
             }
             else if(m_requirements.find(req.name) != m_requirements.end())
             {
-                composite->getContainer()[req.name] = m_requirements[req.name];
+                (*composite)[req.name] = m_requirements[req.name];
             }
             else if(req.create == true || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
                 // create the new data
-                data::Object::sptr newObj = data::factory::New(req.type);
-                composite->getContainer()[req.name] = newObj;
-                m_requirements[req.name]            = newObj;
+                auto newObj = data::factory::New(req.type);
+                (*composite)[req.name]   = newObj;
+                m_requirements[req.name] = newObj;
             }
             else if(req.minOccurs == 0)
             {
                 // create empty composite for optional data
-                data::Composite::sptr optionalDataComposite = data::Composite::New();
-                composite->getContainer()[req.name] = optionalDataComposite;
-                m_requirements[req.name]            = optionalDataComposite;
+                auto optionalDataComposite = data::Composite::New();
+                (*composite)[req.name]   = optionalDataComposite;
+                m_requirements[req.name] = optionalDataComposite;
             }
         }
 

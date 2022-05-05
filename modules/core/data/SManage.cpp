@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,18 @@
 
 #include "SManage.hpp"
 
-#include <data/Composite.hpp>
-#include <data/Exception.hpp>
-#include <data/helper/Composite.hpp>
-#include <data/helper/Field.hpp>
-#include <data/helper/SeriesDB.hpp>
-#include <data/helper/Vector.hpp>
-#include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
-#include <data/Vector.hpp>
-
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+
+#include <data/Composite.hpp>
+#include <data/Exception.hpp>
+#include <data/helper/Field.hpp>
+#include <data/helper/SeriesDB.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Vector.hpp>
 
 #include <service/macros.hpp>
 
@@ -136,51 +134,42 @@ void SManage::addOrSwap()
     }
     else
     {
-        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
-        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
-        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-
-        if(composite)
+        if(const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared()); composite)
         {
-            sight::data::helper::Composite helper(composite);
-            if(composite->find(m_compositeKey) == composite->end())
+            const auto scoped_emitter = composite->scoped_emit();
+            composite->insert_or_assign(m_compositeKey, obj.get_shared());
+        }
+        else if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
+        {
+            if(const auto& it = std::find(vector->cbegin(), vector->cend(), obj.get_shared()); it == vector->end())
             {
-                helper.add(m_compositeKey, obj.get_shared());
+                const auto scoped_emitter = vector->scoped_emit();
+                vector->push_back(obj.get_shared());
             }
             else
             {
-                helper.swap(m_compositeKey, obj.get_shared());
+                SIGHT_WARN("Object already exists in the Vector, does nothing.");
             }
-
-            helper.notify();
         }
-        else if(vector)
+        else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+                seriesDB)
         {
-            auto iter = std::find(vector->begin(), vector->end(), obj.get_shared());
-            if(iter == vector->end())
-            {
-                sight::data::helper::Vector helper(vector);
-                helper.add(obj.get_shared());
-                helper.notify();
-            }
-
-            SIGHT_WARN_IF("Object already exists in the Vector, does nothing.", iter != vector->end());
-        }
-        else
-        {
-            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
-            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj.get_shared());
-            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series", series);
-
-            auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
+            const auto series = sight::data::Series::dynamicCast(obj.get_shared());
+            auto iter         = std::find(seriesDB->begin(), seriesDB->end(), series);
             if(iter == seriesDB->end())
             {
                 sight::data::helper::SeriesDB helper(*seriesDB);
                 helper.add(series);
                 helper.notify();
             }
-
-            SIGHT_WARN_IF("Object already exists in the SeriesDB, does nothing.", iter != seriesDB->end());
+            else
+            {
+                SIGHT_WARN("Series already exists in the SeriesDB, does nothing.");
+            }
+        }
+        else
+        {
+            SIGHT_FATAL("Source object is not a Composite or a Vector or a SeriesDB");
         }
     }
 }
@@ -195,7 +184,6 @@ void SManage::swap()
     SIGHT_ASSERT("Object is missing.", obj);
 
     const auto container = m_container.lock();
-    const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
 
     if(!m_fieldName.empty())
     {
@@ -203,11 +191,10 @@ void SManage::swap()
         helper.swap(m_fieldName, obj.get_shared());
         helper.notify();
     }
-    else if(composite)
+    else if(const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared()); composite)
     {
-        sight::data::helper::Composite helper(composite);
-        helper.swap(m_compositeKey, obj.get_shared());
-        helper.notify();
+        const auto scoped_emitter = composite->scoped_emit();
+        composite->insert_or_assign(m_compositeKey, obj.get_shared());
     }
     else
     {
@@ -233,34 +220,33 @@ void SManage::remove()
     }
     else
     {
-        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
-        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
-        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-
-        if(composite)
+        if(const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared()); composite)
         {
-            sight::data::helper::Composite helper(composite);
-            helper.remove(m_compositeKey);
-            helper.notify();
-        }
-        else if(vector)
-        {
-            SIGHT_ASSERT("Object is missing.", obj);
-            sight::data::helper::Vector helper(vector);
-            helper.remove(obj.get_shared());
-            helper.notify();
+            const auto scoped_emitter = composite->scoped_emit();
+            composite->erase(m_compositeKey);
         }
         else
         {
-            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
-
             SIGHT_ASSERT("Object is missing.", obj);
-            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj.get_shared());
-            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series", series);
 
-            sight::data::helper::SeriesDB helper(*seriesDB);
-            helper.remove(series);
-            helper.notify();
+            if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
+            {
+                const auto scoped_emitter = vector->scoped_emit();
+                vector->remove_all(obj.get_shared());
+            }
+            else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+                    seriesDB)
+            {
+                const auto series = sight::data::Series::dynamicCast(obj.get_shared());
+
+                sight::data::helper::SeriesDB helper(*seriesDB);
+                helper.remove(series);
+                helper.notify();
+            }
+            else
+            {
+                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
+            }
         }
     }
 }
@@ -290,49 +276,39 @@ void SManage::removeIfPresent()
     }
     else
     {
-        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
-        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
-        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-
-        if(composite)
+        if(const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared()); composite)
         {
-            sight::data::helper::Composite helper(composite);
-            if(composite->find(m_compositeKey) != composite->end())
-            {
-                helper.remove(m_compositeKey);
-                helper.notify();
-            }
-        }
-        else if(vector)
-        {
-            SIGHT_ASSERT("Object is missing.", obj);
-            auto iter = std::find(vector->begin(), vector->end(), obj.get_shared());
-            if(iter != vector->end())
-            {
-                sight::data::helper::Vector helper(vector);
-                helper.remove(obj.get_shared());
-                helper.notify();
-            }
-
-            SIGHT_WARN_IF("Object does not exist in the Vector, does nothing.", iter == vector->end());
+            const auto scoped_emitter = composite->scoped_emit();
+            composite->erase(m_compositeKey);
         }
         else
         {
-            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
-
             SIGHT_ASSERT("Object is missing.", obj);
-            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj.get_shared());
-            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series", series);
 
-            auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
-            if(iter != seriesDB->end())
+            if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
             {
-                sight::data::helper::SeriesDB helper(*seriesDB);
-                helper.remove(series);
-                helper.notify();
+                const auto scoped_emitter = composite->scoped_emit();
+                vector->remove_all(obj.get_shared());
             }
-
-            SIGHT_WARN_IF("Object does not exist in the SeriesDB, does nothing.", iter == seriesDB->end());
+            else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+                    seriesDB)
+            {
+                const auto series = sight::data::Series::dynamicCast(obj.get_shared());
+                if(const auto iter = std::find(seriesDB->begin(), seriesDB->end(), series); iter != seriesDB->end())
+                {
+                    sight::data::helper::SeriesDB helper(*seriesDB);
+                    helper.remove(series);
+                    helper.notify();
+                }
+                else
+                {
+                    SIGHT_WARN("Object does not exist in the SeriesDB, does nothing.");
+                }
+            }
+            else
+            {
+                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
+            }
         }
     }
 }
@@ -353,27 +329,26 @@ void SManage::clear()
     }
     else
     {
-        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
-        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
-        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-        if(composite)
+        if(const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared()); composite)
         {
-            sight::data::helper::Composite helper(composite);
-            helper.clear();
-            helper.notify();
+            const auto scoped_emitter = composite->scoped_emit();
+            composite->clear();
         }
-        else if(vector)
+        else if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
         {
-            sight::data::helper::Vector helper(vector);
+            const auto scoped_emitter = vector->scoped_emit();
+            vector->clear();
+        }
+        else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+                seriesDB)
+        {
+            sight::data::helper::SeriesDB helper(*seriesDB);
             helper.clear();
             helper.notify();
         }
         else
         {
-            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
-            sight::data::helper::SeriesDB helper(*seriesDB);
-            helper.clear();
-            helper.notify();
+            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
         }
     }
 }
@@ -403,30 +378,27 @@ void SManage::internalAdd(bool _copy)
     }
     else
     {
-        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
-        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
-        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-
-        if(composite)
+        if(const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared()); composite)
         {
-            sight::data::helper::Composite helper(composite);
-            helper.add(m_compositeKey, obj);
-            helper.notify();
+            const auto scoped_emitter = composite->scoped_emit();
+            composite->insert_or_assign(m_compositeKey, obj);
         }
-        else if(vector)
+        else if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
         {
-            sight::data::helper::Vector helper(vector);
-            helper.add(obj);
-            helper.notify();
+            const auto scoped_emitter = vector->scoped_emit();
+            vector->push_back(obj);
         }
-        else if(seriesDB)
+        else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+                seriesDB)
         {
-            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
-            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
-            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
+            auto series = sight::data::Series::dynamicCast(obj);
             sight::data::helper::SeriesDB helper(*seriesDB);
             helper.add(series);
             helper.notify();
+        }
+        else
+        {
+            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
         }
     }
 }

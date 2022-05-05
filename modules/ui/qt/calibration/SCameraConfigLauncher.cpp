@@ -28,6 +28,7 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
 #include <data/Composite.hpp>
+#include <data/IContainer.hxx>
 #include <data/SeriesDB.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -353,7 +354,7 @@ void SCameraConfigLauncher::onRemoveClicked()
             // Remove calibrationInfo
             std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
             const auto activitySeries      = m_activitySeries.lock();
-            activitySeries->getData()->getContainer().erase(calibrationInfoKey);
+            activitySeries->getData()->erase(calibrationInfoKey);
 
             const std::size_t nbCam = cameraSeries->numCameras();
             if(nbCam == 1)
@@ -412,10 +413,9 @@ void SCameraConfigLauncher::startIntrinsicConfig(std::size_t index)
 
         std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
 
-        const auto activitySeries             = m_activitySeries.lock();
-        data::Composite::sptr data            = activitySeries->getData();
-        data::CalibrationInfo::sptr calibInfo =
-            data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
+        const auto activitySeries  = m_activitySeries.lock();
+        data::Composite::sptr data = activitySeries->getData();
+        auto calibInfo             = data::CalibrationInfo::dynamicCast((*data)[calibrationInfoKey]);
 
         replaceMap["camera"]          = camera->getID();
         replaceMap["calibrationInfo"] = calibInfo->getID();
@@ -461,13 +461,13 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
             calibInfo1 = data::CalibrationInfo::New();
             calibInfo2 = data::CalibrationInfo::New();
 
-            data->getContainer()[calibrationInfo1Key] = calibInfo1;
-            data->getContainer()[calibrationInfo2Key] = calibInfo2;
+            (*data)[calibrationInfo1Key] = calibInfo1;
+            (*data)[calibrationInfo2Key] = calibInfo2;
         }
         else
         {
-            calibInfo1 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo1Key]);
-            calibInfo2 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
+            calibInfo1 = data::CalibrationInfo::dynamicCast((*data)[calibrationInfo1Key]);
+            calibInfo2 = data::CalibrationInfo::dynamicCast((*data)[calibrationInfo2Key]);
         }
 
         replaceMap["camera1"]          = camera1->getID();
@@ -498,7 +498,7 @@ void SCameraConfigLauncher::addCamera()
         data::CalibrationInfo::sptr calibInfo = data::CalibrationInfo::New();
 
         const auto activitySeries = m_activitySeries.lock();
-        activitySeries->getData()->getContainer()[calibrationInfoKey] = calibInfo;
+        (*activitySeries->getData())[calibrationInfoKey] = calibInfo;
 
         // Add the camera
         cameraSeries->addCamera(camera);

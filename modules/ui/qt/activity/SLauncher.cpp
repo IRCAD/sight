@@ -546,7 +546,7 @@ void SLauncher::launchSeries(data::Series::sptr series)
     else
     {
         data::Vector::sptr selection = data::Vector::New();
-        selection->getContainer().push_back(series);
+        selection->push_back(series);
         ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection);
 
         if(m_quickLaunch.find(series->getClassname()) != m_quickLaunch.end())

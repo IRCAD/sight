@@ -25,7 +25,6 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <data/CalibrationInfo.hpp>
-#include <data/List.hpp>
 #include <data/PointList.hpp>
 
 #include <ui/base/IEditor.hpp>

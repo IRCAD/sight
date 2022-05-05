@@ -57,7 +57,6 @@ const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "Fin
 ChainManager::ChainManager(Ogre::Viewport* _viewport) :
     m_ogreViewport(_viewport)
 {
-    m_adaptorsObjectsOwner = data::Composite::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -284,16 +283,13 @@ void ChainManager::updateCompositorAdaptors(
                             shaderParamService->configure();
                             shaderParamService->start();
 
-                            (*m_adaptorsObjectsOwner)[constantName] = obj;
+                            m_adaptorsObjectsOwner.insert_or_assign(constantName, obj);
                         }
                     }
                     else
                     {
                         this->unregisterService(id);
-                        if(m_adaptorsObjectsOwner->at<data::Object>(constantName) != nullptr)
-                        {
-                            m_adaptorsObjectsOwner->getContainer().erase(constantName);
-                        }
+                        m_adaptorsObjectsOwner.erase(constantName);
                     }
                 }
             }

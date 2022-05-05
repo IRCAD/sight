@@ -33,10 +33,15 @@ SIGHT_REGISTER_DATA(sight::data::Series)
 namespace sight::data
 {
 
-Series::Series(Object::Key) :
+Series::Series() :
     m_patient(Patient::New()),
     m_study(Study::New()),
     m_equipment(Equipment::New())
+{
+}
+
+Series::Series(Object::Key) :
+    Series()
 {
 }
 

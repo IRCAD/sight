@@ -24,8 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/helper/Composite.hpp>
-
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
@@ -129,8 +127,7 @@ void SMultipleTF::starting()
         if(m_currentTF == nullptr)
         {
             // Finds the first TF of the composite.
-            const data::TransferFunction::sptr poolTF =
-                data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
+            const auto poolTF = data::TransferFunction::dynamicCast(tfPool->begin()->second);
             SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", poolTF);
             m_currentTF = poolTF;
             // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
@@ -1174,8 +1171,8 @@ void SMultipleTF::rightButtonClickOnPointEvent(
         // Update unclamped data.
         if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
         {
-            data::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
-            tfData.erase(tfValue);
+            data::TransferFunction::TFDataType& tfData2 = m_unclampedTFData[tf->getID()];
+            tfData2.erase(tfValue);
         }
 
         // Gets new window/level min max value in the window/level space.
@@ -1626,7 +1623,7 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
             }
 
             // Updates the current TF.
-            tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+            tf = data::TransferFunction::dynamicCast((*tfPool)[key]);
             SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", tf);
 
             const double scale = _event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown ? -0.05 : 0.05;
@@ -1705,7 +1702,14 @@ void SMultipleTF::removeCurrenTF()
         const auto tfPool = m_tfPool.lock();
         SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' does not exist.", tfPool);
 
-        data::helper::Composite compositeHelper(tfPool.get_shared());
+        // Block notifier
+        auto sig = tfPool->signal<data::Composite::removed_signal_t>(
+            data::Composite::s_REMOVED_OBJECTS_SIG
+        );
+
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const auto scoped_emitter = tfPool->scoped_emit();
+
         data::TransferFunction::sptr tf;
 
         SIGHT_ASSERT(
@@ -1729,23 +1733,15 @@ void SMultipleTF::removeCurrenTF()
         m_unclampedTFData.erase(m_currentTF->getID());
 
         // Removes the current TF.
-        compositeHelper.remove(key);
+
+        tfPool->erase(key);
 
         // Sets the new current TF.
-        tf = data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
+        tf = data::TransferFunction::dynamicCast(tfPool->begin()->second);
         SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", tf);
         m_currentTF = tf;
         // This action will call swapping method but m_currentTF is set, nothing will be done. The scene is draw after.
         m_tfOut = tf;
-
-        // Sends the signal.
-        auto sig = tfPool->signal<data::Composite::RemovedObjectsSignalType>(
-            data::Composite::s_REMOVED_OBJECTS_SIG
-        );
-        {
-            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            compositeHelper.notify();
-        }
     }
 
     // Re-draw all the scene here since swapping method as not been called.
@@ -1779,7 +1775,7 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
         }
 
         // Updates the current TF.
-        tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+        tf = data::TransferFunction::dynamicCast((*tfPool)[key]);
         SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", tf);
         tf->setIsClamped(_clamp);
     }
@@ -1834,7 +1830,7 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
         }
 
         // Updates the current TF.
-        tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+        tf = data::TransferFunction::dynamicCast((*tfPool)[key]);
         SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", tf);
         tf->setInterpolationMode(_linear ? data::TransferFunction::LINEAR : data::TransferFunction::NEAREST);
     }
@@ -1879,18 +1875,18 @@ void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
         const auto tfPool = m_tfPool.lock();
         SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' does not exist.", tfPool);
 
-        // Adds the new TF.
-        data::helper::Composite compositeHelper(tfPool.get_shared());
-        compositeHelper.add(_tf->getName(), _tf);
-
-        // Sends the signal.
-        auto sig = tfPool->signal<data::Composite::AddedObjectsSignalType>(
+        // Block notifier
+        auto sig = tfPool->signal<data::Composite::added_signal_t>(
             data::Composite::s_ADDED_OBJECTS_SIG
         );
+
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+
         {
-            const core::com::Connection::Blocker block(
-                sig->getConnection(m_slotUpdate));
-            compositeHelper.notify();
+            const auto scoped_emitter = tfPool->scoped_emit();
+
+            // Adds the new TF.
+            tfPool->insert_or_assign(_tf->getName(), _tf);
         }
     }
 
@@ -1914,7 +1910,7 @@ void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
 void SMultipleTF::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
 {
     // Creates the new TF.
-    data::Composite::KeyType name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
+    auto name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
         name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
@@ -1943,7 +1939,7 @@ void SMultipleTF::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
 void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
 {
     // Creates the new TF.
-    data::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_right_ramp_index_counter++);
+    auto name = "CT-RightRamp_" + std::to_string(s_right_ramp_index_counter++);
     while(this->hasTFName(name))
     {
         name = "CT-RightRamp_" + std::to_string(s_right_ramp_index_counter++);
@@ -1972,7 +1968,7 @@ void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
 void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
 {
     // Creates the new TF.
-    data::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_trapeze_index_counter++);
+    auto name = "CT-Trapeze_" + std::to_string(s_trapeze_index_counter++);
     while(this->hasTFName(name))
     {
         name = "CT-Trapeze_" + std::to_string(s_trapeze_index_counter++);

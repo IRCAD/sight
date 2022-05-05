@@ -103,7 +103,7 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
                 data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
                 if(distanceVector && !distanceVector->empty())
                 {
-                    for(const data::Object::sptr& object : distanceVector->getContainer())
+                    for(const data::Object::sptr& object : *distanceVector)
                     {
                         data::PointList::sptr pointList = data::PointList::dynamicCast(object);
                         if(pointList && pointList->getPoints().size() >= 2)

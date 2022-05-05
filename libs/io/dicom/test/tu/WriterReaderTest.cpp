@@ -235,7 +235,7 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
         data::helper::MedicalImage::setDistances(*image, vectDist);
     }
 
-    vectDist->getContainer().push_back(pl);
+    vectDist->push_back(pl);
 
     data::helper::MedicalImage::setDistanceVisibility(*image, true);
     data::helper::MedicalImage::setLandmarksVisibility(*image, true);

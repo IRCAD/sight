@@ -27,8 +27,6 @@
 
 #include <core/location/ILocation.hpp>
 
-#include <data/Composite.hpp>
-
 #include <filesystem>
 #include <string>
 

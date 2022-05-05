@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <core/runtime/ConfigurationElement.hpp>
 
 #include <data/Composite.hpp>
-#include <data/helper/Composite.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>

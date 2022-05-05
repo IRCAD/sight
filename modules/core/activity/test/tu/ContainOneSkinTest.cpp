@@ -195,7 +195,7 @@ void ContainOneSkinTest::testValidatorWithVector()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector series should be valid", true, validation.first);
     }
     {
-        vector->getContainer().push_back(modelSeries1);
+        vector->push_back(modelSeries1);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with one ModelSeries (without Skin) should NOT be valid",
@@ -223,7 +223,7 @@ void ContainOneSkinTest::testValidatorWithVector()
     }
     {
         rec12->setStructureType("Bones");
-        vector->getContainer().push_back(modelSeries2);
+        vector->push_back(modelSeries2);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with two ModelSeries (one without Skin) should be NOT valid",
@@ -252,7 +252,7 @@ void ContainOneSkinTest::testValidatorWithVector()
     }
     {
         rec22->setStructureType("Bone");
-        vector->getContainer().push_back(modelSeries3);
+        vector->push_back(modelSeries3);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with three ModelSeries (two with one Skin and one without skin) should NOT "

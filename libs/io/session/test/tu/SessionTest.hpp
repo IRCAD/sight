@@ -62,7 +62,6 @@ public:
     CPPUNIT_TEST(graphTest);
     CPPUNIT_TEST(landmarksTest);
     CPPUNIT_TEST(lineTest);
-    CPPUNIT_TEST(listTest);
     CPPUNIT_TEST(materialTest);
     CPPUNIT_TEST(matrix4Test);
     CPPUNIT_TEST(planeTest);
@@ -81,6 +80,9 @@ public:
     CPPUNIT_TEST(dicomSeriesTest);
     CPPUNIT_TEST(imageSeriesTest);
     CPPUNIT_TEST(modelSeriesTest);
+    CPPUNIT_TEST(activitySetTest);
+    CPPUNIT_TEST(cameraSetTest);
+    CPPUNIT_TEST(seriesSetTest);
 
     CPPUNIT_TEST(customSerializerTest);
 
@@ -119,7 +121,6 @@ public:
     void graphTest();
     void landmarksTest();
     void lineTest();
-    void listTest();
     void materialTest();
     void matrix4Test();
     void planeTest();
@@ -138,6 +139,9 @@ public:
     void dicomSeriesTest();
     void imageSeriesTest();
     void modelSeriesTest();
+    void activitySetTest();
+    void cameraSetTest();
+    void seriesSetTest();
 
     void customSerializerTest();
 };

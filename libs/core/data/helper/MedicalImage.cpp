@@ -22,7 +22,6 @@
 
 #include "data/helper/MedicalImage.hpp"
 
-#include "data/helper/Composite.hpp"
 #include "data/helper/Field.hpp"
 
 #include <data/Boolean.hpp>
@@ -199,9 +198,8 @@ bool checkTransferFunctionPool(const data::Image::sptr& image)
         }
 
         // Set in TFPool
-        data::helper::Composite compositeHelper(tfPool);
-        compositeHelper.add(defaultTFName, tf);
-        compositeHelper.notify();
+        const auto scoped_emitter = tfPool->scoped_emit();
+        tfPool->insert_or_assign(defaultTFName, tf);
     }
 
     return fieldIsCreated;

@@ -26,7 +26,6 @@
 #include <core/com/Slot.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <data/helper/Composite.hpp>
 #include <data/helper/Field.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
@@ -219,27 +218,15 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
         data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
-        data::helper::Composite aCompositeHelper(pComposite.get_shared());
+        const auto scoped_emitter = pComposite->scoped_emit();
         if((currentItem->checkState()) == Qt::Checked)
         {
-            if(pComposite->find(item_name) == pComposite->end())
-            {
-                aCompositeHelper.add(item_name, pMesh);
-            }
-            else
-            {
-                aCompositeHelper.swap(item_name, pMesh);
-            }
+            pComposite->insert_or_assign(item_name, pMesh);
         }
         else
         {
-            if(pComposite->find(item_name) != pComposite->end())
-            {
-                aCompositeHelper.remove(item_name);
-            }
+            pComposite->erase(item_name);
         }
-
-        aCompositeHelper.notify();
     }
 }
 
@@ -328,7 +315,7 @@ void SOrganTransformation::onLoadClick()
 void SOrganTransformation::onSelectAllChanged(int state)
 {
     const auto pComposite = m_composite.lock();
-    data::helper::Composite compositeHelper(pComposite.get_shared());
+    const auto notifier   = pComposite->scoped_emit();
 
     if(state == Qt::Checked)
     {
@@ -338,10 +325,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
         for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
-            if(pComposite->find(rec->getOrganName()) == pComposite->end())
-            {
-                compositeHelper.add(rec->getOrganName(), rec->getMesh());
-            }
+            pComposite->insert({rec->getOrganName(), rec->getMesh()});
         }
     }
     else if(state == Qt::Unchecked)
@@ -353,14 +337,12 @@ void SOrganTransformation::onSelectAllChanged(int state)
         {
             if(item->checkState() == Qt::Unchecked)
             {
-                compositeHelper.remove(item->text().toStdString());
+                pComposite->erase(item->text().toStdString());
             }
         }
 
         this->refresh();
     }
-
-    compositeHelper.notify();
 }
 
 //------------------------------------------------------------------------------
