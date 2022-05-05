@@ -3,6 +3,7 @@ sight_add_target(
     TYPE LIBRARY
     PCH pchServiceOmp
     WARNINGS_AS_ERRORS OFF
+    FAST_DEBUG ON
 )
 
 find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT REQUIRED)

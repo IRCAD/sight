@@ -388,7 +388,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor();
+    this->updateMaterialAdaptor(_pointList->getID());
 
     this->attachNode(m_entity);
 
@@ -443,7 +443,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor();
+    this->updateMaterialAdaptor(_mesh->getID());
 
     this->attachNode(m_entity);
 
@@ -457,7 +457,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _materialSuffix)
+scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _meshId)
 {
     auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "sight::module::viz::scene3d::adaptor::SMaterial"
@@ -473,22 +473,7 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
 
-    std::string meshName;
-    const auto pointList = m_pointList.lock();
-    if(pointList)
-    {
-        meshName = pointList->getID();
-    }
-    else
-    {
-        const auto mesh = m_mesh.lock();
-        if(mesh)
-        {
-            meshName = mesh->getID();
-        }
-    }
-
-    const std::string mtlName = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
+    const std::string mtlName = _meshId + "_" + materialAdaptor->getID();
 
     materialAdaptor->setMaterialName(mtlName);
 
@@ -497,13 +482,13 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
 
 //------------------------------------------------------------------------------
 
-void SPointList::updateMaterialAdaptor()
+void SPointList::updateMaterialAdaptor(const std::string& _meshId)
 {
     if(!m_materialAdaptor)
     {
         if(m_entity)
         {
-            m_materialAdaptor = this->createMaterialService();
+            m_materialAdaptor = this->createMaterialService(_meshId);
             m_materialAdaptor->start();
 
             auto materialFw = m_materialAdaptor->getMaterialFw();

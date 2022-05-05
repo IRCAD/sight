@@ -5,6 +5,7 @@ add_dependencies(
     sightrun
     module_appXml
     module_ui_base
+    module_viz_scene2d
     module_viz_scene3d
     module_ui_qt
     module_viz_scene3dQt
@@ -16,6 +17,7 @@ add_dependencies(
     module_io_realsense
     module_sync
     module_data
+    viz_scene2d
 )
 
 # Allow dark theme via module_ui_qt

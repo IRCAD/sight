@@ -5,6 +5,6 @@ if(OPENMP_CXX_FOUND)
     add_compile_options(${OpenMP_CXX_FLAGS})
 endif()
 
-sight_add_target(pchServiceOmp TYPE LIBRARY)
+sight_add_target(pchServiceOmp TYPE LIBRARY FAST_DEBUG ON)
 
 target_link_libraries(pchServiceOmp PUBLIC service)

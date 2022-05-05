@@ -410,14 +410,17 @@ void SVideo::setVisible(bool _visible)
 
 void SVideo::updateTF()
 {
-    const auto tf = m_tf.lock();
+    if(m_gpuTF)
+    {
+        const auto tf = m_tf.lock();
 
-    m_gpuTF->updateTexture(tf.get_shared());
+        m_gpuTF->updateTexture(tf.get_shared());
 
-    Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-    m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
+        Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+        m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
 
-    this->requestRender();
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------

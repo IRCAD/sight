@@ -169,13 +169,12 @@ private:
 
     /**
      * @brief Instantiates a new material adaptor.
-     * @param _materialSuffix suffix use for the material name.
      */
-    module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
+    module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const std::string& _meshId);
 
     /// Associates a new SMaterial to the managed SPointList.
     /// With this method, SPointList is responsible for creating a SMaterial.
-    void updateMaterialAdaptor();
+    void updateMaterialAdaptor(const std::string& _meshId);
 
     /**
      * @brief Attaches a node in the scene graph.

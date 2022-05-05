@@ -1,4 +1,9 @@
-sight_add_target(viz_scene3d TYPE LIBRARY PCH pchServiceOmp)
+sight_add_target(
+    viz_scene3d
+    TYPE LIBRARY
+    PCH pchServiceOmp
+    FAST_DEBUG ON
+)
 
 # include first to be taken into account in the PCH compile flags
 find_package(OpenMP QUIET)
