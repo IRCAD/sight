@@ -74,6 +74,15 @@ Window::Window(QWindow* _parent) :
     m_id(Window::m_counter++)
 {
     connect(this, &Window::screenChanged, this, &Window::onScreenChanged);
+
+    auto nvPrime   = std::getenv("__NV_PRIME_RENDER_OFFLOAD");
+    auto glxVendor = std::getenv("__GLX_VENDOR_LIBRARY_NAME");
+
+    if(nvPrime && glxVendor && !std::strcmp(nvPrime, "1") && !std::strcmp(glxVendor, "nvidia"))
+    {
+        SIGHT_INFO("NVidia Prime detected, switching to internal GL control.");
+        m_externalGLControl = false;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -104,8 +113,13 @@ void Window::initialize()
 
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
-    parameters["currentGLContext"]  = "true";
-    parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
+    parameters["currentGLContext"] = "true";
+    if(m_externalGLControl)
+    {
+        parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
+    }
+
+    // parameters["vsync"]  = "true";
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
@@ -228,7 +242,10 @@ void Window::render()
         m_ogreRoot->_fireFrameRenderingQueued();
         m_ogreRoot->_fireFrameEnded();
 
-        m_glContext->swapBuffers(this);
+        if(m_externalGLControl)
+        {
+            m_glContext->swapBuffers(this);
+        }
     }
     catch(const std::exception& e)
     {

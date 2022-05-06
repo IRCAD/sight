@@ -183,6 +183,9 @@ private:
     /// Defines the last size sent to Ogre. In hidpi
     QSize m_ogreSize;
 
+    /// Workaround to fix multiple scenes rendering with NVidia Prime
+    bool m_externalGLControl {true};
+
 private Q_SLOTS:
 
     /// Called when the screen changes.
