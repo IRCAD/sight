@@ -133,7 +133,9 @@ mark_as_advanced(SIGHT_DEFAULT_PASSWORD)
 if(SIGHT_ENABLE_ENCRYPTED_LOG)
     add_compile_definitions(SIGHT_ENABLE_ENCRYPTED_LOG)
 endif()
-add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
+if(SIGHT_DEFAULT_PASSWORD)
+    add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
+endif()
 
 # Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
