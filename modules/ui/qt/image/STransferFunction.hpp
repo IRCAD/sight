@@ -24,35 +24,31 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <core/macros.hpp>
+
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <ui/base/IEditor.hpp>
 
+#include <QComboBox>
 #include <QObject>
+#include <QPushButton>
 
 #include <filesystem>
-
-class QComboBox;
-class QPushButton;
-class QIcon;
 
 namespace sight::module::ui::qt::image
 {
 
 /**
- * @brief Editor to select a transfer function.
- *
- * The available transfer function are stored in a composite (transferFunctionPool), if it contains at most one
- * transfert function, this service will read transfer function from the given pathes.
+ * @brief Editor to select a transfer function preset.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::STransferFunction">
-       <in key="currentTF" uid="..." />
-       <inout key="tfPool" uid="..." />
-       <out key="tf" uid="..." />
-       <config useDefaultPath="true">
+       <in key="current" uid="..." />
+       <out key="selected" uid="..." />
+       <config useDefaultPath="true" >
            <path>....</path>
            <path>....</path>
            <path>....</path>
@@ -61,22 +57,18 @@ namespace sight::module::ui::qt::image
    @endcode
  *
  * @subsection Input Input
- * - \b currentTF [sight::data::TransferFunction](optional): current transfer function used to change editor selection.
- * It
- *      should be the same TF as the output.
- *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
- *      TF in another service.
- * @subsection In-Out In-Out
- * - \b tfPool [sight::data::Composite]: composite containing the transfer function.
+ * - \b current [sight::data::TransferFunction](optional): current transfer function used to change editor
+ * selection. It should be the same as the output.
  *
  * @subsection Output Output
- * - \b tf [sight::data::TransferFunction]: selected transfer function.
+ * - \b selected [sight::data::TransferFunction]: selected transfer function.
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
  * - \b deleteIcon (optional): path of the delete button icon.
  * - \b newIcon (optional): path of the new button icon.
+ * - \b copyIcon (optional): path of the copy button icon.
  * - \b reinitializeIcon (optional): path of the reinitialize button icon.
  * - \b renameIcon (optional): path of the rename button icon.
  * - \b importIcon (optional): path of the import button icon.
@@ -84,123 +76,125 @@ namespace sight::module::ui::qt::image
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
  */
-class MODULE_UI_QT_CLASS_API STransferFunction final : public QObject,
-                                                       public sight::ui::base::IEditor
+class MODULE_UI_QT_CLASS_API STransferFunction final :
+    public QObject,
+    public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STransferFunction, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(module::ui::qt::image::STransferFunction, sight::ui::base::IEditor);
 
-    /// Does nothing.
+    /// Creates the editor.
     MODULE_UI_QT_API STransferFunction();
 
-    /// Does nothing.
+    /// Destroyes the editor.
     MODULE_UI_QT_API ~STransferFunction() noexcept override;
 
 protected:
 
-    /// Configures the transfer function editor.
+    /// Configures the editor.
     MODULE_UI_QT_API void configuring() override;
 
-    /// Starts the service, creates container, place in buttons, comboBox, layout, and connect them.
+    /// Creates container and the UI.
     MODULE_UI_QT_API void starting() override;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT.
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT.
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT.
-     */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_UI_QT_API void updating() override;
 
     /**
-     * @brief Selects the current transfer function.
+     * @brief Selects the current transfer function preset.
      * @param _key key of the swapped data.
      */
     MODULE_UI_QT_API void swapping(std::string_view _key) override;
 
-    /// Stops the service, disconnect buttons and combo box, delete them and clean the container.
+    /// Destroyes the UI.
     MODULE_UI_QT_API void stopping() override;
 
 private:
 
     /**
-     * @brief Initializes the transfer functions.
+     * @brief Checks if the composite contains the specified key.
+     * @param _name the name used to search.
+     * @return True if the preset named _name is found.
+     */
+    bool hasPresetName(const std::string& _name) const;
+
+    /**
+     * @brief Create a string that represents a TF preset name not already present in the composite.
      *
-     * Add their names to the ComboBox. If the composite does not contain any TF (or only the default grey level TF,
+     * For example, if CT-GreyLevel is already used, it will return CT-GreyLevel_1.
+     *
+     * @param _basename the name of the TF preset to create.
+     * @return The new name of the TF preset.
+     */
+    std::string createPresetName(const std::string& _basename) const;
+
+    /**
+     * @brief Initializes the composite.
+     *
+     * Add their names to m_presetComboBox. If the composite does not contain any TF (or only the default grey level TF,
      * the service creates a few from the ressources of the module.
-     */
-    void initTransferFunctions();
-
-    /**
-     * @brief Checks if the composite contain the specified TF.
-     * @param _name the name used to search the TF.
-     * @return True if the TF named _sName is found.
-     */
-    bool hasTransferFunctionName(const std::string& _name, const data::Composite::csptr _poolTF = nullptr) const;
-
-    /**
-     * @brief Create a string that represents a TF name not already present in the composite.
      *
-     * For example, if "test" is already used, it will return "test_1".
-     *
-     * @param _basename the name of the TF to create.
-     * @return The new name of the TF.
+     * @see updatePresetsPreset()
      */
-    std::string createTransferFunctionName(const std::string& _basename) const;
+    void initializePresets();
 
-    /// Updates the output transferFunction with the selected TF in the ComboBox.
-    void updateTransferFunction();
+    /// Updates the TF preset from the composite.
+    void updatePresetsPreset();
 
-    /// Updates the TF preset from the TF pool.
-    void updateTransferFunctionPreset();
+    /// Sets the current TF preset to the output of this service.
+    void setCurrentPreset();
 
 private Q_SLOTS:
 
-    /// Deletes the current selected TF.
-    void deleteTF();
+    /// Changes the current selected TF preset.
+    void presetChoice(int _index);
 
-    /// Creates a new TF.
-    void newTF();
+    /// Deletes the current selected TF preset.
+    void deletePreset();
 
-    /// Resets the current selected TF.
-    void reinitializeTFPool();
+    /// Creates a new TF preset with a GreyLevel TF.
+    void createPreset();
 
-    /// Renames the current selected TF.
-    void renameTF();
+    /// Copies the current TF preset.
+    void copyPreset();
 
-    /// Imports a TF.
-    void importTF();
+    /// Resets the composite.
+    void reinitializePresets();
 
-    /// Exports the current selected TF.
-    void exportTF();
+    /// Renames the current selected TF preset.
+    void renamePreset();
 
-    /// Changes the current selected TF.
-    void presetChoice(int index);
+    /// Imports a TF preset.
+    void importPreset();
+
+    /// Exports the current selected TF preset.
+    void exportPreset();
 
 private:
 
-    /// Contains the list of all TF preset.
-    QComboBox* m_transferFunctionPreset {nullptr};
+    /// Stores path were looking for TF presets.
+    std::vector<std::filesystem::path> m_paths;
 
-    /// Contains the delete TF button.
+    /// Contains the list of all TF preset.
+    QComboBox* m_presetComboBox {nullptr};
+
+    /// Contains the delete TF preset button.
     QPushButton* m_deleteButton {nullptr};
 
-    /// Contains the new TF button.
+    /// Contains the new TF preset button.
     QPushButton* m_newButton {nullptr};
 
-    /// Contains the reset TF button.
+    /// Contains the copy TF preset button.
+    QPushButton* m_copyButton {nullptr};
+
+    /// Contains the reset TF preset button.
     QPushButton* m_reinitializeButton {nullptr};
 
-    /// Contains the rename TF button.
+    /// Contains the rename TF preset button.
     QPushButton* m_renameButton {nullptr};
 
     /// Contains the import TF button.
@@ -209,18 +203,14 @@ private:
     /// Contains the export TF button.
     QPushButton* m_exportButton {nullptr};
 
-    /// Contains the current selected TF.
-    data::TransferFunction::sptr m_selectedTF {nullptr};
-
-    /// Stores path were looking for TF presets.
-    typedef std::vector<std::filesystem::path> PathContainerType;
-    PathContainerType m_paths;
-
     /// Defines the path of the delete button icon.
     std::filesystem::path m_deleteIcon;
 
     /// Defines the path of the new button icon.
     std::filesystem::path m_newIcon;
+
+    /// Defines the path of the copy button icon.
+    std::filesystem::path m_copyIcon;
 
     /// Defines the path of the reinitialize button icon.
     std::filesystem::path m_reinitializeIcon;
@@ -240,13 +230,12 @@ private:
     /// Defines icons height.
     unsigned int m_iconHeight {16};
 
-    static constexpr std::string_view s_CURRENT_TF      = "currentTF";
-    static constexpr std::string_view s_TF_POOL         = "tfPool";
-    static constexpr std::string_view s_NEW_SELECTED_TF = "tf";
+    std::map<std::string, sight::data::TransferFunction::sptr> m_tfPresets;
 
-    data::ptr<data::TransferFunction, data::Access::in> m_currentTf {this, s_CURRENT_TF, false, true};
-    data::ptr<data::Composite, data::Access::inout> m_tfPool {this, s_TF_POOL};
-    data::ptr<data::TransferFunction, data::Access::out> m_newSelectedTf {this, s_NEW_SELECTED_TF};
+    static constexpr std::string_view s_CURRENT_INPUT = "current";
+
+    data::ptr<data::TransferFunction, data::Access::in> m_currentTF {this, s_CURRENT_INPUT, false, true};
+    data::ptr<data::TransferFunction, data::Access::out> m_selectedTF {this, "selected"};
 };
 
 } // namespace sight::module::ui::qt::image.

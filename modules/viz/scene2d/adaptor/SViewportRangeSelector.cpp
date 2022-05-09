@@ -154,7 +154,7 @@ void SViewportRangeSelector::updating()
 
     if(tf)
     {
-        std::tie(m_min, m_max) = tf->getWLMinMax();
+        std::tie(m_min, m_max) = tf->windowMinMax();
     }
 
     if(image)

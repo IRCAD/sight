@@ -164,7 +164,7 @@ SummedAreaTable::~SummedAreaTable()
         m_sceneManager->destroyCamera(m_dummyCamera);
     }
 
-    //Members of m_listeners are freed by the manager upon desctruction. Freeing them here causes a double-free.
+    //Members of m_listeners are freed by the manager upon destruction. Freeing them here causes a double-free.
 }
 
 //-----------------------------------------------------------------------------
@@ -569,7 +569,7 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
                         static_cast<std::size_t>(z)
                     );
 
-                const glm::vec4 saturation = applyTf(_tf, imgValue)
+                const glm::vec4 saturation = glm::vec4(_tf->sample(imgValue))
                                              + value_at(buffer, x - 1, y - 1, z - 1)
                                              + value_at(buffer, x, y, z - 1)
                                              + value_at(buffer, x, y - 1, z)
@@ -594,27 +594,6 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
     std::memcpy(pDest, buffer.data(), buffer.size() * sizeof(glm::vec4));
 
     pixBuffer->unlock();
-}
-
-//-----------------------------------------------------------------------------
-
-glm::vec4 SummedAreaTable::applyTf(data::TransferFunction::sptr _tf, int16_t imgValue)
-{
-    //Window (extent)
-    const double invWindow = 1. / _tf->getWindow();
-
-    //Intensity min and max
-    const auto [i_min, i_max] = _tf->getWLMinMax();
-
-    //TF min and max
-    const auto [tf_min, tf_max] = _tf->getMinMaxTFValues();
-
-    //Scaled value, which needs to be interpolated
-    const double value = (imgValue - i_min) * (tf_max - tf_min) * invWindow + tf_min;
-
-    const data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
-
-    return glm::vec4(interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
 }
 
 //-----------------------------------------------------------------------------

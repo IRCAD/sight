@@ -13,14 +13,14 @@ The services are implementations of the IAdaptor present in libs/viz/scene2D
   Displays the histogram of an image
 - **SLine**
   Draws a line on the scene2D
-- **SMultipleTF**
+- **STransferFunction**
   Displays a composite of TF and interact with them.
 - **SNegato**
   Displays one slice of an 3D image.
 - **SSquare**
-  Draws a square on the scene2D
+  Draws a square on the scene2D.
 - **STransferFunction**
-  Applies a transfer function on the image displayed
+  Displays and edits a transfer function from a medical image.
 - **SViewportInteractor**
   Manages the camera on the scene2D view
 - **SViewportRangeSelector**

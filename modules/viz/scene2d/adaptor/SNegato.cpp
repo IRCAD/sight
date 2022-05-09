@@ -133,17 +133,12 @@ void SNegato::updateBufferFromImage(QImage* _img)
     // Window min/max
     const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     const data::mt::locked_ptr tfLock(tf);
-    const double wlMin = tf->getWLMinMax().first;
 
     // Window max
     auto image                     = m_image.lock();
     const data::Image::Size size   = image->getSize();
     const short* imgBuff           = static_cast<const short*>(image->getBuffer());
     const std::size_t imageZOffset = size[0] * size[1];
-
-    const double tfMin = tf->getMinMaxTFValues().first;
-    const double tfMax = tf->getMinMaxTFValues().second;
-    const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
     std::uint8_t* pDest = _img->bits();
 
@@ -159,7 +154,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t y = 0 ; y < size[1] ; ++y)
             {
-                const QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, tfWin, tf);
+                const QRgb val = this->getQImageVal(imgBuff[zxOffset + y * size[0]], tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -179,7 +174,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
-                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+                const QRgb val = this->getQImageVal(imgBuff[zyOffset + x], tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -199,7 +194,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
-                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+                const QRgb val = this->getQImageVal(imgBuff[zyOffset + x], tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -214,19 +209,9 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
 //-----------------------------------------------------------------------------
 
-QRgb SNegato::getQImageVal(
-    const std::size_t index,
-    const short* buffer,
-    double wlMin,
-    double tfWin,
-    const data::TransferFunction::csptr& tf
-)
+QRgb SNegato::getQImageVal(const short value, const data::TransferFunction::csptr& tf)
 {
-    const short val16 = buffer[index];
-
-    double value = (val16 - wlMin) * tfWin;
-
-    const data::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
+    const data::TransferFunction::color_t color = tf->sample(value);
 
     // use QImage::Format_RGBA8888 in QImage if you need alpha value
     return qRgb(static_cast<int>(color.r * 255), static_cast<int>(color.g * 255), static_cast<int>(color.b * 255));
@@ -560,8 +545,8 @@ void SNegato::changeImageMinMaxFromCoord(
     data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     data::mt::locked_ptr tfLock(tf);
 
-    const double min = tf->getWLMinMax().first;
-    const double max = tf->getWLMinMax().second;
+    const double min = tf->windowMinMax().first;
+    const double max = tf->windowMinMax().second;
 
     const double window = newCoord.x - m_oldCoord.x;
     const double level  = newCoord.y - m_oldCoord.y;

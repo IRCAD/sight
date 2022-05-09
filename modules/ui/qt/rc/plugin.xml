@@ -27,12 +27,12 @@
          <service>sight::module::ui::qt::SParameters</service>
          <desc>Generic editor to interact with parameters.</desc>
     </extension>
+
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::qt::SPreferencesConfiguration</service>
          <desc>This action shows a dialog to configure preferences of an application.</desc>
     </extension>
-
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
@@ -201,18 +201,10 @@
     </extension>
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
-         <service>sight::module::ui::qt::image::SMultipleTF</service>
-         <object key="currentTFPool">sight::data::Composite</object>
-         <object key="tfPools">sight::data::Composite</object>
-         <object key="tfPool">sight::data::Composite</object>
-         <desc>Editor to select a transfer function pool.</desc>
-    </extension>
-
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::qt::image::STransferFunction</service>
-         <desc>Editor to select a transfer function.</desc>
+         <object key="current">sight::data::TransferFunction</object>
+         <object key="selected">sight::data::TransferFunction</object>
+         <desc>Editor to select a transfer function preset.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
@@ -220,12 +212,6 @@
          <service>sight::module::ui::qt::image::SliceIndexPositionEditor</service>
          <object>sight::data::Image</object>
          <desc>SliceIndexPositionEditor service allows to change the slice index of an image.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IEditor</type>
-         <service>sight::module::ui::qt::image::TransferFunctionEditor</service>
-         <desc>Editor to select a transfer function.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">

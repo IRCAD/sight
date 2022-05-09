@@ -102,8 +102,8 @@ void TransferFunction::removeTexture()
 
 void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
 {
-    using TFValueType     = data::TransferFunction::TFValueType;
-    using TFValuePairType = data::TransferFunction::TFValuePairType;
+    using value_t   = data::TransferFunction::value_t;
+    using min_max_t = data::TransferFunction::min_max_t;
 
     // Retrieves the pixel buffer from the texture
     Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
@@ -114,23 +114,16 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
     std::uint8_t* pDest   = static_cast<std::uint8_t*>(pixBox.data);
 
     // Retrieves the transfer function's intensity window
-    const TFValuePairType intensityMinMax = _tf->getWLMinMax();
-
-    const TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
+    const min_max_t intensityMinMax = _tf->windowMinMax();
 
     // Counter used to iterate through the texture buffer without exceeding its limit
-    const TFValueType invWindow     = 1. / _tf->getWindow();
-    const TFValueType intensityStep = (intensityMinMax.second - intensityMinMax.first)
-                                      / TEXTURE_PIXEL_COUNT;
+    const value_t intensityStep = (intensityMinMax.second - intensityMinMax.first)
+                                  / TEXTURE_PIXEL_COUNT;
 
-    TFValueType i = intensityMinMax.first;
+    value_t i = intensityMinMax.first;
     for(std::uint32_t k = 0 ; k < TEXTURE_PIXEL_COUNT ; ++k)
     {
-        // Tf intensity to mapped color.
-        const TFValueType value = (i - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first)
-                                  * invWindow + tfMinMax.first;
-
-        data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+        data::TransferFunction::color_t interpolatedColor = _tf->sample(i);
 
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.b * 255);
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.g * 255);
@@ -142,9 +135,9 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
 
     pixBuffer->unlock();
 
-    m_isClamped = _tf->getIsClamped();
+    m_isClamped = _tf->clamped();
 
-    const auto tfWLMinMax = _tf->getWLMinMax();
+    const auto tfWLMinMax = _tf->windowMinMax();
     m_tfWindow = Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
 }
 

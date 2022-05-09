@@ -1,24 +1,18 @@
 <extension implements="sight::service::extension::AppConfig" >
-    <id>TransferFunctionManagerWindowCfg</id>
+    <id>TransferFunctionWindowCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="WINDOW_TITLE" />
         <param name="WINDOW_ICON" />
         <param name="image" />
-        <param name="tfPools" />
-        <param name="currentTFPool" />
         <param name="currentTF" />
-        <param name="mergedTF" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${tfPools}" type="sight::data::Composite" src="ref" />
-        <object uid="${currentTFPool}" type="sight::data::Composite" src="deferred" />
         <object uid="${currentTF}" type="sight::data::TransferFunction" src="deferred" />
-        <object uid="${mergedTF}" type="sight::data::TransferFunction" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -51,13 +45,10 @@
 
         <!-- TF manager -->
         <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
-            <appConfig id="TransferFunctionManagerCfg" />
+            <appConfig id="TransferFunctionWidgetCfg" />
             <parameter replace="WID_PARENT" by="tfView" />
             <inout key="image" uid="${image}" />
-            <inout key="tfPools" uid="${tfPools}" />
-            <inout key="currentTFPool" uid="${currentTFPool}" optional="true" />
             <inout key="currentTF" uid="${currentTF}" optional="true" />
-            <inout key="mergedTF" uid="${mergedTF}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

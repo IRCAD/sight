@@ -29,10 +29,8 @@
     </extension>
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SMultipleTF</service>
+         <service>sight::module::viz::scene2d::adaptor::STransferFunction</service>
          <object key="viewport">sight::viz::scene2d::data::Viewport</object>
-         <object key="currentTF">sight::data::TransferFunction</object>
-         <object key="tfPool">sight::data::Composite</object>
          <object key="tf">sight::data::TransferFunction</object>
          <desc>Defines an adaptor to display a composite of TF and interact with them.</desc>
     </extension>
@@ -54,12 +52,6 @@
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SSquare</service>
          <desc>Create a square on the scene2D</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::STransferFunction</service>
-         <desc>IAdaptor implementation to display a transfer function.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">

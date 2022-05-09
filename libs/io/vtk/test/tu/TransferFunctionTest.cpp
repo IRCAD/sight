@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,17 +57,17 @@ data::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
-    tf->setBackgroundColor(data::TransferFunction::TFColor(1.0, 0.3, 0.6, 0.1));
-    tf->setInterpolationMode(data::TransferFunction::LINEAR);
-    tf->setIsClamped(false);
+    tf->setBackgroundColor(data::TransferFunction::color_t(1.0, 0.3, 0.6, 0.1));
+    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::LINEAR);
+    tf->setClamped(false);
     tf->setLevel(0.0);
-    tf->setName("TFColor");
+    tf->setName("color_t");
     tf->setWindow(400.0);
 
-    tf->addTFColor(-200, data::TransferFunction::TFColor(1.0, 0.0, 0.0, 0.0));
-    tf->addTFColor(0, data::TransferFunction::TFColor(0.0, 1.0, 0.0, 0.0));
-    tf->addTFColor(100, data::TransferFunction::TFColor(0.0, 0.0, 1.0, 0.5));
-    tf->addTFColor(200, data::TransferFunction::TFColor(0.0, 1.0, 1.0, 1.0));
+    tf->insert({-200, data::TransferFunction::color_t(1.0, 0.0, 0.0, 0.0)});
+    tf->insert({0, data::TransferFunction::color_t(0.0, 1.0, 0.0, 0.0)});
+    tf->insert({100, data::TransferFunction::color_t(0.0, 0.0, 1.0, 0.5)});
+    tf->insert({200, data::TransferFunction::color_t(0.0, 1.0, 1.0, 1.0)});
 
     return tf;
 }
@@ -105,7 +105,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.75, opacity, colorTolerance);
 
-    tf->setInterpolationMode(data::TransferFunction::NEAREST);
+    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
     io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, true, 4096);
     lt->GetColor(120, color);
     opacity = lt->GetOpacity(120);

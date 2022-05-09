@@ -143,13 +143,7 @@ private:
         sight::viz::scene2d::vec2d_t& newCoord
     );
 
-    static QRgb getQImageVal(
-        const std::size_t index,
-        const short* buffer,
-        double wlMin,
-        double tfWin,
-        const data::TransferFunction::csptr& tf
-    );
+    static QRgb getQImageVal(const short value, const data::TransferFunction::csptr& tf);
 
     QImage* m_qImg;
 

@@ -255,9 +255,11 @@ void SNegato3D::swapping(std::string_view key)
 {
     if(key == s_TF_INOUT)
     {
-        const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        {
+            const auto image = m_image.lock();
+            const auto tf    = m_tf.lock();
+            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        }
 
         this->updateTF();
     }
@@ -416,7 +418,7 @@ void SNegato3D::updateTF()
 
         for(const auto& plane : m_planes)
         {
-            plane->switchThresholding(tf->getIsClamped());
+            plane->switchThresholding(tf->clamped());
 
             // Sends the TF texture to the negato-related passes
             plane->setTFData(*m_gpuTF.get());
@@ -539,8 +541,8 @@ void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
             const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
             const data::mt::locked_ptr lock(tf);
 
-            m_initialLevel  = tf->getLevel();
-            m_initialWindow = tf->getWindow();
+            m_initialLevel  = tf->level();
+            m_initialWindow = tf->window();
 
             m_initialPos = {_x, _y};
         }

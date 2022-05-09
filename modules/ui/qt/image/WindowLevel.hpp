@@ -149,7 +149,7 @@ protected Q_SLOTS:
 
 protected:
 
-    typedef data::TransferFunction::TFValuePairType WindowLevelMinMaxType;
+    typedef data::TransferFunction::min_max_t WindowLevelMinMaxType;
 
     double toWindowLevel(double _val);
 

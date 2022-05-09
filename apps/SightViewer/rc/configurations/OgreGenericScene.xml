@@ -30,7 +30,7 @@
 
         <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
         <object uid="${image}" type="sight::data::Image" src="deferred" />
-        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="deferred" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 

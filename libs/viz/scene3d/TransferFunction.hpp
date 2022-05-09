@@ -83,7 +83,7 @@ private:
     /**
      *  @brief Defines interpolation mode on extremities. Copied from data::TransferFunction.
      *
-     *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
+     *  if m_isClamped == true then after extremity point, the returned TF color is color_t(0,0,0,0).
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
      **/
     bool m_isClamped {false};

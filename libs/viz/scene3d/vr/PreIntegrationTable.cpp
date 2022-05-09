@@ -173,23 +173,14 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, floa
 
     FW_PROFILE("PreIntegration")
     {
-        const data::TransferFunction::TFValuePairType intensityMinMax = _tf->getWLMinMax();
-
-        const data::TransferFunction::TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
-
-        const double invWindow = 1. / _tf->getWindow();
-
         glm::vec4 tmp(0.f);
 
-        _tf->setIsClamped(false);
+        _tf->setClamped(false);
 
         for(int k = 0 ; k < static_cast<int>(m_textureSize) ; ++k)
         {
-            data::TransferFunction::TFValueType value = k + m_valueInterval.first;
-
-            value = (value - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
-
-            data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+            data::TransferFunction::value_t value             = k + m_valueInterval.first;
+            data::TransferFunction::color_t interpolatedColor = _tf->sample(value);
 
             // We use associated colours.
             double alpha = interpolatedColor.a;
@@ -226,13 +217,8 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, floa
                 }
                 else
                 {
-                    data::TransferFunction::TFValueType value = sb + m_valueInterval.first;
-
-                    // intensity --> transfer function
-                    value = (value - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow
-                            + tfMinMax.first;
-
-                    data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+                    data::TransferFunction::value_t value             = sb + m_valueInterval.first;
+                    data::TransferFunction::color_t interpolatedColor = _tf->sample(value);
 
                     res =
                         glm::vec4(

@@ -229,7 +229,7 @@ void WindowLevel::updating()
         const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
         SIGHT_ASSERT("TransferFunction null pointer", tf);
         const data::mt::locked_ptr<const data::TransferFunction> lock(tf);
-        data::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
+        data::TransferFunction::min_max_t minMax = tf->windowMinMax();
         this->onImageWindowLevelChanged(minMax.first, minMax.second);
     }
 }
@@ -298,7 +298,7 @@ WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
     const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     const data::mt::locked_ptr<const data::TransferFunction> lock(tf);
     SIGHT_ASSERT("TransferFunction null pointer", tf);
-    return tf->getWLMinMax();
+    return tf->windowMinMax();
 }
 
 //------------------------------------------------------------------------------
@@ -340,8 +340,8 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
     const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     const data::mt::locked_ptr<data::TransferFunction> lock(tf);
 
-    tf->setWLMinMax(
-        data::TransferFunction::TFValuePairType(
+    tf->setWindowMinMax(
+        data::TransferFunction::min_max_t(
             _imageMin,
             _imageMax
         )
@@ -351,7 +351,7 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
     );
     {
         const core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
-        sig->asyncEmit(tf->getWindow(), tf->getLevel());
+        sig->asyncEmit(tf->window(), tf->level());
     }
 }
 
@@ -440,11 +440,11 @@ void WindowLevel::onToggleTF(bool squareTF)
     if(squareTF)
     {
         newTF = data::TransferFunction::New();
-        data::TransferFunction::TFColor color(1., 1., 1., 1.);
+        data::TransferFunction::color_t color(1., 1., 1., 1.);
         newTF->setName("SquareTF");
-        newTF->addTFColor(0.0, color);
-        newTF->addTFColor(1.0, color);
-        newTF->setIsClamped(true);
+        newTF->insert({0.0, color});
+        newTF->insert({1.0, color});
+        newTF->setClamped(true);
     }
     else
     {
@@ -458,8 +458,8 @@ void WindowLevel::onToggleTF(bool squareTF)
         }
     }
 
-    newTF->setWindow(currentTF->getWindow());
-    newTF->setLevel(currentTF->getLevel());
+    newTF->setWindow(currentTF->window());
+    newTF->setLevel(currentTF->level());
 
     m_previousTF = data::Object::copy(currentTF);
 

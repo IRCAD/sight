@@ -63,8 +63,7 @@ Here is the list of uncategorised services:
 - **ImageTransparency**: allows to change image transparency.
 - **SImage**: displays an image.
 - **SliceIndexPositionEditor**: allows to change the slice index of an image.
-- **SMultipleTF**: editor to select a transfer function pool.
-- **STransferFunction**: editor to select a transfer function
+- **STransferFunction**: editor to select a transfer function.
 - **TransferFunctionEditor**: ***deprecated in sight 22.0***. Editor to select a transfer function.
 - **WindowLevel**: allows to change the min/max value of windowing.
 

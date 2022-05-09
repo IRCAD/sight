@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,18 +43,18 @@ void TransferFunction::toVtkLookupTable(
     lt->SetNumberOfTableValues(size);
     lt->SetScaleToLinear();
 
-    data::TransferFunction::TFValuePairType minMax = tf->getMinMaxTFValues();
+    data::TransferFunction::min_max_t minMax = tf->minMax();
 
     lt->SetTableRange(minMax.first, minMax.second);
 
     double delta = (minMax.second - minMax.first) / (double) (size - 1);
-    data::TransferFunction::TFColor interpolatedColor;
+    data::TransferFunction::color_t interpolatedColor;
 
     if(allowTransparency)
     {
         for(unsigned int k = 0 ; k < size ; ++k)
         {
-            interpolatedColor = tf->getInterpolatedColor(k * delta + minMax.first);
+            interpolatedColor = tf->sample(k * delta + minMax.first);
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
         }
     }
@@ -62,7 +62,7 @@ void TransferFunction::toVtkLookupTable(
     {
         for(unsigned int k = 0 ; k < size ; ++k)
         {
-            interpolatedColor = tf->getInterpolatedColor(k * delta + minMax.first);
+            interpolatedColor = tf->sample(k * delta + minMax.first);
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, 1.0);
         }
     }

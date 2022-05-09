@@ -94,8 +94,8 @@ void TransferFunction::createTransferFunction(data::Image::sptr image)
         {
             double min, max;
             data::helper::MedicalImage::getMinMax(image, min, max);
-            data::TransferFunction::TFValuePairType wlMinMax(min, max);
-            tfGreyLevel->setWLMinMax(wlMinMax);
+            data::TransferFunction::min_max_t wlMinMax(min, max);
+            tfGreyLevel->setWindowMinMax(wlMinMax);
         }
 
         const auto scoped_emitter = tfPool->scoped_emit();
@@ -103,7 +103,7 @@ void TransferFunction::createTransferFunction(data::Image::sptr image)
     }
 
     auto transferFunction = m_transferFunction.lock();
-    if(transferFunction && transferFunction->getTFValues().empty())
+    if(transferFunction && transferFunction->empty())
     {
         auto tfGreyLevel = data::TransferFunction::dynamicCast(tfPool->get(data::TransferFunction::s_DEFAULT_TF_NAME));
         transferFunction->deepCopy(tfGreyLevel);

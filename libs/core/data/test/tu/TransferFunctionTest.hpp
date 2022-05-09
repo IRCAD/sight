@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,11 +40,12 @@ private:
     CPPUNIT_TEST(constructorTest);
     CPPUNIT_TEST(defaultTfTest);
     CPPUNIT_TEST(classicGetSetTest);
-    CPPUNIT_TEST(usingTfTest);
     CPPUNIT_TEST(setTFDataTest);
     CPPUNIT_TEST(shallowAndDeepCopyTest);
     CPPUNIT_TEST(linearColorTest);
     CPPUNIT_TEST(nearestColorTest);
+    CPPUNIT_TEST(mapValuesTest);
+    CPPUNIT_TEST(piecewiseFunctionTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,7 +54,6 @@ public:
     void setUp();
     void tearDown();
 
-    void methode1();
     void constructorTest();
     void defaultTfTest();
     void classicGetSetTest();
@@ -62,6 +62,8 @@ public:
     void shallowAndDeepCopyTest();
     void linearColorTest();
     void nearestColorTest();
+    void mapValuesTest();
+    void piecewiseFunctionTest();
 
     data::TransferFunction::sptr createTFColor();
     void checkTFColor(data::TransferFunction::sptr tf);

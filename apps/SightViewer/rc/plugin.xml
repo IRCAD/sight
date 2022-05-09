@@ -55,7 +55,7 @@
     </extension>
 
 
-    
+
 
     <extension implements="sight::service::extension::AppConfig" >
         <id>SightViewer_AppCfg</id>
@@ -70,12 +70,7 @@
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
             <object uid="landmarks" type="sight::data::Landmarks" />
 
-            <object uid="volumeTFPools" type="sight::data::Composite" />
-            <object uid="volumeCurrentTFPool" type="sight::data::Composite" src="deferred" />
-            <object uid="volumeCurrentTF" type="sight::data::TransferFunction" src="deferred" />
-            <object uid="volumeTF" type="sight::data::TransferFunction" >
-                <colors default="true" />
-            </object>
+            <object uid="volumeTF" type="sight::data::TransferFunction" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -484,20 +479,17 @@
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <inout key="modelSeries" uid="modelSeries" optional="true"/>
                 <inout key="image" uid="image" optional="true"/>
-                <inout key="volumeTF" uid="volumeTF" />
+                <inout key="volumeTF" uid="volumeTF" optional="true" />
                 <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
                 <inout key="landmarks" uid="landmarks" />
             </service>
 
             <!-- TF manager -->
             <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="TransferFunctionManagerCfg" />
+                <appConfig id="TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout key="image" uid="image" />
-                <inout key="tfPools" uid="volumeTFPools" />
-                <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
-                <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
-                <inout key="mergedTF" uid="volumeTF" />
+                <inout key="currentTF" uid="volumeTF" optional="true" />
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >

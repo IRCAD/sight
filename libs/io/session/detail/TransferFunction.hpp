@@ -45,40 +45,25 @@ constexpr static auto s_IsClamped {"IsClamped"};
 constexpr static auto s_TFData {"TFData"};
 constexpr static auto s_Value {"Value"};
 constexpr static auto s_Color {"Color"};
+constexpr static auto s_Pieces {"Pieces"};
 
 //------------------------------------------------------------------------------
 
-inline static void serialize(
-    zip::ArchiveWriter&,
+inline static void serializeTransferFunctionData(
     boost::property_tree::ptree& tree,
-    data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    const data::TransferFunctionData& transferFunction
 )
 {
-    const auto transferFunction = Helper::safeCast<data::TransferFunction>(object);
-
-    // Serialize attributes
-    tree.put(s_Level, transferFunction->getLevel());
-    tree.put(s_Window, transferFunction->getWindow());
-    Helper::writeString(tree, s_Name, transferFunction->getName());
-    tree.put(s_InterpolationMode, transferFunction->getInterpolationMode());
-    tree.put(s_IsClamped, transferFunction->getIsClamped());
-
-    // Background color
-    const auto& backgroundColor = transferFunction->getBackgroundColor();
-    boost::property_tree::ptree backgroundColorTree;
-    backgroundColorTree.put(s_Red, backgroundColor.r);
-    backgroundColorTree.put(s_Green, backgroundColor.g);
-    backgroundColorTree.put(s_Blue, backgroundColor.b);
-    backgroundColorTree.put(s_Alpha, backgroundColor.a);
-    tree.add_child(s_BackgroundColor, backgroundColorTree);
+    tree.put(s_InterpolationMode, static_cast<int>(transferFunction.interpolationMode()));
+    tree.put(s_IsClamped, transferFunction.clamped());
+    tree.put(s_Level, transferFunction.level());
+    tree.put(s_Window, transferFunction.window());
 
     // Transfer function data
     boost::property_tree::ptree dataTree;
 
     std::size_t index = 0;
-    for(const auto& value : transferFunction->getTFData())
+    for(const auto& value : transferFunction)
     {
         boost::property_tree::ptree valueTree;
         valueTree.put(s_Value, std::to_string(value.first));
@@ -94,6 +79,76 @@ inline static void serialize(
 
 //------------------------------------------------------------------------------
 
+inline static void deserializeTransferFunctionData(
+    const boost::property_tree::ptree& tree,
+    data::TransferFunctionData& transferFunction
+)
+{
+    // Deserialize attributes
+    transferFunction.setLevel(tree.get<double>(s_Level));
+    transferFunction.setWindow(tree.get<double>(s_Window));
+    transferFunction.setInterpolationMode(
+        static_cast<data::TransferFunction::InterpolationMode>(tree.get<int>(s_InterpolationMode))
+    );
+    transferFunction.setClamped(tree.get<bool>(s_IsClamped));
+
+    // Transfer function data
+    for(const auto& value : tree.get_child(s_TFData))
+    {
+        const auto& colorTree = value.second;
+        data::TransferFunction::color_t color(
+            colorTree.get<double>(s_Red),
+            colorTree.get<double>(s_Green),
+            colorTree.get<double>(s_Blue),
+            colorTree.get<double>(s_Alpha)
+        );
+
+        transferFunction.insert({colorTree.get<double>(s_Value), color});
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static void serialize(
+    zip::ArchiveWriter&,
+    boost::property_tree::ptree& tree,
+    data::Object::csptr object,
+    std::map<std::string, data::Object::csptr>&,
+    const core::crypto::secure_string& = ""
+)
+{
+    const auto transferFunction = Helper::safeCast<data::TransferFunction>(object);
+
+    Helper::writeVersion<data::TransferFunction>(tree, 1);
+
+    // Serialize attributes
+    Helper::writeString(tree, s_Name, transferFunction->name());
+
+    // Background color
+    const auto& backgroundColor = transferFunction->backgroundColor();
+    boost::property_tree::ptree backgroundColorTree;
+    backgroundColorTree.put(s_Red, backgroundColor.r);
+    backgroundColorTree.put(s_Green, backgroundColor.g);
+    backgroundColorTree.put(s_Blue, backgroundColor.b);
+    backgroundColorTree.put(s_Alpha, backgroundColor.a);
+    tree.add_child(s_BackgroundColor, backgroundColorTree);
+
+    serializeTransferFunctionData(tree, *transferFunction);
+
+    boost::property_tree::ptree piecesTree;
+    std::size_t index = 0;
+    for(const auto& piece : transferFunction->pieces())
+    {
+        boost::property_tree::ptree pieceTree;
+        serializeTransferFunctionData(pieceTree, *piece);
+        piecesTree.add_child(s_Pieces + std::to_string(index++), pieceTree);
+    }
+
+    tree.add_child(s_Pieces, piecesTree);
+}
+
+//------------------------------------------------------------------------------
+
 inline static data::TransferFunction::sptr deserialize(
     zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
@@ -105,40 +160,38 @@ inline static data::TransferFunction::sptr deserialize(
     // Create or reuse the object
     auto transferFunction = Helper::safeCast<data::TransferFunction>(object);
 
-    // Check version number. Not mandatory, but could help for future release
-    Helper::readVersion<data::TransferFunction>(tree, 0, 1);
-
-    // Deserialize attributes
-    transferFunction->setLevel(tree.get<double>(s_Level));
-    transferFunction->setWindow(tree.get<double>(s_Window));
-    transferFunction->setName(Helper::readString(tree, s_Name));
-    transferFunction->setInterpolationMode(
-        static_cast<data::TransferFunction::InterpolationMode>(tree.get<int>(s_InterpolationMode))
-    );
-    transferFunction->setIsClamped(tree.get<bool>(s_IsClamped));
-
     // Background color
     const auto backgroundColorTree = tree.get_child(s_BackgroundColor);
-    data::TransferFunction::TFColor backgroundColor(
+    data::TransferFunction::color_t backgroundColor(
         backgroundColorTree.get<double>(s_Red),
         backgroundColorTree.get<double>(s_Green),
         backgroundColorTree.get<double>(s_Blue),
         backgroundColorTree.get<double>(s_Alpha)
     );
     transferFunction->setBackgroundColor(backgroundColor);
+    transferFunction->setName(Helper::readString(tree, s_Name));
 
-    // Transfer function data
-    for(const auto& value : tree.get_child(s_TFData))
+    const int version = Helper::readVersion<data::TransferFunction>(tree, 0, 1);
+
+    if(version == -1)
     {
-        const auto& colorTree = value.second;
-        data::TransferFunction::TFColor color(
-            colorTree.get<double>(s_Red),
-            colorTree.get<double>(s_Green),
-            colorTree.get<double>(s_Blue),
-            colorTree.get<double>(s_Alpha)
-        );
+        auto& pieces = transferFunction->pieces();
+        pieces.push_back(data::TransferFunctionData::New());
 
-        transferFunction->addTFColor(colorTree.get<double>(s_Value), color);
+        deserializeTransferFunctionData(tree, *pieces.back());
+        transferFunction->mergePieces();
+    }
+    else
+    {
+        deserializeTransferFunctionData(tree, *transferFunction);
+
+        for(const auto& pieceTree : tree.get_child(s_Pieces))
+        {
+            auto& pieces = transferFunction->pieces();
+            pieces.push_back(data::TransferFunctionData::New());
+
+            deserializeTransferFunctionData(pieceTree.second, *pieces.back());
+        }
     }
 
     return transferFunction;

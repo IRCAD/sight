@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,15 +72,15 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
                 data::Color::sptr newColor = data::Color::New();
                 newColor->setRGBA(strColor);
 
-                const data::TransferFunction::TFColor color(newColor->red(), newColor->green(),
+                const data::TransferFunction::color_t color(newColor->red(), newColor->green(),
                                                             newColor->blue(), newColor->alpha());
-                tf->addTFColor(value, color);
+                (*tf)[value] = color;
             }
 
-            tf->setWLMinMax(tf->getMinMaxTFValues());
+            tf->setWindowMinMax(tf->minMax());
 
             const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
-            tf->setIsClamped(isClamped);
+            tf->setClamped(isClamped);
 
             const std::string name = config.get<std::string>("name", "");
             if(!name.empty())

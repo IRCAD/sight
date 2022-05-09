@@ -118,8 +118,8 @@ struct JpgITKSaverFunctor
             {
                 data::TransferFunction::sptr tf;
                 tf  = data::TransferFunction::dynamicCast(iter->second);
-                min = tf->getWLMinMax().first;
-                max = tf->getWLMinMax().second;
+                min = tf->windowMinMax().first;
+                max = tf->windowMinMax().second;
             }
         }
         else

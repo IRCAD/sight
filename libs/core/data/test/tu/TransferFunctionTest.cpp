@@ -26,8 +26,17 @@
 #include <data/String.hpp>
 #include <data/TransferFunction.hpp>
 
+#include <glm/common.hpp>
+#include <glm/gtc/epsilon.hpp>
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::TransferFunctionTest);
+
+static const double s_EPSILON = 1e-5;
+
+// There might be some uncertainty when sampling, so we need to include an epsilon when testing equality
+#define ASSERT_COLOR_EQUALS(c1, c2) \
+    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, s_EPSILON)));
 
 namespace sight::data
 {
@@ -57,119 +66,83 @@ void TransferFunctionTest::constructorTest()
     const double expectedLevel                                          = 0.0;
     const double expectedWindow                                         = 100.0;
     const std::string expectedName                                      = "";
-    const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
+    const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::InterpolationMode::LINEAR;
     const bool expectedIsClamped                                        = true;
-    const TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
+    const TransferFunction::color_t expectedBackgroundColor             = TransferFunction::color_t();
     const std::size_t expectedSize                                      = 0;
 
     data::TransferFunction::csptr tf = data::TransferFunction::New();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->level());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->window());
 
-    CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
-    CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
-    CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->getIsClamped());
-    CPPUNIT_ASSERT(expectedBackgroundColor == tf->getBackgroundColor());
-    CPPUNIT_ASSERT_EQUAL(expectedSize, tf->getTFData().size());
+    CPPUNIT_ASSERT_EQUAL(expectedName, tf->name());
+    CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->interpolationMode());
+    CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->clamped());
+    CPPUNIT_ASSERT(expectedBackgroundColor == tf->backgroundColor());
+    CPPUNIT_ASSERT_EQUAL(expectedSize, tf->size());
 }
 
 //------------------------------------------------------------------------------
 void TransferFunctionTest::defaultTfTest()
 {
     // Expected default value.
-    double expectedLevel  = 0.0;
-    double expectedWindow = 100.0;
+    double expectedLevel  = 50.0;
+    double expectedWindow = 500.0;
 
     const std::string expectedName                                      = TransferFunction::s_DEFAULT_TF_NAME;
-    const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
+    const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::InterpolationMode::LINEAR;
     const bool expectedIsClamped                                        = false;
-    const TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
+    const TransferFunction::color_t expectedBackgroundColor             = TransferFunction::color_t();
     const std::size_t expectedSize                                      = 2;
 
     data::TransferFunction::csptr tf = data::TransferFunction::createDefaultTF();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 50.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 500.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->window(), s_EPSILON);
 
-    CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
-    CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
-    CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->getIsClamped());
-    CPPUNIT_ASSERT(expectedBackgroundColor == tf->getBackgroundColor());
-    CPPUNIT_ASSERT_EQUAL(expectedSize, tf->getTFData().size());
+    CPPUNIT_ASSERT_EQUAL(expectedName, tf->name());
+    CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->interpolationMode());
+    CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->clamped());
+    CPPUNIT_ASSERT(expectedBackgroundColor == tf->backgroundColor());
+    CPPUNIT_ASSERT_EQUAL(expectedSize, tf->size());
 }
 
 //------------------------------------------------------------------------------
 
 void TransferFunctionTest::classicGetSetTest()
 {
-    const TransferFunction::TFColor expectedColor1(0.0, 0.0, 0.0, 0.0);
-    const TransferFunction::TFColor expectedColor2(1.0, 1.0, 1.0, 1.0);
-    const TransferFunction::TFValueType expectedKey1(0.0);
-    const TransferFunction::TFValueType expectedKey2(1.0);
+    const TransferFunction::color_t expectedColor1(0.0, 0.0, 0.0, 0.0);
+    const TransferFunction::color_t expectedColor2(1.0, 1.0, 1.0, 1.0);
+    const TransferFunction::value_t expectedKey1(-200.0);
+    const TransferFunction::value_t expectedKey2(300.0);
 
     data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
 
     // Test getTFData()
-    const TransferFunction::TFDataType& data = tf->getTFData();
+    TransferFunction::data_t::const_iterator itr = tf->cbegin();
+    const TransferFunction::value_t key1         = itr->first;
+    const TransferFunction::value_t key2         = (++itr)->first;
 
-    TransferFunction::TFDataType::const_iterator itr = data.begin();
-    const TransferFunction::TFValueType key1         = itr->first;
-    const TransferFunction::TFValueType key2         = (++itr)->first;
-
-    TransferFunction::TFDataType::const_iterator itrColor = data.begin();
-    const TransferFunction::TFColor color1                = itrColor->second;
-    const TransferFunction::TFColor color2                = (++itrColor)->second;
+    TransferFunction::data_t::const_iterator itrColor = tf->cbegin();
+    const TransferFunction::color_t color1            = itrColor->second;
+    const TransferFunction::color_t color2            = (++itrColor)->second;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedKey1, key1, 1e-10);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedKey2, key2, 1e-10);
 
     CPPUNIT_ASSERT(expectedColor1 == color1);
     CPPUNIT_ASSERT(expectedColor2 == color2);
-
-    // Test getTFColor()
-    CPPUNIT_ASSERT(expectedColor1 == tf->getTFColor(key1));
-
-    // Test getTFValues()
-    const TransferFunction::TFValueVectorType values = tf->getTFValues();
-
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong key value", expectedKey1, values[0]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong key value", expectedKey2, values[1]);
-
-    // Test getTFColors()
-    const TransferFunction::TFColorVectorType colors = tf->getTFColors();
-
-    CPPUNIT_ASSERT(expectedColor1 == colors[0]);
-    CPPUNIT_ASSERT(expectedColor2 == colors[1]);
+    CPPUNIT_ASSERT(expectedColor1 == tf->find(key1)->second);
 
     // Test erase
-    tf->eraseTFValue(1.0);
-    CPPUNIT_ASSERT_EQUAL((std::size_t) 1, tf->getTFData().size());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrong key value", expectedKey1, tf->getTFValues()[0]);
+    tf->erase(300.0);
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 1, tf->size());
 
     // Test clear()
     tf->clear();
     const std::size_t expectedClearedSize = 0;
-    CPPUNIT_ASSERT_EQUAL(expectedClearedSize, tf->getTFData().size());
-}
-
-//------------------------------------------------------------------------------
-
-void TransferFunctionTest::usingTfTest()
-{
-    data::TransferFunction::csptr tf = this->createTFColor();
-
-    // -40.33 / -0.2 / 3 / 150
-    CPPUNIT_ASSERT_EQUAL(-40.33, tf->getNearestValue(-140.33));
-    CPPUNIT_ASSERT_EQUAL(-40.33, tf->getNearestValue(-40.33));
-    CPPUNIT_ASSERT_EQUAL(-40.33, tf->getNearestValue(-25));
-    CPPUNIT_ASSERT_EQUAL(-0.2, tf->getNearestValue(-10.8));
-    CPPUNIT_ASSERT_EQUAL(-0.2, tf->getNearestValue(-0.2));
-    CPPUNIT_ASSERT_EQUAL(-0.2, tf->getNearestValue(1.0));
-    CPPUNIT_ASSERT_EQUAL(3.0, tf->getNearestValue(50));
-    CPPUNIT_ASSERT_EQUAL(3.0, tf->getNearestValue(3));
-    CPPUNIT_ASSERT_EQUAL(150.0, tf->getNearestValue(150));
-    CPPUNIT_ASSERT_EQUAL(150.0, tf->getNearestValue(1000));
+    CPPUNIT_ASSERT_EQUAL(expectedClearedSize, tf->size());
 }
 
 //------------------------------------------------------------------------------
@@ -177,6 +150,9 @@ void TransferFunctionTest::usingTfTest()
 void TransferFunctionTest::shallowAndDeepCopyTest()
 {
     const data::TransferFunction::sptr tf = this->createTFColor();
+    tf->setLevel(900.6);
+    tf->setWindow(-200.02);
+
     this->checkTFColor(tf);
 
     const data::TransferFunction::sptr deepCopyTf = data::Object::copy(tf);
@@ -193,18 +169,17 @@ data::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
-    tf->setBackgroundColor(data::TransferFunction::TFColor(1.0, 0.3, 0.6, 0.1));
-    tf->setInterpolationMode(data::TransferFunction::NEAREST);
-    tf->setIsClamped(false);
-    tf->setLevel(900.6);
-    tf->setName("TFColor");
-    tf->setWindow(-200.02);
+    tf->setBackgroundColor(data::TransferFunction::color_t(1.0, 0.3, 0.6, 0.1));
+    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
+    tf->setClamped(false);
+    tf->setWindowMinMax({-40.33, 150.});
 
-    tf->addTFColor(-40.33, data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4));
-    tf->addTFColor(3, data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4)); // Invert point 3 <=> -0.2, for
+    tf->setName("color_t");
+    tf->insert({-40.33, data::TransferFunction::color_t(0.9, 0.2, 0.3, 0.4)});
+    tf->insert({3, data::TransferFunction::color_t(0.1, 0.2, 0.9, 0.4)}); // Invert point 3 <=> -0.2, for
     // tests
-    tf->addTFColor(-0.2, data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4));
-    tf->addTFColor(150, data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9));
+    tf->insert({-0.2, data::TransferFunction::color_t(0.1, 0.9, 0.3, 0.4)});
+    tf->insert({150, data::TransferFunction::color_t(0.1, 0.2, 0.3, 0.9)});
 
     data::String::sptr myString = data::String::New("fieldStringValue");
     tf->setField("fieldStringKey", myString);
@@ -216,27 +191,21 @@ data::TransferFunction::sptr TransferFunctionTest::createTFColor()
 
 void TransferFunctionTest::checkTFColor(data::TransferFunction::sptr tf)
 {
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(1.0, 0.3, 0.6, 0.1) == tf->getBackgroundColor());
-    CPPUNIT_ASSERT_EQUAL(data::TransferFunction::NEAREST, tf->getInterpolationMode());
-    CPPUNIT_ASSERT_EQUAL(false, tf->getIsClamped());
-    CPPUNIT_ASSERT_EQUAL(900.6, tf->getLevel());
-    CPPUNIT_ASSERT_EQUAL(std::string("TFColor"), tf->getName());
-    CPPUNIT_ASSERT_EQUAL(-200.02, tf->getWindow());
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(1.0, 0.3, 0.6, 0.1) == tf->backgroundColor());
+    CPPUNIT_ASSERT_EQUAL(data::TransferFunction::InterpolationMode::NEAREST, tf->interpolationMode());
+    CPPUNIT_ASSERT_EQUAL(false, tf->clamped());
+    CPPUNIT_ASSERT_EQUAL(900.6, tf->level());
+    CPPUNIT_ASSERT_EQUAL(std::string("color_t"), tf->name());
+    CPPUNIT_ASSERT_EQUAL(-200.02, tf->window());
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), tf->getTFData().size());
-    CPPUNIT_ASSERT_EQUAL(-40.33, tf->getMinMaxTFValues().first);
-    CPPUNIT_ASSERT_EQUAL(150.0, tf->getMinMaxTFValues().second);
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), tf->size());
+    CPPUNIT_ASSERT_EQUAL(-40.33, tf->minMax().first);
+    CPPUNIT_ASSERT_EQUAL(150., tf->minMax().second);
 
-    const TransferFunction::TFValueVectorType& values = tf->getTFValues();
-    CPPUNIT_ASSERT_EQUAL(values[0], -40.33);
-    CPPUNIT_ASSERT_EQUAL(values[1], -0.2);
-    CPPUNIT_ASSERT_EQUAL(values[2], 3.0);
-    CPPUNIT_ASSERT_EQUAL(values[3], 150.0);
-
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getTFColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getTFColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getTFColor(3));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getTFColor(150));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(0.9, 0.2, 0.3, 0.4) == tf->find(-40.33)->second);
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(0.1, 0.9, 0.3, 0.4) == tf->find(-0.2)->second);
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(0.1, 0.2, 0.9, 0.4) == tf->find(3)->second);
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(0.1, 0.2, 0.3, 0.9) == tf->find(150)->second);
 
     CPPUNIT_ASSERT_EQUAL(
         std::string("fieldStringValue"),
@@ -249,14 +218,16 @@ void TransferFunctionTest::checkTFColor(data::TransferFunction::sptr tf)
 void TransferFunctionTest::setTFDataTest()
 {
     data::TransferFunction::sptr tf = this->createTFColor();
+    tf->setLevel(900.6);
+    tf->setWindow(-200.02);
 
     tf->clear();
-    data::TransferFunction::TFDataType tfData;
-    tfData[-40.33] = data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4);
-    tfData[3]      = data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4);
-    tfData[-0.2]   = data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4);
-    tfData[150]    = data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9);
-    tf->setTFData(tfData);
+    data::TransferFunction::data_t tfData;
+    tfData[-40.33] = data::TransferFunction::color_t(0.9, 0.2, 0.3, 0.4);
+    tfData[3]      = data::TransferFunction::color_t(0.1, 0.2, 0.9, 0.4);
+    tfData[-0.2]   = data::TransferFunction::color_t(0.1, 0.9, 0.3, 0.4);
+    tfData[150]    = data::TransferFunction::color_t(0.1, 0.2, 0.3, 0.9);
+    std::copy(tfData.begin(), tfData.end(), inserter(*tf));
 
     this->checkTFColor(tf);
 }
@@ -268,75 +239,39 @@ void TransferFunctionTest::linearColorTest()
     data::TransferFunction::sptr tf = this->createTFColor();
 
     // Value = -40.33 => color : {0.9, 0.2, 0.3, 0.4}
-    // Value = -0.2  => color : {0.1, 0.9, 0.3, 0.4}
-    // Value = 3     => color : {0.1, 0.2, 0.9, 0.4}
-    // Value = 150   => color : {0.1, 0.2, 0.3, 0.9}
+    // Value = -0.2   => color : {0.1, 0.9, 0.3, 0.4}
+    // Value = 3      => color : {0.1, 0.2, 0.9, 0.4}
+    // Value = 150    => color : {0.1, 0.2, 0.3, 0.9}
 
-    tf->setIsClamped(true);
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getLinearColor(-120));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getLinearColor(200));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(150));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.6,
-            0.65
-        ) == tf->getLinearColor(((150.0 - 3.0) / 2.0) + 3)
-    );
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getLinearColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(
-            ((150.0 - 3.0) / 4.0) + 3
-        )
-    );
+    tf->setClamped(true);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.0, .0, .0, .0), tf->sampleLinear(-120));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.0, .0, .0, .0), tf->sampleLinear(200));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.9, .2, .3, .4), tf->sampleLinear(-40.33));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .3, .9), tf->sampleLinear(150));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .6, .65), tf->sampleLinear(((150. - 3.) / 2.) + 3));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .9, .3, .4), tf->sampleLinear(-0.2));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .9, .4), tf->sampleLinear(3));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .75, .525), tf->sampleLinear(((150. - 3.) / 4.) + 3));
 
-    tf->setInterpolationMode(TransferFunction::LINEAR);
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(-120));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(200));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getInterpolatedColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(150));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.6,
-            0.65
-        ) == tf->getInterpolatedColor(((150.0 - 3.0) / 2.0) + 3)
-    );
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getInterpolatedColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(3));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.75,
-            0.525
-        ) == tf->getInterpolatedColor(((150.0 - 3.0) / 4.0) + 3)
-    );
+    tf->setInterpolationMode(TransferFunction::InterpolationMode::LINEAR);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.0, .0, .0, .0), tf->sample(-120));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.0, .0, .0, .0), tf->sample(200));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.9, .2, .3, .4), tf->sample(-40.33));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .3, .9), tf->sample(150));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .6, .65), tf->sample(((150. - 3.) / 2.) + 3));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .9, .3, .4), tf->sample(-0.2));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .9, .4), tf->sample(3));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .75, .525), tf->sample(((150. - 3.) / 4.) + 3));
 
-    tf->setIsClamped(false);
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-120));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(200));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(150));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.6,
-            0.65
-        ) == tf->getLinearColor(((150.0 - 3.0) / 2.0) + 3)
-    );
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getLinearColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(
-            ((150.0 - 3.0) / 4.0) + 3
-        )
-    );
+    tf->setClamped(false);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.9, .2, .3, .4), tf->sampleLinear(-120));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .3, .9), tf->sampleLinear(200));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.9, .2, .3, .4), tf->sampleLinear(-40.33));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .3, .9), tf->sampleLinear(150));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .6, .65), tf->sampleLinear(((150. - 3.) / 2.) + 3));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .9, .3, .4), tf->sampleLinear(-0.2));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .9, .4), tf->sampleLinear(3));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(.1, .2, .75, .525), tf->sampleLinear(((150. - 3.) / 4.) + 3));
 }
 
 //------------------------------------------------------------------------------
@@ -350,77 +285,164 @@ void TransferFunctionTest::nearestColorTest()
     // Value = 3     => color : {0.1, 0.2, 0.9, 0.4}
     // Value = 150   => color : {0.1, 0.2, 0.3, 0.9}
 
-    tf->setIsClamped(true);
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getNearestColor(-120));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getNearestColor(200));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(150));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.3,
-            0.9
-        ) == tf->getNearestColor(((150.0 - 3.0) / 2.0) + 3 + 0.1)
-    );
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getNearestColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(3));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.9,
-            0.4
-        ) == tf->getNearestColor(((150.0 - 3.0) / 4.0) + 3)
-    );
+    tf->setClamped(true);
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sampleNearest(-120));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sampleNearest(200));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.9, .2, .3, .4) == tf->sampleNearest(-40.33));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sampleNearest(150));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sampleNearest(((150. - 3.) / 2.) + 3 + .1));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .9, .3, .4) == tf->sampleNearest(-0.2));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .9, .4) == tf->sampleNearest(3));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .9, .4) == tf->sampleNearest(((150. - 3.) / 4.) + 3));
 
-    tf->setInterpolationMode(TransferFunction::NEAREST);
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(-120));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(200));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getInterpolatedColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(150));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.3,
-            0.9
-        ) == tf->getInterpolatedColor(((150.0 - 3.0) / 2.0) + 3 + 0.1)
-    );
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getInterpolatedColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(3));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.9,
-            0.4
-        ) == tf->getInterpolatedColor(((150.0 - 3.0) / 4.0) + 3)
-    );
+    tf->setInterpolationMode(TransferFunction::InterpolationMode::NEAREST);
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sample(-120));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sample(200));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.9, .2, .3, .4) == tf->sample(-40.33));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sample(150));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sample(((150. - 3.) / 2.) + 3 + 0.1));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .9, .3, .4) == tf->sample(-0.2));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .9, .4) == tf->sample(3));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .9, .4) == tf->sample(((150. - 3.) / 4.) + 3));
 
-    tf->setIsClamped(false);
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-120));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(200));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-40.33));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(150));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.3,
-            0.9
-        ) == tf->getNearestColor(((150.0 - 3.0) / 2.0) + 3 + 0.1)
-    );
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.9, 0.3, 0.4) == tf->getNearestColor(-0.2));
-    CPPUNIT_ASSERT(data::TransferFunction::TFColor(0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(3));
-    CPPUNIT_ASSERT(
-        data::TransferFunction::TFColor(
-            0.1,
-            0.2,
-            0.9,
-            0.4
-        ) == tf->getNearestColor(((150.0 - 3.0) / 4.0) + 3)
-    );
+    tf->setClamped(false);
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.9, .2, .3, .4) == tf->sampleNearest(-120));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sampleNearest(200));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.9, .2, .3, .4) == tf->sampleNearest(-40.33));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sampleNearest(150));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .3, .9) == tf->sampleNearest(((150. - 3.) / 2.) + 3 + .1));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .9, .3, .4) == tf->sampleNearest(-0.2));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .9, .4) == tf->sampleNearest(3));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.1, .2, .9, .4) == tf->sampleNearest(((150. - 3.) / 4.) + 3));
+}
+
+//------------------------------------------------------------------------------
+
+void TransferFunctionTest::mapValuesTest()
+{
+    auto tf = data::TransferFunction::New();
+
+    tf->setClamped(false);
+    tf->setWindowMinMax({-200, 300.});
+    tf->insert({0., {0., 0., 0., 0.}});
+    tf->insert({1., {1., 1., 1., 1.}});
+
+    CPPUNIT_ASSERT_EQUAL(-200., tf->mapValueToWindow(0.));
+    CPPUNIT_ASSERT_EQUAL(50., tf->mapValueToWindow(0.5));
+    CPPUNIT_ASSERT_EQUAL(300., tf->mapValueToWindow(1.));
+
+    CPPUNIT_ASSERT_EQUAL(0., tf->mapValueFromWindow(-200.));
+    CPPUNIT_ASSERT_EQUAL(.5, tf->mapValueFromWindow(50.));
+    CPPUNIT_ASSERT_EQUAL(1., tf->mapValueFromWindow(300.));
+
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sampleNearest(-200));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sampleNearest(0));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0) == tf->sampleNearest(55));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0) == tf->sampleNearest(100));
+
+    // Insert a point that changes the maximum value
+    tf->insert({2., {1., 1., 0., 1.}});
+
+    CPPUNIT_ASSERT_EQUAL(-200., tf->mapValueToWindow(0.));
+    CPPUNIT_ASSERT_EQUAL(-75., tf->mapValueToWindow(0.5));
+    CPPUNIT_ASSERT_EQUAL(50., tf->mapValueToWindow(1.));
+    CPPUNIT_ASSERT_EQUAL(300., tf->mapValueToWindow(2.));
+
+    CPPUNIT_ASSERT_EQUAL(0., tf->mapValueFromWindow(-200.));
+    CPPUNIT_ASSERT_EQUAL(.5, tf->mapValueFromWindow(-75.));
+    CPPUNIT_ASSERT_EQUAL(1., tf->mapValueFromWindow(50.));
+    CPPUNIT_ASSERT_EQUAL(2., tf->mapValueFromWindow(300.));
+
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(.0, .0, .0, .0) == tf->sampleNearest(-200));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0) == tf->sampleNearest(0));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(1.0, 1.0, .5, 1.0) == tf->sampleLinear(175));
+    CPPUNIT_ASSERT(data::TransferFunction::color_t(1.0, 1.0, 0., 1.0) == tf->sampleNearest(300.));
+}
+
+//------------------------------------------------------------------------------
+
+void TransferFunctionTest::piecewiseFunctionTest()
+{
+    auto tf = data::TransferFunction::New();
+
+    auto& pieces = tf->pieces();
+
+    pieces.emplace_back(data::TransferFunctionData::New());
+
+    pieces[0]->setClamped(false);
+    pieces[0]->setWindowMinMax({-10, 0.});
+    pieces[0]->insert({-10.0, {0.0, 0.0, 0.0, 0.0}}); // 1
+    pieces[0]->insert({-5.0, {1.0, 0.3, 0.0, 1.0}});  // 2
+    pieces[0]->insert({0.0, {0.0, 0.0, 1.0, 0.4}});   // 3
+
+    CPPUNIT_ASSERT(tf->empty());
+
+    tf->mergePieces();
+
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), tf->size());
+    CPPUNIT_ASSERT_EQUAL(-5., tf->level());
+    CPPUNIT_ASSERT_EQUAL(10., tf->window());
+
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 0.0, 0.0), tf->find(-10.)->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 0.3, 0.0, 1.0), tf->find(-5.)->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 1.0, 0.4), tf->find(0)->second);
+
+    pieces[0]->setClamped(true);
+
+    tf->mergePieces();
+
+    CPPUNIT_ASSERT_EQUAL(std::size_t(5), tf->size());
+    CPPUNIT_ASSERT_EQUAL(-5., tf->level());
+    CPPUNIT_ASSERT_EQUAL(10.2, tf->window());
+
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 0.0, 0.0), tf->find(-10.)->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 0.3, 0.0, 1.0), tf->find(-5.)->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 1.0, 0.4), tf->find(0)->second);
+
+    /// Additional values for the clamp
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 0.0, 0.0), tf->begin()->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 0.0, 0.0), tf->rbegin()->second);
+
+    pieces.emplace_back(data::TransferFunctionData::New());
+
+    pieces[1]->setClamped(false);
+    pieces[1]->setWindowMinMax({0, 100.});
+    pieces[1]->insert({0.0, {0.0, 0.6, 0.0, 0.5}});   // 4
+    pieces[1]->insert({50.0, {1.0, 1.0, 0.0, 1.0}});  // 5
+    pieces[1]->insert({100.0, {1.0, 0.0, 1.0, 0.5}}); // 6
+
+    tf->mergePieces();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(7), tf->size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(44.95, tf->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(110.1, tf->window(), s_EPSILON);
+
+    // Yields 1 and 4 because the second tf is unclamped
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.6, 0.0, 0.5), tf->find(-10.)->second);
+    // Yields 2 and 4 because the second tf is unclamped
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.5, 0.45, 0.0, 0.75), tf->find(-5.)->second);
+    // Yields 3 and exactly 4
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.3, 0.5, 0.45), tf->find(0.)->second);
+    // Yields exactly 5
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 1.0, 0.0, 1.0), tf->find(50.)->second);
+    // Yields exactly 6
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 0.0, 1.0, 0.5), tf->find(100.)->second);
+
+    // Test windowing
+    tf->setLevel(200);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(200., tf->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(110.1, tf->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(150.05, pieces[0]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(10., pieces[0]->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(205.05, pieces[1]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(100., pieces[1]->window(), s_EPSILON);
+
+    tf->setWindow(55);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(200., tf->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(55., tf->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(150.05, pieces[0]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.99545, pieces[0]->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(205.05, pieces[1]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(49.95458, pieces[1]->window(), s_EPSILON);
 }
 
 } //namespace ut

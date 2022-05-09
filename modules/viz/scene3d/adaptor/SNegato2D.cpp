@@ -187,9 +187,11 @@ void SNegato2D::swapping(std::string_view _key)
 {
     if(_key == s_TF_INOUT)
     {
-        const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        {
+            const auto image = m_image.lock();
+            const auto tf    = m_tf.lock();
+            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        }
 
         this->updateTF();
     }
@@ -348,7 +350,7 @@ void SNegato2D::updateTF()
         const data::mt::locked_ptr lock(tf);
         m_gpuTF->updateTexture(tf);
 
-        m_plane->switchThresholding(tf->getIsClamped());
+        m_plane->switchThresholding(tf->clamped());
     }
 
     // Sends the TF texture to the negato-related passes

@@ -97,9 +97,6 @@ private:
     /// Creates the buffers and initializes the SAT.
     void updateBuffers();
 
-    /// Returns the voxel colour after TF application.
-    glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
-
     listeners_t m_listeners {};
 
     /// SAT size ratio used to computes its resolution.

@@ -4,5 +4,6 @@
     <requirement id="sight::module::viz::scene2d" />
 
     <xi:include href="configurations/TransferFunctionWidget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/TransferFunctionWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
 </plugin>

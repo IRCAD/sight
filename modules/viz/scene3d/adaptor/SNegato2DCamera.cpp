@@ -312,8 +312,8 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
         const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
         const data::mt::locked_ptr lock(tf);
 
-        m_initialLevel  = tf->getLevel();
-        m_initialWindow = tf->getWindow();
+        m_initialLevel  = tf->level();
+        m_initialWindow = tf->window();
 
         m_initialPos = {_x, _y};
     }

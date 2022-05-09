@@ -193,8 +193,8 @@ bool checkTransferFunctionPool(const data::Image::sptr& image)
         {
             double min, max;
             getMinMax(image, min, max);
-            data::TransferFunction::TFValuePairType wlMinMax(min, max);
-            tf->setWLMinMax(wlMinMax);
+            data::TransferFunction::min_max_t wlMinMax(min, max);
+            tf->setWindowMinMax(wlMinMax);
         }
 
         // Set in TFPool

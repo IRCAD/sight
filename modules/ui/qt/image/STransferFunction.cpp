@@ -22,33 +22,22 @@
 
 #include "modules/ui/qt/image/STransferFunction.hpp"
 
-#include <core/base.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
+#include <service/base.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QBoxLayout>
-#include <QComboBox>
-#include <QIcon>
-#include <QPushButton>
-#include <QString>
-#include <QWidget>
-
-#include <filesystem>
 
 namespace sight::module::ui::qt::image
 {
@@ -57,6 +46,7 @@ static const std::string s_USE_DEFAULT_PATH_CONFIG  = "useDefaultPath";
 static const std::string s_PATH_CONFIG              = "path";
 static const std::string s_DELETE_ICON_CONFIG       = "deleteIcon";
 static const std::string s_NEW_ICON_CONFIG          = "newIcon";
+static const std::string s_COPY_ICON_CONFIG         = "copyIcon";
 static const std::string s_REINITIALIZE_ICON_CONFIG = "reinitializeIcon";
 static const std::string s_RENAME_ICON_CONFIG       = "renameIcon";
 static const std::string s_IMPORT_ICON_CONFIG       = "importIcon";
@@ -64,10 +54,8 @@ static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
-static const std::string s_CONTEXT_TF = "TF";
+static const std::string s_CONTEXT_TF = "TF_PRESET";
 static const std::string s_VERSION_TF = "V1";
-
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
@@ -77,8 +65,9 @@ STransferFunction::STransferFunction()
 
     m_deleteIcon       = modulePath / "delete.png";
     m_newIcon          = modulePath / "new.png";
-    m_reinitializeIcon = modulePath / "reinitialize.png";
+    m_copyIcon         = modulePath / "new.png";
     m_renameIcon       = modulePath / "rename.png";
+    m_reinitializeIcon = modulePath / "reinitialize.png";
     m_importIcon       = modulePath / "import.png";
     m_exportIcon       = modulePath / "export.png";
 }
@@ -124,6 +113,12 @@ void STransferFunction::configuring()
             if(newIconCfg)
             {
                 m_newIcon = core::runtime::getModuleResourceFilePath(newIconCfg.value());
+            }
+
+            const auto copyIconCfg = configAttr->get_optional<std::string>(s_COPY_ICON_CONFIG);
+            if(copyIconCfg)
+            {
+                m_copyIcon = core::runtime::getModuleResourceFilePath(copyIconCfg.value());
             }
 
             const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
@@ -172,13 +167,16 @@ void STransferFunction::starting()
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
-    m_transferFunctionPreset = new QComboBox();
+    m_presetComboBox = new QComboBox();
 
     m_deleteButton = new QPushButton(QIcon(m_deleteIcon.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
 
     m_newButton = new QPushButton(QIcon(m_newIcon.string().c_str()), "");
     m_newButton->setToolTip(QString("New"));
+
+    m_copyButton = new QPushButton(QIcon(m_copyIcon.string().c_str()), "");
+    m_copyButton->setToolTip(QString("Copy"));
 
     m_reinitializeButton = new QPushButton(QIcon(m_reinitializeIcon.string().c_str()), "");
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
@@ -196,6 +194,7 @@ void STransferFunction::starting()
     {
         m_deleteButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_newButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_copyButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_reinitializeButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_renameButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_importButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
@@ -205,9 +204,10 @@ void STransferFunction::starting()
     // Layout management
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
 
-    layout->addWidget(m_transferFunctionPreset);
+    layout->addWidget(m_presetComboBox);
     layout->addWidget(m_deleteButton);
     layout->addWidget(m_newButton);
+    layout->addWidget(m_copyButton);
     layout->addWidget(m_reinitializeButton);
     layout->addWidget(m_renameButton);
     layout->addWidget(m_importButton);
@@ -215,50 +215,43 @@ void STransferFunction::starting()
 
     qtContainer->setLayout(layout);
 
-    // Qt signals management ( connection to buttons )
-    QObject::connect(
-        m_transferFunctionPreset,
-        qOverload<int>(&QComboBox::activated),
-        this,
-        &STransferFunction::presetChoice
-    );
-    QObject::connect(m_deleteButton, &QPushButton::clicked, this, &STransferFunction::deleteTF);
-    QObject::connect(m_newButton, &QPushButton::clicked, this, &STransferFunction::newTF);
-    QObject::connect(m_reinitializeButton, &QPushButton::clicked, this, &STransferFunction::reinitializeTFPool);
-    QObject::connect(m_renameButton, &QPushButton::clicked, this, &STransferFunction::renameTF);
-    QObject::connect(m_importButton, &QPushButton::clicked, this, &STransferFunction::importTF);
-    QObject::connect(m_exportButton, &QPushButton::clicked, this, &STransferFunction::exportTF);
+    // Manage connection with the editor.
+    QObject::connect(m_presetComboBox, qOverload<int>(&QComboBox::activated), this, &STransferFunction::presetChoice);
+    QObject::connect(m_deleteButton, &QPushButton::clicked, this, &STransferFunction::deletePreset);
+    QObject::connect(m_newButton, &QPushButton::clicked, this, &STransferFunction::createPreset);
+    QObject::connect(m_copyButton, &QPushButton::clicked, this, &STransferFunction::copyPreset);
+    QObject::connect(m_reinitializeButton, &QPushButton::clicked, this, &STransferFunction::reinitializePresets);
+    QObject::connect(m_renameButton, &QPushButton::clicked, this, &STransferFunction::renamePreset);
+    QObject::connect(m_importButton, &QPushButton::clicked, this, &STransferFunction::importPreset);
+    QObject::connect(m_exportButton, &QPushButton::clicked, this, &STransferFunction::exportPreset);
 
-    // preset initialization
-    this->initTransferFunctions();
-}
-
-//------------------------------------------------------------------------------
-
-service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_TF_POOL, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    // Initializes the TF preset from paths.
+    this->initializePresets();
 }
 
 //------------------------------------------------------------------------------
 
 void STransferFunction::updating()
 {
-    this->updateTransferFunctionPreset();
 }
 
 //------------------------------------------------------------------------------
 
 void STransferFunction::swapping(std::string_view _key)
 {
-    if(_key == s_CURRENT_TF)
+    // Avoid swapping if it's the same TF.
+    if(_key == s_CURRENT_INPUT)
     {
-        this->updateTransferFunctionPreset();
+        data::TransferFunction::wptr selectedTF;
+        {
+            selectedTF = m_selectedTF.lock().get_shared();
+        }
+        const auto currentTF = m_currentTF.lock();
+
+        if(currentTF && currentTF.get_shared() != selectedTF.lock())
+        {
+            this->updatePresetsPreset();
+        }
     }
 }
 
@@ -271,378 +264,14 @@ void STransferFunction::stopping()
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::presetChoice(int index)
+bool STransferFunction::hasPresetName(const std::string& _name) const
 {
-    m_transferFunctionPreset->setCurrentIndex(index);
-    this->updateTransferFunction();
-
-    const std::string tfName = m_transferFunctionPreset->currentText().toStdString();
-    const bool isEnabled     = (tfName != data::TransferFunction::s_DEFAULT_TF_NAME);
-
-    m_renameButton->setEnabled(isEnabled);
-    m_deleteButton->setEnabled(isEnabled);
+    return m_tfPresets.find(_name) != m_tfPresets.end();
 }
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::deleteTF()
-{
-    sight::ui::base::dialog::MessageDialog messageBox;
-    messageBox.setTitle("Deleting confirmation");
-    messageBox.setMessage("Are you sure you want to delete this transfer function?");
-    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::YES);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
-    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
-
-    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
-    {
-        const auto poolTF = m_tfPool.lock();
-
-        if(poolTF->size() > 1)
-        {
-            const int indexSelectedTF       = m_transferFunctionPreset->currentIndex();
-            const std::string selectedTFKey = m_transferFunctionPreset->currentText().toStdString();
-
-            SIGHT_ASSERT("TF '" + selectedTFKey + "' missing in pool", this->hasTransferFunctionName(selectedTFKey));
-
-            {
-                const auto sig = poolTF->signal<data::Composite::removed_signal_t>(
-                    data::Composite::s_REMOVED_OBJECTS_SIG
-                );
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-
-                {
-                    const auto scoped_emitter = poolTF->scoped_emit();
-                    poolTF->erase(selectedTFKey);
-                }
-            }
-
-            m_transferFunctionPreset->removeItem(indexSelectedTF);
-            const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
-
-            int index = m_transferFunctionPreset->findText(QString::fromStdString(defaultTFName));
-            index = std::max(index, 0);
-            this->presetChoice(index);
-        }
-        else
-        {
-            sight::ui::base::dialog::MessageDialog::show(
-                "Warning",
-                "You can not remove this transfer function because the program requires at least one.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
-            );
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::newTF()
-{
-    std::string newName = m_selectedTF->getName();
-    if(this->hasTransferFunctionName(newName))
-    {
-        newName = this->createTransferFunctionName(newName);
-    }
-
-    sight::ui::base::dialog::InputDialog inputDialog;
-    inputDialog.setTitle("Creating transfer function");
-    inputDialog.setMessage("Transfer function name:");
-    inputDialog.setInput(newName);
-    newName = inputDialog.getInput();
-
-    if(!newName.empty())
-    {
-        if(!this->hasTransferFunctionName(newName))
-        {
-            data::TransferFunction::sptr pNewTransferFunction;
-
-            pNewTransferFunction = data::Object::copy(m_selectedTF);
-            pNewTransferFunction->setName(newName);
-            {
-                const auto poolTF         = m_tfPool.lock();
-                const auto scoped_emitter = poolTF->scoped_emit();
-                poolTF->insert_or_assign(newName, pNewTransferFunction);
-            }
-            m_transferFunctionPreset->addItem(QString(newName.c_str()));
-            m_transferFunctionPreset->setCurrentIndex(m_transferFunctionPreset->count() - 1);
-            this->updateTransferFunction();
-        }
-        else
-        {
-            sight::ui::base::dialog::MessageDialog::show(
-                "Warning",
-                "This transfer function name already exists so you can not overwrite it.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
-            );
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::reinitializeTFPool()
-{
-    sight::ui::base::dialog::MessageDialog messageBox;
-    messageBox.setTitle("Reinitializing confirmation");
-    messageBox.setMessage("Are you sure you want to reinitialize all transfer functions?");
-    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::YES);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
-    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
-
-    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
-    {
-        {
-            const auto poolTF         = m_tfPool.lock();
-            const auto scoped_emitter = poolTF->scoped_emit();
-            poolTF->clear();
-        }
-
-        this->initTransferFunctions();
-
-        this->updateTransferFunction();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::renameTF()
-{
-    const std::string str = m_transferFunctionPreset->currentText().toStdString();
-    std::string newName(str);
-
-    sight::ui::base::dialog::InputDialog inputDialog;
-    inputDialog.setTitle("Creating transfer function");
-    inputDialog.setMessage("Transfer function name:");
-    inputDialog.setInput(newName);
-    newName = inputDialog.getInput();
-
-    if(!newName.empty() && newName != str)
-    {
-        if(!this->hasTransferFunctionName(newName))
-        {
-            {
-                const auto poolTF = m_tfPool.lock();
-
-                const data::TransferFunction::sptr pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
-                {
-                    const data::mt::locked_ptr TFLock(pTF);
-                    pTF->setName(newName);
-                }
-
-                const auto scoped_emitter = poolTF->scoped_emit();
-                poolTF->erase(str);
-                poolTF->insert_or_assign(newName, pTF);
-            }
-
-            m_transferFunctionPreset->setItemText(m_transferFunctionPreset->currentIndex(), QString(newName.c_str()));
-            m_transferFunctionPreset->setCurrentIndex(m_transferFunctionPreset->findText(QString(newName.c_str())));
-
-            this->updateTransferFunction();
-        }
-        else
-        {
-            sight::ui::base::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage("This transfer function name already exists so you can not overwrite it.");
-            messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
-            messageBox.show();
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::importTF()
-{
-    const auto tf     = data::TransferFunction::New();
-    const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
-
-    reader->setInOut(tf, io::base::service::s_DATA_KEY);
-
-    service::IService::ConfigType config;
-    config.add("dialog.<xmlattr>.extension", ".tf");
-    config.add("dialog.<xmlattr>.description", "Transfer Function");
-
-    reader->configure(config);
-    reader->start();
-    reader->openLocationDialog();
-    reader->update().wait();
-    reader->stop().wait();
-    service::OSR::unregisterService(reader);
-
-    if(!tf->getName().empty())
-    {
-        if(this->hasTransferFunctionName(tf->getName()))
-        {
-            tf->setName(this->createTransferFunctionName(tf->getName()));
-        }
-
-        const auto poolTF = m_tfPool.lock();
-
-        const auto scoped_emitter = poolTF->scoped_emit();
-        poolTF->insert_or_assign(tf->getName(), tf);
-
-        m_transferFunctionPreset->addItem(QString(tf->getName().c_str()));
-        this->presetChoice(static_cast<int>((*poolTF).size() - 1));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::exportTF()
-{
-    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
-
-    writer->setInput(m_selectedTF, io::base::service::s_DATA_KEY);
-
-    service::IService::ConfigType config;
-    config.add("dialog.<xmlattr>.extension", ".tf");
-    config.add("dialog.<xmlattr>.description", "Transfer Function");
-
-    writer->configure(config);
-    writer->start();
-    writer->openLocationDialog();
-    writer->update().wait();
-    writer->stop().wait();
-    service::OSR::unregisterService(writer);
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::initTransferFunctions()
-{
-    {
-        // Get transfer function composite (pool TF)
-        const auto poolTF = m_tfPool.lock();
-
-        const auto scoped_emitter = poolTF->scoped_emit();
-
-        const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
-        if(!this->hasTransferFunctionName(defaultTFName, poolTF.get_shared()))
-        {
-            data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
-            poolTF->insert_or_assign(defaultTFName, defaultTf);
-        }
-
-        // Test if transfer function composite has few TF
-        if(poolTF->size() <= 1)
-        {
-            // Parse all TF contained in uiTF module's resources
-            std::vector<std::filesystem::path> paths;
-            for(std::filesystem::path dirPath : m_paths)
-            {
-                SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
-                for(std::filesystem::directory_iterator it(dirPath) ;
-                    it != std::filesystem::directory_iterator() ;
-                    ++it)
-                {
-                    if(!std::filesystem::is_directory(*it)
-                       && it->path().extension().string() == ".sight")
-                    {
-                        paths.push_back(*it);
-                    }
-                }
-            }
-
-            const auto tf     = data::TransferFunction::New();
-            const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
-            reader->setInOut(tf, io::base::service::s_DATA_KEY);
-
-            const auto srvCfg  = core::runtime::EConfigurationElement::New("service");
-            const auto fileCfg = core::runtime::EConfigurationElement::New("file");
-            srvCfg->addConfigurationElement(fileCfg);
-
-            for(std::filesystem::path file : paths)
-            {
-                fileCfg->setValue(file.string());
-                reader->setConfiguration(srvCfg);
-                reader->configure();
-                reader->start();
-                reader->update();
-                reader->stop();
-
-                if(!tf->getName().empty())
-                {
-                    const data::TransferFunction::sptr newTF =
-                        data::Object::copy<data::TransferFunction>(tf);
-                    if(this->hasTransferFunctionName(newTF->getName(), poolTF.get_shared()))
-                    {
-                        newTF->setName(this->createTransferFunctionName(newTF->getName()));
-                    }
-
-                    poolTF->insert_or_assign(newTF->getName(), newTF);
-                }
-
-                tf->initTF();
-            }
-
-            service::OSR::unregisterService(reader);
-        }
-    }
-
-    this->updateTransferFunctionPreset();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-void STransferFunction::updateTransferFunctionPreset()
-{
-    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
-
-    // Manage TF preset
-    m_transferFunctionPreset->clear();
-    {
-        const auto poolTF = m_tfPool.lock();
-        for(data::Composite::value_type elt : *poolTF)
-        {
-            m_transferFunctionPreset->addItem(elt.first.c_str());
-        }
-    }
-
-    std::string currentTFName = defaultTFName;
-    {
-        const auto tf = m_currentTf.lock();
-        if(tf)
-        {
-            currentTFName = tf->getName();
-        }
-        else if(m_selectedTF)
-        {
-            currentTFName = m_selectedTF->getName();
-        }
-    }
-
-    int index = m_transferFunctionPreset->findText(QString::fromStdString(currentTFName));
-    index = std::max(index, 0);
-
-    this->presetChoice(index);
-}
-
-//------------------------------------------------------------------------------
-
-bool STransferFunction::hasTransferFunctionName(
-    const std::string& _name,
-    const data::Composite::csptr _poolTF
-) const
-{
-    if(_poolTF)
-    {
-        return _poolTF->find(_name) != _poolTF->end();
-    }
-    else
-    {
-        const auto poolTF = m_tfPool.lock();
-        return poolTF->find(_name) != poolTF->end();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-std::string STransferFunction::createTransferFunctionName(const std::string& _basename) const
+std::string STransferFunction::createPresetName(const std::string& _basename) const
 {
     bool hasTransferFunctionName = true;
     std::string newName          = _basename;
@@ -652,7 +281,7 @@ std::string STransferFunction::createTransferFunctionName(const std::string& _ba
         std::stringstream tmpStr;
         tmpStr << _basename << "_" << cpt;
         newName                 = tmpStr.str();
-        hasTransferFunctionName = this->hasTransferFunctionName(newName);
+        hasTransferFunctionName = this->hasPresetName(newName);
         cpt++;
     }
 
@@ -661,24 +290,407 @@ std::string STransferFunction::createTransferFunctionName(const std::string& _ba
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::updateTransferFunction()
+void STransferFunction::initializePresets()
 {
-    const std::string newSelectedTFKey = m_transferFunctionPreset->currentText().toStdString();
-    SIGHT_DEBUG("Transfer function selected : " + newSelectedTFKey);
-
-    SIGHT_ASSERT("TF '" + newSelectedTFKey + "' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
-
-    const auto poolTF = m_tfPool.lock();
-
-    const data::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
-
-    if(newSelectedTF && m_selectedTF != newSelectedTF)
     {
-        this->setOutput(s_NEW_SELECTED_TF, newSelectedTF);
-        m_selectedTF = data::TransferFunction::dynamicCast(newSelectedTF);
+        // Add the default TF if it not exists.
+        const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
+        if(!this->hasPresetName(defaultTFName))
+        {
+            const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+            m_tfPresets.insert_or_assign(defaultTFName, defaultTf);
+        }
+
+        // Test if transfer function composite has few TF
+        if(m_tfPresets.size() <= 1)
+        {
+            // Creates the TF reader.
+            const auto tf       = data::TransferFunction::New();
+            const auto tfReader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
+            tfReader->setInOut(tf, io::base::service::s_DATA_KEY);
+
+            // Parse all paths contained in m_path and read basic TF.
+            for(std::filesystem::path dirPath : m_paths)
+            {
+                SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+                for(std::filesystem::directory_iterator it(dirPath) ;
+                    it != std::filesystem::directory_iterator() ;
+                    ++it)
+                {
+                    if(!std::filesystem::is_directory(*it) && it->path().extension().string() == ".tf")
+                    {
+                        const std::filesystem::path file = *it;
+
+                        // Add a new composite for each TF path.
+                        service::IService::ConfigType config;
+                        config.put("file", file.string());
+                        config.put("archive.<xmlattr>.format", "filesystem");
+
+                        tfReader->setConfiguration(config);
+                        tfReader->configure();
+                        tfReader->start();
+                        tfReader->update();
+                        tfReader->stop();
+
+                        if(!tf->name().empty())
+                        {
+                            const data::TransferFunction::sptr newTF = data::Object::copy<data::TransferFunction>(tf);
+                            if(this->hasPresetName(newTF->name()))
+                            {
+                                newTF->setName(this->createPresetName(newTF->name()));
+                            }
+
+                            m_tfPresets[newTF->name()] = newTF;
+                        }
+                    }
+                }
+            }
+
+            // Delete the reader.
+            service::remove(tfReader);
+        }
+    }
+
+    // Update all presets in the editor.
+    this->updatePresetsPreset();
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::updatePresetsPreset()
+{
+    m_presetComboBox->clear();
+
+    // Store the current composite.
+    std::string currentPresetName = data::TransferFunction::s_DEFAULT_TF_NAME;
+
+    {
+        // Gets TF presets.
+        // Iterate over each composite to add them to the presets selector.
+        for(const auto& elt : m_tfPresets)
+        {
+            m_presetComboBox->addItem(elt.first.c_str());
+        }
+
+        // If the current TF preset exists, find it.
+        const auto currentTfPreset = m_currentTF.lock();
+
+        if(currentTfPreset)
+        {
+            for(const auto& elt : m_tfPresets)
+            {
+                if(elt.second == currentTfPreset.get_shared())
+                {
+                    currentPresetName = elt.first;
+                    break;
+                }
+            }
+        }
+    }
+
+    const int index = m_presetComboBox->findText(QString::fromStdString(currentPresetName));
+
+    // Set the current composite
+    this->presetChoice(index);
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::presetChoice(int _index)
+{
+    m_presetComboBox->setCurrentIndex(_index);
+    // Set the output to the current preset.
+    this->setCurrentPreset();
+
+    const std::string tfName = m_presetComboBox->currentText().toStdString();
+    const bool isEnabled     = (tfName != data::TransferFunction::s_DEFAULT_TF_NAME);
+
+    m_renameButton->setEnabled(isEnabled);
+    m_deleteButton->setEnabled(isEnabled);
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::setCurrentPreset()
+{
+    const std::string newSelectedTFKey = m_presetComboBox->currentText().toStdString();
+
+    const data::Object::sptr newSelectedObject       = m_tfPresets[newSelectedTFKey];
+    const data::TransferFunction::sptr newSelectedTF = data::TransferFunction::dynamicCast(newSelectedObject);
+    SIGHT_ASSERT("tfPresets must contain only TransferFunction.", newSelectedTF);
+
+    if(newSelectedTF && newSelectedTF != m_selectedTF.lock().get_shared())
+    {
+        m_selectedTF = newSelectedTF;
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module::ui::qt::image.
+void STransferFunction::deletePreset()
+{
+    sight::ui::base::dialog::MessageDialog messageBox;
+    messageBox.setTitle("Deleting confirmation");
+    messageBox.setMessage("Are you sure you want to delete this TF preset ?");
+    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
+    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+
+    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
+    {
+        {
+            // Remove the current TF preset from the Composite.
+            const std::string selectedTFPresetKey = m_presetComboBox->currentText().toStdString();
+            m_tfPresets.erase(selectedTFPresetKey);
+
+            m_presetComboBox->removeItem(m_presetComboBox->findText(QString::fromStdString(selectedTFPresetKey)));
+        }
+
+        // Find the new current composite.
+        const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
+        const int index                 = m_presetComboBox->findText(QString::fromStdString(defaultTFName));
+
+        // Set the current composite
+        this->presetChoice(index);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::createPreset()
+{
+    const std::string str = m_presetComboBox->currentText().toStdString();
+    std::string newName(str);
+
+    sight::ui::base::dialog::InputDialog inputDialog;
+    inputDialog.setTitle("Create new transfer function");
+    inputDialog.setMessage("Enter transfer function name :");
+    inputDialog.setInput(newName);
+    newName = inputDialog.getInput();
+
+    if(!newName.empty())
+    {
+        {
+            // Gets TF presets.
+            if(!this->hasPresetName(newName))
+            {
+                // Create the new composite.
+                const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+                defaultTf->setName(newName);
+
+                m_tfPresets.insert_or_assign(newName, defaultTf);
+
+                // Recreates presets.
+                m_presetComboBox->clear();
+                for(const auto& elt : m_tfPresets)
+                {
+                    m_presetComboBox->addItem(elt.first.c_str());
+                }
+            }
+        }
+
+        // Set the current composite.
+        this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName.c_str())));
+    }
+    else
+    {
+        sight::ui::base::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage("This TF preset name already exists so you can not overwrite it.");
+        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.show();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::copyPreset()
+{
+    const std::string str = m_presetComboBox->currentText().toStdString();
+    std::string newName(str);
+
+    sight::ui::base::dialog::InputDialog inputDialog;
+    inputDialog.setTitle("Copy transfer function");
+    inputDialog.setMessage("Enter new transfer function name:");
+    inputDialog.setInput(newName);
+    newName = inputDialog.getInput();
+
+    if(!newName.empty())
+    {
+        // Gets TF presets.
+        if(!this->hasPresetName(newName))
+        {
+            const data::TransferFunction::sptr currentTF = m_tfPresets[str];
+            SIGHT_ASSERT("Can not find current TF.", currentTF);
+
+            data::TransferFunction::sptr tf = data::Object::copy(currentTF);
+
+            tf->setName(newName);
+            m_tfPresets.insert_or_assign(newName, tf);
+
+            // Recreates presets.
+            m_presetComboBox->clear();
+            for(const auto& elt : m_tfPresets)
+            {
+                m_presetComboBox->addItem(elt.first.c_str());
+            }
+
+            // Set the current composite.
+            this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName.c_str())));
+        }
+        else
+        {
+            sight::ui::base::dialog::MessageDialog messageBox;
+            messageBox.setTitle("Error");
+            messageBox.setMessage("This preset name already exists, please choose another one.");
+            messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+            messageBox.show();
+        }
+    }
+    else
+    {
+        sight::ui::base::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Error");
+        messageBox.setMessage("No preset name specified.");
+        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.show();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::reinitializePresets()
+{
+    // Clears previous settings.
+    m_presetComboBox->clear();
+    m_tfPresets.clear();
+
+    // Initialize presets.
+    this->initializePresets();
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::renamePreset()
+{
+    const std::string str = m_presetComboBox->currentText().toStdString();
+    std::string newName(str);
+
+    sight::ui::base::dialog::InputDialog inputDialog;
+    inputDialog.setTitle("Rename transfer function preset");
+    inputDialog.setMessage("Enter new name:");
+    inputDialog.setInput(newName);
+    newName = inputDialog.getInput();
+
+    if(!newName.empty() && newName != str)
+    {
+        {
+            // Gets TF presets.
+            if(!this->hasPresetName(newName))
+            {
+                data::TransferFunction::sptr tf = m_tfPresets[str];
+
+                // Rename the composite.
+                m_tfPresets.erase(str);
+                m_tfPresets.insert_or_assign(newName, tf);
+
+                // Creates presets.
+                m_presetComboBox->clear();
+                for(const auto& elt : m_tfPresets)
+                {
+                    m_presetComboBox->addItem(elt.first.c_str());
+                }
+
+                tf->setName(newName);
+            }
+            else
+            {
+                sight::ui::base::dialog::MessageDialog messageBox;
+                messageBox.setTitle("Warning");
+                messageBox.setMessage("This TF preset name already exists so you can not overwrite it.");
+                messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+                messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+                messageBox.show();
+                return;
+            }
+        }
+
+        // Set the current composite.
+        this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName.c_str())));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::importPreset()
+{
+    const auto newTF = data::TransferFunction::New();
+
+    const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
+
+    reader->setInOut(newTF, io::base::service::s_DATA_KEY);
+
+    service::IService::ConfigType config;
+    config.put("dialog.<xmlattr>.extension", ".tf");
+    config.put("dialog.<xmlattr>.description", "Transfer Function Preset");
+    config.put("archive.<xmlattr>.format", "filesystem");
+
+    reader->configure(config);
+    reader->start();
+    reader->openLocationDialog();
+    reader->update().wait();
+
+    // Check the loaded composite.
+    if(newTF->size() >= 1)
+    {
+        int index = 0;
+        {
+            std::string presetName(newTF->name());
+
+            if(this->hasPresetName(presetName))
+            {
+                presetName = this->createPresetName(presetName);
+            }
+
+            m_tfPresets.insert_or_assign(presetName, newTF);
+            newTF->setName(presetName);
+
+            m_presetComboBox->addItem(QString(presetName.c_str()));
+            index = static_cast<int>(m_tfPresets.size() - 1);
+        }
+
+        this->presetChoice(index);
+    }
+
+    reader->stop().wait();
+    service::remove(reader);
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::exportPreset()
+{
+    const auto writer    = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
+    const auto currentTf = m_currentTF.lock();
+    writer->setInput(currentTf.get_shared(), io::base::service::s_DATA_KEY);
+
+    service::IService::ConfigType config;
+    config.add("dialog.<xmlattr>.extension", ".tf");
+    config.add("dialog.<xmlattr>.description", "Transfer Function Preset");
+    config.put("archive.<xmlattr>.format", "filesystem");
+
+    writer->configure(config);
+    writer->start();
+    writer->openLocationDialog();
+    writer->update().wait();
+    writer->stop().wait();
+    service::remove(writer);
+}
+
+//------------------------------------------------------------------------------
+
+} // end namespace
