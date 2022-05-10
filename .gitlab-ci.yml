@@ -47,7 +47,11 @@ lint:sheldon:
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
-    - ninja
+    - ninja | tee output.log
+    # Generate metrics information
+    - nb_warnings=$(grep -c "warning:" output.log)
+    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log)
+    - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
     # Print CCache statistics (Cache hit rate should have raised)
     - ccache -s
     # Clone sight-data.
@@ -91,6 +95,7 @@ lint:sheldon:
       - .build/testImages
     reports:
       junit: .build/junit.xml
+      metrics: .build/metrics.txt
 
 build:linux-21.10-debug-gcc:
   extends: .linux_build
