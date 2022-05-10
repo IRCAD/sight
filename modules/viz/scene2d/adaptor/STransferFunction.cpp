@@ -1761,7 +1761,7 @@ void STransferFunction::addTrapeze(const sight::viz::scene2d::data::Event& _even
     trapeze->insert({1. / 3., data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     trapeze->insert({2. / 3., data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     trapeze->insert({1.0, data::TransferFunction::color_t()});
-    trapeze->setClamped(false);
+    trapeze->setClamped(true);
     trapeze->setWindow(500.);
     trapeze->setLevel(50.);
 

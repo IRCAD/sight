@@ -134,7 +134,7 @@ TransferFunctionData::color_t TransferFunctionData::sample(value_t _value, std::
     }
     else if(nextValue == max)
     {
-        if(m_clamped && (value != previousValue))
+        if(m_clamped && !sight::core::tools::is_equal(value, previousValue))
         {
             color = blackColor;
         }
@@ -305,24 +305,26 @@ sight::data::TransferFunction::color_t mergeColors(
 )
 {
     sight::data::TransferFunction::color_t result(0.);
-    double count = 0.;
+    std::vector<sight::data::TransferFunction::color_t> colors;
+    colors.reserve(_tf.pieces().size());
+
+    // 1. Determine the maximum of opacity for this value
     for(const auto& piece : _tf.pieces())
     {
-        sight::data::TransferFunction::color_t currentColor = piece->sample(_value);
-
-        if(currentColor.a > 0.)
-        {
-            count    += 1.0;
-            result.r += currentColor.r;
-            result.g += currentColor.g;
-            result.b += currentColor.b;
-            result.a += std::clamp(currentColor.a, 0., 1.);
-        }
+        sight::data::TransferFunction::color_t color = piece->sample(_value);
+        result.a = std::max(result.a, color.a);
+        colors.push_back(color);
     }
 
-    if(count > 0.)
+    result.a = std::clamp(result.a, 0., 1.);
+
+    // 2. Mix the colors by the ratio of the opacity and the maximum opacity
+    for(const auto& color : colors)
     {
-        result /= count;
+        const double ratio = result.a == 0. ? 1.0 : color.a / result.a;
+        result.r += color.r * ratio;
+        result.g += color.g * ratio;
+        result.b += color.b * ratio;
     }
 
     return glm::min(result, glm::dvec4(1.));
@@ -339,10 +341,6 @@ void TransferFunction::mergePieces()
 
     this->clear();
 
-    // Iterates over each TF to merge them in the output one.
-    value_t min = std::numeric_limits<value_t>::max();
-    value_t max = std::numeric_limits<value_t>::lowest();
-
     bool clamped = false;
 
     for(const auto& piece : this->m_pieces)
@@ -352,11 +350,10 @@ void TransferFunction::mergePieces()
                                     sight::data::TransferFunction::value_t value = piece->mapValueToWindow(_value);
                                     value         += _delta;
                                     (*this)[value] = mergeColors(*this, value);
-                                    min            = std::min(value, min);
-                                    max            = std::max(value, max);
                                 };
 
         sight::data::TransferFunction::value_t previousValue = 0.;
+
         // Add new TF value to the output.
         for(const auto& elt : *piece)
         {
@@ -365,8 +362,8 @@ void TransferFunction::mergePieces()
                && elt != *piece->begin())
             {
                 sight::data::TransferFunction::value_t middleValue = previousValue + (elt.first - previousValue) / 2.;
-                addTFPoint(middleValue, -.1);
-                addTFPoint(middleValue, .1);
+                addTFPoint(middleValue, -.5);
+                addTFPoint(middleValue, .5);
             }
 
             // If the TF is clamped, we create a new point in the merged TF.
@@ -374,11 +371,11 @@ void TransferFunction::mergePieces()
             {
                 if(elt == *piece->begin())
                 {
-                    addTFPoint(elt.first, -0.1);
+                    addTFPoint(elt.first, -0.5);
                 }
                 else if(elt == *piece->rbegin())
                 {
-                    addTFPoint(elt.first, 0.1);
+                    addTFPoint(elt.first, 0.5);
                 }
             }
 
@@ -388,6 +385,10 @@ void TransferFunction::mergePieces()
     }
 
     this->setClamped(clamped);
+
+    // Iterates over each TF to merge them in the output one.
+    const value_t min = this->begin()->first;
+    const value_t max = this->rbegin()->first;
 
     // Updates the window/level.
     m_window = std::abs(max - min);

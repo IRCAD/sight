@@ -391,9 +391,10 @@ void TransferFunctionTest::piecewiseFunctionTest()
 
     tf->mergePieces();
 
+    // The clamp add two boundary points at +/-0.5
     CPPUNIT_ASSERT_EQUAL(std::size_t(5), tf->size());
     CPPUNIT_ASSERT_EQUAL(-5., tf->level());
-    CPPUNIT_ASSERT_EQUAL(10.2, tf->window());
+    CPPUNIT_ASSERT_EQUAL(11.0, tf->window());
 
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.0, 0.0, 0.0), tf->find(-10.)->second);
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 0.3, 0.0, 1.0), tf->find(-5.)->second);
@@ -413,15 +414,15 @@ void TransferFunctionTest::piecewiseFunctionTest()
 
     tf->mergePieces();
     CPPUNIT_ASSERT_EQUAL(std::size_t(7), tf->size());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(44.95, tf->level(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(110.1, tf->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(44.75, tf->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(110.5, tf->window(), s_EPSILON);
 
     // Yields 1 and 4 because the second tf is unclamped
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.6, 0.0, 0.5), tf->find(-10.)->second);
     // Yields 2 and 4 because the second tf is unclamped
-    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.5, 0.45, 0.0, 0.75), tf->find(-5.)->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 0.6, 0.0, 1.0), tf->find(-5.)->second);
     // Yields 3 and exactly 4
-    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.3, 0.5, 0.45), tf->find(0.)->second);
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0.0, 0.6, 0.8, 0.5), tf->find(0.)->second);
     // Yields exactly 5
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1.0, 1.0, 0.0, 1.0), tf->find(50.)->second);
     // Yields exactly 6
@@ -430,19 +431,19 @@ void TransferFunctionTest::piecewiseFunctionTest()
     // Test windowing
     tf->setLevel(200);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(200., tf->level(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(110.1, tf->window(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(150.05, pieces[0]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(110.5, tf->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(150.25, pieces[0]->level(), s_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(10., pieces[0]->window(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(205.05, pieces[1]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(205.25, pieces[1]->level(), s_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(100., pieces[1]->window(), s_EPSILON);
 
     tf->setWindow(55);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(200., tf->level(), s_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(55., tf->window(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(150.05, pieces[0]->level(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.99545, pieces[0]->window(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(205.05, pieces[1]->level(), s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(49.95458, pieces[1]->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(150.25, pieces[0]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.97737, pieces[0]->window(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(205.25, pieces[1]->level(), s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(49.77375, pieces[1]->window(), s_EPSILON);
 }
 
 } //namespace ut
