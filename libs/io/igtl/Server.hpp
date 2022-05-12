@@ -25,6 +25,8 @@
 #include "io/igtl/Client.hpp"
 #include "io/igtl/config.hpp"
 #include "io/igtl/INetwork.hpp"
+// Patched header.
+#include "io/igtl/patch/igtlSocket.h"
 
 #include <core/Exception.hpp>
 #include <core/mt/types.hpp>
@@ -141,6 +143,9 @@ public:
     IO_IGTL_API void setMessageDeviceName(const std::string& deviceName);
 
 private:
+
+    /// Patched version of igtlServer::CreateServer.
+    int createServer(std::uint16_t port);
 
     /// server socket
     ::igtl::ServerSocket::Pointer m_serverSocket;

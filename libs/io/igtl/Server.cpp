@@ -140,7 +140,12 @@ void Server::start(std::uint16_t port)
         throw Exception("Server already started");
     }
 
-    const int result = m_serverSocket->CreateServer(port);
+    //NOTE: Use the patched version of createServer
+    const int result = this->createServer(port);
+
+    // Uncomment this when patch version isn't needed anymore.
+    // m_serverSocket->CreateServer(port);
+
     // Ask m_serverSocket to give us the real port number (ex: if port is 0, it will use the first available port).
     m_port = std::uint16_t(m_serverSocket->GetServerPort());
 
@@ -179,8 +184,24 @@ void Server::stop()
     }
 
     m_isStarted = false;
+    // Disconnect all clients
+
+    for(auto& client : m_clients)
+    {
+        client->disconnect();
+    }
+
     m_clients.clear();
-    m_socket->CloseSocket();
+
+    // HACK: patched version of closeSocket
+    sight::io::igtl::INetwork::closeSocket(m_serverSocket->m_SocketDescriptor);
+    m_serverSocket->m_SocketDescriptor = -1;
+
+    sight::io::igtl::INetwork::closeSocket(m_socket->m_SocketDescriptor);
+    m_socket->m_SocketDescriptor = -1;
+
+    // Uncomment this when patch isn't needed anymore.
+    //m_socket->CloseSocket();
 }
 
 //------------------------------------------------------------------------------
@@ -235,7 +256,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
                 throw sight::io::igtl::Exception("Mismatch in received message size");
             }
 
-            if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+            if(headerMsg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
             {
                 const std::string deviceName = headerMsg->GetDeviceName();
 
@@ -267,6 +288,11 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 {
     ::igtl::MessageBase::Pointer msg;
 
+    if(!headerMsg)
+    {
+        throw sight::io::igtl::Exception("Invalid header message");
+    }
+
     msg = io::igtl::detail::MessageFactory::create(headerMsg->GetDeviceType());
     msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
@@ -275,15 +301,27 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 
     const int result = (m_clients[client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
-    if(result == -1)
+    if(result == -1) // Timeout
     {
-        return ::igtl::MessageBase::Pointer();
+        throw sight::io::igtl::Exception("Network timeout");
     }
-
-    const int unpackResult = msg->Unpack(1);
-    if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+    else if(result == 0) // Error
     {
-        return msg;
+        throw sight::io::igtl::Exception("Network Error");
+    }
+    else
+    {
+        const auto unpackResult = msg->Unpack();
+
+        if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
+        {
+            throw sight::io::igtl::Exception("Network Error");
+        }
+
+        if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
+        {
+            return msg;
+        }
     }
 
     throw Exception("Body pack is not valid");
@@ -295,7 +333,7 @@ std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>&
 {
     std::vector<data::Object::sptr> objVect;
     std::vector< ::igtl::MessageHeader::Pointer> headerMsgVect = this->receiveHeaders();
-    std::size_t client                                         = 0;
+    unsigned int client                                        = 0;
     for(const auto& headerMsg : headerMsgVect)
     {
         if(headerMsg.IsNotNull())
@@ -329,5 +367,35 @@ void Server::setMessageDeviceName(const std::string& deviceName)
 }
 
 //------------------------------------------------------------------------------
+
+int Server::createServer(std::uint16_t port)
+{
+    if(m_serverSocket->m_SocketDescriptor != -1)
+    {
+        SIGHT_WARN("Server Socket already exists. Closing old socket.");
+        sight::io::igtl::INetwork::closeSocket(m_serverSocket->m_SocketDescriptor);
+        m_serverSocket->m_SocketDescriptor = -1;
+    }
+
+    m_serverSocket->m_SocketDescriptor = sight::io::igtl::INetwork::createSocket();
+
+    if(m_serverSocket->m_SocketDescriptor < 0)
+    {
+        SIGHT_ERROR("Cannot create socket");
+        return -1;
+    }
+
+    if(sight::io::igtl::INetwork::bindSocket(m_serverSocket->m_SocketDescriptor, port) != 0
+       || sight::io::igtl::INetwork::listenSocket(m_serverSocket->m_SocketDescriptor) != 0)
+    {
+        // failed to bind or listen.
+        sight::io::igtl::INetwork::closeSocket(m_serverSocket->m_SocketDescriptor);
+        m_serverSocket->m_SocketDescriptor = -1;
+        return -1;
+    }
+
+    // Success.
+    return 0;
+}
 
 } //namespace sight::io::igtl

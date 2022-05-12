@@ -23,6 +23,8 @@
 #pragma once
 
 #include "io/igtl/config.hpp"
+// Patched header.
+#include "io/igtl/patch/igtlSocket.h"
 
 #include <core/Exception.hpp>
 
@@ -144,6 +146,21 @@ public:
     IO_IGTL_API std::string getDeviceNameOut() const;
 
 protected:
+
+    /// Patched methods from igtl.
+
+    /// Closes the socket (from igtlSocket::CloseSocket()).
+    /// Patched version: Added a close() after shutdown() on Linux.
+    static void closeSocket(int socket_descriptor);
+    /// Creates an endpoint for communication and returns the descriptor.
+    /// -1 indicates error.
+    static int createSocket();
+    /// Listen for connections on a socket. Returns 0 on success. -1 on error.
+    static int listenSocket(int socket_descriptor);
+    /// Binds socket to a particular port.
+    /// Returns 0 on success other -1 is returned.
+    /// Patched version: Doesn't rely on VTK_HAVE_SO_REUSEADDR to add option SO_REUSEADDR.
+    static int bindSocket(int socket_descriptor, std::uint16_t port);
 
     /// client socket
     ::igtl::Socket::Pointer m_socket;

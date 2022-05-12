@@ -34,8 +34,10 @@ class ClientServerTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(ClientServerTest);
 CPPUNIT_TEST(clientToServer);
 CPPUNIT_TEST(serverToClient);
-CPPUNIT_TEST(clientExceptionTest);
-CPPUNIT_TEST(serverExceptionTest);
+CPPUNIT_TEST(clientHeaderExceptionTest);
+CPPUNIT_TEST(serverHeaderExceptionTest);
+CPPUNIT_TEST(clientBodyExceptionTest);
+CPPUNIT_TEST(serverBodyExceptionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,8 +46,10 @@ public:
     void tearDown();
     void clientToServer();
     void serverToClient();
-    void clientExceptionTest();
-    void serverExceptionTest();
+    void clientHeaderExceptionTest();
+    void serverHeaderExceptionTest();
+    void clientBodyExceptionTest();
+    void serverBodyExceptionTest();
 };
 
 } // namespace ut

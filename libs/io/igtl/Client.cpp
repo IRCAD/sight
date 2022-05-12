@@ -102,7 +102,11 @@ void Client::connect(const std::string& addr, std::uint16_t port)
 void Client::disconnect()
 {
     std::lock_guard lock(s_connectLock);
-    m_socket->CloseSocket();
+    // HACK: Use the patched version of closeSocket
+    sight::io::igtl::INetwork::closeSocket(m_socket->m_SocketDescriptor);
+    m_socket->m_SocketDescriptor = -1;
+    // Uncomment this when patch isn't needed anymore.
+    //m_socket->CloseSocket();
 }
 
 //------------------------------------------------------------------------------

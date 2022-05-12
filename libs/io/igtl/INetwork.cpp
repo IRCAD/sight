@@ -27,6 +27,20 @@
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
 
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  #include <windows.h>
+  #include <winsock2.h>
+#else
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <netinet/tcp.h>
+  #include <arpa/inet.h>
+  #include <netdb.h>
+  #include <unistd.h>
+  #include <sys/time.h>
+#endif
+
 namespace sight::io::igtl
 {
 
@@ -143,7 +157,7 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     }
     else
     {
-        if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+        if(headerMsg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
         {
             const std::string deviceName = headerMsg->GetDeviceName();
 
@@ -176,6 +190,11 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     int result;
     ::igtl::MessageBase::Pointer msg;
 
+    if(!headerMsg)
+    {
+        throw sight::io::igtl::Exception("Invalid header message");
+    }
+
     msg = io::igtl::detail::MessageFactory::create(headerMsg->GetDeviceType());
     msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
@@ -192,12 +211,12 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     else
     {
         unpackResult = msg->Unpack();
-        if(unpackResult == 0)
+        if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
         {
             throw sight::io::igtl::Exception("Network Error");
         }
 
-        if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+        if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
         {
             return msg;
         }
@@ -258,6 +277,98 @@ void INetwork::setDeviceNameOut(const std::string& deviceName)
 std::string INetwork::getDeviceNameOut() const
 {
     return m_deviceNameOut;
+}
+
+//------------------------------------------------------------------------------
+
+void INetwork::closeSocket(int socket_descriptor)
+{
+    // NOTE: Patched version of original CloseSocket() from igtlSocket.h, adding close() after shutdown() on Linux.
+    // This can be removed on recent version of IGTL (Debian version is pretty old).
+
+    if(socket_descriptor == -1)
+    {
+        return;
+    }
+
+    #if defined(_WIN32) && !defined(__CYGWIN__)
+        #define WSA_VERSION MAKEWORD(1, 1)
+    closesocket(socket_descriptor);
+    #else
+    shutdown(socket_descriptor, 2);
+    close(socket_descriptor); // closing socket for latter reuse.
+    #endif
+
+    socket_descriptor = -1;
+}
+
+//------------------------------------------------------------------------------
+
+int INetwork::createSocket()
+{
+    #if defined(_WIN32) && !defined(__CYGWIN__)
+    // Declare variables
+    WSADATA wsaData;
+    //SOCKET ListenSocket;
+    //sockaddr_in service;
+
+    //---------------------------------------
+    // Initialize Winsock
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if(iResult != NO_ERROR)
+    {
+        std::cerr << "Error at WSAStartup" << std::endl;
+        return -1;
+    }
+#endif
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    // Elimate windows 0.2 second delay sending (buffering) data.
+    int on = 1;
+    if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*) &on, sizeof(on)))
+    {
+        return -1;
+    }
+
+    return sock;
+}
+
+//------------------------------------------------------------------------------
+
+int INetwork::listenSocket(int socket_descriptor)
+{
+    if(socket_descriptor < 0)
+    {
+        return -1;
+    }
+
+    return listen(socket_descriptor, 1);
+}
+
+//------------------------------------------------------------------------------
+
+int INetwork::bindSocket(int socket_descriptor, std::uint16_t port)
+{
+    struct sockaddr_in server;
+
+    server.sin_family      = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port        = htons(port);
+    // Allow the socket to be bound to an address that is already in use
+#ifdef _WIN32
+    int opt = 1;
+    setsockopt(socket_descriptor, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(int));
+#else
+    int opt = 1;
+    setsockopt(socket_descriptor, SOL_SOCKET, SO_REUSEADDR, (void*) &opt, sizeof(int));
+#endif
+
+    if(bind(socket_descriptor, reinterpret_cast<sockaddr*>(&server), sizeof(server)))
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 //------------------------------------------------------------------------------
