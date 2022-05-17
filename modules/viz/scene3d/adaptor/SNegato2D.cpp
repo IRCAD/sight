@@ -52,6 +52,7 @@ static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
 static const std::string s_FILTERING_CONFIG   = "filtering";
 static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
 static const std::string s_BORDER_CONFIG      = "border";
+static const std::string s_TRANSFORM_CONFIG   = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -113,6 +114,10 @@ void SNegato2D::configuring()
 
     m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
     m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
+
+    const std::string transformId =
+        config.get<std::string>(sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
+    this->setTransformId(transformId);
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +144,9 @@ void SNegato2D::starting()
     m_gpuTF->createTexture(this->getID());
 
     // Scene node's instantiation
-    m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
+    m_negatoSceneNode = transformNode->createChildSceneNode();
 
     // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::Plane>(

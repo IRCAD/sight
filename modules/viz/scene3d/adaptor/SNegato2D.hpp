@@ -30,6 +30,7 @@
 #include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Plane.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
@@ -73,8 +74,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): allows to display the plane border.
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
+ *      was specified in the STransform adaptor.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final :
+    public sight::viz::scene3d::IAdaptor,
+    public sight::viz::scene3d::ITransformable
 {
 public:
 
