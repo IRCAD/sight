@@ -195,8 +195,8 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
         return data::Object::sptr();
     }
 
-    const auto& uuid     = objectTree.get<std::string>(ISession::s_uuid);
-    const auto& objectIt = cache.find(uuid);
+    const auto serialized_uuid = objectTree.get<std::string>(ISession::s_uuid);
+    const auto& objectIt       = cache.find(serialized_uuid);
 
     // First check the cache
     if(objectIt != cache.cend())
@@ -211,20 +211,14 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
 
         // Try to reuse existing rather than create new one
         // Existing object will be overwritten
-        auto object = std::dynamic_pointer_cast<data::Object>(data::Object::fromUUID(uuid));
 
-        if(!object)
-        {
-            // Create the new object so we can safely deserialize child
-            object = data::factory::New(classname);
-            object->setUUID(uuid);
-        }
+        auto object = data::factory::New(classname);
 
         // Lock for writing (it will do nothing if object is null)
         data::mt::locked_ptr<data::Object> object_guard(object);
 
         // Store the object in cache for later use and to allow circular reference
-        cache[uuid] = object;
+        cache[serialized_uuid] = object;
 
         // Construct children map, if needed
         std::map<std::string, data::Object::sptr> children;
@@ -245,14 +239,18 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
             objectTree,
             children,
             object,
-            ISession::pickle(password, secure_string(uuid), encryptionPolicy)
+            ISession::pickle(password, secure_string(serialized_uuid), encryptionPolicy)
         );
 
         if(newObject != object)
         {
             // This should not happen normally, only if the serializer doesn't reuse object
-            newObject->setUUID(uuid, true);
-            cache[uuid] = newObject;
+            newObject->setUUID(object->getUUID(), true);
+            cache[serialized_uuid] = newObject;
+            SIGHT_ASSERT(
+                "An object has been replaced by a deserializer, but it is still referenced",
+                object.use_count() == 1
+            );
         }
 
         // Construct field map
