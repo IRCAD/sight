@@ -73,7 +73,6 @@ DataConverter::~DataConverter()
     }
 
     SIGHT_THROW("Object of type " << classname << " is not supported");
-    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +92,6 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     }
 
     SIGHT_THROW("Message of type " << std::string(src->GetDeviceType()) << " is not supported");
-    return obj;
 }
 
 //-----------------------------------------------------------------------------

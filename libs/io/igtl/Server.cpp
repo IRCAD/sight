@@ -142,7 +142,7 @@ void Server::start(std::uint16_t port)
 
     const int result = m_serverSocket->CreateServer(port);
     // Ask m_serverSocket to give us the real port number (ex: if port is 0, it will use the first available port).
-    m_port = m_serverSocket->GetServerPort();
+    m_port = std::uint16_t(m_serverSocket->GetServerPort());
 
     if(result != Server::s_SUCCESS)
     {
@@ -298,7 +298,7 @@ std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>&
     {
         if(headerMsg.IsNotNull())
         {
-            ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg, client);
+            ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg, std::uint32_t(client));
             if(msg.IsNotNull())
             {
                 detail::DataConverter::sptr converter = detail::DataConverter::getInstance();

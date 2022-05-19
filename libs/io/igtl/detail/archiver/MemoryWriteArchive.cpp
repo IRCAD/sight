@@ -65,7 +65,7 @@ void MemoryArchiveSink::archive()
     archive_entry_set_pathname(entry, m_path.string().c_str());
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);
-    archive_entry_set_size(entry, m_buffer.size());
+    archive_entry_set_size(entry, la_int64_t(m_buffer.size()));
     const time_t seconds   = now.time_of_day().total_seconds();
     const long nanoseconds = static_cast<long>(now.time_of_day().total_nanoseconds());
     archive_entry_set_atime(entry, seconds, nanoseconds);
@@ -78,10 +78,10 @@ void MemoryArchiveSink::archive()
     }
 
     archive_entry_free(entry);
-    for(int i = 0 ; i < m_buffer.size() ; i += MemoryArchiveSink::s_WRITE_BUFFER_SIZE)
+    for(std::size_t i = 0 ; i < m_buffer.size() ; i += MemoryArchiveSink::s_WRITE_BUFFER_SIZE)
     {
         size = MemoryArchiveSink::s_WRITE_BUFFER_SIZE;
-        if(i + MemoryArchiveSink::s_WRITE_BUFFER_SIZE > m_buffer.size())
+        if(std::size_t(i + MemoryArchiveSink::s_WRITE_BUFFER_SIZE) > m_buffer.size())
         {
             size = m_buffer.size() - i;
         }
@@ -103,25 +103,25 @@ std::streamsize MemoryArchiveSink::write(const char* buf, std::streamsize n)
 
 //-----------------------------------------------------------------------------
 
-int MemoryWriteArchive::open(struct archive* archive, void* client_data)
+int MemoryWriteArchive::open(struct archive* /*archive*/, void* /*client_data*/)
 {
     return ARCHIVE_OK;
 }
 
 //-----------------------------------------------------------------------------
 
-ssize_t MemoryWriteArchive::write(struct archive* a, void* client_data, const void* buff, std::size_t size)
+ssize_t MemoryWriteArchive::write(struct archive* /*a*/, void* client_data, const void* buff, std::size_t size)
 {
     std::vector<char>* bytes = reinterpret_cast<std::vector<char>*>(client_data);
     const char* bytesToWrite = reinterpret_cast<const char*>(buff);
 
     bytes->insert(bytes->end(), bytesToWrite, bytesToWrite + size);
-    return size;
+    return ssize_t(size);
 }
 
 //-----------------------------------------------------------------------------
 
-int MemoryWriteArchive::close(struct archive* archive, void* client_data)
+int MemoryWriteArchive::close(struct archive* /*archive*/, void* /*client_data*/)
 {
     return 0;
 }
@@ -176,7 +176,7 @@ void MemoryWriteArchive::writeArchive()
 
 //-----------------------------------------------------------------------------
 
-bool MemoryWriteArchive::createDir(const std::filesystem::path& path)
+bool MemoryWriteArchive::createDir(const std::filesystem::path& /*path*/)
 {
     return true;
 }

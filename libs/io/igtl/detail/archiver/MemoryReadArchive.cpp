@@ -85,16 +85,16 @@ std::streamsize MemoryArchiveSource::read(char* s, std::streamsize n)
     std::size_t oldReadIndex;
     std::size_t endIndex;
 
-    endIndex = m_readIndex + n;
+    endIndex = std::size_t(long(m_readIndex) + n);
     if(endIndex > m_content->size())
     {
         endIndex = m_content->size();
     }
 
-    std::copy(m_content->begin() + m_readIndex, m_content->begin() + endIndex, s);
+    std::copy(m_content->begin() + long(m_readIndex), m_content->begin() + long(endIndex), s);
     oldReadIndex = m_readIndex;
     m_readIndex  = endIndex;
-    return endIndex - oldReadIndex;
+    return long(endIndex - oldReadIndex);
 }
 
 //-----------------------------------------------------------------------------

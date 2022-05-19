@@ -68,7 +68,7 @@ public:
     virtual void draw(QPainter& painter, bool /*enabled*/)
     {
         int height       = drawingArea().height() - 1;
-        int top          = height * m_verticalPadding;
+        int top          = int(height * m_verticalPadding);
         int handleHeight = height - 2 * top;
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setPen(m_pen);
@@ -83,7 +83,7 @@ public:
         bool picked = false;
 
         int height       = drawingArea().height() - 1;
-        int top          = height * m_verticalPadding;
+        int top          = int(height * m_verticalPadding);
         int handleHeight = height - 2 * top;
 
         if(abs(point.x() - m_pos) <= (halfWidth() + m_tolerance)
@@ -493,7 +493,7 @@ void QRangeSlider::wheelEvent(QWheelEvent* event)
     Handle* maxHandle = Handle::safeCast(m_maxHandle);
     Window* window    = Window::safeCast(m_window);
 
-    int delta = this->size().width() / (((double) event->delta()) / 4.);
+    int delta = int(this->size().width() / (((double) event->delta()) / 4.));
     int low   = minHandle->pos();
     int high  = maxHandle->pos();
 
@@ -527,7 +527,7 @@ void QRangeSlider::wheelEvent(QWheelEvent* event)
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::resizeEvent(QResizeEvent* event)
+void QRangeSlider::resizeEvent(QResizeEvent* /*event*/)
 {
     this->setPos(m_minValue, m_maxValue);
 }

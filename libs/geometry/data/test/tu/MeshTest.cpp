@@ -132,7 +132,7 @@ void MeshTest::colorizePointsTest()
         std::set<std::size_t> vertexIndices;
         for(std::size_t i = 0 ; i < vectorNumTriangle.size() ; ++i)
         {
-            auto cell = cellIterBegin + vectorNumTriangle[i];
+            auto cell = cellIterBegin + long(vectorNumTriangle[i]);
             vertexIndices.insert(cell->pt[0]);
             vertexIndices.insert(cell->pt[1]);
             vertexIndices.insert(cell->pt[2]);
@@ -369,7 +369,7 @@ void MeshTest::transformTest()
         sight::data::Mesh::sptr out = sight::data::Mesh::copy(in);
         const auto outLock          = out->dump_lock();
         geometry::data::Mesh::transform(in, out, trans);
-        int i = 0;
+        std::size_t i = 0;
         for(const auto& point : out->crange<point::xyz>())
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPoints[i][0], point.x, epsilon);
@@ -393,7 +393,7 @@ void MeshTest::transformTest()
         sight::data::Mesh::sptr out = sight::data::Mesh::copy(in);
         const auto outLock          = out->dump_lock();
         geometry::data::Mesh::transform(in, out, trans);
-        int i = 0;
+        std::size_t i = 0;
         for(const auto& [p, n] : out->czip_range<point::xyz, point::nxyz>())
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPoints[i][0], p.x, epsilon);
@@ -425,7 +425,7 @@ void MeshTest::transformTest()
         sight::data::Mesh::sptr out = sight::data::Mesh::copy(in);
         const auto outLock          = out->dump_lock();
         geometry::data::Mesh::transform(in, out, trans);
-        int i = 0;
+        std::size_t i = 0;
         for(const auto& [p, n] : out->czip_range<point::xyz, cell::nxyz>())
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPoints[i][0], p.x, epsilon);
@@ -465,7 +465,7 @@ void MeshTest::transformTest()
         sight::data::Mesh::sptr out = sight::data::Mesh::copy(in);
         const auto outLock          = out->dump_lock();
         geometry::data::Mesh::transform(in, out, trans);
-        int i = 0;
+        std::size_t i = 0;
         for(const auto& [p, pn, cn] : out->czip_range<point::xyz, point::nxyz, cell::nxyz>())
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPoints[i][0], p.x, epsilon);

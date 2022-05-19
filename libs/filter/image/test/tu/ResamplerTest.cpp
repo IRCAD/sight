@@ -208,7 +208,7 @@ void ResamplerTest::rotateTest()
     rotMat->setCoefficient(2, 2, 0);
 
     // 32 mm translation along the X axis.
-    rotMat->setCoefficient(0, 3, SIZE[0] / 2.);
+    rotMat->setCoefficient(0, 3, double(SIZE[0]) / 2.);
 
     filter::image::Resampler::resample(
         data::Image::csptr(imageIn),

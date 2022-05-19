@@ -2,7 +2,6 @@ sight_add_target(
     filter_image
     TYPE LIBRARY
     PCH pchServiceOmp
-    WARNINGS_AS_ERRORS OFF
     FAST_DEBUG ON
 )
 

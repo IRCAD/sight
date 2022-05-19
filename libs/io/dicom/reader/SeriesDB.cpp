@@ -55,7 +55,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(io::base::reader::IObjectReader::Key key) :
+SeriesDB::SeriesDB(io::base::reader::IObjectReader::Key /*key*/) :
     m_isDicomdirActivated(false),
     m_dicomFilterType(""),
     m_logger(core::log::Logger::New()),
@@ -92,7 +92,7 @@ void SeriesDB::read()
     {
         this->readDicom();
     }
-    catch(const std::exception& e)
+    catch(const std::exception& /*e*/)
     {
         m_logger->clear();
         m_logger->critical("An error has occurred during the reading process : unable to retrieve series.");
@@ -162,7 +162,7 @@ void SeriesDB::readDicomSeries()
     {
         this->readDicom();
     }
-    catch(const std::exception& e)
+    catch(const std::exception& /*e*/)
     {
         m_logger->clear();
         m_logger->critical("An error has occurred during the reading process : unable to retrieve series.");
@@ -394,7 +394,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
                     }
                 }
             }
-            catch(io::dicom::exception::Failed& e)
+            catch(io::dicom::exception::Failed& /*e*/)
             {
                 m_logger->critical("Unable to read series : " + dicomSeries->getInstanceUID());
             }

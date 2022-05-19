@@ -115,7 +115,7 @@ public:
         double distance2 = 0;
         for(typename TImage::IndexValueType i = 0 ; i < IndexType::Dimension ; ++i)
         {
-            const double realDim = imgSize[i] * imgSpacing[i];
+            const double realDim = double(imgSize[std::uint32_t(i)]) * imgSpacing[i];
             distance2 += realDim * realDim;
         }
 
@@ -192,7 +192,8 @@ public:
 
             for(typename TImage::IndexValueType i = 0 ; i < IndexType::Dimension ; ++i)
             {
-                const double distTmp = (index[i] - seed[i]) * imgSpacing[i];
+                const double distTmp = double(index[std::uint32_t(i)] - seed[std::uint32_t(i)])
+                                       * imgSpacing[std::uint32_t(i)];
                 distance2 += distTmp * distTmp;
             }
 
@@ -214,9 +215,13 @@ public:
 
         const data::Image::BufferType* roiVal =
             reinterpret_cast<const data::Image::BufferType*>(
-                m_roi->getPixel(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
+                m_roi->getPixel(
+                    std::size_t(index[0]) + std::size_t(index[1]) * size[0] + std::size_t(index[2])
+                    * size[0] * size[1]
+                )
+            );
 
-        return !data::helper::MedicalImage::isBufNull(roiVal, m_roi->getType().size());
+        return !data::helper::MedicalImage::isBufNull(roiVal, std::uint32_t(m_roi->getType().size()));
     }
 
 private:
@@ -270,7 +275,7 @@ struct MinMaxPropagator
 
             for(typename ImageType::IndexValueType i = 0 ; i < ImageType::IndexType::Dimension ; ++i)
             {
-                index[i] = static_cast<typename ImageType::IndexValueType>(seed[i]);
+                index[std::uint32_t(i)] = typename ImageType::IndexValueType(seed[std::size_t(i)]);
             }
 
             itkSeeds.push_back(index);
@@ -285,8 +290,10 @@ struct MinMaxPropagator
 
         const auto dumpLock = params.outputImage->dump_lock();
 
-        const std::uint8_t outImgPixelSize = params.outputImage->getType().size()
-                                             * static_cast<std::uint8_t>(params.outputImage->numComponents());
+        const std::uint8_t outImgPixelSize = std::uint8_t(
+            params.outputImage->getType().size()
+            * params.outputImage->numComponents()
+        );
 
         for( ; !iter.IsAtEnd() ; ++iter)
         {

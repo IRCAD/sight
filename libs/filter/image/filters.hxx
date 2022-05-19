@@ -156,7 +156,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
 
         if(!isPixel)
         {
-            itkItOut.Set(itk::NumericTraits<IMAGE_TYPE>::Zero);
+            itkItOut.Set(decltype(itkItOut) ::PixelType(itk::NumericTraits<IMAGE_TYPE>::Zero));
         }
     }
 

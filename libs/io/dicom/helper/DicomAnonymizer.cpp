@@ -322,7 +322,6 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     m_stringFilter.SetFile(reader.GetFile());
 
     // Objects used to scan groups of elements
-    gdcm::Tag tag;
     gdcm::DataElement dataElement;
     const gdcm::File& datasetFile = reader.GetFile();
     gdcm::DataSet dataset         = datasetFile.GetDataSet();
@@ -391,6 +390,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
                                          };
 
     const auto dataElementSet = dataset.GetDES();
+    gdcm::Tag tag;
 
     // Curve Data (0x50xx,0xxxxx)
     auto element = dataElementSet.lower_bound(gdcm::Tag(0x5000, 0x0));
@@ -499,7 +499,7 @@ void DicomAnonymizer::applyActionCodeK(const gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::applyActionCodeC(const gdcm::Tag& tag)
+void DicomAnonymizer::applyActionCodeC(const gdcm::Tag& /*tag*/)
 {
     SIGHT_FATAL(
         "Basic profile \"C\" is not supported yet: "

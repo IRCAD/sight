@@ -72,8 +72,8 @@ Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Poin
 
 void generateRegionCellNormals(
     const sight::data::Mesh::sptr& mesh,
-    const sight::data::Mesh::cell_t regionMin,
-    const sight::data::Mesh::cell_t regionMax
+    const std::size_t regionMin,
+    const std::size_t regionMax
 )
 {
     switch(mesh->getCellType())
@@ -91,8 +91,8 @@ void generateRegionCellNormals(
             const auto pointBegin = mesh->cbegin<point::xyz>();
 
             auto cellRange     = mesh->zip_range<cell::triangle, cell::nxyz>();
-            auto cellBegin     = cellRange.begin() + regionMin;
-            const auto cellEnd = cellRange.begin() + regionMax;
+            auto cellBegin     = cellRange.begin() + long(regionMin);
+            const auto cellEnd = cellRange.begin() + long(regionMax);
 
             int i = 0;
             std::for_each(
@@ -123,8 +123,8 @@ void generateRegionCellNormals(
             const auto pointBegin = mesh->cbegin<point::xyz>();
 
             auto cellRange     = mesh->zip_range<cell::quad, cell::nxyz>();
-            auto cellBegin     = cellRange.begin() + regionMin;
-            const auto cellEnd = cellRange.begin() + regionMax;
+            auto cellBegin     = cellRange.begin() + long(regionMin);
+            const auto cellEnd = cellRange.begin() + long(regionMax);
 
             std::for_each(
                 cellBegin,
@@ -155,7 +155,11 @@ void generateRegionCellNormals(
                     normal.ny = n.y;
                     normal.nz = n.z;
                 });
+            break;
         }
+
+        default:
+            SIGHT_ASSERT("_SIZE is an invalid cell type", false);
     }
 }
 
@@ -219,8 +223,8 @@ void generateRegionCellNormalsByPoints(
     FloatVectors& normalsData,
     std::size_t dataId,
     const sight::data::Mesh::sptr& mesh,
-    const sight::data::Mesh::cell_t regionMin,
-    const sight::data::Mesh::cell_t regionMax
+    const std::size_t regionMin,
+    const std::size_t regionMax
 )
 {
     FloatVectors::value_type& normalsResults = normalsData[dataId];
@@ -237,11 +241,14 @@ void generateRegionCellNormalsByPoints(
 
     switch(mesh->getCellType())
     {
+        case sight::data::Mesh::CellType::POINT:
+            break;
+
         case sight::data::Mesh::CellType::LINE:
         {
             const auto range = mesh->czip_range<cell::line, cell::nxyz>();
-            auto begin       = range.begin() + regionMin;
-            const auto end   = range.begin() + regionMax;
+            auto begin       = range.begin() + long(regionMin);
+            const auto end   = range.begin() + long(regionMax);
             std::for_each(
                 begin,
                 end,
@@ -257,8 +264,8 @@ void generateRegionCellNormalsByPoints(
         case sight::data::Mesh::CellType::TRIANGLE:
         {
             const auto range = mesh->czip_range<cell::triangle, cell::nxyz>();
-            auto begin       = range.begin() + regionMin;
-            const auto end   = range.begin() + regionMax;
+            auto begin       = range.begin() + long(regionMin);
+            const auto end   = range.begin() + long(regionMax);
             std::for_each(
                 begin,
                 end,
@@ -276,8 +283,8 @@ void generateRegionCellNormalsByPoints(
         case sight::data::Mesh::CellType::TETRA:
         {
             const auto range = mesh->czip_range<cell::quad, cell::nxyz>();
-            auto begin       = range.begin() + regionMin;
-            const auto end   = range.begin() + regionMax;
+            auto begin       = range.begin() + long(regionMin);
+            const auto end   = range.begin() + long(regionMax);
             std::for_each(
                 begin,
                 end,
@@ -291,6 +298,9 @@ void generateRegionCellNormalsByPoints(
                 });
             break;
         }
+
+        default:
+            SIGHT_ASSERT("_SIZE is an invalid cell type", false);
     }
 }
 
@@ -299,16 +309,16 @@ void generateRegionCellNormalsByPoints(
 void normalizeRegionCellNormalsByPoints(
     FloatVectors::value_type& normalsData,
     sight::data::Mesh::sptr mesh,
-    const sight::data::Mesh::cell_t regionMin,
-    const sight::data::Mesh::cell_t regionMax
+    const std::size_t regionMin,
+    const std::size_t regionMax
 )
 {
     Vector<sight::data::Mesh::normal_t>* normalSum =
         reinterpret_cast<Vector<sight::data::Mesh::normal_t>*>(&(*normalsData.begin()));
 
-    auto pointItr = mesh->begin<point::nxyz>() + regionMin;
+    auto pointItr = mesh->begin<point::nxyz>() + long(regionMin);
 
-    for(sight::data::Mesh::cell_t i = regionMin ; i < regionMax ; ++i, ++pointItr)
+    for(size_t i = regionMin ; i < regionMax ; ++i, ++pointItr)
     {
         Vector<sight::data::Mesh::normal_t> normal = normalSum[i];
 
@@ -388,14 +398,14 @@ void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 template<typename T>
-void regionShakeNormals(T normals, const sight::data::Mesh::cell_t regionMin, const sight::data::Mesh::cell_t regionMax)
+void regionShakeNormals(T normals, const std::size_t regionMin, const std::size_t regionMax)
 {
     RandFloat randFloat;
-    for(sight::data::Mesh::cell_t i = regionMin ; i < regionMax ; ++i)
+    for(std::size_t i = regionMin ; i < regionMax ; ++i)
     {
         Vector<float> v(randFloat(), randFloat(), randFloat());
-        normals[i] += v;
-        normals[i].normalize();
+        normals[long(i)] += v;
+        normals[long(i)].normalize();
     }
 }
 
@@ -415,7 +425,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
             static_cast<NormalsMultiArrayType::element*>(buf),
-            boost::extents[nbOfNormals]
+            boost::extents[long(nbOfNormals)]
         );
 
         sight::data::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);
@@ -426,7 +436,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
                 std::placeholders::_1,
                 std::placeholders::_2
             ),
-            nbOfNormals
+            long(nbOfNormals)
         );
     }
 }
@@ -763,6 +773,9 @@ bool Mesh::isClosed(const sight::data::Mesh::csptr& mesh)
 
     switch(mesh->getCellType())
     {
+        case sight::data::Mesh::CellType::POINT:
+            break;
+
         case sight::data::Mesh::CellType::LINE:
         {
             for(auto& line : mesh->crange<cell::line>())
@@ -798,6 +811,9 @@ bool Mesh::isClosed(const sight::data::Mesh::csptr& mesh)
 
             break;
         }
+
+        default:
+            SIGHT_ASSERT("_SIZE is an invalid cell type", false);
     }
 
     for(const EdgeHistogram::value_type& h : edgesHistogram)

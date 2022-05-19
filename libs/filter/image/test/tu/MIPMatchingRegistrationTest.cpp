@@ -156,11 +156,11 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     auto itkFixed = io::itk::moveToItk<ImageType>(fixed);
 
     // Resample the image to get a different spacing
-    ImageType::SizeType newSize;
+    ImageType::SizeType newSize {};
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0 ; i != 3 ; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * double(moving->getSize()[i]));
     }
 
     auto resample = itk::ResampleImageFilter<ImageType, ImageType>::New();

@@ -82,7 +82,7 @@ void SeriesRetriever::initialize(
     this->setAndCheckAssociationProfile("Default");
 
     // Set non blocking states & timeout so we don't end up in an infinite loop
-    this->setConnectionTimeout(timeout);
+    this->setConnectionTimeout(Uint32(timeout));
     this->setConnectionBlockingMode(DUL_NOBLOCK);
 }
 

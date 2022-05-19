@@ -43,7 +43,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-DicomSeriesDBWriter::DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key) :
+DicomSeriesDBWriter::DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key /*key*/) :
     m_aggregator(core::jobs::Aggregator::New("Writing Dicom series"))
 {
 }
@@ -122,13 +122,13 @@ void DicomSeriesDBWriter::write()
                         writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
 
                         runningJob.addCancelHook(
-                            [&](core::jobs::IJob& subJob)
+                            [&](core::jobs::IJob& /*subJob*/)
                         {
                             writer->getJob()->cancel();
                         });
 
                         writer->getJob()->addDoneWorkHook(
-                            [&](core::jobs::IJob& subJob, std::uint64_t oldWork)
+                            [&](core::jobs::IJob& subJob, std::uint64_t /*oldWork*/)
                         {
                             runningJob.doneWork(subJob.getDoneWorkUnits());
                         });
@@ -151,7 +151,7 @@ void DicomSeriesDBWriter::write()
             );
 
         m_aggregator->addCancelHook(
-            [&](core::jobs::IJob& subJob)
+            [&](core::jobs::IJob& /*subJob*/)
                 {
                     job->cancel();
                 });

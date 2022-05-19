@@ -103,7 +103,7 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
         int frameNumber =
             io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1160, int>(referencedImageDataset);
         double zCoordinate =
-            io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, frameNumber);
+            io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, std::size_t(frameNumber));
 
         data::Point::sptr point = data::Point::New(
             static_cast<double>(pointValues[0]),

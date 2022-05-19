@@ -119,7 +119,7 @@ void SpatialFiducials::writeSpatialFiducialsModule()
         gdcm::DataSet& referencedImageItemDataset = referencedImageItem.GetNestedDataSet();
 
         // Referenced Frame Number - Type 1C
-        int frameNumber = index + 1;
+        int frameNumber = int(index) + 1;
         io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(
             &frameNumber,
             1,
@@ -350,7 +350,7 @@ void SpatialFiducials::addReferencedImage(
 
     // Referenced SOP Instance UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
-        m_instance->getSOPInstanceUIDContainer()[frameNumber - 1],
+        m_instance->getSOPInstanceUIDContainer()[std::size_t(frameNumber - 1)],
         referencedImageItemDataset
     );
 

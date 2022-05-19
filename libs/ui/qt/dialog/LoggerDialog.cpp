@@ -47,7 +47,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LoggerDialog::LoggerDialog(ui::base::GuiBaseObject::Key key)
+LoggerDialog::LoggerDialog(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 

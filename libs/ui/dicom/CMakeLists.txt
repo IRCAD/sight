@@ -1,9 +1,4 @@
-sight_add_target(
-    ui_dicom
-    TYPE LIBRARY
-    PCH pchData
-    WARNINGS_AS_ERRORS OFF
-)
+sight_add_target(ui_dicom TYPE LIBRARY PCH pchData)
 
 find_package(DCMTK REQUIRED)
 target_include_directories(ui_dicom SYSTEM PRIVATE ${DCMTK_INCLUDE_DIRS})

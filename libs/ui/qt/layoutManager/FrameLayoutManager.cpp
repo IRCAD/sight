@@ -46,7 +46,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-FrameLayoutManager::FrameLayoutManager(ui::base::GuiBaseObject::Key key)
+FrameLayoutManager::FrameLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 

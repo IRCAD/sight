@@ -92,7 +92,7 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                             const int frameNumber = imageNode->getFrameNumber();
                             double zCoordinate    = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object,
-                                frameNumber
+                                std::size_t(frameNumber)
                             );
 
                             auto origin = data::Point::New(

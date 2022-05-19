@@ -128,7 +128,7 @@ struct ComputeHistogramFunctor
                     numPixels += param.o_histogram[i];
                 }
 
-                SIGHT_ASSERT("The number of pixels should not be null", numPixels);
+                SIGHT_ASSERT("The number of pixels should not be null", numPixels != 0);
                 for(std::size_t i = 0 ; i < size ; ++i)
                 {
                     param.o_histogram[i] /= numPixels;

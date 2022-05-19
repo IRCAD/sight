@@ -215,7 +215,7 @@ void processDirInformation(
 
                 if(progress)
                 {
-                    progress(++p);
+                    progress(std::size_t(++p));
                 }
 
                 if(cancel && cancel())

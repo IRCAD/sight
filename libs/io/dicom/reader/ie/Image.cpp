@@ -755,7 +755,7 @@ Image::MatrixType Image::computeInverseMatrix(MatrixType matrix)
     boost::numeric::ublas::permutation_matrix<std::size_t> perm(matrix.size1());
 
     // Perform LU-factorization
-    long unsigned int res = boost::numeric::ublas::lu_factorize(matrix, perm);
+    size_t res = boost::numeric::ublas::lu_factorize(matrix, perm);
     if(res != 0)
     {
         SIGHT_WARN("Cannot compute matrix.");

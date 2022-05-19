@@ -47,7 +47,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-MenuLayoutManager::MenuLayoutManager(ui::base::GuiBaseObject::Key key)
+MenuLayoutManager::MenuLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
@@ -119,11 +119,11 @@ void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent, c
 
         if(actionInfo.m_isMenu)
         {
-            ui::qt::container::QtMenuContainer::sptr menu = ui::qt::container::QtMenuContainer::New();
-            QMenu* qtMenu                                 = new QMenu();
-            menu->setQtMenu(qtMenu);
+            ui::qt::container::QtMenuContainer::sptr menuContainer = ui::qt::container::QtMenuContainer::New();
+            QMenu* qtMenu                                          = new QMenu();
+            menuContainer->setQtMenu(qtMenu);
             action->setMenu(qtMenu);
-            m_menus.push_back(menu);
+            m_menus.push_back(menuContainer);
         }
 
         menuItem->setQtMenuItem(action);

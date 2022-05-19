@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,11 +59,11 @@ MatrixConverter::~MatrixConverter()
 
     msg = ::igtl::TransformMessage::New();
     msg->GetMatrix(dest);
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            dest[i][j] = srcMatrix->getCoefficient(i, j);
+            dest[i][j] = float(srcMatrix->getCoefficient(i, j));
         }
     }
 
@@ -80,9 +80,9 @@ data::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::P
     ::igtl::TransformMessage::Pointer srcTransform = ::igtl::TransformMessage::Pointer(msg);
     data::Matrix4::sptr dest                       = data::Matrix4::New();
     srcTransform->GetMatrix(matrix);
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             dest->setCoefficient(i, j, matrix[i][j]);
         }

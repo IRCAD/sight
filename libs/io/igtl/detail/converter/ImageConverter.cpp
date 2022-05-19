@@ -71,8 +71,8 @@ ImageConverter::~ImageConverter()
     dest->SetMatrix(matrix);
     dest->SetScalarType(ImageTypeConverter::getIgtlType(srcImg->getType()));
     dest->SetCoordinateSystem(::igtl::ImageMessage::COORDINATE_LPS);
-    dest->SetOrigin(srcImg->getOrigin()[0], srcImg->getOrigin()[1], srcImg->getOrigin()[2]);
-    dest->SetSpacing(srcImg->getSpacing()[0], srcImg->getSpacing()[1], srcImg->getSpacing()[2]);
+    dest->SetOrigin(float(srcImg->getOrigin()[0]), float(srcImg->getOrigin()[1]), float(srcImg->getOrigin()[2]));
+    dest->SetSpacing(float(srcImg->getSpacing()[0]), float(srcImg->getSpacing()[1]), float(srcImg->getSpacing()[2]));
     dest->SetNumComponents(static_cast<int>(srcImg->numComponents()));
     dest->SetDimensions(
         static_cast<int>(srcImg->getSize()[0]),
@@ -110,7 +110,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     destImg->setOrigin(origins);
     destImg->setSpacing(spacing);
 
-    sight::data::Image::PixelFormat format;
+    sight::data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
     if(srcImg->GetNumComponents() == 1)
     {
         format = data::Image::PixelFormat::GRAY_SCALE;
@@ -123,8 +123,12 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     {
         format = data::Image::PixelFormat::RGBA;
     }
+    else
+    {
+        SIGHT_ASSERT("invalid number of components: " + std::to_string(srcImg->GetNumComponents()), false);
+    }
 
-    destImg->resize(size, ImageTypeConverter::getFwToolsType(srcImg->GetScalarType()), format);
+    destImg->resize(size, ImageTypeConverter::getFwToolsType(std::uint8_t(srcImg->GetScalarType())), format);
     auto destIter = destImg->begin();
     igtlImageBuffer = reinterpret_cast<char*>(srcImg->GetScalarPointer());
     std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), destIter);

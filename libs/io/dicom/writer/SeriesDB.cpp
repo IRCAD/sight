@@ -40,7 +40,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(io::base::writer::IObjectWriter::Key key) :
+SeriesDB::SeriesDB(io::base::writer::IObjectWriter::Key /*key*/) :
     m_fiducialsExportMode(io::dicom::writer::Series::SPATIAL_FIDUCIALS)
 {
 }

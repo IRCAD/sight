@@ -110,9 +110,9 @@ void ImageExtruderTest::extrudeTriangleMesh()
         std::size_t pt = 0;
         for(std::size_t index = 0 ; index < 36 ; index += 3)
         {
-            it->pt[0] = indexes[pt++];
-            it->pt[1] = indexes[pt++];
-            it->pt[2] = indexes[pt++];
+            it->pt[0] = data::iterator::cell_t(indexes[pt++]);
+            it->pt[1] = data::iterator::cell_t(indexes[pt++]);
+            it->pt[2] = data::iterator::cell_t(indexes[pt++]);
 
             ++it;
         }
@@ -131,9 +131,9 @@ void ImageExtruderTest::extrudeTriangleMesh()
         {
             for(std::size_t x = 0 ; x < m_size[0] ; ++x)
             {
-                if(x >= static_cast<float>(m_origin[0] + 1) && x < static_cast<float>(m_size[0] - 1)
-                   && y >= static_cast<float>(m_origin[1] + 1) && y < static_cast<float>(m_size[1] - 1)
-                   && z >= static_cast<float>(m_origin[2] + 1) && z < static_cast<float>(m_size[2] - 1))
+                if(double(x) >= m_origin[0] + 1 && x < m_size[0] - 1
+                   && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
+                   && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
                 {
                     CPPUNIT_ASSERT_EQUAL(
                         std::numeric_limits<std::int8_t>::lowest(),
@@ -202,10 +202,10 @@ void ImageExtruderTest::extrudeQuadMesh()
         std::size_t pt = 0;
         for(std::size_t index = 0 ; index < 24 ; index += 4)
         {
-            it->pt[0] = indexes[pt++];
-            it->pt[1] = indexes[pt++];
-            it->pt[2] = indexes[pt++];
-            it->pt[3] = indexes[pt++];
+            it->pt[0] = data::iterator::cell_t(indexes[pt++]);
+            it->pt[1] = data::iterator::cell_t(indexes[pt++]);
+            it->pt[2] = data::iterator::cell_t(indexes[pt++]);
+            it->pt[3] = data::iterator::cell_t(indexes[pt++]);
 
             ++it;
         }
@@ -224,9 +224,9 @@ void ImageExtruderTest::extrudeQuadMesh()
         {
             for(std::size_t x = 0 ; x < m_size[0] ; ++x)
             {
-                if(x >= static_cast<float>(m_origin[0] + 1) && x < static_cast<float>(m_size[0] - 1)
-                   && y >= static_cast<float>(m_origin[1] + 1) && y < static_cast<float>(m_size[1] - 1)
-                   && z >= static_cast<float>(m_origin[2] + 1) && z < static_cast<float>(m_size[2] - 1))
+                if(double(x) >= m_origin[0] + 1 && x < m_size[0] - 1
+                   && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
+                   && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
                 {
                     CPPUNIT_ASSERT_EQUAL(
                         std::numeric_limits<std::int8_t>::lowest(),

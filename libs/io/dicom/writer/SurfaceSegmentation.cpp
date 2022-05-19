@@ -50,7 +50,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key key) :
+SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key /*key*/) :
     m_logger(core::log::Logger::New()),
     m_writerJob(core::jobs::Observer::New("Writing DICOM file"))
 {

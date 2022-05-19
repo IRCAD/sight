@@ -117,7 +117,7 @@ void InrImageIO::ReadImageInformation()
     {
         std::string line(linebuf);
         // Count the number of characters we just read : length of the line
-        m_headerSize += line.length();
+        m_headerSize += std::streamoff(line.length());
         // Remove eventual trailing '\n'
         std::string::size_type const endOfLine = line.find('\n');
         line = line.substr(0, endOfLine);
@@ -152,8 +152,8 @@ void InrImageIO::ReadImageInformation()
             }
 
             // Tokenize [KEY] = [VALUE] and store it in map
-            std::string key   = line.substr(0, delimiter - line.begin());
-            std::string value = line.substr(delimiter - line.begin() + 1, std::string::npos);
+            std::string key   = line.substr(0, std::size_t(delimiter - line.begin()));
+            std::string value = line.substr(std::size_t(delimiter - line.begin() + 1), std::string::npos);
             if(headerValues.find(key) != headerValues.end())
             {
                 // duplicate key
@@ -179,22 +179,22 @@ void InrImageIO::ReadImageInformation()
     {
         if(it->first == "XDIM")
         {
-            int xdim = boost::lexical_cast<int>(it->second);
+            std::size_t xdim = boost::lexical_cast<std::size_t>(it->second);
             this->SetDimensions(0, xdim);
         }
         else if(it->first == "YDIM")
         {
-            int ydim = boost::lexical_cast<int>(it->second);
+            std::size_t ydim = boost::lexical_cast<std::size_t>(it->second);
             this->SetDimensions(1, ydim);
         }
         else if(it->first == "ZDIM")
         {
-            int zdim = boost::lexical_cast<int>(it->second);
+            std::size_t zdim = boost::lexical_cast<std::size_t>(it->second);
             this->SetDimensions(2, zdim);
         }
         else if(it->first == "VDIM")
         {
-            int vdim = boost::lexical_cast<int>(it->second);
+            std::uint32_t vdim = boost::lexical_cast<std::uint32_t>(it->second);
             if(vdim == 1)
             {
                 SetPixelType(SCALAR);
@@ -438,7 +438,7 @@ void InrImageIO::Read(void* buffer)
     }
 
     // Skip the header
-    int bytesSkipped = gzseek(file, m_headerSize, SEEK_CUR);
+    int bytesSkipped = int(gzseek(file, m_headerSize, SEEK_CUR));
     if(bytesSkipped != m_headerSize)
     {
         ExceptionObject exception(__FILE__, __LINE__);
@@ -464,11 +464,12 @@ void InrImageIO::Read(void* buffer)
         while(bytesRead < GetImageSizeInBytes() && step < nbStep)
         {
             step++;
-            UpdateProgress(((float) bytesRead) / GetImageSizeInBytes());
-            bytesRead += gzread(file, ((char*) buffer) + bytesRead, min(size, GetImageSizeInBytes() - bytesRead));
+            UpdateProgress(((float) bytesRead) / float(GetImageSizeInBytes()));
+            bytesRead +=
+                gzread(file, ((char*) buffer) + bytesRead, std::uint32_t(min(size, GetImageSizeInBytes() - bytesRead)));
         }
     }
-    catch(sight::core::Exception& e) // catch progress bar cancel exception
+    catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
     {
         gzclose(file);
         throw;
@@ -486,61 +487,63 @@ void InrImageIO::Read(void* buffer)
         throw exception;
     }
 
+    const std::size_t imageSizeInComponents = std::size_t(GetImageSizeInComponents());
+
     // Swap bytes if necessary
     if(m_ByteOrder == LittleEndian)
     {
         switch(m_ComponentType)
         {
             case CHAR:
-                ByteSwapper<char>::SwapRangeFromSystemToLittleEndian((char*) buffer, GetImageSizeInComponents());
+                ByteSwapper<char>::SwapRangeFromSystemToLittleEndian((char*) buffer, imageSizeInComponents);
                 break;
 
             case UCHAR:
                 ByteSwapper<unsigned char>::SwapRangeFromSystemToLittleEndian(
                     (unsigned char*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case SHORT:
-                ByteSwapper<short>::SwapRangeFromSystemToLittleEndian((short*) buffer, GetImageSizeInComponents());
+                ByteSwapper<short>::SwapRangeFromSystemToLittleEndian((short*) buffer, imageSizeInComponents);
                 break;
 
             case USHORT:
                 ByteSwapper<unsigned short>::SwapRangeFromSystemToLittleEndian(
                     (unsigned short*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case INT:
-                ByteSwapper<int>::SwapRangeFromSystemToLittleEndian((int*) buffer, GetImageSizeInComponents());
+                ByteSwapper<int>::SwapRangeFromSystemToLittleEndian((int*) buffer, imageSizeInComponents);
                 break;
 
             case UINT:
                 ByteSwapper<unsigned int>::SwapRangeFromSystemToLittleEndian(
                     (unsigned int*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case LONG:
-                ByteSwapper<long>::SwapRangeFromSystemToLittleEndian((long*) buffer, GetImageSizeInComponents());
+                ByteSwapper<long>::SwapRangeFromSystemToLittleEndian((long*) buffer, imageSizeInComponents);
                 break;
 
             case ULONG:
                 ByteSwapper<unsigned long>::SwapRangeFromSystemToLittleEndian(
                     (unsigned long*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case FLOAT:
-                ByteSwapper<float>::SwapRangeFromSystemToLittleEndian((float*) buffer, GetImageSizeInComponents());
+                ByteSwapper<float>::SwapRangeFromSystemToLittleEndian((float*) buffer, imageSizeInComponents);
                 break;
 
             case DOUBLE:
-                ByteSwapper<double>::SwapRangeFromSystemToLittleEndian((double*) buffer, GetImageSizeInComponents());
+                ByteSwapper<double>::SwapRangeFromSystemToLittleEndian((double*) buffer, imageSizeInComponents);
                 break;
 
             default:
@@ -555,55 +558,55 @@ void InrImageIO::Read(void* buffer)
         switch(m_ComponentType)
         {
             case CHAR:
-                ByteSwapper<char>::SwapRangeFromSystemToBigEndian((char*) buffer, GetImageSizeInComponents());
+                ByteSwapper<char>::SwapRangeFromSystemToBigEndian((char*) buffer, imageSizeInComponents);
                 break;
 
             case UCHAR:
                 ByteSwapper<unsigned char>::SwapRangeFromSystemToBigEndian(
                     (unsigned char*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case SHORT:
-                ByteSwapper<short>::SwapRangeFromSystemToBigEndian((short*) buffer, GetImageSizeInComponents());
+                ByteSwapper<short>::SwapRangeFromSystemToBigEndian((short*) buffer, imageSizeInComponents);
                 break;
 
             case USHORT:
                 ByteSwapper<unsigned short>::SwapRangeFromSystemToBigEndian(
                     (unsigned short*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case INT:
-                ByteSwapper<int>::SwapRangeFromSystemToBigEndian((int*) buffer, GetImageSizeInComponents());
+                ByteSwapper<int>::SwapRangeFromSystemToBigEndian((int*) buffer, imageSizeInComponents);
                 break;
 
             case UINT:
                 ByteSwapper<unsigned int>::SwapRangeFromSystemToBigEndian(
                     (unsigned int*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case LONG:
-                ByteSwapper<long>::SwapRangeFromSystemToBigEndian((long*) buffer, GetImageSizeInComponents());
+                ByteSwapper<long>::SwapRangeFromSystemToBigEndian((long*) buffer, imageSizeInComponents);
                 break;
 
             case ULONG:
                 ByteSwapper<unsigned long>::SwapRangeFromSystemToBigEndian(
                     (unsigned long*) buffer,
-                    GetImageSizeInComponents()
+                    imageSizeInComponents
                 );
                 break;
 
             case FLOAT:
-                ByteSwapper<float>::SwapRangeFromSystemToBigEndian((float*) buffer, GetImageSizeInComponents());
+                ByteSwapper<float>::SwapRangeFromSystemToBigEndian((float*) buffer, imageSizeInComponents);
                 break;
 
             case DOUBLE:
-                ByteSwapper<double>::SwapRangeFromSystemToBigEndian((double*) buffer, GetImageSizeInComponents());
+                ByteSwapper<double>::SwapRangeFromSystemToBigEndian((double*) buffer, imageSizeInComponents);
                 break;
 
             default:
@@ -727,7 +730,7 @@ void InrImageIO::WriteImageInformation()
     pixelSize *= 8;
     headerStream << "PIXSIZE=" << pixelSize << " bits" << "\n";
 
-    int const padding = 256 - headerStream.str().length() - std::string("##}\n").length();
+    int const padding = int(256 - headerStream.str().length() - std::string("##}\n").length());
     for(int i = 0 ; i < padding ; ++i)
     {
         headerStream << "\n";
@@ -763,7 +766,7 @@ void InrImageIO::WriteImageInformation()
         }
 
         std::string const headerString = headerStream.str();
-        gzwrite(outputFile, const_cast<char*>(headerString.c_str()), headerString.length());
+        gzwrite(outputFile, const_cast<char*>(headerString.c_str()), std::uint32_t(headerString.length()));
         gzclose(outputFile);
     }
     else
@@ -816,12 +819,16 @@ void InrImageIO::Write(const void* buffer)
         {
             while(written < GetImageSizeInBytes())
             {
-                UpdateProgress(((float) written) / GetImageSizeInBytes());
+                UpdateProgress(((float) written) / float(GetImageSizeInBytes()));
                 written +=
-                    gzwrite(outputFile, ((char*) buffer) + written, min(size, GetImageSizeInBytes() - written));
+                    gzwrite(
+                        outputFile,
+                        ((char*) buffer) + written,
+                        std::uint32_t(min(size, GetImageSizeInBytes() - written))
+                    );
             }
         }
-        catch(sight::core::Exception& e) // catch progress bar cancel exception
+        catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
         {
             gzclose(outputFile);
             throw;
@@ -854,12 +861,17 @@ void InrImageIO::Write(const void* buffer)
         {
             while(written < GetImageSizeInBytes())
             {
-                UpdateProgress(((float) written) / GetImageSizeInBytes());
+                UpdateProgress(((float) written) / float(GetImageSizeInBytes()));
                 written +=
-                    fwrite(((char*) buffer) + written, 1, min(size, GetImageSizeInBytes() - written), outputFile);
+                    int(fwrite(
+                            ((char*) buffer) + written,
+                            1,
+                            std::size_t(min(size, GetImageSizeInBytes() - written)),
+                            outputFile
+                    ));
             }
         }
-        catch(sight::core::Exception& e) // catch progress bar cancel exception
+        catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
         {
             fclose(outputFile);
             throw;

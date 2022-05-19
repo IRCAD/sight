@@ -41,7 +41,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key key) :
+MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key /*key*/) :
     m_message(""),
     m_title("")
 {

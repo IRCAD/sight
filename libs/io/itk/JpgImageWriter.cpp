@@ -50,7 +50,7 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key key)
+JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key /*key*/)
 {
 }
 
@@ -121,16 +121,20 @@ struct JpgITKSaverFunctor
                 min = tf->windowMinMax().first;
                 max = tf->windowMinMax().second;
             }
+            else
+            {
+                data::helper::MedicalImage::getMinMax(image, min, max);
+            }
         }
         else
         {
             data::helper::MedicalImage::getMinMax(image, min, max);
         }
 
-        rescaleFilter->SetWindowMinimum(min);
-        rescaleFilter->SetWindowMaximum(max);
-        rescaleFilter->SetOutputMinimum(0);
-        rescaleFilter->SetOutputMaximum(255);
+        rescaleFilter->SetWindowMinimum(PIXELTYPE(min));
+        rescaleFilter->SetWindowMaximum(PIXELTYPE(max));
+        rescaleFilter->SetOutputMinimum(PIXELTYPE(0));
+        rescaleFilter->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
         rescaleFilter->InPlaceOff();
         rescaleFilter->SetInput(itkImage);
         rescaleFilter->Update();

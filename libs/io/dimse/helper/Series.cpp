@@ -189,7 +189,7 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
             // Number of instances
             long int nb_instances;
             (*it)->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances);
-            series->setNumberOfInstances(nb_instances);
+            series->setNumberOfInstances(std::size_t(nb_instances));
 
             // Add series to container
             seriesContainer.push_back(series);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,9 +84,9 @@ QTagSelectorWidget::~QTagSelectorWidget()
 
 //-----------------------------------------------------------------------------
 
-void QTagSelectorWidget::updateTagName(int value)
+void QTagSelectorWidget::updateTagName(int /*value*/)
 {
-    DcmTag tag(m_groupSpinBox->value(), m_elementSpinBox->value());
+    DcmTag tag(Uint16(m_groupSpinBox->value()), Uint16(m_elementSpinBox->value()));
     std::string text = "<b>Tag name :</b> " + std::string(tag.getTagName());
     m_tagNameLabel->setText(text.c_str());
 }
@@ -104,7 +104,7 @@ void QTagSelectorWidget::setTagValue(const DcmTagKey& tag)
 
 DcmTagKey QTagSelectorWidget::getTag()
 {
-    return DcmTagKey(m_groupSpinBox->value(), m_elementSpinBox->value());
+    return DcmTagKey(Uint16(m_groupSpinBox->value()), Uint16(m_elementSpinBox->value()));
 }
 
 } // namespace widget

@@ -277,7 +277,7 @@ void Surface::readSurfaceMeshModule(
 
     // Convert CIE Lab to RGBA
     const unsigned short* lab = surface->GetRecommendedDisplayCIELabValue();
-    gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + sizeof(lab) / sizeof(unsigned short));
+    gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + 3);
     std::vector<float> colorVector = gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1);
 
     // Recommended Presentation Opacity
@@ -361,9 +361,9 @@ void Surface::readSurfaceMeshModule(
 
     // Create a new Mesh
     io::dicom::container::DicomSurface surfaceContainer(reinterpret_cast<const float*>(pointCoordinates->GetPointer()),
-                                                        pointCoordinatesSize,
+                                                        data::Mesh::size_t(pointCoordinatesSize),
                                                         reinterpret_cast<const uint32_t*>(pointIndices->GetPointer()),
-                                                        indexSize,
+                                                        data::Mesh::size_t(indexSize),
                                                         reinterpret_cast<const float*>(normalCoordinatesPointer));
 
     // Set the reconstruction

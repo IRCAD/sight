@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::Object::csptr /*src*/) const
 {
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::New();
 

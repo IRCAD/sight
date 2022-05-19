@@ -150,16 +150,16 @@ void Matrix4Test::matrixTest()
     geometry::data::identity(tm2);
 
     sight::data::Matrix4::TMCoefArray tm1Coefs;
-    for(int i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
-        tm1Coefs[i] = i + 1;
+        tm1Coefs[i] = double(i + 1);
     }
 
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            tm2.setCoefficient(i, j, fabs(static_cast<double>(i - j)) + 1);
+            tm2.setCoefficient(i, j, fabs(double(i) - double(j)) + 1);
         }
     }
 
@@ -278,7 +278,7 @@ void Matrix4Test::glmGetterSetterTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_EQUAL(glmMat[i][j], coefs[i + j * 4]);
+            CPPUNIT_ASSERT_EQUAL(glmMat[int(i)][int(j)], coefs[i + j * 4]);
         }
     }
 

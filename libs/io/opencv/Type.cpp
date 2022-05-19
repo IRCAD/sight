@@ -93,7 +93,7 @@ std::pair<core::Type, uint8_t> Type::fromCv(int32_t _cvType)
     const auto it = s_IMAGE_FORMAT_FROM_CV.find(_cvType);
     SIGHT_ASSERT("Format not handled by OpenCV: " + std::to_string(_cvType), it != s_IMAGE_FORMAT_FROM_CV.end());
 
-    return it->second;
+    return {it->second.first, uint8_t(it->second.second)};
 }
 
 //------------------------------------------------------------------------------

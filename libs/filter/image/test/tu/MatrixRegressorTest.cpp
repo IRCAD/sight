@@ -82,7 +82,7 @@ void MatrixRegressorTest::identityTest()
 
     data::Matrix4::sptr res = regressor.minimize(*id);
 
-    for(int i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         const double expected = id->getCoefficients()[i];
         const double result   = res->getCoefficients()[i];
@@ -131,7 +131,7 @@ void MatrixRegressorTest::avgTranslationTest()
 
     geometry::data::setTF3DFromMatrix(expectedMat, transExpected);
 
-    for(int i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         const double expected = expectedMat.getCoefficients()[i];
         const double result   = res->getCoefficients()[i];

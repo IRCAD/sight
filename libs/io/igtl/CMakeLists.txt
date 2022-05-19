@@ -1,4 +1,4 @@
-sight_add_target(io_igtl TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
+sight_add_target(io_igtl TYPE LIBRARY)
 
 find_package(LibArchive REQUIRED)
 target_include_directories(io_igtl PRIVATE ${LibArchive_INCLUDE_DIRS})

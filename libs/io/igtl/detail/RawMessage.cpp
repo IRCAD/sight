@@ -97,7 +97,7 @@ int RawMessage::PackBody()
 
     this->AllocatePack();
     size  = (uint32_t*) (m_Body);
-    *size = m_msg.size();
+    *size = std::uint32_t(m_msg.size());
     str   = (char*) (m_Body + sizeof(uint32_t));
     if(*size > 0)
     {

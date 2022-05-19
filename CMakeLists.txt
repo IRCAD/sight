@@ -237,6 +237,7 @@ if(SIGHT_BUILD_EXAMPLES)
     add_subdirectory(tutorials)
     add_subdirectory(examples)
 endif()
+add_subdirectory(3rd-party)
 
 ########################################################################################################################
 # Export and install targets

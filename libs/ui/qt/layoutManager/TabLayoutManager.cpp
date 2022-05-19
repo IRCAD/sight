@@ -44,7 +44,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-TabLayoutManager::TabLayoutManager(ui::base::GuiBaseObject::Key key)
+TabLayoutManager::TabLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 

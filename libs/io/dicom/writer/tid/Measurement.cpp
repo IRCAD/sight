@@ -96,7 +96,7 @@ void Measurement::createNodes(
 void Measurement::createMeasurement(
     const SPTR(io::dicom::container::sr::DicomSRNode)& parent,
     const data::PointList::csptr& pointList,
-    unsigned int id,
+    unsigned int /*id*/,
     bool useSCoord3D
 )
 {
@@ -184,7 +184,7 @@ void Measurement::createMeasurement(
                 "SELECTED FROM",
                 m_instance->getSOPClassUID(),
                 m_instance->getSOPInstanceUIDContainer()[frameNumber1 - 1],
-                frameNumber1
+                int(frameNumber1)
             );
         scoordNode->addSubNode(imageNode);
     }

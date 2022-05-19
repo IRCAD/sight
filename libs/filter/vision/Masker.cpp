@@ -165,7 +165,7 @@ bool Masker::isModelLearned(void)
         case bgLL:
             return !m_backgroundModel.empty();
 
-        case LLRatio:
+        default: // LLRatio
             return !m_foregroundModel.empty() && !m_backgroundModel.empty();
     }
 }

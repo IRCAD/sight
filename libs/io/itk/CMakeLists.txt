@@ -1,9 +1,4 @@
-sight_add_target(
-    io_itk
-    TYPE LIBRARY
-    PCH pchData
-    WARNINGS_AS_ERRORS OFF
-)
+sight_add_target(io_itk TYPE LIBRARY PCH pchData)
 
 find_package(JPEG QUIET REQUIRED)
 find_package(ZLIB QUIET REQUIRED)

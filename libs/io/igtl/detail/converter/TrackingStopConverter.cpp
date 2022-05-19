@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::Object::csptr /*src*/) const
 {
     ::igtl::StopTrackingDataMessage::Pointer trackingMsg = ::igtl::StopTrackingDataMessage::New();
     return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
@@ -61,7 +61,7 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer /*src*/) const
 {
     data::Composite::sptr composite = data::Composite::New();
     data::Boolean::sptr status      = data::Boolean::New();

@@ -141,7 +141,12 @@ data::Mesh::sptr DicomSurface::convertToData()
         attribute = data::Mesh::Attributes::POINT_NORMALS;
     }
 
-    mesh->resize(m_pointBuffer.size() / 3, m_cellBuffer.size() / 3, data::Mesh::CellType::TRIANGLE, attribute);
+    mesh->resize(
+        data::Mesh::size_t(m_pointBuffer.size() / 3),
+        data::Mesh::size_t(m_cellBuffer.size() / 3),
+        data::Mesh::CellType::TRIANGLE,
+        attribute
+    );
 
     // Coordinates
     {

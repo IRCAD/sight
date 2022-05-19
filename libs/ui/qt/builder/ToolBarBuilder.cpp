@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,7 +102,7 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
                 area = Qt::RightToolBarArea;
                 break;
 
-            case LEFT:
+            default: // LEFT
                 area = Qt::LeftToolBarArea;
                 break;
         }

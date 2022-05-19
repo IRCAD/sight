@@ -223,7 +223,7 @@ void MeshConverter::copyAttributesFromFwMesh(
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("PointTexCoord");
         attr->SetType(::igtl::PolyDataAttribute::POINT_VECTOR);
-        attr->SetSize(numberOfPoints);
+        attr->SetSize(igtlUint32(numberOfPoints));
         attr->SetData(igtlDataPointTex);
         dest->AddAttribute(attr);
         delete[] igtlDataPointTex;
@@ -290,7 +290,7 @@ void MeshConverter::copyAttributesFromFwMesh(
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("CellTexCoord");
         attr->SetType(::igtl::PolyDataAttribute::CELL_VECTOR);
-        attr->SetSize(numberOfCells);
+        attr->SetSize(igtlUint32(numberOfCells));
         attr->SetData(igtlDataCellTex);
         dest->AddAttribute(attr);
         delete[] igtlDataCellTex;
@@ -311,7 +311,7 @@ data::Object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     const int numberOfPoints = meshMsg->GetPoints()->GetNumberOfPoints();
 
     data::Mesh::Attributes attributes = data::Mesh::Attributes::NONE;
-    for(int i = 0 ; i < meshMsg->GetNumberOfAttributes() ; ++i)
+    for(unsigned int i = 0 ; int(i) < meshMsg->GetNumberOfAttributes() ; ++i)
     {
         const ::igtl::PolyDataAttribute::Pointer attr = meshMsg->GetAttribute(i);
         switch(attr->GetType())
@@ -362,10 +362,10 @@ data::Object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
     if(numberOfCells == 0)
     {
-        numberOfCells = numberOfPoints;
+        numberOfCells = igtlUint32(numberOfPoints);
     }
 
-    mesh->reserve(numberOfPoints, numberOfCells, cellType, attributes);
+    mesh->reserve(data::Mesh::size_t(numberOfPoints), numberOfCells, cellType, attributes);
     const auto dumpLock = mesh->dump_lock();
 
     ::igtl::PolyDataPointArray* points = meshMsg->GetPoints();
@@ -414,7 +414,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
 {
     ::igtl::PolyDataAttribute::Pointer attr;
 
-    for(int i = 0 ; i < src->GetNumberOfAttributes() ; ++i)
+    for(unsigned int i = 0 ; int(i) < src->GetNumberOfAttributes() ; ++i)
     {
         attr = src->GetAttribute(i);
         switch(attr->GetType())

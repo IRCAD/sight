@@ -39,7 +39,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 ProgressDialog::ProgressDialog(
-    ui::base::GuiBaseObject::Key key,
+    ui::base::GuiBaseObject::Key /*key*/,
     const std::string& title,
     const std::string& message
 ) :

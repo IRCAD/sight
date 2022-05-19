@@ -111,11 +111,17 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
     {
         // get triangle vertices.
         const fwVec3d P1 =
-        {_vertex[_vertexIndex[i][0]][0], _vertex[_vertexIndex[i][0]][1], _vertex[_vertexIndex[i][0]][2]};
+        {_vertex[std::size_t(_vertexIndex[i][0])][0], _vertex[std::size_t(_vertexIndex[i][0])][1],
+         _vertex[std::size_t(_vertexIndex[i][0])][2]
+        };
         const fwVec3d P2 =
-        {_vertex[_vertexIndex[i][1]][0], _vertex[_vertexIndex[i][1]][1], _vertex[_vertexIndex[i][1]][2]};
+        {_vertex[std::size_t(_vertexIndex[i][1])][0], _vertex[std::size_t(_vertexIndex[i][1])][1],
+         _vertex[std::size_t(_vertexIndex[i][1])][2]
+        };
         const fwVec3d P3 =
-        {_vertex[_vertexIndex[i][2]][0], _vertex[_vertexIndex[i][2]][1], _vertex[_vertexIndex[i][2]][2]};
+        {_vertex[std::size_t(_vertexIndex[i][2])][0], _vertex[std::size_t(_vertexIndex[i][2])][1],
+         _vertex[std::size_t(_vertexIndex[i][2])][2]
+        };
 
         // remove all triangles above point.
         if(!(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z])) //trianglePotentiallyWellPositionned
@@ -201,12 +207,11 @@ bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 // container of connected component
 void findBorderEdges(
     const fwVertexIndex& _vertexIndex,
-    std::vector<std::vector<std::pair<int, int> > >& contours
+    std::vector<std::vector<std::pair<std::size_t, std::size_t> > >& contours
 )
 {
-    typedef std::pair<int, int> Edge;
+    typedef std::pair<std::size_t, std::size_t> Edge;
     typedef std::vector<Edge> Contour; // at Border
-    typedef std::vector<Contour> Contours;
 
     std::map<Edge, int> edgesHistogram;
     for(fwVertexIndex::value_type vertex : _vertexIndex)
@@ -263,7 +268,7 @@ void findBorderEdges(
 
 bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 {
-    typedef std::pair<int, int> Edge;
+    typedef std::pair<std::size_t, std::size_t> Edge;
     typedef std::vector<Edge> Contour; // at Border
     typedef std::vector<Contour> Contours;
 
@@ -279,7 +284,7 @@ bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 
         for(const Contour::value_type& edge : contour)
         {
-            for(int i = 0 ; i < 3 ; ++i)
+            for(std::size_t i = 0 ; i < 3 ; ++i)
             {
                 massCenter[i] += _vertex[edge.first][i];
                 massCenter[i] += _vertex[edge.second][i];
@@ -287,15 +292,15 @@ bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 
             // create new Triangle
             std::vector<int> triangleIndex(3);
-            triangleIndex[0] = edge.first;
-            triangleIndex[1] = edge.second;
-            triangleIndex[2] = newVertexIndex;
+            triangleIndex[0] = int(edge.first);
+            triangleIndex[1] = int(edge.second);
+            triangleIndex[2] = int(newVertexIndex);
             _vertexIndex.push_back(triangleIndex); // TEST
         }
 
-        for(int i = 0 ; i < 3 ; ++i)
+        for(std::size_t i = 0 ; i < 3 ; ++i)
         {
-            massCenter[i] /= contour.size() * 2;
+            massCenter[i] /= float(contour.size() * 2);
         }
 
         _vertex.push_back(massCenter); // normalize barycenter
@@ -331,7 +336,7 @@ bool removeOrphanVertices(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex
         for(int indexPt : indexPointToKeep)
         {
             translate[indexPt] = idx++;
-            newVertex.push_back(_vertex[indexPt]);
+            newVertex.push_back(_vertex[std::size_t(indexPt)]);
         }
 
         for(fwVertexIndex::value_type& vertex : _vertexIndex)

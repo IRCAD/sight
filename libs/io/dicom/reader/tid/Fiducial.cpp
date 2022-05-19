@@ -69,7 +69,7 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
        && !node->getSubNodeContainer().empty())
     {
         std::string label = "";
-        double x, y, z;
+        double x = 0, y = 0, z = 0;
         bool foundLandmark = false;
         for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
         {
@@ -109,7 +109,7 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
                             const int frameNumber = imageNode->getFrameNumber();
                             z = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object,
-                                frameNumber
+                                std::size_t(frameNumber)
                             );
                             foundLandmark = true;
                         }

@@ -367,7 +367,7 @@ void PointListTest::associate()
     // Check that the matched points are really the closest
     {
         // Create an initial octahedron with points
-        sight::data::PointList::sptr pl1 = sight::data::PointList::New();
+        pl1 = sight::data::PointList::New();
         pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 0.0f));
         pl1->pushBack(sight::data::Point::New(2.0f, 0.0f, 1.0f));
         pl1->pushBack(sight::data::Point::New(2.0f, 0.8f, 0.0f));
@@ -376,7 +376,7 @@ void PointListTest::associate()
         pl1->pushBack(sight::data::Point::New(3.0f, 0.0f, 0.0f));
 
         // Reference final octahedron
-        sight::data::PointList::sptr pl2 = sight::data::PointList::New();
+        pl2 = sight::data::PointList::New();
         pl2->pushBack(sight::data::Point::New(0.0f, 0.0f, 5.2f));
         pl2->pushBack(sight::data::Point::New(1.0f, 0.0f, 6.2f));
         pl2->pushBack(sight::data::Point::New(0.0f, 0.8f, 6.2f));
@@ -414,7 +414,7 @@ void PointListTest::associate()
             const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             // Compare the components
-            for(int j = 0 ; j < nbComponents ; j++)
+            for(std::size_t j = 0 ; j < nbComponents ; j++)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[j], tmp2[j], 1e-5);
             }

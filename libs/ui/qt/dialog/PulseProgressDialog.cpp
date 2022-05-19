@@ -40,7 +40,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key key)
+PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key /*key*/)
 {
     m_dialog = new QProgressDialog(qApp->activeWindow());
 }

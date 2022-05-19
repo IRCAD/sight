@@ -42,7 +42,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(ui::base::GuiBaseObject::Key key) :
+SelectorDialog::SelectorDialog(ui::base::GuiBaseObject::Key /*key*/) :
     m_message(""),
     m_title("")
 {

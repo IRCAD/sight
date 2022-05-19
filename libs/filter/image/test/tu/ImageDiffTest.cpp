@@ -98,13 +98,13 @@ void ImageDiffTest::storeDiffsTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff.
-    for(int i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
         diff.addDiff(index, oldBufferValue, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), diff.numElements());
+        CPPUNIT_ASSERT_EQUAL(i + 1, diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 
@@ -113,7 +113,7 @@ void ImageDiffTest::storeDiffsTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(8), diff.numElements());
 
     // Ensure the elements where inserted.
-    for(int i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         ImageDiff::ElementType elt = diff.getElement(i);
 
@@ -126,13 +126,13 @@ void ImageDiffTest::storeDiffsTest()
     const std::vector<data::Image::IndexType> indices2 = {{66, 42, 8888}};
     ImageDiff diff2(sizeof(OLDVALUE));
 
-    for(int i = 0 ; i < 3 ; ++i)
+    for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         const data::Image::IndexType index = indices2[i];
 
         diff2.addDiff(index, oldBufferValue, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), diff2.numElements());
+        CPPUNIT_ASSERT_EQUAL(i + 1, diff2.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff2.getElementDiffIndex(i));
     }
 
@@ -149,7 +149,7 @@ void ImageDiffTest::storeDiffsTest()
     mergedIndices.insert(mergedIndices.end(), indices2.begin(), indices2.end());
 
     // Ensure the elements where merged.
-    for(int i = 0 ; i < 11 ; ++i)
+    for(std::size_t i = 0 ; i < 11 ; ++i)
     {
         ImageDiff::ElementType elt = diff.getElement(i);
 
@@ -206,7 +206,7 @@ void ImageDiffTest::undoRedoTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(int i = 0 ; i < 8 ; ++i)
+    for(std::size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
@@ -216,7 +216,7 @@ void ImageDiffTest::undoRedoTest()
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), diff.numElements());
+        CPPUNIT_ASSERT_EQUAL(i + 1, diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
         CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(index)));
     }

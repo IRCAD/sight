@@ -43,7 +43,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-MenuBarLayoutManager::MenuBarLayoutManager(ui::base::GuiBaseObject::Key key)
+MenuBarLayoutManager::MenuBarLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 

@@ -184,7 +184,7 @@ void Fiducial::createFiducial(
                 "SELECTED FROM",
                 m_instance->getSOPClassUID(),
                 m_instance->getSOPInstanceUIDContainer()[frameNumber - 1],
-                frameNumber
+                int(frameNumber)
             );
         scoordNode->addSubNode(imageNode);
     }

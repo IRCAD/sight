@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,6 +75,9 @@ public:
     IO_DIMSE_API bool start();
 
 protected:
+
+    // workaround warning 'sight::io::dimse::SeriesRetriever::handleSTORERequest' hides overloaded virtual function
+    using DcmSCP::handleSTORERequest;
 
     /// Handle Incoming Command (Override)
     virtual OFCondition handleIncomingCommand(

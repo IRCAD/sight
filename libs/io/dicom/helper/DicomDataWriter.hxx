@@ -68,7 +68,7 @@ public:
     static void setTagValue(const T& value, gdcm::DataSet& dataset)
     {
         gdcm::Attribute<GROUP, ELEMENT> attribute;
-        attribute.SetValue(value);
+        attribute.SetValue(typename gdcm::Attribute<GROUP, ELEMENT>::ArrayType(value));
         dataset.Insert(attribute.GetAsDataElement());
     }
 

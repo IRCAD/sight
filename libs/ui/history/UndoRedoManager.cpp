@@ -57,7 +57,7 @@ bool UndoRedoManager::enqueue(ICommand::sptr cmd)
     // Remove all commands following the current history point.
     if(!m_commandQueue.empty())
     {
-        for(std::int64_t i = m_commandQueue.size() - 1 ; i > m_commandIndex ; --i)
+        for(std::size_t i = m_commandQueue.size() - 1 ; i > std::size_t(m_commandIndex) ; --i)
         {
             m_usedMemory -= m_commandQueue[i]->getSize();
             m_commandQueue.pop_back();
@@ -89,10 +89,10 @@ bool UndoRedoManager::redo()
 {
     bool success = false;
 
-    if(m_commandIndex != m_commandQueue.size() - 1)
+    if(std::size_t(m_commandIndex) != m_commandQueue.size() - 1)
     {
         m_commandIndex++;
-        success = m_commandQueue[m_commandIndex]->redo();
+        success = m_commandQueue[std::size_t(m_commandIndex)]->redo();
     }
 
     return success;
@@ -106,7 +106,7 @@ bool UndoRedoManager::undo()
 
     if(m_commandIndex > -1)
     {
-        success = m_commandQueue[m_commandIndex]->undo();
+        success = m_commandQueue[std::size_t(m_commandIndex)]->undo();
         m_commandIndex--;
     }
 
@@ -124,7 +124,7 @@ bool UndoRedoManager::canUndo() const
 
 bool UndoRedoManager::canRedo() const
 {
-    return (m_commandIndex != this->getCommandCount() - 1) && (this->getCommandCount() > 0);
+    return (std::size_t(m_commandIndex) != this->getCommandCount() - 1) && (this->getCommandCount() > 0);
 }
 
 //-----------------------------------------------------------------------------

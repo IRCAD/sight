@@ -92,7 +92,7 @@ public:
         typename FwDataObjectType::csptr obj = FwDataObjectType::dynamicConstCast(src);
 
         msg = RawMessage::New(m_igtlType);
-        RawMessage::RawDataType content = helper::ScalarToBytes<ScalarType>::toBytes(obj->getValue());
+        RawMessage::RawDataType content = helper::ScalarToBytes<ScalarType>::toBytes(ScalarType(obj->getValue()));
         msg->append(content);
         return ::igtl::MessageBase::Pointer(msg);
     }

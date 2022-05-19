@@ -48,7 +48,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-CardinalLayoutManager::CardinalLayoutManager(ui::base::GuiBaseObject::Key key)
+CardinalLayoutManager::CardinalLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
@@ -77,12 +77,12 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
 
     const std::list<ViewInfo>& views = this->getViewsInfo();
 
-    bool hasCentral = false;
+    [[maybe_unused]] bool hasCentral = false;
 
     for(ViewInfo viewInfo : views)
     {
         QWidget* insideWidget;
-        QScrollArea* scrollArea;
+        QScrollArea* scrollArea = nullptr;
 
         if(viewInfo.m_align == CENTER)
         {
@@ -177,6 +177,10 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
             {
                 area = Qt::TopDockWidgetArea;
             }
+            else
+            {
+                area = Qt::NoDockWidgetArea;
+            }
 
             m_qtWindow->addDockWidget(area, dockWidget);
             dockWidget->setFeatures(features);
@@ -193,12 +197,12 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                 // Ensure widget->sizeHint() doesn't return a -1 size that will trigger a runtime warning:
                 // As setTitleBarWidget require a widget that have a valid QWidget::sizeHint()
                 // and QWidget::sizeHint() return -1 for widget without a layout...
-                QHBoxLayout* layout = new QHBoxLayout;
-                layout->setSpacing(0);
-                layout->setMargin(0);
+                QHBoxLayout* anotherLayout = new QHBoxLayout;
+                anotherLayout->setSpacing(0);
+                anotherLayout->setMargin(0);
 
                 QWidget* widget = new QWidget;
-                widget->setLayout(layout);
+                widget->setLayout(anotherLayout);
 
                 dockWidget->setMinimumSize(
                     std::max(viewInfo.m_minSize.first, 0),

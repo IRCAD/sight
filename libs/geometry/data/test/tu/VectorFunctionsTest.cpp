@@ -93,9 +93,6 @@ void VectorFunctionsTest::checkDot()
 
 void VectorFunctionsTest::checkCross()
 {
-    // Dot product.
-    const double DISTANCE = 10.25;
-
     // New version
     const double CROSS_X = -0.03;
     const double CROSS_Y = 0.06;

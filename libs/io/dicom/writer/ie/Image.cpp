@@ -73,7 +73,7 @@ void Image::writeGeneralImageModuleSpecificTags(unsigned int instanceNumber)
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Instance Number
-    io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(instanceNumber, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(int(instanceNumber), dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ void Image::writeVOILUTModule()
 
     const double windowCenter = m_object->getWindowCenter();
     const double windowWidth  = m_object->getWindowWidth();
-    if(windowCenter || windowWidth)
+    if(windowCenter != 0 || windowWidth != 0)
     {
         // Image's windows center
         io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1050>(&windowCenter, 1, dataset);

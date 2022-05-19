@@ -65,7 +65,6 @@ sight::data::Image::sptr createSphereImage(itk::Vector<double, N> spacing = itk:
     transform->SetIdentity();
 
     typename TransformType::OutputVectorType translation;
-    typename TransformType::CenterType center;
 
     translation[0] = 50;
     translation[1] = 50;

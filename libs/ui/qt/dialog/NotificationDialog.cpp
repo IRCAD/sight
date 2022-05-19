@@ -44,7 +44,7 @@ bool checkSizeOfMessage(const QString& _message, const QFontMetrics& _fm, const 
 {
     const auto rect = _fm.boundingRect(
         QRect(0, 0, _acceptable_size.width(), _acceptable_size.height()),
-        Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignVCenter,
+        int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
         _message
     );
 

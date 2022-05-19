@@ -103,24 +103,24 @@ void Image::copyFromCv(data::Image& _image, const cv::Mat& _cvImage)
 
     if(_cvImage.dims == 1)
     {
-        imageSize[0] = _cvImage.size[0];
+        imageSize[0] = std::size_t(_cvImage.size[0]);
     }
     else if(_cvImage.dims == 2 && _cvImage.rows == 1)
     {
         // This means this is actually a 1D image so remove the first dimension (==1)
-        imageSize[0] = _cvImage.size[1];
+        imageSize[0] = std::size_t(_cvImage.size[1]);
         imageSize[1] = 0;
     }
     else if(_cvImage.dims == 2)
     {
-        imageSize[0] = _cvImage.size[1];
-        imageSize[1] = _cvImage.size[0];
+        imageSize[0] = std::size_t(_cvImage.size[1]);
+        imageSize[1] = std::size_t(_cvImage.size[0]);
     }
     else // 3D
     {
-        imageSize[0] = _cvImage.size[2];
-        imageSize[1] = _cvImage.size[1];
-        imageSize[2] = _cvImage.size[0];
+        imageSize[0] = std::size_t(_cvImage.size[2]);
+        imageSize[1] = std::size_t(_cvImage.size[1]);
+        imageSize[2] = std::size_t(_cvImage.size[0]);
     }
 
     const auto prevImageSize = _image.getSize();

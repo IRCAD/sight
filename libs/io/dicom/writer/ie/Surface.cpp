@@ -499,13 +499,13 @@ void Surface::writeSurfaceSequence(
     // Create one item
     gdcm::Item pointsItem;
     pointsItem.SetVLToUndefined();
-
+    using ulong = unsigned long;
     //======================================
     // Table C.27-2. Points Macro Attributes
     //======================================
     {
         // Number Of Surface Points (0x0066,0x0015) - Type 1
-        surface->SetNumberOfSurfacePoints(surfaceContainer.getPointBufferSize() / 3);
+        surface->SetNumberOfSurfacePoints(ulong(surfaceContainer.getPointBufferSize() / 3));
 
         // Point Coordinates Data (0x0066,0x0016) - Type 1
         gdcm::DataElement& pointCoordData = surface->GetPointCoordinatesData();
@@ -531,7 +531,7 @@ void Surface::writeSurfaceSequence(
         normalsItem.SetVLToUndefined();
 
         // Number Of Vectors (0x0066, 0x001e) - Type 1
-        surface->SetNumberOfVectors(surfaceContainer.getNormalBufferSize() / 3);
+        surface->SetNumberOfVectors(ulong(surfaceContainer.getNormalBufferSize() / 3));
 
         // Vector Dimensionality (0x0066, 0x001f) - Type 1
         surface->SetVectorDimensionality(1);

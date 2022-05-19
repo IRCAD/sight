@@ -47,7 +47,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key key) :
+LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key /*key*/) :
     m_style(ui::base::dialog::ILocationDialog::NONE),
     m_type(ui::base::dialog::ILocationDialog::SINGLE_FILE)
 {
@@ -123,7 +123,7 @@ core::location::ILocation::sptr LocationDialog::show()
             else if(m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
             {
                 std::vector<std::filesystem::path> paths;
-                paths.reserve(selectedFiles.size());
+                paths.reserve(size_t(selectedFiles.size()));
                 for(const QString& file : selectedFiles)
                 {
                     paths.push_back(file.toStdString());

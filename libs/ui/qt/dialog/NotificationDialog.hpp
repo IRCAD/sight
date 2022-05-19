@@ -65,7 +65,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPosition(std::function<QPoint(QWidget*)> _position, QWidget* _parent)
+    void setPosition(std::function<QPoint(QWidget*)> /*_position*/, QWidget* /*_parent*/)
     {
         QPropertyAnimation* a = new QPropertyAnimation(this, "pos");
         a->setDuration(500);

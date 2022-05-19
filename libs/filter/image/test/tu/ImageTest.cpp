@@ -81,10 +81,10 @@ void TestRoiApply(const core::Type imageType, const core::Type roiType)
     // fill roi with random values
     utestData::generator::Image::randomizeImage(roi);
 
-    const auto dumpLock    = roi->dump_lock();
-    auto begin             = roi->begin();
-    const auto end         = roi->end();
-    const std::size_t part = (end - begin) / 3;
+    const auto dumpLock = roi->dump_lock();
+    auto begin          = roi->begin();
+    const auto end      = roi->end();
+    const long part     = long((end - begin) / 3);
 
     // keep random values in 1/3 of the image (else fill with 0)
     std::fill(begin, begin + part, 0);
