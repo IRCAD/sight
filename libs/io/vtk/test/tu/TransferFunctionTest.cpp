@@ -58,16 +58,20 @@ data::TransferFunction::sptr TransferFunctionTest::createTFColor()
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
     tf->setBackgroundColor(data::TransferFunction::color_t(1.0, 0.3, 0.6, 0.1));
-    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::LINEAR);
-    tf->setClamped(false);
-    tf->setLevel(0.0);
     tf->setName("color_t");
+    tf->setLevel(0.0);
     tf->setWindow(400.0);
 
-    tf->insert({-200, data::TransferFunction::color_t(1.0, 0.0, 0.0, 0.0)});
-    tf->insert({0, data::TransferFunction::color_t(0.0, 1.0, 0.0, 0.0)});
-    tf->insert({100, data::TransferFunction::color_t(0.0, 0.0, 1.0, 0.5)});
-    tf->insert({200, data::TransferFunction::color_t(0.0, 1.0, 1.0, 1.0)});
+    auto tfData = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
+    tfData->setClamped(false);
+    tfData->setInterpolationMode(data::TransferFunction::InterpolationMode::LINEAR);
+    tfData->setLevel(0.0);
+    tfData->setWindow(400.0);
+
+    tfData->insert({-200, data::TransferFunction::color_t(1.0, 0.0, 0.0, 0.0)});
+    tfData->insert({0, data::TransferFunction::color_t(0.0, 1.0, 0.0, 0.0)});
+    tfData->insert({100, data::TransferFunction::color_t(0.0, 0.0, 1.0, 0.5)});
+    tfData->insert({200, data::TransferFunction::color_t(0.0, 1.0, 1.0, 1.0)});
 
     return tf;
 }
@@ -105,7 +109,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.75, opacity, colorTolerance);
 
-    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
+    tf->pieces()[0]->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
     io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, true, 4096);
     lt->GetColor(120, color);
     opacity = lt->GetOpacity(120);

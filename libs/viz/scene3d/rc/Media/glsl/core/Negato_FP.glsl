@@ -11,7 +11,6 @@ layout(binding=1) uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
 uniform float u_slice;
-uniform int u_threshold = 0;
 uniform int u_orientation = 0;
 uniform vec4 u_diffuse;
 uniform int u_enableAlpha; //bool

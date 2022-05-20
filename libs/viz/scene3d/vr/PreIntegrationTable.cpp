@@ -175,8 +175,6 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, floa
     {
         glm::vec4 tmp(0.f);
 
-        _tf->setClamped(false);
-
         for(int k = 0 ; k < static_cast<int>(m_textureSize) ; ++k)
         {
             data::TransferFunction::value_t value             = k + m_valueInterval.first;

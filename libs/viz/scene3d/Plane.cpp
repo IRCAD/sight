@@ -416,28 +416,6 @@ void Plane::setTFData(const viz::scene3d::TransferFunction& _tfTexture)
 
 //-----------------------------------------------------------------------------
 
-void Plane::switchThresholding(bool _threshold)
-{
-    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
-
-    for(const auto tech : techniques)
-    {
-        SIGHT_ASSERT("Technique is not set", tech);
-
-        if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
-        {
-            Ogre::Pass* pass = tech->getPass(0);
-
-            SIGHT_ASSERT("Can't find Ogre pass", pass);
-
-            m_threshold = _threshold;
-            pass->getFragmentProgramParameters()->setNamedConstant("u_threshold", static_cast<int>(m_threshold));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void Plane::moveToOriginPosition()
 {
     m_planeSceneNode->setPosition(m_originPosition);

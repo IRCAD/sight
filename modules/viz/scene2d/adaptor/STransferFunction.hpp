@@ -129,7 +129,7 @@ private:
     struct PieceView
     {
         /// Contains the TF data.
-        data::TransferFunctionData::sptr m_tf;
+        data::TransferFunctionPiece::sptr m_tf;
 
         /// Sets the z value in the local layer.
         int m_zIndex {0};
@@ -138,7 +138,7 @@ private:
         std::vector<std::pair<vec2d_t, QGraphicsEllipseItem*> > m_TFPoints;
 
         /// Contains the graphic gradient.
-        QGraphicsPolygonItem* m_TFPolygon;
+        std::vector<QAbstractGraphicsShapeItem*> m_TFPolygons;
     };
 
     /// Deletes pieceView in @ref m_pieceView and clears them.
@@ -155,7 +155,7 @@ private:
     void destroyTFPoints();
 
     /// Creates a pieceView from a TF, fills basic data and creates graphic points.
-    PieceView* createPieceView(const data::TransferFunctionData::sptr _tf, int _zIndex);
+    PieceView* createPieceView(const data::TransferFunctionPiece::sptr _tf, int _zIndex);
 
     /// Creates the gradient of each pieceView and stores it in each element of @ref m_pieceView.
     void createTFPolygons();
@@ -354,7 +354,7 @@ private:
      * @brief Adds a new TF to the composite and re draw the scene.
      * @param _tf the new TF to add.
      */
-    void addNewTF(const data::TransferFunctionData::sptr _tf);
+    void addNewTF(const data::TransferFunctionPiece::sptr _tf);
 
     /**
      * @brief Adds a left ramp pieceView and update the composite.
@@ -411,7 +411,7 @@ private:
     QTimer* m_eventFilter {nullptr};
 
     /// Stores the current working TF.
-    data::TransferFunctionData::sptr m_currentTF {nullptr};
+    data::TransferFunctionPiece::sptr m_currentTF {nullptr};
 
     /// Stores the captured clicked point.
     std::pair<vec2d_t, QGraphicsEllipseItem*>* m_capturedTFPoint {nullptr};
@@ -419,7 +419,7 @@ private:
     /// Stores the captured clicked TF and the current mouse position,
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
-    std::pair<data::TransferFunctionData::sptr, sight::viz::scene2d::vec2d_t> m_capturedTF;
+    std::pair<data::TransferFunctionPiece::sptr, sight::viz::scene2d::vec2d_t> m_capturedTF;
 
     static constexpr std::string_view s_VIEWPORT_INPUT   = "viewport";
     static constexpr std::string_view s_CURRENT_TF_INOUT = "tf";

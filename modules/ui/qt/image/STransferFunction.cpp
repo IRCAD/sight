@@ -252,7 +252,7 @@ void STransferFunction::swapping(std::string_view _key)
 
         if(currentTF && currentTF.get_shared() != selectedTF.lock())
         {
-            this->updatePresetsPreset();
+            this->updatePresets();
         }
     }
 }
@@ -300,7 +300,7 @@ void STransferFunction::initializePresets()
         if(!this->hasPresetName(defaultTFName))
         {
             const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
-            m_tfPresets.insert_or_assign(defaultTFName, defaultTf);
+            m_tfPresets[defaultTFName] = defaultTf;
         }
 
         // Test if transfer function composite has few TF
@@ -354,12 +354,12 @@ void STransferFunction::initializePresets()
     }
 
     // Update all presets in the editor.
-    this->updatePresetsPreset();
+    this->updatePresets();
 }
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::updatePresetsPreset()
+void STransferFunction::updatePresets()
 {
     m_presetComboBox->clear();
 
@@ -417,9 +417,7 @@ void STransferFunction::setCurrentPreset()
 {
     const std::string newSelectedTFKey = m_presetComboBox->currentText().toStdString();
 
-    const data::Object::sptr newSelectedObject       = m_tfPresets[newSelectedTFKey];
-    const data::TransferFunction::sptr newSelectedTF = data::TransferFunction::dynamicCast(newSelectedObject);
-    SIGHT_ASSERT("tfPresets must contain only TransferFunction.", newSelectedTF);
+    const data::TransferFunction::sptr newSelectedTF = m_tfPresets[newSelectedTFKey];
 
     if(newSelectedTF && newSelectedTF != m_selectedTF.lock().get_shared())
     {
@@ -481,7 +479,7 @@ void STransferFunction::createPreset()
                 const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
                 defaultTf->setName(newName);
 
-                m_tfPresets.insert_or_assign(newName, defaultTf);
+                m_tfPresets[newName] = defaultTf;
 
                 // Recreates presets.
                 m_presetComboBox->clear();
@@ -530,7 +528,7 @@ void STransferFunction::copyPreset()
             data::TransferFunction::sptr tf = data::Object::copy(currentTF);
 
             tf->setName(newName);
-            m_tfPresets.insert_or_assign(newName, tf);
+            m_tfPresets[newName] = tf;
 
             // Recreates presets.
             m_presetComboBox->clear();
@@ -598,7 +596,7 @@ void STransferFunction::renamePreset()
 
                 // Rename the composite.
                 m_tfPresets.erase(str);
-                m_tfPresets.insert_or_assign(newName, tf);
+                m_tfPresets[newName] = tf;
 
                 // Creates presets.
                 m_presetComboBox->clear();
@@ -647,7 +645,7 @@ void STransferFunction::importPreset()
     reader->update().wait();
 
     // Check the loaded composite.
-    if(newTF->size() >= 1)
+    if(!newTF->empty())
     {
         int index = 0;
         {
@@ -658,7 +656,7 @@ void STransferFunction::importPreset()
                 presetName = this->createPresetName(presetName);
             }
 
-            m_tfPresets.insert_or_assign(presetName, newTF);
+            m_tfPresets[presetName] = newTF;
             newTF->setName(presetName);
 
             m_presetComboBox->addItem(QString(presetName.c_str()));

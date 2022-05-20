@@ -2549,12 +2549,6 @@ inline data::TransferFunction::sptr _generate<data::TransferFunction>(const std:
     object->setLevel(random<double>());
     object->setWindow(random<double>());
     object->setName(UUID::generateUUID());
-    object->setInterpolationMode(
-        variant % 3 == 0
-        ? data::TransferFunction::InterpolationMode::LINEAR
-        : data::TransferFunction::InterpolationMode::NEAREST
-    );
-    object->setClamped(variant % 4 == 0);
     object->setBackgroundColor(
         data::TransferFunction::color_t(
             random<double>(),
@@ -2564,9 +2558,17 @@ inline data::TransferFunction::sptr _generate<data::TransferFunction>(const std:
         )
     );
 
+    auto tfData = object->pieces().emplace_back(data::TransferFunctionPiece::New());
+    tfData->setInterpolationMode(
+        variant % 3 == 0
+        ? data::TransferFunction::InterpolationMode::LINEAR
+        : data::TransferFunction::InterpolationMode::NEAREST
+    );
+    tfData->setClamped(variant % 4 == 0);
+
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        object->insert(
+        tfData->insert(
                 {
                     random<double>(),
                     data::TransferFunction::color_t(
@@ -2594,8 +2596,6 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->level(), actual->level(), DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->window(), actual->window(), DOUBLE_EPSILON);
     CPPUNIT_ASSERT_EQUAL(expected->name(), actual->name());
-    CPPUNIT_ASSERT_EQUAL(expected->interpolationMode(), actual->interpolationMode());
-    CPPUNIT_ASSERT_EQUAL(expected->clamped(), actual->clamped());
 
     const auto& expectedBackgroundColor = expected->backgroundColor();
     const auto& actualBackgroundColor   = actual->backgroundColor();
@@ -2604,10 +2604,16 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.b, actualBackgroundColor.b, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.a, actualBackgroundColor.a, DOUBLE_EPSILON);
 
-    for(const auto& expectedData : *expected)
+    auto expectedPiece = expected->pieces().front();
+    auto actualPiece   = actual->pieces().front();
+
+    CPPUNIT_ASSERT_EQUAL(expectedPiece->interpolationMode(), actualPiece->interpolationMode());
+    CPPUNIT_ASSERT_EQUAL(expectedPiece->clamped(), actualPiece->clamped());
+
+    for(const auto& expectedData : *expectedPiece)
     {
         const auto& expectedColor = expectedData.second;
-        const auto& actualColor   = actual->at(expectedData.first);
+        const auto& actualColor   = actualPiece->at(expectedData.first);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedColor.r, actualColor.r, DOUBLE_EPSILON);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedColor.g, actualColor.g, DOUBLE_EPSILON);

@@ -418,8 +418,6 @@ void SNegato3D::updateTF()
 
         for(const auto& plane : m_planes)
         {
-            plane->switchThresholding(tf->clamped());
-
             // Sends the TF texture to the negato-related passes
             plane->setTFData(*m_gpuTF.get());
         }

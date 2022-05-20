@@ -147,12 +147,6 @@ public:
      */
     VIZ_SCENE3D_API void setTFData(const viz::scene3d::TransferFunction& _tfTexture);
 
-    /**
-     * @brief Sets whether or not the transfer function uses thresholding.
-     * @param _threshold use true to enable the treshold.
-     */
-    VIZ_SCENE3D_API void switchThresholding(bool _threshold);
-
     /// Gets the plane's width in model space.
     VIZ_SCENE3D_API Ogre::Real getWidth() const;
 
@@ -199,9 +193,6 @@ private:
 
     /// Sets the dimensions for the related members, and also creates a movable plane to instantiate the entity.
     Ogre::MovablePlane setDimensions();
-
-    /// Indicates whether whe want to threshold instead of windowing.
-    bool m_threshold {false};
 
     /// Defines the filtering type for this plane.
     FilteringEnumType m_filtering {FilteringEnum::ANISOTROPIC};

@@ -143,7 +143,7 @@ private:
     void initializePresets();
 
     /// Updates the TF preset from the composite.
-    void updatePresetsPreset();
+    void updatePresets();
 
     /// Sets the current TF preset to the output of this service.
     void setCurrentPreset();

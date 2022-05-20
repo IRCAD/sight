@@ -49,9 +49,9 @@ constexpr static auto s_Pieces {"Pieces"};
 
 //------------------------------------------------------------------------------
 
-inline static void serializeTransferFunctionData(
+inline static void serializeTransferFunctionPiece(
     boost::property_tree::ptree& tree,
-    const data::TransferFunctionData& transferFunction
+    const data::TransferFunctionPiece& transferFunction
 )
 {
     tree.put(s_InterpolationMode, static_cast<int>(transferFunction.interpolationMode()));
@@ -79,9 +79,9 @@ inline static void serializeTransferFunctionData(
 
 //------------------------------------------------------------------------------
 
-inline static void deserializeTransferFunctionData(
+inline static void deserializeTransferFunctionPiece(
     const boost::property_tree::ptree& tree,
-    data::TransferFunctionData& transferFunction
+    data::TransferFunctionPiece& transferFunction
 )
 {
     // Deserialize attributes
@@ -133,14 +133,15 @@ inline static void serialize(
     backgroundColorTree.put(s_Alpha, backgroundColor.a);
     tree.add_child(s_BackgroundColor, backgroundColorTree);
 
-    serializeTransferFunctionData(tree, *transferFunction);
+    tree.put(s_Level, transferFunction->level());
+    tree.put(s_Window, transferFunction->window());
 
     boost::property_tree::ptree piecesTree;
     std::size_t index = 0;
     for(const auto& piece : transferFunction->pieces())
     {
         boost::property_tree::ptree pieceTree;
-        serializeTransferFunctionData(pieceTree, *piece);
+        serializeTransferFunctionPiece(pieceTree, *piece);
         piecesTree.add_child(s_Pieces + std::to_string(index++), pieceTree);
     }
 
@@ -176,21 +177,26 @@ inline static data::TransferFunction::sptr deserialize(
     if(version == -1)
     {
         auto& pieces = transferFunction->pieces();
-        pieces.push_back(data::TransferFunctionData::New());
+        pieces.push_back(data::TransferFunctionPiece::New());
 
-        deserializeTransferFunctionData(tree, *pieces.back());
-        transferFunction->mergePieces();
+        deserializeTransferFunctionPiece(tree, *pieces.back());
+
+        transferFunction->fitWindow();
     }
     else
     {
-        deserializeTransferFunctionData(tree, *transferFunction);
+        transferFunction->setLevel(tree.get<double>(s_Level));
+        transferFunction->setWindow(tree.get<double>(s_Window));
+
+        auto& pieces = transferFunction->pieces();
+        pieces.clear();
 
         for(const auto& pieceTree : tree.get_child(s_Pieces))
         {
-            auto& pieces = transferFunction->pieces();
-            pieces.push_back(data::TransferFunctionData::New());
+            const auto newPiece = data::TransferFunctionPiece::New();
+            pieces.push_back(newPiece);
 
-            deserializeTransferFunctionData(pieceTree.second, *pieces.back());
+            deserializeTransferFunctionPiece(pieceTree.second, *newPiece);
         }
     }
 

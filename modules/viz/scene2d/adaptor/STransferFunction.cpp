@@ -35,6 +35,7 @@
 #include <QApplication>
 #include <QColorDialog>
 #include <QDesktopWidget>
+#include <QGraphicsRectItem>
 #include <QMenu>
 #include <QTimer>
 
@@ -89,10 +90,6 @@ void STransferFunction::starting()
         if(tf && !tf->pieces().empty())
         {
             m_currentTF = tf->pieces().front();
-        }
-        else if(tf)
-        {
-            m_currentTF = tf.get_shared();
         }
         else
         {
@@ -173,7 +170,7 @@ void STransferFunction::createTFPoints()
     // Iterates over each TF to create pieceView.
     const auto tf = m_tf.lock();
 
-    if(m_interactive && !tf->pieces().empty())
+    if(!tf->pieces().empty())
     {
         int zIndex = 0;
         for(auto& tfData : tf->pieces())
@@ -186,11 +183,6 @@ void STransferFunction::createTFPoints()
             m_pieceView.push_back(this->createPieceView(tfData, index));
             ++zIndex;
         }
-    }
-    else
-    {
-        // Pushs the pieceView to the vector.
-        m_pieceView.push_back(this->createPieceView(tf.get_shared(), 1));
     }
 }
 
@@ -214,7 +206,7 @@ void STransferFunction::destroyTFPoints()
 //-----------------------------------------------------------------------------
 
 STransferFunction::PieceView* STransferFunction::createPieceView(
-    const data::TransferFunctionData::sptr _tf,
+    const data::TransferFunctionPiece::sptr _tf,
     int _zIndex
 )
 {
@@ -297,91 +289,123 @@ void STransferFunction::createTFPolygons()
 
 void STransferFunction::createTFPolygon(PieceView* const _pieceView)
 {
-    const auto viewport = m_viewport.lock();
-
-    QVector<QPointF> position;
-    QLinearGradient grad;
-
-    const std::pair<vec2d_t, QGraphicsEllipseItem*>& firstTFPoint = _pieceView->m_TFPoints.front();
-    const std::pair<vec2d_t, QGraphicsEllipseItem*>& lastTFPoint  = _pieceView->m_TFPoints.back();
-
-    const QGraphicsEllipseItem* const firstPoint = firstTFPoint.second;
-
-    double xBegin = firstTFPoint.first.x;
-    double xEnd   = lastTFPoint.first.x;
-
-    if(_pieceView->m_tf->clamped())
+    if(m_interactive)
     {
-        position.append(QPointF(xBegin, 0));
-    }
-    else
-    {
-        if(xBegin > viewport->x())
+        const auto viewport = m_viewport.lock();
+
+        QVector<QPointF> position;
+        QLinearGradient grad;
+
+        const std::pair<vec2d_t, QGraphicsEllipseItem*>& firstTFPoint = _pieceView->m_TFPoints.front();
+        const std::pair<vec2d_t, QGraphicsEllipseItem*>& lastTFPoint  = _pieceView->m_TFPoints.back();
+
+        const QGraphicsEllipseItem* const firstPoint = firstTFPoint.second;
+
+        double xBegin = firstTFPoint.first.x;
+        double xEnd   = lastTFPoint.first.x;
+
+        if(_pieceView->m_tf->clamped())
         {
-            xBegin = viewport->x() - 10;
             position.append(QPointF(xBegin, 0));
-            position.append(QPointF(xBegin, firstTFPoint.first.y));
         }
         else
         {
-            position.append(QPointF(xBegin, 0));
+            if(xBegin > viewport->x())
+            {
+                xBegin = viewport->x() - 10;
+                position.append(QPointF(xBegin, 0));
+                position.append(QPointF(xBegin, firstTFPoint.first.y));
+            }
+            else
+            {
+                position.append(QPointF(xBegin, 0));
+            }
+
+            if(xEnd < viewport->x() + viewport->width())
+            {
+                xEnd = viewport->x() + viewport->width() + 10;
+            }
         }
 
-        if(xEnd < viewport->x() + viewport->width())
+        grad.setColorAt(0, firstPoint->brush().color());
+
+        grad.setStart(xBegin, 0);
+        grad.setFinalStop(xEnd, 0);
+
+        const double distanceMax = xEnd - xBegin;
+
+        // Iterates on TF points vector to add line and polygon items to the polygons vector.
+        if(_pieceView->m_tf->interpolationMode() == data::TransferFunction::InterpolationMode::LINEAR)
         {
-            xEnd = viewport->x() + viewport->width() + 10;
+            this->buildLinearPolygons(_pieceView, position, grad, distanceMax);
         }
-    }
+        else
+        {
+            this->buildNearestPolygons(_pieceView, position, grad, distanceMax);
+        }
 
-    grad.setColorAt(0, firstPoint->brush().color());
+        if(!_pieceView->m_tf->clamped())
+        {
+            if(xEnd == viewport->x() + viewport->width() + 10)
+            {
+                position.append(QPointF(xEnd, lastTFPoint.first.y));
+            }
 
-    grad.setStart(xBegin, 0);
-    grad.setFinalStop(xEnd, 0);
+            const double lastPointX = lastTFPoint.first.x;
+            grad.setColorAt((lastPointX - xBegin) / distanceMax, lastTFPoint.second->brush().color());
+        }
 
-    const double distanceMax = xEnd - xBegin;
+        position.append(QPointF(xEnd, 0));
+        grad.setColorAt(1, lastTFPoint.second->brush().color());
 
-    // Iterates on TF points vector to add line and polygon items to the polygons vector.
-    if(_pieceView->m_tf->interpolationMode() == data::TransferFunction::InterpolationMode::LINEAR)
-    {
-        this->buildLinearPolygons(_pieceView, position, grad, distanceMax);
+        QGraphicsPolygonItem* const poly = new QGraphicsPolygonItem(QPolygonF(position));
+        // Sets gradient, opacity and pen to the polygon
+        poly->setBrush(QBrush(grad));
+        poly->setPen(m_polygonsPen);
+        poly->setZValue(_pieceView->m_zIndex * 2);
+
+        // If the z-index is the highest, it's the current one.
+        if(static_cast<std::size_t>(_pieceView->m_zIndex) == m_pieceView.size())
+        {
+            poly->setOpacity(m_opacity);
+        }
+        else
+        {
+            poly->setOpacity(m_secondOpacity);
+        }
+
+        // Pushs the polygon back into the polygons vector
+        _pieceView->m_TFPolygons.push_back(poly);
     }
     else
     {
-        this->buildNearestPolygons(_pieceView, position, grad, distanceMax);
-    }
+        const auto viewport = m_viewport.lock();
 
-    if(!_pieceView->m_tf->clamped())
-    {
-        if(xEnd == viewport->x() + viewport->width() + 10)
+        const auto view            = this->getScene2DRender()->getView();
+        const double viewportWidth = viewport->width();
+        const double step          = viewportWidth / view->width();
+        const uint size            = static_cast<uint>(viewportWidth / step);
+        double f                   = viewport->left();
+
+        for(uint i = 0 ; i < size ; ++i)
         {
-            position.append(QPointF(xEnd, lastTFPoint.first.y));
+            const auto color = _pieceView->m_tf->sample(f);
+
+            vec2d_t pt = this->mapAdaptorToScene({f, color.a});
+
+            QColor qColor;
+            qColor.setRgbF(color.r, color.g, color.b, 1.0);
+            QBrush brush = QBrush(qColor);
+
+            QGraphicsRectItem* rect = new QGraphicsRectItem(pt.x, 0.0, step, pt.y);
+            rect->setBrush(brush);
+            rect->setPen(Qt::NoPen);
+
+            _pieceView->m_TFPolygons.push_back(rect);
+
+            f += step;
         }
-
-        const double lastPointX = lastTFPoint.first.x;
-        grad.setColorAt((lastPointX - xBegin) / distanceMax, lastTFPoint.second->brush().color());
     }
-
-    position.append(QPointF(xEnd, 0));
-    grad.setColorAt(1, lastTFPoint.second->brush().color());
-
-    QGraphicsPolygonItem* const poly = new QGraphicsPolygonItem(QPolygonF(position));
-    // Sets gradient, opacity and pen to the polygon
-    poly->setBrush(QBrush(grad));
-    poly->setPen(m_polygonsPen);
-    poly->setZValue(_pieceView->m_zIndex * 2);
-
-    // If the z-index is the highest, it's the current one.
-    if(static_cast<std::size_t>(_pieceView->m_zIndex) == m_pieceView.size())
-    {
-        poly->setOpacity(m_opacity);
-    }
-    else
-    {
-        poly->setOpacity(m_secondOpacity);
-    }
-
-    // Pushs the polygon back into the polygons vector
-    _pieceView->m_TFPolygon = poly;
 }
 
 //-----------------------------------------------------------------------------
@@ -399,9 +423,14 @@ void STransferFunction::destroyTFPolygons()
 
 void STransferFunction::destroyTFPolygon(PieceView* _pieceView)
 {
+    for(auto& poly : _pieceView->m_TFPolygons)
+    {
+        this->getScene2DRender()->getScene()->removeItem(poly);
+        delete poly;
+    }
+
     // Removes polygon items from the scene and clear the polygon vector.
-    this->getScene2DRender()->getScene()->removeItem(_pieceView->m_TFPolygon);
-    delete _pieceView->m_TFPolygon;
+    _pieceView->m_TFPolygons.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -477,7 +506,10 @@ void STransferFunction::buildLayer()
             m_layer->addToGroup(tfPoint.second);
         }
 
-        m_layer->addToGroup(pieceView->m_TFPolygon);
+        for(auto& poly : pieceView->m_TFPolygons)
+        {
+            m_layer->addToGroup(poly);
+        }
     }
 
     // Adjusts the layer's position and zValue depending on the associated axis.
@@ -543,7 +575,7 @@ std::vector<STransferFunction::PieceView*> STransferFunction::getMatchingPieceVi
     for(PieceView* const pieceView : m_pieceView)
     {
         // Checks if a polygon is clicked.
-        if(items.indexOf(pieceView->m_TFPolygon) >= 0)
+        if(items.indexOf(pieceView->m_TFPolygons.front()) >= 0)
         {
             matchingPieceView.push_back(pieceView);
         }
@@ -986,7 +1018,7 @@ void STransferFunction::mouseMoveOnPointEvent(
         pointIndex = _pieceView->m_TFPoints.size() - 1 - pointIndex;
     }
 
-    const data::TransferFunctionData::sptr tfPiece = _pieceView->m_tf;
+    const data::TransferFunctionPiece::sptr tfPiece = _pieceView->m_tf;
 
     // Retrieves the TF point.
     auto tfDataIt = tfPiece->cbegin();
@@ -1025,7 +1057,7 @@ void STransferFunction::mouseMoveOnPointEvent(
         tfPiece->setWindowMinMax(data::TransferFunction::min_max_t(max, min));
     }
 
-    tf->mergePieces();
+    tf->fitWindow();
 
     // Sends the modification signal.
     const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
@@ -1064,7 +1096,7 @@ void STransferFunction::rightButtonClickOnPointEvent(
     SIGHT_ASSERT("The captured point is not found", pointIt != _pieceView->m_TFPoints.end());
     std::size_t pointIndex = std::size_t(pointIt - _pieceView->m_TFPoints.begin());
 
-    const data::TransferFunctionData::sptr tfPiece = _pieceView->m_tf;
+    const data::TransferFunctionPiece::sptr tfPiece = _pieceView->m_tf;
     {
         // If the window is negative, the TF point list is reversed compared to the TF data.
         const double window = tfPiece->window();
@@ -1109,7 +1141,7 @@ void STransferFunction::rightButtonClickOnPointEvent(
         }
     }
 
-    tf->mergePieces();
+    tf->fitWindow();
 
     // Sends the modification signal.
     const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
@@ -1187,7 +1219,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(
             tfPiece->insert({tfValue, color_t});
         }
 
-        tf->mergePieces();
+        tf->fitWindow();
 
         // Sends the modification signal.
         const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
@@ -1282,7 +1314,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
             }
         }
 
-        tf->mergePieces();
+        tf->fitWindow();
 
         // Sends the signal.
         const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
@@ -1363,14 +1395,14 @@ void STransferFunction::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::dat
     const double windowDelta = _event.getCoord().y - m_capturedTF.second.y;
 
     // Updates the TF.
-    const data::TransferFunctionData::sptr tfPiece = m_capturedTF.first;
+    const data::TransferFunctionPiece::sptr tfPiece = m_capturedTF.first;
     {
         const auto tf = m_tf.lock();
 
         tfPiece->setWindow(tfPiece->window() - windowDelta);
         tfPiece->setLevel(tfPiece->level() + levelDelta);
 
-        tf->mergePieces();
+        tf->fitWindow();
 
         // Sends the signal.
         const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
@@ -1516,7 +1548,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
     // Change the opacity only if the mouse if over the current TF.
     if(matchingIt != matchingPieceView.end())
     {
-        data::TransferFunctionData::sptr tfPiece;
+        data::TransferFunctionPiece::sptr tfPiece;
         {
             const auto tf      = m_tf.lock();
             const auto& pieces = tf->pieces();
@@ -1539,7 +1571,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
                 data.second.a = data.second.a * scale;
             }
 
-            tf->mergePieces();
+            tf->fitWindow();
 
             // Sends the signal.
             const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
@@ -1583,7 +1615,7 @@ void STransferFunction::removeCurrenTF()
 
         // Sets the new current TF.
         m_currentTF = pieces.front();
-        tf->mergePieces();
+        tf->fitWindow();
         // Block notifier
         auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -1609,7 +1641,7 @@ void STransferFunction::clampCurrentTF(bool _clamp)
     auto tfPiece       = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& p){return p == m_currentTF;});
 
     tfPiece->setClamped(_clamp);
-    tf->mergePieces();
+    tf->fitWindow();
     // Sends the signal.
     const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(data::TransferFunction::s_MODIFIED_SIG);
     {
@@ -1646,7 +1678,7 @@ void STransferFunction::toggleLinearCurrentTF(bool _linear)
     tfPiece->setInterpolationMode(
         _linear ? data::TransferFunction::InterpolationMode::LINEAR : data::TransferFunction::InterpolationMode::NEAREST
     );
-    tf->mergePieces();
+    tf->fitWindow();
     // Sends the signal.
     const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(data::TransferFunction::s_MODIFIED_SIG);
     {
@@ -1670,7 +1702,7 @@ void STransferFunction::toggleLinearCurrentTF(bool _linear)
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::addNewTF(const data::TransferFunctionData::sptr _tf)
+void STransferFunction::addNewTF(const data::TransferFunctionPiece::sptr _tf)
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
@@ -1680,7 +1712,7 @@ void STransferFunction::addNewTF(const data::TransferFunctionData::sptr _tf)
 
         // Adds the new TF.
         tf->pieces().push_back(_tf);
-        tf->mergePieces();
+        tf->fitWindow();
         // Block notifier
         auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -1708,7 +1740,7 @@ void STransferFunction::addLeftRamp(const sight::viz::scene2d::data::Event& _eve
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    const auto leftRamp = data::TransferFunctionData::New();
+    const auto leftRamp = data::TransferFunctionPiece::New();
     leftRamp->insert({0.0, data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     leftRamp->insert({1.0, data::TransferFunction::color_t()});
     leftRamp->setClamped(false);
@@ -1732,7 +1764,7 @@ void STransferFunction::addRightRamp(const sight::viz::scene2d::data::Event& _ev
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Creates the new TF.
-    const auto rightRamp = data::TransferFunctionData::New();
+    const auto rightRamp = data::TransferFunctionPiece::New();
     rightRamp->insert({0.0, data::TransferFunction::color_t()});
     rightRamp->insert({1.0, data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     rightRamp->setClamped(false);
@@ -1756,7 +1788,7 @@ void STransferFunction::addTrapeze(const sight::viz::scene2d::data::Event& _even
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Creates the new TF.
-    const auto trapeze = data::TransferFunctionData::New();
+    const auto trapeze = data::TransferFunctionPiece::New();
     trapeze->insert({0.0, data::TransferFunction::color_t()});
     trapeze->insert({1. / 3., data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     trapeze->insert({2. / 3., data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});

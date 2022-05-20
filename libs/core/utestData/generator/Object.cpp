@@ -270,6 +270,7 @@ data::TransferFunction::sptr Object::createTFColor(
 {
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
+    tf->setName("color_t");
     tf->setBackgroundColor(
         data::TransferFunction::color_t(
             static_cast<float>(safeRand() % 100) / 100.f,
@@ -278,16 +279,21 @@ data::TransferFunction::sptr Object::createTFColor(
             static_cast<float>(safeRand() % 100) / 100.f
         )
     );
-    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
-    tf->setClamped(false);
-    tf->setLevel(level);
-    tf->setName("color_t");
-    tf->setWindow(window);
+
+    auto tfData = data::TransferFunctionPiece::New();
+
+    auto& pieces = tf->pieces();
+    pieces.push_back(tfData);
+
+    tfData->setLevel(level);
+    tfData->setWindow(window);
+    tfData->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
+    tfData->setClamped(false);
 
     for(unsigned char nb = 0 ; nb < nbPoints ; ++nb)
     {
         double value = safeRand() % 100 - level;
-        (*tf)[value] = data::TransferFunction::color_t(
+        (*tfData)[value] = data::TransferFunction::color_t(
             static_cast<float>(safeRand() % 100) / 100.f,
             static_cast<float>(safeRand() % 100) / 100.f,
             static_cast<float>(safeRand() % 100) / 100.f,
@@ -308,17 +314,23 @@ data::TransferFunction::sptr Object::createTFColor()
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
     tf->setBackgroundColor(data::TransferFunction::color_t(1.0f, 0.3f, 0.6f, 0.1f));
-    tf->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
-    tf->setClamped(false);
-    tf->setLevel(900.6);
     tf->setName("color_t");
-    tf->setWindow(-200.02);
 
-    tf->insert({-40.33, data::TransferFunction::color_t(0.9f, 0.2f, 0.3f, 0.4f)});
-    tf->insert({3, data::TransferFunction::color_t(0.1f, 0.2f, 0.9f, 0.4f)}); // Invert point 3 <=> -0.2,
+    auto tfData = data::TransferFunctionPiece::New();
+
+    auto& pieces = tf->pieces();
+    pieces.push_back(tfData);
+
+    tfData->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
+    tfData->setClamped(false);
+    tfData->setLevel(900.6);
+    tfData->setWindow(-200.02);
+
+    tfData->insert({-40.33, data::TransferFunction::color_t(0.9f, 0.2f, 0.3f, 0.4f)});
+    tfData->insert({3, data::TransferFunction::color_t(0.1f, 0.2f, 0.9f, 0.4f)}); // Invert point 3 <=> -0.2,
     // for tests
-    tf->insert({-0.2, data::TransferFunction::color_t(0.1f, 0.9f, 0.3f, 0.4f)});
-    tf->insert({150, data::TransferFunction::color_t(0.1f, 0.2f, 0.3f, 0.9f)});
+    tfData->insert({-0.2, data::TransferFunction::color_t(0.1f, 0.9f, 0.3f, 0.4f)});
+    tfData->insert({150, data::TransferFunction::color_t(0.1f, 0.2f, 0.3f, 0.9f)});
 
     data::String::sptr myString = data::String::New("fieldStringValue");
     tf->setField("fieldStringKey", myString);

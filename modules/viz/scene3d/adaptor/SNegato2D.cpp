@@ -356,8 +356,6 @@ void SNegato2D::updateTF()
     {
         const data::mt::locked_ptr lock(tf);
         m_gpuTF->updateTexture(tf);
-
-        m_plane->switchThresholding(tf->clamped());
     }
 
     // Sends the TF texture to the negato-related passes

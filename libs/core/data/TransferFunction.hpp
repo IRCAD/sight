@@ -26,33 +26,23 @@
 #include "data/IContainer.hpp"
 
 #include <glm/vec4.hpp>
-
 namespace sight::data
 {
 
-/**
- * @brief Stores a transfer function properties. A list of points associating a value to a RGBA color, and windowing
- * parameters which simplifies the scaling of the function.
- */
-class DATA_CLASS_API TransferFunctionData : public ContainerWrapper<std::map<double,
-                                                                             glm::dvec4> >
+class DATA_CLASS_API ITransferFunction
 {
 public:
 
-    SIGHT_DECLARE_CLASS(TransferFunctionData);
-
     /// Defines the type of values of each point.
-    using value_t = key_type;
+    using value_t = double;
 
     /// Defines the color of each point.
-    using color_t = mapped_type;
+    using color_t = glm::dvec4;
 
     /// Defines the type used to store transfer function data.
     using data_t = std::map<value_t, color_t>;
 
     using min_max_t = std::pair<value_t, value_t>;
-
-    using ContainerWrapper<data_t>::ContainerWrapper;
 
     /// Defines the available modes {LINEAR, NEAREST} to interpolate color between two TF color points.
     enum class InterpolationMode
@@ -60,77 +50,108 @@ public:
         LINEAR,
         NEAREST
     };
-
-    DATA_API virtual ~TransferFunctionData() = default;
-
-    static TransferFunctionData::sptr New();
-
-    /// Equality comparison operators
-    /// @{
-    bool operator==(const TransferFunctionData& _other) const noexcept;
-    bool operator!=(const TransferFunctionData& _other) const noexcept;
-    /// @}
-
-    TransferFunctionData& operator=(const TransferFunctionData& _other);
+    DATA_API virtual ~ITransferFunction() = default;
 
     /// Scale the intensity value from the transfer function space to the window space.
-    DATA_API value_t mapValueToWindow(value_t _value) const;
+    [[nodiscard]] DATA_API value_t mapValueToWindow(value_t _value) const;
 
     /// Scale the intensity value from the window space space to the transfer function.
-    DATA_API value_t mapValueFromWindow(value_t _value) const;
+    [[nodiscard]] DATA_API value_t mapValueFromWindow(value_t _value) const;
 
-    /// Gets the first and last point values of the tf data.
-    DATA_API min_max_t minMax() const;
+    /// Gets the nearest color of a value, taking into account the window range
+    [[nodiscard]] DATA_API color_t sampleNearest(value_t _value) const;
+
+    /// Gets the color for a value (the color is computed with a linear interpolation), taking into account the window
+    /// range
+    [[nodiscard]] DATA_API color_t sampleLinear(value_t _value) const;
 
     /// Gets the min/max of the window level.
-    DATA_API min_max_t windowMinMax() const;
+    [[nodiscard]] DATA_API min_max_t windowMinMax() const;
 
     /// Sets the min/max of the window level.
     DATA_API void setWindowMinMax(const min_max_t& _minMax);
 
-    /// Gets the nearest color of a value, taking into account the window range
-    DATA_API color_t sampleNearest(value_t _value) const;
-
-    /// Gets the color for a value (the color is computed with a linear interpolation), taking into account the window
-    /// range
-    DATA_API color_t sampleLinear(value_t _value) const;
-
-    /// Gets the interpolated color of the TF for a value, taking into account the window range
-    /// @param _value input value in the curve
-    /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
-    DATA_API color_t sample(value_t _value, std::optional<InterpolationMode> _mode = std::nullopt) const;
-
-    /// Gets the interpolation mode.
-    InterpolationMode interpolationMode() const;
-
-    /// Sets the interpolation mode.
-    void setInterpolationMode(InterpolationMode _value);
-
     /// Gets the level.
     [[nodiscard]] value_t level() const;
-
-    /// Sets the level.
-    DATA_API virtual void setLevel(value_t _value);
 
     /// Gets the window.
     [[nodiscard]] value_t window() const;
 
+    /// Sets the level.
+    DATA_API virtual void setLevel(value_t _value) = 0;
+
     /// Sets the window.
-    DATA_API virtual void setWindow(value_t _value);
+    DATA_API virtual void setWindow(value_t _value) = 0;
+
+    /// Gets the first and last point values of the tf data.
+    [[nodiscard]] DATA_API virtual min_max_t minMax() const = 0;
+
+    /// Gets the interpolated color of the TF for a value, taking into account the window range
+    /// @param _value input value in the curve
+    /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
+    DATA_API virtual color_t sample(value_t _value, std::optional<InterpolationMode> _mode = std::nullopt) const = 0;
+
+    /// Sets the current visualization level.
+    double m_level {0.};
+
+    /// Sets the current visualization window.
+    double m_window {2.};
+};
+
+/**
+ * @brief Stores a transfer function properties. A list of points associating a value to a RGBA color, and windowing
+ * parameters which simplifies the scaling of the function.
+ */
+class DATA_CLASS_API TransferFunctionPiece final : public ContainerWrapper<std::map<ITransferFunction::value_t,
+                                                                                    ITransferFunction::color_t> >,
+                                                   public ITransferFunction
+{
+public:
+
+    SIGHT_DECLARE_CLASS(TransferFunctionPiece);
+
+    using ContainerWrapper<data_t>::ContainerWrapper;
+
+    DATA_API ~TransferFunctionPiece() final = default;
+
+    static TransferFunctionPiece::sptr New();
+
+    /// Equality comparison operators
+    /// @{
+    bool operator==(const TransferFunctionPiece& _other) const noexcept;
+    bool operator!=(const TransferFunctionPiece& _other) const noexcept;
+    /// @}
+
+    TransferFunctionPiece& operator=(const TransferFunctionPiece& _other);
+
+    /// Sets the level.
+    DATA_API void setLevel(value_t _value) final;
+
+    /// Sets the window.
+    DATA_API void setWindow(value_t _value) final;
+
+    /// Gets the first and last point values of the tf data.
+    [[nodiscard]] DATA_API min_max_t minMax() const final;
+
+    /// Gets the interpolated color of the TF for a value, taking into account the window range
+    /// @param _value input value in the curve
+    /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
+    [[nodiscard]] DATA_API color_t sample(
+        value_t _value,
+        std::optional<InterpolationMode> _mode = std::nullopt
+    ) const final;
+
+    /// Gets the interpolation mode.
+    [[nodiscard]] InterpolationMode interpolationMode() const;
+
+    /// Sets the interpolation mode.
+    void setInterpolationMode(InterpolationMode _value);
 
     /// Gets if the TF is clamped.
     [[nodiscard]] bool clamped() const;
 
     /// Sets if the TF is clamped.
     void setClamped(bool _value);
-
-protected:
-
-    /// Sets the current visualization level.
-    double m_level {0.};
-
-    /// Sets the current visualization window.
-    double m_window {100.};
 
 private:
 
@@ -153,27 +174,39 @@ private:
  * to a RGBA color.
  *
  * The function is composed of individual pieces that can be accessed and edited independently thanks to the pieces()
- * function that returns a vector of TransferFunctionData. When the pieces are modified, the function mergePieces() must
- * be called to mix the pieces together with additive alpha blending.
+ * function that returns a vector of TransferFunctionPiece.
  */
 class DATA_CLASS_API TransferFunction final : public Object,
-                                              public TransferFunctionData
+                                              public ITransferFunction
 {
 public:
 
     SIGHT_DECLARE_CLASS(TransferFunction, Object, factory::New<TransferFunction>);
 
+    /// Defines the type of values of each point.
+    using value_t = TransferFunctionPiece::value_t;
+
+    /// Defines the color of each point.
+    using color_t = TransferFunctionPiece::color_t;
+
+    /// Defines the type used to store transfer function data.
+    using data_t = TransferFunctionPiece::data_t;
+
+    using min_max_t = TransferFunctionPiece::min_max_t;
+
+    using InterpolationMode = TransferFunctionPiece::InterpolationMode;
+
     /// Constructors / Destructor / Assignment operators
     /// @{
     DATA_API TransferFunction(Object::Key);
-    DATA_API ~TransferFunction() override = default;
+    DATA_API ~TransferFunction() final = default;
     /// @}
 
     /**
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) final;
 
     /// Equality comparison operators
     /// @{
@@ -200,23 +233,34 @@ public:
     void setBackgroundColor(const color_t& _value);
 
     /// Returns all the pieces of the piecewise function
-    std::vector<TransferFunctionData::sptr>& pieces();
-    const std::vector<TransferFunctionData::sptr>& pieces() const;
+    std::vector<TransferFunctionPiece::sptr>& pieces();
+    const std::vector<TransferFunctionPiece::sptr>& pieces() const;
 
-    /// Blends all pieces together with additive alpha blending. Additional points may be added according to the
-    /// clamping settings of the pieces.
-    DATA_API void mergePieces();
+    /// Returns true if the function is empty
+    [[nodiscard]] bool empty() const;
+
+    /// Recompute the window parameters by taking the minimum and the maximum of the pieces.
+    DATA_API void fitWindow();
 
     /// Sets the level of the transfer function and its pieces.
-    DATA_API void setLevel(value_t _value) override;
+    DATA_API void setLevel(value_t _value) final;
 
     /// Sets the window of the transfer function and its pieces.
-    DATA_API void setWindow(value_t _value) override;
+    DATA_API void setWindow(value_t _value) final;
 
-    /**
-     * @name Signals
-     * @{
-     */
+    /// Gets the first and last point values of the tf data.
+    [[nodiscard]] DATA_API min_max_t minMax() const final;
+
+    /// Gets the interpolated color of the TF for a value, taking into account the window range
+    /// @param _value input value in the curve
+    /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
+    [[nodiscard]] DATA_API color_t sample(
+        value_t _value,
+        std::optional<InterpolationMode> _mode = std::nullopt
+    ) const final;
+
+    /// @name Signals
+    /// @{
     /// Defines the type of signal sent when points are modified.
     typedef core::com::Signal<void ()> PointsModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINTS_MODIFIED_SIG;
@@ -224,9 +268,7 @@ public:
     /// Defines the type of signal sent when window-level is modified (window, level).
     typedef core::com::Signal<void (value_t, value_t)> WindowingModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
-/**
- * @}
- */
+    /// @}
 
 protected:
 
@@ -235,7 +277,7 @@ protected:
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) final;
 
 private:
 
@@ -246,18 +288,19 @@ private:
     color_t m_backgroundColor {0., 0., 0., 0.};
 
     /// The transfer function object is a piecewise function
-    std::vector<TransferFunctionData::sptr> m_pieces;
+    std::vector<TransferFunctionPiece::sptr> m_pieces;
 };
+
 //------------------------------------------------------------------------------
 
-inline TransferFunctionData::sptr TransferFunctionData::New()
+inline TransferFunctionPiece::sptr TransferFunctionPiece::New()
 {
-    return std::make_shared<TransferFunctionData>();
+    return std::make_shared<TransferFunctionPiece>();
 }
 
 //------------------------------------------------------------------------------
 
-inline TransferFunctionData& TransferFunctionData::operator=(const TransferFunctionData& _other)
+inline TransferFunctionPiece& TransferFunctionPiece::operator=(const TransferFunctionPiece& _other)
 {
     this->clear();
 
@@ -273,7 +316,7 @@ inline TransferFunctionData& TransferFunctionData::operator=(const TransferFunct
 
 //------------------------------------------------------------------------------
 
-inline bool TransferFunctionData::operator==(const TransferFunctionData& _other) const noexcept
+inline bool TransferFunctionPiece::operator==(const TransferFunctionPiece& _other) const noexcept
 {
     if(!core::tools::is_equal(m_level, _other.m_level)
        || !core::tools::is_equal(m_window, _other.m_window)
@@ -290,70 +333,44 @@ inline bool TransferFunctionData::operator==(const TransferFunctionData& _other)
     );
 }
 
-//------------------------------------------------------------------------------
-
-inline TransferFunctionData::value_t TransferFunctionData::mapValueToWindow(value_t _value) const
-{
-    const min_max_t minMax       = this->minMax();
-    const min_max_t windowMinMax = this->windowMinMax();
-
-    const value_t scale = m_window / (minMax.second - minMax.first);
-    const value_t value = (_value - minMax.first) * scale + windowMinMax.first;
-
-    return value;
-}
-
-//------------------------------------------------------------------------------
-
-inline TransferFunctionData::value_t TransferFunctionData::mapValueFromWindow(value_t _value) const
-{
-    const min_max_t minMax       = this->minMax();
-    const min_max_t windowMinMax = this->windowMinMax();
-
-    const value_t scale = (minMax.second - minMax.first) / m_window;
-    const value_t value = (_value - windowMinMax.first) * scale + minMax.first;
-
-    return value;
-}
-
 //-----------------------------------------------------------------------------
 
-inline TransferFunction::InterpolationMode TransferFunctionData::interpolationMode() const
-{
-    return m_interpolationMode;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void TransferFunctionData::setInterpolationMode(InterpolationMode _value)
-{
-    m_interpolationMode = _value;
-}
-
-//-----------------------------------------------------------------------------
-
-inline TransferFunctionData::value_t TransferFunctionData::level() const
+inline ITransferFunction::value_t ITransferFunction::level() const
 {
     return m_level;
 }
 
 //-----------------------------------------------------------------------------
 
-inline TransferFunctionData::value_t TransferFunctionData::window() const
+inline ITransferFunction::value_t ITransferFunction::window() const
 {
     return m_window;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool TransferFunctionData::clamped() const
+inline TransferFunction::InterpolationMode TransferFunctionPiece::interpolationMode() const
+{
+    return m_interpolationMode;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunctionPiece::setInterpolationMode(InterpolationMode _value)
+{
+    m_interpolationMode = _value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool TransferFunctionPiece::clamped() const
 {
     return m_clamped;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void TransferFunctionData::setClamped(bool _value)
+inline void TransferFunctionPiece::setClamped(bool _value)
 {
     m_clamped = _value;
 }
@@ -388,16 +405,23 @@ inline void TransferFunction::setBackgroundColor(const color_t& _value)
 
 //-----------------------------------------------------------------------------
 
-inline std::vector<TransferFunctionData::sptr>& TransferFunction::pieces()
+inline std::vector<TransferFunctionPiece::sptr>& TransferFunction::pieces()
 {
     return m_pieces;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::vector<TransferFunctionData::sptr>& TransferFunction::pieces() const
+inline const std::vector<TransferFunctionPiece::sptr>& TransferFunction::pieces() const
 {
     return m_pieces;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool TransferFunction::empty() const
+{
+    return m_pieces.empty();
 }
 
 //-----------------------------------------------------------------------------

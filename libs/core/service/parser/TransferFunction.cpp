@@ -64,6 +64,15 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
         {
             const auto stepsConfig = colorCfg.equal_range("step");
 
+            auto tfData            = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
+            const std::string name = config.get<std::string>("name", "");
+            if(!name.empty())
+            {
+                tf->setName(name);
+            }
+
+            tf->setWindowMinMax(tf->minMax());
+
             for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
             {
                 const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
@@ -74,19 +83,11 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
 
                 const data::TransferFunction::color_t color(newColor->red(), newColor->green(),
                                                             newColor->blue(), newColor->alpha());
-                (*tf)[value] = color;
+                (*tfData)[value] = color;
             }
-
-            tf->setWindowMinMax(tf->minMax());
 
             const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
-            tf->setClamped(isClamped);
-
-            const std::string name = config.get<std::string>("name", "");
-            if(!name.empty())
-            {
-                tf->setName(name);
-            }
+            tfData->setClamped(isClamped);
         }
     }
 }

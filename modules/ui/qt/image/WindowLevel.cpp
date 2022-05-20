@@ -442,9 +442,11 @@ void WindowLevel::onToggleTF(bool squareTF)
         newTF = data::TransferFunction::New();
         data::TransferFunction::color_t color(1., 1., 1., 1.);
         newTF->setName("SquareTF");
-        newTF->insert({0.0, color});
-        newTF->insert({1.0, color});
-        newTF->setClamped(true);
+
+        auto tfData = newTF->pieces().emplace_back(data::TransferFunctionPiece::New());
+        tfData->insert({0.0, color});
+        tfData->insert({1.0, color});
+        tfData->setClamped(true);
     }
     else
     {

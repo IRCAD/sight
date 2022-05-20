@@ -35,7 +35,7 @@
 #include <OGRE/OgreTextureManager.h>
 
 #include <OgreHardwarePixelBuffer.h>
-
+#include <core/Profiling.hpp>
 #include <algorithm>
 #include <cstdint> // for std::uint_8
 
@@ -114,30 +114,29 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
     std::uint8_t* pDest   = static_cast<std::uint8_t*>(pixBox.data);
 
     // Retrieves the transfer function's intensity window
-    const min_max_t intensityMinMax = _tf->windowMinMax();
+    const min_max_t tfWLMinMax = _tf->windowMinMax();
 
-    // Counter used to iterate through the texture buffer without exceeding its limit
-    const value_t intensityStep = (intensityMinMax.second - intensityMinMax.first)
-                                  / TEXTURE_PIXEL_COUNT;
+    // Here we will sample the transfer function in its window to benefit of the whole texture range
+    // We want the minimum and the maximum to be included (so we need +1 extra sample)
+    // But we also want one extra point outside each bound window to sample the default color if the tf is clamped,
+    // so we need at the end 1+2=3 extra samples
+    const value_t intensityStep = (tfWLMinMax.second - tfWLMinMax.first) / (TEXTURE_PIXEL_COUNT - 3);
 
-    value_t i = intensityMinMax.first;
+    value_t i = tfWLMinMax.first - intensityStep;
     for(std::uint32_t k = 0 ; k < TEXTURE_PIXEL_COUNT ; ++k)
     {
-        data::TransferFunction::color_t interpolatedColor = _tf->sample(i);
+        const auto color = _tf->sample(i) * 255.0;
 
-        *pDest++ = static_cast<std::uint8_t>(interpolatedColor.b * 255);
-        *pDest++ = static_cast<std::uint8_t>(interpolatedColor.g * 255);
-        *pDest++ = static_cast<std::uint8_t>(interpolatedColor.r * 255);
-        *pDest++ = static_cast<std::uint8_t>(interpolatedColor.a * 255);
+        *pDest++ = static_cast<std::uint8_t>(color.b);
+        *pDest++ = static_cast<std::uint8_t>(color.g);
+        *pDest++ = static_cast<std::uint8_t>(color.r);
+        *pDest++ = static_cast<std::uint8_t>(color.a);
 
         i += intensityStep;
     }
 
     pixBuffer->unlock();
 
-    m_isClamped = _tf->clamped();
-
-    const auto tfWLMinMax = _tf->windowMinMax();
     m_tfWindow = Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
 }
 
