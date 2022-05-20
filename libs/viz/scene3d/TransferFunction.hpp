@@ -69,7 +69,7 @@ public:
         const Ogre::Pass* const _ogrePass,
         const std::string& _texUnitName,
         Ogre::SharedPtr<GPU_PARAMETERS> _params,
-        const std::string& _uniform = "u_f2TFWindow"
+        const std::string& _uniform = "u_f3TFWindow"
     ) const;
 
 private:
@@ -80,19 +80,10 @@ private:
     /// Current sample distance used in the VR renderer.
     float m_sampleDistance {1.f};
 
-    /**
-     *  @brief Defines interpolation mode on extremities. Copied from data::TransferFunction.
-     *
-     *  if m_isClamped == true then after extremity point, the returned TF color is color_t(0,0,0,0).
-     *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
-     **/
-    bool m_isClamped {false};
-
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
-    Ogre::Vector2 m_tfWindow;
+    Ogre::Vector3 m_tfWindow;
 
     static std::uint32_t TEXTURE_SIZE;
-    static std::uint32_t TEXTURE_PIXEL_COUNT;
 };
 
 //-----------------------------------------------------------------------------
@@ -132,18 +123,7 @@ inline void TransferFunction::bind(
     }
 
     texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
-
-    // Beware, "clamped" here means the border color is black (see data::TransferFunction), otherwise use the
-    // last value, which corresponds to the "clamp" texture address mode
-    if(m_isClamped)
-    {
-        texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-        texUnitState->setTextureBorderColour(Ogre::ColourValue::Black);
-    }
-    else
-    {
-        texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-    }
+    texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
     _params->setNamedConstant(_uniform, m_tfWindow);
 }

@@ -8,7 +8,7 @@
 
 layout(binding=0) uniform sampler3D u_texture;
 layout(binding=1) uniform sampler1D u_s1TFTexture;
-uniform vec2 u_f2TFWindow;
+uniform vec3 u_f3TFWindow;
 
 uniform float u_slice;
 uniform int u_orientation = 0;
@@ -35,7 +35,7 @@ vec4 getFragmentColor()
         value = texture(u_texture, vec3(uv, u_slice)).r;
     }
 
-    vec4 windowedColor = sampleTransferFunction(value, u_s1TFTexture, u_f2TFWindow);
+    vec4 windowedColor = sampleTransferFunction(value, u_s1TFTexture, u_f3TFWindow);
 
     float tfAlpha = (1 - u_enableAlpha) + u_enableAlpha * windowedColor.a;
     float alpha   = tfAlpha * u_diffuse.a;

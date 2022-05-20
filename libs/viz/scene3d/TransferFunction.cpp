@@ -35,7 +35,7 @@
 #include <OGRE/OgreTextureManager.h>
 
 #include <OgreHardwarePixelBuffer.h>
-#include <core/Profiling.hpp>
+
 #include <algorithm>
 #include <cstdint> // for std::uint_8
 
@@ -43,7 +43,6 @@ namespace sight::viz::scene3d
 {
 
 std::uint32_t TransferFunction::TEXTURE_SIZE;
-std::uint32_t TransferFunction::TEXTURE_PIXEL_COUNT;
 
 //-----------------------------------------------------------------------------
 
@@ -53,8 +52,7 @@ TransferFunction::TransferFunction()
     // So we have no other choice than asking OpenGL directly
     int max;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
-    TEXTURE_SIZE        = static_cast<std::uint32_t>(max);
-    TEXTURE_PIXEL_COUNT = static_cast<std::uint32_t>(max);
+    TEXTURE_SIZE = static_cast<std::uint32_t>(max);
 
     SIGHT_INFO("Use a 1D texture of size : " << TEXTURE_SIZE);
 }
@@ -116,28 +114,42 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
     // Retrieves the transfer function's intensity window
     const min_max_t tfWLMinMax = _tf->windowMinMax();
 
-    // Here we will sample the transfer function in its window to benefit of the whole texture range
+    // The window can be inverted
+    const value_t min = std::min(tfWLMinMax.second, tfWLMinMax.first);
+    const value_t max = std::max(tfWLMinMax.second, tfWLMinMax.first);
+
+    // Here we will sample the transfer function in its window
     // We want the minimum and the maximum to be included (so we need +1 extra sample)
     // But we also want one extra point outside each bound window to sample the default color if the tf is clamped,
     // so we need at the end 1+2=3 extra samples
-    const value_t intensityStep = (tfWLMinMax.second - tfWLMinMax.first) / (TEXTURE_PIXEL_COUNT - 3);
+    // We only use the required space of the texture to be more efficient (up to 50x faster)
+    const value_t range         = std::min(max - min, value_t(TEXTURE_SIZE));
+    const value_t intensityStep = (max - min) / (range - 3);
 
-    value_t i = tfWLMinMax.first - intensityStep;
-    for(std::uint32_t k = 0 ; k < TEXTURE_PIXEL_COUNT ; ++k)
+    value_t i = min - intensityStep;
+
+    // We fill the whole range plus one value for the right bound to avoid rounding errors on the GPU
+    // We clamp "manually" in the GLSL
+    for(std::uint32_t k = 0 ; k < range + 1 ; ++k)
     {
-        const auto color = _tf->sample(i) * 255.0;
+        const auto color = glm::u8vec4(_tf->sample(i) * 255.0);
 
-        *pDest++ = static_cast<std::uint8_t>(color.b);
-        *pDest++ = static_cast<std::uint8_t>(color.g);
-        *pDest++ = static_cast<std::uint8_t>(color.r);
-        *pDest++ = static_cast<std::uint8_t>(color.a);
+        *pDest++ = color.b;
+        *pDest++ = color.g;
+        *pDest++ = color.r;
+        *pDest++ = color.a;
 
         i += intensityStep;
     }
 
     pixBuffer->unlock();
 
-    m_tfWindow = Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
+    m_tfWindow =
+        Ogre::Vector3(
+            float(min - intensityStep),
+            float(max + intensityStep),
+            float((max - min) / TEXTURE_SIZE)
+        );
 }
 
 //-----------------------------------------------------------------------------

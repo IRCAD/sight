@@ -200,7 +200,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
         }
 
         // define the shared param structure
-        m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", Ogre::GCT_FLOAT2);
+        m_RTVSharedParameters->addConstantDefinition("u_f3TFWindow", Ogre::GCT_FLOAT3);
         m_RTVSharedParameters->addConstantDefinition("u_fSampleDis_Ms", Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", Ogre::GCT_FLOAT4);
         m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMinPos_Ms", Ogre::GCT_FLOAT3);
@@ -672,6 +672,8 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     {
         Ogre::TextureUnitState* const texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(defines::VOLUME_TF_TEXUNIT_NAME);
+        texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
         m_gpuVolumeTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
         fpParams->setNamedConstant("u_s1TFTexture", numTexUnit++);
     }
@@ -913,6 +915,8 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                 {
                     Ogre::TextureUnitState* const texUnitState = pass->createTextureUnitState();
                     texUnitState->setName(defines::VOLUME_TF_TEXUNIT_NAME);
+                    texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
+                    texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
                     m_gpuVolumeTF->bind(pass, texUnitState->getName(), fpParams);
                     fpParams->setNamedConstant("u_s1TFTexture", 1);
                 }

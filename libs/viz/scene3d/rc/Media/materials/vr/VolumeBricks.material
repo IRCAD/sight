@@ -20,7 +20,7 @@ fragment_program VolumeBricksGrid_FP glsl
         param_named u_slice int 0
         param_named u_image int 0
         param_named u_s1TFTexture int 1
-        param_named u_f2TFWindow float2 0 0
+        param_named u_f3TFWindow float3 0 0
     }
 }
 

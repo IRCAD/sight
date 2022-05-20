@@ -23,6 +23,7 @@
 #include "modules/viz/scene2d/adaptor/STransferFunction.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/Profiling.hpp>
 
 #include <data/IContainer.hxx>
 
