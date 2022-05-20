@@ -142,7 +142,7 @@ void SLabelImageToBinaryImage::updating()
             {
                 data::Integer::csptr intObj = data::Integer::dynamicConstCast(_o);
                 SIGHT_ASSERT("The label vector should only contain integers.", intObj);
-                const int val = intObj->value();
+                const int val = int(intObj->value());
                 SIGHT_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255);
                 labelSet.set(static_cast<std::uint8_t>(val), true);
             });

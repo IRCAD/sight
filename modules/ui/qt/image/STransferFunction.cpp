@@ -192,13 +192,15 @@ void STransferFunction::starting()
 
     if(m_iconWidth > 0 && m_iconHeight > 0)
     {
-        m_deleteButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
-        m_newButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
-        m_copyButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
-        m_reinitializeButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
-        m_renameButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
-        m_importButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
-        m_exportButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        int iconWidth  = int(m_iconWidth);
+        int iconHeight = int(m_iconHeight);
+        m_deleteButton->setIconSize(QSize(iconWidth, iconHeight));
+        m_newButton->setIconSize(QSize(iconWidth, iconHeight));
+        m_copyButton->setIconSize(QSize(iconWidth, iconHeight));
+        m_reinitializeButton->setIconSize(QSize(iconWidth, iconHeight));
+        m_renameButton->setIconSize(QSize(iconWidth, iconHeight));
+        m_importButton->setIconSize(QSize(iconWidth, iconHeight));
+        m_exportButton->setIconSize(QSize(iconWidth, iconHeight));
     }
 
     // Layout management

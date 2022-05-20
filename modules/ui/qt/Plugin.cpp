@@ -126,7 +126,7 @@ void Plugin::loadStyleSheet()
         const std::string resourceFile = this->getModule()->getParameterValue("resource");
         const auto path                = core::runtime::getModuleResourceFilePath(resourceFile);
 
-        const bool resourceLoaded = QResource::registerResource(path.string().c_str());
+        [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(path.string().c_str());
         SIGHT_ASSERT("Cannot load resources '" + resourceFile + "'.", resourceLoaded);
     }
 

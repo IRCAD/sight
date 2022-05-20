@@ -112,7 +112,12 @@ void SPointCloudFromDepthMap::updating()
             attribute = data::Mesh::Attributes::POINT_COLORS;
         }
 
-        pointCloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, attribute);
+        pointCloud->resize(
+            data::Mesh::size_t(nbPoints),
+            data::Mesh::size_t(nbPoints),
+            data::Mesh::CellType::POINT,
+            attribute
+        );
 
         const auto dumpLock = pointCloud->dump_lock();
 
@@ -121,7 +126,7 @@ void SPointCloudFromDepthMap::updating()
         // to display the mesh, we need to create cells with one point.
         for(std::size_t i = 0 ; i < nbPoints ; ++i, ++itr)
         {
-            itr->pt = i;
+            itr->pt = data::Mesh::cell_t(i);
         }
 
         auto sig = pointCloud->signal<data::Mesh::ModifiedSignalType>(data::Mesh::s_MODIFIED_SIG);
@@ -360,7 +365,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                     const std::size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
                     if(rgbIdx < imageSize)
                     {
-                        const auto color = rgbBegin + rgbIdx;
+                        const auto color = rgbBegin + long(rgbIdx);
                         c = *color;
                     }
                     else

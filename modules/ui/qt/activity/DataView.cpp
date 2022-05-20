@@ -197,7 +197,7 @@ void DataView::fillInformation(const ActivityInfo& _info)
     this->clear();
 
     const ActivityInfo::RequirementsType& reqVect = m_activityInfo.requirements;
-    for(const auto req : reqVect)
+    for(const auto& req : reqVect)
     {
         QVBoxLayout* const layout = new QVBoxLayout();
         QWidget* const widget     = new QWidget();
@@ -1076,7 +1076,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         this,
                         "Edition",
                         "Enter the Integer value:",
-                        intObj->value(),
+                        int(intObj->value()),
                         std::numeric_limits<int>::min(),
                         std::numeric_limits<int>::max(),
                         1,

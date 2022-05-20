@@ -257,7 +257,7 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
     const auto image = m_extent.lock();
     SIGHT_ASSERT("Cannot find " << s_EXTENT_IN, image);
 
-    std::int64_t idx;
+    std::int64_t idx = 0;
     switch(m_orientation)
     {
         case data::helper::MedicalImage::orientation_t::X_AXIS:

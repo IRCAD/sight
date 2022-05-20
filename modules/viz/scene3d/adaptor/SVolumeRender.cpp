@@ -385,7 +385,7 @@ void SVolumeRender::updateSampling(unsigned _nbSamples)
 
 void SVolumeRender::updateOpacityCorrection(unsigned _opacityCorrection)
 {
-    m_volumeRenderer->setOpacityCorrection(_opacityCorrection);
+    m_volumeRenderer->setOpacityCorrection(int(_opacityCorrection));
     this->requestRender();
 }
 

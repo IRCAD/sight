@@ -108,7 +108,7 @@ void SnapshotEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::info(std::ostream& _sstream)
+void SnapshotEditor::info(std::ostream& /*_sstream*/)
 {
 }
 

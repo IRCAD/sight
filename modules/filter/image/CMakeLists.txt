@@ -1,4 +1,4 @@
-sight_add_target(module_filter_image TYPE MODULE WARNINGS_AS_ERRORS OFF)
+sight_add_target(module_filter_image TYPE MODULE)
 
 # Necessary only because of SPlaneSlicer, can be removed if rewritten as a visualisation adaptor
 find_package(VTK QUIET REQUIRED COMPONENTS vtkImagingCore)

@@ -183,7 +183,7 @@ void SSeriesPusher::pushSeries()
                 const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
                 const std::size_t size = bufferObj->getSize();
 
-                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
+                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, int(size));
 
                 /// Url PACS
                 const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));

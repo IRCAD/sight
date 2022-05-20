@@ -212,9 +212,9 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                         std::vector<cv::Point2f> reprojectedP = errP.second;
 
-                        for(std::size_t i = 0 ; i < reprojectedP.size() ; ++i)
+                        for(std::size_t j = 0 ; j < reprojectedP.size() ; ++j)
                         {
-                            cv::circle(cvImage, reprojectedP[i], 7, m_cvColor, 1, cv::LINE_8);
+                            cv::circle(cvImage, reprojectedP[j], 7, m_cvColor, 1, cv::LINE_8);
                         }
                     }
                 }

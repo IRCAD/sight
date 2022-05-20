@@ -280,10 +280,10 @@ void SCameraConfigLauncher::onImportClicked()
     {
         QStringList cameras;
         std::map<std::string, data::Camera::csptr> map;
-        for(auto nSeries = 0 ; nSeries != cameraSeriesVector.size() ; ++nSeries)
+        for(std::size_t nSeries = 0 ; nSeries != cameraSeriesVector.size() ; ++nSeries)
         {
             auto cameraSeries_ = cameraSeriesVector[nSeries];
-            for(auto nCam = 0 ; nCam != cameraSeries_->numCameras() ; ++nCam)
+            for(std::size_t nCam = 0 ; nCam != cameraSeries_->numCameras() ; ++nCam)
             {
                 auto cam      = cameraSeries_->getCamera(nCam);
                 auto cameraID =
@@ -320,7 +320,7 @@ void SCameraConfigLauncher::onImportClicked()
                 const auto selectedCamera = map[selectedStd];
                 const auto camIdx         = m_cameraComboBox->currentIndex();
                 const auto cameraSeries   = m_cameraSeries.lock();
-                auto camera               = cameraSeries->getCamera(camIdx);
+                auto camera               = cameraSeries->getCamera(std::size_t(camIdx));
                 camera->deepCopy(selectedCamera);
                 camera->signal<data::Camera::IntrinsicCalibratedSignalType>(
                     data::Camera::s_INTRINSIC_CALIBRATED_SIG

@@ -141,7 +141,6 @@ void SVector::stopping()
 
     this->deleteVector();
 
-    Ogre::SceneManager* sceneMgr   = this->getSceneManager();
     Ogre::SceneNode* transformNode = this->getTransformNode();
     if(transformNode)
     {

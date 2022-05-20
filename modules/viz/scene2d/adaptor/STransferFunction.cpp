@@ -978,7 +978,7 @@ void STransferFunction::mouseMoveOnPointEvent(
     this->buildLayer();
 
     // Updates the TF with the new point position.
-    std::size_t pointIndex = pointIt - _pieceView->m_TFPoints.begin();
+    std::size_t pointIndex = std::size_t(pointIt - _pieceView->m_TFPoints.begin());
 
     // If the window is negative, the TF point list is reversed compared to the TF data.
     if(_pieceView->m_tf->window() < 0)
@@ -1062,7 +1062,7 @@ void STransferFunction::rightButtonClickOnPointEvent(
     // Updates the TF.
     auto pointIt = std::find(_pieceView->m_TFPoints.begin(), _pieceView->m_TFPoints.end(), _TFPoint);
     SIGHT_ASSERT("The captured point is not found", pointIt != _pieceView->m_TFPoints.end());
-    std::size_t pointIndex = pointIt - _pieceView->m_TFPoints.begin();
+    std::size_t pointIndex = std::size_t(pointIt - _pieceView->m_TFPoints.begin());
 
     const data::TransferFunctionData::sptr tfPiece = _pieceView->m_tf;
     {
@@ -1158,7 +1158,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(
         auto pointIt =
             std::find(_pieceView->m_TFPoints.begin(), _pieceView->m_TFPoints.end(), _TFPoint);
         SIGHT_ASSERT("The captured point is not found", pointIt != _pieceView->m_TFPoints.end());
-        std::size_t pointIndex = pointIt - _pieceView->m_TFPoints.begin();
+        std::size_t pointIndex = std::size_t(pointIt - _pieceView->m_TFPoints.begin());
 
         const auto tfPiece = _pieceView->m_tf;
         {

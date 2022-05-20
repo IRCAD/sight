@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -193,7 +193,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
     // Number of cylinder regarding their needed length
     const double nbOfCylinders = m_height / m_needleMinorStepsLength;
     // Entire part
-    const int nbOfEntireParts = floor(nbOfCylinders);
+    const int nbOfEntireParts = int(nbOfCylinders);
     // Decimal part
     const double restOfCylinder = m_needleMinorStepsLength * (nbOfCylinders - nbOfEntireParts);
 
@@ -208,7 +208,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
 
         // Put a torus every "m_needleMajorSteps" minor steps (for example every 5 minor steps by default) and not on
         // the end of the needle
-        if(((nbOfEntireParts - cylinderIndex) % m_needleMajorSteps) == 0 && cylinderIndex != 0)
+        if((unsigned(nbOfEntireParts - cylinderIndex) % m_needleMajorSteps) == 0 && cylinderIndex != 0)
         {
             // Move the center from half the minor step length to get the torus on the edge of two cylinders
             const double torusCenter              = center - m_needleMinorStepsLength / 2.0;

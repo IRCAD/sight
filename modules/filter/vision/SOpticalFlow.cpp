@@ -193,7 +193,7 @@ void SOpticalFlow::updating()
             }
         }
 
-        if(!acc)
+        if(acc)
         {
             RMS = RMS / static_cast<long double>(acc);
             RMS = std::sqrt(RMS);

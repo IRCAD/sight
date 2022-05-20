@@ -296,7 +296,7 @@ void SSeriesPusher::pushSeries()
         }
 
         // Number of instances that must be uploaded
-        m_instanceCount = dicomContainer.size();
+        m_instanceCount = static_cast<unsigned long>(dicomContainer.size());
 
         // Connect from PACS
         m_seriesEnquirer->connect();
@@ -328,9 +328,9 @@ void SSeriesPusher::pushSeries()
 //------------------------------------------------------------------------------
 
 void SSeriesPusher::progressCallback(
-    const std::string& seriesInstanceUID,
+    const std::string& /*seriesInstanceUID*/,
     unsigned int instanceNumber,
-    const std::string& filePath
+    const std::string& /*filePath*/
 )
 {
     if(instanceNumber < (m_instanceCount - 1))

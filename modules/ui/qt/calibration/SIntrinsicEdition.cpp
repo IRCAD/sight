@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,8 +78,8 @@ void SIntrinsicEdition::updateCalibration()
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("The inout key '" << s_CAMERA << "' is not correctly set.", camera);
 
-    camera->setWidth(m_calibration[0]);
-    camera->setHeight(m_calibration[1]);
+    camera->setWidth(std::size_t(m_calibration[0]));
+    camera->setHeight(std::size_t(m_calibration[1]));
 
     camera->setFx(m_calibration[2]);
     camera->setFy(m_calibration[3]);
@@ -120,8 +120,8 @@ void SIntrinsicEdition::readCalibration()
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("The inout key '" << s_CAMERA << "' is not correctly set.", camera);
 
-    m_calibration[0] = camera->getWidth();
-    m_calibration[1] = camera->getHeight();
+    m_calibration[0] = double(camera->getWidth());
+    m_calibration[1] = double(camera->getHeight());
 
     m_calibration[2] = camera->getFx();
     m_calibration[3] = camera->getFy();

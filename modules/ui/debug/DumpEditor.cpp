@@ -222,7 +222,7 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
             }
             else if((unsigned int) index.row() <= names.size())
             {
-                const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(index.row() - 1);
+                const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(std::size_t(index.row() - 1));
 
                 return QString::fromStdString(currentPolicy->getParam(name));
             }
@@ -252,7 +252,7 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
         }
         else if((unsigned int) section <= names.size())
         {
-            const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(section - 1);
+            const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(std::size_t(section - 1));
             return QString::fromStdString(name);
         }
     }
@@ -285,7 +285,7 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
                         dumpPolicy = core::memory::policy::registry::get()->create(strvalue);
                         if(dumpPolicy)
                         {
-                            core::mt::ReadToWriteLock lock(m_buffManager->getMutex());
+                            core::mt::ReadToWriteLock anotherLock(m_buffManager->getMutex());
                             m_buffManager->setDumpPolicy(dumpPolicy);
                         }
 
@@ -296,7 +296,7 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
                     break;
 
                 default:
-                    const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(row - 1);
+                    const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(std::size_t(row - 1));
                     currentPolicy->setParam(name, strvalue);
                     return true;
             }
@@ -713,7 +713,7 @@ void DumpEditor::changeStatus(int index)
     if(buffManager)
     {
         const core::memory::BufferManager::BufferInfoMapType buffInfoMap = m_bufferInfos;
-        core::memory::BufferManager::ConstBufferPtrType selectedBuffer   = m_objectsUID[index];
+        core::memory::BufferManager::ConstBufferPtrType selectedBuffer   = m_objectsUID[std::size_t(index)];
 
         core::memory::BufferManager::BufferInfoMapType::const_iterator iter;
         iter = buffInfoMap.find(selectedBuffer);

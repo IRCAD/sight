@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ void SStyleSelector::starting()
                 filename.begin(),
                 filename.end(),
                 name.begin(),
-                [](unsigned char c) -> unsigned char {return std::toupper(c);});
+                [](unsigned char c) -> unsigned char {return static_cast<unsigned char>(std::toupper(c));});
 
             m_styleMap[name] = f.replace_extension("");
         }
@@ -125,7 +125,11 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
     }
 
     // Load ressources
-    const bool resourceLoaded = QResource::registerResource(path.replace_extension(".rcc").string().c_str());
+    [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(
+        path.replace_extension(
+            ".rcc"
+        ).string().c_str()
+    );
     SIGHT_ASSERT("Cannot load resources '" + path.replace_extension(".rcc").string() + "'.", resourceLoaded);
 
     // Load stylesheet.
@@ -153,7 +157,7 @@ void SStyleSelector::updateFromPrefs()
             this->changeStyle(*theme);
         }
     }
-    catch(const sight::ui::base::PreferencesDisabled& e)
+    catch(const sight::ui::base::PreferencesDisabled& /*e*/)
     {
         // Nothing to do..
     }

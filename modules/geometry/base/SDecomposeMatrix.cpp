@@ -99,7 +99,7 @@ void SDecomposeMatrix::updating()
             sight::geometry::data::identity(*translation);
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
-                translation->setCoefficient(i, 3, glmTranslation[i]);
+                translation->setCoefficient(i, 3, glmTranslation[int(i)]);
             }
 
             auto transSig =
@@ -119,7 +119,7 @@ void SDecomposeMatrix::updating()
                 {
                     if(i == j)
                     {
-                        scale->setCoefficient(i, j, glmScale[i]);
+                        scale->setCoefficient(i, j, glmScale[int(i)]);
                     }
                 }
             }

@@ -142,7 +142,7 @@ namespace sight::module::navigation::openvslam
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public service::ITracker
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam final : public service::ITracker
 {
 public:
 

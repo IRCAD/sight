@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,6 +85,8 @@ public:
 
     /// Defines the map associating icons to series (map\<series classname, icon path\>)
     typedef std::map<std::string, std::string> SeriesIconType;
+
+    using QStandardItemModel::removeRows;
 
     /// Initializes the model.
     MODULE_UI_QT_API SelectorModel(QWidget* _parent = nullptr);

@@ -120,11 +120,11 @@ void SWizard::configuring()
     const auto iconCfg  = iconsCfg.equal_range("icon");
     for(auto itIcon = iconCfg.first ; itIcon != iconCfg.second ; ++itIcon)
     {
-        const auto iconCfg = itIcon->second.get_child("<xmlattr>");
+        const auto anotherIconCfg = itIcon->second.get_child("<xmlattr>");
 
-        const std::string type = iconCfg.get<std::string>("type");
+        const std::string type = anotherIconCfg.get<std::string>("type");
         SIGHT_ASSERT("'type' attribute must not be empty", !type.empty());
-        const std::string icon = iconCfg.get<std::string>("icon");
+        const std::string icon = anotherIconCfg.get<std::string>("icon");
         SIGHT_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
         const auto file = core::runtime::getResourceFilePath(icon);

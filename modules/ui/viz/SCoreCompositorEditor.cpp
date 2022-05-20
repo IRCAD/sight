@@ -191,7 +191,6 @@ void SCoreCompositorEditor::refreshRenderers()
     service::registry::ObjectService::ServiceVectorType renderers =
         service::OSR::getServices("sight::viz::scene3d::SRender");
 
-    bool is3DLayer = false;
     for(auto srv : renderers)
     {
         sight::viz::scene3d::SRender::sptr render = sight::viz::scene3d::SRender::dynamicCast(srv);
@@ -205,7 +204,6 @@ void SCoreCompositorEditor::refreshRenderers()
                 const std::string renderID = render->getID();
                 m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
                 m_layers.push_back(layerMap.second);
-                is3DLayer = true;
             }
         }
     }

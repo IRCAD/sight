@@ -488,11 +488,11 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
 
         m_thetaSlider->setValue(
             static_cast<int>(m_currentLight->getThetaOffset()
-                             + ILight::s_OFFSET_RANGE / 2)
+                             + float(ILight::s_OFFSET_RANGE / 2))
         );
         m_phiSlider->setValue(
             static_cast<int>(m_currentLight->getPhiOffset()
-                             + ILight::s_OFFSET_RANGE / 2)
+                             + float(ILight::s_OFFSET_RANGE / 2))
         );
 
         Ogre::SceneNode* const root       = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();

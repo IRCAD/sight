@@ -71,7 +71,7 @@ void SLabelGeometryImage::configuring()
 
             for(const auto& t : tok)
             {
-                clusterLabels.push_back(std::stoi(t));
+                clusterLabels.push_back(std::stoul(t));
             }
 
             m_lPointListLabels.push_back(clusterLabels);
@@ -123,13 +123,13 @@ void SLabelGeometryImage::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string key)
+void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string /*key*/)
 {
     SIGHT_ASSERT(
         "value: " << value << "should end by a number between 0 and 9",
         value.back() >= '0' && value.back() <= '9'
     );
-    int indexPlane = std::stoi(value);
+    std::size_t indexPlane = std::stoul(value);
     // if the XML enum is between 1 and n, instead of 0 and n-1
     if(indexPlane > 0)
     {

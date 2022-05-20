@@ -85,20 +85,10 @@ public:
     };
 
     /// Image local and texture coordinates /!\ The order matters to our intersection algorithm.
-    VIZ_SCENE3D_API static inline const std::array<Ogre::Vector3, 8> s_imagePositions =
-    {
-        Ogre::Vector3(1, 1, 1),
-        Ogre::Vector3(1, 0, 1),
-        Ogre::Vector3(1, 1, 0),
-        Ogre::Vector3(0, 1, 1),
-        Ogre::Vector3(0, 0, 1),
-        Ogre::Vector3(1, 0, 0),
-        Ogre::Vector3(0, 1, 0),
-        Ogre::Vector3(0, 0, 0)
-    };
+    VIZ_SCENE3D_API static const std::array<Ogre::Vector3, 8> s_imagePositions;
 
     /// List of vertex indices pairs that make an edge.
-    VIZ_SCENE3D_API static inline const CubeEdgeList s_cubeEdges =
+    VIZ_SCENE3D_API static constexpr CubeEdgeList s_cubeEdges =
     {
         {
             {0, 1}, {1, 4}, {4, 3}, {3, 0},

@@ -226,7 +226,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             // Speed up SHIFT+ wheel: "scrolls" 5% of total slices at each wheel move.
             if(_modifier == Modifier::SHIFT)
             {
-                slice_move *= std::round(static_cast<float>(max_slice) * 5.f / 100.f);
+                slice_move *= int(std::round(static_cast<float>(max_slice) * 5.f / 100.f));
             }
 
             // TODO: We may test for finer-resolution wheels and wait for another event before moving.

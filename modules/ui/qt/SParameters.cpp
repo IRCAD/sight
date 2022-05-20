@@ -168,15 +168,15 @@ void SParameters::starting()
         {
             const std::string widget = cfg.get<std::string>("<xmlattr>.widget", "spin");
 
-            const double min          = cfg.get<double>("<xmlattr>.min", 0.);
-            const double max          = cfg.get<double>("<xmlattr>.max", 1.);
-            const double defaultValue = cfg.get<double>("<xmlattr>.defaultValue", 0.5);
+            const double min                = cfg.get<double>("<xmlattr>.min", 0.);
+            const double max                = cfg.get<double>("<xmlattr>.max", 1.);
+            const double defaultValueDouble = cfg.get<double>("<xmlattr>.defaultValue", 0.5);
 
             const int count = (type == "double3") ? 3 : (type == "double2" ? 2 : 1);
 
             if(widget == "spin")
             {
-                this->createDoubleWidget(*layout, row, key, defaultValue, min, max, count, resetButton);
+                this->createDoubleWidget(*layout, row, key, defaultValueDouble, min, max, count, resetButton);
             }
             else if(widget == "slider")
             {
@@ -189,7 +189,7 @@ void SParameters::starting()
                     *layout,
                     row,
                     key,
-                    defaultValue,
+                    defaultValueDouble,
                     min,
                     max,
                     decimals,
@@ -206,15 +206,15 @@ void SParameters::starting()
         {
             const std::string widget = cfg.get<std::string>("<xmlattr>.widget", "slider");
 
-            const int min          = cfg.get<int>("<xmlattr>.min", 0);
-            const int max          = cfg.get<int>("<xmlattr>.max", 100);
-            const int defaultValue = cfg.get<int>("<xmlattr>.defaultValue", 50);
+            const int min                = cfg.get<int>("<xmlattr>.min", 0);
+            const int max                = cfg.get<int>("<xmlattr>.max", 100);
+            const int defaultValueDouble = cfg.get<int>("<xmlattr>.defaultValue", 50);
 
             const int count = (type == "int3") ? 3 : (type == "int2" ? 2 : 1);
 
             if(widget == "spin")
             {
-                this->createIntegerSpinWidget(*layout, row, key, defaultValue, min, max, count, resetButton);
+                this->createIntegerSpinWidget(*layout, row, key, defaultValueDouble, min, max, count, resetButton);
             }
             else if(widget == "slider")
             {
@@ -222,7 +222,16 @@ void SParameters::starting()
                 SIGHT_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 const bool onRelease = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
-                this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max, resetButton, onRelease);
+                this->createIntegerSliderWidget(
+                    *layout,
+                    row,
+                    key,
+                    defaultValueDouble,
+                    min,
+                    max,
+                    resetButton,
+                    onRelease
+                );
             }
             else
             {
@@ -954,7 +963,7 @@ void SParameters::createBoolWidget(
     int row,
     const std::string& key,
     const std::string& defaultValue,
-    bool resetButton
+    bool addResetButton
 )
 {
     QCheckBox* checkbox = new QCheckBox();
@@ -972,7 +981,7 @@ void SParameters::createBoolWidget(
     QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(onChangeBoolean(int)));
 
     // Reset button
-    if(resetButton)
+    if(addResetButton)
     {
         QPushButton* resetButton = this->createResetButton(key);
 
@@ -990,7 +999,7 @@ void SParameters::createColorWidget(
     int row,
     const std::string& key,
     const std::string& defaultValue,
-    bool resetButton
+    bool addResetButton
 )
 {
     QPushButton* colourButton = new QPushButton("Color");
@@ -1028,7 +1037,7 @@ void SParameters::createColorWidget(
     QObject::connect(colourButton, &QPushButton::clicked, this, &SParameters::onColorButton);
 
     // Reset button
-    if(resetButton)
+    if(addResetButton)
     {
         QPushButton* resetButton = this->createResetButton(key);
 
@@ -1049,7 +1058,7 @@ void SParameters::createDoubleWidget(
     double min,
     double max,
     int count,
-    bool resetButton
+    bool addResetButton
 )
 {
     QDoubleSpinBox* spinboxes[3];
@@ -1102,7 +1111,7 @@ void SParameters::createDoubleWidget(
     }
 
     // Reset button
-    if(resetButton)
+    if(addResetButton)
     {
         QPushButton* resetButton = this->createResetButton(key);
 
@@ -1123,7 +1132,7 @@ void SParameters::createDoubleSliderWidget(
     double min,
     double max,
     std::uint8_t decimals,
-    bool resetButton,
+    bool addResetButton,
     bool onRelease
 )
 {
@@ -1194,7 +1203,7 @@ void SParameters::createDoubleSliderWidget(
     slider->setProperty(propName.c_str(), QVariant::fromValue<QSlider*>(slider));
 
     // Reset button
-    if(resetButton)
+    if(addResetButton)
     {
         QPushButton* resetButton = this->createResetButton(key);
 
@@ -1214,7 +1223,7 @@ void SParameters::createIntegerSliderWidget(
     int defaultValue,
     int min,
     int max,
-    bool resetButton,
+    bool addResetButton,
     bool onRelease
 )
 {
@@ -1278,7 +1287,7 @@ void SParameters::createIntegerSliderWidget(
     slider->setProperty(propName.c_str(), QVariant::fromValue<QSlider*>(slider));
 
     // Reset button
-    if(resetButton)
+    if(addResetButton)
     {
         QPushButton* resetButton = this->createResetButton(key);
 
@@ -1299,7 +1308,7 @@ void SParameters::createIntegerSpinWidget(
     int min,
     int max,
     int count,
-    bool resetButton
+    bool addResetButton
 )
 {
     QSpinBox* spinboxes[3];
@@ -1338,7 +1347,7 @@ void SParameters::createIntegerSpinWidget(
     }
 
     // Reset button
-    if(resetButton)
+    if(addResetButton)
     {
         QPushButton* resetButton = this->createResetButton(key);
 

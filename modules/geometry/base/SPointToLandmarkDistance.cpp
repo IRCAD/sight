@@ -142,7 +142,7 @@ void SPointToLandmarkDistance::updateSelectedPoint(std::string name, std::size_t
     const data::Landmarks::PointType& point = landmark->getPoint(name, index);
     for(int i = 0 ; i < 3 ; ++i)
     {
-        m_currentLandmark[i] = point[i];
+        m_currentLandmark[i] = point[std::size_t(i)];
     }
 
     this->update();
@@ -158,7 +158,7 @@ void SPointToLandmarkDistance::updatePoint(std::string name)
     const data::Landmarks::PointType& point = landmark->getPoint(name, size - 1);
     for(int i = 0 ; i < 3 ; ++i)
     {
-        m_currentLandmark[i] = point[i];
+        m_currentLandmark[i] = point[std::size_t(i)];
     }
 
     this->update();

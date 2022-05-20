@@ -186,28 +186,28 @@ void SGrid2D::starting()
 
 float SGrid2D::getXStartVal()
 {
-    return (int) (m_xMin / m_xSpacing) * m_xSpacing;
+    return std::floor(m_xMin / m_xSpacing) * m_xSpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 float SGrid2D::getXEndVal()
 {
-    return (int) (m_xMax / m_xSpacing) * m_xSpacing;
+    return std::floor(m_xMax / m_xSpacing) * m_xSpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 float SGrid2D::getYStartVal()
 {
-    return (int) (m_yMin / m_ySpacing) * m_ySpacing;
+    return std::floor(m_yMin / m_ySpacing) * m_ySpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 float SGrid2D::getYEndVal()
 {
-    return (int) (m_yMax / m_ySpacing) * m_ySpacing;
+    return std::floor(m_yMax / m_ySpacing) * m_ySpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------

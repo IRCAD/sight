@@ -66,7 +66,7 @@ namespace sight::module::geometry::base
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public service::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList final : public service::IController
 {
 public:
 

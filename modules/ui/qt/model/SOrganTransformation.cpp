@@ -152,7 +152,7 @@ void SOrganTransformation::updating()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::info(std::ostream& sstream)
+void SOrganTransformation::info(std::ostream& /*sstream*/)
 {
 }
 

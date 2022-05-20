@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,9 +77,9 @@ void SMatrixViewer::starting()
 
     QGridLayout* gridLayout = new QGridLayout();
 
-    for(unsigned int i = 0 ; i < 4 ; ++i)
+    for(int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0 ; j < 4 ; ++j)
+        for(int j = 0 ; j < 4 ; ++j)
         {
             QLabel* label = new QLabel("");
             m_matrixLabels.push_back(label);
@@ -117,7 +117,7 @@ void SMatrixViewer::updateFromMatrix()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j), 0, 'f', 2));
+            m_matrixLabels[int(i * 4 + j)]->setText(QString("%1").arg(matrix->getCoefficient(i, j), 0, 'f', 2));
         }
     }
 }
@@ -126,9 +126,9 @@ void SMatrixViewer::updateFromMatrix()
 
 void SMatrixViewer::clearLabels()
 {
-    for(unsigned int i = 0 ; i < 4 ; ++i)
+    for(int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0 ; j < 4 ; ++j)
+        for(int j = 0 ; j < 4 ; ++j)
         {
             m_matrixLabels[i * 4 + j]->setText(QString(""));
         }

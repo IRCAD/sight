@@ -343,9 +343,6 @@ void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
 
         if(index >= 0.f && index < static_cast<double>(nbValues) && m_entered)
         {
-            const double histIndex = sceneCoord.x;
-            const double index     = histIndex - histogramMinValue;
-
             sight::viz::scene2d::vec2d_t coord;
             coord.x = sceneCoord.x;
             coord.y = static_cast<double>(values.at(static_cast<std::size_t>(index / histogramBinsWidth))) * m_scale;

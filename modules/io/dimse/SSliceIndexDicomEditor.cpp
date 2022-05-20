@@ -222,7 +222,7 @@ void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
     const auto dicomSeries               = m_series.lock();
-    const std::size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
+    const std::size_t selectedSliceIndex = std::size_t(m_slider->value()) + dicomSeries->getFirstInstanceNumber();
     const bool isInstanceAvailable       = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
     // If the slice is not pulled, pull it.
@@ -365,7 +365,7 @@ void SSliceIndexDicomEditor::readSlice(
         return;
     }
 
-    fs.write(buffer, bufferSize);
+    fs.write(buffer, long(bufferSize));
     fs.close();
 
     // Read the image.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ namespace sight::module::ui::viz
  *   - \b current: select the screen on which the application is currently displayed.
  *   - \b neighbor: select a neighboring screen if there is one.
  */
-class MODULE_UI_VIZ_CLASS_API SScreenSelector : public sight::ui::base::IAction
+class MODULE_UI_VIZ_CLASS_API SScreenSelector final : public sight::ui::base::IAction
 {
 public:
 

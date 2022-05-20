@@ -88,7 +88,7 @@ void SPointToLandmarkVector::updating()
     auto transform = m_transform.lock();
     auto translationMatrix = m_translationMatrix.lock();
     const auto landmark = m_landmark.lock();
-    std::array<double, 3> sourcePoint, targetPoint;
+    std::array<double, 3> sourcePoint {}, targetPoint;
     if(landmark->getGroup(m_originLabel).m_size >= 1)
     {
         sourcePoint = landmark->getPoint(m_originLabel, 0);

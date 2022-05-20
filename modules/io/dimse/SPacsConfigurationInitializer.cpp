@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -123,7 +123,7 @@ void SPacsConfigurationInitializer::starting()
                 preferences.get(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod))
             );
         }
-        catch(const ui::base::PreferencesDisabled& e)
+        catch(const ui::base::PreferencesDisabled& /*e*/)
         {
             // Nothing to do..
         }
@@ -189,7 +189,7 @@ void SPacsConfigurationInitializer::updating()
             preferences.put(getKey(s_MoveApplicationPort), m_movePort);
             preferences.put(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod));
         }
-        catch(const ui::base::PreferencesDisabled& e)
+        catch(const ui::base::PreferencesDisabled& /*e*/)
         {
             // Nothing to do..
         }

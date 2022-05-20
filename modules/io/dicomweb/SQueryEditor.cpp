@@ -277,14 +277,14 @@ void SQueryEditor::queryStudyDate()
             const QJsonArray& seriesArray = jsonObj["Series"].toArray();
             const int seriesArraySize     = seriesArray.count();
 
-            for(int i = 0 ; i < seriesArraySize ; ++i)
+            for(int j = 0 ; j < seriesArraySize ; ++j)
             {
-                const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
+                const std::string& seriesUID = seriesArray.at(j).toString().toStdString();
                 const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
                 const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesUrl));
                 jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-                const QJsonObject& jsonObj      = jsonResponse.object();
-                const QJsonArray& instanceArray = jsonObj["Instances"].toArray();
+                const QJsonObject& anotherJsonObj = jsonResponse.object();
+                const QJsonArray& instanceArray   = anotherJsonObj["Instances"].toArray();
 
                 // Retrieve the first instance for the needed information
                 const std::string& instanceUID = instanceArray.at(0).toString().toStdString();

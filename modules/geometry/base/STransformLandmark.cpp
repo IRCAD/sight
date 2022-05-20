@@ -123,7 +123,7 @@ service::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() co
 
 // -----------------------------------------------------------------------------
 
-void STransformLandmark::updateSelectedPoint(std::string name, std::size_t index)
+void STransformLandmark::updateSelectedPoint(std::string /*name*/, std::size_t index)
 {
     m_landmarkSelected = true;
     m_index            = index;

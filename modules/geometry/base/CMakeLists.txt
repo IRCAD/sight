@@ -1,4 +1,4 @@
-sight_add_target(module_geometry_base TYPE MODULE WARNINGS_AS_ERRORS OFF)
+sight_add_target(module_geometry_base TYPE MODULE)
 
 find_package(glm QUIET REQUIRED)
 target_include_directories(module_geometry_base SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})

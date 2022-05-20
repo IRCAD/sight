@@ -140,7 +140,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
         auto intValue          = data::Integer::dynamicCast(shaderObj.get_shared());
-        const int defaultValue = intValue->value();
+        const int defaultValue = int(intValue->value());
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
         const int max          = minmax.second;

@@ -127,11 +127,11 @@ void SUltrasoundMesh::updateMeshPosition()
     // compute delta angle
     const double thetaInit   = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
     const double thetaEnd    = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double delta_theta = (thetaEnd - thetaInit) / (m_resolutionX - 1.);
+    const double delta_theta = (thetaEnd - thetaInit) / (double(m_resolutionX) - 1.);
 
     // compute delta lengths
-    const double dDepth = m_depth / (m_resolutionY - 1.);
-    const double dWidth = m_width / (m_resolutionX - 1.);
+    const double dDepth = m_depth / (double(m_resolutionY) - 1.);
+    const double dWidth = m_width / (double(m_resolutionX) - 1.);
 
     const fwVec3d centerPosition = {{0., 0., 0.}};
     const fwVec3d direction      = {{0., 1., 0.}};
@@ -145,14 +145,14 @@ void SUltrasoundMesh::updateMeshPosition()
         fwVec3d centerLive;
         if(m_shape)
         {
-            const double angleLive = thetaInit + delta_theta * (m_resolutionX - widthGrid - 1);
+            const double angleLive = thetaInit + delta_theta * double(m_resolutionX - widthGrid - 1);
             directionLive = std::cos(angleLive) * normal + std::sin(angleLive) * direction;
             centerLive    = centerPosition;
         }
         else
         {
             directionLive = direction;
-            centerLive    = centerPosition + (widthGrid * dWidth - m_width / 2.f) * normal;
+            centerLive    = centerPosition + (widthGrid * dWidth - double(m_width) / 2.f) * normal;
         }
 
         for(unsigned int depthGrid = 0 ;
@@ -179,8 +179,8 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     const std::size_t numQuads       = (width - 1) * (height - 1);
 
     _mesh->resize(
-        numPointsTotal,
-        numQuads,
+        data::Mesh::size_t(numPointsTotal),
+        data::Mesh::size_t(numQuads),
         data::Mesh::CellType::QUAD,
         data::Mesh::Attributes::POINT_TEX_COORDS
         | data::Mesh::Attributes::POINT_NORMALS
@@ -204,8 +204,8 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
             p.y             = *pointsIn++;
             p.z             = *pointsIn++;
 
-            tex.u = i / static_cast<data::Mesh::texcoord_t>(width - 1);
-            tex.v = j / static_cast<data::Mesh::texcoord_t>(height - 1);
+            tex.u = data::Mesh::texcoord_t(i) / static_cast<data::Mesh::texcoord_t>(width - 1);
+            tex.v = data::Mesh::texcoord_t(j) / static_cast<data::Mesh::texcoord_t>(height - 1);
             ++pointsItr;
         }
     }
@@ -215,9 +215,9 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     {
         for(std::size_t j = 0 ; j < height - 1 ; ++j)
         {
-            const data::Mesh::cell_t idx1 = j + i * height;
+            const data::Mesh::cell_t idx1 = data::Mesh::cell_t(j + i * height);
             const data::Mesh::cell_t idx2 = idx1 + 1;
-            const data::Mesh::cell_t idx4 = idx1 + height;
+            const data::Mesh::cell_t idx4 = data::Mesh::cell_t(idx1 + height);
             const data::Mesh::cell_t idx3 = idx4 + 1;
 
             cellsItr->pt[0] = idx1;

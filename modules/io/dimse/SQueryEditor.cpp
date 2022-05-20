@@ -114,7 +114,7 @@ void SQueryEditor::starting()
         m_searchButton->setIcon(QIcon(QString::fromStdString(m_iconPath.string())));
         if(m_iconWidth > 0 && m_iconHeight > 0)
         {
-            m_searchButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+            m_searchButton->setIconSize(QSize(int(m_iconWidth), int(m_iconHeight)));
         }
     }
 

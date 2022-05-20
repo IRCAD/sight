@@ -136,7 +136,7 @@ void SPoseFrom2d::updating()
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp)
+void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
     SIGHT_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped());
 

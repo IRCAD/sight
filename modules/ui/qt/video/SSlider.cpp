@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ QString convertMSecToHHMMSS(int64_t milliseconds)
     ms -= minutes;
     std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
 
-    QTime time(hours.count(), minutes.count(), static_cast<std::int32_t>(seconds.count()));
+    QTime time(int(hours.count()), int(minutes.count()), static_cast<std::int32_t>(seconds.count()));
     return time.toString("hh:mm:ss");
 }
 

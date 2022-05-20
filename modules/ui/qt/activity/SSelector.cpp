@@ -172,7 +172,7 @@ void SSelector::starting()
     int i = 1;
     int j = 0;
 
-    for(const auto info : m_activitiesInfo)
+    for(const auto& info : m_activitiesInfo)
     {
         QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));

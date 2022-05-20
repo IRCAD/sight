@@ -293,7 +293,7 @@ void SColourImageMasking::setBackground()
     cv::erode(maskCV, maskCV, elementErode);
 
     // Learn background color model
-    m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
+    m_masker->trainBackgroundModel(videoCV, maskCV, unsigned(m_backgroundComponents));
 
     // Initialize the mask timeline
     const auto videoMaskTL = m_videoMaskTL.lock();
@@ -349,7 +349,7 @@ void SColourImageMasking::setForeground()
     cv::erode(foregroundMask, openForegroundMask, elementErode);
 
     // Learn foreground color model
-    m_masker->trainForegroundModel(videoCV, openForegroundMask, m_foregroundComponents, m_noise);
+    m_masker->trainForegroundModel(videoCV, openForegroundMask, unsigned(m_foregroundComponents), m_noise);
 }
 
 // ------------------------------------------------------------------------------

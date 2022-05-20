@@ -44,7 +44,7 @@ namespace sight::core::com
 {
 
 template<typename F>
-struct Slot;
+class Slot;
 
 }
 

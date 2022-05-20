@@ -60,9 +60,9 @@ SMatrixList::~SMatrixList() noexcept
 void SMatrixList::starting()
 {
     // get inputs
-    const std::size_t numMatrices = m_inputVector.size();
-    const std::size_t numSelected = m_selectedVector.size();
-    const std::size_t numOutput   = m_outputVector.size();
+    [[maybe_unused]] const std::size_t numMatrices = m_inputVector.size();
+    [[maybe_unused]] const std::size_t numSelected = m_selectedVector.size();
+    [[maybe_unused]] const std::size_t numOutput   = m_outputVector.size();
 
     SIGHT_ASSERT(
         "the numbers of matrices, vectors and selected matrices should be the same",
@@ -94,7 +94,7 @@ void SMatrixList::updating()
     data::Vector::sptr computedVector;
     if(m_inputVector.size() > 0)
     {
-        for(int i = 0 ; i < m_inputVector.size() ; ++i)
+        for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
             data::Matrix4::sptr computedMatrix = data::Matrix4::New();
 
@@ -128,10 +128,10 @@ void SMatrixList::updating()
         computedMatrix->deepCopy(input.get_shared());
     }
     const data::Matrix4::TMCoefArray& coef = computedMatrix->getCoefficients();
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         str += "[ ";
-        for(int j = 0 ; j < 4 ; j++)
+        for(std::size_t j = 0 ; j < 4 ; j++)
         {
             std::ostringstream out;
             out << std::setprecision(3) << coef[i * 4 + j];
@@ -163,7 +163,7 @@ void SMatrixList::selectMatrix(int index)
     {
         auto selectedMatrix = m_selectedVector[i].lock();
         auto outputVector   = m_outputVector[i].lock();
-        selectedMatrix->deepCopy(data::Matrix4::dynamicCast((*outputVector)[index]));
+        selectedMatrix->deepCopy(data::Matrix4::dynamicCast((*outputVector)[std::size_t(index)]));
 
         auto sig = selectedMatrix->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG);
         sig->asyncEmit();

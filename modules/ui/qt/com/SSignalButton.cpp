@@ -157,13 +157,13 @@ void SSignalButton::configuring()
         core::runtime::ConfigurationElement::sptr widthCfg = config->findConfigurationElement("iconWidth");
         if(widthCfg)
         {
-            m_iconWidth = std::stoi(widthCfg->getValue());
+            m_iconWidth = unsigned(std::stoi(widthCfg->getValue()));
         }
 
         core::runtime::ConfigurationElement::sptr heightCfg = config->findConfigurationElement("iconHeight");
         if(heightCfg)
         {
-            m_iconHeight = std::stoi(heightCfg->getValue());
+            m_iconHeight = unsigned(std::stoi(heightCfg->getValue()));
         }
 
         core::runtime::ConfigurationElement::sptr tooltipCfg = config->findConfigurationElement("toolTip");
@@ -200,7 +200,7 @@ void SSignalButton::starting()
 
     if(m_iconWidth > 0 && m_iconHeight > 0)
     {
-        m_button->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_button->setIconSize(QSize(int(m_iconWidth), int(m_iconHeight)));
     }
 
     if(m_checkable)

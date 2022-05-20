@@ -1,4 +1,4 @@
-sight_add_target(module_geometry_vision TYPE MODULE WARNINGS_AS_ERRORS OFF)
+sight_add_target(module_geometry_vision TYPE MODULE)
 
 find_package(
     OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d opencv_imgproc opencv_imgcodecs

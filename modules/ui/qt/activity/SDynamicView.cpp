@@ -89,9 +89,9 @@ void SDynamicView::configuring()
 {
     this->sight::ui::base::view::IActivityView::configuring();
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigElementType;
 
-    ConfigType config_ui_activity = m_configuration->findConfigurationElement("mainActivity");
+    ConfigElementType config_ui_activity = m_configuration->findConfigurationElement("mainActivity");
     if(config_ui_activity)
     {
         const std::string closableStr = config_ui_activity->getAttributeValue("closable");
@@ -103,7 +103,7 @@ void SDynamicView::configuring()
         m_mainActivityClosable = closable;
     }
 
-    ConfigType config = m_configuration->findConfigurationElement("config");
+    ConfigElementType config = m_configuration->findConfigurationElement("config");
     if(config)
     {
         const std::string documentStr = config->getAttributeValue("document");
@@ -285,7 +285,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::info(std::ostream& _sstream)
+void SDynamicView::info(std::ostream& /*_sstream*/)
 {
 }
 

@@ -32,6 +32,18 @@ namespace sight::viz::scene3d
 namespace vr
 {
 
+const std::array<Ogre::Vector3, 8> IVolumeRenderer::s_imagePositions =
+{
+    Ogre::Vector3(1, 1, 1),
+    Ogre::Vector3(1, 0, 1),
+    Ogre::Vector3(1, 1, 0),
+    Ogre::Vector3(0, 1, 1),
+    Ogre::Vector3(0, 0, 1),
+    Ogre::Vector3(1, 0, 0),
+    Ogre::Vector3(0, 1, 0),
+    Ogre::Vector3(0, 0, 0)
+};
+
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::IVolumeRenderer(

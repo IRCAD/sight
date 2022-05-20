@@ -134,9 +134,9 @@ void SCameraSeriesEditor::updateInformations()
 
 void SCameraSeriesEditor::clearLabels()
 {
-    for(unsigned int i = 0 ; i < 4 ; ++i)
+    for(int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0 ; j < 4 ; ++j)
+        for(int j = 0 ; j < 4 ; ++j)
         {
             m_matrixLabels[i * 4 + j]->setText(QString(""));
         }

@@ -61,7 +61,7 @@ void Plugin::start()
     if(this->getModule()->hasParameter("plugins"))
     {
         const std::string pluginsStr = this->getModule()->getParameterValue("plugins");
-        const std::size_t count      = std::count(pluginsStr.begin(), pluginsStr.end(), ' ');
+        const std::size_t count      = std::size_t(std::count(pluginsStr.begin(), pluginsStr.end(), ' '));
 
         std::vector<std::string> plugins;
         plugins.reserve(count);

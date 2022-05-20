@@ -313,7 +313,7 @@ void SDistortion::remap()
     {
         auto sigModified = outputImage->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker anotherBlock(sigModified->getConnection(m_slotUpdate));
             sigModified->asyncEmit();
         }
     }
@@ -361,7 +361,7 @@ void SDistortion::calibrate()
         {
             for(int j = 0 ; j < size.width ; j++)
             {
-                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(j, i);
+                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(float(j), float(i));
             }
 
             cv::undistortPoints(

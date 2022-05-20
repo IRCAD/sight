@@ -300,13 +300,13 @@ void SSequencer::goTo(int index)
         }
 
         // Disable all next activities (including current)
-        for(std::size_t i = index + 1 ; i < seriesDB->size() ; ++i)
+        for(std::size_t i = std::size_t(index + 1) ; i < seriesDB->size() ; ++i)
         {
-            this->disableActivity(i);
+            this->disableActivity(int(i));
         }
 
         // Remove all last activities.
-        this->removeLastActivities(*seriesDB, index);
+        this->removeLastActivities(*seriesDB, std::size_t(index));
     }
     // Store data otherwise.
     else if(m_currentActivity >= 0)

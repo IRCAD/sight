@@ -1,4 +1,4 @@
-sight_add_target(module_io_dicomweb TYPE MODULE WARNINGS_AS_ERRORS OFF)
+sight_add_target(module_io_dicomweb TYPE MODULE)
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Network Widgets REQUIRED)
 

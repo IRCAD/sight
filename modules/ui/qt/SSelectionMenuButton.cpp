@@ -173,7 +173,7 @@ void SSelectionMenuButton::updating()
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::info(std::ostream& _sstream)
+void SSelectionMenuButton::info(std::ostream& /*_sstream*/)
 {
 }
 

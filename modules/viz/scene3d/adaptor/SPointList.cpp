@@ -553,8 +553,7 @@ void SPointList::detachAndDestroyEntity()
 {
     if(m_entity)
     {
-        Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
-        Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
+        Ogre::SceneManager* const sceneMgr = this->getSceneManager();
         if(m_sceneNode)
         {
             m_sceneNode->detachObject(m_entity);

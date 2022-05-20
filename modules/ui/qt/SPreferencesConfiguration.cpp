@@ -216,7 +216,7 @@ void SPreferencesConfiguration::starting()
             }
         }
     }
-    catch(const sight::ui::base::PreferencesDisabled& e)
+    catch(const sight::ui::base::PreferencesDisabled& /*e*/)
     {
         // Nothing to do..
     }

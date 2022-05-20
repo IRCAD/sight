@@ -214,7 +214,7 @@ void SStatus::updating()
 
 //------------------------------------------------------------------------------
 
-void SStatus::info(std::ostream& _sstream)
+void SStatus::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -282,10 +282,10 @@ void SStatus::changeNthToGreen(const int index)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color: green; border-radius: "
@@ -301,10 +301,10 @@ void SStatus::changeNthToRed(const int index)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color: red; border-radius: "
@@ -320,10 +320,10 @@ void SStatus::changeNthToOrange(const int index)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color: orange; border-radius: "
@@ -339,10 +339,10 @@ void SStatus::toggleNthGreenRed(const int index, const bool green)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color:" + QString(green ? "green" : "red")

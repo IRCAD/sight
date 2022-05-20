@@ -545,10 +545,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y,
         // Else we move the distance along a plane.
         if(moveInCameraPlane)
         {
-            const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-
-            const Ogre::Camera* const cam = layer->getDefaultCamera();
-            const auto* const vp          = cam->getViewport();
+            const auto* const vp = cam->getViewport();
 
             const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
             const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());

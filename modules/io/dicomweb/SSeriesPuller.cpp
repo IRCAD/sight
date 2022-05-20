@@ -277,8 +277,8 @@ void SSeriesPuller::pullSeries()
                 QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
                 const QJsonArray& seriesArray = jsonResponse.array();
 
-                const std::size_t seriesArraySize = seriesArray.count();
-                for(std::size_t i = 0 ; i < seriesArraySize ; ++i)
+                const int seriesArraySize = seriesArray.count();
+                for(int i = 0 ; i < seriesArraySize ; ++i)
                 {
                     const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
 
@@ -290,8 +290,8 @@ void SSeriesPuller::pullSeries()
                     const QJsonObject& jsonObj       = jsonResponse.object();
                     const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
 
-                    const std::size_t instancesArraySize = instancesArray.count();
-                    for(std::size_t j = 0 ; j < instancesArraySize ; ++j)
+                    const int instancesArraySize = instancesArray.count();
+                    for(int j = 0 ; j < instancesArraySize ; ++j)
                     {
                         const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
 

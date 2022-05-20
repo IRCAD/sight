@@ -136,8 +136,12 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
     int index = m_devicesComboBox->currentIndex();
     if(index >= 0)
     {
-        QCameraInfo camInfo              = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
-        data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
+        QCameraInfo camInfo = qvariant_cast<QCameraInfo>(
+            m_devicesComboBox->itemData(
+                index
+            )
+        );
+        [[maybe_unused]] data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
         QListWidgetItem* item = m_camSettings->currentItem();
         if(item)

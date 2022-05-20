@@ -290,8 +290,8 @@ void SLandmarks::onColorButton()
         const std::string groupName = colorButton->property(s_GROUP_PROPERTY_NAME).value<QString>().toStdString();
 
         data::Landmarks::ColorType color = {{
-            colorQt.red() / 255.f, colorQt.green() / 255.f,
-            colorQt.blue() / 255.f, colorQt.alpha() / 255.f
+            float(colorQt.red()) / 255.f, float(colorQt.green()) / 255.f,
+            float(colorQt.blue()) / 255.f, float(colorQt.alpha()) / 255.f
         }
         };
 
@@ -306,7 +306,7 @@ void SLandmarks::onColorButton()
             sig = landmarks->signal<data::Landmarks::GroupModifiedSignalType>(data::Landmarks::s_GROUP_MODIFIED_SIG);
         }
 
-        m_opacitySlider->setValue(static_cast<int>(color[3] * m_opacitySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(color[3] * float(m_opacitySlider->maximum())));
 
         {
             core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
@@ -476,7 +476,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         m_sizeSlider->setValue(size);
         m_visibilityCheckbox->setChecked(visible);
         m_shapeSelector->setCurrentText(shapeText);
-        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
     }
 
     m_groupEditorWidget->setDisabled(_current == nullptr);
@@ -1050,7 +1050,7 @@ void SLandmarks::modifyGroup(std::string _name)
         m_shapeSelector->setCurrentText(shapeText);
 
         const float opacity = group.m_color[3];
-        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
     }
 }
 
@@ -1125,7 +1125,7 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
     m_sizeSlider->setValue(size);
     m_visibilityCheckbox->setChecked(visible);
     m_shapeSelector->setCurrentText(shapeText);
-    m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
+    m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
 
     m_groupEditorWidget->setEnabled(true);
     m_treeWidget->blockSignals(false);

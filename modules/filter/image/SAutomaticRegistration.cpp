@@ -199,11 +199,11 @@ void SAutomaticRegistration::updating()
             {
                 std::stringstream transformStream;
 
-                for(std::uint8_t i = 0 ; i < 16 ; ++i)
+                for(std::uint8_t j = 0 ; j < 16 ; ++j)
                 {
-                    transformStream << transform->getCoefficients()[i];
+                    transformStream << transform->getCoefficients()[j];
 
-                    if(i != 15)
+                    if(j != 15)
                     {
                         transformStream << ";";
                     }
