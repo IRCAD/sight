@@ -44,6 +44,21 @@ lint:sheldon:
       -DSIGHT_ENABLE_REALSENSE=ON
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
       -DSIGHT_ENABLE_GDB=ON
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=${SIGHT_ENABLE_CLANG_TIDY}
+    # Analyze sources with Clang-Tidy
+    - >
+      if [ "${SIGHT_ENABLE_CLANG_TIDY}" == "ON" ]; then
+        sed -i s/-gmodules//g compile_commands.json
+        git diff --name-only --diff-filter=d --merge-base dev | grep '.cpp$' >sources.txt || true
+        if [ $(cat sources.txt | wc -l) -gt 0 ]; then
+            run-clang-tidy-13 -j$(nproc) -p . $(cat sources.txt) | tee clang-tidy.log
+            aha -f clang-tidy.log >clang-tidy.html
+            echo [ >tmp.json
+            sed -En s+.*$(realpath $PWD/..)/'([^:]*):([^:]*):[^:]*: .*warning:[^ ]* .*\[1m(.*) (\[.*\]).*+{"description": "\3 \4", "fingerprint": "\1:\2\4", "severity": "minor", "location": {"path": "\1", "lines": {"begin": \2}}},+p' clang-tidy.log >>tmp.json
+            head -c -2 tmp.json >codequality.json
+            echo ] >>codequality.json
+        fi
+      fi
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
@@ -93,9 +108,11 @@ lint:sheldon:
       - .build/coverage
       - .build/bin/*.core
       - .build/testImages
+      - .build/clang-tidy.html
     reports:
       junit: .build/junit.xml
       metrics: .build/metrics.txt
+      codequality: .build/codequality.json
 
 build:linux-21.10-debug-gcc:
   extends: .linux_build
@@ -121,6 +138,7 @@ build:linux-21.10-RelWithDebInfo-clang:
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    SIGHT_ENABLE_CLANG_TIDY: "ON"
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
 

@@ -1,0 +1,4 @@
+---
+Checks: '*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-bugprone-macro-parentheses,-cppcoreguidelines-macro-usage,-modernize-use-trailing-return-type,-misc-non-private-member-variables-in-classes,-cppcoreguidelines-non-private-member-variables-in-classes,-modernize-use-using,-bugprone-reserved-identifier'
+HeaderFilterRegex: '.*/sight/.*'
+...
