@@ -151,11 +151,6 @@ build:linux-21.10-coverage-gcc:
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
-  coverage: /^lines:\s+(\d+\.*\d*\%).*$/
-  artifacts:
-    <<: *linux_build_artifacts
-    reports:
-      cobertura: .build/coverage/cobertura-coverage.xml
 
 deploy:linux-debug:
   extends: .linux_deploy
