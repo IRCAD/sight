@@ -25,16 +25,60 @@
 #include "ui/base/config.hpp"
 #include "ui/base/registry/Action.hpp"
 
-#include <core/com/Signals.hpp>
-#include <core/com/Slots.hpp>
-
 #include <service/IService.hpp>
 
 namespace sight::ui::base
 {
 
 /**
- * @brief   Defines the service interface managing the menu items.
+ * @brief   Defines the service interface managing menu or toolbar items.
+ *
+ * @section Signals Signals
+ * - \b isChecked(bool): Emitted when the action is checked or unchecked.
+ * - \b checked(): Emitted when the action is checked.
+ * - \b unchecked(): Emitted when the action is unchecked.
+ * - \b isEnabled(bool): Emitted when the action is enabled or disabled.
+ * - \b enabled(): Emitted when the action is enabled.
+ * - \b disabled(): Emitted when the action is disabled.
+ *
+ * @section Slots Slots
+ * - \b setChecked(bool): sets whether the action is checked.
+ * - \b check(): check the action.
+ * - \b uncheck(): uncheck the action.
+ * - \b setVisible(bool): sets whether the action is visible in its container.
+ * - \b show(): make the action visible.
+ * - \b hide(): make the action invisible.
+ * - \b setEnabled(bool): sets whether the action can be interacted with.
+ * - \b enable(): make the action interactive.
+ * - \b disable(): make the action not interactive.
+ * - \b setIsActive(bool): deprecated, synonym of setChecked().
+ * - \b activate(): deprecated, synonym of check().
+ * - \b deactivate(): deprecated, synonym of uncheck().
+ * - \b setIsExecutable(bool): deprecated, synonym of setEnabled()
+ * - \b setExecutable(): deprecated, synonym of enable().
+ * - \b setInexecutable(): deprecated, synonym of disable().
+ *
+ * Example of configuration
+ * @code{.xml}
+    <service uid="item" type="sight::module::ui::base::SDefaultAction" autoConnect="false" >
+        <state checked="false" enabled="false" inverse="true" visible="true" />
+        <confirmation message="..." />
+    </service>
+   @endcode
+ *
+ * All configurations options are optional.
+ * - \<state checked="false" enabled="false" /\> : fix the state of the action in the menu and Toolbar.
+ *   - \b enabled not mandatory (Default value true ) : allows to enable/disable the execution of the action.
+ *     If the action appears in the interface it will be enabled/disabled.
+ *   - \b checked not mandatory (Default value false ):
+ *     If the action appears in the interface it will be checked/unchecked.
+ *   - \b visible not mandatory (Default value true ):
+ *     If true, the action is visible in the interface (and if the action is associated to a menu and/or a toolbar).
+ *   - \b inverse not mandatory (Default value true) : allow to invert the state of the action (if "check")
+ * - \b sync: set to true to emit the 'checked' signals synchronously instead of the default, asynchronously.
+ * - \<confirmation message="..." /\> : configure if the action must be confirmed by the user before executing it.
+ *   - \b message not mandatory : if not empty the message is shown in dialog box.
+ *   - \b defaultButton (optional) (default defined by the gui backend): dialog default button (true or false)
  */
 class UI_BASE_CLASS_API IAction : public sight::service::IService
 {
@@ -47,21 +91,25 @@ public:
      * @name Signals
      * @{
      */
+    typedef core::com::Signal<void (bool)> bool_signal_t;
+    typedef core::com::Signal<void ()> void_signal_t;
+
+    /// Signal emitted when action is checked/unchecked
+    static const core::com::Signals::SignalKeyType s_IS_ENABLED_SIG;
 
     /// Signal emitted when action is enabled
-    typedef core::com::Signal<void ()> EnabledSignalType;
     static const core::com::Signals::SignalKeyType s_ENABLED_SIG;
 
     /// Signal emitted when action is disabled
-    typedef core::com::Signal<void ()> DisabledSignalType;
     static const core::com::Signals::SignalKeyType s_DISABLED_SIG;
 
+    /// Signal emitted when action is checked/unchecked
+    static const core::com::Signals::SignalKeyType s_IS_CHECKED_SIG;
+
     /// Signal emitted when action is checked
-    typedef core::com::Signal<void ()> CheckedSignalType;
     static const core::com::Signals::SignalKeyType s_CHECKED_SIG;
 
     /// Signal emitted when action is unchecked
-    typedef core::com::Signal<void ()> UncheckedSignalType;
     static const core::com::Signals::SignalKeyType s_UNCHECKED_SIG;
     /**
      * @}
@@ -81,23 +129,41 @@ public:
     /// Slot to disable the action
     static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
-    /// Slot to activate/deactivate the action
+    /// Deprecated: Slot to check or uncheck the action
     static const core::com::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;
 
-    /// Slot to activate the action
+    /// Deprecated: Slot to check the action
     static const core::com::Slots::SlotKeyType s_ACTIVATE_SLOT;
 
-    /// Slot to desactivate the action
+    /// Deprecated: Slot to check the action
     static const core::com::Slots::SlotKeyType s_DEACTIVATE_SLOT;
 
-    /// Slot to enable/disable the action
+    /// Slot to check or uncheck the action
+    static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT;
+
+    /// Slot to check the action
+    static const core::com::Slots::SlotKeyType s_CHECK_SLOT;
+
+    /// Slot to check the action
+    static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT;
+
+    /// Deprecated: Slot to enable/disable the action
     static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT;
 
-    /// Slot to enable the action
+    /// Deprecated: Slot to enable the action
     static const core::com::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT;
 
-    /// Slot to disable the action
+    /// Deprecated: Slot to disable the action
     static const core::com::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT;
+
+    /// Slot to enable or disable the action
+    static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+
+    /// Slot to enable the action
+    static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;
+
+    /// Slot to disable the action
+    static const core::com::Slots::SlotKeyType s_DISABLE_SLOT;
     /**
      * @}
      */
@@ -108,47 +174,53 @@ public:
     /// Method called when the action service is starting
     UI_BASE_API void actionServiceStarting();
 
-    /// Set the action service is active/inactive.
-    UI_BASE_API virtual void setIsActive(bool isActive);
+    /// Checks or unchecks the action service.
+    UI_BASE_API virtual void setChecked(bool checked);
 
-    /// Set the action service is active.
-    UI_BASE_API virtual void activate();
+    /// Sets the action service executable or not.
+    [[nodiscard]] UI_BASE_API bool checked() const;
 
-    /// Set the action service is not active.
-    UI_BASE_API virtual void deactivate();
+    /// Sets the action service is active/inactive.
+    [[deprecated("Removed in sight 23.0.")]] UI_BASE_API virtual void setIsActive(bool isActive);
 
-    /// Return true if action service is active.
-    UI_BASE_API bool getIsActive() const;
+    /// Returns true if action service is active.
+    [[deprecated("Removed in sight 23.0.")]] UI_BASE_API bool getIsActive() const;
 
-    /// Set the action service executable or not.
-    UI_BASE_API virtual void setIsExecutable(bool isExecutable);
+    /// Enables or disables the action service.
+    UI_BASE_API void setEnabled(bool enabled);
 
-    /// Set the action service executable.
-    UI_BASE_API virtual void setExecutable();
+    /// Sets the action service executable or not.
+    [[nodiscard]] UI_BASE_API bool enabled() const;
 
-    /// Set the action service not executable.
-    UI_BASE_API virtual void setInexecutable();
+    /// Sets the action service executable or not.
+    [[deprecated("Removed in sight 23.0.")]] UI_BASE_API void setIsExecutable(bool isExecutable);
 
-    /// Return action service is executable.
-    UI_BASE_API bool getIsExecutable() const;
+    /// Returns action service is executable.
+    [[deprecated("Removed in sight 23.0.")]] UI_BASE_API bool getIsExecutable() const;
 
-    /// Show or hide the action.
+    /// Shows or hides the action.
     UI_BASE_API void setVisible(bool isVisible);
 
-    /// Show the action.
+    /// Shows the action.
     UI_BASE_API void show();
 
-    /// Hide the action.
+    /// Hides the action.
     UI_BASE_API void hide();
 
     /// Returns true if action is visible
-    UI_BASE_API bool isVisible() const;
+    [[deprecated("Removed in sight 23.0.")]] UI_BASE_API bool isVisible() const;
 
-    /// Return true if the active state should be inverted.
-    UI_BASE_API bool isInverted() const;
+    /// Returns true if action is visible
+    [[nodiscard]] UI_BASE_API bool visible() const;
+
+    /// Returns true if the active state is inverted.
+    [[deprecated("Removed in sight 23.0.")]] UI_BASE_API bool isInverted() const;
+
+    /// Returns true if the active state is inverted.
+    [[nodiscard]] UI_BASE_API bool inverted() const;
 
     /**
-     * @brief Confirm that the action must be executed.
+     * @brief Confirms that the action must be executed.
      *
      * If action is configured to be confirmed : show a dialog box to confirm execution.
      * Else return true
@@ -160,62 +232,23 @@ public:
 protected:
 
     UI_BASE_API IAction();
-
     UI_BASE_API virtual ~IAction();
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-
-    /**
-     * @brief Initialize the action.
-     *
-     * Example of configuration
-     * @code{.xml}
-           <service uid="item" type="sight::module::ui::base::SDefaultAction" autoConnect="false" >
-              <state active="false" executable="false" inverse="true" visible="true" />
-              <confirmation value="true" message="..." />
-           </service>
-       @endcode
-     * - \<state active="false" executable="false" /\> : fix the state of the action in the menu and Toolbar.
-     *   - \b executable not mandatory (Default value true ) : allows to enable/disable the execution of the action.
-     *     If the action appears in the interface it will be enabled/disabled.
-     *   - \b active not mandatory (Default value false ):
-     *     If the action appears in the interface it will be checked/unchecked.
-     *   - \b visible not mandatory (Default value true ):
-     *     If true, the action is visible in the interface (and if the action is associated to a menu and/or a toolbar).
-     *   - \b inverse not mandatory (Default value true) : allow to invert the state of the action (if "check")
-     * - \<confirmation value="true" message="..." /\> : configure if the action must be confirmed
-     *                                                  by the user before executing it.
-     *   - \b value : if true the action will show a confirmation message before executing it.
-     *   - \b message not mandatory : if not empty the message is shown in dialog box.
-     *   - \b defaultbutton not mandatory (default defined by underlying gui backend) :
-     *                      specify the dialog default button (true or false)
-     */
+    /// Initializes the action. This should be called in the configuring() method in derived classes.
     UI_BASE_API void initialize();
 
 private:
 
     ui::base::registry::Action::sptr m_registry;
 
-    /// Handle the information of the action state inversion.
-    bool m_isInverted {false};
-    bool m_isActive {false};
-    bool m_isExecutable {true};
-    bool m_isVisible {true};
+    /// Handles the information of the action state inversion.
+    bool m_inverted {false};
+    bool m_checked {false};
+    bool m_enabled {true};
+    bool m_visible {true};
     bool m_confirmAction {false};
+    bool m_defaultButton {false};
     std::string m_confirmMessage;
-    std::string m_defaultButton;
-
-    /// Signal emitted when action is enabled
-    EnabledSignalType::sptr m_sigEnabled;
-
-    /// Signal emitted when action is disabled
-    DisabledSignalType::sptr m_sigDisabled;
-
-    /// Signal emitted when action is checked
-    CheckedSignalType::sptr m_sigChecked;
-
-    /// Signal emitted when action is unchecked
-    UncheckedSignalType::sptr m_sigUnchecked;
 };
 
 //-----------------------------------------------------------------------------
@@ -227,12 +260,12 @@ public:
     LockAction(IAction::wptr action) :
         m_action(action)
     {
-        m_action.lock()->setIsExecutable(false);
+        m_action.lock()->setEnabled(false);
     }
 
     ~LockAction()
     {
-        m_action.lock()->setIsExecutable(true);
+        m_action.lock()->setEnabled(true);
     }
 
 private:

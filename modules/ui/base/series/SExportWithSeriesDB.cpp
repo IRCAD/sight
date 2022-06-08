@@ -72,10 +72,10 @@ void SExportWithSeriesDB::info(std::ostream& _sstream)
 void SExportWithSeriesDB::configuring()
 {
     this->sight::ui::base::IAction::initialize();
-    std::vector<ConfigurationType> vectConfig = m_configuration->find("IOSelectorSrvConfig");
+    auto vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
-        ConfigurationType selectorConfig = vectConfig.at(0);
+        auto selectorConfig = vectConfig.at(0);
         SIGHT_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
         m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
     }

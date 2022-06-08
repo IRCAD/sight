@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,10 +60,10 @@ public:
     UI_BASE_API void actionServiceStarting();
 
     /// Method called when the action service is activated or not
-    UI_BASE_API void actionServiceSetActive(bool isActive);
+    UI_BASE_API void actionServiceSetChecked(bool isChecked);
 
-    /// Method called when the action service is executable or not
-    UI_BASE_API void actionServiceSetExecutable(bool isExecutable);
+    /// Method called when the action service is enabled or not
+    UI_BASE_API void actionServiceSetEnabled(bool isEnabled);
 
     /// Method called when the action service is visible or not
     UI_BASE_API void actionServiceSetVisible(bool isVisible);

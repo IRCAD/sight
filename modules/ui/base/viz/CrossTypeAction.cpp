@@ -85,7 +85,7 @@ void CrossTypeAction::configuring()
 
     if(this->m_configuration->size() > 0)
     {
-        std::vector<ConfigurationType> vectConfig = this->m_configuration->find("crossType");
+        auto vectConfig = this->m_configuration->find("crossType");
         SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
         m_crossType = vectConfig.at(0)->getValue();
         boost::algorithm::trim(m_crossType);

@@ -133,8 +133,8 @@ public:
      * If a menuItem has attribute start="false", the associated action won't be started and the menuItem will be
      * disabled.
      * If a menuItem has attribute start="true", two possibilities: \n
-     *  - the associated action has attribute executable="false" then the menuItem will be disabled.\n
-     *  - the associated action has attribute executable="true" then the menuItem will be enabled.\n
+     *  - the associated action has attribute enabled="false" then the menuItem will be disabled.\n
+     *  - the associated action has attribute enabled="true" then the menuItem will be enabled.\n
      *
      * @warning If the action is present in a toolbar and a menu it must be started only one time.
      * @see ui::base::registry::Menu for more information on interaction between menubar and toolbar.

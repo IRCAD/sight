@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -429,7 +429,7 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
+void GuiRegistry::actionServiceSetChecked(std::string actionSid, bool isChecked)
 {
     if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
@@ -449,11 +449,11 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if(menuSrv)
                 {
-                    menuSrv->actionServiceSetActive(actionSid, isActive);
+                    menuSrv->actionServiceSetChecked(actionSid, isChecked);
                 }
                 else if(toolbarSrv)
                 {
-                    toolbarSrv->actionServiceSetActive(actionSid, isActive);
+                    toolbarSrv->actionServiceSetChecked(actionSid, isChecked);
                 }
                 else
                 {
@@ -469,7 +469,7 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecutable)
+void GuiRegistry::actionServiceSetEnabled(std::string actionSid, bool isEnabled)
 {
     if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
@@ -489,11 +489,11 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if(menuSrv)
                 {
-                    menuSrv->actionServiceSetExecutable(actionSid, isExecutable);
+                    menuSrv->actionServiceSetEnabled(actionSid, isEnabled);
                 }
                 else if(toolbarSrv)
                 {
-                    toolbarSrv->actionServiceSetExecutable(actionSid, isExecutable);
+                    toolbarSrv->actionServiceSetEnabled(actionSid, isEnabled);
                 }
                 else
                 {

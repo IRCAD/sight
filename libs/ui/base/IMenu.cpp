@@ -184,11 +184,11 @@ void IMenu::actionServiceStarting(std::string actionSrvSID)
             std::function<void()>(
                 [&]
             {
-                m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
-                const bool isInverted = actionSrv->isInverted();
-                const bool isActive   = actionSrv->getIsActive();
-                m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
-                m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
+                m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->enabled());
+                const bool inverted  = actionSrv->inverted();
+                const bool isChecked = actionSrv->checked();
+                m_layoutManager->menuItemSetChecked(menuItem, inverted ? !isChecked : isChecked);
+                m_layoutManager->menuItemSetVisible(menuItem, actionSrv->visible());
             })
         ).wait();
     }
@@ -196,7 +196,7 @@ void IMenu::actionServiceStarting(std::string actionSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void IMenu::actionServiceSetActive(std::string actionSrvSID, bool isActive)
+void IMenu::actionServiceSetChecked(std::string actionSrvSID, bool isChecked)
 {
     ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
         actionSrvSID,
@@ -210,15 +210,15 @@ void IMenu::actionServiceSetActive(std::string actionSrvSID, bool isActive)
         std::function<void()>(
             [&]
         {
-            const bool isInverted = actionSrv->isInverted();
-            m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
+            const bool inverted = actionSrv->inverted();
+            m_layoutManager->menuItemSetChecked(menuItem, inverted ? !isChecked : isChecked);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenu::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
+void IMenu::actionServiceSetEnabled(std::string actionSrvSID, bool isEnabled)
 {
     ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
         actionSrvSID,
@@ -229,7 +229,7 @@ void IMenu::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutab
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+            m_layoutManager->menuItemSetEnabled(menuItem, isEnabled);
         })
     ).wait();
 }

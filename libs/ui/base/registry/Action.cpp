@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,16 +65,16 @@ void Action::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
-void Action::actionServiceSetActive(bool isActive)
+void Action::actionServiceSetChecked(bool isChecked)
 {
-    ui::base::GuiRegistry::actionServiceSetActive(m_sid, isActive);
+    ui::base::GuiRegistry::actionServiceSetChecked(m_sid, isChecked);
 }
 
 //-----------------------------------------------------------------------------
 
-void Action::actionServiceSetExecutable(bool isExecutable)
+void Action::actionServiceSetEnabled(bool isEnabled)
 {
-    ui::base::GuiRegistry::actionServiceSetExecutable(m_sid, isExecutable);
+    ui::base::GuiRegistry::actionServiceSetEnabled(m_sid, isEnabled);
 }
 
 //-----------------------------------------------------------------------------

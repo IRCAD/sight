@@ -77,7 +77,7 @@ void SPreferencesConfiguration::configuring()
     {
         PreferenceElt pref;
 
-        ConfigurationType typeCfg = elt->findConfigurationElement("type");
+        auto typeCfg = elt->findConfigurationElement("type");
         SIGHT_ASSERT("element 'type' is missing.", typeCfg);
         if(typeCfg->getValue() == "checkbox")
         {
@@ -103,7 +103,7 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::DOUBLE;
 
-            ConfigurationType keyCfg = elt->findConfigurationElement("min");
+            auto keyCfg = elt->findConfigurationElement("min");
             if(keyCfg)
             {
                 pref.m_dMinMax.first = std::stod(keyCfg->getValue());
@@ -119,7 +119,7 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::U_INT;
 
-            ConfigurationType keyCfg = elt->findConfigurationElement("min");
+            auto keyCfg = elt->findConfigurationElement("min");
             if(keyCfg)
             {
                 pref.m_iMinMax.first = std::stoi(keyCfg->getValue());
@@ -136,15 +136,15 @@ void SPreferencesConfiguration::configuring()
             SIGHT_ERROR("Preference type " << typeCfg->getValue() << " is not implemented");
         }
 
-        ConfigurationType nameCfg = elt->findConfigurationElement("name");
+        auto nameCfg = elt->findConfigurationElement("name");
         SIGHT_ASSERT("element 'name' is missing.", nameCfg);
         pref.m_name = nameCfg->getValue();
 
-        ConfigurationType keyCfg = elt->findConfigurationElement("key");
+        auto keyCfg = elt->findConfigurationElement("key");
         SIGHT_ASSERT("element 'key' is missing.", keyCfg);
         pref.m_preferenceKey = keyCfg->getValue();
 
-        ConfigurationType defaultValueCfg = elt->findConfigurationElement("default_value");
+        auto defaultValueCfg = elt->findConfigurationElement("default_value");
         SIGHT_ASSERT("element 'default_value' is missing.", defaultValueCfg);
         pref.m_defaultValue = defaultValueCfg->getValue();
 
@@ -174,7 +174,7 @@ void SPreferencesConfiguration::configuring()
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
-            ConfigurationType valuesCfg = elt->findConfigurationElement("values");
+            auto valuesCfg = elt->findConfigurationElement("values");
             SIGHT_ASSERT("element 'values' is missing.", valuesCfg);
 
             const boost::char_separator<char> sep(", ;");
