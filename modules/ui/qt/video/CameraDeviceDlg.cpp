@@ -160,12 +160,42 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
         [[maybe_unused]] data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
         QListWidgetItem* item = m_camSettings->currentItem();
-        if((item && resolutionXMLOption == "preferences") || (item && resolutionXMLOption == "prompt"))
+
+        const auto resolutionWarning =
+            [this](size_t source_res_x, size_t source_res_y, int target_res_x, int target_res_y)
+            {
+                QMessageBox::warning(
+                    this,
+                    "Warning",
+                    QString(
+                        "The selected resolution (%3x%4) does not match the calibration (%1x%2).\n"
+                        "Please select a video source with a resolution of %1x%2."
+                    ).arg(source_res_x).arg(source_res_y).arg(target_res_x).arg(target_res_y)
+                );
+            };
+
+        if((item && resolutionXMLOption == "preferences")
+           || (item && resolutionXMLOption == "prompt"))
         {
             QCameraViewfinderSettings settings = qvariant_cast<QCameraViewfinderSettings>(item->data(Qt::UserRole));
             camera->setMaximumFrameRate(static_cast<float>(settings.maximumFrameRate()));
-            camera->setHeight(static_cast<std::size_t>(settings.resolution().height()));
+
+            if((camera->getWidth() != 0 || camera->getHeight() != 0)
+               && !(camera->getWidth() == static_cast<size_t>(settings.resolution().width())
+                    && camera->getHeight() == static_cast<size_t>(settings.resolution().height()))
+               && camera->getIsCalibrated())
+            {
+                resolutionWarning(
+                    camera->getWidth(),
+                    camera->getHeight(),
+                    settings.resolution().width(),
+                    settings.resolution().height()
+                );
+                return false;
+            }
+
             camera->setWidth(static_cast<std::size_t>(settings.resolution().width()));
+            camera->setHeight(static_cast<std::size_t>(settings.resolution().height()));
 
             PixelFormatTranslatorType::left_const_iterator iter;
             iter = pixelFormatTranslator.left.find(settings.pixelFormat());
@@ -200,6 +230,21 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
             }
 
             camera->setMaximumFrameRate(30.f);
+
+            if((camera->getWidth() != 0 || camera->getHeight() != 0)
+               && !(camera->getWidth() == static_cast<size_t>(xmlResolutionValue.width())
+                    && camera->getHeight() == static_cast<size_t>(xmlResolutionValue.height()))
+               && camera->getIsCalibrated())
+            {
+                resolutionWarning(
+                    camera->getWidth(),
+                    camera->getHeight(),
+                    xmlResolutionValue.width(),
+                    xmlResolutionValue.height()
+                );
+                return false;
+            }
+
             camera->setHeight(static_cast<size_t>(xmlResolutionValue.height()));
             camera->setWidth(static_cast<size_t>(xmlResolutionValue.width()));
         }

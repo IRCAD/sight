@@ -116,6 +116,7 @@ service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CALIBRATION_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);

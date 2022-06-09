@@ -22,8 +22,8 @@
 
 #include "SPoseFrom2d.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <geometry/vision/helper.hpp>
 
@@ -34,21 +34,13 @@
 namespace sight::module::geometry::vision
 {
 
-//-----------------------------------------------------------------------------
+static const std::string s_UPDATE_CAMERA_SLOT = "updateCamera";
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2d::SPoseFrom2d() noexcept :
-    m_lastTimestamp(0),
-    m_patternWidth(80),
-    m_isInitialized(false)
+SPoseFrom2d::SPoseFrom2d() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-SPoseFrom2d::~SPoseFrom2d() noexcept
-{
+    newSlot(s_UPDATE_CAMERA_SLOT, &SPoseFrom2d::initialize, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,6 +95,8 @@ void SPoseFrom2d::starting()
         auto sig = pl->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
+
+    this->initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +106,6 @@ void SPoseFrom2d::stopping()
     m_cameras.clear();
     m_3dModel.clear();
     m_lastTimestamp = 0;
-    m_isInitialized = false;
 
     auto pl = m_pointList.lock();
     if(pl)
@@ -138,12 +131,7 @@ void SPoseFrom2d::updating()
 
 void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
-    SIGHT_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped());
-
-    if(!m_isInitialized)
-    {
-        this->initialize();
-    }
+    SIGHT_WARN_IF("Invoking computeRegistration while service is STOPPED", this->isStopped());
 
     if(this->isStarted())
     {
@@ -224,6 +212,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
 
 void SPoseFrom2d::initialize()
 {
+    m_cameras.clear();
     for(std::size_t idx = 0 ; idx < m_camera.size() ; ++idx)
     {
         auto camera = m_camera[idx].lock();
@@ -262,8 +251,6 @@ void SPoseFrom2d::initialize()
 
         m_cameras.push_back(cam);
     }
-
-    m_isInitialized = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -306,9 +293,11 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 
 service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_CAMERA_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_CAMERA_SLOT},
+        {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_CAMERA_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------

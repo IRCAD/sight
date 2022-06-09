@@ -448,6 +448,7 @@ void SCamera::onChooseDevice()
     }
     else
     {
+        bool configured = true;
         for(auto& camera : cameras)
         {
             module::ui::qt::video::CameraDeviceDlg camDialog(m_resolution);
@@ -463,7 +464,8 @@ void SCamera::onChooseDevice()
             {
                 data::mt::locked_ptr<data::Camera> lock(camera);
 
-                isSelected = camDialog.getSelectedCamera(camera, m_resolution);
+                isSelected  = camDialog.getSelectedCamera(camera, m_resolution);
+                configured &= isSelected;
             }
 
             if(isSelected)
@@ -480,7 +482,10 @@ void SCamera::onChooseDevice()
             }
         }
 
-        m_sigConfiguredCameras->asyncEmit();
+        if(configured)
+        {
+            m_sigConfiguredCameras->asyncEmit();
+        }
     }
 }
 
