@@ -74,8 +74,8 @@ void SImageReader::openLocationDialog()
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
+    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.addFilter("NIfTI (.nii)", "*.nii");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -169,14 +169,14 @@ bool SImageReader::loadImage(
     sight::ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
 
     sight::io::base::reader::IObjectReader::sptr imageReader;
-    if(imgFile.string().find(".inr.gz") != std::string::npos)
+    if(boost::algorithm::ends_with(imgFile.string(), ".inr.gz"))
     {
         auto inrReader = sight::io::itk::InrImageReader::New();
         inrReader->setFile(imgFile);
         inrReader->addHandler(progressMeterGUI);
         imageReader = inrReader;
     }
-    else if(ext == ".nii")
+    else if(ext == ".nii" || boost::algorithm::ends_with(imgFile.string(), ".nii.gz"))
     {
         auto niftiReader = sight::io::itk::NiftiImageReader::New();
         niftiReader->setFile(imgFile);
@@ -187,7 +187,7 @@ bool SImageReader::loadImage(
     {
         std::stringstream ss;
         ss << "The file extension " << ext
-        << " is not supported by the image reader. Please choose either *.inr.gz or *.nii files";
+        << " is not supported by the image reader. Please choose either *.inr.gz, *.nii or *.nii.gz files";
         sight::ui::base::dialog::MessageDialog::show(
             "Error",
             ss.str(),

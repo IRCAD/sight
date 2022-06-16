@@ -78,8 +78,8 @@ void SImageWriter::openLocationDialog()
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
+    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.addFilter("NIfTI (.nii)", "*.nifti");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
@@ -129,7 +129,7 @@ bool SImageWriter::saveImage(const std::filesystem::path& imgSavePath, const dat
     std::string ext = imgSavePath.extension().string();
     boost::algorithm::to_lower(ext);
 
-    if(imgSavePath.string().find(".inr.gz") != std::string::npos)
+    if(boost::algorithm::ends_with(imgSavePath.string(), ".inr.gz"))
     {
         auto inrWriter = sight::io::itk::InrImageWriter::New();
         sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
@@ -137,7 +137,7 @@ bool SImageWriter::saveImage(const std::filesystem::path& imgSavePath, const dat
         inrWriter->setFile(imgSavePath);
         myWriter = inrWriter;
     }
-    else if(ext == ".nii")
+    else if(ext == ".nii" || boost::algorithm::ends_with(imgSavePath.string(), ".nii.gz"))
     {
         auto niftiWriter = sight::io::itk::NiftiImageWriter::New();
         niftiWriter->setFile(imgSavePath);

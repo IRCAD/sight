@@ -85,8 +85,8 @@ void SSeriesDBReader::openLocationDialog()
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
+    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.addFilter("Nifti (.nii)", "*.nii");
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
@@ -144,6 +144,7 @@ void SSeriesDBReader::updating()
         }
 
         data::helper::SeriesDB sDBhelper(*seriesDB);
+        sDBhelper.clear();
         sDBhelper.merge(localSeriesDB);
         sDBhelper.notify();
 

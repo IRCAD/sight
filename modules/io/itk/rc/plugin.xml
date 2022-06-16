@@ -14,7 +14,6 @@
         <desc>ITK Writer (ITK/Ircad)</desc>
     </extension>
 
-
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IWriter</type>
         <service>sight::module::io::itk::SSlicedImageSeriesWriter</service>
@@ -37,11 +36,10 @@
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
+        <type>sight::io::base::service::IReader</type>
         <service>sight::module::io::itk::SImageSeriesReader</service>
         <object>sight::data::ImageSeries</object>
-        <desc>ImageSeries Writer (ITK)</desc>
+        <desc>ImageSeries Reader (ITK)</desc>
     </extension>
-
 
 </plugin>

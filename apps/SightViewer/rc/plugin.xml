@@ -30,7 +30,7 @@
 
     <extension implements="sight::service::extension::Config" >
         <id>SightViewer_itk_SrvCfg</id>
-        <desc>ITK</desc>
+        <desc>Nifti or Inr images</desc>
         <config>
             <windowTitle>Open an .inr or .nii file</windowTitle>
         </config>
@@ -310,7 +310,7 @@
                 <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
                 <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
                 <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
-                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SImageReader" />
+                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SSeriesDBReader" />
             </service>
 
             <!-- Show the negato/volume view -->

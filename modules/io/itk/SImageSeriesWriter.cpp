@@ -78,8 +78,8 @@ void SImageSeriesWriter::openLocationDialog()
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
+    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.addFilter("Nifti (nii)", "*.nii");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     auto result = core::location::SingleFile::dynamicCast(dialogFile.show());

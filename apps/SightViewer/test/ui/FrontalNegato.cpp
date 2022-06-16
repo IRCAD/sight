@@ -50,7 +50,7 @@ void FrontalNegato::test()
         {
             openFile(
                 tester,
-                "SeriesDB image Reader (ITK)",
+                "Nifti or Inr images",
                 utestData::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 

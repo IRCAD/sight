@@ -148,7 +148,7 @@ void ITest::openFile(
         );
         QTest::qWait(10000);
     }
-    else if(format == "SeriesDB Inrimage Reader (ITK)")
+    else if(format == "Nifti or Inr images")
     {
         // The Show/hide volume button becomes enabled when the image is loaded.
         tester.take<QWidget*>(
