@@ -1,5 +1,7 @@
 cmake_policy(SET CMP0057 NEW)
 
+include(GNUInstallDirs)
+
 # install all Qt5 plugins
 if(${DEPENDS} MATCHES "_qt")
     message(STATUS "Install Qt plugins from '${QT_PLUGINS_SOURCE_DIR}'")
@@ -23,5 +25,5 @@ if(${DEPENDS} MATCHES "viz_scene3d ")
          "${OGRE_PLUGIN_DIR}/*Plugin_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
          "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
     )
-    file(INSTALL DESTINATION ${CMAKE_INSTALL_PREFIX}/ogrePlugins FILES ${OGRE_PLUGINS})
+    file(INSTALL DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} FILES ${OGRE_PLUGINS})
 endif()
