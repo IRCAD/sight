@@ -71,8 +71,6 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
                 tf->setName(name);
             }
 
-            tf->setWindowMinMax(tf->minMax());
-
             for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
             {
                 const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
@@ -85,6 +83,8 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
                                                             newColor->blue(), newColor->alpha());
                 (*tfData)[value] = color;
             }
+
+            tfData->setWindowMinMax(tfData->minMax());
 
             const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
             tfData->setClamped(isClamped);

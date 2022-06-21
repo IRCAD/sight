@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,15 +36,14 @@ namespace ut
 {
 
 /**
- * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
- * @see     ICompositeParser
- * @see     CompositeEditor
+ * @brief   Test the build of objects from XML configurations.
  */
 class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ConfigParserTest);
 CPPUNIT_TEST(testObjectCreationWithConfig);
 CPPUNIT_TEST(testImageParser);
+CPPUNIT_TEST(testTransferFunctionParser);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +54,7 @@ public:
     /// test object with services creation from a configuration
     void testObjectCreationWithConfig();
     void testImageParser();
+    void testTransferFunctionParser();
 
 private:
 

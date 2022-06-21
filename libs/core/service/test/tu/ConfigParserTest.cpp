@@ -28,10 +28,23 @@
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <service/AppConfigManager.hpp>
 #include <service/base.hpp>
 #include <service/parser/Image.hpp>
+#include <service/parser/TransferFunction.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
+
+#include <glm/common.hpp>
+#include <glm/gtc/epsilon.hpp>
+
+static const double s_EPSILON = 1e-5;
+
+// There might be some uncertainty when sampling, so we need to include an epsilon when testing equality
+#define ASSERT_COLOR_EQUALS(c1, c2) \
+    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, s_EPSILON)));
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ConfigParserTest);
@@ -155,6 +168,65 @@ void ConfigParserTest::testImageParser()
     }
 
     configManager->destroy();
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigParserTest::testTransferFunctionParser()
+{
+    service::IService::ConfigType config;
+
+    std::stringstream config_string;
+    config_string << "<object uid=\"test\" type=\"sight::data::TransferFunction\">"
+                     "<colors>"
+                     "<step color=\"#ffff00ff\" value=\"-200\" />"
+                     "<step color=\"#000000ff\" value=\"0\" />"
+                     "<step color=\"#0000ffff\" value=\"1\" />"
+                     "<step color=\"#0000ffff\" value=\"500\" />"
+                     "<step color=\"#00ff00ff\" value=\"1000\" />"
+                     "<step color=\"#ff0000ff\" value=\"1500\" />"
+                     "<step color=\"#000000ff\" value=\"5000\" />"
+                     "</colors>"
+                     "</object>";
+    boost::property_tree::read_xml(config_string, config);
+
+    // Create object configuration
+    const auto cfg = core::runtime::Convert::fromPropertyTree(config);
+
+    auto parser = sight::service::add<sight::service::parser::TransferFunction>(
+        "sight::service::parser::TransferFunction"
+    );
+    parser->setObjectConfig(cfg);
+
+    auto tf = sight::data::TransferFunction::New();
+    parser->createConfig(tf);
+
+    const auto piece = tf->pieces().front();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());
+
+    CPPUNIT_ASSERT_EQUAL(-200., piece->minMax().first);
+    CPPUNIT_ASSERT_EQUAL(5000., piece->minMax().second);
+    CPPUNIT_ASSERT_EQUAL(5200., piece->window());
+    CPPUNIT_ASSERT_EQUAL(2400., piece->level());
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1., 1., 0., 1.), piece->sampleLinear(-200));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 0., 1.), piece->sampleLinear(0));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 1., 1.), piece->sampleLinear(250));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 1., 1.), piece->sampleLinear(500));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 1., 0., 1.), piece->sampleLinear(1000));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1., 0., 0., 1.), piece->sampleLinear(1500));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 0., 1.), piece->sampleLinear(5000));
+
+    CPPUNIT_ASSERT_EQUAL(-200., tf->minMax().first);
+    CPPUNIT_ASSERT_EQUAL(5000., tf->minMax().second);
+    CPPUNIT_ASSERT_EQUAL(2., tf->window());
+    CPPUNIT_ASSERT_EQUAL(0., tf->level());
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1., 1., 0., 1.), tf->sampleLinear(-200));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 0., 1.), tf->sampleLinear(0));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 1., 1.), tf->sampleLinear(250));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 1., 1.), tf->sampleLinear(500));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 1., 0., 1.), tf->sampleLinear(1000));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1., 0., 0., 1.), tf->sampleLinear(1500));
+    ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 0., 1.), tf->sampleLinear(5000));
 }
 
 //------------------------------------------------------------------------------
