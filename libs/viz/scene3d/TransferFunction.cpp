@@ -123,14 +123,14 @@ void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
     // But we also want one extra point outside each bound window to sample the default color if the tf is clamped,
     // so we need at the end 1+2=3 extra samples
     // We only use the required space of the texture to be more efficient (up to 50x faster)
-    const value_t range         = std::min(max - min, value_t(TEXTURE_SIZE));
+    const value_t range         = std::min(max - min + 1, value_t(TEXTURE_SIZE));
     const value_t intensityStep = (max - min) / (range - 3);
 
     value_t i = min - intensityStep;
 
     // We fill the whole range plus one value for the right bound to avoid rounding errors on the GPU
     // We clamp "manually" in the GLSL
-    for(std::uint32_t k = 0 ; k < range + 1 ; ++k)
+    for(std::uint32_t k = 0 ; k < range ; ++k)
     {
         const auto color = glm::u8vec4(_tf->sample(i) * 255.0);
 
