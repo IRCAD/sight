@@ -144,72 +144,36 @@
             <!-- declaration of actions/slot callers -->
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
-            <service uid="loadTransformationAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>transformReaderSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="loadTransformationAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="loadMeshAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>meshReaderSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="loadMeshAct" type="sight::module::ui::base::SAction" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/show</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                </slots>
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/show</slot>
-                </slots>
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                    <slot>startVideoAct/show</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/disable</slot>
-                    <slot>loopVideoAct/disable</slot>
-                    <slot>loopVideoAct/uncheck</slot>
-                </slots>
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
-                </slots>
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="learnBackgroundAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>maskerSrv/setBackground</slot>
-                </slots>
+            <service uid="learnBackgroundAct" type="sight::module::ui::base::SAction" >
             </service>
 
             <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher" >
@@ -218,11 +182,7 @@
                 <parameter replace="ICON_PATH" by="ExRGBDImageMasking/app.ico" />
             </service>
 
-            <service uid="showSettingsAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>settingsView/setVisible</slot>
-                </slots>
-            </service>
+            <service uid="showSettingsAct" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -394,6 +354,56 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>loadTransformationAct/clicked</signal>
+                <slot>transformReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>loadMeshAct/clicked</signal>
+                <slot>meshReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>resumeVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/disable</slot>
+                <slot>loopVideoAct/disable</slot>
+                <slot>loopVideoAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>loopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </connect>
+
+            <connect>
+                <signal>learnBackgroundAct/clicked</signal>
+                <slot>maskerSrv/setBackground</slot>
+            </connect>
+
+            <connect>
                 <signal>videoSelectorSrv/configuredFile</signal>
                 <signal>videoSelectorSrv/configuredStream</signal>
                 <signal>videoSelectorSrv/configuredDevice</signal>
@@ -438,6 +448,11 @@
             <connect>
                  <signal>maskerThresholdParamSrv/intChanged</signal>
                  <slot>maskerSrv/setThreshold</slot>
+            </connect>
+
+            <connect>
+                <signal>showSettingsAct/isChecked</signal>
+                <slot>settingsView/setVisible</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

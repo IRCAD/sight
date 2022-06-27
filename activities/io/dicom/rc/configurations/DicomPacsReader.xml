@@ -111,11 +111,7 @@
             <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
         </service>
 
-        <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>pullSeriesController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_pullSeries" type="sight::module::ui::base::SAction" />
 
         <service uid="action_pushSeries" type="sight::module::ui::base::series::SPushSelection">
             <in key="selectedSeries" uid="localSelections" />
@@ -189,14 +185,21 @@
             <signal>pullSeriesController/progressed</signal>
             <slot>progressBarController/updateProgress</slot>
         </connect>
+
         <connect>
             <signal>pullSeriesController/progressStarted</signal>
             <slot>progressBarController/startProgress</slot>
         </connect>
+
         <connect>
             <signal>pullSeriesController/progressStopped</signal>
             <slot>progressBarController/stopProgress</slot>
-         </connect>
+        </connect>
+
+        <connect>
+            <signal>action_pullSeries/clicked</signal>
+            <slot>pullSeriesController/update</slot>
+        </connect>
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />

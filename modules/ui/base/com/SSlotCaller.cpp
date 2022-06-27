@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,6 +48,10 @@ static const service::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
 SSlotCaller::SSlotCaller() noexcept
 {
+    SIGHT_WARN(
+        "'SSlotCaller' is deprecated and will be removed in Sight 23.0,"
+        " please use 'SAction' with regular signal/slots connections instead."
+    );
 }
 
 //-----------------------------------------------------------------------------

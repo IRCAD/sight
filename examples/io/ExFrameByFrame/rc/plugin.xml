@@ -58,35 +58,11 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="previousImageAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/previousImage</slot>
-                </slots>
-            </service>
-
-            <service uid="nextImageAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/nextImage</slot>
-                </slots>
-            </service>
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="previousImageAct" type="sight::module::ui::base::SAction" />
+            <service uid="nextImageAct" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -130,6 +106,31 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>previousImageAct/clicked</signal>
+                <slot>videoGrabberSrv/previousImage</slot>
+            </connect>
+
+            <connect>
+                <signal>nextImageAct/clicked</signal>
+                <slot>videoGrabberSrv/nextImage</slot>
+            </connect>
 
             <connect>
                 <signal>camera/idModified</signal>

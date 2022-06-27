@@ -90,12 +90,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>action_pullSeries/disable</slot>
-                <slot>pullSeriesController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_pullSeries" type="sight::module::ui::base::SAction" />
 
         <service uid="action_pushSeries" type="sight::module::ui::base::series::SPushSelection">
             <in key="selectedSeries" uid="localSelections" />
@@ -152,8 +147,9 @@
         <!-- ******************************* Connections ************************************** -->
 
         <connect>
-            <signal>pullSeriesController/updated</signal>
-            <slot>action_pullSeries/enable</slot>
+            <signal>action_pullSeries/clicked</signal>
+            <slot>action_pullSeries/disable</slot>
+            <slot>pullSeriesController/update</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

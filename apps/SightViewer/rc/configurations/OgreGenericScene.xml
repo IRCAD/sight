@@ -516,20 +516,12 @@
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="sight::module::ui::base::com::SSlotCaller">
+        <service uid="windowedAct" type="sight::module::ui::base::SAction">
             <state visible="false" />
-            <slots>
-                <slot>genericSceneSrv/disableFullscreen</slot>
-                <slot>fullscreenAct/show</slot>
-            </slots>
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>imageWriterSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction"/>
 
         <!-- ******************************* Connections ***************************************** -->
 
@@ -668,6 +660,17 @@
             <signal>frontalLandmarksAdp/sendWorldCoord</signal>
             <signal>sagittalLandmarksAdp/sendWorldCoord</signal>
             <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
+        <connect>
+            <signal>windowedAct/clicked</signal>
+            <slot>genericSceneSrv/disableFullscreen</slot>
+            <slot>fullscreenAct/show</slot>
+        </connect>
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

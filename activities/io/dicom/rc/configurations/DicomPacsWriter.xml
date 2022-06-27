@@ -60,18 +60,10 @@
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>anonymizeController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_anonymize" type="sight::module::ui::base::SAction" />
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>pushSeriesController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::SAction" />
 
         <!-- ******************************* Services ***************************************** -->
 
@@ -132,6 +124,16 @@
 
         <connect channel="${PROGRESS_CHANNEL}">
             <signal>anonymizeController/jobCreated</signal>
+        </connect>
+
+        <connect>
+            <signal>action_anonymize/clicked</signal>
+            <slot>anonymizeController/update</slot>
+        </connect>
+
+        <connect>
+            <signal>action_pushSeriesToPacs/clicked</signal>
+            <slot>pushSeriesController/update</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

@@ -99,52 +99,27 @@
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/show</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                </slots>
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/show</slot>
-                </slots>
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                    <slot>startVideoAct/show</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/disable</slot>
-                    <slot>loopVideoAct/disable</slot>
-                    <slot>loopVideoAct/uncheck</slot>
-                </slots>
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
-                </slots>
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
@@ -211,6 +186,46 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>resumeVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>loopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/disable</slot>
+                <slot>loopVideoAct/disable</slot>
+                <slot>loopVideoAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
 
             <connect>
                 <signal>videoSelectorSrv/configuredFile</signal>

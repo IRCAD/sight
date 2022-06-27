@@ -60,11 +60,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>calibrationWriterSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="writeCalibrationAct" type="sight::module::ui::base::SAction" />
 
         <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
             <inout key="cameraSeries" uid="${cameraSeries}" />
@@ -133,6 +129,11 @@
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>writeCalibrationAct/clicked</signal>
+            <slot>calibrationWriterSrv/update</slot>
+        </connect>
 
         <connect channel="preferencesModifiedProxy">
             <signal>chessboardSizeAct/parametersModified</signal>

@@ -181,124 +181,26 @@
 
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
+            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="startOpenvslamAct" type="sight::module::ui::base::SAction" />
+            <service uid="pauseOpenvslamAct" type="sight::module::ui::base::SAction" />
+            <service uid="showHidePointCloudAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>calibrationReaderSrv/update</slot>
-                </slots>
+            <service uid="enableLocalizationAct" type="sight::module::ui::base::SAction" >
+                <state checked="false" />
             </service>
 
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
-                </slots>
-            </service>
-
-            <service uid="startOpenvslamAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>frustumListAdp/clear</slot>
-                    <slot>resetOpenvslamAct/show</slot>
-                    <slot>startOpenvslamAct/hide</slot>
-                    <slot>stopOpenvslamAct/show</slot>
-                    <slot>openvslamSrv/startTracking</slot>
-                    <slot>EditorViews/hide</slot>
-                    <slot>openvslamInitSrvStatus/changeToOrange</slot>
-                    <slot>saveMapAct/show</slot>
-                    <slot>savePCAct/show</slot>
-                </slots>
-            </service>
-
-            <service uid="pauseOpenvslamAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>openvslamSrv/pauseTracker</slot>
-                </slots>
-            </service>
-
-            <service uid="showHidePointCloudAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>pointCloudAdp/toggleVisibility</slot>
-                </slots>
-            </service>
-
-            <service uid="enableLocalizationAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-             <state checked="false" />
-                <slots>
-                    <slot>openvslamSrv/enableLocalization</slot>
-                </slots>
-            </service>
-
-            <service uid="saveMapAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>openvslamSrv/saveMap</slot>
-                </slots>
-            </service>
-
-            <service uid="saveTrajectoriesAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>openvslamSrv/saveTrajectories</slot>
-                </slots>
-            </service>
-
-
-            <service uid="loadMapAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>openvslamSrv/loadMap</slot>
-                </slots>
-            </service>
-
-            <service uid="resetOpenvslamAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>openvslamSrv/resetPointCloud</slot>
-                    <slot>frustumListAdp/clear</slot>
-                </slots>
-            </service>
-
-            <service uid="savePCAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>meshWriterSrv/update</slot>
-                </slots>
-            </service>
-
-            <service uid="stopOpenvslamAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>resetOpenvslamAct/hide</slot>
-                    <slot>stopOpenvslamAct/hide</slot>
-                    <slot>startOpenvslamAct/show</slot>
-                    <slot>openvslamSrv/stopTracking</slot>
-                    <slot>EditorViews/show</slot>
-                    <slot>openvslamTrackingStatusSrv/changeToRed</slot>
-                    <slot>openvslamInitSrvStatus/changeToRed</slot>
-                </slots>
-            </service>
-
-            <service uid="HideAtStart" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>stopOpenvslamAct/hide</slot>
-                    <slot>resetOpenvslamAct/hide</slot>
-                    <slot>saveMapAct/hide</slot>
-                    <slot>savePCAct/hide</slot>
-                    <slot>saveTrajectoriesAct/hide</slot>
-                    <slot>loadMapAct/hide</slot>
-                </slots>
-            </service>
+            <service uid="saveMapAct" type="sight::module::ui::base::SAction" />
+            <service uid="saveTrajectoriesAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadMapAct" type="sight::module::ui::base::SAction" />
+            <service uid="resetOpenvslamAct" type="sight::module::ui::base::SAction" />
+            <service uid="savePCAct" type="sight::module::ui::base::SAction" />
+            <service uid="stopOpenvslamAct" type="sight::module::ui::base::SAction" />
+            <service uid="HideAtStart" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -480,6 +382,106 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>loadCalibAct/clicked</signal>
+                <slot>calibrationReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>loopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </connect>
+
+            <connect>
+                <signal>startOpenvslamAct/clicked</signal>
+                <slot>frustumListAdp/clear</slot>
+                <slot>resetOpenvslamAct/show</slot>
+                <slot>startOpenvslamAct/hide</slot>
+                <slot>stopOpenvslamAct/show</slot>
+                <slot>openvslamSrv/startTracking</slot>
+                <slot>EditorViews/hide</slot>
+                <slot>openvslamInitSrvStatus/changeToOrange</slot>
+                <slot>saveMapAct/show</slot>
+                <slot>savePCAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseOpenvslamAct/clicked</signal>
+                <slot>openvslamSrv/pauseTracker</slot>
+            </connect>
+
+            <connect>
+                <signal>showHidePointCloudAct/clicked</signal>
+                <slot>pointCloudAdp/toggleVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>enableLocalizationAct/clicked</signal>
+                <slot>openvslamSrv/enableLocalization</slot>
+            </connect>
+
+            <connect>
+                <signal>saveMapAct/clicked</signal>
+                <slot>openvslamSrv/saveMap</slot>
+            </connect>
+
+            <connect>
+                <signal>saveTrajectoriesAct/clicked</signal>
+                <slot>openvslamSrv/saveTrajectories</slot>
+            </connect>
+
+            <connect>
+                <signal>loadMapAct/clicked</signal>
+                <slot>openvslamSrv/loadMap</slot>
+            </connect>
+
+            <connect>
+                <signal>resetOpenvslamAct/clicked</signal>
+                <slot>openvslamSrv/resetPointCloud</slot>
+                <slot>frustumListAdp/clear</slot>
+            </connect>
+
+            <connect>
+                <signal>savePCAct/clicked</signal>
+                <slot>meshWriterSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>stopOpenvslamAct/clicked</signal>
+                <slot>resetOpenvslamAct/hide</slot>
+                <slot>stopOpenvslamAct/hide</slot>
+                <slot>startOpenvslamAct/show</slot>
+                <slot>openvslamSrv/stopTracking</slot>
+                <slot>EditorViews/show</slot>
+                <slot>openvslamTrackingStatusSrv/changeToRed</slot>
+                <slot>openvslamInitSrvStatus/changeToRed</slot>
+            </connect>
+
+            <connect>
+                <signal>HideAtStart/updated</signal>
+                <slot>stopOpenvslamAct/hide</slot>
+                <slot>resetOpenvslamAct/hide</slot>
+                <slot>saveMapAct/hide</slot>
+                <slot>savePCAct/hide</slot>
+                <slot>saveTrajectoriesAct/hide</slot>
+                <slot>loadMapAct/hide</slot>
+            </connect>
+
+            <connect>
                 <signal>camera/idModified</signal>
                 <slot>videoGrabberSrv/stopCamera</slot>
             </connect>
@@ -573,6 +575,11 @@
                 <slot>openvslamInitSrvStatus/changeToOrange</slot>
                 <slot>saveMapAct/show</slot>
                 <slot>savePCAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>enableLocalizationAct/isChecked</signal>
+                <slot>openvslamSrv/enableLocalization</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

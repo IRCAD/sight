@@ -9,6 +9,12 @@
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
+         <service>sight::module::ui::base::SAction</service>
+         <desc>Defines the default action to have a simple action button.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SDefaultAction</service>
          <desc>Defines the default action to have a simple action button.</desc>
     </extension>

@@ -388,19 +388,9 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <sync>true</sync>
-                <slots>
-                    <slot>parameterView/hide</slot>
-                    <slot>rightToolbarSliderView/show</slot>
-                </slots>
-             </service>
+            <service uid="hideParameterAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="showParameterAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>parameterView/show</slot>
-                    <slot>rightToolbarSliderView/hide</slot>
-                </slots>
+            <service uid="showParameterAct" type="sight::module::ui::base::SAction" >
                 <state checked="true" />
             </service>
 
@@ -598,6 +588,18 @@
 
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >
                 <signal>axisVisibilityAct/triggered</signal>
+            </connect>
+
+            <connect>
+                <signal>hideParameterAct/clicked</signal>
+                <slot>parameterView/hide</slot>
+                <slot>rightToolbarSliderView/show</slot>
+            </connect>
+
+            <connect>
+                <signal>showParameterAct/clicked</signal>
+                <slot>parameterView/show</slot>
+                <slot>rightToolbarSliderView/hide</slot>
             </connect>
 
             <connect>

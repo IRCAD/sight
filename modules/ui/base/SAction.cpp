@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,59 +19,62 @@
  *
  ***********************************************************************/
 
-#include "SDefaultAction.hpp"
-
-#include <service/macros.hpp>
+#include "SAction.hpp"
 
 namespace sight::module::ui::base
 {
 
-SDefaultAction::SDefaultAction() noexcept
-{
-    SIGHT_WARN(
-        "'SDefaultAction' is deprecated and will be removed in Sight 23.0,"
-        " please use 'SAction' instead."
-    );
-}
+static const core::com::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
 
 //-----------------------------------------------------------------------------
 
-SDefaultAction::~SDefaultAction() noexcept
+SAction::SAction() noexcept
 {
+    newSignal<IAction::void_signal_t>(s_CLICKED_SIG);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SDefaultAction::configuring()
+void SAction::configuring()
 {
     this->initialize();
+
+    auto config = this->getConfigTree();
+    m_sync = core::runtime::get_ptree_value(config, "sync", m_sync);
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultAction::starting()
+void SAction::starting()
 {
     this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultAction::stopping()
+void SAction::stopping()
 {
     this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultAction::updating()
+void SAction::updating()
 {
+    if(this->confirmAction())
+    {
+        auto sig = this->signal<void_signal_t>(s_CLICKED_SIG);
+        if(m_sync)
+        {
+            sig->emit();
+        }
+        else
+        {
+            sig->asyncEmit();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultAction::info(std::ostream& _sstream)
-{
-    _sstream << "Default button" << std::endl;
-}
-
-}
+} // namespace sight::module::ui::base

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,11 +55,12 @@ namespace sight::module::ui::base::metrics
             <inout key="image" uid="${image}" />
     </service>
 
-    <service uid="removeLastDistance" type="sight::module::ui::base::com::SSlotCaller">
-        <slots>
-            <slot>SRemoveDistanceAct/removeLastDistance</slot>
-        </slots>
-    </service>
+    <service uid="removeLastDistance" type="sight::module::ui::base::SAction" />
+
+    <connect>
+        <signal>removeLastDistance/clicked</signal>
+        <slot>SRemoveDistanceAct/removeLastDistance</slot>
+    </connect>
    @endcode
  *
  * @subsection In-Out In-Out

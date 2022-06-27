@@ -12,7 +12,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
@@ -45,25 +45,16 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger" >
+        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger">
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>anonymizeController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_anonymize" type="sight::module::ui::base::SAction" />
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>pushSeriesController/update</slot>
-                <slot>action_pushSeriesToPacs/disable</slot>
-            </slots>
-        </service>
+        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::SAction" />
 
         <service uid="pushSeriesController" type="sight::module::io::dicomweb::SSeriesPusher">
             <in key="selectedSeries" uid="selections" />
@@ -100,6 +91,17 @@
         <connect>
             <signal>pushSeriesController/updated</signal>
             <slot>action_pushSeriesToPacs/enable</slot>
+        </connect>
+
+        <connect>
+            <signal>action_anonymize/clicked</signal>
+            <slot>anonymizeController/update</slot>
+        </connect>
+
+        <connect>
+            <signal>action_pushSeriesToPacs/clicked</signal>
+            <slot>action_pushSeriesToPacs/disable</slot>
+            <slot>pushSeriesController/update</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

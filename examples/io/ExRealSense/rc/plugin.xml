@@ -252,88 +252,49 @@
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/show</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                </slots>
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/show</slot>
-                </slots>
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                    <slot>startVideoAct/show</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/disable</slot>
-                    <slot>loopVideoAct/disable</slot>
-                    <slot>loopVideoAct/uncheck</slot>
-                </slots>
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
-                </slots>
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="recordAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/record</slot>
-                </slots>
-            </service>
+            <service uid="recordAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="configureRecordingPathAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <service uid="configureRecordingPathAct" type="sight::module::ui::base::SAction" >
                 <slots>
                     <slot>videoGrabberSrv/configureRecordingPath</slot>
                 </slots>
             </service>
 
-            <service uid="showPCDepthAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>DMPointAdp/updateVisibility</slot>
-                </slots>
+            <service uid="showPCDepthAct" type="sight::module::ui::base::SAction" >
                 <state checked="false" />
             </service>
 
-            <service uid="showPCColorAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>VPointAdp/updateVisibility</slot>
-                </slots>
+            <service uid="showPCColorAct" type="sight::module::ui::base::SAction" >
                 <state checked="false" />
             </service>
 
             <!-- Show/hide the parameters view -->
 
-            <service uid="showfilterSettingsAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>filterSettingsView/setVisible</slot>
-                </slots>
-            </service>
+            <service uid="showfilterSettingsAct" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -647,6 +608,46 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>resumeVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/disable</slot>
+                <slot>loopVideoAct/disable</slot>
+                <slot>loopVideoAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>loopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </connect>
+
+            <connect>
+                <signal>recordAct/clicked</signal>
+                <slot>videoGrabberSrv/record</slot>
+            </connect>
+
+            <connect>
                 <signal>videoSelectorSrv/configuredFile</signal>
                 <signal>videoSelectorSrv/configuredStream</signal>
                 <signal>videoSelectorSrv/configuredDevice</signal>
@@ -747,6 +748,21 @@
                 <slot>distanceMapRenderSrv/requestRender</slot>
                 <slot>reconstructionRenderSrv/requestRender</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
+            </connect>
+
+            <connect>
+                <signal>showPCDepthAct/isChecked</signal>
+                <slot>DMPointAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>showPCColorAct/isChecked</signal>
+                <slot>VPointAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>showfilterSettingsAct/isChecked</signal>
+                <slot>filterSettingsView/setVisible</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

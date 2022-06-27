@@ -122,23 +122,10 @@
             <inout key="image" uid="image" />
         </service> -->
 
-        <service uid="ActionLoadLandmark" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>LoadLandmark/update</slot>
-            </slots>
-        </service>
+        <service uid="ActionLoadLandmark" type="sight::module::ui::base::SAction" />
+        <service uid="ActionSaveLandmark" type="sight::module::ui::base::SAction" />
+        <service uid="ActionEditLandmark" type="sight::module::ui::base::SAction" />
 
-        <service uid="ActionSaveLandmark" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>SaveLandmark/update</slot>
-            </slots>
-        </service>
-
-        <service uid="ActionEditLandmark" type="sight::module::ui::base::com::SBooleanSlotCaller">
-            <slots>
-                <slot>landmarksEditor/setVisible</slot>
-            </slots>
-        </service>
         <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SAddDistance">
             <inout key="image" uid="image" />
         </service>
@@ -194,6 +181,16 @@
             <out key="image" uid="image" />
         </service>
 
+        <connect>
+            <signal>ActionLoadLandmark/clicked</signal>
+            <slot>LoadLandmark/update</slot>
+        </connect>
+
+        <connect>
+            <signal>ActionSaveLandmark/clicked</signal>
+            <slot>SaveLandmark/update</slot>
+        </connect>
+
         <connect channel="crossTypeChannel">
             <signal>ActionHideCross/crossTypeModified</signal>
             <signal>ActionShowNormalCross/crossTypeModified</signal>
@@ -228,6 +225,11 @@
         <!-- Connection to called 'next' slot of the application's SSequencer. -->
         <connect channel="${nextActivityChannel}">
             <signal>ActionNext/triggered</signal>
+        </connect>
+
+        <connect>
+            <signal>ActionEditLandmark/isChecked</signal>
+            <slot>landmarksEditor/setVisible</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

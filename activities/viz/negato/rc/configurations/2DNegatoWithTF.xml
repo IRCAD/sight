@@ -60,11 +60,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>imageWriterSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction"/>
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
@@ -150,6 +146,11 @@
 
         <connect channel="${PickingChannel}">
             <signal>pickerInteractor/picked</signal>
+        </connect>
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
         </connect>
 
         <start uid="LockImageSrv" />

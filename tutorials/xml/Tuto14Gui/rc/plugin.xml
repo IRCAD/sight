@@ -281,55 +281,38 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="item1Act" type="sight::module::ui::base::SDefaultAction" >
+        <service uid="item1Act" type="sight::module::ui::base::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="item2Act" type="sight::module::ui::base::SDefaultAction" >
+        <service uid="item2Act" type="sight::module::ui::base::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="item3Act" type="sight::module::ui::base::SDefaultAction" />
+        <service uid="item3Act" type="sight::module::ui::base::SAction" />
 
-        <service uid="item4Act" type="sight::module::ui::base::SDefaultAction" >
+        <service uid="item4Act" type="sight::module::ui::base::SAction" >
             <state checked="false" />
         </service>
 
-        <service uid="item5Act" type="sight::module::ui::base::SDefaultAction" >
+        <service uid="item5Act" type="sight::module::ui::base::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="startAct" type="sight::module::ui::base::com::SSlotCaller" >
+        <service uid="startAct" type="sight::module::ui::base::SAction" >
             <confirmation value="true" message="Are you sure you want to Start ?"/>
-            <slots>
-                <slot>startAct/hide</slot>
-                <slot>stopAct/enable</slot>
-                <slot>pauseAct/show</slot>
-            </slots>
         </service>
 
-        <service uid="stopAct" type="sight::module::ui::base::com::SSlotCaller" >
+        <service uid="stopAct" type="sight::module::ui::base::SAction" >
             <state enabled="false" />
-            <slots>
-                <slot>startAct/show</slot>
-                <slot>stopAct/disable</slot>
-                <slot>pauseAct/hide</slot>
-            </slots>
         </service>
 
-        <service uid="pauseAct" type="sight::module::ui::base::com::SSlotCaller" >
+        <service uid="pauseAct" type="sight::module::ui::base::SAction" >
             <state checked="true" visible="false" />
-            <slots>
-                <slot>startAct/show</slot>
-                <slot>pauseAct/hide</slot>
-            </slots>
         </service>
 
-        <service uid="view5VisibilityAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
+        <service uid="view5VisibilityAct" type="sight::module::ui::base::SAction" >
             <state checked="true" inverse="true" />
-            <slots>
-                <slot>sub5View/setVisible</slot>
-            </slots>
         </service>
 
         <service uid="item16Act" type="sight::module::ui::base::com::SStarter" >
@@ -371,7 +354,7 @@
         </service>
 
         <service uid="ircadIHULogoSrv" type="sight::module::ui::qt::image::SImage" >
-            <path>flaticons/IrcadIHU.svg</path>
+            <path>sight::module::ui::flaticons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 
@@ -395,6 +378,31 @@
         <connect>
             <signal>meSrv/clicked</signal>
             <slot>checkableSrv/uncheck</slot>
+        </connect>
+
+        <connect>
+            <signal>view5VisibilityAct/isChecked</signal>
+            <slot>sub5View/setVisible</slot>
+        </connect>
+
+        <connect>
+            <signal>startAct/updated</signal>
+            <slot>startAct/hide</slot>
+            <slot>stopAct/enable</slot>
+            <slot>pauseAct/show</slot>
+        </connect>
+
+        <connect>
+            <signal>stopAct/updated</signal>
+            <slot>startAct/show</slot>
+            <slot>stopAct/disable</slot>
+            <slot>pauseAct/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>startAct/updated</signal>
+            <slot>startAct/show</slot>
+            <slot>pauseAct/hide</slot>
         </connect>
 
         <!-- ******************************* Start services ***************************************** -->

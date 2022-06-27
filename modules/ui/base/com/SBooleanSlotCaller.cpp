@@ -24,10 +24,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <service/macros.hpp>
-
-#include <regex>
-
 namespace sight::module::ui::base
 {
 
@@ -38,6 +34,10 @@ namespace com
 
 SBooleanSlotCaller::SBooleanSlotCaller() noexcept
 {
+    SIGHT_WARN(
+        "'SBooleanSlotCaller' is deprecated and will be removed in Sight 23.0,"
+        " please use 'SAction' with regular signal/slots connections instead."
+    );
 }
 
 //-----------------------------------------------------------------------------

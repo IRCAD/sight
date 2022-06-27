@@ -102,11 +102,7 @@ are already displayed and where they are displayed on screen.
                 </parameters>
             </service>
 
-            <service uid="notifyAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>testNotifierSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="notifyAct" type="sight::module::ui::base::SAction" />
 
             <!-- preference to apply new theme on app -->
             <service uid="changeThemeAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
@@ -174,6 +170,11 @@ are already displayed and where they are displayed on screen.
             <connect>
                 <signal>changeThemeAct/parametersModified</signal>
                 <slot>styleChangerSrv/updateFromPreferences</slot>
+            </connect>
+
+            <connect>
+                <signal>notifyAct/clicked</signal>
+                <slot>testNotifierSrv/update</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -176,11 +176,7 @@ Detail of the ToolBar
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="registerAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>PLRegistrationSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="registerAct" type="sight::module::ui::base::SAction" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -336,6 +332,11 @@ Detail of the ToolBar
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>registerAct/clicked</signal>
+                <slot>PLRegistrationSrv/update</slot>
+            </connect>
 
             <connect>
                 <signal>N1PickerAdp/picked</signal>

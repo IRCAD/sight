@@ -97,11 +97,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>imageWriterSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction"/>
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
@@ -182,6 +178,11 @@
             <signal>mainView/started</signal>
             <slot>negato_top_slider_view/show</slot>
             <slot>negato_bottom_slider_view/show</slot>
+        </connect>
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
         </connect>
 
         <start uid="LockImageSrv" />

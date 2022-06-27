@@ -70,11 +70,7 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="loadMeshAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>meshReaderSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="loadMeshAct" type="sight::module::ui::base::SAction" />
 
             <service uid="startServerAct" type="sight::module::ui::base::com::SStarter" >
                 <start uid="matrixNetworkSenderSrv" />
@@ -174,6 +170,11 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>loadMeshAct/clicked</signal>
+                    <slot>meshReaderSrv/update</slot>
+            </connect>
 
             <connect>
                 <signal>matrixNetworkSenderSrv/connected</signal>

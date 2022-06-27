@@ -20,7 +20,7 @@
 
         <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <toolBar/>
+                <toolBar />
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
@@ -41,9 +41,9 @@
             <gui>
                 <layout>
                     <menuItem name="Export camera series" icon="sight::module::ui::flaticons/BlueSave.svg" />
-                    <separator/>
+                    <separator />
                     <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />
-                    <separator/>
+                    <separator />
                     <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
                     <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
                     <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
@@ -92,11 +92,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>CalibrationXmlWriter/update</slot>
-            </slots>
-        </service>
+        <service uid="writeCalibrationAct" type="sight::module::ui::base::SAction"/>
 
         <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true">
             <inout key="seriesDB" uid="${SERIESDB}" />
@@ -104,36 +100,13 @@
         </service>
 
         <service uid="CalibrationXmlWriter" type="sight::module::io::vision::SOpenCVWriter">
-            <in key="data" uid="newCameraSeries"/>
+            <in key="data" uid="newCameraSeries" />
         </service>
 
-        <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>videoGrabber1Srv/startCamera</slot>
-                <slot>videoGrabber2Srv/startCamera</slot>
-            </slots>
-        </service>
-
-        <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>videoGrabber1Srv/stopCamera</slot>
-                <slot>videoGrabber2Srv/stopCamera</slot>
-            </slots>
-        </service>
-
-        <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>videoGrabber1Srv/pauseCamera</slot>
-                <slot>videoGrabber2Srv/pauseCamera</slot>
-            </slots>
-        </service>
-
-        <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>videoGrabber1Srv/loopVideoAct</slot>
-                <slot>videoGrabber2Srv/loopVideoAct</slot>
-            </slots>
-        </service>
+        <service uid="startVideoAct" type="sight::module::ui::base::SAction"/>
+        <service uid="stopVideoAct" type="sight::module::ui::base::SAction"/>
+        <service uid="pauseVideoAct" type="sight::module::ui::base::SAction"/>
+        <service uid="loopVideoAct" type="sight::module::ui::base::SAction"/>
 
         <!-- ************************ Configuration launchers ********************************* -->
 
@@ -141,9 +114,12 @@
             <appConfig id="videoEdition" />
             <inout key="camera" uid="camera0" />
             <parameter replace="WID_PARENT" by="camera0View" />
-            <parameter replace="videoGrabber" by="videoGrabber1Srv" />
             <parameter replace="grabberProxyGuiTitle" by="Please select the first video grabber" />
             <parameter replace="cameraModifiedChannel" by="cameraModified" />
+            <parameter replace="videoStartedChannel" by="videoStarted" />
+            <parameter replace="videoStoppedChannel" by="videoStopped" />
+            <parameter replace="videoPausedChannel" by="videoPaused" />
+            <parameter replace="videoLoopedChannel" by="videoLooped" />
             <parameter replace="videoPositionChangedChannel" by="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" by="videoPositionModified" />
             <parameter replace="videoDurationModifiedChannel" by="videoDurationModified" />
@@ -153,9 +129,12 @@
             <appConfig id="videoEdition" />
             <inout key="camera" uid="camera1" />
             <parameter replace="WID_PARENT" by="camera1View" />
-            <parameter replace="videoGrabber" by="videoGrabber2Srv" />
             <parameter replace="grabberProxyGuiTitle" by="Please select the second video grabber" />
             <parameter replace="cameraModifiedChannel" by="cameraModified" />
+            <parameter replace="videoStartedChannel" by="videoStarted" />
+            <parameter replace="videoStoppedChannel" by="videoStopped" />
+            <parameter replace="videoPausedChannel" by="videoPaused" />
+            <parameter replace="videoLoopedChannel" by="videoLooped" />
             <parameter replace="videoPositionChangedChannel" by="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" by="videoPositionModified" />
             <parameter replace="videoDurationModifiedChannel" by="videoDurationModified" />
@@ -169,8 +148,8 @@
             <in key="source" uid="${cameraSeries}" />
             <out key="outTarget" uid="newCameraSeries" />
         </service>
-           <service uid="extractCamerasSrv" type="sight::module::data::SGetCamera">
-            <inout key="cameraSeries" uid="newCameraSeries"/>
+        <service uid="extractCamerasSrv" type="sight::module::data::SGetCamera">
+            <inout key="cameraSeries" uid="newCameraSeries" />
             <out group="camera">
                 <key index="0" uid="camera0" />
                 <key index="1" uid="camera1" />
@@ -192,6 +171,27 @@
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>writeCalibrationAct/clicked</signal>
+            <slot>CalibrationXmlWriter/update</slot>
+        </connect>
+
+        <connect channel="videoStarted">
+            <signal>startVideoAct/clicked</signal>
+        </connect>
+
+        <connect channel="videoStopped">
+            <signal>stopVideoAct/clicked</signal>
+        </connect>
+
+        <connect channel="videoPaused">
+            <signal>pauseVideoAct/clicked</signal>
+        </connect>
+
+        <connect channel="videoLooped">
+            <signal>loopVideoAct/clicked</signal>
+        </connect>
 
         <connect channel="cameraModified">
             <signal>camera0/idModified</signal>

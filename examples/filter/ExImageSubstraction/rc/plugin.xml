@@ -241,11 +241,7 @@
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="computeImageAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>imageSubstractSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="computeImageAct" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -406,6 +402,11 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>computeImageAct/clicked</signal>
+                <slot>imageSubstractSrv/update</slot>
+            </connect>
 
             <connect>
                 <signal>snapshotNegato1EditorSrv/clicked</signal>
