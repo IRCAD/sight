@@ -63,22 +63,23 @@ Runtime::Runtime()
 
     // In most cases, we can rely on finding sight_core library and then go upward in the filesystem tree
     // The lib location looks like 'SIGHT_DIR/lib/<arch>/libsight_core.*', where arch is optional
-    const std::string corePath = boost::dll::this_line_location().string();
-    const std::string libPrefix(MODULE_LIB_PREFIX);
-    auto it = std::search(corePath.begin(), corePath.end(), libPrefix.begin(), libPrefix.end());
+    const std::string corePath = boost::dll::this_line_location().generic_string();
+    const std::string libPrefix("/" MODULE_LIB_PREFIX "/");
+    auto it = std::search(corePath.rbegin(), corePath.rend(), libPrefix.rbegin(), libPrefix.rend());
 
-    if(it == corePath.end())
+    if(it == corePath.rend())
     {
         // But if we link statically, for instance linking with sight_core as an object library, then
         // boost::dll::this_line_location() will return the location of the current executable
         // In this case, we know that have to locate the bin directory instead of the library directory
-        const std::string binPrefix(MODULE_BIN_PREFIX);
-        it = std::search(corePath.begin(), corePath.end(), binPrefix.begin(), binPrefix.end());
-        SIGHT_FATAL_IF("Failed to locate Sight runtime. We tried to guess it from: " + corePath, it == corePath.end());
+        const std::string binPrefix("/" MODULE_BIN_PREFIX "/");
+        it = std::search(corePath.rbegin(), corePath.rend(), binPrefix.rbegin(), binPrefix.rend());
+        SIGHT_FATAL_IF("Failed to locate Sight runtime. We tried to guess it from: " + corePath, it == corePath.rend());
     }
 
-    const std::filesystem::path libPath(corePath.begin(), it);
-    m_workingPath = libPath.parent_path();
+    const auto dist = std::distance(it, corePath.rend());
+    const std::filesystem::path libPath(corePath.begin(), corePath.begin() + dist - 1);
+    m_workingPath = libPath.parent_path().make_preferred();
     SIGHT_INFO("Located Sight runtime in folder: " + m_workingPath.string());
 }
 
