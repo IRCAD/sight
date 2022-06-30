@@ -110,9 +110,6 @@ void SDistortion::stopping()
 
 void SDistortion::updating()
 {
-    // Store bufferObject of output (if used).
-    core::memory::BufferObject::sptr hack = nullptr;
-
     const auto inputImage = m_image.lock();
     SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
 
@@ -158,10 +155,6 @@ void SDistortion::updating()
                 reallocated = inputImage->getBuffer() != outputImage->getBuffer();
             }
 
-            // TODO: Get BufferObject of outputImage, to avoid assert when deleting internal data array of outputImage.
-            // This happens because m_output & m_input are locked during shallowCopy, and thus original bufferObject of
-            // m_output is still locked after shallowCopy.
-            hack = outputImage->getBufferObject();
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
             outputImage->shallowCopy(inputImage.get_shared());
@@ -204,6 +197,7 @@ void SDistortion::remap()
     FW_PROFILE_AVG("distort", 5);
 
     auto sig = inputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
@@ -237,6 +231,7 @@ void SDistortion::remap()
     }
 
     const auto prevSize = outputImage->getSize();
+
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;

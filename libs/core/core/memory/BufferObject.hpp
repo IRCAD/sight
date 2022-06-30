@@ -105,8 +105,14 @@ public:
 
         typedef typename std::conditional_t<std::is_const_v<T>, const void*, void*> BufferType;
 
-        LockBase()  = default;
-        ~LockBase() = default;
+        LockBase() = default;
+        inline ~LockBase()
+        {
+            // Resetting the counter in the destructor **BEFORE** resetting BufferObject shared pointer is required !
+            // Otherwise, the lock count assert in the destruction of the buffer, in
+            // BufferManager::::unregisterBufferImpl() will be triggered.
+            m_count.reset();
+        }
 
         /**
          * @brief Build a lock on object 'bo'
