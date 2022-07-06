@@ -34,6 +34,7 @@ class ClientServerTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(ClientServerTest);
 CPPUNIT_TEST(clientToServer);
 CPPUNIT_TEST(serverToClient);
+CPPUNIT_TEST(clientToServerTimeout);
 CPPUNIT_TEST(clientHeaderExceptionTest);
 CPPUNIT_TEST(serverHeaderExceptionTest);
 CPPUNIT_TEST(clientBodyExceptionTest);
@@ -45,6 +46,7 @@ public:
     void setUp();
     void tearDown();
     void clientToServer();
+    void clientToServerTimeout();
     void serverToClient();
     void clientHeaderExceptionTest();
     void serverHeaderExceptionTest();

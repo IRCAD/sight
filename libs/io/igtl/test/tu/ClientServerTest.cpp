@@ -54,6 +54,7 @@ void ClientServerTest::setUp()
     // Using 0 as port number will check for the first available port number.
     s_server->start(0);
     s_server->addAuthorizedDevice("Sight_Tests_Client");
+    s_server->setReceiveTimeout(30);
 
     // Run server (waitForConnection on a thread).
     s_serverFuture = std::async(std::launch::async, std::bind(&::sight::io::igtl::Server::runServer, s_server));
@@ -140,6 +141,22 @@ void ClientServerTest::clientToServer()
             == std::string(stringMsg->GetString())
         );
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ClientServerTest::clientToServerTimeout()
+{
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
+    CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
+
+    CPPUNIT_ASSERT_MESSAGE("Timeout", s_server->getReceiveTimeout().has_value());
+    CPPUNIT_ASSERT_MESSAGE("Timeout value", s_server->getReceiveTimeout().value() == 30);
+
+    // Reach the timeout
+    std::vector< ::igtl::MessageHeader::Pointer> headers;
+    CPPUNIT_ASSERT_THROW(headers = s_server->receiveHeaders(), sight::io::igtl::Exception);
 }
 
 //------------------------------------------------------------------------------

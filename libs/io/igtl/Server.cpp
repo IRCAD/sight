@@ -82,6 +82,11 @@ void Server::runServer()
         if(newClient != nullptr)
         {
             core::mt::ScopedLock lock(m_mutex);
+            if(m_receiveTimeout.has_value())
+            {
+                newClient->getSocket()->SetReceiveTimeout(static_cast<int>(m_receiveTimeout.value()));
+            }
+
             m_clients.push_back(newClient);
         }
     }
@@ -225,12 +230,13 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
     std::vector< ::igtl::MessageHeader::Pointer> headerMsgs;
 
     core::mt::ScopedLock lock(m_mutex);
-
-    for(const auto& client : m_clients)
+    for(size_t i = 0 ; i < m_clients.size() ; ++i)
     {
+        const auto client = m_clients[i];
         //if client is disconnected
         if(client == nullptr)
         {
+            m_clients.erase(m_clients.begin() + std::ptrdiff_t(i));
             continue;
         }
 
@@ -249,6 +255,9 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
             }
             else if(sizeReceive == 0)
             {
+                // Disconnect this client.
+                this->removeClient(client);
+                m_clients.erase(m_clients.begin() + std::ptrdiff_t(i));
                 throw sight::io::igtl::Exception("Network error");
             }
             else if(sizeReceive != headerMsg->GetPackSize())
@@ -307,7 +316,10 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
     }
     else if(result == 0) // Error
     {
-        throw sight::io::igtl::Exception("Network Error");
+        // Disconnect this client.
+        this->removeClient(m_clients[client]);
+        m_clients.erase(m_clients.begin() + client);
+        throw sight::io::igtl::Exception("Network error");
     }
     else
     {
@@ -315,7 +327,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 
         if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
         {
-            throw sight::io::igtl::Exception("Network Error");
+            throw sight::io::igtl::Exception("Network error");
         }
 
         if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
@@ -396,6 +408,17 @@ int Server::createServer(std::uint16_t port)
 
     // Success.
     return 0;
+}
+
+//------------------------------------------------------------------------------
+
+void Server::removeClient(Client::sptr _client)
+{
+    if(_client)
+    {
+        _client->disconnect();
+        _client.reset();
+    }
 }
 
 } //namespace sight::io::igtl

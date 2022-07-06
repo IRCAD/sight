@@ -36,6 +36,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace sight::io::igtl
 {
@@ -142,10 +143,18 @@ public:
      */
     IO_IGTL_API void setMessageDeviceName(const std::string& deviceName);
 
+    /// Sets the receive timeout in ms.
+    inline void setReceiveTimeout(std::optional<unsigned int> _timeout);
+
+    /// Gets the current receive timeout.
+    inline std::optional<int> getReceiveTimeout() const;
+
 private:
 
     /// Patched version of igtlServer::CreateServer.
     int createServer(std::uint16_t port);
+
+    void removeClient(Client::sptr _client);
 
     /// server socket
     ::igtl::ServerSocket::Pointer m_serverSocket;
@@ -167,6 +176,23 @@ private:
 
     /// device name in the sended message
     std::string m_deviceNameOut;
+
+    /// Optional timeout for receiving message from clients
+    std::optional<unsigned int> m_receiveTimeout;
 };
+
+//------------------------------------------------------------------------------
+
+inline void Server::setReceiveTimeout(std::optional<unsigned int> _timeout)
+{
+    m_receiveTimeout = _timeout;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::optional<int> Server::getReceiveTimeout() const
+{
+    return m_receiveTimeout;
+}
 
 } // namespace sight::io
