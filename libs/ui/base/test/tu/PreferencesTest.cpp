@@ -160,6 +160,39 @@ void PreferencesTest::delimeterTest()
 
 //------------------------------------------------------------------------------
 
+void PreferencesTest::parsedGetTest()
+{
+    const std::string& root_key      = "ROOT";
+    const std::string& str_key       = root_key + ".STR";
+    const std::string& delimited_key = "%" + str_key + "%";
+    const std::string str_value      = "1664";
+
+    ui::base::Preferences preferences;
+
+    CPPUNIT_ASSERT_NO_THROW(
+        preferences.put(str_key, str_value);
+    );
+
+    // Now test the getter
+    {
+        // Test without delimiter, will fail as the key won't be found
+        // The key will however be returned as the val
+        auto [key, val] = preferences.parsed_get<std::string>(str_key);
+        CPPUNIT_ASSERT_EQUAL(key, std::string(""));
+        CPPUNIT_ASSERT_EQUAL(val, str_key);
+    }
+
+    {
+        // Test with a delimiter, both values should be returned
+        // As the preferneces is valid this time
+        auto [key, val] = preferences.parsed_get<std::string>(delimited_key);
+        CPPUNIT_ASSERT_EQUAL(key, str_key);
+        CPPUNIT_ASSERT_EQUAL(val, str_value);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void PreferencesTest::encryptedTest()
 {
     // Setting a password will enable encryption

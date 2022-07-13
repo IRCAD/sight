@@ -201,6 +201,13 @@ void SMatrixWriter::startRecord()
 
     if(this->hasLocationDefined())
     {
+        // Make sure the parent path exists
+        const std::filesystem::path dirname = this->getFile().parent_path();
+        if(!std::filesystem::exists(dirname))
+        {
+            std::filesystem::create_directories(dirname);
+        }
+
         if(!m_filestream.is_open())
         {
             m_filestream.open(this->getFile().string(), std::ofstream::out | openMode);
@@ -212,7 +219,7 @@ void SMatrixWriter::startRecord()
         {
             SIGHT_WARN(
                 "The file " + this->getFile().string()
-                + " can't be open. Please check if it is already open in another program."
+                + " can't be opened. Please check if it is already open in another program."
             );
         }
     }

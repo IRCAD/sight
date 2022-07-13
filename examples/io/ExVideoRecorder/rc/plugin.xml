@@ -47,6 +47,8 @@
                         <menuItem name="Frame recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
                         <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg"  style="check"  />
                         <editor/>
+                        <spacer />
+                        <menuItem name="Preferences" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -59,7 +61,17 @@
                     <menuItem sid="frameRecordingAct" start="true" />
                     <menuItem sid="videoRecordingAct" start="true" />
                     <editor sid="parametersSrv" start="true" />
+                    <menuItem sid="preferences" start="true" />
                 </registry>
+            </service>
+
+            <service uid="preferences" type="sight::module::ui::qt::SPreferencesConfiguration">
+                <preference>
+                    <type>path</type>
+                    <name>Base output folder for recordings</name>
+                    <key>BASE_FOLDER</key>
+                    <default_value></default_value>
+                </preference>
             </service>
 
             <!-- ************************************* Action ************************************ -->
@@ -114,16 +126,12 @@
                 <state executable="false" />
             </service>
 
-            <service uid="frameRecordingAct" type="sight::module::ui::base::com::SBooleanSlotCaller">
-                <slots>
-                    <slot>frameWriterSrv/record</slot>
-                </slots>
+            <service uid="frameRecordingAct" type="sight::module::ui::base::com::STimestampSignal">
+                <useSystemClock>true</useSystemClock>
             </service>
 
-            <service uid="videoRecordingAct" type="sight::module::ui::base::com::SBooleanSlotCaller">
-                <slots>
-                    <slot>videoWriterSrv/record</slot>
-                </slots>
+            <service uid="videoRecordingAct" type="sight::module::ui::base::com::STimestampSignal">
+                <useSystemClock>true</useSystemClock>
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -150,13 +158,16 @@
                 </parameters>
             </service>
 
-            <service uid="frameWriterSrv" type="sight::module::io::video::SFrameWriter" worker="videoRecordingActWorker" >
+            <service uid="frameWriterSrv" type="sight::module::io::video::SFrameWriter" worker="frameRecordingActWorker" >
                 <in key="data" uid="frameTL" autoConnect="true" />
                 <format>.tiff</format>
+                <baseFolder>%BASE_FOLDER%</baseFolder>
             </service>
 
             <service uid="videoWriterSrv" type="sight::module::io::video::SVideoWriter" worker="videoRecordingActWorker" >
                 <in key="data" uid="frameTL" autoConnect="true" />
+                <baseFolder>%BASE_FOLDER%</baseFolder>
+                <file>video.mp4</file>
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
@@ -215,6 +226,26 @@
             <connect>
                 <signal>parametersSrv/enumChanged</signal>
                 <slot>frameWriterSrv/setFormatParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>frameRecordingAct/triggeredAsString</signal>
+                <slot>frameWriterSrv/setPrefix</slot>
+            </connect>
+
+            <connect>
+                <signal>frameWriterSrv/prefixSet</signal>
+                <slot>frameWriterSrv/toggleRecording</slot>
+            </connect>
+
+            <connect>
+                <signal>videoRecordingAct/triggeredAsString</signal>
+                <slot>videoWriterSrv/setPrefix</slot>
+            </connect>
+
+            <connect>
+                <signal>videoWriterSrv/prefixSet</signal>
+                <slot>videoWriterSrv/toggleRecording</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

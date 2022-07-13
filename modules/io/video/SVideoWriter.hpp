@@ -102,6 +102,9 @@ private:
     /// SLOT: Starts/stops recording, according to the parameter value
     void record(bool);
 
+    /// SLOT: Toggles recording.
+    void toggleRecording();
+
     /// opencv video writer
     UPTR(cv::VideoWriter) m_writer;
 

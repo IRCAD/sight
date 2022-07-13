@@ -180,4 +180,10 @@
         <type>sight::service::IController</type>
         <service>sight::module::ui::base::com::SRecurrentSignal</service>
     </extension>
+
+    <extension implements="sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::ui::base::com::STimestampSignal</service>
+         <desc>Action that sends a signal with the current timestamp when it is triggered</desc>
+    </extension>
 </plugin>

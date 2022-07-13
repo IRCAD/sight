@@ -30,7 +30,7 @@ namespace ut
 {
 
 /**
- * @brief Test Etract Mesh from Model series
+ * @brief Test Extract Mesh from Model series
  */
 class SGetMeshTest : public CPPUNIT_NS::TestFixture
 {

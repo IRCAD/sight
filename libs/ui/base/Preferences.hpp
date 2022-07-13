@@ -217,6 +217,30 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
+    /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
+    /// return the key as a value, otherwise, we search in the preference
+    /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
+    /// @param delimiter the magical delimiter.
+    template<typename T>
+    inline std::pair<std::string, T> parsed_get(
+        const std::string& key,
+        const std::string& delimiter = s_DEFAULT_DELIMITER
+    ) const
+    {
+        if(const auto& delimiter_start = key.find_first_of(delimiter); delimiter_start != std::string::npos)
+        {
+            if(const auto& delimiter_end = key.find_last_of(delimiter); delimiter_end != std::string::npos)
+            {
+                const auto& real_key = key.substr(delimiter_start + 1, delimiter_end - (delimiter_start + 1));
+                return {real_key, get<T>(real_key)};
+            }
+        }
+
+        return {"", boost::lexical_cast<T>(key)};
+    }
+
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
     /// return the key as a value, otherwise, we search in the preference
     /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
@@ -224,16 +248,7 @@ public:
     template<typename T>
     inline T delimited_get(const std::string& key, const std::string& delimiter = s_DEFAULT_DELIMITER) const
     {
-        if(const auto& delimiter_start = key.find_first_of(delimiter); delimiter_start != std::string::npos)
-        {
-            if(const auto& delimiter_end = key.find_last_of(delimiter); delimiter_end != std::string::npos)
-            {
-                const auto& real_key = key.substr(delimiter_start + 1, delimiter_end - (delimiter_start + 1));
-                return get<T>(real_key);
-            }
-        }
-
-        return boost::lexical_cast<T>(key);
+        return this->parsed_get<T>(key, delimiter).second;
     }
 
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should

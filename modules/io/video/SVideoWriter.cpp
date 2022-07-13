@@ -41,10 +41,11 @@
 namespace sight::module::io::video
 {
 
-static const core::com::Slots::SlotKeyType s_SAVE_FRAME   = "saveFrame";
-static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
-static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
-static const core::com::Slots::SlotKeyType s_RECORD       = "record";
+static const core::com::Slots::SlotKeyType s_SAVE_FRAME       = "saveFrame";
+static const core::com::Slots::SlotKeyType s_START_RECORD     = "startRecord";
+static const core::com::Slots::SlotKeyType s_STOP_RECORD      = "stopRecord";
+static const core::com::Slots::SlotKeyType s_RECORD           = "record";
+static const core::com::Slots::SlotKeyType s_TOGGLE_RECORDING = "toggleRecording";
 
 const std::string SVideoWriter::s_MP4_EXTENSION = ".mp4";
 const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
@@ -57,6 +58,7 @@ SVideoWriter::SVideoWriter() noexcept
     newSlot(s_START_RECORD, &SVideoWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SVideoWriter::stopRecord, this);
     newSlot(s_RECORD, &SVideoWriter::record, this);
+    newSlot(s_TOGGLE_RECORDING, &SVideoWriter::toggleRecording, this);
 }
 
 //------------------------------------------------------------------------------
@@ -314,6 +316,13 @@ void SVideoWriter::startRecord()
             return;
         }
 
+        // Make sure the parent path exists
+        const std::filesystem::path dirname = this->getFile().parent_path();
+        if(!std::filesystem::exists(dirname))
+        {
+            std::filesystem::create_directories(dirname);
+        }
+
         m_isRecording = true;
     }
 }
@@ -343,6 +352,20 @@ void SVideoWriter::record(bool state)
     else
     {
         this->stopRecord();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoWriter::toggleRecording()
+{
+    if(m_isRecording)
+    {
+        this->stopRecord();
+    }
+    else
+    {
+        this->startRecord();
     }
 }
 

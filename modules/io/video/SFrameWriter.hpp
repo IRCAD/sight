@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,6 +113,9 @@ private:
 
     /// SLOT: Starts/stops recording, according to the parameter value
     void record(bool);
+
+    /// SLOT: Toggle the recording.
+    void toggleRecording();
 
     /// Slot called when a format is changed
     void setFormatParameter(std::string val, std::string key);

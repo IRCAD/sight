@@ -25,6 +25,8 @@
 #include "io/base/config.hpp"
 #include "io/base/service/ioTypes.hpp"
 
+#include <core/com/Signal.hpp>
+
 #include <service/IService.hpp>
 
 #include <filesystem>
@@ -36,10 +38,19 @@ namespace sight::io::base::service
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
  * @section Slots Slots
- * - \b setFileFolder(const std::filesystem::path&): Sets the folder when a path is configured in FILE or
- * FILES mode
- * - \b setTimestampPrefix(core::HiResClock::HiResClockType): When connected to a timestamp-emitting signal,
- * this slot will concatenate the current timestamp as a prefix of the output file (file-mode only).
+ * - \b setPrefix(std::string): When connected to a string-emitting signal (or function),
+ *   this slot will concatenate the string as a prefix of the output file/folder.
+ *
+ * @subsection Configuration Configuration
+ * - \b file: default file path.
+ * - \b folder: default folder path.
+ * - \b baseFolder: path or preference key specifying the root output path.
+ *      If set, it will override user setting the path via GUI input,
+ *      leading to a service that automatically saves data without user queries.
+ *      If the output is a file, then the output will be built as follows:
+ *        <base_folder>(/<prefix>)^{0,1}/<file>, where file is the value in the file tag.
+ *      If the output is a folder, then the output will be built as follows:
+ *        <base_folder>(/<prefix>)^{0,1}/<folder>, where folder is the value in the folder tag.
  *
  * This class represents the base interface for writer services.
  * Use the base service methods :
@@ -65,11 +76,18 @@ public:
     };
 
     /**
+     * @name Signals API
+     * @{
+     */
+
+    IO_BASE_API static const core::com::Signals::SignalKeyType s_PREFIX_SET_SIG;
+    typedef core::com::Signal<void ()> PrefixSetSignalType;
+
+    /**
      * @name Slots API
      * @{
      */
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_FILE_FOLDER;
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_TIMESTAMP_PREFIX;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_PREFIX;
     /// @}
 
     /**
@@ -95,7 +113,7 @@ public:
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service does not support FILE mode
      */
-    IO_BASE_API const std::filesystem::path& getFile() const;
+    IO_BASE_API const std::filesystem::path getFile() const;
 
     /**
      * @brief Sets file path
@@ -121,7 +139,7 @@ public:
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FOLDER mode
      */
-    IO_BASE_API const std::filesystem::path& getFolder() const;
+    IO_BASE_API const std::filesystem::path getFolder() const;
 
     /**
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
@@ -141,20 +159,10 @@ public:
     IO_BASE_API void setFolder(const std::filesystem::path& folder);
 
     /**
-     * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
-     * This is ignored if a path is not configured
-     *
-     * @pre exception if service does not support FILE or FILES mode
-     */
-    IO_BASE_API void setFileFolder(std::filesystem::path folder);
-
-    /**
-     * @brief Slot: Sets a timestamp prefix on the output file name
-     * When this slot is first triggered, it will enable the addition of a timestamp prefix to the filename.
-     * At each update, the filename name will get the newest timestamp as prefix.
+     * @brief Slot: Inserts a path prefix generated via a signal sent to the service.
      *
      */
-    IO_BASE_API void setTimestampPrefix(core::HiResClock::HiResClockType timestamp);
+    IO_BASE_API void setPrefix(std::string prefix);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     IO_BASE_API bool hasLocationDefined() const;
@@ -263,15 +271,16 @@ protected:
 
 private:
 
+    /// Triggers an update of the base folder, and outputs it via a reference.
+    // We need to check for potential updates, notably in the case
+    // where the user updates an associated preference during runtime.
+    void updateBaseFolder(std::string&) const;
+
     /// Value to store file or folder paths
     io::base::service::LocationsType m_locations;
 
-    /// Value indicating whether we should append timestamps or not
-    bool m_useTimestampPrefix;
-    core::HiResClock::HiResClockType m_currentTimestamp;
-
-    /// Value acting as a temporary location for timestamped path
-    mutable std::filesystem::path m_currentLocation;
+    /// Prefix to be inserted
+    std::string m_currentPrefix {""};
 };
 
 } //namespace sight::io::base::service
