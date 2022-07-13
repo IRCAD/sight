@@ -182,7 +182,7 @@
         <service uid="ActionShowNormalCross" type="sight::module::ui::base::viz::CrossTypeAction">
             <in key="image" uid="image" />
             <crossType>half</crossType>
-            <state active="true" />
+            <state checked="true" />
         </service>
         <service uid="ActionShowFullCross" type="sight::module::ui::base::viz::CrossTypeAction">
             <in key="image" uid="image" />
@@ -209,7 +209,7 @@
         <connect channel="${enabledPreviousChannel}">
             <slot>ActionExportActivity/hide</slot>
             <slot>ActionPrevious/show</slot>
-            <slot>ActionPrevious/setIsExecutable</slot>
+            <slot>ActionPrevious/setEnabled</slot>
         </connect>
 
         <!-- Connection to called 'previous' slot of the application's SSequencer. -->
@@ -222,7 +222,7 @@
         <connect channel="${enabledNextChannel}">
             <slot>ActionExportActivity/hide</slot>
             <slot>ActionNext/show</slot>
-            <slot>ActionNext/setIsExecutable</slot>
+            <slot>ActionNext/setEnabled</slot>
         </connect>
 
         <!-- Connection to called 'next' slot of the application's SSequencer. -->

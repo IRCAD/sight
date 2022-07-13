@@ -105,7 +105,7 @@ void SModifyLayout::updating()
             auto actionSrv = sight::ui::base::IAction::dynamicCast(service);
             if(actionSrv)
             {
-                actionSrv->setIsExecutable(isEnable);
+                actionSrv->setEnabled(isEnable);
             }
         }
     }
@@ -128,7 +128,7 @@ void SModifyLayout::updating()
         }
         else
         {
-            container->setVisible(this->getIsActive());
+            container->setVisible(this->checked());
         }
     }
 
@@ -154,7 +154,7 @@ void SModifyLayout::updating()
         }
         else
         {
-            container->setVisible(this->getIsActive());
+            container->setVisible(this->checked());
         }
     }
 }

@@ -80,7 +80,7 @@ public:
     MODULE_UI_BASE_API virtual ~SConfigLauncher() noexcept;
 
     /// Set the action service is activated/disable.
-    MODULE_UI_BASE_API void setIsActive(bool isActive) override;
+    MODULE_UI_BASE_API void setChecked(bool isChecked) override;
 
     // Launched signal key
     MODULE_UI_BASE_API static const core::com::Signals::SignalKeyType s_LAUNCHED_SIG;

@@ -54,7 +54,7 @@ static const core::com::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT       = "setChecked";
 static const core::com::Slots::SlotKeyType s_CHECK_SLOT             = "check";
 static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT           = "uncheck";
-static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setEnabled";
 static const core::com::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT    = "setExecutable";
 static const core::com::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
 static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT       = "setVisible";
@@ -71,7 +71,7 @@ SSignalButton::SSignalButton() noexcept
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
     newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
-    newSlot(s_SET_IS_EXECUTABLE_SLOT, &SSignalButton::setIsExecutable, this);
+    newSlot(s_SET_IS_EXECUTABLE_SLOT, &SSignalButton::setEnabled, this);
     newSlot(s_SET_EXECUTABLE_SLOT, &SSignalButton::setExecutable, this);
     newSlot(s_SET_INEXECUTABLE_SLOT, &SSignalButton::setInexecutable, this);
     newSlot(s_SET_VISIBLE_SLOT, &SSignalButton::setVisible, this);
@@ -305,9 +305,9 @@ void SSignalButton::uncheck()
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::setIsExecutable(bool _isExecutable)
+void SSignalButton::setEnabled(bool _isEnabled)
 {
-    m_button->setEnabled(_isExecutable);
+    m_button->setEnabled(_isEnabled);
 }
 
 //-----------------------------------------------------------------------------

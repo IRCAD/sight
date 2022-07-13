@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ void SBooleanSlotCaller::updating()
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
 
-            slot->asyncRun(this->getIsActive());
+            slot->asyncRun(this->checked());
         }
     }
 }

@@ -75,7 +75,7 @@ void SShowDistance::updating()
 
     if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
-        this->sight::ui::base::IAction::setIsActive(false);
+        this->sight::ui::base::IAction::setChecked(false);
     }
     else
     {
@@ -85,7 +85,7 @@ void SShowDistance::updating()
         data::helper::MedicalImage::setDistanceVisibility(*image, toShow);
 
         // Manage hide/show from the field information.
-        this->sight::ui::base::IAction::setIsActive(!toShow);
+        this->sight::ui::base::IAction::setChecked(!toShow);
 
         const auto sig = image->signal<data::Image::DistanceDisplayedSignalType>(
             data::Image::s_DISTANCE_DISPLAYED_SIG
@@ -121,7 +121,7 @@ void SShowDistance::showDistance(bool)
     const auto image          = m_image.lock();
     const auto show_distances = data::helper::MedicalImage::getDistanceVisibility(*image);
 
-    this->sight::ui::base::IAction::setIsActive(!(show_distances));
+    this->sight::ui::base::IAction::setChecked(!(show_distances));
 }
 
 //------------------------------------------------------------------------------

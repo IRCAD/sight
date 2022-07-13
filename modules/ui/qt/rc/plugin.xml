@@ -177,7 +177,7 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::service::IService</type>
          <service>sight::module::ui::qt::com::SSignalShortcut</service>
-         <desc>This service sends a signal when the associated shortcut is activated.</desc>
+         <desc>This service sends a signal when the associated shortcut is checkd.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">

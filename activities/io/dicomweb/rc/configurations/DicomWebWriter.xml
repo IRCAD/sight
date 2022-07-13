@@ -61,7 +61,7 @@
         <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
-                <slot>action_pushSeriesToPacs/setInexecutable</slot>
+                <slot>action_pushSeriesToPacs/disable</slot>
             </slots>
         </service>
 
@@ -99,7 +99,7 @@
 
         <connect>
             <signal>pushSeriesController/updated</signal>
-            <slot>action_pushSeriesToPacs/setExecutable</slot>
+            <slot>action_pushSeriesToPacs/enable</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

@@ -338,7 +338,7 @@ void SLauncher::updateState()
     const auto selection = m_series.lock();
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
-    bool isExecutable = false;
+    bool isEnabled = false;
 
     if(selection->size() == 1 && data::ActivitySeries::dynamicCast((*selection)[0]))
     {
@@ -352,20 +352,20 @@ void SLauncher::updateState()
 
             if(keyIt != m_keys.end() && isIncludeMode)
             {
-                isExecutable = true;
+                isEnabled = true;
             }
             else if(keyIt == m_keys.end() && !isIncludeMode)
             {
-                isExecutable = true;
+                isEnabled = true;
             }
 
-            isExecutable &= Activity::getDefault()->hasInfo(
+            isEnabled &= Activity::getDefault()->hasInfo(
                 as->getActivityConfigId()
             );
         }
         else
         {
-            isExecutable = Activity::getDefault()->hasInfo(
+            isEnabled = Activity::getDefault()->hasInfo(
                 as->getActivityConfigId()
             );
         }
@@ -379,17 +379,17 @@ void SLauncher::updateState()
             data::Object::sptr obj = selection->front();
             if(data::ActivitySeries::dynamicCast(obj))
             {
-                isExecutable = true;
+                isEnabled = true;
             }
         }
 
         ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection.get_shared());
         infos = this->getEnabledActivities(infos);
 
-        isExecutable |= !infos.empty();
+        isEnabled |= !infos.empty();
     }
 
-    this->setIsExecutable(isExecutable);
+    this->setEnabled(isEnabled);
 }
 
 //------------------------------------------------------------------------------

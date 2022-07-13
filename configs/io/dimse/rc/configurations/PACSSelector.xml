@@ -532,7 +532,7 @@
 
         <connect>
             <signal>extractLocalImageSeriesSrv/updated</signal>
-            <slot>exportImageAct/setExecutable</slot>
+            <slot>exportImageAct/enable</slot>
         </connect>
 
         <connect>

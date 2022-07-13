@@ -71,12 +71,12 @@
         <!-- *************************** Begin Actions *************************** -->
 
         <service uid="actionStartOpenIGTLinkClient" type="sight::module::ui::base::com::SStarter">
-            <state active="true" visible="true" />
+            <state checked="true" visible="true" />
             <start uid="trackerTLMatrixListener" />
         </service>
 
         <service uid="actionStopOpenIGTLinkClient" type="sight::module::ui::base::com::SStarter">
-            <state active="true" visible="false" />
+            <state checked="true" visible="false" />
             <stop uid="trackerTLMatrixListener" />
         </service>
 

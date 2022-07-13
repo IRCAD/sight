@@ -401,7 +401,7 @@
                     <slot>parameterView/show</slot>
                     <slot>rightToolbarSliderView/hide</slot>
                 </slots>
-                <state active="true" />
+                <state checked="true" />
             </service>
 
             <!-- PACS manager -->
@@ -414,31 +414,31 @@
 
             <!-- Adaptors visibility -->
             <service uid="volumeVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="negato3DVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="meshVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="boxWidgetVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="boxWidgetResetAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="shapeExtruderAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="true" />
+                <state enabled="true" />
             </service>
 
             <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="true" />
+                <state enabled="true" />
             </service>
 
             <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
@@ -589,7 +589,7 @@
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" >
-                <slot>shapeExtruderAct/deactivate</slot>
+                <slot>shapeExtruderAct/uncheck</slot>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
@@ -602,7 +602,7 @@
 
             <connect>
                 <signal>image/visibilityModified</signal>
-                <slot>negato3DVisibilityAct/setIsActive</slot>
+                <slot>negato3DVisibilityAct/setChecked</slot>
             </connect>
 
             <connect>
@@ -622,23 +622,23 @@
 
             <connect>
                 <signal>extractSeriesSrv/modelSelected</signal>
-                <slot>meshVisibilityAct/setExecutable</slot>
-                <slot>meshVisibilityAct/activate</slot>
+                <slot>meshVisibilityAct/enable</slot>
+                <slot>meshVisibilityAct/check</slot>
             </connect>
 
             <connect>
                 <signal>extractSeriesSrv/imageSelected</signal>
                 <signal>extractPacsImageSrv/updated</signal>
-                <slot>volumeVisibilityAct/setExecutable</slot>
-                <slot>volumeVisibilityAct/activate</slot>
-                <slot>negato3DVisibilityAct/setExecutable</slot>
-                <slot>negato3DVisibilityAct/activate</slot>
-                <slot>boxWidgetVisibilityAct/setExecutable</slot>
-                <slot>shapeExtruderAct/setExecutable</slot>
-                <slot>boxWidgetResetAct/setExecutable</slot>
-                <slot>addDistanceAct/setExecutable</slot>
-                <slot>removeDistanceAct/setExecutable</slot>
-                <slot>hideDistanceAct/setExecutable</slot>
+                <slot>volumeVisibilityAct/enable</slot>
+                <slot>volumeVisibilityAct/check</slot>
+                <slot>negato3DVisibilityAct/enable</slot>
+                <slot>negato3DVisibilityAct/check</slot>
+                <slot>boxWidgetVisibilityAct/enable</slot>
+                <slot>shapeExtruderAct/enable</slot>
+                <slot>boxWidgetResetAct/enable</slot>
+                <slot>addDistanceAct/enable</slot>
+                <slot>removeDistanceAct/enable</slot>
+                <slot>hideDistanceAct/enable</slot>
             </connect>
 
             <connect channel="VOLUME_BASIC_BOOL_SENDER_CHANNEL" >
@@ -658,65 +658,65 @@
                 <slot>lightEditorSrv/editLight</slot>
             </connect>
 
-            <!-- Allow to activate button in the advanced toolbar -->
+            <!-- Allow to check button in the advanced toolbar -->
             <connect>
                 <signal>volumeManagerAct/updated</signal>
-                <slot>volumeManagerAct/activate</slot>
-                <slot>TFManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/check</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
+                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>TFManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>TFManagerAct/activate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/check</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
+                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>organsManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>TFManagerAct/deactivate</slot>
-                <slot>organsManagerAct/activate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/check</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
+                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>landmarksManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>TFManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/activate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/check</slot>
+                <slot>lightManagerAct/uncheck</slot>
+                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>lightManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>TFManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/activate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/check</slot>
+                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>extrudedMeshesManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>TFManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/activate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
+                <slot>extrudedMeshesManagerAct/check</slot>
             </connect>
 
             <!-- Manage landmarks -->

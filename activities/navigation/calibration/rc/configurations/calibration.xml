@@ -142,7 +142,7 @@
         <connect channel="${enabledPreviousChannel}">
             <slot>exportAct/hide</slot>
             <slot>previousAct/show</slot>
-            <slot>previousAct/setIsExecutable</slot>
+            <slot>previousAct/setEnabled</slot>
         </connect>
 
         <!-- Connection to called 'previous' slot of the application's SSequencer. -->
@@ -154,7 +154,7 @@
         <connect channel="${enabledNextChannel}">
             <slot>exportAct/hide</slot>
             <slot>nextAct/show</slot>
-            <slot>nextAct/setIsExecutable</slot>
+            <slot>nextAct/setEnabled</slot>
         </connect>
 
         <!-- Connection to called 'next' slot of the application's SSequencer. -->

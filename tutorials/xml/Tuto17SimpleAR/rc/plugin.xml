@@ -168,7 +168,7 @@
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
@@ -198,11 +198,11 @@
                     <slot>startVideoAct/show</slot>
                     <slot>resumeVideoAct/hide</slot>
                     <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/deactivate</slot>
+                    <slot>stopVideoAct/disable</slot>
+                    <slot>loopVideoAct/disable</slot>
+                    <slot>loopVideoAct/uncheck</slot>
                 </slots>
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
@@ -210,13 +210,13 @@
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="startUndistortAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>undistortAdp/show</slot>
-                    <slot>startDistortAct/setInexecutable</slot>
+                    <slot>startDistortAct/disable</slot>
                     <slot>startUndistortAct/hide</slot>
                     <slot>stopUndistortAct/show</slot>
                 </slots>
@@ -226,7 +226,7 @@
                 <state visible="false" />
                 <slots>
                     <slot>undistortAdp/hide</slot>
-                    <slot>startDistortAct/setExecutable</slot>
+                    <slot>startDistortAct/enable</slot>
                     <slot>startUndistortAct/show</slot>
                     <slot>stopUndistortAct/hide</slot>
                 </slots>
@@ -235,7 +235,7 @@
             <service uid="startDistortAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>distortAdp/show</slot>
-                    <slot>startUndistortAct/setInexecutable</slot>
+                    <slot>startUndistortAct/disable</slot>
                     <slot>startDistortAct/hide</slot>
                     <slot>stopDistortAct/show</slot>
                 </slots>
@@ -245,7 +245,7 @@
                 <state visible="false" />
                 <slots>
                     <slot>distortAdp/hide</slot>
-                    <slot>startUndistortAct/setExecutable</slot>
+                    <slot>startUndistortAct/enable</slot>
                     <slot>startDistortAct/show</slot>
                     <slot>stopDistortAct/hide</slot>
                 </slots>
@@ -255,7 +255,7 @@
                 <slots>
                     <slot>cubeAdp/updateVisibility</slot>
                 </slots>
-                <state active="true" />
+                <state checked="true" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -521,8 +521,8 @@
                 <signal>videoGrabberSrv/cameraStarted</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/setExecutable</slot>
-                <slot>loopVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/enable</slot>
+                <slot>loopVideoAct/enable</slot>
             </connect>
 
             <connect>
@@ -532,7 +532,7 @@
 
             <connect>
                 <signal>camera/modified</signal>
-                <slot>startVideoAct/setExecutable</slot>
+                <slot>startVideoAct/enable</slot>
                 <slot>stopVideoAct/update</slot>
             </connect>
 

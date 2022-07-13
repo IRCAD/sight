@@ -637,7 +637,7 @@
         <connect>
             <signal>genericSceneSrv/fullscreenSet</signal>
             <slot>windowedAct/setVisible</slot>
-            <slot>windowedAct/setIsExecutable</slot>
+            <slot>windowedAct/setEnabled</slot>
         </connect>
 
         <connect>

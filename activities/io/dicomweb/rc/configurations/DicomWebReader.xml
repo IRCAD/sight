@@ -92,7 +92,7 @@
 
         <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
-                <slot>action_pullSeries/setInexecutable</slot>
+                <slot>action_pullSeries/disable</slot>
                 <slot>pullSeriesController/update</slot>
             </slots>
         </service>
@@ -153,7 +153,7 @@
 
         <connect>
             <signal>pullSeriesController/updated</signal>
-            <slot>action_pullSeries/setExecutable</slot>
+            <slot>action_pullSeries/enable</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

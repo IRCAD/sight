@@ -171,7 +171,7 @@
 
             <!-- Connect the shortcut "v" to the update slot of 'createMeshAct'-->
             <connect>
-                <signal>shortcutSrv/activated</signal>
+                <signal>shortcutSrv/checkd</signal>
                 <slot>createMeshAct/update</slot>
             </connect>
 

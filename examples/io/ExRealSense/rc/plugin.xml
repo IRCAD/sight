@@ -256,7 +256,7 @@
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
@@ -286,11 +286,11 @@
                     <slot>startVideoAct/show</slot>
                     <slot>resumeVideoAct/hide</slot>
                     <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/deactivate</slot>
+                    <slot>stopVideoAct/disable</slot>
+                    <slot>loopVideoAct/disable</slot>
+                    <slot>loopVideoAct/uncheck</slot>
                 </slots>
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
@@ -298,7 +298,7 @@
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="recordAct" type="sight::module::ui::base::com::SSlotCaller" >
@@ -317,14 +317,14 @@
                 <slots>
                     <slot>DMPointAdp/updateVisibility</slot>
                 </slots>
-                <state active="false" />
+                <state checked="false" />
             </service>
 
             <service uid="showPCColorAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>VPointAdp/updateVisibility</slot>
                 </slots>
-                <state active="false" />
+                <state checked="false" />
             </service>
 
             <!-- Show/hide the parameters view -->
@@ -657,8 +657,8 @@
                 <signal>videoGrabberSrv/cameraStarted</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/setExecutable</slot>
-                <slot>loopVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/enable</slot>
+                <slot>loopVideoAct/enable</slot>
             </connect>
 
             <connect>
@@ -668,7 +668,7 @@
 
             <connect>
                 <signal>RGBCamera/modified</signal>
-                <slot>startVideoAct/setExecutable</slot>
+                <slot>startVideoAct/enable</slot>
                 <slot>stopVideoAct/update</slot>
             </connect>
 
@@ -725,20 +725,20 @@
 
             <connect>
                 <signal>videoGrabberSrv/filePlayed</signal>
-                <slot>recordAct/setInexecutable</slot>
+                <slot>recordAct/disable</slot>
                 <slot>infraredEmitterSrv/disable</slot>
                 <slot>presetsSrv/disable</slot>
                 <slot>rangeEditorSrv/disable</slot>
-                <slot>configureRecordingPathAct/setInexecutable</slot>
+                <slot>configureRecordingPathAct/disable</slot>
             </connect>
 
             <connect>
                 <signal>videoGrabberSrv/devicePlayed</signal>
-                <slot>recordAct/setExecutable</slot>
+                <slot>recordAct/enable</slot>
                 <slot>infraredEmitterSrv/enable</slot>
                 <slot>presetsSrv/enable</slot>
                 <slot>rangeEditorSrv/enable</slot>
-                <slot>configureRecordingPathAct/setExecutable</slot>
+                <slot>configureRecordingPathAct/enable</slot>
             </connect>
 
             <connect>

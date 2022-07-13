@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ void SExport::starting()
     {
         if(series == this->getSeries())
         {
-            this->setIsExecutable(false);
+            this->setEnabled(false);
         }
     }
 }
@@ -152,7 +152,7 @@ void SExport::updating()
         data::helper::SeriesDB seriesDBHelper(*seriesDB);
         seriesDBHelper.add(series.get_shared());
         seriesDBHelper.notify();
-        this->setIsExecutable(false);
+        this->setEnabled(false);
     }
 }
 
@@ -180,7 +180,7 @@ void SExport::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
     {
         if(series == this->getSeries())
         {
-            this->setIsExecutable(false);
+            this->setEnabled(false);
         }
     }
 }
@@ -193,7 +193,7 @@ void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
     {
         if(series == this->getSeries())
         {
-            this->setIsExecutable(true);
+            this->setEnabled(true);
         }
     }
 }

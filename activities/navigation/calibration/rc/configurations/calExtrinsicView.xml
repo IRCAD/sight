@@ -260,11 +260,11 @@
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
-                <slot>stopVideoAct/setInexecutable</slot>
-                <slot>loopVideoAct/setInexecutable</slot>
-                <slot>loopVideoAct/deactivate</slot>
+                <slot>stopVideoAct/disable</slot>
+                <slot>loopVideoAct/disable</slot>
+                <slot>loopVideoAct/uncheck</slot>
             </slots>
-            <state executable="false" />
+            <state enabled="false" />
         </service>
 
         <!-- Loop the frame grabber -->
@@ -273,7 +273,7 @@
                 <slot>videoGrabber1Srv/loopVideo</slot>
                 <slot>videoGrabber2Srv/loopVideo</slot>
             </slots>
-            <state executable="false" />
+            <state enabled="false" />
         </service>
 
         <service uid="exportExtrinsicAct" type="sight::module::ui::base::com::SSlotCaller">
@@ -456,8 +456,8 @@
             <signal>videoGrabber2Srv/cameraStarted</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
-            <slot>stopVideoAct/setExecutable</slot>
-            <slot>loopVideoAct/setExecutable</slot>
+            <slot>stopVideoAct/enable</slot>
+            <slot>loopVideoAct/enable</slot>
         </connect>
 
         <connect>

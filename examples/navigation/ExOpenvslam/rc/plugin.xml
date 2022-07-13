@@ -239,7 +239,7 @@
             </service>
 
             <service uid="enableLocalizationAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-             <state active="false" />
+             <state checked="false" />
                 <slots>
                     <slot>openvslamSrv/enableLocalization</slot>
                 </slots>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ namespace com
  * - \b setChecked(bool): allows to check/uncheck the button.
  * - \b check(): allows to check the button.
  * - \b uncheck(): allows to uncheck the button.
- * - \b setIsExecutable(bool): sets the button executability.
+ * - \b setEnabled(bool): sets the button executability.
  * - \b setExecutable(): sets the button executable.
  * - \b setInexecutable(): sets the button inexecutable.
  * - \b setVisible(bool):s ets the button visibility.
@@ -134,7 +134,7 @@ private:
     void uncheck();
 
     /// SLOT: sets the button executability.
-    void setIsExecutable(bool _isExecutable);
+    void setEnabled(bool _isEnabled);
 
     /// SLOT: sets the button executable.
     void setExecutable();

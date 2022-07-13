@@ -282,43 +282,43 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="item1Act" type="sight::module::ui::base::SDefaultAction" >
-            <state active="true" />
+            <state checked="true" />
         </service>
 
         <service uid="item2Act" type="sight::module::ui::base::SDefaultAction" >
-            <state active="true" />
+            <state checked="true" />
         </service>
 
         <service uid="item3Act" type="sight::module::ui::base::SDefaultAction" />
 
         <service uid="item4Act" type="sight::module::ui::base::SDefaultAction" >
-            <state active="false" />
+            <state checked="false" />
         </service>
 
         <service uid="item5Act" type="sight::module::ui::base::SDefaultAction" >
-            <state active="true" />
+            <state checked="true" />
         </service>
 
         <service uid="startAct" type="sight::module::ui::base::com::SSlotCaller" >
             <confirmation value="true" message="Are you sure you want to Start ?"/>
             <slots>
                 <slot>startAct/hide</slot>
-                <slot>stopAct/setExecutable</slot>
+                <slot>stopAct/enable</slot>
                 <slot>pauseAct/show</slot>
             </slots>
         </service>
 
         <service uid="stopAct" type="sight::module::ui::base::com::SSlotCaller" >
-            <state executable="false" />
+            <state enabled="false" />
             <slots>
                 <slot>startAct/show</slot>
-                <slot>stopAct/setInexecutable</slot>
+                <slot>stopAct/disable</slot>
                 <slot>pauseAct/hide</slot>
             </slots>
         </service>
 
         <service uid="pauseAct" type="sight::module::ui::base::com::SSlotCaller" >
-            <state active="true" visible="false" />
+            <state checked="true" visible="false" />
             <slots>
                 <slot>startAct/show</slot>
                 <slot>pauseAct/hide</slot>
@@ -326,14 +326,14 @@
         </service>
 
         <service uid="view5VisibilityAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-            <state active="true" inverse="true" />
+            <state checked="true" inverse="true" />
             <slots>
                 <slot>sub5View/setVisible</slot>
             </slots>
         </service>
 
         <service uid="item16Act" type="sight::module::ui::base::com::SStarter" >
-            <state active="true" />
+            <state checked="true" />
             <start uid="item2Act" />
             <start uid="item3Act" />
             <stop uid="item4Act" />

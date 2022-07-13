@@ -108,8 +108,8 @@
             <signal>videoGrabberSrv/cameraStarted</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
-            <slot>stopVideoAct/setExecutable</slot>
-            <slot>loopVideoAct/setExecutable</slot>
+            <slot>stopVideoAct/enable</slot>
+            <slot>loopVideoAct/enable</slot>
         </connect>
 
         <connect>
@@ -119,7 +119,7 @@
 
         <connect>
             <signal>${camera}/modified</signal>
-            <slot>startVideoAct/setExecutable</slot>
+            <slot>startVideoAct/enable</slot>
             <slot>stopVideoAct/update</slot>
         </connect>
 
