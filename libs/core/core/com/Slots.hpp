@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,10 +74,6 @@ public:
         SPTR(SlotBase) slotBase = std::dynamic_pointer_cast<SlotBase>(slot);
         return this->operator()(key, slotBase);
     }
-
-    /// Creates in intern a new slot from function and registers it in m_slots
-    template<typename F, typename ... A>
-    Slots& operator()(const SlotKeyType& key, F f, A ... a);
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
     CORE_API SPTR(SlotBase) operator[](const SlotKeyType& key) const;

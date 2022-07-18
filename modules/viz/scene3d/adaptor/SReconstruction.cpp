@@ -44,8 +44,8 @@ static const std::string s_QUERY_CONFIG            = "queryFlags";
 
 SReconstruction::SReconstruction() noexcept
 {
-    m_slots(s_CHANGE_MESH_SLOT, &SReconstruction::changeMesh, this);
-    m_slots(s_VISIBILITY_SLOT, &SReconstruction::modifyVisibility, this);
+    newSlot(s_CHANGE_MESH_SLOT, &SReconstruction::changeMesh, this);
+    newSlot(s_VISIBILITY_SLOT, &SReconstruction::modifyVisibility, this);
 }
 
 //------------------------------------------------------------------------------

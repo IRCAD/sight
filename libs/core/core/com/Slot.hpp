@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #define __FWCOM_SLOT_HPP__
 
 #include "core/com/SlotCall.hpp"
+#include "core/function.hpp"
 
 #include <functional>
 
@@ -115,7 +116,15 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template<typename F, typename ... Bindings>
+template<typename F, typename, typename ... Bindings>
 SPTR(Slot<typename core::com::util::convert_function_type<F>::type>) newSlot(F f, Bindings ... bindings);
+
+//-----------------------------------------------------------------------------
+
+// Prototype used for lambdas functions
+template<typename F, typename>
+SPTR(Slot<core::lambda_to_function_t<F> >) newSlot(F f);
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::core::com

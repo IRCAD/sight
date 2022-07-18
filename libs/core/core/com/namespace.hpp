@@ -64,9 +64,9 @@ namespace util
  *
  * @section Slots Slots
  *
- * Slots are wrappers for functions and class methods that can be attached to a
+ * Slots are wrappers for functions, class methods and lambda functions that can be attached to a
  * core::thread::Worker. The purpose of this class is to provide synchronous and
- * asynchronous mechanisms for method and function calling.
+ * asynchronous mechanisms for function calls.
  *
  * Slots have a common base class : SlotBase. This allows to store them in the
  * same container. Slots are designed to permit calling them by knowing only the
@@ -78,6 +78,10 @@ namespace util
  * signature `int (int, int)`
  *
  *     core::com::Slot< int (int, int) >::sptr slotSum = core::com::newSlot( &sum );
+ *
+ * This declares a slot wrapping a lambda function that does the same than above:
+ *
+ *     core::com::Slot< int (int, int) >::sptr slotSum = core::com::newSlot( [](int a, int b){ return a + b;} );
  *
  * This declares a Slot wrapping the method `start` with signature `void()` of
  * the object `a` which class type is `A`

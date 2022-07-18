@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,8 +98,7 @@ void SlotsTest::buildTest()
     CPPUNIT_ASSERT(slots["sum"] == slots["another_key"]);
     CPPUNIT_ASSERT(!slots["wrong_slot"]);
 
-    SlotsTestBasic slotsBasicStruct;
-    slots("struct_sum", &SlotsTestBasic::sum, &slotsBasicStruct);
+    slots("struct_sum", slot1);
 
     CPPUNIT_ASSERT_EQUAL(14, slots["struct_sum"]->call<int>(5, 9));
 
@@ -127,9 +126,10 @@ struct SlotsTestHasSlots : public HasSlots
 
     SlotsTestHasSlots()
     {
-        GetValueSlotType::sptr slotGetValue = core::com::newSlot(&SlotsTestHasSlots::getValue, this);
+        auto slotGetValue = core::com::newSlot(&SlotsTestHasSlots::getValue, this);
+        auto slotSum      = core::com::newSlot(&SlotsTestHasSlots::sum, this);
 
-        HasSlots::m_slots("sum", &SlotsTestHasSlots::sum, this)
+        HasSlots::m_slots("sum", slotSum)
             ("getValue", slotGetValue);
     }
 

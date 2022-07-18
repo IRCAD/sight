@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 #include "core/com/Slots.hpp"
 #include "core/com/util/convert_function_type.hpp"
 #include "core/config.hpp"
+#include "core/function.hpp"
 
 namespace sight::core::com
 {
@@ -70,6 +71,9 @@ public:
         F f,
         A a
     );
+
+    template<typename F>
+    SPTR(Slot<core::lambda_to_function_t<F> >) newSlot(const Slots::SlotKeyType& key, F f);
 
 protected:
 
