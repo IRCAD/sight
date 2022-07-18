@@ -68,6 +68,7 @@ static const core::com::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT       = "se
 static const core::com::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT       = "setInt3Parameter";
 static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
 static const core::com::Slots::SlotKeyType s_SET_ENUM_INDEX_PARAMETER_SLOT = "setEnumIndexParameter";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_VALUES_SLOT          = "setEnumValues";
 static const core::com::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "setIntMinParameter";
 static const core::com::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
@@ -99,6 +100,7 @@ SParameters::SParameters() noexcept :
     newSlot(s_SET_INT3_PARAMETER_SLOT, &SParameters::setInt3Parameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SParameters::setEnumParameter, this);
     newSlot(s_SET_ENUM_INDEX_PARAMETER_SLOT, &SParameters::setEnumIndexParameter, this);
+    newSlot(s_SET_ENUM_VALUES_SLOT, &SParameters::setEnumValues, this);
     newSlot(s_SET_INT_MIN_PARAMETER_SLOT, &SParameters::setIntMinParameter, this);
     newSlot(s_SET_INT_MAX_PARAMETER_SLOT, &SParameters::setIntMaxParameter, this);
     newSlot(s_SET_DOUBLE_MIN_PARAMETER_SLOT, &SParameters::setDoubleMinParameter, this);
@@ -246,32 +248,7 @@ void SParameters::starting()
             std::vector<std::string> values;
             std::vector<std::string> data;
 
-            const boost::char_separator<char> sep(", ;");
-            const boost::tokenizer<boost::char_separator<char> > tokens {options, sep};
-
-            for(const auto& token : tokens)
-            {
-                //split again values separated by '='
-                const boost::char_separator<char> subsep("=");
-                const boost::tokenizer<boost::char_separator<char> > subtokens {token, subsep};
-                auto it = subtokens.begin();
-
-                if(it != subtokens.end())
-                {
-                    values.push_back(*it);
-                    ++it;
-                }
-
-                if(it != subtokens.end())
-                {
-                    data.push_back(*it);
-                    ++it;
-                }
-                else
-                {
-                    data.push_back(values.back());
-                }
-            }
+            this->parseEnumString(options, values, data);
 
             this->createEnumWidget(*layout, row, key, defaultValue, values, data);
         }
@@ -1360,6 +1337,43 @@ void SParameters::createIntegerSpinWidget(
 
 //-----------------------------------------------------------------------------
 
+void SParameters::parseEnumString(
+    const std::string& options,
+    std::vector<std::string>& values,
+    std::vector<std::string>& data,
+    std::string separators
+)
+{
+    const boost::char_separator<char> sep(separators.c_str());
+    const boost::tokenizer<boost::char_separator<char> > tokens {options, sep};
+
+    for(const auto& token : tokens)
+    {
+        //split again values separated by '='
+        const boost::char_separator<char> subsep("=");
+        const boost::tokenizer<boost::char_separator<char> > subtokens {token, subsep};
+        auto it = subtokens.begin();
+
+        if(it != subtokens.end())
+        {
+            values.push_back(*it);
+            ++it;
+        }
+
+        if(it != subtokens.end())
+        {
+            data.push_back(*it);
+            ++it;
+        }
+        else
+        {
+            data.push_back(values.back());
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SParameters::createEnumWidget(
     QGridLayout& layout,
     int row,
@@ -1616,6 +1630,44 @@ void SParameters::setEnumIndexParameter(int val, std::string key)
     if(combobox)
     {
         combobox->setCurrentIndex(val);
+    }
+
+    this->blockSignals(false);
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setEnumValues(std::string options, std::string key)
+{
+    this->blockSignals(true);
+
+    QWidget* widget = this->getParamWidget(key);
+
+    QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+
+    if(combobox)
+    {
+        combobox->clear();
+
+        std::vector<std::string> values;
+        std::vector<std::string> data;
+
+        this->parseEnumString(options, values, data);
+
+        int idx = 0;
+        for(const auto& value : values)
+        {
+            combobox->insertItem(idx, QString::fromStdString(value));
+            ++idx;
+        }
+
+        // Add optional data
+        idx = 0;
+        for(const auto& choice : data)
+        {
+            combobox->setItemData(idx, QString::fromStdString(choice));
+            ++idx;
+        }
     }
 
     this->blockSignals(false);

@@ -307,6 +307,14 @@ private:
         bool resetButton
     );
 
+    /// Parses the string for an enum
+    void parseEnumString(
+        const std::string& options,
+        std::vector<std::string>& values,
+        std::vector<std::string>& data,
+        std::string separators = ", ;"
+    );
+
     /// Create a multi choice widget
     void createEnumWidget(
         QGridLayout& layout,
@@ -360,6 +368,9 @@ private:
 
     /// SLOT: This method sets an enum parameter using the index of the enum
     void setEnumIndexParameter(int, std::string key);
+
+    /// SLOT: This method sets the enum values
+    void setEnumValues(std::string options, std::string key);
 
     /// Slot: Set the minimum value of an integer parameter (int, int2, int3)
     void setIntMinParameter(int min, std::string key);
