@@ -1605,13 +1605,30 @@ void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key
 
 void SParameters::setEnumParameter(std::string val, std::string key)
 {
+    this->blockSignals(true);
+
     QWidget* widget = this->getParamWidget(key);
 
     QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
     if(combobox)
     {
-        combobox->setCurrentText(QString::fromStdString(val));
+        // Find first in text
+        auto res = combobox->findText(QString::fromStdString(val));
+        if(res == -1)
+        {
+            // fallback, try to find in optional data.
+            res = combobox->findData(QString::fromStdString(val));
+        }
+
+        if(res >= 0)
+        {
+            combobox->setCurrentIndex(res);
+        }
+        else
+        {
+            SIGHT_WARN("value '" + val + "' isn't found in Enum ComboBox '" + key + "'.");
+        }
     }
 
     this->blockSignals(false);
