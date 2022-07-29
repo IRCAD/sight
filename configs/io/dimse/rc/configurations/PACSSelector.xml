@@ -549,32 +549,15 @@
 
         <!-- connection from IService notify signals to the SNotifier,you can add as many services as you need -->
         <connect>
-            <signal>configurePACSEditorSrv/successNotified</signal>
-            <signal>seriesPullerSrv/successNotified</signal>
-            <slot>rightNotifierSrv/popSuccess</slot>
+            <signal>configurePACSEditorSrv/notified</signal>
+            <signal>sliderIndexDicomPullerEditorSrv/notified</signal>
+            <signal>seriesPullerSrv/notified</signal>
+            <slot>rightNotifierSrv/pop</slot>
         </connect>
 
         <connect>
-            <signal>queryEditorSrv/failureNotified</signal>
-            <slot>leftNotifierSrv/popFailure</slot>
-        </connect>
-
-        <connect>
-            <signal>configurePACSEditorSrv/failureNotified</signal>
-            <signal>sliderIndexDicomPullerEditorSrv/failureNotified</signal>
-            <signal>seriesPullerSrv/failureNotified</signal>
-            <slot>rightNotifierSrv/popFailure</slot>
-        </connect>
-
-        <connect>
-            <signal>queryEditorSrv/infoNotified</signal>
-            <slot>leftNotifierSrv/popInfo</slot>
-        </connect>
-
-        <connect>
-            <signal>sliderIndexDicomPullerEditorSrv/infoNotified</signal>
-            <signal>seriesPullerSrv/infoNotified</signal>
-            <slot>rightNotifierSrv/popInfo</slot>
+            <signal>queryEditorSrv/notified</signal>
+            <slot>leftNotifierSrv/pop</slot>
         </connect>
 
         <connect>

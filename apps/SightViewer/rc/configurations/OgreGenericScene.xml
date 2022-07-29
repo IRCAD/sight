@@ -644,13 +644,8 @@
         </connect>
 
         <connect>
-            <signal>shapeExtruderAdp/infoNotified</signal>
-            <slot>notifierSrv/popInfo</slot>
-        </connect>
-
-        <connect>
-            <signal>shapeExtruderAdp/failureNotified</signal>
-            <slot>notifierSrv/popFailure</slot>
+            <signal>shapeExtruderAdp/notified</signal>
+            <slot>notifierSrv/pop</slot>
         </connect>
 
         <!-- Connects double click on landmark to slice moves. -->

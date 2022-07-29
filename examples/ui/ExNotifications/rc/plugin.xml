@@ -1,8 +1,8 @@
 <!--
 This example shows how to display notifications popups.
 
-Mode 1: Using SNotifier service (recommanded) and appropriate signals from IService (notifyInfo, notifySuccess, notifyFailure)
-connected to SNotifier slots popInfo/Failure/Success.
+Mode 1: Using SNotifier service (recommanded) and 'notified' signal from IService
+connected to SNotifier slots 'pop'.
 
 Mode 2: Standalone by calling directly the notification dialog inside your service (see SDisplayTestNotifications.cpp)
 this mode is not recommanded since each service can pop notification without any knowlegde of how many notifications
@@ -135,18 +135,8 @@ are already displayed and where they are displayed on screen.
 
             <!-- connection from IService notify signals to the SNotifier,you can add as many service as you need -->
             <connect>
-                <signal>testNotifierSrv/infoNotified</signal>
-                <slot>notifierSrv/popInfo</slot>
-            </connect>
-
-            <connect>
-                <signal>testNotifierSrv/successNotified</signal>
-                <slot>notifierSrv/popSuccess</slot>
-            </connect>
-
-            <connect>
-                <signal>testNotifierSrv/failureNotified</signal>
-                <slot>notifierSrv/popFailure</slot>
+                <signal>testNotifierSrv/notified</signal>
+                <slot>notifierSrv/pop</slot>
             </connect>
 
             <!-- Others connections -->

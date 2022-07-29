@@ -26,6 +26,8 @@
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
+#include <service/IService.hpp>
+
 #include <array>
 #include <string>
 
@@ -45,14 +47,8 @@ public:
     SIGHT_DECLARE_CLASS(INotificationDialog, ui::base::GuiBaseObject);
 
     /// Notification Type (changes Qss style).
-    enum class Type
-    {
-        INFO = 0,
-        SUCCESS,
-        FAILURE,
-        NONE,
-        DEFAULT = INFO
-    };
+
+    using Type = service::IService::NotificationType;
 
     /// Where to display notifications.
     enum class Position
@@ -152,7 +148,7 @@ protected:
     std::string m_fullMessage;
 
     /// Type of notification (may change the background color).
-    Type m_notificationType {Type::DEFAULT};
+    Type m_notificationType {Type::INFO};
 
     /// Where the notification will be displayed (relative to the active windows).
     Position m_position {Position::DEFAULT};

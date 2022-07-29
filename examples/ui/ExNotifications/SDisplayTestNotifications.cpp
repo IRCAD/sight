@@ -177,18 +177,7 @@ void SDisplayTestNotifications::updating()
                                                                      "sunt in culpa qui officia deserunt mollit anim id est laborum.";
         }
 
-        if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
-        {
-            this->notify(NotificationType::SUCCESS, message);
-        }
-        else if(m_type == ::dial::NotificationDialog::Type::FAILURE)
-        {
-            this->notify(NotificationType::FAILURE, message);
-        }
-        else
-        {
-            this->notify(NotificationType::INFO, message);
-        }
+        this->notify(m_type, message);
     }
     else
     {

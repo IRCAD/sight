@@ -42,13 +42,12 @@ namespace sight::service
 
 //-----------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType IService::s_STARTED_SIG          = "started";
-const core::com::Signals::SignalKeyType IService::s_UPDATED_SIG          = "updated";
-const core::com::Signals::SignalKeyType IService::s_SWAPPED_SIG          = "swapped";
-const core::com::Signals::SignalKeyType IService::s_STOPPED_SIG          = "stopped";
-const core::com::Signals::SignalKeyType IService::s_INFO_NOTIFIED_SIG    = "infoNotified";
-const core::com::Signals::SignalKeyType IService::s_SUCCESS_NOTIFIED_SIG = "successNotified";
-const core::com::Signals::SignalKeyType IService::s_FAILURE_NOTIFIED_SIG = "failureNotified";
+const core::com::Signals::SignalKeyType IService::s_STARTED_SIG = "started";
+const core::com::Signals::SignalKeyType IService::s_UPDATED_SIG = "updated";
+const core::com::Signals::SignalKeyType IService::s_SWAPPED_SIG = "swapped";
+const core::com::Signals::SignalKeyType IService::s_STOPPED_SIG = "stopped";
+
+const core::com::Signals::SignalKeyType IService::s_NOTIFIED_SIG = "notified";
 
 const core::com::Slots::SlotKeyType IService::s_START_SLOT   = "start";
 const core::com::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
@@ -68,9 +67,8 @@ IService::IService() :
     newSignal<UpdatedSignalType>(s_UPDATED_SIG);
     newSignal<SwappedSignalType>(s_SWAPPED_SIG);
     newSignal<StoppedSignalType>(s_STOPPED_SIG);
-    newSignal<NotifSignalType>(s_INFO_NOTIFIED_SIG);
-    newSignal<NotifSignalType>(s_SUCCESS_NOTIFIED_SIG);
-    newSignal<NotifSignalType>(s_FAILURE_NOTIFIED_SIG);
+
+    newSignal<notification_signal_type>(s_NOTIFIED_SIG);
 
     m_slotStart   = newSlot(s_START_SLOT, &IService::_startSlot, this);
     m_slotStop    = newSlot(s_STOP_SLOT, &IService::_stopSlot, this);
@@ -1195,35 +1193,10 @@ bool IService::hasAllRequiredObjects() const
 
 //------------------------------------------------------------------------------
 
-SERVICE_API void IService::notify(NotificationType type, const std::string& message) const
+void IService::notify(NotificationType type, const std::string& message) const
 {
-    switch(type)
-    {
-        case NotificationType::SUCCESS:
-        {
-            const auto sig = this->signal<NotifSignalType>(s_SUCCESS_NOTIFIED_SIG);
-            sig->asyncEmit(message);
-            break;
-        }
-
-        case NotificationType::FAILURE:
-        {
-            const auto sig = this->signal<NotifSignalType>(s_FAILURE_NOTIFIED_SIG);
-            sig->asyncEmit(message);
-            break;
-        }
-
-        case NotificationType::INFO:
-        {
-            const auto sig = this->signal<NotifSignalType>(s_INFO_NOTIFIED_SIG);
-            sig->asyncEmit(message);
-            break;
-        }
-
-        default:
-            SIGHT_ERROR("Unknown NotificationType");
-            break;
-    }
+    const auto sig = this->signal<notification_signal_type>(s_NOTIFIED_SIG);
+    sig->asyncEmit(type, message);
 }
 
 //------------------------------------------------------------------------------

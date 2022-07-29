@@ -32,9 +32,7 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::Slots::SlotKeyType s_POP_INFO_SLOT    = "popInfo";
-static const core::com::Slots::SlotKeyType s_POP_SUCCESS_SLOT = "popSuccess";
-static const core::com::Slots::SlotKeyType s_POP_FAILURE_SLOT = "popFailure";
+static const core::com::Slots::SlotKeyType s_POP_NOTIFICATION_SLOT = "pop";
 
 static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 
@@ -51,9 +49,7 @@ SNotifier::SNotifier() noexcept
     m_positionMap["BOTTOM_LEFT"]     = sight::ui::base::dialog::NotificationDialog::Position::BOTTOM_LEFT;
     m_positionMap["CENTERED_BOTTOM"] = sight::ui::base::dialog::NotificationDialog::Position::CENTERED_BOTTOM;
 
-    newSlot(s_POP_INFO_SLOT, &SNotifier::popInfo, this);
-    newSlot(s_POP_SUCCESS_SLOT, &SNotifier::popSuccess, this);
-    newSlot(s_POP_FAILURE_SLOT, &SNotifier::popFailure, this);
+    newSlot(s_POP_NOTIFICATION_SLOT, &SNotifier::pop, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SNotifier::setEnumParameter, this);
 }
 
@@ -148,23 +144,32 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void SNotifier::popInfo(std::string _message)
+void SNotifier::pop(service::IService::NotificationType _type, std::string _message)
 {
-    this->showNotification(_message, sight::ui::base::dialog::INotificationDialog::Type::INFO);
-}
+    switch(_type)
+    {
+        case NotificationType::SUCCESS:
+        {
+            this->showNotification(_message, sight::ui::base::dialog::INotificationDialog::Type::SUCCESS);
+            break;
+        }
 
-//-----------------------------------------------------------------------------
+        case NotificationType::FAILURE:
+        {
+            this->showNotification(_message, sight::ui::base::dialog::INotificationDialog::Type::FAILURE);
+            break;
+        }
 
-void SNotifier::popSuccess(std::string _message)
-{
-    this->showNotification(_message, sight::ui::base::dialog::INotificationDialog::Type::SUCCESS);
-}
+        case NotificationType::INFO:
+        {
+            this->showNotification(_message, sight::ui::base::dialog::INotificationDialog::Type::INFO);
+            break;
+        }
 
-//-----------------------------------------------------------------------------
-
-void SNotifier::popFailure(std::string _message)
-{
-    this->showNotification(_message, sight::ui::base::dialog::INotificationDialog::Type::FAILURE);
+        default:
+            SIGHT_ERROR("Unknown NotificationType");
+            break;
+    }
 }
 
 //-----------------------------------------------------------------------------

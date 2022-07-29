@@ -92,9 +92,7 @@ class Config;
  * - \b started() : Emitted when the service has started.
  * - \b updated() : Emitted when the service has updated.
  * - \b stopped() : Emitted when the service has stopped.
- * - \b infoNotified(std::string _message): Emitted when the service wants to pop an info notification.
- * - \b successNotified(std::string _message): Emitted when the service wants to pop a success notification.
- * - \b failureNotified(std::string _message): Emitted when the service wants to pop a failure notification.
+ * - \b notified(NotificationType _type, std::string _message): Emitted when the service wants to pop a notification.
  *
  * @section Slots Slots
  * - \b start() : Start the service.
@@ -218,6 +216,15 @@ public:
 
     //@}
 
+    /// Defines Notification type, default is INFO.
+    enum class NotificationType
+    {
+        SUCCESS,
+        INFO,
+        FAILURE,
+        DEFAULT = INFO
+    };
+
     /**
      * @name Signal API
      */
@@ -235,10 +242,9 @@ public:
     SERVICE_API static const core::com::Signals::SignalKeyType s_STOPPED_SIG;
     typedef core::com::Signal<void ()> StoppedSignalType;
 
-    using NotifSignalType = core::com::Signal<void (std::string)>;
-    SERVICE_API static const core::com::Signals::SignalKeyType s_INFO_NOTIFIED_SIG;
-    SERVICE_API static const core::com::Signals::SignalKeyType s_SUCCESS_NOTIFIED_SIG;
-    SERVICE_API static const core::com::Signals::SignalKeyType s_FAILURE_NOTIFIED_SIG;
+    /// Single signal for notifications.
+    using notification_signal_type = core::com::Signal<void (NotificationType, std::string)>;
+    SERVICE_API static const core::com::Signals::SignalKeyType s_NOTIFIED_SIG;
 
     //@}
 
@@ -719,19 +725,11 @@ public:
     /// Return true if all the non-optional object required by the service are present
     SERVICE_API bool hasAllRequiredObjects() const;
 
-    /// Defines Notification type, default is INFO.
-    enum class NotificationType
-    {
-        SUCCESS, ///< to emit 's_SUCCESS_NOTIFIED_SIG'
-        INFO,    ///< to emit 's_INFO_NOTIFIED_SIG'
-        FAILURE  ///< to emit 's_FAILURE_NOTIFIED_SIG'
-    };
-
     /**
-     * @brief Emit notification signal with 'message' base on Notification 'type' provided
+     * @brief Emits notification signal with 'message' and Notification 'type' provided
      *
      * @param[in] type type of the notification to emit @see Notification enum class.
-     * @param[in] message message to send in the signal std::string.
+     * @param[in] message message as std::string.
      */
     SERVICE_API void notify(NotificationType type, const std::string& message) const;
 
