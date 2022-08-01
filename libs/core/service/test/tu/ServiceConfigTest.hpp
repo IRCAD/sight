@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
+#include <service/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -52,7 +52,7 @@ public:
 
 private:
 
-    static core::runtime::ConfigurationElement::sptr buildConfig();
+    static service::IService::ConfigType buildConfig();
 };
 
 } // namespace sight::service::ut

@@ -27,7 +27,6 @@
 
 #include <core/mt/types.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
 
 #include <map>

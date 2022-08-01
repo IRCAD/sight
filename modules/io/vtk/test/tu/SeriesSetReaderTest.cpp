@@ -22,7 +22,6 @@
 
 #include "SeriesSetReaderTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
@@ -34,10 +33,10 @@
 #include <data/SeriesSet.hpp>
 
 #include <service/base.hpp>
-#include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <filesystem>
 
@@ -80,14 +79,11 @@ void SeriesSetReaderTest::testSeriesSetReader()
         std::filesystem::exists(meshFile)
     );
 
-    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr file1Cfg     = core::runtime::EConfigurationElement::New("file");
-    core::runtime::EConfigurationElement::sptr file2Cfg     = core::runtime::EConfigurationElement::New("file");
-    file1Cfg->setValue(imageFile.string());
-    readerSrvCfg->addConfigurationElement(file1Cfg);
-    file2Cfg->setValue(meshFile.string());
-    readerSrvCfg->addConfigurationElement(file2Cfg);
-    readerSrvCfg->addConfigurationElement(file2Cfg);
+    service::IService::ConfigType readerSrvCfg;
+    readerSrvCfg.add("file", imageFile.string());
+    service::IService::ConfigType file2Cfg;
+    readerSrvCfg.add("file", meshFile.string());
+    readerSrvCfg.add("file", meshFile.string());
 
     auto series_set = data::SeriesSet::New();
 
@@ -160,10 +156,8 @@ void SeriesSetReaderTest::testMergeSeriesSetReader()
         std::filesystem::exists(imageFile)
     );
 
-    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr fileCfg      = core::runtime::EConfigurationElement::New("file");
-    fileCfg->setValue(imageFile.string());
-    readerSrvCfg->addConfigurationElement(fileCfg);
+    service::IService::ConfigType readerSrvCfg;
+    readerSrvCfg.add("file", imageFile.string());
 
     auto imageSeries = data::ImageSeries::New();
     auto series_set  = data::SeriesSet::New();

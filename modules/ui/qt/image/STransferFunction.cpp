@@ -22,7 +22,6 @@
 
 #include "modules/ui/qt/image/STransferFunction.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>

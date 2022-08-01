@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <data/Object.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>

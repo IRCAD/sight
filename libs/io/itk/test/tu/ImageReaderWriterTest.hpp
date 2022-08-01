@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <data/Image.hpp>
 
 #include <service/macros.hpp>

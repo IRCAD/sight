@@ -28,7 +28,6 @@
 #include <activity/extension/Activity.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/Series.hpp>
 #include <data/Vector.hpp>

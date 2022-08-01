@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/profile/Profile.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>

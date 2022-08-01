@@ -23,7 +23,6 @@
 #pragma once
 
 #include <core/base.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <service/macros.hpp>
 

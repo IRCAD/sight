@@ -22,8 +22,6 @@
 
 #include "ImageReaderWriterTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
@@ -33,6 +31,8 @@
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -49,7 +49,7 @@ namespace sight::module::io::vtk::ut
 
 void runImageSrv(
     const std::string& srvname,
-    const SPTR(core::runtime::EConfigurationElement)& cfg,
+    const boost::property_tree::ptree& cfg,
     const SPTR(data::Object)& image
 )
 {
@@ -88,12 +88,10 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-core::runtime::EConfigurationElement::sptr getIOConfiguration(const std::filesystem::path& file)
+boost::property_tree::ptree getIOConfiguration(const std::filesystem::path& file)
 {
-    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr readerCfg    = core::runtime::EConfigurationElement::New("file");
-    readerCfg->setValue(file.string());
-    readerSrvCfg->addConfigurationElement(readerCfg);
+    service::IService::ConfigType readerSrvCfg;
+    readerSrvCfg.add("file", file.string());
 
     return readerSrvCfg;
 }

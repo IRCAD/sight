@@ -22,7 +22,6 @@
 
 #include "IoItkTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
@@ -65,7 +64,7 @@ void IoItkTest::tearDown()
 void executeService(
     const SPTR(data::Object)& obj,
     const std::string& srvImpl,
-    const SPTR(core::runtime::EConfigurationElement)& cfg,
+    const boost::property_tree::ptree& cfg,
     const data::Access access = data::Access::inout
 )
 {
@@ -102,10 +101,9 @@ void IoItkTest::testImageSeriesWriterJPG()
     std::filesystem::create_directories(path);
 
     // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg    = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr folderCfg = core::runtime::EConfigurationElement::New("folder");
-    folderCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(folderCfg);
+
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("folder", path.string());
 
     // Create and execute service
     executeService(
@@ -139,10 +137,8 @@ void IoItkTest::testSaveLoadInr()
     std::filesystem::create_directories(path.parent_path());
 
     // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("file", path.string());
 
     // Create and execute service
     executeService(
@@ -187,10 +183,8 @@ void IoItkTest::testSaveLoadNifti()
     std::filesystem::create_directories(path.parent_path());
 
     // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("file", path.string());
 
     // Create and execute service
     executeService(
@@ -236,10 +230,8 @@ void IoItkTest::ImageSeriesInrTest()
     std::filesystem::create_directories(path.parent_path());
 
     // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("file", path.string());
 
     // Create and execute service
     executeService(
@@ -291,10 +283,8 @@ void IoItkTest::ImageSeriesNiftiTest()
     std::filesystem::create_directories(path.parent_path());
 
     // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("file", path.string());
 
     // Create and execute service
     executeService(
@@ -352,14 +342,9 @@ void IoItkTest::SeriesSetInrTest()
     );
 
     // Create Config
-    core::runtime::EConfigurationElement::sptr srvCfg       = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr fileImageCfg = core::runtime::EConfigurationElement::New("file");
-    fileImageCfg->setValue(imageFile.string());
-    srvCfg->addConfigurationElement(fileImageCfg);
-
-    core::runtime::EConfigurationElement::sptr fileSkinCfg = core::runtime::EConfigurationElement::New("file");
-    fileSkinCfg->setValue(skinFile.string());
-    srvCfg->addConfigurationElement(fileSkinCfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("file", imageFile.string());
+    srvCfg.add("file", skinFile.string());
 
     // load SeriesSet
     auto series_set = data::SeriesSet::New();

@@ -22,7 +22,6 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/ActivitySet.hpp>
@@ -36,10 +35,7 @@
 
 #include <utestData/generator/SeriesSet.hpp>
 
-#include <boost/functional/hash.hpp>
-
 #include <filesystem>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -73,7 +69,7 @@ void ModelSeriesWriterTest::tearDown()
 
 void runModelSeriesSrv(
     const std::string& impl,
-    const SPTR(core::runtime::EConfigurationElement)& cfg,
+    const boost::property_tree::ptree& cfg,
     const SPTR(data::Object)& obj
 )
 {
@@ -100,27 +96,22 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-core::runtime::EConfigurationElement::sptr getIOCfgFromFolder(const fs::path& file)
+boost::property_tree::ptree getIOCfgFromFolder(const fs::path& file)
 {
-    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr cfg    = core::runtime::EConfigurationElement::New("folder");
-    cfg->setValue(file.string());
-    srvCfg->addConfigurationElement(cfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("folder", file.string());
 
     return srvCfg;
 }
 
 //------------------------------------------------------------------------------
 
-core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainerType& files)
+boost::property_tree::ptree getIOCfgFromFiles(const FileContainerType& files)
 {
-    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
-
-    for(const std::string& file : files)
+    service::IService::ConfigType srvCfg;
+    for(const auto& file : files)
     {
-        core::runtime::EConfigurationElement::sptr cfg = core::runtime::EConfigurationElement::New("file");
-        cfg->setValue(file);
-        srvCfg->addConfigurationElement(cfg);
+        srvCfg.add("file", file);
     }
 
     return srvCfg;
@@ -163,10 +154,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
             fs::create_directories(dir / ext);
         }
 
-        auto cfg    = getIOCfgFromFolder(dir / ext);
-        auto extCfg = core::runtime::EConfigurationElement::New("extension");
-        extCfg->setValue(ext);
-        cfg->addConfigurationElement(extCfg);
+        auto cfg = getIOCfgFromFolder(dir / ext);
+        cfg.add("extension", ext);
 
         runModelSeriesSrv(
             "sight::module::io::vtk::SModelSeriesWriter",

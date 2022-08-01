@@ -25,7 +25,6 @@
 #include "modules/ui/base/Plugin.hpp"
 
 #include <core/crypto/PasswordKeeper.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Os.hpp>
 
 #include <service/base.hpp>

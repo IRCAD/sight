@@ -22,6 +22,8 @@
 
 #include "ServiceConfigTest.hpp"
 
+#include <core/runtime/Convert.hpp>
+
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
@@ -61,9 +63,10 @@ void ServiceConfigTest::serviceConfigTest()
     const std::string configId(service::extension::AppConfig::getUniqueIdentifier());
     const std::string service("sight::service::ut::TestService");
     const std::string desc("Description of config");
-    core::runtime::ConfigurationElement::csptr config = sight::service::ut::ServiceConfigTest::buildConfig();
+    service::IService::ConfigType config = buildConfig();
 
-    currentServiceConfig->addServiceConfigInfo(configId, service, desc, config);
+    const auto configElement = core::runtime::Convert::fromPropertyTree(config);
+    currentServiceConfig->addServiceConfigInfo(configId, service, desc, configElement);
 
     core::runtime::ConfigurationElement::csptr serviceConfig =
         currentServiceConfig->getServiceConfig(configId, service);
@@ -225,18 +228,17 @@ void ServiceConfigTest::getAllConfigsTest()
 
 //------------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
+service::IService::ConfigType ServiceConfigTest::buildConfig()
 {
-    std::shared_ptr<core::runtime::EConfigurationElement> serviceCfg(new core::runtime::EConfigurationElement(
-                                                                         "config"
-    ));
-    serviceCfg->setAttributeValue("uid", "serviceUUID");
-    serviceCfg->setAttributeValue("type", "serviceType");
+    service::IService::ConfigType config;
 
-    core::runtime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
-    cfg->setValue("Parameter");
+    service::IService::ConfigType serviceCfg;
+    serviceCfg.add("<xmlattr>.uid", "serviceUUID");
+    serviceCfg.add("<xmlattr>.type", "serviceType");
+    serviceCfg.add("param", "Parameter");
 
-    return serviceCfg;
+    config.add_child("service", serviceCfg);
+    return config;
 }
 
 //------------------------------------------------------------------------------

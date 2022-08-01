@@ -27,7 +27,6 @@
 #include <core/BaseObject.hpp>
 #include <core/mt/types.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 

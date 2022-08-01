@@ -24,7 +24,6 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>

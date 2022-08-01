@@ -24,8 +24,6 @@
 
 #include "TestService.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace sight::service::ut

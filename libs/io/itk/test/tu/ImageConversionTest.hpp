@@ -24,7 +24,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <service/macros.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/Image.hpp>
 

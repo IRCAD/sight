@@ -23,6 +23,7 @@
 #pragma once
 
 #include <service/AppConfigManager.hpp>
+#include <service/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -66,7 +67,7 @@ public:
 
 private:
 
-    static core::runtime::ConfigurationElement::sptr buildConfig();
+    static service::IService::ConfigType buildConfig();
 
     static service::AppConfigManager::sptr launchAppConfigMgr(
         const std::string& name,

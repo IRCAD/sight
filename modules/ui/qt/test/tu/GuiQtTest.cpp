@@ -22,8 +22,6 @@
 
 #include "GuiQtTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <data/String.hpp>
 
 #include <service/AppConfigManager.hpp>

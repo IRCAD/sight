@@ -32,7 +32,6 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/Activity.hpp>
 #include <data/ActivitySet.hpp>

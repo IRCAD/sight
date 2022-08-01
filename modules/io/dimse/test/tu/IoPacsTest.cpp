@@ -22,8 +22,6 @@
 
 #include "IoPacsTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <io/dimse/data/PacsConfiguration.hpp>
 
 #include <service/AppConfigManager.hpp>
@@ -31,6 +29,8 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::dimse::ut::IoPacsTest);
@@ -65,20 +65,20 @@ void IoPacsTest::pacsConfigurationInitializer()
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
-    core::runtime::EConfigurationElement::sptr srvElement    = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr configElement = core::runtime::EConfigurationElement::New("config");
-    srvElement->addConfigurationElement(configElement);
-    configElement->setAttributeValue("localApplicationTitle", "VRRender");
-    configElement->setAttributeValue("pacsHostName", "mypacs.mycompany.com");
-    configElement->setAttributeValue("pacsApplicationTitle", "PACSNAME");
-    configElement->setAttributeValue("pacsApplicationPort", "11112");
-    configElement->setAttributeValue("moveApplicationTitle", "MoveApplicationTitle");
-    configElement->setAttributeValue("moveApplicationPort", "11110");
-    configElement->setAttributeValue("retrieveMethod", "GET");
-
+    service::IService::ConfigType configSrv;
+    std::stringstream config_string;
+    config_string << "<config localApplicationTitle=\"VRRender\""
+                     "pacsHostName=\"mypacs.mycompany.com\""
+                     "pacsApplicationTitle=\"PACSNAME\""
+                     "pacsApplicationPort=\"11112\""
+                     "moveApplicationTitle=\"MoveApplicationTitle\""
+                     "moveApplicationPort=\"11110\""
+                     "retrieveMethod=\"GET\""
+                     "/>";
+    boost::property_tree::read_xml(config_string, configSrv);
     // Use the service
     srv->setInOut(pacsConfiguration, "config");
-    srv->setConfiguration(srvElement);
+    srv->setConfiguration(configSrv);
     srv->configure();
     srv->start();
     srv->update();

@@ -25,7 +25,6 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/String.hpp>
 

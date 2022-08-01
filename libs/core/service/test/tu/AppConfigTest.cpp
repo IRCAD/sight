@@ -109,9 +109,11 @@ void AppConfigTest::addConfigTest()
     const std::string moduleId("sight::module::service");
     service::extension::AppInfo::ParametersType parameters;
 
-    core::runtime::ConfigurationElement::csptr config = sight::service::ut::AppConfigTest::buildConfig();
+    const service::IService::ConfigType config = buildConfig();
 
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId);
+    const auto configElement = core::runtime::Convert::fromPropertyTree(config);
+
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, configElement, moduleId);
 
     std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT_EQUAL(false, allConfigs.empty());
@@ -1422,34 +1424,44 @@ void AppConfigTest::objectConfigTest()
 
 //------------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr AppConfigTest::buildConfig()
+service::IService::ConfigType AppConfigTest::buildConfig()
 {
+    service::IService::ConfigType cfg;
+
     // Object
-    std::shared_ptr<core::runtime::EConfigurationElement> cfg(new core::runtime::EConfigurationElement("object"));
-    cfg->setAttributeValue("uid", "image");
-    cfg->setAttributeValue("type", "sight::data::Image");
+    service::IService::ConfigType objCfg;
+    objCfg.add("<xmlattr>.uid", "image");
+    objCfg.add("<xmlattr>.type", "sight::data::Image");
+    cfg.add_child("object", objCfg);
 
     // Service
-    std::shared_ptr<core::runtime::EConfigurationElement> serviceA = cfg->addConfigurationElement("service");
-    serviceA->setAttributeValue("uid", "myTestService1");
-    serviceA->setAttributeValue("type", "sight::service::ut::STest1Image");
-    serviceA->setAttributeValue("autoConnect", "false");
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("<xmlattr>.uid", "myTestService1");
+    srvCfg.add("<xmlattr>.type", "sight::service::ut::STest1Image");
+    srvCfg.add("<xmlattr>.autoConnect", "false");
+    cfg.add_child("service", srvCfg);
 
     // Connections
-    std::shared_ptr<core::runtime::EConfigurationElement> connect1 = cfg->addConfigurationElement("connect");
-    connect1->setAttributeValue("channel", "channel1");
-    connect1->addConfigurationElement("signal")->setValue("image/modified");
-    connect1->addConfigurationElement("slot")->setValue("myTestService1/update");
+    service::IService::ConfigType connectCfg;
+    connectCfg.add("<xmlattr>.channel", "channel1");
+    connectCfg.add("signal", "image/modified");
+    connectCfg.add("slot", "myTestService1/update");
+    cfg.add_child("connect", connectCfg);
 
     // Start method from object's services
-    std::shared_ptr<core::runtime::EConfigurationElement> startA = cfg->addConfigurationElement("start");
-    startA->setAttributeValue("uid", "myTestService1");
+    service::IService::ConfigType startCfg;
+    startCfg.add("<xmlattr>.uid", "myTestService1");
+    cfg.add_child("start", startCfg);
 
     // Update method from object's services
-    std::shared_ptr<core::runtime::EConfigurationElement> updateA = cfg->addConfigurationElement("update");
-    updateA->setAttributeValue("uid", "myTestService1");
+    service::IService::ConfigType updateCfg;
+    updateCfg.add("<xmlattr>.uid", "myTestService1");
+    cfg.add_child("update", updateCfg);
 
-    return cfg;
+    service::IService::ConfigType appCfg;
+    appCfg.add_child("config", cfg);
+
+    return appCfg;
 }
 
 //------------------------------------------------------------------------------
