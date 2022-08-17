@@ -8,7 +8,7 @@ sight_add_target(
 find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT REQUIRED)
 target_link_libraries(filter_image PUBLIC ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT)
 
-if(MSVC)
+if(ITK_VERSION_MAJOR GREATER 4)
     find_package(ITK QUIET COMPONENTS ITKSmoothing ITKRegistrationMethodsv4 REQUIRED)
     target_link_libraries(filter_image PUBLIC ITKSmoothing ITKRegistrationMethodsv4)
 endif()

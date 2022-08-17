@@ -19,7 +19,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef WIN32
+
+#if ITK_VERSION_MAJOR == 4 || (ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3)
 
 #include "SpheroidExtractionTest.hpp"
 
@@ -209,4 +210,4 @@ void SpheroidExtractionTest::extractionTest()
 
 } //namespace sight::filter::image.
 
-#endif // ifndef WIN32
+#endif // ITK_VERSION_MAJOR == 4 || (ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3)
