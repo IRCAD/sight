@@ -9,5 +9,4 @@ add_dependencies(
     module_ui_icons
     module_ui_base
     module_ui_qt
-    module_viz_scene3d
 )

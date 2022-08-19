@@ -48,16 +48,16 @@ namespace sight::module::io::video
  * implementation available, a dialog proposes the user to make a choice.
  *
  * @section Signals Signals
- * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
- * - \b durationModified(std::int64_t) : Emitted when the duration of the video is modified.
+ * - \b positionModified(std::int64_t): Emitted when the position in the video is modified during playing.
+ * - \b durationModified(std::int64_t): Emitted when the duration of the video is modified.
  *
  * @section Slots Slots
- * - \b startCamera() : Start playing the camera or the video.
- * - \b stopCamera() : Stop playing the camera or the video.
- * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
- * - \b loopVideo() : Toggle the loop of the playing.
- * - \b setPositionVideo(int) : Force the current time in the video.
- * - \b reconfigure() : Allows to erase the implementation choice, so that the selection routine is ran again, thus,
+ * - \b startCamera(): Start playing the camera or the video.
+ * - \b stopCamera(): Stop playing the camera or the video.
+ * - \b pauseCamera(): Pause the video, it has no effect when playing a camera.
+ * - \b loopVideo(): Toggle the loop of the playing.
+ * - \b setPositionVideo(int): Force the current time in the video.
+ * - \b reconfigure(): Allows to erase the implementation choice, so that the selection routine is ran again, thus,
  * potentially the selection dialog is shown.
  * - \b nextImage(): display the next image in step by step mode. Does nothing if not supported by the selected grabber.
  * - \b previousImage(): display the previous image in step by step mode. Does nothing if not supported by the
@@ -163,6 +163,21 @@ protected:
 
     /// Set step used on readPrevious/readNext slots.
     MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
+
+    /// Sets an internal bool value.
+    MODULE_IO_VIDEO_API void setBoolParameter(bool, std::string) final;
+
+    /// Sets an internal double value.
+    MODULE_IO_VIDEO_API void setDoubleParameter(double, std::string) final;
+
+    /// Sets an internal int value.
+    MODULE_IO_VIDEO_API void setIntParameter(int, std::string) final;
+
+    /// Sets an internal enum value.
+    MODULE_IO_VIDEO_API void setEnumParameter(std::string, std::string) final;
+
+    /// Sets internal enum values.
+    MODULE_IO_VIDEO_API void setEnumValuesParameter(std::string, std::string) final;
 /** @} */
 
 private:
@@ -197,6 +212,24 @@ private:
 
     /// A frame is presented in the sub-service.
     void fwdPresentFrame();
+
+    /// A named bool parameter has been emitted in the sub-service.
+    void fwdSetBoolParameter(bool value, std::string key);
+
+    /// A named double parameter has been emitted in the sub-service.
+    void fwdSetDoubleParameter(double value, std::string key);
+
+    /// A named int parameter has been emitted in the sub-service.
+    void fwdSetIntParameter(int value, std::string key);
+
+    /// A named enum parameter has been emitted in the sub-service.
+    void fwdSetEnumParameter(std::string value, std::string key);
+
+    /// A named enum values parameter has been emitted in the sub-service.
+    void fwdSetEnumValuesParameter(std::string value, std::string key);
+
+    // Forwards notifications
+    void fwdNotify(IService::NotificationType, const std::string message);
     /** @} */
 
     /// Camera type (RGB, RGBD,...)

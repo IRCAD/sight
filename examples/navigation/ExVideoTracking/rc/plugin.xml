@@ -26,6 +26,7 @@
 
                 <inout key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
+
                 <parameter replace="TOOLBAR" by="subToolbarView" />
             </service>
 

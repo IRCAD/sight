@@ -6,13 +6,30 @@
         <param name="frameTL" />
 
         <param name="TOOLBAR" />
+        <param name="videoSupport" default="true" />
+
+        <param name="cameraStartedChannelOut" default="cameraStartedChannelOut" />
+        <param name="cameraStoppedChannelOut" default="cameraStoppedChannelOut" />
+        <param name="notificationChannel" default="notificationChannel" />
+
+        <param name="boolParameterChannelIn" default="boolParameterChannelIn" />
+        <param name="boolParameterChannelOut" default="boolParameterChannelOut" />
+        <param name="intParameterChannelIn" default="intParameterChannelIn" />
+        <param name="intParameterChannelOut" default="intParameterChannelOut" />
+        <param name="enumParameterChannelIn" default="enumParameterChannelIn" />
+        <param name="enumParameterChannelOut" default="enumParameterChannelOut" />
+        <param name="enumValuesParameterChannelOut" default="enumValuesParameterChannelOut" />
+
+        <param name="videoPositionParameterIn" default="videoPositionParameterIn" />
+        <param name="videoPositionParameterOut" default="videoPositionParameterOut" />
+        <param name="videoDurationParameterOut" default="videoDurationParameterOut" />
     </parameters>
     <config>
 
         <object uid="${camera}" type="sight::data::Camera" src="ref" />
         <object uid="${frameTL}" type="sight::data::FrameTL" src="ref" />
 
-        <service uid="containerView" type="sight::module::ui::base::SView" >
+        <service uid="containerViewSrv" type="sight::module::ui::base::SView" >
             <gui>
                 <toolBar />
                 <layout type="sight::ui::base::LineLayoutManager" >
@@ -21,16 +38,16 @@
             </gui>
             <registry>
                 <parent wid="${TOOLBAR}" />
-                <toolBar sid="toolbarView" start="true" />
+                <toolBar sid="toolbarViewSrv" start="true" />
             </registry>
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
             <inout key="camera" uid="${camera}" />
-            <videoSupport>true</videoSupport>
+            <videoSupport>${videoSupport}</videoSupport>
         </service>
 
-        <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolbarViewSrv" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <editor/>
@@ -51,7 +68,7 @@
             </registry>
         </service>
 
-        <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy" >
+        <service uid="grabberProxySrv" type="sight::module::io::video::SGrabberProxy" >
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${frameTL}" />
         </service>
@@ -59,9 +76,7 @@
         <!-- ******************************* Actions ****************************** -->
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
-            <state enabled="false" />
-        </service>
+        <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
 
         <!-- Pause the frame grabber -->
         <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
@@ -87,26 +102,26 @@
 
         <connect>
             <signal>startVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/startCamera</slot>
+            <slot>grabberProxySrv/startCamera</slot>
         </connect>
 
         <connect>
             <signal>pauseVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/pauseCamera</slot>
+            <slot>grabberProxySrv/pauseCamera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
         </connect>
 
         <connect>
             <signal>resumeVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/pauseCamera</slot>
+            <slot>grabberProxySrv/pauseCamera</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/show</slot>
         </connect>
 
         <connect>
             <signal>stopVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <slot>grabberProxySrv/stopCamera</slot>
             <slot>startVideoAct/show</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/hide</slot>
@@ -117,12 +132,12 @@
 
         <connect>
             <signal>loopVideoAct/clicked</signal>
-            <slot>videoGrabberSrv/loopVideo</slot>
+            <slot>grabberProxySrv/loopVideo</slot>
         </connect>
 
         <connect>
             <signal>videoSelectorSrv/configuredCameras</signal>
-            <slot>videoGrabberSrv/reconfigure</slot>
+            <slot>grabberProxySrv/reconfigure</slot>
         </connect>
 
         <connect>
@@ -132,8 +147,8 @@
             <slot>startVideoAct/update</slot>
         </connect>
 
-        <connect>
-            <signal>videoGrabberSrv/cameraStarted</signal>
+        <connect channel="${cameraStartedChannelOut}" >
+            <signal>grabberProxySrv/cameraStarted</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
             <slot>stopVideoAct/enable</slot>
@@ -142,7 +157,11 @@
 
         <connect>
             <signal>camera/idModified</signal>
-            <slot>videoGrabberSrv/stopCamera</slot>
+            <slot>grabberProxySrv/stopCamera</slot>
+        </connect>
+
+        <connect channel="${cameraStoppedChannelOut}" >
+            <signal>grabberProxySrv/cameraStopped</signal>
         </connect>
 
         <connect>
@@ -151,8 +170,52 @@
             <slot>stopVideoAct/update</slot>
         </connect>
 
-        <start uid="containerView" />
-        <start uid="videoGrabberSrv" />
+        <connect channel="${boolParameterChannelIn}" >
+            <slot>grabberProxySrv/setBoolParameter</slot>
+        </connect>
+
+        <connect channel="${boolParameterChannelOut}" >
+            <signal>grabberProxySrv/boolChanged</signal>
+        </connect>
+
+        <connect channel="${intParameterChannelIn}">
+            <slot>grabberProxySrv/setIntParameter</slot>
+        </connect>
+
+        <connect channel="${intParameterChannelOut}">
+            <signal>grabberProxySrv/intChanged</signal>
+        </connect>
+
+        <connect channel="${enumParameterChannelIn}">
+            <slot>grabberProxySrv/setEnumParameter</slot>
+        </connect>
+
+        <connect channel="${enumParameterChannelOut}">
+            <signal>grabberProxySrv/enumChanged</signal>
+        </connect>
+
+        <connect channel="${enumValuesParameterChannelOut}">
+            <signal>grabberProxySrv/enumValuesChanged</signal>
+        </connect>
+
+        <connect channel="${videoPositionParameterIn}">
+            <slot>grabberProxySrv/setPositionVideo</slot>
+        </connect>
+
+        <connect channel="${videoPositionParameterOut}">
+            <signal>grabberProxySrv/positionModified</signal>
+        </connect>
+
+        <connect channel="${videoDurationParameterOut}">
+            <signal>grabberProxySrv/durationModified</signal>
+        </connect>
+
+        <connect channel="${notificationChannel}">
+            <signal>grabberProxySrv/notified</signal>
+        </connect>
+
+        <start uid="containerViewSrv" />
+        <start uid="grabberProxySrv" />
 
     </config>
 </extension>
