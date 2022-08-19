@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,9 +42,8 @@ namespace sight::module::filter::mesh
    <service type="sight::module::filter::mesh::SVTKMesher" >
        <in key="imageSeries" uid="..."/>
        <out key="modelSeries" uid="..." />
-       <config>
-            <percentReduction>80</percentReduction>
-        </config>   </service>
+       <config percentReduction="80" threshold="255" />
+    </service>
     @endcode
  *
  * @subsection Input Input
@@ -54,6 +53,8 @@ namespace sight::module::filter::mesh
  * @subsection Configuration Configuration
  * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
+ * - \b threshold : This value is used for threshold of the image means that Pixels below threshold value are converted
+ *      to black (bit value of zero), and pixels above the threshold value are converted to white (a bit value of one).
  */
 class MODULE_FILTER_MESH_CLASS_API SVTKMesher : public service::IFilter
 {
@@ -77,6 +78,8 @@ protected:
 private:
 
     unsigned int m_reduction;
+    unsigned int m_threshold;
+    void updateThreshold(int);
 
     static constexpr std::string_view s_MODELSERIES_OUT = "modelSeries";
 

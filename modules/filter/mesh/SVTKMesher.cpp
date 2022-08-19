@@ -25,6 +25,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
 #include <data/ImageSeries.hpp>
@@ -48,12 +49,13 @@ namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
-
+static const sight::core::com::Slots::SlotKeyType s_UPDATE_THRESHOLD_SLOT = "updateThreshold";
 //-----------------------------------------------------------------------------
 
 SVTKMesher::SVTKMesher() noexcept :
     m_reduction(0)
 {
+    newSlot(s_UPDATE_THRESHOLD_SLOT, &SVTKMesher::updateThreshold, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,14 +82,10 @@ void SVTKMesher::stopping()
 void SVTKMesher::configuring()
 {
     const service::IService::ConfigType& srvConfig = this->getConfigTree();
-
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
-
     const service::IService::ConfigType& config = srvConfig.get_child("config");
-
-    SIGHT_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
-    const service::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
-    m_reduction = reductionCfg.get_value<unsigned int>();
+    m_threshold = config.get<unsigned int>("<xmlattr>.threshold");
+    m_reduction = config.get<unsigned int>("<xmlattr>.percentReduction");
 }
 
 //-----------------------------------------------------------------------------
@@ -118,7 +116,7 @@ void SVTKMesher::updating()
     // contour filter
     auto contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
     contourFilter->SetInputData(vtkImage);
-    contourFilter->SetValue(0, 255);
+    contourFilter->SetValue(0, m_threshold);
     contourFilter->ComputeScalarsOn();
     contourFilter->ComputeNormalsOn();
     contourFilter->Update();
@@ -176,6 +174,14 @@ void SVTKMesher::updating()
     m_model = modelSeries;
 }
 
+//------------------------------------------------------------------------------
+
+void SVTKMesher::updateThreshold(int threshold)
+{
+    m_threshold = (threshold >= 0) ? static_cast<unsigned int>(threshold) : 0;
+    this->update();
+}
+
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::filter::mesh
