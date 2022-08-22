@@ -72,8 +72,6 @@ are already displayed and where they are displayed on screen.
                         <orientation value="vertical" />
                     </layout>
                 </gui>
-                <registry>
-                </registry>
             </service>
 
             <!-- ************************************* Action ************************************ -->

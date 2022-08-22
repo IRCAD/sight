@@ -103,6 +103,7 @@ void IActionTest::configuringTest()
 
         action->setConfiguration(config);
         action->configure();
+        action->start();
 
         CPPUNIT_ASSERT_EQUAL(true, action->checked());
         CPPUNIT_ASSERT_EQUAL(true, action->enabled());
@@ -110,6 +111,8 @@ void IActionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(false, action->inverted());
 
         CPPUNIT_ASSERT_EQUAL(true, action->confirmAction());
+
+        action->stop();
     }
     {
         auto action = std::make_shared<TestAction>();
@@ -123,6 +126,7 @@ void IActionTest::configuringTest()
 
         action->setConfiguration(config);
         action->configure();
+        action->start();
 
         CPPUNIT_ASSERT_EQUAL(true, action->checked());
         CPPUNIT_ASSERT_EQUAL(true, action->enabled());
@@ -130,6 +134,8 @@ void IActionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(false, action->inverted());
 
         CPPUNIT_ASSERT_EQUAL(false, action->confirmAction());
+
+        action->stop();
     }
     {
         // Test deprecated attributes
@@ -143,6 +149,7 @@ void IActionTest::configuringTest()
 
         action->setConfiguration(config);
         action->configure();
+        action->start();
 
         CPPUNIT_ASSERT_EQUAL(true, action->checked());
         CPPUNIT_ASSERT_EQUAL(false, action->enabled());
@@ -150,6 +157,8 @@ void IActionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(true, action->inverted());
         CPPUNIT_ASSERT_EQUAL(true, action->isVisible());
         CPPUNIT_ASSERT_EQUAL(true, action->isInverted());
+
+        action->stop();
     }
 }
 

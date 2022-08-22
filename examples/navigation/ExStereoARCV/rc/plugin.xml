@@ -553,7 +553,7 @@
 
             <connect>
                 <signal>stopRecordAct/clicked</signal>
-                <slot>matricesWriterSrv/stopRecordAct</slot>
+                <slot>matricesWriterSrv/stopRecord</slot>
                 <slot>stopRecordAct/hide</slot>
                 <slot>startRecordAct/show</slot>
             </connect>

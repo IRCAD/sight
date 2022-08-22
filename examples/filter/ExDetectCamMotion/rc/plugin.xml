@@ -223,11 +223,6 @@
             </connect>
 
             <connect>
-                <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
-            </connect>
-
-            <connect>
                 <signal>videoSelectorSrv/configuredFile</signal>
                 <signal>videoSelectorSrv/configuredStream</signal>
                 <signal>videoSelectorSrv/configuredDevice</signal>

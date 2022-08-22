@@ -1088,6 +1088,9 @@ Function .onInit
         Abort
     ${EndIf}
 
+    ; If the installer is silent, don't check for registry keys
+    IfSilent inst
+
     ClearErrors
     UserInfo::GetAccountType
     Pop $1
@@ -1144,6 +1147,9 @@ uninst_failed:
 inst:
     ; Reads components status for registry
     !insertmacro SectionList "InitSection"
+
+    ; Don't modify $INSTDIR in silent mode
+    IfSilent done
 
     StrCpy $INSTDIR "$LOCALAPPDATA\@CPACK_PACKAGE_VENDOR@\@CPACK_PACKAGE_INSTALL_DIRECTORY@"
 

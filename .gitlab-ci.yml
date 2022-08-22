@@ -2,6 +2,7 @@ stages:
   - lint
   - prebuild
   - build
+  - deploy-test
   - deploy
 
 include:
@@ -85,6 +86,7 @@ lint:sheldon:
       if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
         ninja SightViewer_package
         rm -rf ${CI_PROJECT_DIR}/.install
+
         ninja SightCalibrator_package
         rm -rf ${CI_PROJECT_DIR}/.install
       fi
@@ -113,6 +115,39 @@ lint:sheldon:
       junit: .build/junit.xml
       metrics: .build/metrics.txt
       codequality: .build/codequality.json
+
+.linux_deploy_test:
+  extends: .linux_before
+  dependencies: []
+  stage: deploy-test
+  variables:
+    SIGHT_TEST_PACKAGES: "OFF"
+    SIGHT_TEST_SDK: "OFF"
+  script:
+    - cd .build
+    - >
+      if [ "${SIGHT_TEST_PACKAGES}" == "ON" ]; then
+        tar -xf packages/SightViewer-*.tar.zst
+        echo Testing SightViewer:
+        timeout 5s xvfb-run -a SightViewer-*/bin/sightviewer || [ $? -eq 124 ]
+
+        tar -xf packages/SightCalibrator-*.tar.zst
+        echo Testing SightCalibrator:
+        timeout 5s xvfb-run -a SightCalibrator-*/bin/sightcalibrator || [ $? -eq 124 ]
+      fi
+    - >
+      if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
+        tar -xf packages/sight-*.tar.zst
+        PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
+        for program in sight-*/bin/{ex*,tuto*,sightviewer,sightcalibrator,dicomxplorer}; do
+            echo Testing $(basename $program):
+            LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
+        done
+        for program in sight-*/bin/{arucomarker,dicomanonymizer,networkproxy}; do
+            echo Testing $(basename $program):
+            $program --help
+        done
+      fi
 
 build:linux-21.10-debug-gcc:
   extends: .linux_build
@@ -152,10 +187,18 @@ build:linux-21.10-coverage-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
+deploy-test:linux-debug:
+  extends: .linux_deploy_test
+  dependencies:
+    - build:linux-21.10-debug-gcc
+  variables:
+    SIGHT_TEST_SDK: "ON"
+
 deploy:linux-debug:
   extends: .linux_deploy
   dependencies:
     - build:linux-21.10-debug-gcc
+    - deploy-test:linux-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -168,15 +211,25 @@ deploy_manual:linux-debug:
   extends: .linux_deploy
   dependencies:
     - build:linux-21.10-debug-gcc
+    - deploy-test:linux-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
   when: manual
 
+deploy-test:linux-release:
+  extends: .linux_deploy_test
+  dependencies:
+    - build:linux-21.10-release-gcc
+  variables:
+    SIGHT_TEST_PACKAGES: "ON"
+    SIGHT_TEST_SDK: "ON"
+
 deploy:linux-release:
   extends: .linux_deploy
   dependencies:
     - build:linux-21.10-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -189,6 +242,7 @@ deploy_manual:linux-release:
   extends: .linux_deploy
   dependencies:
     - build:linux-21.10-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -198,6 +252,7 @@ deploy:apps-linux-release:
   extends: .linux_deploy
   dependencies:
     - build:linux-21.10-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -210,6 +265,7 @@ deploy_manual:apps-linux-release:
   extends: .linux_deploy
   dependencies:
     - build:linux-21.10-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -243,6 +299,7 @@ deploy_manual:apps-linux-release:
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
         Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
+
         ninja SightCalibrator_package
         Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
       }
@@ -263,6 +320,71 @@ deploy_manual:apps-linux-release:
     reports:
       junit: build/junit.xml
 
+.windows_deploy_test:
+  dependencies: []
+  stage: deploy-test
+  variables:
+    SIGHT_TEST_PACKAGES: "OFF"
+    SIGHT_TEST_SDK: "OFF"
+    CACHE: "D:\\gitlab-cache"
+  script:
+    - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
+    - cd build
+    - |
+      if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
+        Start-Process -Wait .\packages\SightViewer-*.exe /S,/D=${pwd}\SightViewer
+        $process = Start-Process -PassThru -NoNewWindow SightViewer\bin\sightviewer.bat --no-abort-dialog,--clog
+        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
+          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
+          $process | Wait-Process
+        }
+        if($process.ExitCode -ne 0){
+          Write-Error "SightViewer crashed." -ErrorAction Stop
+        }
+
+        Start-Process -Wait .\packages\SightCalibrator-*.exe /S,/D=${pwd}\SightCalibrator
+        $process = Start-Process -PassThru -NoNewWindow SightCalibrator\bin\sightcalibrator.bat --no-abort-dialog,--clog
+        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
+          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
+          $process | Wait-Process
+        }
+        if($process.ExitCode -ne 0){
+          Write-Error "SightCalibrator crashed." -ErrorAction Stop
+        }
+      }
+    - |
+      if("${SIGHT_TEST_SDK}" -eq "ON"){
+        Expand-Archive packages/sight-*.zip
+        cd sight-*/*/bin
+        $env:PATH += ";$CACHE\$PACKAGE_NAME\installed\x64-windows\bin"
+        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sightviewer.bat,sightcalibrator.bat,dicomxplorer.bat){
+          $programName = Split-Path -Leaf $program
+          Write-Host Testing $programName
+          $process = Start-Process -PassThru -NoNewWindow $program --no-abort-dialog,--clog
+          $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+          ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
+              (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
+              $process | Wait-Process -Timeout 5
+              if(!$process.HasExited){
+                (Get-Process -Id $p.ProcessId).Kill()
+                $process | Wait-Process
+              }
+          }
+          if(!($process.ExitCode -in -1,0)){
+              Write-Error "$programName crashed." -ErrorAction Stop
+          }
+        }
+        ForEach($program in Get-ChildItem arucomarker.exe,dicomanonymizer.exe){
+          $programName = Split-Path -Leaf $program
+          Write-Host Testing $programName
+          Start-Process -NoNewWindow -Wait $program --help
+        }
+      }
+  tags:
+    - windows
+
 build:windows-debug:
   extends: .windows_build
   variables:
@@ -276,10 +398,18 @@ build:windows-release:
     SIGHT_BUILD_PACKAGES: "ON"
     SIGHT_BUILD_SDK: "ON"
 
+deploy-test:window-debug:
+  extends: .windows_deploy_test
+  dependencies:
+    - build:windows-debug
+  variables:
+    SIGHT_TEST_SDK: "ON"
+
 deploy:windows-debug:
   extends: .windows_deploy
   dependencies:
     - build:windows-debug
+    - deploy-test:window-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -292,15 +422,25 @@ deploy_manual:windows-debug:
   extends: .windows_deploy
   dependencies:
     - build:windows-debug
+    - deploy-test:window-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
   when: manual
 
+deploy-test:windows-release:
+  extends: .windows_deploy_test
+  dependencies:
+    - build:windows-release
+  variables:
+    SIGHT_TEST_PACKAGES: "ON"
+    SIGHT_TEST_SDK: "ON"
+
 deploy:windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -313,6 +453,7 @@ deploy_manual:windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -322,6 +463,7 @@ deploy:apps-windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -334,6 +476,7 @@ deploy_manual:apps-windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"

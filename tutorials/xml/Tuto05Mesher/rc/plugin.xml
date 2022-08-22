@@ -200,7 +200,7 @@
 
             <connect>
                <signal>mesher50Srv/updated</signal>
-               <slot>meshSrv/update</slot>   
+               <slot>meshSrv/update</slot>
             </connect>
 
             <connect>

@@ -305,7 +305,7 @@ bool IAction::confirmAction()
 {
     bool actionIsConfirmed = true;
 
-    if(m_confirmAction)
+    if(m_confirmAction && this->getStatus() == IService::STARTED)
     {
         ui::base::dialog::MessageDialog dialog;
         dialog.setTitle("Confirmation");

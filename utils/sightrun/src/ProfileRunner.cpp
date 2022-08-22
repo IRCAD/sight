@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore SEM_NOGPFAULTERRORBOX
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -205,6 +207,9 @@ int main(int argc, char* argv[])
 
     // Hidden options
     bool macroMode = false;
+#ifdef WIN32
+    bool enableAbortDialog = true;
+#endif
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -212,6 +217,10 @@ int main(int argc, char* argv[])
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
         ("macro", po::value(&macroMode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
         ("no-macro", po::value(&macroMode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
+#ifdef WIN32
+    ("abort-dialog", po::value(&enableAbortDialog)->implicit_value(true)->zero_tokens(), "Enable abort dialog")
+        ("no-abort-dialog", po::value(&enableAbortDialog)->implicit_value(false)->zero_tokens(), "Disable abort dialog")
+#endif
     ;
 
     // Set options
@@ -249,6 +258,19 @@ int main(int argc, char* argv[])
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
     }
+
+#ifdef WIN32
+    if(!enableAbortDialog)
+    {
+        _set_error_mode(_OUT_TO_STDERR);
+        SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+        _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+        _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+        _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+    }
+#endif
 
     // Log file
     SpyLogger& logger = SpyLogger::get();
