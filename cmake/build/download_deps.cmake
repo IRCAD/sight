@@ -74,9 +74,15 @@ else()
     execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
 
     if(NOT SIGHT_DEPS_PACKAGE)
-        set(SIGHT_DEPS_PACKAGE
-            "sight-deps-21-0-0-2-geb877f3-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}"
-        )
+        if("${LINUX_NAME}" STREQUAL "Ubuntu" AND "${LINUX_VERSION}" STREQUAL "21.10")
+            set(SIGHT_DEPS_PACKAGE
+                "sight-deps-21-0-0-2-geb877f3-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}"
+            )
+        elseif("${LINUX_NAME}" STREQUAL "Ubuntu" AND "${LINUX_VERSION}" STREQUAL "22.04")
+            set(SIGHT_DEPS_PACKAGE
+                "sight-deps-21-1-0-2-gbad3c07-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}"
+            )
+        endif()
     endif()
 
     if(NOT SIGHT_DEPS_ARCHIVE)
@@ -95,6 +101,18 @@ else()
                 # RelWithDebInfo (DEFAULT)
                 set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/index.php/s/7QbKdcmjXmq8QF9/download")
                 set(SIGHT_DEPS_ARCHIVE_HASH "b0ef945f7a6a7acf4ad7bd2bd19daebdf161bdff42b4036360f1c44a591d956f")
+            endif()
+        elseif("${LINUX_NAME}" STREQUAL "Ubuntu" AND "${LINUX_VERSION}" STREQUAL "22.04")
+            if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+                set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/index.php/s/EKHX9BdbQ9p3ZQa/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "342d3c767abfba943c5c46aad12dc1874ca4efffed96e6764e7f2283ad5d2868")
+            elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+                set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/index.php/s/mne4Mo3RJ5RseKt/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "ebceaeaa2b4259bf46810abe2fbf3cbf2bc0e320c8184583376a9090009059ac")
+            else()
+                # RelWithDebInfo (DEFAULT)
+                set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/index.php/s/7Q5HMdAHxpkoMeq/download")
+                set(SIGHT_DEPS_ARCHIVE_HASH "8fba2c3d5051e074ae93d9f98b8aee24714b64b317a229942d3f8d16f50478a0")
             endif()
         else()
             message(FATAL_ERROR "Unsupported linux distribution: ${LINUX_NAME} ${LINUX_VERSION}")

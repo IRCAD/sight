@@ -138,14 +138,9 @@ void SVTKMesherTest::generateMesh()
     generateMeshService->configure();
     generateMeshService->start().wait();
     generateMeshService->update().wait();
-    auto modelSeries = generateMeshService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
-#if VTK_MAJOR_VERSION >= 9 && VTK_MINOR_VERSION >= 0 && VTK_BUILD_VERSION > 1
+    auto modelSeries          = generateMeshService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
     unsigned int numberPoints = 77;
     unsigned int numberCells  = 125;
-#else
-    unsigned int numberPoints = 83;
-    unsigned int numberCells  = 125;
-#endif
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
     generateMeshService->stop().wait();

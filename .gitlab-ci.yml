@@ -26,6 +26,7 @@ lint:sheldon:
     SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGES: "OFF"
     SIGHT_BUILD_SDK: "OFF"
+    SIGHT_ENABLE_REALSENSE: "OFF"
   script:
     # Reset the modified time of all files to improve ccache performance
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -44,7 +45,7 @@ lint:sheldon:
       -DSIGHT_ENABLE_PCH=OFF
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
       -DSIGHT_ENABLE_OPENVSLAM=ON
-      -DSIGHT_ENABLE_REALSENSE=ON
+      -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
       -DSIGHT_ENABLE_GDB=ON
     # Touch all generated files to improve CCache performance
@@ -134,8 +135,9 @@ lint:sheldon:
         done
       fi
 
-build:linux-21.10-debug-gcc:
+build:linux-22.04-debug-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
@@ -143,8 +145,9 @@ build:linux-21.10-debug-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.10-release-gcc:
+build:linux-22.04-release-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_SDK: "ON"
@@ -153,8 +156,9 @@ build:linux-21.10-release-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.10-RelWithDebInfo-clang:
+build:linux-22.04-RelWithDebInfo-clang:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
@@ -162,8 +166,9 @@ build:linux-21.10-RelWithDebInfo-clang:
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
 
-build:linux-21.10-coverage-gcc:
+build:linux-22.04-coverage-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_BUILD_DOC: "ON"
@@ -174,15 +179,17 @@ build:linux-21.10-coverage-gcc:
 
 deploy-test:linux-debug:
   extends: .linux_deploy_test
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-debug-gcc
+    - build:linux-22.04-debug-gcc
   variables:
     SIGHT_TEST_SDK: "ON"
 
 deploy:linux-debug:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-debug-gcc
+    - build:linux-22.04-debug-gcc
     - deploy-test:linux-debug
   variables:
     APPS: "sight-"
@@ -194,8 +201,9 @@ deploy:linux-debug:
 
 deploy_manual:linux-debug:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-debug-gcc
+    - build:linux-22.04-debug-gcc
     - deploy-test:linux-debug
   variables:
     APPS: "sight-"
@@ -204,16 +212,18 @@ deploy_manual:linux-debug:
 
 deploy-test:linux-release:
   extends: .linux_deploy_test
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
   variables:
     SIGHT_TEST_PACKAGES: "ON"
     SIGHT_TEST_SDK: "ON"
 
 deploy:linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
     - deploy-test:linux-release
   variables:
     APPS: "sight-"
@@ -225,8 +235,9 @@ deploy:linux-release:
 
 deploy_manual:linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
     - deploy-test:linux-release
   variables:
     APPS: "sight-"
@@ -235,8 +246,9 @@ deploy_manual:linux-release:
 
 deploy:apps-linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
     - deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
@@ -248,8 +260,9 @@ deploy:apps-linux-release:
 
 deploy_manual:apps-linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
     - deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
@@ -468,10 +481,10 @@ deploy_manual:apps-windows-release:
   when: manual
 
 deploy:pages:
-  image: "${SIGHT_CI_UBUNTU21_10}:dev"
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   stage: deploy
   dependencies:
-    - build:linux-21.10-coverage-gcc
+    - build:linux-22.04-coverage-gcc
   script:
     - mv .build/Documentation/Doxygen/html/ public/
     - mv .build/coverage/ public/coverage
