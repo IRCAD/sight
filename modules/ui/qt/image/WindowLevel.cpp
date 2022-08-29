@@ -22,13 +22,10 @@
 
 #include "modules/ui/qt/image/WindowLevel.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
@@ -55,6 +52,8 @@
 namespace sight::module::ui::qt::image
 {
 
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
+
 static const std::string s_AUTO_WINDOWING_CONFIG   = "autoWindowing";
 static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
 
@@ -64,9 +63,9 @@ WindowLevel::WindowLevel() noexcept :
     m_widgetDynamicRangeMin(-1024),
     m_widgetDynamicRangeWidth(4000),
     m_autoWindowing(false),
-    m_enableSquareTF(true),
-    m_helperTF(std::bind(&WindowLevel::updateTF, this))
+    m_enableSquareTF(true)
 {
+    newSlot(s_UPDATE_TF_SLOT, &WindowLevel::updateTF, this);
 }
 
 //------------------------------------------------------------------------------
@@ -200,9 +199,6 @@ void WindowLevel::starting()
             this,
             &WindowLevel::onDynamicRangeSelectionChanged
         );
-
-        const auto tf = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
     this->updating();
 }
@@ -226,9 +222,7 @@ void WindowLevel::updating()
             this->updateImageWindowLevel(min, max);
         }
 
-        const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-        SIGHT_ASSERT("TransferFunction null pointer", tf);
-        const data::mt::locked_ptr<const data::TransferFunction> lock(tf);
+        const auto tf                            = m_tf.const_lock();
         data::TransferFunction::min_max_t minMax = tf->windowMinMax();
         this->onImageWindowLevelChanged(minMax.first, minMax.second);
     }
@@ -238,8 +232,6 @@ void WindowLevel::updating()
 
 void WindowLevel::stopping()
 {
-    m_helperTF.removeTFConnections();
-
     QObject::disconnect(
         m_dynamicRangeSelection,
         &::QToolButton::triggered,
@@ -262,23 +254,6 @@ void WindowLevel::stopping()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::swapping(std::string_view key)
-{
-    if(key == s_TF)
-    {
-        {
-            const auto image = m_image.lock();
-            SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
-
-            const auto tf = m_tf.lock();
-            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-        }
-        this->updating();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void WindowLevel::updateTF()
 {
     this->updating();
@@ -295,8 +270,7 @@ void WindowLevel::info(std::ostream& _sstream)
 
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    const data::mt::locked_ptr<const data::TransferFunction> lock(tf);
+    const auto tf = m_tf.const_lock();
     SIGHT_ASSERT("TransferFunction null pointer", tf);
     return tf->windowMinMax();
 }
@@ -337,9 +311,7 @@ double WindowLevel::toWindowLevel(double _val)
 
 void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
-    const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    const data::mt::locked_ptr<data::TransferFunction> lock(tf);
-
+    const auto tf = m_tf.lock();
     tf->setWindowMinMax(
         data::TransferFunction::min_max_t(
             _imageMin,
@@ -350,7 +322,7 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
         data::TransferFunction::s_WINDOWING_MODIFIED_SIG
     );
     {
-        const core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
         sig->asyncEmit(tf->window(), tf->level());
     }
 }
@@ -432,8 +404,7 @@ void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 void WindowLevel::onToggleTF(bool squareTF)
 {
-    data::TransferFunction::sptr currentTF = m_helperTF.getTransferFunction();
-    const data::mt::locked_ptr<data::TransferFunction> lock(currentTF);
+    const auto currentTF = m_tf.lock();
 
     data::TransferFunction::sptr newTF;
 
@@ -463,7 +434,7 @@ void WindowLevel::onToggleTF(bool squareTF)
     newTF->setWindow(currentTF->window());
     newTF->setLevel(currentTF->level());
 
-    m_previousTF = data::Object::copy(currentTF);
+    m_previousTF = data::Object::copy(currentTF.get_shared());
 
     currentTF->deepCopy(newTF);
 
@@ -472,7 +443,7 @@ void WindowLevel::onToggleTF(bool squareTF)
         data::TransferFunction::s_POINTS_MODIFIED_SIG
     );
     {
-        core::com::Connection::Blocker block(m_helperTF.getTFUpdateConnection());
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
         sig->asyncEmit();
     }
 }
@@ -546,11 +517,13 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 
 service::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_IMAGE, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_TF, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

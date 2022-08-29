@@ -90,6 +90,11 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
             tfData->setClamped(isClamped);
         }
     }
+    else
+    {
+        data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+        tf->deepCopy(defaultTf);
+    }
 }
 
 // ------------------------------------------------------------------------------

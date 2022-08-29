@@ -382,7 +382,7 @@ void Image::readImagePixelModule()
 
     if(sight::data::helper::MedicalImage::checkImageValidity(m_object))
     {
-        sight::data::helper::MedicalImage::checkTransferFunctionPool(m_object);
+        sight::data::helper::MedicalImage::updateDefaultTransferFunction(*m_object);
         sight::data::helper::MedicalImage::checkImageSliceIndex(m_object);
     }
 }

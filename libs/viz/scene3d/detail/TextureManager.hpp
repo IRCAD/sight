@@ -19,25 +19,34 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/operations.hpp>
+#pragma once
 
-namespace sight::viz::scene3d
+#include "viz/scene3d/config.hpp"
+
+#include <data/Image.hpp>
+
+#include <viz/scene3d/detail/IResourceManager.hpp>
+
+namespace sight::viz::scene3d::detail
 {
 
-namespace ut
-{
+//---------------------------------------------------------------------
 
-struct Initializer
+class TextureLoader
 {
-    Initializer()
-    {
-        sight::core::runtime::init();
-        sight::core::runtime::loadModule("sight::module::viz::scene3d::test");
-    }
+public:
+
+    using return_t = bool;
+    static return_t load(const sight::data::Image&, Ogre::Texture*);
 };
 
-static const Initializer init;
+//---------------------------------------------------------------------
 
-} //namespace ut
+/**
+ * @brief  Implementation of texture resource manager.
+ *
+ * Currently, it is only used for grayscale images.
+ */
+using TextureManager = IResourceManager<sight::data::Image, Ogre::Texture, TextureLoader>;
 
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::detail

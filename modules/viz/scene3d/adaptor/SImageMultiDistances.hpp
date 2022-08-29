@@ -54,12 +54,12 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-        <inout key="image" uid="..." />
+        <in key="image" uid="..." />
         <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out:
+ * @subsection Input Input:
  * - \b image [sight::data::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
@@ -281,8 +281,8 @@ private:
     /// Stores all generatesd distances.
     DistanceMap m_distances;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
+    static constexpr std::string_view s_IMAGE_IN = "image";
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

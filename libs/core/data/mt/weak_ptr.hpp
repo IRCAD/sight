@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,6 +110,7 @@ public:
     ~weak_ptr()                          = default;
 
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
+    [[nodiscard]] locked_ptr<std::add_const_t<DATATYPE> > const_lock() const noexcept;
 
     /// Returns true if the weak pointer has expired
     inline bool expired() const noexcept
@@ -159,7 +160,15 @@ private:
 template<class DATATYPE>
 inline locked_ptr<DATATYPE> weak_ptr<DATATYPE>::lock() const noexcept
 {
-    return locked_ptr<DATATYPE>(m_data.lock());
+    return locked_ptr<DATATYPE>(m_data);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class DATATYPE>
+inline locked_ptr<std::add_const_t<DATATYPE> > weak_ptr<DATATYPE>::const_lock() const noexcept
+{
+    return locked_ptr<std::add_const_t<DATATYPE> >(m_data);
 }
 
 //-----------------------------------------------------------------------------

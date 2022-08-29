@@ -25,7 +25,6 @@
 #include "modules/viz/scene2d/config.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene2d/IAdaptor.hpp>
 
@@ -104,9 +103,6 @@ protected:
 
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    /// Retrives the current transfer function
-    MODULE_VIZ_SCENE2D_API void swapping(std::string_view key) override;
-
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /// Slot: updates the TF
@@ -143,7 +139,7 @@ private:
         sight::viz::scene2d::vec2d_t& newCoord
     );
 
-    static QRgb getQImageVal(const short value, const data::TransferFunction::csptr& tf);
+    static QRgb getQImageVal(const short value, const data::TransferFunction& tf);
 
     QImage* m_qImg;
 
@@ -165,13 +161,11 @@ private:
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
 
-    data::helper::TransferFunction m_helperTF;
+    static constexpr std::string_view s_IMAGE_IN = "image";
+    static constexpr std::string_view s_TF_INOUT = "tf";
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    static constexpr std::string_view s_TF_INOUT    = "tf";
-
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, true};
     sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, "viewport"};
 
     /// Stores current slice index on each orientation.

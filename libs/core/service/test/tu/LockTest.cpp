@@ -169,6 +169,9 @@ void LockTest::testScopedLock()
     data::Integer::sptr inout  = data::Integer::New(0);
     data::Integer::sptr output = data::Integer::New(0);
 
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), inout->lastModified());
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), output->lastModified());
+
     // Register the data
     lockedService->setInput(input, service::ut::LockedService::s_INPUT);
     lockedService->setInOut(inout, service::ut::LockedService::s_INOUT);
@@ -186,12 +189,14 @@ void LockTest::testScopedLock()
     {
         auto sharedInOut = weakInOut.lock();
         CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), sharedInOut->lastModified());
     }
 
     data::mt::weak_ptr<data::Integer> weakOutput(output);
     {
         auto sharedOutput = weakOutput.lock();
         CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), sharedOutput->lastModified());
     }
 
     // Test basic scoped lock from service getters
@@ -205,12 +210,14 @@ void LockTest::testScopedLock()
     {
         auto sharedInOut = weakInOut.lock();
         CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(2), sharedInOut->lastModified());
     }
 
     weakOutput = lockedService->getOutput<data::Integer>(service::ut::LockedService::s_OUTPUT);
     {
         auto sharedOutput = weakOutput.lock();
         CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(2), sharedOutput->lastModified());
     }
 
     // Test basic scoped lock from service direct locker

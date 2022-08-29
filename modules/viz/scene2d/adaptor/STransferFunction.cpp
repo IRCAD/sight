@@ -23,6 +23,7 @@
 #include "modules/viz/scene2d/adaptor/STransferFunction.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
 
 #include <data/IContainer.hxx>
@@ -46,10 +47,14 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
+
 //-----------------------------------------------------------------------------
 
 STransferFunction::STransferFunction() noexcept
 {
+    newSlot(s_UPDATE_TF_SLOT, &STransferFunction::updateTF, this);
+
     m_eventFilter = new QTimer();
 }
 
@@ -87,7 +92,7 @@ void STransferFunction::starting()
     // Sets the current TF.
     {
         // Sets the current TF used to highlight it in the editor.
-        const auto tf = m_tf.lock();
+        const auto tf = m_tf.const_lock();
         if(tf && !tf->pieces().empty())
         {
             m_currentTF = tf->pieces().front();
@@ -118,7 +123,7 @@ service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() con
 {
     KeyConnectionsMap connections;
     connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CURRENT_TF_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CURRENT_TF_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
     connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
@@ -169,7 +174,7 @@ void STransferFunction::createTFPoints()
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
     // Iterates over each TF to create pieceView.
-    const auto tf = m_tf.lock();
+    const auto tf = m_tf.const_lock();
 
     if(!tf->pieces().empty())
     {
@@ -1485,7 +1490,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         if(matchingIt != matchingPieceView.end())
         {
             {
-                const auto tf = m_tf.lock();
+                const auto tf = m_tf.const_lock();
                 // Adds the delete action if there is more than one TF.
                 if(tf->pieces().size() > 1)
                 {
@@ -1806,6 +1811,27 @@ void STransferFunction::addTrapeze(const sight::viz::scene2d::data::Event& _even
     trapeze->setWindowMinMax(data::TransferFunction::min_max_t(min, max));
 
     this->addNewTF(trapeze);
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::updateTF()
+{
+    // Sets the current TF.
+    {
+        // Sets the current TF used to highlight it in the editor.
+        const auto tf = m_tf.const_lock();
+        if(tf && !tf->pieces().empty())
+        {
+            m_currentTF = tf->pieces().front();
+        }
+        else
+        {
+            SIGHT_FATAL("The current TF mustn't be null");
+        }
+    }
+
+    updating();
 }
 
 //-----------------------------------------------------------------------------

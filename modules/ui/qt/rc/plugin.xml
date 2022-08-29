@@ -202,8 +202,7 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::qt::image::STransferFunction</service>
-         <object key="current">sight::data::TransferFunction</object>
-         <object key="selected">sight::data::TransferFunction</object>
+         <object key="tf">sight::data::TransferFunction</object>
          <desc>Editor to select a transfer function preset.</desc>
     </extension>
 

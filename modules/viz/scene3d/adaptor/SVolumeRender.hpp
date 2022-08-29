@@ -24,11 +24,6 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-
-#include <data/helper/TransferFunction.hpp>
-
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/IGraphicsWorker.hpp>
 #include <viz/scene3d/interactor/ClippingBoxInteractor.hpp>
@@ -80,8 +75,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
-        <inout key="image" uid="..." autoConnect="true" />
-        <inout key="tf" uid="..." />
+        <in key="image" uid="..." autoConnect="true" />
+        <in key="tf" uid="..." />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
                 samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
@@ -90,10 +85,12 @@ namespace sight::module::viz::scene3d::adaptor
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b image [sight::data::Image]: input volume data.
  * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
+ *
+ * @subsection In-Out In-Out
  * - \b clippingMatrix [sight::data::Matrix4]: matrix used to clip the volume.
  *
  * @subsection Configuration Configuration
@@ -146,6 +143,7 @@ protected:
     static inline const sight::core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
     static inline const sight::core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
     static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
+    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT            = "updateTF";
 
     ///@brief Internal wrapper holding config defines.
     struct config
@@ -206,8 +204,8 @@ protected:
     /// Internal wrapper holding object keys
     struct objects
     {
-        static constexpr std::string_view IMAGE_INOUT           = "image";
-        static constexpr std::string_view VOLUME_TF_INOUT       = "tf";
+        static constexpr std::string_view IMAGE_IN              = "image";
+        static constexpr std::string_view VOLUME_TF_IN          = "tf";
         static constexpr std::string_view CLIPPING_MATRIX_INOUT = "clippingMatrix";
     };
 
@@ -229,12 +227,6 @@ protected:
 
     /// Does nothing.
     MODULE_VIZ_SCENE3D_API void updating() override;
-
-    /**
-     * @brief Notifies that the TF is swapped.
-     * @param _key key of the swapped data.
-     */
-    MODULE_VIZ_SCENE3D_API void swapping(std::string_view _key) override;
 
     /// Cleans up scene objects.
     MODULE_VIZ_SCENE3D_API void stopping() override;
@@ -440,9 +432,6 @@ private:
     /// Implements a simple GPU ray-tracing renderer.
     std::unique_ptr<sight::viz::scene3d::vr::RayTracingVolumeRenderer> m_volumeRenderer {nullptr};
 
-    /// Helps to manage updates of the transfer function.
-    data::helper::TransferFunction m_helperVolumeTF;
-
     /// Fills the incoming image texture in a parallel thread.
     std::unique_ptr<sight::viz::scene3d::IGraphicsWorker> m_bufferingWorker;
 
@@ -455,14 +444,14 @@ private:
     /// Stores the widgets used for clipping.
     std::shared_ptr<sight::viz::scene3d::interactor::ClippingBoxInteractor> m_widget;
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, objects::IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, objects::VOLUME_TF_INOUT,
-                                                                                      false, true
-    };
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, objects::IMAGE_IN, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, objects::VOLUME_TF_IN, true};
     sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_clippingMatrix
     {
         this,
-        objects::CLIPPING_MATRIX_INOUT
+        objects::CLIPPING_MATRIX_INOUT,
+        true,
+        true
     };
 };
 

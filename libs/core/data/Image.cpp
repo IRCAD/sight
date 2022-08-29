@@ -28,6 +28,8 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/helper/MedicalImage.hpp>
+
 #include <numeric>
 
 //------------------------------------------------------------------------------
@@ -86,6 +88,8 @@ Image::Image(data::Object::Key) :
 
     auto pl = data::PointList::New();
     data::helper::MedicalImage::setLandmarks(*this, pl);
+
+    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*this);
 }
 
 //------------------------------------------------------------------------------

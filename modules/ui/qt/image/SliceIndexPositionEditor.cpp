@@ -100,6 +100,7 @@ void SliceIndexPositionEditor::starting()
     changeTypeCallback = std::bind(&SliceIndexPositionEditor::sliceTypeNotification, this, std::placeholders::_1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     m_sliceSelectorPanel->setTypeSelection(m_orientation);
+
     layout->addWidget(m_sliceSelectorPanel);
     layout->setContentsMargins(0, 0, 0, 0);
 

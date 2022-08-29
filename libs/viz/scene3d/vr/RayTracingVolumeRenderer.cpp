@@ -136,14 +136,15 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
     std::string parentId,
     Layer::sptr layer,
     Ogre::SceneNode* const parentNode,
-    std::optional<Ogre::TexturePtr> imageTexture,
+    sight::data::Image::csptr image,
+    sight::data::TransferFunction::csptr tf,
     bool buffer,
     bool preintegration,
     const std::optional<shadows_parameters_t> shadows,
     const std::optional<IllumAmbientOcclusionSAT::sat_parameters_t>& sat,
     const std::optional<std::string>& shader
 ) :
-    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, buffer, preintegration),
+    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, image, tf, buffer, preintegration),
     m_shader(shader.value_or("RayTracedVolume_FP.glsl")),
     m_shadows({shadows.value_or(shadows_parameters_t {})}),
     m_layer(layer),
@@ -214,12 +215,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::update()
+void RayTracingVolumeRenderer::update(const data::TransferFunction::csptr& tf)
 {
     initEntryPoints(); //Does nothing after the first call
     updateRayTracingMaterial();
-    setSampling(m_nbSlices);
-    m_update_pending = false;
+    setSampling(m_nbSlices, tf);
 }
 
 //-----------------------------------------------------------------------------
@@ -266,7 +266,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::imageUpdate(const data::Image::sptr image, const data::TransferFunction::sptr tf)
+void RayTracingVolumeRenderer::imageUpdate(const data::Image::csptr image, const data::TransferFunction::csptr tf)
 {
     if(!data::helper::MedicalImage::checkImageValidity(image))
     {
@@ -381,17 +381,16 @@ void RayTracingVolumeRenderer::updateSAT()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::updateVolumeTF(std::shared_ptr<data::TransferFunction>& tf)
+void RayTracingVolumeRenderer::updateVolumeTF(const data::TransferFunction::csptr& tf)
 {
     //Update the attributes
     {
-        m_cpuTF = tf;
-        m_gpuVolumeTF->updateTexture(m_cpuTF);
+        m_gpuVolumeTF->update();
     }
 
     if(m_preintegration)
     {
-        m_preIntegrationTable.tfUpdate(m_cpuTF, m_sampleDistance);
+        m_preIntegrationTable.tfUpdate(tf, m_sampleDistance);
     }
 
     const auto material = Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName, RESOURCE_GROUP);
@@ -425,7 +424,7 @@ void RayTracingVolumeRenderer::updateVolumeTF(std::shared_ptr<data::TransferFunc
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setSampling(std::uint16_t nbSamples)
+void RayTracingVolumeRenderer::setSampling(std::uint16_t nbSamples, const data::TransferFunction::csptr& tf)
 {
     if(nbSamples == 0)
     {
@@ -438,9 +437,6 @@ void RayTracingVolumeRenderer::setSampling(std::uint16_t nbSamples)
 
     // Update the sample distance in the shaders
     m_RTVSharedParameters->setNamedConstant("u_fSampleDis_Ms", m_sampleDistance);
-
-    m_gpuVolumeTF->setSampleDistance(m_sampleDistance);
-
     if(m_shadows.parameters.enabled())
     {
         updateSAT();
@@ -448,7 +444,7 @@ void RayTracingVolumeRenderer::setSampling(std::uint16_t nbSamples)
 
     if(m_preintegration)
     {
-        m_preIntegrationTable.tfUpdate(m_cpuTF, m_sampleDistance);
+        m_preIntegrationTable.tfUpdate(tf, m_sampleDistance);
     }
 }
 
@@ -653,9 +649,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     // Volume data
     {
         Ogre::TextureUnitState* const texUnitState = _rayCastingPass->createTextureUnitState();
-        texUnitState->setTextureName(m_3DOgreTexture->getName(), Ogre::TEX_TYPE_3D);
-        texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
-        texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+        m_3DOgreTexture->bind(texUnitState, Ogre::TEX_TYPE_3D, Ogre::TFO_BILINEAR, Ogre::TextureUnitState::TAM_CLAMP);
     }
 
     fpParams->setNamedConstant("u_s3Image", numTexUnit++);
@@ -903,9 +897,12 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                 Ogre::TextureUnitState* const texUnitState = pass->createTextureUnitState();
                 SIGHT_ASSERT("texUnitState is nullptr.", texUnitState != nullptr);
 
-                texUnitState->setTextureName(m_3DOgreTexture->getName(), Ogre::TEX_TYPE_3D);
-                texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
-                texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+                m_3DOgreTexture->bind(
+                    texUnitState,
+                    Ogre::TEX_TYPE_3D,
+                    Ogre::TFO_BILINEAR,
+                    Ogre::TextureUnitState::TAM_CLAMP
+                );
                 fpParams->setNamedConstant("u_s3Image", 0);
             }
 
@@ -956,9 +953,9 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
 
         Ogre::TextureUnitState* const texUnitState = pass->getTextureUnitState(0);
         SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", texUnitState);
-        texUnitState->setTextureName(m_3DOgreTexture->getName(), Ogre::TEX_TYPE_3D);
+        texUnitState->setTextureName(m_3DOgreTexture->name(), Ogre::TEX_TYPE_3D);
 
-        m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
+        m_proxyGeometry->set3DImageTexture(m_3DOgreTexture->get());
     }
 
     if(static_cast<bool>(m_entryPointGeometry))
@@ -1042,7 +1039,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
             viz::scene3d::vr::GridProxyGeometry::New(
                 this->m_parentId + "_GridProxyGeometry",
                 m_sceneManager,
-                m_3DOgreTexture,
+                m_3DOgreTexture->get(),
                 m_gpuVolumeTF,
                 "RayEntryPoints"
             );

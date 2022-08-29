@@ -12,7 +12,7 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${currentTF}" type="sight::data::TransferFunction" src="deferred" />
+        <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -48,7 +48,7 @@
             <appConfig id="TransferFunctionWidgetCfg" />
             <parameter replace="WID_PARENT" by="tfView" />
             <inout key="image" uid="${image}" />
-            <inout key="currentTF" uid="${currentTF}" optional="true" />
+            <inout key="currentTF" uid="${currentTF}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

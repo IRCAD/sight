@@ -26,9 +26,8 @@
 
 #include <data/TransferFunction.hpp>
 
-#include <boost/noncopyable.hpp>
+#include <viz/scene3d/IResource.hpp>
 
-#include <OGRE/Ogre.h>
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
 
@@ -36,32 +35,24 @@ namespace sight::viz::scene3d
 {
 
 /**
- * @brief Represents and manages a tranfer function from a GPU point of view
+ * @brief This binds a sight::data::TransferFunction to a shared Ogre texture. It allows to share the GPU memory from
+ * multiple callers that use the same object, and only update the GPU buffer when necessary.
  */
-class VIZ_SCENE3D_CLASS_API TransferFunction : public boost::noncopyable
+class VIZ_SCENE3D_CLASS_API TransferFunction : public IResource<data::TransferFunction,
+                                                                Ogre::Texture,
+                                                                TransferFunction>
 {
 public:
 
-    typedef std::shared_ptr<TransferFunction> sptr;
-    typedef std::weak_ptr<TransferFunction> wptr;
-
-    VIZ_SCENE3D_API TransferFunction();
-    VIZ_SCENE3D_API virtual ~TransferFunction();
-
-    /// Initialize the textures attributes.
-    VIZ_SCENE3D_API void createTexture(const Ogre::String& _parentId);
-
-    /// Destroy the texture.
-    VIZ_SCENE3D_API void removeTexture();
+    /// Instantiates a transfer function. If a texture matching the transfer function name does not exist, it creates a
+    /// new one, otherwise it wraps the existing one.
+    /// @param object input transfer function
+    /// @param suffixId optional suffix to the object identifier, this allows to create different copies of the object
+    VIZ_SCENE3D_API TransferFunction(const data::TransferFunction::csptr& _tf, const std::string& suffixId = "");
+    VIZ_SCENE3D_API ~TransferFunction();
 
     /// Update the TF texture according to the transfer function data.
-    VIZ_SCENE3D_API void updateTexture(const data::TransferFunction::csptr& _tf);
-
-    /// Return the TF texture.
-    VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
-
-    /// Set the sample distance.
-    VIZ_SCENE3D_API void setSampleDistance(const float& _sampleDistance);
+    VIZ_SCENE3D_API void update() override;
 
     /// Bind the texture and the uniforms in a given pass
     template<class GPU_PARAMETERS>
@@ -74,32 +65,9 @@ public:
 
 private:
 
-    /// Texture containing the interpolated nodes of the transfer function.
-    Ogre::TexturePtr m_texture;
-
-    /// Current sample distance used in the VR renderer.
-    float m_sampleDistance {1.f};
-
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
     Ogre::Vector3 m_tfWindow;
-
-    static std::uint32_t TEXTURE_SIZE;
 };
-
-//-----------------------------------------------------------------------------
-// Inline functions
-
-inline Ogre::TexturePtr TransferFunction::getTexture() const
-{
-    return m_texture;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
-{
-    m_sampleDistance = _sampleDistance;
-}
 
 //------------------------------------------------------------------------------
 
@@ -117,9 +85,9 @@ inline void TransferFunction::bind(
     auto texUnitState = _pass->getTextureUnitState(_texUnitName);
     SIGHT_ASSERT("'" + _texUnitName + "' texture unit is not found", texUnitState);
 
-    if(texUnitState->getTextureName() != m_texture->getName())
+    if(m_resource && texUnitState->getTextureName() != m_resource->getName())
     {
-        texUnitState->setTexture(m_texture);
+        texUnitState->setTexture(m_resource);
     }
 
     texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
@@ -130,4 +98,4 @@ inline void TransferFunction::bind(
 
 //-----------------------------------------------------------------------------
 
-} // Namespace fwRenderOgre
+} // namespace sight::viz::scene3d

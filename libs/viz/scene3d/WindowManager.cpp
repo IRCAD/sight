@@ -31,7 +31,7 @@ namespace sight::viz::scene3d
 
 // ----------------------------------------------------------------------------
 
-void WindowManager::registerWindow(Ogre::RenderWindow* _window)
+void WindowManager::add(Ogre::RenderWindow* _window)
 {
     if(m_windows.empty())
     {
@@ -43,7 +43,7 @@ void WindowManager::registerWindow(Ogre::RenderWindow* _window)
 
 // ----------------------------------------------------------------------------
 
-void WindowManager::unregisterWindow(Ogre::RenderWindow* _window)
+void WindowManager::remove(Ogre::RenderWindow* _window)
 {
     m_windows.erase(_window);
 
@@ -62,6 +62,14 @@ void WindowManager::unregisterWindow(Ogre::RenderWindow* _window)
         viz::scene3d::Utils::destroyOgreRoot();
         m_firstWindow = nullptr;
     }
+}
+
+// ----------------------------------------------------------------------------
+
+Ogre::RenderWindow* WindowManager::get(const std::string& _name) const
+{
+    auto it = std::find_if(m_windows.begin(), m_windows.end(), [&](auto _window){return _window->getName() == _name;});
+    return it != m_windows.end() ? *it : nullptr;
 }
 
 // ----------------------------------------------------------------------------

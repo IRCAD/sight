@@ -19,25 +19,31 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/operations.hpp>
+#pragma once
 
-namespace sight::viz::scene3d
+#include "viz/scene3d/config.hpp"
+
+#include <data/TransferFunction.hpp>
+
+#include <viz/scene3d/detail/IResourceManager.hpp>
+
+namespace sight::viz::scene3d::detail
 {
 
-namespace ut
-{
+//---------------------------------------------------------------------
 
-struct Initializer
+class TFLoader
 {
-    Initializer()
-    {
-        sight::core::runtime::init();
-        sight::core::runtime::loadModule("sight::module::viz::scene3d::test");
-    }
+public:
+
+    using return_t = Ogre::Vector3;
+    static return_t load(const sight::data::TransferFunction&, Ogre::Texture*);
 };
 
-static const Initializer init;
+//---------------------------------------------------------------------
 
-} //namespace ut
+using TFManager = IResourceManager<sight::data::TransferFunction, Ogre::Texture, TFLoader>;
 
-} //namespace sight::viz::scene3d
+//---------------------------------------------------------------------
+
+} // namespace sight::viz::scene3d::detail

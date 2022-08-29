@@ -19,25 +19,25 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/operations.hpp>
+#include "viz/scene3d/detail/TextureManager.hpp"
 
-namespace sight::viz::scene3d
+#include "viz/scene3d/ogre.hpp"
+#include "viz/scene3d/Utils.hpp"
+
+#include <viz/scene3d/ogre.hpp>
+
+namespace sight::viz::scene3d::detail
 {
 
-namespace ut
+// ----------------------------------------------------------------------------
+
+TextureLoader::return_t TextureLoader::load(const sight::data::Image& _image, Ogre::Texture* _texture)
 {
+    sight::viz::scene3d::Utils::loadGrayscaleImage(_texture, _image);
 
-struct Initializer
-{
-    Initializer()
-    {
-        sight::core::runtime::init();
-        sight::core::runtime::loadModule("sight::module::viz::scene3d::test");
-    }
-};
+    return true;
+}
 
-static const Initializer init;
+// ----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::detail

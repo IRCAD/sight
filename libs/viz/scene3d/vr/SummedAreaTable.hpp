@@ -27,9 +27,8 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
-
-#include <glm/glm.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTexture.h>
@@ -62,7 +61,7 @@ public:
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
     VIZ_SCENE3D_API void computeParallel(
-        Ogre::TexturePtr _imgTexture,
+        const Texture::sptr& _imgTexture,
         const viz::scene3d::TransferFunction::sptr& _gpuTf,
         float _sampleDistance
     );
@@ -74,7 +73,7 @@ public:
     VIZ_SCENE3D_API Ogre::TexturePtr getSpareTexture() const;
 
     /// Updates the current size of the image according to the passed texture and updates the SAT
-    VIZ_SCENE3D_API void updateSatFromTexture(Ogre::TexturePtr _imgTexture);
+    VIZ_SCENE3D_API void updateSatFromTexture(const Texture::sptr& _imgTexture);
 
     /// Updates the SAT size ratio and updates the SAT.
     VIZ_SCENE3D_API void updateSatFromRatio(float _sizeRatio);

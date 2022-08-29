@@ -59,13 +59,13 @@ public:
 
     /// Sets the table resolution based on the new image and recomputes it.
     VIZ_SCENE3D_API void imageUpdate(
-        const data::Image::sptr& _img,
-        const data::TransferFunction::sptr& _tf,
+        const data::Image::csptr& _img,
+        const data::TransferFunction::csptr& _tf,
         float _samplingRate
     );
 
     /// Computes the table based on the given TF and slice distance.
-    VIZ_SCENE3D_API void tfUpdate(const data::TransferFunction::sptr& _tf, float _sampleDistance);
+    VIZ_SCENE3D_API void tfUpdate(const data::TransferFunction::csptr& _tf, float _sampleDistance);
 
     /// Get the texture holding the pre-integration table.
     VIZ_SCENE3D_API inline Ogre::TexturePtr getTexture() const;

@@ -27,11 +27,11 @@
 #include <core/com/Signal.hpp>
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Plane.hpp>
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
@@ -56,13 +56,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2D">
-        <inout key="image" uid="..." />
-        <inout key="tf" uid="..." />
+        <in key="image" uid="..." />
+        <in key="tf" uid="..." />
         <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
    </service>
    @endcode
  *
- * @subsection In-Out In-Out:
+ * @subsection Input Input:
  * - \b image [sight::data::Image]: image to display.
  * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
@@ -117,12 +117,6 @@ protected:
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     MODULE_VIZ_SCENE3D_API void updating() override;
 
-    /**
-     * @brief Retrieves the current transfer function.
-     * @param _key key of the swapped data.
-     */
-    MODULE_VIZ_SCENE3D_API void swapping(std::string_view _key) override;
-
     /// Disconnects the attached data from the received slot.
     MODULE_VIZ_SCENE3D_API void stopping() override;
 
@@ -176,10 +170,10 @@ private:
     void createPlane(const Ogre::Vector3& _spacing);
 
     /// Contains the Ogre texture which will be displayed on the negato.
-    Ogre::TexturePtr m_3DOgreTexture;
+    sight::viz::scene3d::Texture::sptr m_3DOgreTexture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF;
+    sight::viz::scene3d::TransferFunction::uptr m_gpuTF;
 
     /// Contains the plane on which we will apply our texture.
     std::unique_ptr<sight::viz::scene3d::Plane> m_plane {nullptr};
@@ -199,20 +193,17 @@ private:
     /// Defines the image orientation.
     OrientationMode m_orientation {OrientationMode::Z_AXIS};
 
-    /// Helps interfacing with the transfer function input.
-    data::helper::TransferFunction m_helperTF;
-
     /// Defines if the plane border is used or not.
     bool m_border {true};
 
     using SliceIndexChangedSignalType = core::com::Signal<void ()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    static constexpr std::string_view s_TF_INOUT    = "tf";
+    static constexpr std::string_view s_IMAGE_IN = "image";
+    static constexpr std::string_view s_TF_IN    = "tf";
 
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_IN, true};
 };
 
 //------------------------------------------------------------------------------

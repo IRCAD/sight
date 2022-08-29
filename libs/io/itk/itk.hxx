@@ -89,7 +89,7 @@ void moveFromItk(
 
     if(sight::data::helper::MedicalImage::checkImageValidity(_dataImage))
     {
-        sight::data::helper::MedicalImage::checkTransferFunctionPool(_dataImage);
+        sight::data::helper::MedicalImage::updateDefaultTransferFunction(*_dataImage);
         sight::data::helper::MedicalImage::checkImageSliceIndex(_dataImage);
     }
 

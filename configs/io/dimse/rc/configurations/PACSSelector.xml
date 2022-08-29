@@ -21,6 +21,7 @@
         <object uid="previewDicom" type="sight::data::DicomSeries" src="deferred" />
         <object uid="previewImage" type="sight::data::Image" />
         <object uid="previewImageReset" type="sight::data::Image" />
+        <object uid="tf" type="sight::data::TransferFunction" />
 
         <object uid="localSelections" type="sight::data::Vector" />
         <object uid="localImageSeries" type="sight::data::Image" src="deferred" />
@@ -245,12 +246,14 @@
         </service>
 
         <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="previewImage" />
+            <in key="image" uid="previewImage" />
+            <in key="tf" uid="tf" />
             <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
         <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="previewImage" />
+            <inout key="tf" uid="tf" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
 
@@ -268,7 +271,8 @@
         </service>
 
         <service uid="lNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-            <inout key="image" uid="localImage" />
+            <in key="image" uid="localImage" />
+            <inout key="tf" uid="tf" />
             <config layer="defaultLayer" priority="1" sliceIndex="axial" interactive="true" />
         </service>
 

@@ -13,6 +13,7 @@
         <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
         <object uid="image" type="sight::data::Image" src="deferred" />
+        <object uid="tf" type="sight::data::TransferFunction" />
         <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
         <object uid="reconstructionUID" type="sight::data::Reconstruction" src="deferred" />
         <object uid="snapshot" type="sight::data::Image" />
@@ -128,8 +129,9 @@
             <config layer="default" picker="" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
-            <inout key="image" uid="image" />
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
+            <in key="image" uid="image" />
+            <inout key="tf" uid="tf" />
             <config layer="default" sliceIndex="axial" />
         </service>
 

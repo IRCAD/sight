@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,33 +20,53 @@
  *
  ***********************************************************************/
 
-#include "modules/viz/scene3dQt/Plugin.hpp"
+#include "viz/scene3d/Texture.hpp"
 
-namespace sight::module::viz::scene3dQt
+#include <viz/scene3d/detail/TextureManager.hpp>
+
+namespace sight::viz::scene3d
 {
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3dQt::Plugin");
-
-//-----------------------------------------------------------------------------
-
-Plugin::~Plugin() noexcept
+Texture::Texture(const data::Image::csptr& _image, const std::string& suffixId)
 {
+    m_resource = detail::TextureManager::get()->instantiate(_image, suffixId);
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start()
+Texture::~Texture()
 {
+    if(m_resource)
+    {
+        detail::TextureManager::get()->release(m_resource);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::stop() noexcept
+void Texture::update()
 {
+    viz::scene3d::detail::TextureManager::get()->load(m_resource);
+}
+
+//------------------------------------------------------------------------------
+
+void Texture::bind(
+    Ogre::TextureUnitState* _texUnit,
+    Ogre::TextureType _type,
+    Ogre::TextureFilterOptions _filterType,
+    Ogre::TextureAddressingMode _addressMode
+)
+{
+    SIGHT_ASSERT("The texture unit is null.", _texUnit);
+
+    _texUnit->setTextureName(m_resource->getName(), _type);
+    _texUnit->setTextureFiltering(_filterType);
+    _texUnit->setTextureAddressingMode(_addressMode);
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module::viz::scene3dQt
+} // namespace sight::viz::scene3d

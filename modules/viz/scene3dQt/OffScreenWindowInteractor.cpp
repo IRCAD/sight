@@ -112,7 +112,7 @@ void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwCo
         false,
         &parameters
     );
-    mgr->registerWindow(m_ogreRenderWindow);
+    mgr->add(m_ogreRenderWindow);
 
     m_ogreRenderWindow->setHidden(true);
     m_ogreRenderWindow->setAutoUpdated(false);
@@ -146,7 +146,7 @@ void OffScreenWindowInteractor::disconnectInteractor()
     if(m_ogreRenderWindow)
     {
         sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-        mgr->unregisterWindow(m_ogreRenderWindow);
+        mgr->remove(m_ogreRenderWindow);
         m_ogreRenderWindow = nullptr;
     }
 

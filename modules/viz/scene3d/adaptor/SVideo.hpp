@@ -25,9 +25,9 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <data/PointList.hpp>
-#include <data/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
 #include <OGRE/OgreTexture.h>
@@ -147,7 +147,7 @@ private:
     void clearEntity();
 
     /// Contains the Ogre texture used to store the image.
-    Ogre::TexturePtr m_texture;
+    sight::viz::scene3d::Texture::sptr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
     Ogre::MaterialPtr m_material;

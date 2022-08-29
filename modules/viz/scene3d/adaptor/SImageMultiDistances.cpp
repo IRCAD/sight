@@ -256,10 +256,10 @@ void SImageMultiDistances::starting()
 service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

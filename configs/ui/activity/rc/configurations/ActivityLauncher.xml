@@ -69,7 +69,7 @@
         <param name="WIZARD_CONFIG" default="defaultWizardConfig" />
         <param name="SESSION_READER_CONFIG" default="DefaultSessionReaderConfig" />
         <param name="SESSION_WRITER_CONFIG" default="DefaultSessionWriterConfig" />
-        <param name="APPLICATION_ICON_PATH" default="module_ui_icons/sight_logo.svg" />
+        <param name="APPLICATION_ICON_PATH" default="sight::module::ui::icons/sight_logo.svg" />
     </parameters>
     <desc>Configuration to launch activities sequentially</desc>
     <config>

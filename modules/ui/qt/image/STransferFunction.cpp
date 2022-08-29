@@ -239,26 +239,6 @@ void STransferFunction::updating()
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::swapping(std::string_view _key)
-{
-    // Avoid swapping if it's the same TF.
-    if(_key == s_CURRENT_INPUT)
-    {
-        data::TransferFunction::wptr selectedTF;
-        {
-            selectedTF = m_selectedTF.lock().get_shared();
-        }
-        const auto currentTF = m_currentTF.lock();
-
-        if(currentTF && currentTF.get_shared() != selectedTF.lock())
-        {
-            this->updatePresets();
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void STransferFunction::stopping()
 {
     this->destroy();
@@ -419,9 +399,12 @@ void STransferFunction::setCurrentPreset()
 
     const data::TransferFunction::sptr newSelectedTF = m_tfPresets[newSelectedTFKey];
 
-    if(newSelectedTF && newSelectedTF != m_selectedTF.lock().get_shared())
+    const auto currentTf = m_currentTF.lock();
+    if(newSelectedTF && newSelectedTF->name() != currentTf->name())
     {
-        m_selectedTF = newSelectedTF;
+        currentTf->deepCopy(newSelectedTF);
+        auto sig = currentTf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 

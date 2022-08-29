@@ -19,6 +19,7 @@
             <object uid="image" type="sight::data::Image" />
             <object uid="mesh" type="sight::data::Mesh" />
             <object uid="texture" type="sight::data::Image" />
+            <object uid="tf" type="sight::data::TransferFunction" />
             <object uid="snapshot" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -136,7 +137,8 @@
 
             <!-- 3D image negatoscope adaptor -->
             <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-                <inout key="image" uid="image" />
+                <in key="image" uid="image" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 

@@ -22,12 +22,8 @@
 
 #include "modules/viz/scene2d/adaptor/SNegato.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
@@ -53,6 +49,7 @@ static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSl
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT          = "updateTF";
 
 namespace medHelper = data::helper::MedicalImage;
 
@@ -63,13 +60,13 @@ SNegato::SNegato() noexcept :
     m_pixmapItem(nullptr),
     m_layer(nullptr),
     m_pointIsCaptured(false),
-    m_changeSliceTypeAllowed(true),
-    m_helperTF(std::bind(&SNegato::updateTF, this))
+    m_changeSliceTypeAllowed(true)
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
     newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
+    newSlot(s_UPDATE_TF_SLOT, &SNegato::updateTF, this);
 
     m_orientation = orientation_t::Z_AXIS;
 }
@@ -131,8 +128,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
     }
 
     // Window min/max
-    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    const data::mt::locked_ptr tfLock(tf);
+    const auto tf = m_tf.const_lock();
 
     // Window max
     auto image                     = m_image.lock();
@@ -154,7 +150,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t y = 0 ; y < size[1] ; ++y)
             {
-                const QRgb val = this->getQImageVal(imgBuff[zxOffset + y * size[0]], tf);
+                const QRgb val = this->getQImageVal(imgBuff[zxOffset + y * size[0]], *tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -174,7 +170,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
-                const QRgb val = this->getQImageVal(imgBuff[zyOffset + x], tf);
+                const QRgb val = this->getQImageVal(imgBuff[zyOffset + x], *tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -194,7 +190,7 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
-                const QRgb val = this->getQImageVal(imgBuff[zyOffset + x], tf);
+                const QRgb val = this->getQImageVal(imgBuff[zyOffset + x], *tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -209,9 +205,9 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
 //-----------------------------------------------------------------------------
 
-QRgb SNegato::getQImageVal(const short value, const data::TransferFunction::csptr& tf)
+QRgb SNegato::getQImageVal(const short value, const data::TransferFunction& tf)
 {
-    const data::TransferFunction::color_t color = tf->sample(value);
+    const data::TransferFunction::color_t color = tf.sample(value);
 
     // use QImage::Format_RGBA8888 in QImage if you need alpha value
     return qRgb(static_cast<int>(color.r * 255), static_cast<int>(color.g * 255), static_cast<int>(color.b * 255));
@@ -308,8 +304,6 @@ void SNegato::starting()
     m_sagittalIndex =
         std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::SAGITTAL).value_or(0)));
 
-    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     m_pixmapItem->setTransformationMode(Qt::SmoothTransformation);
@@ -332,24 +326,6 @@ void SNegato::updating()
 {
     m_qImg = this->createQImage();
     this->updateBufferFromImage(m_qImg);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato::swapping(std::string_view key)
-{
-    if(key == s_TF_INOUT)
-    {
-        {
-            auto image = m_image.lock();
-            SIGHT_ASSERT("Missing image", image);
-
-            auto tf = m_tf.lock();
-            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-        }
-
-        this->updating();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -429,8 +405,6 @@ void SNegato::updateTF()
 
 void SNegato::stopping()
 {
-    m_helperTF.removeTFConnections();
-
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
     delete m_qImg;
@@ -542,8 +516,7 @@ void SNegato::changeImageMinMaxFromCoord(
     sight::viz::scene2d::vec2d_t& newCoord
 )
 {
-    data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    data::mt::locked_ptr tfLock(tf);
+    const auto tf = m_tf.lock();
 
     const double min = tf->windowMinMax().first;
     const double max = tf->windowMinMax().second;
@@ -566,7 +539,7 @@ void SNegato::changeImageMinMaxFromCoord(
         data::TransferFunction::s_WINDOWING_MODIFIED_SIG
     );
     {
-        core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
         sig->asyncEmit(newImgWindow, newImgLevel);
     }
 }
@@ -575,13 +548,16 @@ void SNegato::changeImageMinMaxFromCoord(
 
 service::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    return connections;
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT},
+        {s_IMAGE_IN, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT},
+        {s_TF_INOUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------

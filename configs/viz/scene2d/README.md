@@ -28,7 +28,7 @@ The `TransferFunctionWidget` configuration can be included with the following co
     <appConfig id="TransferFunctionWidgetCfg" />
     <parameter replace="WID_PARENT" by="..." />
     <inout key="image" uid="..." />
-    <inout key="currentTF" uid="..." optional="true" />
+    <inout key="currentTF" uid="..." />
 </service>
 ```
 
@@ -46,7 +46,7 @@ The `TransferFunctionWindow` configuration can be included with the following co
     <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
     <parameter replace="WINDOW_ICON" by="path/to/icon.svg" />
     <inout key="image" uid="..." />
-    <inout key="currentTF" uid="..." optional="true" />
+    <inout key="currentTF" uid="..." />
 </service>
 ```
 

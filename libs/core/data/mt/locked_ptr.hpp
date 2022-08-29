@@ -55,8 +55,15 @@ public:
     {
         if(m_data)
         {
-            m_locker = std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock,
-                                          core::mt::WriteLock>(data->getMutex());
+            if constexpr(std::is_const<DATATYPE>::value)
+            {
+                m_locker = core::mt::ReadLock(data->getMutex());
+            }
+            else
+            {
+                m_locker = core::mt::WriteLock(data->getMutex());
+                m_data->modify();
+            }
         }
     }
 
@@ -187,8 +194,7 @@ private:
     std::shared_ptr<DATATYPE> m_data;
 
     /// Read lock if the data is const, write lock otherwise
-    typename std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock,
-                                core::mt::WriteLock> m_locker;
+    typename std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock, core::mt::WriteLock> m_locker;
 
     template<class C, class = void>
     class dump_locks final

@@ -47,10 +47,13 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Registers an Ogre window.
-    VIZ_SCENE3D_API void registerWindow(Ogre::RenderWindow* _window);
+    VIZ_SCENE3D_API void add(Ogre::RenderWindow* _window);
 
     /// Unregisters an Ogre window.
-    VIZ_SCENE3D_API void unregisterWindow(Ogre::RenderWindow* _window);
+    VIZ_SCENE3D_API void remove(Ogre::RenderWindow* _window);
+
+    /// Gets an Ogre window.
+    VIZ_SCENE3D_API Ogre::RenderWindow* get(const std::string& _name) const;
 
     /**
      * @brief Gets the unique instance of this class.

@@ -80,8 +80,8 @@ void PreIntegrationTable::removeTexture()
 //-----------------------------------------------------------------------------
 
 void PreIntegrationTable::imageUpdate(
-    const data::Image::sptr& _img,
-    const data::TransferFunction::sptr& _tf,
+    const data::Image::csptr& _img,
+    const data::TransferFunction::csptr& _tf,
     float _samplingRate
 )
 {
@@ -97,8 +97,8 @@ void PreIntegrationTable::imageUpdate(
         {
             case Ogre::PF_L8: //uint8
             {
-                uint8_t* ucharImgBuffer = static_cast<uint8_t*>(_img->getBuffer());
-                auto minMax             = std::minmax_element(ucharImgBuffer, ucharImgBuffer + nbPixels);
+                auto* ucharImgBuffer = static_cast<const uint8_t*>(_img->getBuffer());
+                auto minMax          = std::minmax_element(ucharImgBuffer, ucharImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
                 m_valueInterval.second = *minMax.second;
@@ -108,8 +108,8 @@ void PreIntegrationTable::imageUpdate(
 
             case Ogre::PF_L16: //int16
             {
-                int16_t* ushortImgBuffer = static_cast<int16_t*>(_img->getBuffer());
-                auto minMax              = std::minmax_element(ushortImgBuffer, ushortImgBuffer + nbPixels);
+                auto* ushortImgBuffer = static_cast<const int16_t*>(_img->getBuffer());
+                auto minMax           = std::minmax_element(ushortImgBuffer, ushortImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
                 m_valueInterval.second = *minMax.second;
@@ -119,8 +119,8 @@ void PreIntegrationTable::imageUpdate(
 
             case ::Ogre::PF_R32_SINT: //int32
             {
-                int32_t* uintImgBuffer = static_cast<int32_t*>(_img->getBuffer());
-                auto minMax            = std::minmax_element(uintImgBuffer, uintImgBuffer + nbPixels);
+                auto* uintImgBuffer = static_cast<const int32_t*>(_img->getBuffer());
+                auto minMax         = std::minmax_element(uintImgBuffer, uintImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
                 m_valueInterval.second = *minMax.second;
@@ -164,7 +164,7 @@ void PreIntegrationTable::imageUpdate(
 
 //-----------------------------------------------------------------------------
 
-void PreIntegrationTable::tfUpdate(const data::TransferFunction::sptr& _tf, float _sampleDistance)
+void PreIntegrationTable::tfUpdate(const data::TransferFunction::csptr& _tf, float _sampleDistance)
 {
     if(!m_table)
     {

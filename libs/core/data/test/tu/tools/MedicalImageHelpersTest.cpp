@@ -650,7 +650,7 @@ void MedicalImageHelpersTest::testTransferFunction()
 
     // set transfer function composite
 
-    data::Composite::sptr tfPool = data::Composite::New();
+    data::TransferFunction::sptr tfPool = data::TransferFunction::New();
 
     medImHelper::setTransferFunction(*image, tfPool);
 

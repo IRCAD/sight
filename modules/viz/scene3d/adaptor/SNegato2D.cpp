@@ -34,15 +34,15 @@
 #include <viz/scene3d/Utils.hpp>
 
 #include <OgreSceneNode.h>
-#include <OgreTextureManager.h>
 
 #include <algorithm>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
-const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
+const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT        = "sliceType";
+const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT       = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
 
@@ -56,12 +56,12 @@ static const std::string s_TRANSFORM_CONFIG   = "transform";
 
 //------------------------------------------------------------------------------
 
-SNegato2D::SNegato2D() noexcept :
-    m_helperTF(std::bind(&SNegato2D::updateTF, this))
+SNegato2D::SNegato2D() noexcept
 {
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
     newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato2D::updateSlicesFromWorld, this);
+    newSlot(s_UPDATE_TF_SLOT, &SNegato2D::updateTF, this);
 
     m_sliceIndexChangedSig = this->newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
 }
@@ -127,21 +127,14 @@ void SNegato2D::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
     {
+        // 3D source texture instantiation
         const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        m_3DOgreTexture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+
+        // TF texture initialization
+        const auto tf = m_tf.lock();
+        m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>(tf.get_shared());
     }
-
-    // 3D source texture instantiation
-    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
-        this->getID() + "_Texture",
-        sight::viz::scene3d::RESOURCE_GROUP,
-        true
-    );
-
-    // TF texture initialization
-    m_gpuTF = std::unique_ptr<sight::viz::scene3d::TransferFunction>(new sight::viz::scene3d::TransferFunction());
-    m_gpuTF->createTexture(this->getID());
 
     // Scene node's instantiation
     Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
@@ -154,7 +147,7 @@ void SNegato2D::starting()
         m_negatoSceneNode,
         getSceneManager(),
         m_orientation,
-        m_3DOgreTexture,
+        m_3DOgreTexture->get(),
         m_filtering,
         m_border
     );
@@ -169,11 +162,7 @@ void SNegato2D::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    m_helperTF.removeTFConnections();
-
     m_plane.reset();
-
-    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
@@ -186,22 +175,6 @@ void SNegato2D::updating()
 {
     this->newImage();
     this->setVisible(m_isVisible);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::swapping(std::string_view _key)
-{
-    if(_key == s_TF_INOUT)
-    {
-        {
-            const auto image = m_image.lock();
-            const auto tf    = m_tf.lock();
-            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-        }
-
-        this->updateTF();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -221,8 +194,6 @@ void SNegato2D::newImage()
     int sagittalIdx = 0;
     {
         const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
         {
@@ -230,7 +201,7 @@ void SNegato2D::newImage()
         }
 
         // Retrieves or creates the slice index fields
-        sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
+        m_3DOgreTexture->update();
 
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
         this->createPlane(spacing);
@@ -246,7 +217,7 @@ void SNegato2D::newImage()
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
 
-    // Update tranfer function in Gpu programs
+    // Update transfer function in Gpu programs
     this->updateTF();
 
     this->requestRender();
@@ -352,11 +323,7 @@ void SNegato2D::updateTF()
 {
     this->getRenderService()->makeCurrent();
 
-    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    {
-        const data::mt::locked_ptr lock(tf);
-        m_gpuTF->updateTexture(tf);
-    }
+    m_gpuTF->update();
 
     // Sends the TF texture to the negato-related passes
     m_plane->setTFData(*m_gpuTF.get());
@@ -368,13 +335,15 @@ void SNegato2D::updateTF()
 
 service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT);
-
-    return connections;
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT},
+        {s_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_IN, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_IN, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

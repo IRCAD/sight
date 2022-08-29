@@ -26,6 +26,8 @@
 
 #include <viz/scene3d/ogre.hpp>
 
+#include <glm/glm.hpp>
+
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorInstance.h>
@@ -170,7 +172,7 @@ SummedAreaTable::~SummedAreaTable()
 //-----------------------------------------------------------------------------
 
 void SummedAreaTable::computeParallel(
-    Ogre::TexturePtr _imgTexture,
+    const Texture::sptr& _imgTexture,
     const TransferFunction::sptr& _gpuTf,
     float _sampleDistance
 )
@@ -194,7 +196,7 @@ void SummedAreaTable::computeParallel(
                 Ogre::Pass* const satInitPass            = technique->getPass(0);
                 Ogre::TextureUnitState* const tex3DState = satInitPass->getTextureUnitState("image");
                 SIGHT_ASSERT("'image' texture unit is not found", tex3DState);
-                tex3DState->setTexture(_imgTexture);
+                tex3DState->setTexture(_imgTexture->get());
 
                 auto fpParams = satInitPass->getFragmentProgramParameters();
                 fpParams->setNamedConstant("u_sampleDistance", _sampleDistance);
@@ -325,15 +327,15 @@ void SummedAreaTable::computeParallel(
 
 //-----------------------------------------------------------------------------
 
-void SummedAreaTable::updateSatFromTexture(Ogre::TexturePtr _imgTexture)
+void SummedAreaTable::updateSatFromTexture(const Texture::sptr& _imgTexture)
 {
     SIGHT_ASSERT("texture cannot be nullptr", _imgTexture != nullptr);
 
     m_currentImageSize =
     {
-        static_cast<std::size_t>(_imgTexture->getWidth()),
-        static_cast<std::size_t>(_imgTexture->getHeight()),
-        static_cast<std::size_t>(_imgTexture->getDepth())
+        static_cast<std::size_t>(_imgTexture->width()),
+        static_cast<std::size_t>(_imgTexture->height()),
+        static_cast<std::size_t>(_imgTexture->depth())
     };
 
     const std::size_t width  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);

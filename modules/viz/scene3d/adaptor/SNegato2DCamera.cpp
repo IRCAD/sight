@@ -45,9 +45,7 @@ static const std::string s_ORIENTATION_CONFIG           = "orientation";
 
 //-----------------------------------------------------------------------------
 
-SNegato2DCamera::SNegato2DCamera() noexcept :
-    // This connection is useless here but needed to create the TF helper.
-    m_helperTF(std::bind(&SNegato2DCamera::updating, this))
+SNegato2DCamera::SNegato2DCamera() noexcept
 {
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
@@ -119,18 +117,6 @@ void SNegato2DCamera::updating() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::swapping(std::string_view _key)
-{
-    if(_key == s_TF_INOUT)
-    {
-        const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SNegato2DCamera::stopping()
 {
     const auto layer = this->getLayer();
@@ -142,12 +128,11 @@ void SNegato2DCamera::stopping()
 
 service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
-
-    return connections;
+    return {
+        {s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT},
+        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT},
+        {s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -309,8 +294,7 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
     {
         m_isInteracting = true;
 
-        const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-        const data::mt::locked_ptr lock(tf);
+        const auto tf = m_tf.const_lock();
 
         m_initialLevel  = tf->level();
         m_initialWindow = tf->window();
@@ -343,10 +327,6 @@ void SNegato2DCamera::resetCamera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const auto image = m_image.lock();
-    const auto tf    = m_tf.lock();
-    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
     auto* const camera         = layer->getDefaultCamera();
@@ -363,6 +343,7 @@ void SNegato2DCamera::resetCamera()
     camNode->setPosition(Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
+    const auto image   = m_image.lock();
     const auto origin  = image->getOrigin();
     const auto size    = image->getSize();
     const auto spacing = image->getSpacing();
@@ -484,13 +465,13 @@ void SNegato2DCamera::updateWindowing(double _dw, double _dl)
     const double newWindow = m_initialWindow + _dw;
     const double newLevel  = m_initialLevel - _dl;
 
-    const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const data::mt::locked_ptr lock(tf);
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
 
         tf->setWindow(newWindow);
         tf->setLevel(newLevel);
-        const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
+        const auto sig = tf->template signal<data::TransferFunction::WindowingModifiedSignalType>(
             data::TransferFunction::s_WINDOWING_MODIFIED_SIG
         );
         {

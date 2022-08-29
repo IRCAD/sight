@@ -23,6 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
+#include "viz/scene3d/Texture.hpp"
 #include "viz/scene3d/vr/SummedAreaTable.hpp"
 
 #include <optional>
@@ -80,7 +81,7 @@ public:
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
     VIZ_SCENE3D_API void SATUpdate(
-        Ogre::TexturePtr _img,
+        const Texture::sptr& _img,
         const viz::scene3d::TransferFunction::sptr& _tf,
         float _sampleDistance
     );

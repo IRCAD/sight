@@ -10,7 +10,7 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${currentTF}" type="sight::data::TransferFunction" src="deferred" />
+        <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
 
         <object uid="viewport" type="sight::viz::scene2d::data::Viewport" />
         <object uid="viewportShutter" type="sight::viz::scene2d::data::Viewport" />
@@ -166,8 +166,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="transferFunctionEditorSrv" type="sight::module::ui::qt::image::STransferFunction" >
-            <in key="current" uid="${currentTF}" />
-            <out key="selected" uid="${currentTF}" />
+            <inout key="tf" uid="${currentTF}" />
             <config deleteicon="sight::module::ui::flaticons/RedDeleteFile.svg"
                     newicon="sight::module::ui::flaticons/GreenNewFile.svg"
                     copyicon="sight::module::ui::flaticons/GreenCopyFile.svg"

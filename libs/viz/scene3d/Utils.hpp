@@ -144,12 +144,12 @@ public:
     );
 
     /**
-     * @brief convertImageForNegato
-     * @param[out] _textureThe target texture
+     * @brief loadGrayscaleImage
+     * @param[out] _texture The target texture
      * @param[in] _image The Sight Image to convert
      * @return
      */
-    VIZ_SCENE3D_API static void convertImageForNegato(Ogre::Texture* _texture, const data::Image::sptr& _image);
+    VIZ_SCENE3D_API static void loadGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image);
 
     /**
      * @brief allocateTexture

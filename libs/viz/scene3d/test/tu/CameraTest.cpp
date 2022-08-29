@@ -29,6 +29,7 @@
 #include <utest/Filter.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
+#include <viz/scene3d/WindowManager.hpp>
 
 #include <OgreLogManager.h>
 #include <OgreMatrix4.h>
@@ -227,30 +228,16 @@ void CameraTest::computeProjectionMatrix()
 
 void CameraTest::convertPixelToWorldSpace()
 {
-    // On some platform / environment like Ubuntu 21.04 in a dockerized environment,
-    // this test will fail because opengl context cannot be acquired correctly
-    if(utest::Filter::ignoreUnstableTests())
-    {
-        return;
-    }
-
     auto* const root         = viz::scene3d::Utils::getOgreRoot();
     auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 
-    // Use a size > 120 because windows will anyway switch to a larger size
-    const unsigned int width  = 200;
-    const unsigned int height = 200;
-    auto* const renderWindow  = root->createRenderWindow(
-        "TestRenderWindow",
-        width,
-        height,
-        false,
-        nullptr
-    );
-    renderWindow->setVisible(false);
-    renderWindow->setAutoUpdated(false);
-    auto* const camera = sceneManager->createCamera("TestCamera");
-    renderWindow->addViewport(camera);
+    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
+    Ogre::RenderWindow* renderWindow             = mgr->get("test");
+    auto* const camera                           = sceneManager->createCamera("TestCamera");
+    renderWindow->addViewport(camera, 0);
+
+    const float width  = static_cast<float>(renderWindow->getWidth());
+    const float height = static_cast<float>(renderWindow->getHeight());
 
     camera->setNearClipDistance(1);
     camera->setFarClipDistance(10);
@@ -299,6 +286,7 @@ void CameraTest::convertPixelToWorldSpace()
 
         comparePoint(standardPoint, unprojectedPoint);
     }
+    renderWindow->removeViewport(0);
     root->destroySceneManager(sceneManager);
 }
 

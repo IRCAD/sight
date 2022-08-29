@@ -39,6 +39,14 @@
 namespace sight::data
 {
 
+namespace mt
+{
+
+template<typename T>
+class locked_ptr;
+
+}
+
 /**
  * @brief   Base class for each data object.
  *
@@ -230,7 +238,8 @@ public:
     DATA_API bool operator!=(const Object& other) const noexcept;
     /// @}
 
-protected:
+    /// Returns a timestamp to know when the object was last modified
+    std::uint64_t lastModified() const;
 
     DATA_API Object();
 
@@ -245,13 +254,26 @@ protected:
     static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) & source, DeepCopyCacheType & cache);
     template<typename DATA_TYPE>
     static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) & source, DeepCopyCacheType & cache);
-    /** @} */
+/** @} */
+
+protected:
 
     /// Fields
     FieldMapType m_fields;
 
     /// Mutex to protect object access.
     mutable core::mt::ReadWriteMutex m_mutex;
+
+    /// Timestamp that can be incremented each time the object is modified
+    std::uint64_t m_lastModified {0};
+
+private:
+
+    template<class T>
+    friend class sight::data::mt::locked_ptr;
+
+    /// Increments the last modified timestamp
+    DATA_API void modify();
 };
 
 template<typename DATA_TYPE>
@@ -314,5 +336,14 @@ SPTR(DATA_TYPE) Object::setDefaultField(const FieldNameType& name, SPTR(DATA_TYP
 
     return result;
 }
+
+//-----------------------------------------------------------------------------
+
+inline std::uint64_t Object::lastModified() const
+{
+    return m_lastModified;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::data

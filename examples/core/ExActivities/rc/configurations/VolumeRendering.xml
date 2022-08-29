@@ -11,8 +11,7 @@
 
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
         <object uid="image" type="sight::data::Image" src="deferred" />
-        <object uid="TF" type="sight::data::TransferFunction" src="deferred" />
-        <object uid="TFPool" type="sight::data::Composite" />
+        <object uid="tf" type="sight::data::TransferFunction" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -69,14 +68,13 @@
         </service>
 
         <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
-            <inout key="image" uid="image" autoConnect="true" />
-            <inout key="tf" uid="TF" />
+            <in key="image" uid="image" />
+            <in key="tf" uid="tf" />
             <config layer="default" widgets="false" preintegration="false" autoresetcamera="true" />
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
-            <inout key="tfPool" uid="TFPool" autoConnect="true" />
-            <out key="tf" uid="TF" />
+            <inout key="tf" uid="tf" />
         </service>
 
         <service uid="extractImageSrv" type="sight::module::data::SGetImage">

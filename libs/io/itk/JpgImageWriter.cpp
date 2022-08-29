@@ -108,23 +108,11 @@ struct JpgITKSaverFunctor
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
         double min, max;
-        data::Composite::sptr poolTF;
-        poolTF = data::helper::MedicalImage::getTransferFunction(*image);
+        auto tf = data::helper::MedicalImage::getTransferFunction(*image);
 
-        if(poolTF)
+        if(tf)
         {
-            data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
-            if(iter != poolTF->end())
-            {
-                data::TransferFunction::sptr tf;
-                tf  = data::TransferFunction::dynamicCast(iter->second);
-                min = tf->windowMinMax().first;
-                max = tf->windowMinMax().second;
-            }
-            else
-            {
-                data::helper::MedicalImage::getMinMax(image, min, max);
-            }
+            std::tie(min, max) = tf->windowMinMax();
         }
         else
         {

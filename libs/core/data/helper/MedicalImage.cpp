@@ -32,7 +32,6 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/TransferFunction.hpp>
 #include <data/Vector.hpp>
 
 #include <numeric>
@@ -159,47 +158,29 @@ bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 
 //------------------------------------------------------------------------------
 
-bool checkTransferFunctionPool(const data::Image::sptr& image)
+bool updateDefaultTransferFunction(data::Image& image)
 {
     bool fieldIsCreated = false;
-    const std::string poolFieldName(id::transferFunction);
-    data::Composite::sptr tfPool;
 
-    tfPool = image->getField<data::Composite>(poolFieldName);
-    // Transfer functions
-    if(!tfPool)
+    auto tf = image.getField<data::TransferFunction>(std::string(id::transferFunction));
+    if(tf == nullptr)
     {
-        tfPool = data::Composite::New();
-
-        // Set in selected image
-        data::helper::Field fieldHelper(image);
-        fieldHelper.setField(poolFieldName, tfPool);
-        fieldHelper.notify();
-
-        // TF pool is modified
+        tf = data::TransferFunction::createDefaultTF();
+        image.setField(std::string(id::transferFunction), tf);
         fieldIsCreated = true;
     }
 
-    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
-    if(tfPool->find(defaultTFName) == tfPool->end())
+    if(image.getWindowWidth() != 0.)
     {
-        data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
-        if(image->getWindowWidth() != 0.)
-        {
-            tf->setWindow(image->getWindowWidth());
-            tf->setLevel(image->getWindowCenter());
-        }
-        else if(checkImageValidity(image))
-        {
-            double min, max;
-            getMinMax(image, min, max);
-            data::TransferFunction::min_max_t wlMinMax(min, max);
-            tf->setWindowMinMax(wlMinMax);
-        }
-
-        // Set in TFPool
-        const auto scoped_emitter = tfPool->scoped_emit();
-        tfPool->insert_or_assign(defaultTFName, tf);
+        tf->setWindow(image.getWindowWidth());
+        tf->setLevel(image.getWindowCenter());
+    }
+    else if(checkImageValidity(image))
+    {
+        double min, max;
+        getMinMax(image.getSptr(), min, max);
+        data::TransferFunction::min_max_t wlMinMax(min, max);
+        tf->setWindowMinMax(wlMinMax);
     }
 
     return fieldIsCreated;
@@ -370,24 +351,14 @@ void setLandmarksVisibility(data::Image& _image, bool _visibility)
 
 //------------------------------------------------------------------------------
 
-data::Composite::sptr getTransferFunction(const data::Image& _image)
+data::TransferFunction::sptr getTransferFunction(const data::Image& _image)
 {
-    const auto field = _image.getField(std::string(id::transferFunction));
-    if(field)
-    {
-        const auto composite = _image.getField<data::Composite>(std::string(id::transferFunction));
-        if(composite)
-        {
-            return composite;
-        }
-    }
-
-    return nullptr;
+    return _image.getField<data::TransferFunction>(std::string(id::transferFunction));
 }
 
 //------------------------------------------------------------------------------
 
-void setTransferFunction(data::Image& _image, const data::Composite::sptr& _cmp)
+void setTransferFunction(data::Image& _image, const data::TransferFunction::sptr& _cmp)
 {
     _image.setField(std::string(id::transferFunction), _cmp);
 }

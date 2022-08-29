@@ -120,7 +120,7 @@ public:
      * @param parentId                  ID of the service using this renderer
      * @param sceneManager              The scene manager being used.
      * @param volumeNode                This object's node.
-     * @param imageTexture (optional)   Texture holding the 3D image to be rendered. Created if not specified.
+     * @param image                     Texture holding the 3D image to be rendered. Created if not specified.
      * @param buffer (optional)         Enable buffering for the textures updates. Default is false.
      * @param preintegration (optional) Enable preintegration. Default is false.
      * @param shadows (optional)        Shadows parameters. Uses default if not specified.
@@ -131,7 +131,8 @@ public:
         std::string parentId,
         Layer::sptr layer,
         Ogre::SceneNode* const parentNode,
-        std::optional<Ogre::TexturePtr> imageTexture                         = {},
+        sight::data::Image::csptr image,
+        sight::data::TransferFunction::csptr tf,
         bool buffer                                                          = false,
         bool preintegration                                                  = false,
         const std::optional<shadows_parameters_t> shadows                    = {},
@@ -142,19 +143,19 @@ public:
     VIZ_SCENE3D_API ~RayTracingVolumeRenderer() override;
 
     /// Updates the raycasting material and sample distance. Also creates the entry point if not done yet.
-    VIZ_SCENE3D_API void update() override;
+    VIZ_SCENE3D_API void update(const data::TransferFunction::csptr& tf) override;
 
     /// Function called when a new image is being rendered.
     VIZ_SCENE3D_API void imageUpdate(
-        const data::Image::sptr image,
-        const data::TransferFunction::sptr tf
+        const data::Image::csptr image,
+        const data::TransferFunction::csptr tf
     ) override;
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API void updateVolumeTF(std::shared_ptr<data::TransferFunction>& tf) override;
+    VIZ_SCENE3D_API void updateVolumeTF(const data::TransferFunction::csptr& tf) override;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API void setSampling(uint16_t nbSamples) override;
+    VIZ_SCENE3D_API void setSampling(uint16_t nbSamples, const data::TransferFunction::csptr& tf) override;
 
     /// Sets the opacity correction factor.
     VIZ_SCENE3D_API void setOpacityCorrection(int opacityCorrection);

@@ -25,7 +25,6 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 
@@ -162,12 +161,6 @@ protected:
     /// Does nothing.
     MODULE_VIZ_SCENE3D_API void updating() noexcept override;
 
-    /**
-     * @brief Retrieves the current transfer function.
-     * @param _key key of the swapped data.
-     */
-    MODULE_VIZ_SCENE3D_API void swapping(std::string_view _key) override;
-
     /// Removes negato camera interactions from the layer.
     MODULE_VIZ_SCENE3D_API void stopping() override;
 
@@ -199,9 +192,6 @@ private:
 
     /// Defines the interaction priority.
     int m_priority {0};
-
-    /// Helps interfacing with the transfer function input.
-    data::helper::TransferFunction m_helperTF;
 
     /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow {0.f};

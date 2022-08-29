@@ -70,6 +70,8 @@ Detail of the ToolBar
 
             <!-- Object to store the image loading in the first tab -->
             <object uid="myImage" type="sight::data::Image" />
+            <object uid="tf" type="sight::data::TransferFunction" />
+
             <object uid="meshOnNegato1" type="sight::data::Mesh" />
             <object uid="meshOnNegato2" type="sight::data::Mesh" />
             <!-- Object to store the point put in the first tab -->
@@ -199,7 +201,8 @@ Detail of the ToolBar
             </service>
 
             <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-                <inout key="image" uid="myImage" />
+                <in key="image" uid="myImage" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
@@ -281,7 +284,8 @@ Detail of the ToolBar
             </service>
 
             <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-                <inout key="image" uid="myImage" />
+                <in key="image" uid="myImage" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 

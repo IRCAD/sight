@@ -223,4 +223,11 @@ bool Object::operator!=(const Object& other) const noexcept
     return !(*this == other);
 }
 
+//-----------------------------------------------------------------------------
+
+void Object::modify()
+{
+    ++m_lastModified;
+}
+
 } // namespace sight::data

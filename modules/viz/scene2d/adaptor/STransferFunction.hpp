@@ -380,6 +380,9 @@ private:
      */
     void addTrapeze(const sight::viz::scene2d::data::Event& _event);
 
+    /// Updates the transfer function.
+    void updateTF();
+
     /// Defines the size of TF points in a ratio relative to the window.
     float m_pointSize {0.03f};
 

@@ -156,7 +156,7 @@ void Window::initialize()
     m_ogreRenderWindow->setAutoUpdated(false);
 
     sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-    mgr->registerWindow(m_ogreRenderWindow);
+    mgr->add(m_ogreRenderWindow);
 
     sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
@@ -206,7 +206,7 @@ void Window::destroyWindow()
     {
         m_ogreRenderWindow->removeListener(this);
         sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-        mgr->unregisterWindow(m_ogreRenderWindow);
+        mgr->remove(m_ogreRenderWindow);
         m_ogreRenderWindow = nullptr;
     }
 }

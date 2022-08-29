@@ -132,7 +132,7 @@ void IllumAmbientOcclusionSAT::updateSatFromRatio(float _satSizeRatio)
 //-----------------------------------------------------------------------------
 
 void IllumAmbientOcclusionSAT::SATUpdate(
-    Ogre::TexturePtr _img,
+    const Texture::sptr& _img,
     const TransferFunction::sptr& _tf,
     float _sampleDistance
 )

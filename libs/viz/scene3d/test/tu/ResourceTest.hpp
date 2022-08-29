@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,7 +20,9 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/operations.hpp>
+#pragma once
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace sight::viz::scene3d
 {
@@ -27,16 +30,22 @@ namespace sight::viz::scene3d
 namespace ut
 {
 
-struct Initializer
+class ResourceTest : public CPPUNIT_NS::TestFixture
 {
-    Initializer()
-    {
-        sight::core::runtime::init();
-        sight::core::runtime::loadModule("sight::module::viz::scene3d::test");
-    }
-};
+CPPUNIT_TEST_SUITE(ResourceTest);
+CPPUNIT_TEST(textureTest);
+CPPUNIT_TEST(tfTest);
+CPPUNIT_TEST_SUITE_END();
 
-static const Initializer init;
+public:
+
+    // interface
+    void setUp();
+    void tearDown();
+
+    void textureTest();
+    void tfTest();
+};
 
 } //namespace ut
 

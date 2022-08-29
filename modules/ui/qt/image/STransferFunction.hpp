@@ -46,8 +46,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::STransferFunction">
-       <in key="current" uid="..." />
-       <out key="selected" uid="..." />
+       <inout key="tf" uid="..." />
        <config useDefaultPath="true" >
            <path>....</path>
            <path>....</path>
@@ -56,13 +55,10 @@ namespace sight::module::ui::qt::image
    </service>
    @endcode
  *
- * @subsection Input Input
- * - \b current [sight::data::TransferFunction](optional): current transfer function used to change editor
+ * @subsection In-Out In-Out
+ * - \b current [sight::data::TransferFunction]: current transfer function used to change editor
  * selection. It should be the same as the output.
- *
- * @subsection Output Output
- * - \b selected [sight::data::TransferFunction]: selected transfer function.
- *
+ * *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
@@ -104,13 +100,7 @@ protected:
     /// Does nothing.
     MODULE_UI_QT_API void updating() override;
 
-    /**
-     * @brief Selects the current transfer function preset.
-     * @param _key key of the swapped data.
-     */
-    MODULE_UI_QT_API void swapping(std::string_view _key) override;
-
-    /// Destroyes the UI.
+    /// Destroys the UI.
     MODULE_UI_QT_API void stopping() override;
 
 private:
@@ -232,10 +222,8 @@ private:
 
     std::map<std::string, sight::data::TransferFunction::sptr> m_tfPresets;
 
-    static constexpr std::string_view s_CURRENT_INPUT = "current";
-
-    data::ptr<data::TransferFunction, data::Access::in> m_currentTF {this, s_CURRENT_INPUT, false, true};
-    data::ptr<data::TransferFunction, data::Access::out> m_selectedTF {this, "selected"};
+    static constexpr std::string_view s_CURRENT_INPUT = "tf";
+    data::ptr<data::TransferFunction, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, false, true};
 };
 
 } // namespace sight::module::ui::qt::image.

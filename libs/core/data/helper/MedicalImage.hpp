@@ -27,11 +27,11 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/NumericRoundCast.hxx>
 
-#include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/PointList.hpp>
 #include <data/thread/RegionThreader.hpp>
+#include <data/TransferFunction.hpp>
 #include <data/Vector.hpp>
 
 #include <optional>
@@ -126,7 +126,7 @@ void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max
  * If the image has not transfer functions, the pool is
  * created and a grey level transfer function is added.
  */
-DATA_API bool checkTransferFunctionPool(const data::Image::sptr& _img);
+DATA_API bool updateDefaultTransferFunction(data::Image& _img);
 
 // Getter/Setter for specific image fields
 
@@ -256,7 +256,7 @@ DATA_API void setLabel(data::Image& _image, const std::string& _label);
  * @param _image : input image reference.
  * @return data::Composite::sptr containing transfer function, can be null.
  */
-DATA_API data::Composite::sptr getTransferFunction(const data::Image& _image);
+DATA_API data::TransferFunction::sptr getTransferFunction(const data::Image& _image);
 
 /**
  * @brief Helper function to set transfer function on medical image.
@@ -265,7 +265,7 @@ DATA_API data::Composite::sptr getTransferFunction(const data::Image& _image);
  * @param _cmp : data::Composite::sptr containing transfer function.
  * @return DATA_API
  */
-DATA_API void setTransferFunction(data::Image& _image, const data::Composite::sptr& _cmp);
+DATA_API void setTransferFunction(data::Image& _image, const data::TransferFunction::sptr& _cmp);
 
 // ------------------------------------------------------------------------------
 

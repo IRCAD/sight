@@ -70,7 +70,7 @@
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
             <object uid="landmarks" type="sight::data::Landmarks" />
 
-            <object uid="volumeTF" type="sight::data::TransferFunction" src="deferred" />
+            <object uid="volumeTF" type="sight::data::TransferFunction" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -182,11 +182,13 @@
                     <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
+                        <view proportion="0" />
                         <spacer />
                     </layout>
                 </gui>
                 <registry>
                     <view wid="TFCfgParameterView" />
+                    <view sid="transparencyParameterSrv" start="true" />
                 </registry>
             </service>
 
@@ -198,7 +200,6 @@
                         <menuItem name="Show organs manager" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
                         <menuItem name="Show landmarks manager" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
                         <menuItem name="Show light manager" icon="sight::module::ui::flaticons/Light.svg" style="check" />
-                        <menuItem name="Show extruded meshes manager" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
                         <spacer/>
                         <menuItem name="Close parameters" icon="sight::module::ui::flaticons/YellowRightChevron.svg" />
                     </layout>
@@ -209,7 +210,6 @@
                     <menuItem sid="organsManagerAct" start="true" />
                     <menuItem sid="landmarksManagerAct" start="true" />
                     <menuItem sid="lightManagerAct" start="true" />
-                    <menuItem sid="extrudedMeshesManagerAct" start="true" />
                     <menuItem sid="hideParameterAct" start="true" />
                 </registry>
             </service>
@@ -376,17 +376,6 @@
                 </config>
             </service>
 
-            <service uid="extrudedMeshesManagerAct" type="sight::module::ui::base::SModifyLayout" >
-                <config>
-                    <hide sid="volumeParameterView" />
-                    <hide sid="TFParameterView" />
-                    <hide wid="organsParameterView" />
-                    <hide sid="landmarksParameterView" />
-                    <hide sid="lightParameterView" />
-                    <show wid="extrudedMeshesParameterView" />
-                </config>
-            </service>
-
             <!-- Show or hide the parameter view -->
             <service uid="hideParameterAct" type="sight::module::ui::base::SAction" />
 
@@ -467,9 +456,10 @@
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
+                <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
                 <inout key="modelSeries" uid="modelSeries" optional="true"/>
                 <inout key="image" uid="image" optional="true"/>
-                <inout key="volumeTF" uid="volumeTF" optional="true" />
+                <inout key="volumeTF" uid="volumeTF" />
                 <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
                 <inout key="landmarks" uid="landmarks" />
             </service>
@@ -479,7 +469,7 @@
                 <appConfig id="TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout key="image" uid="image" />
-                <inout key="currentTF" uid="volumeTF" optional="true" />
+                <inout key="currentTF" uid="volumeTF" />
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >
@@ -540,6 +530,13 @@
 
             <service uid="lightEditorSrv" type="sight::module::ui::viz::SLightEditor" />
 
+            <!-- Transparency for the 3D negato -->
+            <service uid="transparencyParameterSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="double" name="Negatoscope transparency" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider"/>
+                </parameters>
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
 
             <connect channel="NEGATO_VIEW_SENDER_CHANNEL" >
@@ -588,6 +585,10 @@
 
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >
                 <signal>axisVisibilityAct/triggered</signal>
+            </connect>
+
+            <connect channel="NEGATO3D_TRANSPARENCY_CHANNEL" >
+                <signal>transparencyParameterSrv/doubleChanged</signal>
             </connect>
 
             <connect>
@@ -668,7 +669,6 @@
                 <slot>organsManagerAct/uncheck</slot>
                 <slot>landmarksManagerAct/uncheck</slot>
                 <slot>lightManagerAct/uncheck</slot>
-                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
@@ -678,7 +678,6 @@
                 <slot>organsManagerAct/uncheck</slot>
                 <slot>landmarksManagerAct/uncheck</slot>
                 <slot>lightManagerAct/uncheck</slot>
-                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
@@ -688,7 +687,6 @@
                 <slot>organsManagerAct/check</slot>
                 <slot>landmarksManagerAct/uncheck</slot>
                 <slot>lightManagerAct/uncheck</slot>
-                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
@@ -698,7 +696,6 @@
                 <slot>organsManagerAct/uncheck</slot>
                 <slot>landmarksManagerAct/check</slot>
                 <slot>lightManagerAct/uncheck</slot>
-                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
@@ -708,17 +705,14 @@
                 <slot>organsManagerAct/uncheck</slot>
                 <slot>landmarksManagerAct/uncheck</slot>
                 <slot>lightManagerAct/check</slot>
-                <slot>extrudedMeshesManagerAct/uncheck</slot>
             </connect>
 
             <connect>
-                <signal>extrudedMeshesManagerAct/updated</signal>
                 <slot>volumeManagerAct/uncheck</slot>
                 <slot>TFManagerAct/uncheck</slot>
                 <slot>organsManagerAct/uncheck</slot>
                 <slot>landmarksManagerAct/uncheck</slot>
                 <slot>lightManagerAct/uncheck</slot>
-                <slot>extrudedMeshesManagerAct/check</slot>
             </connect>
 
             <!-- Manage landmarks -->

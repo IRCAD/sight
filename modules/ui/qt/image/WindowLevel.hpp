@@ -26,9 +26,9 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <data/helper/TransferFunction.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -114,9 +114,6 @@ protected:
     /// Destroys the layout.
     void stopping() final;
 
-    /// Selects the current tf.
-    void swapping(std::string_view) final;
-
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
@@ -133,7 +130,7 @@ protected:
     MODULE_UI_QT_API void info(std::ostream& _sstream) final;
 
     /// Slot: Updates the slider position
-    MODULE_UI_QT_API virtual void updateTF();
+    MODULE_UI_QT_API void updateTF();
 
 protected Q_SLOTS:
 
@@ -188,13 +185,11 @@ private:
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     data::TransferFunction::sptr m_previousTF;
 
-    data::helper::TransferFunction m_helperTF;
-
     static constexpr std::string_view s_IMAGE = "image";
     static constexpr std::string_view s_TF    = "tf";
 
-    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE};
-    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF, false, true};
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE, true};
+    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF, true};
 };
 
 } // uiImageQt

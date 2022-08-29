@@ -26,6 +26,7 @@
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <service/registry/Proxy.hpp>
 
@@ -225,6 +226,7 @@ void Plugin::start()
     // Objects declaration
     auto imageSeries = data::ImageSeries::New();
     auto snapshot    = data::Image::New();
+    auto tf          = data::TransferFunction::createDefaultTF();
 
     /* **************************************************************************************
     *              GUI configuration
@@ -507,6 +509,7 @@ void Plugin::start()
     extractImage->setInput(imageSeries, "imageSeries");
     mesher50->setInput(imageSeries, "imageSeries");
     mesher80->setInput(imageSeries, "imageSeries");
+    imageAdaptor->setInOut(tf, "tf");
 
     modelSeriesWriter->setObjectId("data", s_MODEL_SERIES_ID);
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);

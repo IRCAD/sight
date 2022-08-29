@@ -18,6 +18,7 @@
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
+        <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
@@ -30,7 +31,7 @@
 
         <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
         <object uid="${image}" type="sight::data::Image" src="deferred" />
-        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="deferred" />
+        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
@@ -271,14 +272,14 @@
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
-            <inout key="image" uid="extrudedImage" autoConnect="true" />
-            <inout key="tf" uid="${volumeTF}" />
-            <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="true" />
+            <in key="image" uid="extrudedImage" />
+            <in key="tf" uid="${volumeTF}" />
+            <inout key="clippingMatrix" uid="clippingMatrix" />
             <config layer="defaultLayer" widgets="false" preintegration="false" autoresetcamera="false" samples="1024" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
-            <inout key="image" uid="${image}" autoConnect="true" />
+            <in key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
@@ -289,7 +290,7 @@
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
@@ -340,18 +341,18 @@
             <config layer="axialNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${volumeTF}" />
+        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" >
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
         <service uid="axialNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" priority="0" orientation="axial" />
@@ -387,18 +388,18 @@
             <config layer="sagittalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${volumeTF}" />
+        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" >
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" sliceIndex="sagittal" filtering="anisotropic" />
         </service>
 
         <service uid="sagittalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" priority="0" orientation="sagittal" />
@@ -434,18 +435,18 @@
             <config layer="frontalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${volumeTF}" />
+        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" >
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" sliceIndex="frontal" filtering="anisotropic" />
         </service>
 
         <service uid="frontalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" priority="0" orientation="frontal" />
@@ -613,6 +614,10 @@
             <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
         </connect>
 
+        <connect channel="${NEGATO3D_TRANSPARENCY_CHANNEL}" >
+            <slot>3DNegatoAdp/setTransparency</slot>
+        </connect>
+
         <!-- Slide view -->
         <connect>
             <signal>mainView/started</signal>
@@ -683,7 +688,6 @@
         <start uid="modeSeriesAdp" />
         <start uid="extrudedMeshesAdp" />
         <start uid="volumeAdp" />
-        <start uid="3DNegatoAdp" />
         <start uid="landmarksAdp" />
         <start uid="multiDistancesAdp" />
         <start uid="axisAdp" />
@@ -694,12 +698,17 @@
         <start uid="snapshotAdp" />
         <start uid="orientationMarkerAdp" />
 
+        <start uid="axialNegatoCameraAdp" />
+        <start uid="frontalNegatoCameraAdp" />
+        <start uid="sagittalNegatoCameraAdp" />
+
+        <start uid="3DNegatoAdp" />
+
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />
         <start uid="axialNegatoAdp" />
         <start uid="axialNegatoMultiDistancesAdp" />
-        <start uid="axialNegatoCameraAdp" />
         <start uid="axialNegatoResizeViewportAdp" />
         <start uid="axialPickerInteractorAdp" />
         <start uid="axialLandmarksAdp" />
@@ -708,7 +717,6 @@
         <start uid="sagittalCompositorAdp" />
         <start uid="sagittalNegatoAdp" />
         <start uid="sagittalNegatoMultiDistancesAdp" />
-        <start uid="sagittalNegatoCameraAdp" />
         <start uid="sagittalNegatoResizeViewportAdp" />
         <start uid="sagittalPickerInteractorAdp" />
         <start uid="sagittalLandmarksAdp" />
@@ -717,7 +725,6 @@
         <start uid="frontalCompositorAdp" />
         <start uid="frontalNegatoAdp" />
         <start uid="frontalNegatoMultiDistancesAdp" />
-        <start uid="frontalNegatoCameraAdp" />
         <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />

@@ -24,16 +24,11 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-
-#include <data/Float.hpp>
-#include <data/helper/TransferFunction.hpp>
-
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Plane.hpp>
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
 #include <OGRE/OgreManualObject.h>
@@ -53,7 +48,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b newImage(): update the image display to show the new content.
  * - \b sliceType(int, int): update image slice index .
  * - \b sliceIndex(int, int, int): update image slice type.
- * - \b updateOpacity(): sets the planes's opacity.
+ * - \b setTransparency(double): sets the global transparency of the three image planes.
  * - \b updateVisibility(bool): sets whether the negato is shown or not.
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
@@ -64,15 +59,17 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato3D">
-        <inout key="image" uid="..." />
+        <in key="image" uid="..." />
         <inout key="tf" uid="..." />
         <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out:
+ * @subsection Input Input:
  * - \b image [sight::data::Image]: image to display.
- * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *
+ * @subsection In-Out In-Out:
+ * - \b tf [sight::data::TransferFunction]: the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -129,12 +126,6 @@ protected:
 
     /// Requests rendering of the scene.
     MODULE_VIZ_SCENE3D_API void updating() override;
-
-    /**
-     * @brief Notifies that the TF is swapped.
-     * @param _key key of the swapped data.
-     */
-    MODULE_VIZ_SCENE3D_API void swapping(std::string_view key) override;
 
     /// Stops the service, disconnects connections.
     MODULE_VIZ_SCENE3D_API void stopping() override;
@@ -229,7 +220,7 @@ private:
     void createPlanes(const Ogre::Vector3& _spacing, const Ogre::Vector3& _origin);
 
     /// SLOT: sets the planes's opacity.
-    void setPlanesOpacity();
+    void setTransparency(double _transparency);
 
     /// Sets the picking flags on all three negato planes.
     void setPlanesQueryFlags(std::uint32_t _flags);
@@ -253,10 +244,10 @@ private:
     int m_priority {1};
 
     /// Contains the ogre texture which will be displayed on the negato.
-    Ogre::TexturePtr m_3DOgreTexture {nullptr};
+    sight::viz::scene3d::Texture::sptr m_3DOgreTexture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF {nullptr};
+    sight::viz::scene3d::TransferFunction::uptr m_gpuTF {nullptr};
 
     /// Stores the planes on which we will apply our texture.
     std::array<sight::viz::scene3d::Plane::sptr, 3> m_planes;
@@ -272,9 +263,6 @@ private:
 
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
-
-    /// Helps interfacing with the transfer function input.
-    data::helper::TransferFunction m_helperTF;
 
     /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow {0.f};
@@ -295,11 +283,11 @@ private:
     using PickedVoxelSigType = core::com::Signal<void (std::string)>;
     PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+    static constexpr std::string_view s_IMAGE_IN = "image";
+    data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE_IN, true};
 
     static constexpr std::string_view s_TF_INOUT = "tf";
-    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
+    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

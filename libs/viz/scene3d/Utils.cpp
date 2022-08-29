@@ -746,18 +746,18 @@ void Utils::loadOgreTexture(
 //------------------------------------------------------------------------------
 
 template<typename SRC_TYPE, typename DST_TYPE>
-void copyNegatoImage(Ogre::Texture* _texture, const data::Image::sptr& _image)
+void copyGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image)
 {
     // Get the pixel buffer
     Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
 
     // Lock the pixel buffer and copy it
     {
-        const auto dumpLock = _image->dump_lock();
+        const auto dumpLock = _image.dump_lock();
 
         typedef typename std::make_unsigned<DST_TYPE>::type unsignedType;
 
-        auto srcBuffer = static_cast<const SRC_TYPE*>(_image->getBuffer());
+        auto srcBuffer = static_cast<const SRC_TYPE*>(_image.getBuffer());
 
         pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
@@ -786,21 +786,21 @@ void copyNegatoImage(Ogre::Texture* _texture, const data::Image::sptr& _image)
 
 //------------------------------------------------------------------------------
 
-void Utils::convertImageForNegato(Ogre::Texture* _texture, const data::Image::sptr& _image)
+void Utils::loadGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image)
 {
     // Allocate texture memory.
-    if(_texture->getWidth() != _image->getSize()[0]
-       || _texture->getHeight() != _image->getSize()[1]
-       || _texture->getDepth() != _image->getSize()[2]
+    if(_texture->getWidth() != _image.getSize()[0]
+       || _texture->getHeight() != _image.getSize()[1]
+       || _texture->getDepth() != _image.getSize()[2]
        || _texture->getTextureType() != Ogre::TEX_TYPE_3D
        || _texture->getFormat() != Ogre::PF_L16
        || _texture->getUsage() != Ogre::TU_STATIC_WRITE_ONLY)
     {
         viz::scene3d::Utils::allocateTexture(
             _texture,
-            _image->getSize()[0],
-            _image->getSize()[1],
-            _image->getSize()[2],
+            _image.getSize()[0],
+            _image.getSize()[1],
+            _image.getSize()[2],
             Ogre::PF_L16,
             Ogre::TEX_TYPE_3D,
             false
@@ -808,18 +808,18 @@ void Utils::convertImageForNegato(Ogre::Texture* _texture, const data::Image::sp
     }
 
     // Fill the texture buffer.
-    const auto srcType = _image->getType();
+    const auto srcType = _image.getType();
     if(srcType == core::Type::INT16)
     {
-        copyNegatoImage<std::int16_t, std::int16_t>(_texture, _image);
+        copyGrayscaleImage<std::int16_t, std::int16_t>(_texture, _image);
     }
     else if(srcType == core::Type::INT32)
     {
-        copyNegatoImage<std::int32_t, std::int16_t>(_texture, _image);
+        copyGrayscaleImage<std::int32_t, std::int16_t>(_texture, _image);
     }
     else if(srcType == core::Type::UINT8)
     {
-        copyNegatoImage<std::uint8_t, std::int16_t>(_texture, _image);
+        copyGrayscaleImage<std::uint8_t, std::int16_t>(_texture, _image);
     }
     else
     {

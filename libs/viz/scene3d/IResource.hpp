@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2015-2022 IRCAD France
- * Copyright (C) 2015-2020 IHU Strasbourg
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,49 @@
  *
  ***********************************************************************/
 
-#include "viz/scene3d/TransferFunction.hpp"
+#pragma once
 
-#include <viz/scene3d/detail/TFManager.hpp>
+#include "viz/scene3d/config.hpp"
+
+#include <viz/scene3d/detail/IResourceManager.hpp>
+
+#include <boost/noncopyable.hpp>
 
 namespace sight::viz::scene3d
 {
 
+/**
+ * @brief Represents and manages a transfer function from a GPU point of view
+ */
+template<class OBJECT, class RESOURCE, class IMPL>
+class VIZ_SCENE3D_CLASS_API IResource : public boost::noncopyable
+{
+public:
+
+    using sptr = std::shared_ptr<IMPL>;
+    using wptr = std::weak_ptr<IMPL>;
+    using uptr = std::unique_ptr<IMPL>;
+
+    virtual ~IResource() = default;
+
+    /// Update the TF resource according to the transfer function data.
+    virtual void update() = 0;
+
+    /// Return the Ogre resource.
+    Ogre::SharedPtr<RESOURCE> get() const;
+
+protected:
+
+    /// Shared resource
+    Ogre::SharedPtr<RESOURCE> m_resource;
+};
+
 //-----------------------------------------------------------------------------
 
-TransferFunction::TransferFunction(const data::TransferFunction::csptr& _tf, const std::string& suffixId)
+template<class OBJECT, class RESOURCE, class IMPL>
+inline Ogre::SharedPtr<RESOURCE> IResource<OBJECT, RESOURCE, IMPL>::get() const
 {
-    m_resource = detail::TFManager::get()->instantiate(_tf, suffixId);
-}
-
-//-----------------------------------------------------------------------------
-
-TransferFunction::~TransferFunction()
-{
-    if(m_resource)
-    {
-        detail::TFManager::get()->release(m_resource);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void TransferFunction::update()
-{
-    auto&& [_, tfWindow] = viz::scene3d::detail::TFManager::get()->load(m_resource);
-    m_tfWindow           = std::any_cast<Ogre::Vector3>(tfWindow);
+    return m_resource;
 }
 
 //-----------------------------------------------------------------------------

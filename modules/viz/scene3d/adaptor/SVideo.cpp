@@ -41,7 +41,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -193,6 +192,11 @@ void SVideo::starting()
 
         SIGHT_ASSERT("SPointList is not started", m_pointListAdaptor->isStarted());
     }
+
+    {
+        const auto image = m_image.lock();
+        m_texture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -221,26 +225,12 @@ void SVideo::updating()
     this->getRenderService()->makeCurrent();
 
     // Getting Sight Image
-    const auto imageSight = m_image.lock();
+    const auto image = m_image.lock();
 
-    auto type = imageSight->getType();
+    auto type = image->getType();
 
     if(!m_isTextureInit || type != m_previousType)
     {
-        // /////////////////////////////////////////////////////////////////////
-        // Create the appropriate material according to the texture format
-        // /////////////////////////////////////////////////////////////////////
-        if(!m_texture)
-        {
-            auto texture = Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
-                this->getID() + "_VideoTexture",
-                sight::viz::scene3d::RESOURCE_GROUP,
-                true
-            ).first;
-
-            m_texture = Ogre::dynamic_pointer_cast<Ogre::Texture>(texture);
-        }
-
         auto& mtlMgr  = Ogre::MaterialManager::getSingleton();
         const auto tf = m_tf.lock();
 
@@ -278,22 +268,20 @@ void SVideo::updating()
         SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
         Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
         SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
-        tus->setTexture(m_texture);
+        tus->setTexture(m_texture->get());
 
         if(tf)
         {
             // TF texture initialization
-            m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>();
-            m_gpuTF->createTexture(this->getID());
-
+            m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>(tf.get_shared());
             this->updateTF();
         }
 
         m_previousType = type;
     }
 
-    const data::Image::Size size = imageSight->getSize();
-    sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, Ogre::TEX_TYPE_2D, true);
+    const data::Image::Size size = image->getSize();
+    sight::viz::scene3d::Utils::loadOgreTexture(image.get_shared(), m_texture->get(), Ogre::TEX_TYPE_2D, true);
 
     const auto layer                     = this->getLayer();
     const Ogre::Viewport* const viewport = layer->getViewport();
@@ -387,8 +375,8 @@ void SVideo::stopping()
 
     this->clearEntity();
 
-    m_material.reset();
     m_texture.reset();
+    m_material.reset();
     m_gpuTF.reset();
 
     m_isTextureInit = false;
@@ -412,9 +400,7 @@ void SVideo::updateTF()
 {
     if(m_gpuTF)
     {
-        const auto tf = m_tf.lock();
-
-        m_gpuTF->updateTexture(tf.get_shared());
+        m_gpuTF->update();
 
         Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
         m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());

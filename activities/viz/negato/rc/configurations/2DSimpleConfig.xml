@@ -8,6 +8,7 @@
     <config>
         <object uid="${objectID}" type="sight::data::ImageSeries" src="ref" />
         <object uid="image" type="sight::data::Image" src="deferred" />
+        <object uid="tf" type="sight::data::TransferFunction" />
         <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
@@ -38,11 +39,13 @@
 
         <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="image" />
+            <inout key="tf" uid="tf" />
             <config layer="default" priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
-            <inout key="image" uid="image" />
+            <in key="image" uid="image" />
+            <in key="tf" uid="tf" />
             <config layer="default" autoresetcamera="true" sliceIndex="${orientation}" />
         </service>
 
