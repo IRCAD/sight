@@ -20,6 +20,14 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <service uid="videoToolbarConfig" type="sight::service::SConfigController">
+                <appConfig id="sight::config::io::video::Toolbar" />
+
+                <inout key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+                <parameter replace="TOOLBAR" by="subToolbarView" />
+            </service>
+
             <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
@@ -38,11 +46,6 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <separator />
                         <menuItem name="Frame recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
                         <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg"  style="check"  />
@@ -52,12 +55,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="true" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="resumeVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="loopVideoAct" start="true" />
+                    <editor wid="subToolbarView" />
                     <menuItem sid="frameRecordingAct" start="true" />
                     <menuItem sid="videoRecordingAct" start="true" />
                     <editor sid="parametersSrv" start="true" />
@@ -75,31 +73,6 @@
             </service>
 
             <!-- ************************************* Action ************************************ -->
-
-            <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
-                <state enabled="false" />
-            </service>
-
-            <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
-                <state visible="false" />
-            </service>
-
-            <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
-                <state visible="false" />
-            </service>
-
-            <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
-                <state enabled="false" />
-            </service>
-
-            <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
-                <state enabled="false" />
-            </service>
 
             <service uid="frameRecordingAct" type="sight::module::ui::base::com::STimestampSignal">
                 <useSystemClock>true</useSystemClock>
@@ -145,16 +118,6 @@
                 <file>video.mp4</file>
             </service>
 
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
-                <inout key="camera" uid="camera" />
-                <videoSupport>true</videoSupport>
-            </service>
-
-            <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy" >
-                <in key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
-            </service>
-
             <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL" />
@@ -166,72 +129,6 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
-
-            <connect>
-                <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/startCamera</slot>
-            </connect>
-
-            <connect>
-                <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
-                <slot>resumeVideoAct/show</slot>
-                <slot>pauseVideoAct/hide</slot>
-            </connect>
-
-            <connect>
-                <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pauseCamera</slot>
-                <slot>resumeVideoAct/hide</slot>
-                <slot>pauseVideoAct/show</slot>
-            </connect>
-
-            <connect>
-                <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
-                <slot>startVideoAct/show</slot>
-                <slot>resumeVideoAct/hide</slot>
-                <slot>pauseVideoAct/hide</slot>
-                <slot>stopVideoAct/disable</slot>
-                <slot>loopVideoAct/disable</slot>
-                <slot>loopVideoAct/uncheck</slot>
-            </connect>
-
-            <connect>
-                <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loopVideo</slot>
-            </connect>
-
-            <connect>
-                <signal>videoSelectorSrv/configuredCameras</signal>
-                <slot>videoGrabberSrv/reconfigure</slot>
-            </connect>
-
-            <connect>
-                <signal>videoSelectorSrv/configuredFile</signal>
-                <signal>videoSelectorSrv/configuredStream</signal>
-                <signal>videoSelectorSrv/configuredDevice</signal>
-                <slot>startVideoAct/update</slot>
-            </connect>
-
-            <connect>
-                <signal>videoGrabberSrv/cameraStarted</signal>
-                <slot>pauseVideoAct/show</slot>
-                <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/enable</slot>
-                <slot>loopVideoAct/enable</slot>
-            </connect>
-
-            <connect>
-                <signal>camera/idModified</signal>
-                <slot>videoGrabberSrv/stopCamera</slot>
-            </connect>
-
-            <connect>
-                <signal>camera/modified</signal>
-                <slot>startVideoAct/enable</slot>
-                <slot>stopVideoAct/update</slot>
-            </connect>
 
             <connect>
                 <signal>parametersSrv/enumChanged</signal>
@@ -261,7 +158,7 @@
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="videoGrabberSrv" />
+            <start uid="videoToolbarConfig" />
             <start uid="frameUpdaterSrv" />
             <start uid="frameWriterSrv" />
             <start uid="videoWriterSrv" />
