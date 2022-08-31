@@ -117,6 +117,7 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
         QWidget* widget = m_parent->getQtContainer();
         SIGHT_ASSERT("Parent container must have a layout", widget->layout());
         QBoxLayout* layout = qobject_cast<QBoxLayout*>(widget->layout());
+
         switch(m_alignment)
         {
             case TOP:
@@ -141,6 +142,7 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
         }
 
         SIGHT_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
+        layout->setSpacing(0);
         layout->insertWidget(0, toolBar, 0);
     }
 

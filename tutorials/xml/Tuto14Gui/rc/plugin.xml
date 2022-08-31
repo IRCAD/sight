@@ -4,6 +4,52 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
+    <!-- This is a sub-config to exhibit how to integrate "subToolBars" -->
+    <extension implements="sight::service::extension::AppConfig" >
+        <id>SubToolBarCfg</id>
+        <parameters>
+            <param name="TOOLBAR" />
+            <param name="LOGO_VISIBILITY_CHANNEL" />
+        </parameters>
+        <config>
+
+            <service uid="view" type="sight::module::ui::base::SView" >
+                <gui>
+                    <toolBar />
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${TOOLBAR}" />
+                    <toolBar sid="toolBarView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout style="ToolButtonTextUnderIcon" >
+                        <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="view5VisibilityAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="view5VisibilityAct" type="sight::module::ui::base::SAction" >
+                <state checked="true" inverse="true" />
+            </service>
+
+            <connect channel="${LOGO_VISIBILITY_CHANNEL}">
+                <signal>view5VisibilityAct/isChecked</signal>
+            </connect>
+
+            <start uid="view" />
+
+        </config>
+    </extension>
+
     <extension implements="sight::service::extension::AppConfig" >
     <id>Tuto14Gui_AppCfg</id>
         <config>
@@ -23,9 +69,7 @@
         <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
             <gui>
                 <menuBar />
-                <toolBar >
-                    <toolBitmapSize height= "32" width="32" />
-                </toolBar>
+                <toolBar />
                 <frame>
                     <name>Tuto14Gui</name>
                     <icon>Tuto14Gui/tuto.ico</icon>
@@ -110,7 +154,7 @@
                     <separator />
                     <menuItem name="start 2-3 / stop A-B" style="radio" icon="Tuto14Gui/icons/important.png" />
                     <menuItem name="start A-B / stop 2-3" style="radio" icon="Tuto14Gui/icons/important.png" />
-                    <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
+                    <editor />
                     <spacer/>
                     <menu name="Test Hide/Show" start="true" />
                     <menuItem name="Quit" icon="sight::module::ui::flaticons/RedCross.svg" />
@@ -127,7 +171,7 @@
                 <menuItem sid="item5Act" start="false" />
                 <menuItem sid="item16Act" start="true" />
                 <menuItem sid="item17Act" start="true" />
-                <menuItem sid="view5VisibilityAct" start="true" />
+                <editor wid="subToolBarView" />
                 <menu sid="testHideShowView" start="true" />
                 <menuItem sid="quitAct" start="true" />
             </registry>
@@ -311,10 +355,6 @@
             <state checked="true" visible="false" />
         </service>
 
-        <service uid="view5VisibilityAct" type="sight::module::ui::base::SAction" >
-            <state checked="true" inverse="true" />
-        </service>
-
         <service uid="item16Act" type="sight::module::ui::base::com::SStarter" >
             <state checked="true" />
             <start uid="item2Act" />
@@ -366,6 +406,12 @@
 
         <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
+        <service uid="subToolBarConfig" type="sight::service::SConfigController">
+            <appConfig id="SubToolBarCfg" />
+            <parameter replace="TOOLBAR" by="subToolBarView" />
+            <parameter replace="LOGO_VISIBILITY_CHANNEL" by="LOGO_VISIBILITY_CHANNEL" />
+        </service>
+
         <!-- ******************************* Connections ***************************************** -->
 
         <!-- check button "Check" when button "Click" is clicked  -->
@@ -380,8 +426,7 @@
             <slot>checkableSrv/uncheck</slot>
         </connect>
 
-        <connect>
-            <signal>view5VisibilityAct/isChecked</signal>
+        <connect channel="LOGO_VISIBILITY_CHANNEL">
             <slot>sub5View/setVisible</slot>
         </connect>
 
@@ -409,6 +454,7 @@
 
         <start uid="mainFrame" />
         <start uid="sub1View" />
+        <start uid="subToolBarConfig" />
 
         </config>
     </extension>

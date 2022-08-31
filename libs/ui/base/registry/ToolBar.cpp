@@ -166,9 +166,7 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
     {
         SIGHT_ASSERT(
             "[" + m_sid + "] <editor> tag must have sid attribute",
-            editor->hasAttribute(
-                "sid"
-            ) || editor->hasAttribute("wid")
+            editor->hasAttribute("sid") || editor->hasAttribute("wid")
         );
         if(editor->hasAttribute("sid"))
         {
