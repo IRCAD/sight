@@ -38,7 +38,7 @@ namespace itk
 
 //------------------------------------------------------------------------------
 
-void InrImageIOFactory::PrintSelf(std::ostream&, Indent) const
+void InrImageIOFactory::PrintSelf(std::ostream& /*os*/, Indent /*indent*/) const
 {
 }
 
@@ -50,7 +50,7 @@ InrImageIOFactory::InrImageIOFactory()
         "itkImageIOBase",
         "InrImageIO",
         "InrImage IO",
-        1,
+        true,
         CreateObjectFunction<InrImageIO>::New()
     );
 }
@@ -58,12 +58,11 @@ InrImageIOFactory::InrImageIOFactory()
 //------------------------------------------------------------------------------
 
 InrImageIOFactory::~InrImageIOFactory()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-const char* InrImageIOFactory::GetITKSourceVersion(void) const
+const char* InrImageIOFactory::GetITKSourceVersion() const
 {
     return ITK_SOURCE_VERSION;
 }

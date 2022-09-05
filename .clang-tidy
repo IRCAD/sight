@@ -1,4 +1,52 @@
 ---
-Checks: '*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-bugprone-macro-parentheses,-cppcoreguidelines-macro-usage,-modernize-use-trailing-return-type,-misc-non-private-member-variables-in-classes,-cppcoreguidelines-non-private-member-variables-in-classes,-modernize-use-using,-bugprone-reserved-identifier'
-HeaderFilterRegex: '.*/sight/.*'
+Checks: '*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-modernize-use-trailing-return-type,-misc-non-private-member-variables-in-classes,-google-readability-namespace-comments,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,-google-readability-todo,-cppcoreguidelines-special-member-functions,-hicpp-special-member-functions,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-altera-unroll-loops,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-avoid-non-const-global-variables,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-google-default-arguments,-altera-id-dependent-backward-branch,-cppcoreguidelines-pro-type-reinterpret-cast,-cert-err58-cpp,-bugprone-easily-swappable-parameters,-cppcoreguidelines-owning-memory,-misc-no-recursion,-concurrency-mt-unsafe,-abseil-*,-clang-analyzer-cplusplus.NewDelete,-bugprone-exception-escape,-cppcoreguidelines-pro-type-static-cast-downcast,-cppcoreguidelines-pro-type-union-access,-readability-redundant-access-specifiers,-readability-function-cognitive-complexity,-clang-analyzer-cplusplus.NewDeleteLeaks,-android-cloexec-fopen,-hicpp-signed-bitwise,-bugprone-unhandled-exception-at-new,-openmp-use-default-none,-performance-no-int-to-ptr,-clang-diagnostic-*,-google-readability-casting,-readability-identifier-length,-clang-analyzer-cplusplus.StringChecker,-readability-redundant-string-cstr,-performance-unnecessary-value-param'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '^((?!/3rd-party/|/patch/).)*$'
+CheckOptions:
+    - key: readability-simplify-boolean-expr.ChainedConditionalReturn
+      value: true
+    - key: readability-simplify-boolean-expr.ChainedConditionalAssignment
+      value: true
+    - key: google-runtime-int.UnsignedTypePrefix
+      value: std::uint
+    - key: google-runtime-int.SignedTypePrefix
+      value: std::int
+    - key: google-runtime-int.TypeSuffix
+      value: _t
+    - key: cppcoreguidelines-init-variables.MathHeader
+      value: <cmath>
+    - key: modernize-loop-convert.MinConfidence
+      value: risky
+    - key: bugprone-misplaced-widening-cast.CheckImplicitCasts
+      value: true
+    - key: performance-inefficient-string-concatenation.StrictMode
+      value: true
+    - key: cppcoreguidelines-macro-usage.AllowedRegexp
+      value: ^ASSERT*
+    - key: cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+      value: true
+    - key: bugprone-assert-side-effect.AssertMacros
+      value: SIGHT_ASSERT
+    - key: bugprone-sizeof-expression.WarnOnSizeOfIntegerExpression
+      value: true
+    - key: bugprone-suspicious-enum-usage.StrictMode
+      value: 1
+    - key: readability-identifier-naming.ClassCase
+      value: CamelCase
+    - key: readability-identifier-naming.NamespaceCase
+      value: camelBack
+    - key: readability-identifier-naming.FunctionCase
+      value: camelBack
+    - key: readability-identifier-naming.MethodCase
+      value: camelBack
+    - key: readability-identifier-naming.MethodIgnoredRegexp
+      value: New
+    - key: readability-identifier-naming.PrivateMemberCase
+      value: camelBack
+    - key: readability-identifier-naming.PrivateMemberPrefix
+      value: m_
+    - key: readability-identifier-naming.EnumCase
+      value: CamelCase
+    - key: readability-identifier-naming.EnumConstantCase
+      value: UPPER_CASE
 ...

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,18 +35,15 @@
 #include <QStandardItem>
 #include <QString>
 
-namespace sight::module::ui::qt
-{
-
-namespace series
+namespace sight::module::ui::qt::series
 {
 
 //-----------------------------------------------------------------------------
 
 Selector::Selector(QWidget* _parent) :
-    QTreeView(_parent)
+    QTreeView(_parent),
+    m_model(new SelectorModel(this))
 {
-    m_model = new SelectorModel(this);
     this->setModel(m_model);
 
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -63,8 +60,7 @@ Selector::Selector(QWidget* _parent) :
 //-----------------------------------------------------------------------------
 
 Selector::~Selector()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -101,9 +97,9 @@ void Selector::selectionChanged(const QItemSelection& _selected, const QItemSele
 {
     QTreeView::selectionChanged(_selected, _deselected);
 
-    SeriesVectorType selectedSeries = this->getSeries(_selected);
+    SeriesVectorType selectedSeries = sight::module::ui::qt::series::Selector::getSeries(_selected);
 
-    SeriesVectorType deselectedSeries = this->getSeries(_deselected);
+    SeriesVectorType deselectedSeries = sight::module::ui::qt::series::Selector::getSeries(_deselected);
 
     Q_EMIT selectSeries(selectedSeries, deselectedSeries);
 }
@@ -115,7 +111,7 @@ Selector::SeriesVectorType Selector::getSeries(const QItemSelection& _selection)
     SeriesVectorType vSeries;
 
     QModelIndexList selectedIndexes = _selection.indexes();
-    vSeries = this->getSeries(selectedIndexes);
+    vSeries = sight::module::ui::qt::series::Selector::getSeries(selectedIndexes);
     return vSeries;
 }
 
@@ -306,6 +302,4 @@ void Selector::setSeriesIcons(const SeriesIconType& _seriesIcons)
 
 //-----------------------------------------------------------------------------
 
-} // namespace series.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::series

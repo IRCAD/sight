@@ -58,7 +58,7 @@ public:
     DATA_API Matrix4(Object::Key key);
 
     //! @brief destructor
-    DATA_API virtual ~Matrix4();
+    DATA_API ~Matrix4() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -119,7 +119,7 @@ public:
 protected:
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
-    TMCoefArray m_vCoefficients;
+    TMCoefArray m_vCoefficients {};
 
     static constexpr TMCoefArray s_IDENTITY = {1., 0., 0., 0.,
                                                0., 1., 0., 0.,

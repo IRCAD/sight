@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) viz::qt3d::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 VIZ_QT3D_API SPTR(viz::qt3d::IWindowInteractor) New(

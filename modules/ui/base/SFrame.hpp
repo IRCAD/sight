@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
     MODULE_UI_BASE_API SFrame() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SFrame() noexcept;
+    MODULE_UI_BASE_API ~SFrame() noexcept override;
 
 protected:
 

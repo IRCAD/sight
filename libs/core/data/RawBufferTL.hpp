@@ -48,7 +48,7 @@ public:
     DATA_API RawBufferTL(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~RawBufferTL();
+    DATA_API ~RawBufferTL() override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

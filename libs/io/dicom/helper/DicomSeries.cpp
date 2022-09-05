@@ -44,10 +44,7 @@
 #include <algorithm>
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 // Series
@@ -87,9 +84,9 @@ std::string getStringValue(
     const gdcm::Tag& tag
 )
 {
-    std::string result = "";
-    const char* value  = scanner.GetValue(filename.c_str(), tag);
-    if(value)
+    std::string result;
+    const char* value = scanner.GetValue(filename.c_str(), tag);
+    if(value != nullptr)
     {
         // Trim buffer
         result = gdcm::LOComp::Trim(value);
@@ -105,7 +102,7 @@ std::string getStringValue(
     const gdcm::Tag& tag
 )
 {
-    std::string result = "";
+    std::string result;
     if(dataset.FindDataElement(tag))
     {
         const gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
@@ -114,7 +111,7 @@ std::string getStringValue(
         {
             // Retrieve buffer
             const gdcm::ByteValue* bv = dataElement.GetByteValue();
-            if(bv)
+            if(bv != nullptr)
             {
                 std::string buffer(bv->GetPointer(), bv->GetLength());
 
@@ -130,14 +127,12 @@ std::string getStringValue(
 // ----------------------------------------------------------------------------
 
 DicomSeries::DicomSeries()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 DicomSeries::~DicomSeries()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
@@ -249,7 +244,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     readerObserver->doneWork(0);
 
     std::vector<std::string> fileVec;
-    for(auto file : filenames)
+    for(const auto& file : filenames)
     {
         fileVec.push_back(file.string());
     }
@@ -301,7 +296,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
            && mediaStorageSopClassUID
            != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
         {
-            this->createSeries(seriesDB, seriesScanner, dicomFile.second);
+            sight::io::dicom::helper::DicomSeries::createSeries(seriesDB, seriesScanner, dicomFile.second);
             previousSOPInstanceUIDs.insert(sopInstanceUID);
         }
 
@@ -310,7 +305,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
             break;
         }
 
-        readerObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / keys.size()));
+        readerObserver->doneWork(static_cast<std::uint64_t>(++progress * 100LL / keys.size()));
     }
 
     return seriesDB;
@@ -351,7 +346,7 @@ void DicomSeries::fillSeries(
         const std::size_t size = series->getDicomContainer().size();
         series->setNumberOfInstances(size);
 
-        if(!size)
+        if(size == 0U)
         {
             SIGHT_ERROR("The DicomSeries doesn't contain any instance.");
             break;
@@ -414,7 +409,7 @@ void DicomSeries::createSeries(
     std::string seriesInstanceUID = getStringValue(scanner, stringFilename, s_SeriesInstanceUIDTag);
 
     // Check if the series already exists
-    for(data::DicomSeries::sptr dicomSeries : seriesDB)
+    for(const data::DicomSeries::sptr& dicomSeries : seriesDB)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
@@ -586,6 +581,4 @@ data::Equipment::sptr DicomSeries::createEquipment(const gdcm::DataSet& dataset)
 
 //------------------------------------------------------------------------------
 
-} //helper
-
-} //fwGdcmIO
+} // namespace sight::io::dicom::helper

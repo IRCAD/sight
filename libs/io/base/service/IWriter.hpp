@@ -113,7 +113,7 @@ public:
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service does not support FILE mode
      */
-    IO_BASE_API const std::filesystem::path getFile() const;
+    IO_BASE_API std::filesystem::path getFile() const;
 
     /**
      * @brief Sets file path
@@ -139,7 +139,7 @@ public:
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FOLDER mode
      */
-    IO_BASE_API const std::filesystem::path getFolder() const;
+    IO_BASE_API std::filesystem::path getFolder() const;
 
     /**
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
@@ -196,30 +196,31 @@ public:
         {
             return DialogPolicy::NEVER;
         }
-        else if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
+
+        if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
         {
             return DialogPolicy::ONCE;
         }
-        else if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
+
+        if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
         {
             return DialogPolicy::ALWAYS;
         }
-        else if(policy.empty() || policy == "default")
+
+        if(policy.empty() || policy == "default")
         {
             return DialogPolicy::DEFAULT;
         }
-        else
-        {
-            // Error case
-            return DialogPolicy::INVALID;
-        }
+
+        // Error case
+        return DialogPolicy::INVALID;
     }
 
 protected:
 
     IO_BASE_API IWriter() noexcept;
 
-    IO_BASE_API virtual ~IWriter() noexcept;
+    IO_BASE_API ~IWriter() noexcept override;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -274,13 +275,13 @@ private:
     /// Triggers an update of the base folder, and outputs it via a reference.
     // We need to check for potential updates, notably in the case
     // where the user updates an associated preference during runtime.
-    void updateBaseFolder(std::string&) const;
+    void updateBaseFolder(std::string& /*outBaseFolder*/) const;
 
     /// Value to store file or folder paths
     io::base::service::LocationsType m_locations;
 
     /// Prefix to be inserted
-    std::string m_currentPrefix {""};
+    std::string m_currentPrefix;
 };
 
 } //namespace sight::io::base::service

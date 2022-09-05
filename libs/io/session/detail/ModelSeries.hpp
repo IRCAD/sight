@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ModelSeries
+namespace sight::io::session::detail::ModelSeries
 {
 
 constexpr static auto s_DicomReference {"DicomReference"};
@@ -106,6 +103,4 @@ inline static data::ModelSeries::sptr deserialize(
     return modelSeries;
 }
 
-} // namespace detail::ModelSeries
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ModelSeries

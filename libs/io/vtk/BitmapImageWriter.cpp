@@ -48,7 +48,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-BitmapImageWriter::BitmapImageWriter(io::base::writer::IObjectWriter::Key) :
+BitmapImageWriter::BitmapImageWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
     m_job(core::jobs::Observer::New("Bitmap image writer"))
 {
 }
@@ -56,8 +56,7 @@ BitmapImageWriter::BitmapImageWriter(io::base::writer::IObjectWriter::Key) :
 //------------------------------------------------------------------------------
 
 BitmapImageWriter::~BitmapImageWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -99,9 +98,9 @@ void BitmapImageWriter::write()
     vtkSmartPointer<io::vtk::helper::vtkLambdaCommand> progressCallback;
     progressCallback = vtkSmartPointer<io::vtk::helper::vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, std::uint64_t, void*)
         {
-            auto filter = static_cast<vtkImageWriter*>(caller);
+            auto* filter = static_cast<vtkImageWriter*>(caller);
             m_job->doneWork(static_cast<uint64_t>(filter->GetProgress() * 100.0));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);

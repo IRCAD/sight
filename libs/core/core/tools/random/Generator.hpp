@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <random>
 #include <type_traits>
 
-namespace sight::core::tools
-{
-
-namespace random
+namespace sight::core::tools::random
 {
 
 /**
@@ -89,13 +86,11 @@ void fillContainer(
 
     std::mt19937 gen(seedVal);
     DistroType dist(min, max);
-    const auto generator = std::bind(dist, gen);
+    const auto generator = [&dist, &gen](auto&& ...){return dist(gen);};
     std::generate(randContainer.begin(), randContainer.end(), generator);
 }
 
 /// This is a thread safe "std::rand" implementation
-CORE_API int safeRand(const bool reset = false);
+CORE_API int safeRand(bool reset = false);
 
-} // namespace random
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::random

@@ -42,9 +42,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3d::test::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -57,10 +56,10 @@ void Plugin::start()
     logMgr->createLog("OgreTest.log", true, false, true);
 
     // Set up context before running a test.
-    static char arg1[] = "OgreTest";
-    char* argv[]       = {arg1, nullptr};
-    int argc           = 1;
-    QGuiApplication a(argc, argv);
+    static std::string arg1 = "OgreTest";
+    std::array argv         = {arg1.data(), static_cast<char*>(nullptr)};
+    int argc                = 1;
+    QGuiApplication a(argc, argv.data());
 
     auto surface = std::make_unique<QOffscreenSurface>();
 
@@ -82,10 +81,10 @@ void Plugin::start()
     parameters["currentGLContext"] = "true";
 
     // This is needed for the TextureManager to be instanced, no better way has be found.
-    auto ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
+    auto* ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
     // Use a size > 120 because windows will anyway switch to a larger size
-    auto window = ogreRoot->createRenderWindow(
+    auto* window = ogreRoot->createRenderWindow(
         "test",
         static_cast<unsigned int>(200),
         static_cast<unsigned int>(200),

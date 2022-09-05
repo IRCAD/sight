@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,19 +20,18 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "PowellOptimizerTest.hpp"
 
 #include <filter/image/PowellOptimizer.hpp>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
+#define _USE_MATH_DEFINES // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
+#include <math.h> // NOLINT(hicpp-deprecated-headers,modernize-deprecated-headers)
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::PowellOptimizerTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +58,8 @@ void PowellOptimizerTest::parabolaTest()
 
     filter::image::PowellOptimizer optimizer(xSquared, 1e-9, 1e-9, 1.0, 200);
 
-    filter::image::PowellOptimizer::FunctionParametersType initParams(1), finalParams(1);
+    filter::image::PowellOptimizer::FunctionParametersType initParams(1);
+    filter::image::PowellOptimizer::FunctionParametersType finalParams(1);
     initParams[0] = 9.0;
     finalParams   = optimizer.optimize(initParams);
 
@@ -73,7 +73,8 @@ void PowellOptimizerTest::ackleyTest()
     filter::image::PowellOptimizer::OptimizedFunctionType ackleyFunction =
         [](const filter::image::PowellOptimizer::FunctionParametersType& p)
         {
-            const double x = p[0], y = p[1];
+            const double x   = p[0];
+            const double y   = p[1];
             const double res = -20 * std::exp(-0.2 * std::sqrt(0.5 * (x * x + y * y)))
                                - std::exp(0.5 * (std::cos(2 * M_PI * x) + std::cos(2 * M_PI * y))) + M_E + 20;
             return res;
@@ -81,7 +82,8 @@ void PowellOptimizerTest::ackleyTest()
 
     filter::image::PowellOptimizer optimizer(ackleyFunction, 1e-9, 1e-9, 1.0, 200);
 
-    filter::image::PowellOptimizer::FunctionParametersType initParams(2), finalParams(2);
+    filter::image::PowellOptimizer::FunctionParametersType initParams(2);
+    filter::image::PowellOptimizer::FunctionParametersType finalParams(2);
     initParams[0] = 1.0;
     initParams[1] = 1.5;
 
@@ -111,7 +113,8 @@ void PowellOptimizerTest::sphereFunctionTest()
     filter::image::PowellOptimizer optimizer(sphereFunction, 1e-9, 1e-9, 1.0, 200);
 
     // 2D sphere function test.
-    filter::image::PowellOptimizer::FunctionParametersType initParams(2), finalParams(2);
+    filter::image::PowellOptimizer::FunctionParametersType initParams(2);
+    filter::image::PowellOptimizer::FunctionParametersType finalParams(2);
     initParams[0] = 1.0;
     initParams[1] = 1.5;
 
@@ -121,7 +124,8 @@ void PowellOptimizerTest::sphereFunctionTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[1], 1e-9);
 
     // 5D sphere function test.
-    filter::image::PowellOptimizer::FunctionParametersType initParams2(5), finalParams2(5);
+    filter::image::PowellOptimizer::FunctionParametersType initParams2(5);
+    filter::image::PowellOptimizer::FunctionParametersType finalParams2(5);
     initParams2[0] = 1.0;
     initParams2[1] = 1.5;
     initParams2[2] = 0.9;
@@ -152,7 +156,8 @@ void PowellOptimizerTest::bealeFunctionTest()
 
     filter::image::PowellOptimizer optimizer(bealeFunction, 1e-9, 1e-9, 1.0, 200);
 
-    filter::image::PowellOptimizer::FunctionParametersType initParams(2), finalParams(2);
+    filter::image::PowellOptimizer::FunctionParametersType initParams(2);
+    filter::image::PowellOptimizer::FunctionParametersType finalParams(2);
     initParams[0] = 0;
     initParams[1] = 0;
 
@@ -162,6 +167,4 @@ void PowellOptimizerTest::bealeFunctionTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, finalParams[1], 1e-9);
 }
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut

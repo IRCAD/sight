@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #pragma once
 
 #include <boost/function_types/function_arity.hpp>
 
-namespace sight::core::com
-{
-
-namespace util
+namespace sight::core::com::util
 {
 
 //------------------------------------------------------------------------------
@@ -36,6 +35,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 0>::FunctionType> AutoBind<F, 0>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(f, a ...);
 }
 
@@ -45,6 +45,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 1>::FunctionType> AutoBind<F, 1>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(f, a ..., std::placeholders::_1);
 }
 
@@ -54,6 +55,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 2>::FunctionType> AutoBind<F, 2>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(f, a ..., std::placeholders::_1, std::placeholders::_2);
 }
 
@@ -63,6 +65,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 3>::FunctionType> AutoBind<F, 3>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(f, a ..., std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 }
 
@@ -72,6 +75,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 4>::FunctionType> AutoBind<F, 4>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
         f,
         a ...,
@@ -88,6 +92,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 5>::FunctionType> AutoBind<F, 5>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
         f,
         a ...,
@@ -105,6 +110,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 6>::FunctionType> AutoBind<F, 6>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
         f,
         a ...,
@@ -123,6 +129,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 7>::FunctionType> AutoBind<F, 7>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
         f,
         a ...,
@@ -142,6 +149,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 8>::FunctionType> AutoBind<F, 8>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
         f,
         a ...,
@@ -162,6 +170,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename AutoBind<F, 9>::FunctionType> AutoBind<F, 9>::wrap(W f, A ... a)
 {
+    // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
         f,
         a ...,
@@ -187,6 +196,4 @@ std::function<typename convert_function_type<F>::type> autobind(F f, A ... a)
     return AutoBind<F, arity>::wrap(f, a ...);
 }
 
-} //namespace util
-
-} //namespace sight::core::com
+} // namespace sight::core::com::util

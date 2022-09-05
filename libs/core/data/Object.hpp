@@ -45,7 +45,7 @@ namespace mt
 template<typename T>
 class locked_ptr;
 
-}
+} // namespace mt
 
 /**
  * @brief   Base class for each data object.
@@ -230,7 +230,7 @@ public:
         return m_mutex;
     }
 
-    DATA_API virtual ~Object();
+    DATA_API ~Object() override;
 
     /// Equality comparison operators
     /// @{

@@ -61,16 +61,13 @@ namespace sight::module::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
-    m_delay(500)
-{
-}
+SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
-{
-}
+SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +82,7 @@ void SSliceIndexDicomPullerEditor::configuring()
         config
     );
 
-    bool success;
+    bool success = false;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
@@ -131,7 +128,7 @@ void SSliceIndexDicomPullerEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
 
     const auto dicomSeries = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
@@ -228,7 +225,7 @@ void SSliceIndexDicomPullerEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
+void SSliceIndexDicomPullerEditor::changeSliceIndex(int /*unused*/)
 {
     // Update text
     std::stringstream ss;
@@ -324,7 +321,7 @@ void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeri
     //Copy image
     data::ImageSeries::sptr imageSeries;
 
-    if(m_tempSeriesDB->getContainer().size() > 0)
+    if(!m_tempSeriesDB->getContainer().empty())
     {
         imageSeries = data::ImageSeries::dynamicCast(*(m_tempSeriesDB->getContainer().begin()));
     }
@@ -367,7 +364,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
 {
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server"))
+    if(configuration.count("server") != 0U)
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
@@ -439,7 +436,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
             << "Pacs host name: " << m_serverHostname << "\n"
             << "Pacs port: " << m_serverPort << "\n";
 
-            this->displayErrorMessage(ss.str());
+            sight::module::io::dicomweb::SSliceIndexDicomPullerEditor::displayErrorMessage(ss.str());
             SIGHT_WARN(exception.what());
         }
         QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
@@ -448,7 +445,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
         // Should be one Series, so take the first of the array.
         const std::string& seriesUID = seriesArray.at(0).toString().toStdString();
         // GET all Instances by Series.
-        const std::string& instancesUrl(pacsServer + "/series/" + seriesUID);
+        const std::string& instancesUrl(std::string(pacsServer).append("/series/").append(seriesUID));
 
         const QByteArray& instancesAnswer =
             m_clientQt.get(sight::io::http::Request::New(instancesUrl));
@@ -460,7 +457,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
 
         // GET frame by Slice.
         std::string instancePath;
-        const std::string& instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
+        const std::string& instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID).append("/file"));
         try
         {
             instancePath = m_clientQt.getFile(sight::io::http::Request::New(instanceUrl));
@@ -471,7 +468,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
             ss << "Content not found:  \n"
             << "Unable download the DICOM instance. \n";
 
-            this->displayErrorMessage(ss.str());
+            sight::module::io::dicomweb::SSliceIndexDicomPullerEditor::displayErrorMessage(ss.str());
             SIGHT_WARN(exception.what());
         }
 
@@ -483,14 +480,14 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        this->displayErrorMessage(ss.str());
+        sight::module::io::dicomweb::SSliceIndexDicomPullerEditor::displayErrorMessage(ss.str());
         SIGHT_WARN(exception.what());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& message) const
+void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& message)
 {
     SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;

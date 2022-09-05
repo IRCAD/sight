@@ -32,20 +32,16 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::CompareTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 // Simple class to test the comparison of containers
 struct Double
 {
     Double()
-    {
-    }
+    = default;
 
-    Double(double value) :
+    explicit Double(double value) :
         m_value(value)
     {
     }
@@ -255,10 +251,10 @@ void CompareTest::pointerTest()
 {
     {
         // raw pointers
-        const auto a = new int(42);
-        const auto b = new int(42);
-        const auto c = new int(0);
-        const auto d = a;
+        auto* const a = new int(42);
+        auto* const b = new int(42);
+        auto* const c = new int(0);
+        auto* const d = a;
 
         CPPUNIT_ASSERT(tools::is_equal(a, b));
         CPPUNIT_ASSERT(!tools::is_equal(a, c));
@@ -271,10 +267,10 @@ void CompareTest::pointerTest()
 
     {
         // smart pointers
-        const auto a = std::make_shared<double>(42.0);
-        const auto b = std::make_shared<float>(42.0F);
-        const auto c = std::make_shared<int>(0);
-        const auto d = a;
+        const auto a  = std::make_shared<double>(42.0);
+        const auto b  = std::make_shared<float>(42.0F);
+        const auto c  = std::make_shared<int>(0);
+        const auto& d = a;
 
         CPPUNIT_ASSERT(tools::is_equal(a, b));
         CPPUNIT_ASSERT(!tools::is_equal(a, c));
@@ -402,6 +398,4 @@ void CompareTest::pairTest()
     CPPUNIT_ASSERT(!tools::is_equal(a, e));
 }
 
-} //namespace ut
-
-} //namespace sight::core::tools
+} // namespace sight::core::tools::ut

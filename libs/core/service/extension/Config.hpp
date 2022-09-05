@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <map>
 
-namespace sight::service
-{
-
-namespace extension
+namespace sight::service::extension
 {
 
 /**
@@ -45,13 +42,11 @@ public:
 
     /// Constructor, do nothing.
     ServiceConfigInfo()
-    {
-    }
+    = default;
 
     /// Destructor, do nothing.
-    virtual ~ServiceConfigInfo()
-    {
-    }
+    ~ServiceConfigInfo() override
+    = default;
 
     std::string service;
     std::string desc;
@@ -87,7 +82,7 @@ public:
     SERVICE_API static Config::sptr getDefault();
 
     /// Destructor
-    SERVICE_API virtual ~Config();
+    SERVICE_API ~Config() override;
 
     /**
      * @brief Parses module information to retrieve service declaration.
@@ -162,6 +157,4 @@ protected:
     static Config::sptr s_currentServiceConfig;
 };
 
-} // namespace extension
-
-} // namespace sight::service
+} // namespace sight::service::extension

@@ -72,7 +72,7 @@ public:
     MODULE_IO_VIDEO_API SFrameWriter() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_IO_VIDEO_API virtual ~SFrameWriter() noexcept;
+    MODULE_IO_VIDEO_API ~SFrameWriter() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     MODULE_IO_VIDEO_API service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -112,7 +112,7 @@ private:
     void stopRecord();
 
     /// SLOT: Starts/stops recording, according to the parameter value
-    void record(bool);
+    void record(bool /*state*/);
 
     /// SLOT: Toggle the recording.
     void toggleRecording();
@@ -120,11 +120,11 @@ private:
     /// Slot called when a format is changed
     void setFormatParameter(std::string val, std::string key);
 
-    int m_imageType; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
+    int m_imageType {0}; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
 
-    bool m_isRecording; ///< flag if the service is recording.
+    bool m_isRecording {false}; ///< flag if the service is recording.
 
     std::string m_format; ///< file format (.tiff by default)
 };
 
-} // videoOpenCV
+} // namespace sight::module::io::video

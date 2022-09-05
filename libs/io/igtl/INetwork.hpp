@@ -110,7 +110,7 @@ public:
      *
      * @return socket
      */
-    IO_IGTL_API ::igtl::Socket::Pointer getSocket() const;
+    [[nodiscard]] IO_IGTL_API ::igtl::Socket::Pointer getSocket() const;
 
     /**
      * @brief add a new authorized device name
@@ -123,7 +123,7 @@ public:
      *
      * @return boolean
      */
-    IO_IGTL_API bool getFilteringByDeviceName() const;
+    [[nodiscard]] IO_IGTL_API bool getFilteringByDeviceName() const;
 
     /**
      * @brief activate/desactivate the filtering by device name
@@ -143,7 +143,7 @@ public:
      *
      * return std::string
      */
-    IO_IGTL_API std::string getDeviceNameOut() const;
+    [[nodiscard]] IO_IGTL_API std::string getDeviceNameOut() const;
 
 protected:
 
@@ -166,7 +166,7 @@ protected:
     ::igtl::Socket::Pointer m_socket;
 
     /// Filter the message by device name
-    bool m_filteringByDeviceName;
+    bool m_filteringByDeviceName {false};
 
     /// Set of authorized device names
     std::set<std::string> m_deviceNamesIn;

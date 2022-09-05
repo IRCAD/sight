@@ -31,10 +31,7 @@
 
 #include <igtlTrackingDataMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string TrackingStartConverter::s_IGTL_TYPE          = "STT_TDATA";
@@ -46,14 +43,12 @@ const std::string s_coordinateNameKey                          = "CoordinateName
 converterRegisterMacro(io::igtl::detail::converter::TrackingStartConverter);
 
 TrackingStartConverter::TrackingStartConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 TrackingStartConverter::~TrackingStartConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -64,14 +59,14 @@ TrackingStartConverter::~TrackingStartConverter()
     trackingMsg->SetResolution(0);
     trackingMsg->SetCoordinateName("Undefined");
 
-    return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
+    return {trackingMsg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
 data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    ::igtl::StartTrackingDataMessage* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
+    auto* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
 
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
@@ -119,6 +114,4 @@ std::string const& TrackingStartConverter::getFwDataObjectType() const
     return TrackingStartConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

@@ -133,12 +133,12 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
+            SIGHT_ERROR(std::string("Value '").append(_val).append("' is not handled for key ").append(_key));
         }
     }
     else
     {
-        SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
+        SIGHT_ERROR(std::string("Value '").append(_val).append("' is not handled for key ").append(_key));
     }
 }
 
@@ -205,7 +205,7 @@ void SNotifier::showNotification(const std::string& _message, sight::ui::base::d
     notif->setPosition(m_notificationsPosition);
     notif->setIndex(static_cast<unsigned int>(m_popups.size()));
     notif->setDuration(m_durationInMs);
-    notif->setClosedCallback(std::bind(&SNotifier::onNotificationClosed, this, notif));
+    notif->setClosedCallback([this, notif](auto&& ...){onNotificationClosed(notif);});
     notif->show();
 
     m_popups.push_back(notif);
@@ -222,7 +222,7 @@ void SNotifier::onNotificationClosed(const sight::ui::base::dialog::Notification
         m_popups.erase(notifItr);
 
         // move all the remaining notifications one index lower
-        for(auto popup : m_popups)
+        for(const auto& popup : m_popups)
         {
             popup->moveDown();
         }
@@ -231,4 +231,4 @@ void SNotifier::onNotificationClosed(const sight::ui::base::dialog::Notification
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt

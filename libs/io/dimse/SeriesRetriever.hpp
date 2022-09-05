@@ -54,7 +54,7 @@ public:
     IO_DIMSE_API SeriesRetriever();
 
     /// Destructor
-    IO_DIMSE_API ~SeriesRetriever();
+    IO_DIMSE_API ~SeriesRetriever() override;
 
     /**
      * @brief Initialize the connection
@@ -66,7 +66,7 @@ public:
      */
     IO_DIMSE_API void initialize(
         const std::string& applicationTitle,
-        unsigned short applicationport,
+        std::uint16_t applicationport,
         int timeout                                     = 3,
         ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr()
     );
@@ -80,7 +80,7 @@ protected:
     using DcmSCP::handleSTORERequest;
 
     /// Handle Incoming Command (Override)
-    virtual OFCondition handleIncomingCommand(
+    OFCondition handleIncomingCommand(
         T_DIMSE_Message* incomingMsg,
         const DcmPresentationContextInfo& presContextInfo
     ) override;
@@ -100,7 +100,7 @@ protected:
     ProgressCallbackSlotType::sptr m_progressCallback;
 
     /// Dowloaded instance index
-    unsigned int m_instanceIndex;
+    unsigned int m_instanceIndex {};
 };
 
 } // namespace sight::io::dimse

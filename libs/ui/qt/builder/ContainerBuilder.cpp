@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,23 +35,19 @@ fwGuiRegisterMacro(
     sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY
 );
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 //-----------------------------------------------------------------------------
 
-ContainerBuilder::ContainerBuilder(ui::base::GuiBaseObject::Key)
+ContainerBuilder::ContainerBuilder(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ContainerBuilder::~ContainerBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -61,10 +57,10 @@ void ContainerBuilder::createContainer(ui::base::container::fwContainer::sptr pa
     SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
 
     ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::New();
-    QWidget* widget                                  = new QWidget();
+    auto* widget                                     = new QWidget();
     qtContainer->setQtContainer(widget);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(widget);
 
@@ -100,9 +96,9 @@ void ContainerBuilder::setParent(ui::base::container::fwContainer::sptr parent)
 
     if(qtParent != m_parent->getQtContainer())
     {
-        if(!qtParent->layout())
+        if(qtParent->layout() == nullptr)
         {
-            QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
+            auto* layout = new QBoxLayout(QBoxLayout::TopToBottom);
             layout->setContentsMargins(0, 0, 0, 0);
             qtParent->setLayout(layout);
         }
@@ -116,6 +112,4 @@ void ContainerBuilder::setParent(ui::base::container::fwContainer::sptr parent)
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

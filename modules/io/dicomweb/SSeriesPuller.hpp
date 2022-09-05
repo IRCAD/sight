@@ -39,7 +39,7 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicomweb
 {
@@ -90,7 +90,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API virtual ~SSeriesPuller() noexcept;
+    MODULE_IO_DICOMWEB_API ~SSeriesPuller() noexcept override;
 
 protected:
 
@@ -121,7 +121,7 @@ private:
      * @brief Display an error message.
      * @param[in] message Error message to display
      */
-    void displayErrorMessage(const std::string& message) const;
+    static void displayErrorMessage(const std::string& message);
 
     /// Http Qt Client
     sight::io::http::ClientQt m_clientQt;
@@ -142,13 +142,13 @@ private:
     InstanceUIDContainerType m_localSeries;
 
     /// Is pulling is set to true when we are pulling series
-    bool m_isPulling;
+    bool m_isPulling {false};
 
     /// Index of the series being downloaded
-    unsigned int m_seriesIndex;
+    unsigned int m_seriesIndex {0};
 
     /// Total number of instances that must be downloaded
-    std::size_t m_instanceCount;
+    std::size_t m_instanceCount {};
 
     /// Map of Dicom series being pulled
     DicomSeriesMapType m_pullingDicomSeriesMap;

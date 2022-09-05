@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,9 +45,8 @@ SSnapshot::SSnapshot() noexcept
 
 //------------------------------------------------------------------------------
 
-SSnapshot::~SSnapshot() noexcept
-{
-}
+SSnapshot::~SSnapshot() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +73,7 @@ void SSnapshot::configuring()
 
 void SSnapshot::updating()
 {
-    std::string filename = this->requestFileName();
+    std::string filename = sight::module::ui::base::viz::SSnapshot::requestFileName();
 
     if(!filename.empty())
     {
@@ -84,7 +83,7 @@ void SSnapshot::updating()
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::info(std::ostream&)
+void SSnapshot::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -92,7 +91,7 @@ void SSnapshot::info(std::ostream&)
 
 std::string SSnapshot::requestFileName()
 {
-    std::string fileName = "";
+    std::string fileName;
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
@@ -115,4 +114,4 @@ std::string SSnapshot::requestFileName()
 
 //------------------------------------------------------------------------------
 
-} // uiVisu
+} // namespace sight::module::ui::base::viz

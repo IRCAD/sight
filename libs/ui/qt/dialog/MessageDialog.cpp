@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,15 +29,12 @@
 #include <QPushButton>
 #include <QVector>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
 
-typedef const std::map<ui::base::dialog::IMessageDialog::Icons, QMessageBox::Icon> MessageDialogQtIconsType;
+using MessageDialogQtIconsType = const std::map<ui::base::dialog::IMessageDialog::Icons, QMessageBox::Icon>;
 MessageDialogQtIconsType messageDialogQtIcons = {{ui::base::dialog::IMessageDialog::NONE, QMessageBox::NoIcon},
     {ui::base::dialog::IMessageDialog::QUESTION, QMessageBox::Question},
     {ui::base::dialog::IMessageDialog::INFO, QMessageBox::Information},
@@ -46,8 +43,8 @@ MessageDialogQtIconsType messageDialogQtIcons = {{ui::base::dialog::IMessageDial
     }
 };
 
-typedef const std::map<ui::base::dialog::IMessageDialog::Buttons,
-                       QMessageBox::StandardButtons> MessageDialogQtButtonType;
+using MessageDialogQtButtonType = const std::map<ui::base::dialog::IMessageDialog::Buttons,
+                                                 QMessageBox::StandardButtons>;
 MessageDialogQtButtonType messageDialogQtButton = {
     {ui::base::dialog::IMessageDialog::OK, QMessageBox::Ok},
     {ui::base::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel},
@@ -58,18 +55,14 @@ MessageDialogQtButtonType messageDialogQtButton = {
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key) :
-    m_buttons(ui::base::dialog::IMessageDialog::NOBUTTON),
-    m_defaultButton(ui::base::dialog::IMessageDialog::NOBUTTON),
-    m_icon(ui::base::dialog::IMessageDialog::NONE)
+MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 MessageDialog::~MessageDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +96,7 @@ void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    QPushButton* button = new QPushButton(QString::fromStdString(label));
+    auto* button = new QPushButton(QString::fromStdString(label));
     m_customButtons.push_back(button);
     QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
@@ -119,7 +112,7 @@ void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons b
 
 ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
-    MessageDialogQtIconsType::const_iterator iterIcon = messageDialogQtIcons.find(m_icon);
+    auto iterIcon = messageDialogQtIcons.find(m_icon);
     SIGHT_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end());
 
     QMessageBox::Icon icon               = iterIcon->second;
@@ -129,7 +122,7 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 
     for(MessageDialogQtButtonType::value_type button : messageDialogQtButton)
     {
-        if(m_buttons & button.first)
+        if((m_buttons & button.first) != 0)
         {
             buttons |= button.second;
         }
@@ -137,12 +130,12 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 
     QMessageBox box(icon, title, text, buttons, qApp->activeWindow());
 
-    for(auto customButton : m_customButtons)
+    for(auto* customButton : m_customButtons)
     {
         box.addButton(customButton, QMessageBox::ActionRole);
     }
 
-    MessageDialogQtButtonType::const_iterator iter = messageDialogQtButton.find(m_defaultButton);
+    auto iter = messageDialogQtButton.find(m_defaultButton);
     if(iter != messageDialogQtButton.end())
     {
         box.setDefaultButton(QMessageBox::StandardButton(static_cast<int>(iter->second)));
@@ -166,6 +159,4 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

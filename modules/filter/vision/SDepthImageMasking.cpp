@@ -45,9 +45,8 @@ SDepthImageMasking::SDepthImageMasking() noexcept
 
 // ------------------------------------------------------------------------------
 
-SDepthImageMasking::~SDepthImageMasking() noexcept
-{
-}
+SDepthImageMasking::~SDepthImageMasking() noexcept =
+    default;
 
 // ------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,10 @@
 
 #include "filter/dicom/registry/detail.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace registry
+namespace sight::filter::dicom::registry
 {
 
 #define fwDicomIOFilterRegisterMacro(classname) \
     static sight::filter::dicom::IFilter::Registry<classname> s__factory__record__ ## __LINE__;
 
-} // end namespace registry
-
-} // end namespace sight::filter::dicom
+} // namespace sight::filter::dicom::registry

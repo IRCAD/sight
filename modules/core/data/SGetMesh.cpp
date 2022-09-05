@@ -104,7 +104,7 @@ void SGetMesh::updating()
     }
 
     // do all type requests
-    for(typeConfig typeCfg : m_typeConfiguration)
+    for(const typeConfig& typeCfg : m_typeConfiguration)
     {
         //go through the whole reconstructionDB, and check if a mesh which respects the type and regex is found.
         bool found = false;

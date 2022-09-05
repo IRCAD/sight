@@ -155,11 +155,11 @@ public:
      */
     DATA_API virtual void _registerObject(
         std::string_view _key,
-        const Access _access,
+        Access _access,
         std::optional<std::size_t> index,
-        const bool _autoConnect = false,
-        const bool _optional    = false
-    )                           = 0;
+        bool _autoConnect = false,
+        bool _optional    = false
+    )                     = 0;
 
     /**
      * @brief Define an object group required by this service.
@@ -177,13 +177,13 @@ public:
      */
     DATA_API virtual void _registerObjectGroup(
         std::string_view _key,
-        const data::Access _access,
-        const bool _autoConnect,
-        const bool _optional
+        data::Access _access,
+        bool _autoConnect,
+        bool _optional
     ) = 0;
 
     /// Registers a pointer
-    void _registerPtr(std::string_view _key, base_ptr* _data, std::size_t = 0)
+    void _registerPtr(std::string_view _key, base_ptr* _data, std::size_t /*unused*/ = 0)
     {
         m_dataContainer[_key] = _data;
     }
@@ -268,7 +268,7 @@ private:
     friend class IHasData;
 
     /// Assign the content of the pointer
-    void set(const sight::data::Object::sptr& _obj, std::optional<std::size_t> = std::nullopt) override
+    void set(const sight::data::Object::sptr& _obj, std::optional<std::size_t> /*index*/ = std::nullopt) override
     {
         if(_obj == nullptr)
         {
@@ -325,7 +325,7 @@ public:
         {
         }
 
-        ptr_t(ptr_t&& _other) :
+        ptr_t(ptr_t&& _other) noexcept :
             m_holder(_other.m_holder),
             m_key(_other.m_key),
             m_index(_other.m_index)
@@ -334,16 +334,12 @@ public:
 
         //------------------------------------------------------------------------------
 
-        ptr_t& operator=(const ptr_t& _other)
-        {
-            m_holder = _other.m_holder;
-            m_key    = _other.m_key;
-            m_index  = _other.m_index;
-        }
+        ptr_t& operator=(const ptr_t& _other) = default;
 
         //------------------------------------------------------------------------------
 
         ptr_t& operator=(ptr_t&& _other)
+        noexcept
         {
             m_holder = _other.m_holder;
             m_key    = _other.m_key;
@@ -367,9 +363,9 @@ public:
             data::mt::weak_ptr<target_t>::operator=(_obj);
         }
 
-        IHasData* m_holder;
+        IHasData* m_holder {};
         std::string_view m_key;
-        std::size_t m_index;
+        std::size_t m_index {};
     };
 
     using container_ptr_t = std::map<std::size_t, ptr_t>;
@@ -414,7 +410,7 @@ public:
     }
 
     /// Return the number of registered pointers
-    std::size_t size() const
+    [[nodiscard]] std::size_t size() const
     {
         return m_ptrs.size();
     }

@@ -62,13 +62,13 @@ public:
     DATA_API FrameTL(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~FrameTL();
+    DATA_API ~FrameTL() override;
     /// Initializes the size of the pool buffer.
     DATA_API void initPoolSize(
         std::size_t width,
         std::size_t height,
         const core::Type& type,
-        const PixelFormat format,
+        PixelFormat format,
         unsigned int maxElementNum = 1
     );
 
@@ -119,13 +119,13 @@ private:
     DATA_API void initPoolSize(unsigned int maxElementNum) override;
 
     /// frame width
-    std::size_t m_width;
+    std::size_t m_width {0};
 
     /// frame height
-    std::size_t m_height;
+    std::size_t m_height {0};
 
     /// number of components
-    std::size_t m_numberOfComponents;
+    std::size_t m_numberOfComponents {3};
 
     /// type of frame pixel
     core::Type m_type;

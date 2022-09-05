@@ -673,26 +673,28 @@ constexpr static bool is_equal(T1 a, T2 b)
             // If direct compare is true, then it is certainly equal. Should also take care of Inf, ...
             return true;
         }
-        else if(std::isinf(a) || std::isinf(b))
+
+        if(std::isinf(a) || std::isinf(b))
         {
             // If one of them is infinite, then they are certainly not equal.
             return false;
         }
-        else if(const bool a_nan = std::isnan(a), b_nan = std::isnan(b); a_nan || b_nan)
+
+        if(const bool a_nan = std::isnan(a), b_nan = std::isnan(b); a_nan || b_nan)
         {
             // Normally, NaN == NaN returns false. We want the opposite
             return a_nan && b_nan;
         }
-        else if(const T1 abs_diff = std::abs(a - b); abs_diff <= std::numeric_limits<T1>::epsilon())
+
+        const T1 abs_diff = std::abs(a - b);
+        if(abs_diff <= std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
             return true;
         }
-        else
-        {
-            // Otherwise, use a scaled epsilon
-            return abs_diff <= std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
-        }
+
+        // Otherwise, use a scaled epsilon
+        return abs_diff <= std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
@@ -885,11 +887,13 @@ constexpr static bool is_equal(const T1& a, const T2& b)
     {
         for(const auto& [a_key, a_value] : a)
         {
-            if(const auto& b_it = b.find(a_key); b_it == b_end)
+            const auto& b_it = b.find(a_key);
+            if(b_it == b_end)
             {
                 return false;
             }
-            else if(!is_equal(a_value, b_it->second))
+
+            if(!is_equal(a_value, b_it->second))
             {
                 return false;
             }
@@ -900,11 +904,13 @@ constexpr static bool is_equal(const T1& a, const T2& b)
     {
         for(const auto& a_value : a)
         {
-            if(const auto& b_it = b.find(a_value); b_it == b_end)
+            const auto& b_it = b.find(a_value);
+            if(b_it == b_end)
             {
                 return false;
             }
-            else if(!is_equal(a_value, *b_it))
+
+            if(!is_equal(a_value, *b_it))
             {
                 return false;
             }
@@ -933,21 +939,22 @@ constexpr static bool is_less(T1 a, T2 b)
             // If one of them is NaN, assume the comparison is always false.
             return false;
         }
-        else if(std::isinf(a) || std::isinf(b))
+
+        if(std::isinf(a) || std::isinf(b))
         {
             // We assume std::isless returns true for -Inf < Inf and false for -Inf < -Inf
             return std::isless(a, b);
         }
-        else if(const T1 diff = a - b; diff < std::numeric_limits<T1>::epsilon())
+
+        const T1 diff = a - b;
+        if(diff < std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
             return true;
         }
-        else
-        {
-            // Otherwise, use a scaled epsilon
-            return diff < std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
-        }
+
+        // Otherwise, use a scaled epsilon
+        return diff < std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
@@ -980,21 +987,22 @@ constexpr static bool is_greater(T1 a, T2 b)
             // If one of them is NaN, assume the comparison is always false.
             return false;
         }
-        else if(std::isinf(a) || std::isinf(b))
+
+        if(std::isinf(a) || std::isinf(b))
         {
             // We assume std::isgreater returns true for Inf > -Inf and false for Inf > Inf
             return std::isgreater(a, b);
         }
-        else if(const T1 diff = a - b; diff > std::numeric_limits<T1>::epsilon())
+
+        const T1 diff = a - b;
+        if(diff > std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
             return true;
         }
-        else
-        {
-            // Otherwise, use a scaled epsilon
-            return diff > std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
-        }
+
+        // Otherwise, use a scaled epsilon
+        return diff > std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {

@@ -72,7 +72,7 @@ T* createExecutableInstance(
 {
     // Retrieves the right configuration element.
     std::shared_ptr<ConfigurationElement> elt(extension->findConfigurationElement(element));
-    if(elt == 0)
+    if(elt == nullptr)
     {
         throw RuntimeException(element + ": configuration element not found in extension.");
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
     MODULE_IO_VISION_API SOpenCVReader();
 
     //Destructor
-    MODULE_IO_VISION_API ~SOpenCVReader();
+    MODULE_IO_VISION_API ~SOpenCVReader() override;
 
 protected:
 

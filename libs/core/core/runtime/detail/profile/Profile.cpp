@@ -31,27 +31,20 @@
 #include <cstring>
 #include <functional>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace profile
+namespace sight::core::runtime::detail::profile
 {
 
 //------------------------------------------------------------------------------
 
-Profile::Profile()
+Profile::Profile() :
+    m_run(defaultRun)
 {
-    m_run = std::bind(&Profile::defaultRun, this);
 }
 
 //------------------------------------------------------------------------------
 
 Profile::~Profile()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +78,7 @@ void Profile::start()
     // Check validity of extension
 
     detail::Runtime& runtime = detail::Runtime::get();
-    for(auto& extension : runtime.getExtensions())
+    for(const auto& extension : runtime.getExtensions())
     {
         auto bundle = std::dynamic_pointer_cast<detail::Module>(extension->getModule());
 
@@ -100,19 +93,19 @@ void Profile::start()
         m_starters.begin(),
         m_starters.end(),
         [](auto& s)
-                {
-                    auto identifier = s.second;
-                    auto module     = detail::Runtime::get().findEnabledModule(identifier);
-                    SIGHT_FATAL_IF("Unable to start module " + identifier + ": not found.", module == nullptr);
-                    try
-                    {
-                        module->start();
-                    }
-                    catch(const std::exception& e)
-                    {
-                        SIGHT_FATAL("Unable to start module " + identifier + ". " + e.what());
-                    }
-                });
+        {
+            auto identifier = s.second;
+            auto module     = detail::Runtime::get().findEnabledModule(identifier);
+            SIGHT_FATAL_IF("Unable to start module " + identifier + ": not found.", module == nullptr);
+            try
+            {
+                module->start();
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_FATAL("Unable to start module " + identifier + ". " + e.what());
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +113,7 @@ void Profile::start()
 int Profile::run()
 {
     SIGHT_ASSERT("the 'run' callback is missing", m_run);
-    int result;
+    int result = 0;
     result = m_run();
     return result;
 }
@@ -147,23 +140,23 @@ void Profile::stop()
         m_stoppers.rbegin(),
         m_stoppers.rend(),
         [](auto& s)
-                {
-                    auto identifier = s.second;
-                    auto module     = detail::Runtime::get().findEnabledModule(identifier);
-                    SIGHT_FATAL_IF(
-                        "Unable to stop module " + identifier + ". Not found.",
-                        module == nullptr
-                    );
-                    try
-                    {
-                        SIGHT_INFO("Stopping module : " + identifier);
-                        module->stop();
-                    }
-                    catch(const std::exception& e)
-                    {
-                        SIGHT_ERROR("Unable to stop module " + identifier + ". " + e.what());
-                    }
-                });
+        {
+            auto identifier = s.second;
+            auto module     = detail::Runtime::get().findEnabledModule(identifier);
+            SIGHT_FATAL_IF(
+                "Unable to stop module " + identifier + ". Not found.",
+                module == nullptr
+            );
+            try
+            {
+                SIGHT_INFO("Stopping module : " + identifier);
+                module->stop();
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_ERROR("Unable to stop module " + identifier + ". " + e.what());
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -186,8 +179,4 @@ Profile::sptr getCurrentProfile()
 
 //------------------------------------------------------------------------------
 
-} // namespace profile
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::profile

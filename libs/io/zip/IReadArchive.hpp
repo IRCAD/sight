@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,8 +40,7 @@ public:
     SIGHT_DECLARE_CLASS(IReadArchive);
 
     virtual ~IReadArchive()
-    {
-    }
+    = default;
 
     /**
      * @brief Returns input stream for the file in current archive.
@@ -53,9 +52,9 @@ public:
     /**
      * @brief Returns archive path.
      */
-    virtual const std::filesystem::path getArchivePath() const = 0;
+    [[nodiscard]] virtual std::filesystem::path getArchivePath() const = 0;
 
-    virtual IReadArchive::sptr clone() const = 0;
+    [[nodiscard]] virtual IReadArchive::sptr clone() const = 0;
 };
 
-}
+} // namespace sight::io::zip

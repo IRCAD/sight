@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::ui::viz
-{
-
-namespace ut
+namespace sight::module::ui::viz::ut
 {
 
 class UtilsTest : public CPPUNIT_NS::TestFixture
@@ -40,13 +37,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void convertOgreColorToQColor();
-    void convertQColorToOgreColor();
+    static void convertOgreColorToQColor();
+    static void convertQColorToOgreColor();
 };
 
-} //namespace ut
-
-} //namespace sight::module::ui::viz
+} // namespace sight::module::ui::viz::ut

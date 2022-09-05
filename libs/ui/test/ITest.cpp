@@ -68,10 +68,10 @@ void ITest::compareImages(const std::filesystem::path& a, const std::filesystem:
                                 + "\nCorrelation: " + std::to_string(correlation) + "\nVoodoo: "
                                 + std::to_string(voodoo)
                                 + '\n';
-    CPPUNIT_ASSERT_MESSAGE(message + " (MSE)\n" + score, mse > 0.97);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Histogram)\n" + score, histogram > 0.98);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Correlation)\n" + score, correlation > 0.71);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Voodoo)\n" + score, voodoo > 0.97);
+    CPPUNIT_ASSERT_MESSAGE(std::string(message).append(" (MSE)\n").append(score), mse > 0.97);
+    CPPUNIT_ASSERT_MESSAGE(std::string(message).append(" (Histogram)\n").append(score), histogram > 0.98);
+    CPPUNIT_ASSERT_MESSAGE(std::string(message).append(" (Correlation)\n").append(score), correlation > 0.71);
+    CPPUNIT_ASSERT_MESSAGE(std::string(message).append(" (Voodoo)\n").append(score), voodoo > 0.97);
 }
 
 } // namespace sight::ui::test

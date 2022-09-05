@@ -29,10 +29,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::activity
-{
-
-namespace validator
+namespace sight::activity::validator
 {
 
 fwActivitiesValidatorRegisterMacro(sight::activity::validator::ImageProperties);
@@ -41,20 +38,19 @@ auto fCompare = [](double a, double b){return std::abs(a - b) < 0.00001;};
 
 //-----------------------------------------------------------------------------
 
-ImageProperties::ImageProperties(activity::IValidator::Key)
+ImageProperties::ImageProperties(activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ImageProperties::~ImageProperties()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType ImageProperties::validate(
-    const activity::extension::ActivityInfo&,
+    const activity::extension::ActivityInfo& /*unused*/,
     const data::Vector::csptr& currentSelection
 ) const
 {
@@ -123,7 +119,7 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
 
     if(vector)
     {
-        for(data::Object::sptr obj : *vector)
+        for(const data::Object::sptr& obj : *vector)
         {
             data::ImageSeries::csptr imgSeries = data::ImageSeries::dynamicConstCast(obj);
             data::Image::csptr img             = data::Image::dynamicConstCast(obj);
@@ -167,7 +163,7 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
     }
     else if(composite)
     {
-        for(auto elt : *composite)
+        for(const auto& elt : *composite)
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(elt.second);
             data::Image::sptr img             = data::Image::dynamicCast(elt.second);
@@ -220,6 +216,4 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
 
 //-----------------------------------------------------------------------------
 
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <igtlStringMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 converterRegisterMacro(io::igtl::detail::converter::IntConverter);
@@ -37,6 +34,4 @@ converterRegisterMacro(io::igtl::detail::converter::FloatConverter);
 
 //-----------------------------------------------------------------------------
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

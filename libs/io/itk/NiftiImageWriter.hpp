@@ -48,7 +48,7 @@ public:
 
     IO_ITK_API NiftiImageWriter(io::base::writer::IObjectWriter::Key key);
 
-    IO_ITK_API ~NiftiImageWriter();
+    IO_ITK_API ~NiftiImageWriter() override;
 
     IO_ITK_API void write() override;
 

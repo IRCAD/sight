@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include "ui/base/builder/IMenuBarBuilder.hpp"
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 const IMenuBarBuilder::RegistryKeyType IMenuBarBuilder::REGISTRY_KEY = "::ui::base::MenuBarBuilder";
@@ -38,14 +35,12 @@ const IMenuBarBuilder::RegistryKeyType IMenuBarBuilder::REGISTRY_KEY = "::ui::ba
 //-----------------------------------------------------------------------------
 
 IMenuBarBuilder::IMenuBarBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IMenuBarBuilder::~IMenuBarBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -76,6 +71,4 @@ ui::base::container::fwMenuBar::sptr IMenuBarBuilder::getMenuBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

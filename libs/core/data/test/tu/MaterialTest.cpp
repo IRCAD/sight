@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::MaterialTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -60,10 +57,10 @@ void MaterialTest::methode1()
 {
     //-----------test values
     data::Color::sptr ambient_color = data::Color::New();
-    ambient_color->setRGBA(0.5f, 0.5f, 0.5f, 0.5f);
+    ambient_color->setRGBA(0.5F, 0.5F, 0.5F, 0.5F);
 
     data::Color::sptr diffuse_color = data::Color::New();
-    diffuse_color->setRGBA(0.8f, 0.2f, 0.5f, 0.4f);
+    diffuse_color->setRGBA(0.8F, 0.2F, 0.5F, 0.4F);
 
     auto material = data::Material::New();
 
@@ -81,6 +78,4 @@ void MaterialTest::methode1()
     CPPUNIT_ASSERT(*material == *material2);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

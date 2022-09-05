@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::ObjectTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -63,6 +60,4 @@ void ObjectTest::idTest()
     CPPUNIT_ASSERT_EQUAL(obj->getID(), UUID);
 }
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

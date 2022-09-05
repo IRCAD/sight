@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 
-namespace sight::io::vtk
-{
-
-namespace helper
+namespace sight::io::vtk::helper
 {
 
 //------------------------------------------------------------------------------
 
-void vtkLambdaCommand::Execute(vtkObject* caller, unsigned long event, void* callData)
+void vtkLambdaCommand::Execute(vtkObject* caller, unsigned long event, void* callData) // NOLINT(google-runtime-int)
 {
     if(m_callback)
     {
@@ -38,6 +37,4 @@ void vtkLambdaCommand::Execute(vtkObject* caller, unsigned long event, void* cal
     }
 }
 
-} // namespace helper
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::helper

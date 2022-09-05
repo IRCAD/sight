@@ -116,10 +116,10 @@ private:
     void removePoint();
 
     /// Selected landmark.
-    glm::dvec3 m_currentLandmark;
+    glm::dvec3 m_currentLandmark {};
 
     /// Bool showing if a landmark is selected.
-    bool m_landmarkSelected;
+    bool m_landmarkSelected {false};
 
     /// Unit to concatenate with the computed result.
     std::string m_unit;

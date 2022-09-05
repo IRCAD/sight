@@ -32,16 +32,13 @@
 namespace sight::ui::base
 {
 
-IMenuBar::IMenuBar() :
-    m_hideMenus(false)
-{
-}
+IMenuBar::IMenuBar()
+= default;
 
 //-----------------------------------------------------------------------------
 
 IMenuBar::~IMenuBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -189,4 +186,4 @@ void IMenuBar::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

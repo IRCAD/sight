@@ -34,10 +34,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::sorter::TagValueSorter);
 
-namespace sight::filter::dicom
-{
-
-namespace sorter
+namespace sight::filter::dicom::sorter
 {
 
 const std::string TagValueSorter::s_FILTER_NAME        = "Tag value sorter";
@@ -46,8 +43,7 @@ const std::string TagValueSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key) :
-    ISorter()
+TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key /*unused*/)
 {
     m_tag = DCM_UndefinedTagKey;
 }
@@ -55,8 +51,7 @@ TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key) :
 //-----------------------------------------------------------------------------
 
 TagValueSorter::~TagValueSorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -98,7 +93,7 @@ const
     data::DicomSeries::DicomContainerType sortedDicom;
 
     OFCondition status;
-    DcmDataset* dataset;
+    DcmDataset* dataset = nullptr;
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
@@ -155,6 +150,4 @@ const
     return result;
 }
 
-} // namespace sorter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::sorter

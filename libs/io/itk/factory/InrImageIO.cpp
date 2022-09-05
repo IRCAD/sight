@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT NOLINTNEXTLINE
+
 #include "InrImageIO.hpp"
 
 #include <core/Exception.hpp>
@@ -37,9 +39,6 @@
 #include <map>
 #include <utility>
 
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define min(a, b) ((a) <= (b) ? (a) : (b))
-
 namespace itk
 {
 
@@ -53,9 +52,7 @@ InrImageIO::InrImageIO()
 //------------------------------------------------------------------------------
 
 InrImageIO::~InrImageIO()
-{
-    // Nothing to do.
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -72,50 +69,42 @@ bool InrImageIO::CanReadFile(const char* FileNameToRead)
 {
     // Do not perform extension checking, magic number in the header is better.
     gzFile inputFile = gzopen(FileNameToRead, "rb");
-    if(inputFile == 0)
+    if(inputFile == nullptr)
     {
         return false;
     }
 
-    char firstLine[256];
+    std::string firstLine(14, '\0');
+    firstLine.reserve(15);
 
-    gzgets(inputFile, firstLine, 256);
+    gzgets(inputFile, firstLine.data(), 15);
 
     gzclose(inputFile);
 
     std::string const magic("#INRIMAGE-4#{\n");
-    if(firstLine != magic)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return firstLine == magic;
 }
 
 //------------------------------------------------------------------------------
 
 void InrImageIO::ReadImageInformation()
 {
+    using namespace std::literals::string_literals;
+
     gzFile inputFile = gzopen(this->GetFileName(), "rb");
-    if(inputFile == NULL)
+    if(inputFile == nullptr)
     {
         gzclose(inputFile);
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "File " << GetFileName() << " could not be read";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(__FILE__, __LINE__, "File "s + GetFileName() + " could not be read");
     }
 
     const int lineBufSize = 256;
-    char linebuf[lineBufSize];
+    std::array<char, lineBufSize> linebuf {};
     std::map<std::string, std::string> headerValues;
     m_headerSize = 0;
-    while(gzgets(inputFile, linebuf, lineBufSize) && !gzeof(inputFile))
+    while((gzgets(inputFile, linebuf.data(), lineBufSize) != nullptr) && (gzeof(inputFile) == 0))
     {
-        std::string line(linebuf);
+        std::string line(linebuf.data());
         // Count the number of characters we just read : length of the line
         m_headerSize += std::streamoff(line.length());
         // Remove eventual trailing '\n'
@@ -128,13 +117,9 @@ void InrImageIO::ReadImageInformation()
             break;
         }
 
-        if(line.empty())
+        if(line.empty() || line[0] == '#')
         {
-            // Empty line, nothing to do
-        }
-        else if(line[0] == '#')
-        {
-            // Comment line, nothing to do
+            // Empty line or comment line, nothing to do
         }
         else
         {
@@ -144,11 +129,7 @@ void InrImageIO::ReadImageInformation()
             {
                 // invalid line : missing '='
                 gzclose(inputFile);
-                ExceptionObject exception(__FILE__, __LINE__);
-                std::stringstream errorMessage;
-                errorMessage << "Invalid INR file.\n" << "Offending line : " << line;
-                exception.SetDescription(errorMessage.str());
-                throw exception;
+                throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nOffending line : "s + line);
             }
 
             // Tokenize [KEY] = [VALUE] and store it in map
@@ -157,17 +138,11 @@ void InrImageIO::ReadImageInformation()
             if(headerValues.find(key) != headerValues.end())
             {
                 // duplicate key
-                ExceptionObject exception(__FILE__, __LINE__);
                 gzclose(inputFile);
-                std::stringstream errorMessage;
-                errorMessage << "Invalid INR file.\n" << "Duplicate key : " << key;
-                exception.SetDescription(errorMessage.str());
-                throw exception;
+                throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nDuplicate key : "s + key);
             }
-            else
-            {
-                headerValues[key] = value;
-            }
+
+            headerValues[key] = value;
         }
     }
 
@@ -175,26 +150,26 @@ void InrImageIO::ReadImageInformation()
     gzclose(inputFile);
 
     // Process headerValue map
-    for(std::map<std::string, std::string>::const_iterator it = headerValues.begin() ; it != headerValues.end() ; ++it)
+    for(auto& headerValue : headerValues)
     {
-        if(it->first == "XDIM")
+        if(headerValue.first == "XDIM")
         {
-            std::size_t xdim = boost::lexical_cast<std::size_t>(it->second);
+            auto xdim = boost::lexical_cast<std::size_t>(headerValue.second);
             this->SetDimensions(0, xdim);
         }
-        else if(it->first == "YDIM")
+        else if(headerValue.first == "YDIM")
         {
-            std::size_t ydim = boost::lexical_cast<std::size_t>(it->second);
+            auto ydim = boost::lexical_cast<std::size_t>(headerValue.second);
             this->SetDimensions(1, ydim);
         }
-        else if(it->first == "ZDIM")
+        else if(headerValue.first == "ZDIM")
         {
-            std::size_t zdim = boost::lexical_cast<std::size_t>(it->second);
+            auto zdim = boost::lexical_cast<std::size_t>(headerValue.second);
             this->SetDimensions(2, zdim);
         }
-        else if(it->first == "VDIM")
+        else if(headerValue.first == "VDIM")
         {
-            std::uint32_t vdim = boost::lexical_cast<std::uint32_t>(it->second);
+            auto vdim = boost::lexical_cast<std::uint32_t>(headerValue.second);
             if(vdim == 1)
             {
                 SetPixelType(SCALAR);
@@ -206,35 +181,31 @@ void InrImageIO::ReadImageInformation()
 
             SetNumberOfComponents(vdim);
         }
-        else if(it->first == "VX")
+        else if(headerValue.first == "VX")
         {
-            float vx = boost::lexical_cast<float>(it->second);
+            auto vx = boost::lexical_cast<float>(headerValue.second);
             this->SetSpacing(0, vx);
         }
-        else if(it->first == "VY")
+        else if(headerValue.first == "VY")
         {
-            float vy = boost::lexical_cast<float>(it->second);
+            auto vy = boost::lexical_cast<float>(headerValue.second);
             this->SetSpacing(1, vy);
         }
-        else if(it->first == "VZ")
+        else if(headerValue.first == "VZ")
         {
-            float vz = boost::lexical_cast<float>(it->second);
+            auto vz = boost::lexical_cast<float>(headerValue.second);
             this->SetSpacing(2, vz);
         }
-        else if(it->first == "TYPE")
+        else if(headerValue.first == "TYPE")
         {
-            std::map<std::string, std::string>::const_iterator pixsize_it = headerValues.find("PIXSIZE");
+            auto pixsize_it = headerValues.find("PIXSIZE");
             if(pixsize_it == headerValues.end())
             {
                 // Missing pixsize
-                ExceptionObject exception(__FILE__, __LINE__);
-                std::stringstream errorMessage;
-                errorMessage << "Invalid INR file.\n" << "PIXSIZE key not found.";
-                exception.SetDescription(errorMessage.str());
-                throw exception;
+                throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nPIXSIZE key not found.");
             }
 
-            std::string type    = it->second;
+            std::string type    = headerValue.second;
             std::string pixsize = pixsize_it->second;
             if(type == "unsigned fixed")
             {
@@ -252,17 +223,13 @@ void InrImageIO::ReadImageInformation()
                     {
                         m_ComponentType = UINT;
                     }
-                    else if(4 == sizeof(unsigned long))
+                    else if(4 == sizeof(unsigned long)) // NOLINT(google-runtime-int)
                     {
                         m_ComponentType = ULONG;
                     }
                     else
                     {
-                        ExceptionObject exception(__FILE__, __LINE__);
-                        std::stringstream errorMessage;
-                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                        exception.SetDescription(errorMessage.str());
-                        throw exception;
+                        throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                     }
                 }
                 else if(pixsize == "64 bits")
@@ -271,26 +238,18 @@ void InrImageIO::ReadImageInformation()
                     {
                         m_ComponentType = UINT;
                     }
-                    else if(8 == sizeof(unsigned long))
+                    else if(8 == sizeof(unsigned long)) // NOLINT(google-runtime-int)
                     {
                         m_ComponentType = ULONG;
                     }
                     else
                     {
-                        ExceptionObject exception(__FILE__, __LINE__);
-                        std::stringstream errorMessage;
-                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                        exception.SetDescription(errorMessage.str());
-                        throw exception;
+                        throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                     }
                 }
                 else
                 {
-                    ExceptionObject exception(__FILE__, __LINE__);
-                    std::stringstream errorMessage;
-                    errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                    exception.SetDescription(errorMessage.str());
-                    throw exception;
+                    throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                 }
             }
             else if(type == "signed fixed")
@@ -309,17 +268,13 @@ void InrImageIO::ReadImageInformation()
                     {
                         m_ComponentType = INT;
                     }
-                    else if(4 == sizeof(long))
+                    else if(4 == sizeof(long)) // NOLINT(google-runtime-int)
                     {
                         m_ComponentType = LONG;
                     }
                     else
                     {
-                        ExceptionObject exception(__FILE__, __LINE__);
-                        std::stringstream errorMessage;
-                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                        exception.SetDescription(errorMessage.str());
-                        throw exception;
+                        throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                     }
                 }
                 else if(pixsize == "64 bits")
@@ -328,39 +283,23 @@ void InrImageIO::ReadImageInformation()
                     {
                         m_ComponentType = INT;
                     }
-                    else if(8 == sizeof(long))
+                    else if(8 == sizeof(long)) // NOLINT(google-runtime-int)
                     {
                         m_ComponentType = LONG;
                     }
                     else
                     {
-                        ExceptionObject exception(__FILE__, __LINE__);
-                        std::stringstream errorMessage;
-                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                        exception.SetDescription(errorMessage.str());
-                        throw exception;
+                        throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                     }
                 }
                 else
                 {
-                    ExceptionObject exception(__FILE__, __LINE__);
-                    std::stringstream errorMessage;
-                    errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                    exception.SetDescription(errorMessage.str());
-                    throw exception;
+                    throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                 }
             }
             else if(type == "float")
             {
-                /*
-                   if(pixsize=="8 bits")
-                   {
-                   }
-                   else if(pixsize=="16 bits")
-                   {
-                   }
-                 */
-                /*else*/ if(pixsize == "32 bits")
+                if(pixsize == "32 bits")
                 {
                     m_ComponentType = FLOAT;
                 }
@@ -370,41 +309,30 @@ void InrImageIO::ReadImageInformation()
                 }
                 else
                 {
-                    ExceptionObject exception(__FILE__, __LINE__);
-                    std::stringstream errorMessage;
-                    errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
-                    exception.SetDescription(errorMessage.str());
-                    throw exception;
+                    throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid PIXSIZE.");
                 }
             }
             else
             {
-                ExceptionObject exception(__FILE__, __LINE__);
-                std::stringstream errorMessage;
-                errorMessage << "Invalid INR file.\n" << "Invalid TYPE.";
-                exception.SetDescription(errorMessage.str());
-                throw exception;
+                throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid TYPE.");
             }
         } // TYPE
-        else if(it->first == "PIXSIZE")
+        else if(headerValue.first == "PIXSIZE" || headerValue.first == "SCALE")
         {
-            // nothing to do, processed with "TYPE"
+            // PIXSIZE: nothing to do, processed with "TYPE"
+            // SCALE: For fixed point arithmetic only. We don't use it.
         }
-        else if(it->first == "SCALE")
-        {
-            // For fixed point arithmetic only. We don't use it.
-        }
-        else if(it->first == "CPU")
+        else if(headerValue.first == "CPU")
         {
             // Big endian are : sun, sgi
-            if(it->second == "sun" || it->second == "sgi")
+            if(headerValue.second == "sun" || headerValue.second == "sgi")
             {
                 // File is big-endian, swap if system is little endian.
                 //m_swapBytes = itk::ByteSwapper<char>::SystemIsLE();
                 m_ByteOrder = BigEndian;
             }
             // Little endian are : pc, alpha, decm
-            else if(it->second == "pc" || it->second == "alpha" || it->second == "decm")
+            else if(headerValue.second == "pc" || headerValue.second == "alpha" || headerValue.second == "decm")
             {
                 // File is little-endian, swap if system is big-endian.
                 //m_swapBytes = itk::ByteSwapper<char>::SystemIsBE();
@@ -412,11 +340,11 @@ void InrImageIO::ReadImageInformation()
             }
             else
             {
-                ExceptionObject exception(__FILE__, __LINE__);
-                std::stringstream errorMessage;
-                errorMessage << "Invalid INR file.\n" << "Unknown CPU value : " << it->second;
-                exception.SetDescription(errorMessage.str());
-                throw exception;
+                throw ExceptionObject(
+                          __FILE__,
+                          __LINE__,
+                          "Invalid INR file.\nUnknown CPU value : "s + headerValue.second
+                );
             }
         }
     }
@@ -426,27 +354,26 @@ void InrImageIO::ReadImageInformation()
 
 void InrImageIO::Read(void* buffer)
 {
+    using namespace std::literals::string_literals;
+
     gzFile file = gzopen(GetFileName(), "rb");
 
-    if(file == NULL)
+    if(file == nullptr)
     {
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "INR file " << GetFileName() << " could not be read";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(__FILE__, __LINE__, "INR file "s + GetFileName() + " could not be read");
     }
 
     // Skip the header
     int bytesSkipped = int(gzseek(file, m_headerSize, SEEK_CUR));
     if(bytesSkipped != m_headerSize)
     {
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "INR file " << GetFileName() << " could not be read (header size : " << bytesSkipped << "/"
-        << m_headerSize << ").";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(
+                  __FILE__,
+                  __LINE__,
+                  "INR file "s + GetFileName() + " could not be read (header size : " + std::to_string(
+                      bytesSkipped
+                  ) + "/" + std::to_string(m_headerSize) + ")."
+        );
     }
 
     // And read the buffer
@@ -454,10 +381,10 @@ void InrImageIO::Read(void* buffer)
     // Replace this line :
     //int bytesRead = gzread(file, buffer, GetImageSizeInBytes());
     // by
-    int bytesRead      = 0;
-    int nbStep         = 10;
-    long long int size =
-        ((GetImageSizeInBytes() > 1024 * 1024 * 10) ? (GetImageSizeInBytes() / nbStep) + 1 : GetImageSizeInBytes());
+    int bytesRead     = 0;
+    int nbStep        = 10;
+    std::int64_t size =
+        ((GetImageSizeInBytes() > 1024LL * 1024 * 10) ? (GetImageSizeInBytes() / nbStep) + 1 : GetImageSizeInBytes());
     int step = 0;
     try
     {
@@ -466,7 +393,11 @@ void InrImageIO::Read(void* buffer)
             step++;
             UpdateProgress(((float) bytesRead) / float(GetImageSizeInBytes()));
             bytesRead +=
-                gzread(file, ((char*) buffer) + bytesRead, std::uint32_t(min(size, GetImageSizeInBytes() - bytesRead)));
+                gzread(
+                    file,
+                    reinterpret_cast<char*>(buffer) + bytesRead,
+                    std::uint32_t(std::min(size, GetImageSizeInBytes() - bytesRead))
+                );
         }
     }
     catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
@@ -480,14 +411,10 @@ void InrImageIO::Read(void* buffer)
     if(bytesRead != GetImageSizeInBytes())
     {
         gzclose(file);
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "INR file " << GetFileName() << " could not be read";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(__FILE__, __LINE__, "INR file "s + GetFileName() + " could not be read");
     }
 
-    const std::size_t imageSizeInComponents = std::size_t(GetImageSizeInComponents());
+    const auto imageSizeInComponents = std::size_t(GetImageSizeInComponents());
 
     // Swap bytes if necessary
     if(m_ByteOrder == LittleEndian)
@@ -495,62 +422,78 @@ void InrImageIO::Read(void* buffer)
         switch(m_ComponentType)
         {
             case CHAR:
-                ByteSwapper<char>::SwapRangeFromSystemToLittleEndian((char*) buffer, imageSizeInComponents);
+                ByteSwapper<char>::SwapRangeFromSystemToLittleEndian(
+                    reinterpret_cast<char*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             case UCHAR:
                 ByteSwapper<unsigned char>::SwapRangeFromSystemToLittleEndian(
-                    (unsigned char*) buffer,
+                    reinterpret_cast<unsigned char*>(buffer),
                     imageSizeInComponents
                 );
                 break;
 
             case SHORT:
-                ByteSwapper<short>::SwapRangeFromSystemToLittleEndian((short*) buffer, imageSizeInComponents);
+                ByteSwapper<short>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<short*>(buffer),                  // NOLINT(google-runtime-int)
+                    imageSizeInComponents
+                );
                 break;
 
             case USHORT:
-                ByteSwapper<unsigned short>::SwapRangeFromSystemToLittleEndian(
-                    (unsigned short*) buffer,
+                ByteSwapper<unsigned short>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<unsigned short*>(buffer),                  // NOLINT(google-runtime-int)
                     imageSizeInComponents
                 );
                 break;
 
             case INT:
-                ByteSwapper<int>::SwapRangeFromSystemToLittleEndian((int*) buffer, imageSizeInComponents);
+                ByteSwapper<int>::SwapRangeFromSystemToLittleEndian(
+                    reinterpret_cast<int*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             case UINT:
                 ByteSwapper<unsigned int>::SwapRangeFromSystemToLittleEndian(
-                    (unsigned int*) buffer,
+                    reinterpret_cast<unsigned int*>(buffer),
                     imageSizeInComponents
                 );
                 break;
 
             case LONG:
-                ByteSwapper<long>::SwapRangeFromSystemToLittleEndian((long*) buffer, imageSizeInComponents);
+                ByteSwapper<long>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<long*>(buffer),                  // NOLINT(google-runtime-int)
+                    imageSizeInComponents
+                );
                 break;
 
             case ULONG:
-                ByteSwapper<unsigned long>::SwapRangeFromSystemToLittleEndian(
-                    (unsigned long*) buffer,
+                ByteSwapper<unsigned long>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<unsigned long*>(buffer),                  // NOLINT(google-runtime-int)
                     imageSizeInComponents
                 );
                 break;
 
             case FLOAT:
-                ByteSwapper<float>::SwapRangeFromSystemToLittleEndian((float*) buffer, imageSizeInComponents);
+                ByteSwapper<float>::SwapRangeFromSystemToLittleEndian(
+                    reinterpret_cast<float*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             case DOUBLE:
-                ByteSwapper<double>::SwapRangeFromSystemToLittleEndian((double*) buffer, imageSizeInComponents);
+                ByteSwapper<double>::SwapRangeFromSystemToLittleEndian(
+                    reinterpret_cast<double*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             default:
                 gzclose(file);
-                ExceptionObject exception(__FILE__, __LINE__);
-                exception.SetDescription("Pixel Type Unknown");
-                throw exception;
+                throw ExceptionObject(__FILE__, __LINE__, "Pixel Type Unknown");
         }
     }
     else if(m_ByteOrder == BigEndian)
@@ -558,62 +501,75 @@ void InrImageIO::Read(void* buffer)
         switch(m_ComponentType)
         {
             case CHAR:
-                ByteSwapper<char>::SwapRangeFromSystemToBigEndian((char*) buffer, imageSizeInComponents);
+                ByteSwapper<char>::SwapRangeFromSystemToBigEndian(
+                    reinterpret_cast<char*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             case UCHAR:
                 ByteSwapper<unsigned char>::SwapRangeFromSystemToBigEndian(
-                    (unsigned char*) buffer,
+                    reinterpret_cast<unsigned char*>(buffer),
                     imageSizeInComponents
                 );
                 break;
 
             case SHORT:
-                ByteSwapper<short>::SwapRangeFromSystemToBigEndian((short*) buffer, imageSizeInComponents);
+                ByteSwapper<short>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<short*>(buffer),               // NOLINT(google-runtime-int)
+                    imageSizeInComponents
+                );
                 break;
 
             case USHORT:
-                ByteSwapper<unsigned short>::SwapRangeFromSystemToBigEndian(
-                    (unsigned short*) buffer,
+                ByteSwapper<unsigned short>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<unsigned short*>(buffer),               // NOLINT(google-runtime-int)
                     imageSizeInComponents
                 );
                 break;
 
             case INT:
-                ByteSwapper<int>::SwapRangeFromSystemToBigEndian((int*) buffer, imageSizeInComponents);
+                ByteSwapper<int>::SwapRangeFromSystemToBigEndian(reinterpret_cast<int*>(buffer), imageSizeInComponents);
                 break;
 
             case UINT:
                 ByteSwapper<unsigned int>::SwapRangeFromSystemToBigEndian(
-                    (unsigned int*) buffer,
+                    reinterpret_cast<unsigned int*>(buffer),
                     imageSizeInComponents
                 );
                 break;
 
             case LONG:
-                ByteSwapper<long>::SwapRangeFromSystemToBigEndian((long*) buffer, imageSizeInComponents);
+                ByteSwapper<long>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<long*>(buffer),               // NOLINT(google-runtime-int)
+                    imageSizeInComponents
+                );
                 break;
 
             case ULONG:
-                ByteSwapper<unsigned long>::SwapRangeFromSystemToBigEndian(
-                    (unsigned long*) buffer,
+                ByteSwapper<unsigned long>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
+                    reinterpret_cast<unsigned long*>(buffer),               // NOLINT(google-runtime-int)
                     imageSizeInComponents
                 );
                 break;
 
             case FLOAT:
-                ByteSwapper<float>::SwapRangeFromSystemToBigEndian((float*) buffer, imageSizeInComponents);
+                ByteSwapper<float>::SwapRangeFromSystemToBigEndian(
+                    reinterpret_cast<float*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             case DOUBLE:
-                ByteSwapper<double>::SwapRangeFromSystemToBigEndian((double*) buffer, imageSizeInComponents);
+                ByteSwapper<double>::SwapRangeFromSystemToBigEndian(
+                    reinterpret_cast<double*>(buffer),
+                    imageSizeInComponents
+                );
                 break;
 
             default:
                 gzclose(file);
-                ExceptionObject exception(__FILE__, __LINE__);
-                exception.SetDescription("Pixel Type Unknown");
-                throw exception;
+                throw ExceptionObject(__FILE__, __LINE__, "Pixel Type Unknown");
         }
     }
 
@@ -634,18 +590,15 @@ bool InrImageIO::CanWriteFile(const char* FileNameToWrite)
     }
 
     index = filename.rfind(".inr.gz");
-    if(index == filename.length() - std::string(".inr.gz").length())
-    {
-        return true;
-    }
-
-    return false;
+    return index == filename.length() - std::string(".inr.gz").length();
 }
 
 //------------------------------------------------------------------------------
 
 void InrImageIO::WriteImageInformation()
 {
+    using namespace std::literals::string_literals;
+
     std::stringstream headerStream;
 
     // Magic
@@ -681,24 +634,23 @@ void InrImageIO::WriteImageInformation()
     else
     {
         // Unknown/incorrect component type
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "File " << GetFileName()
-        << " could not be written : unknown pixel type.";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(
+                  __FILE__,
+                  __LINE__,
+                  "File "s + GetFileName() + " could not be written : unknown pixel type."
+        );
     }
 
     headerStream << "TYPE=" << type << "\n";
     // PixelSize
-    int pixelSize;
+    int pixelSize = 0;
     if(m_ComponentType == UCHAR || m_ComponentType == CHAR)
     {
         pixelSize = sizeof(char);
     }
     else if(m_ComponentType == USHORT || m_ComponentType == SHORT)
     {
-        pixelSize = sizeof(short);
+        pixelSize = sizeof(short); // NOLINT(google-runtime-int)
     }
     else if(m_ComponentType == UINT || m_ComponentType == INT)
     {
@@ -706,7 +658,7 @@ void InrImageIO::WriteImageInformation()
     }
     else if(m_ComponentType == ULONG || m_ComponentType == LONG)
     {
-        pixelSize = sizeof(long);
+        pixelSize = sizeof(long); // NOLINT(google-runtime-int)
     }
     else if(m_ComponentType == FLOAT)
     {
@@ -719,12 +671,11 @@ void InrImageIO::WriteImageInformation()
     else
     {
         // Unknown/incorrect component type
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "File " << GetFileName()
-        << " could not be written : unknown pixel type.";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(
+                  __FILE__,
+                  __LINE__,
+                  "File "s + GetFileName() + " could not be written : unknown pixel type."
+        );
     }
 
     pixelSize *= 8;
@@ -740,12 +691,11 @@ void InrImageIO::WriteImageInformation()
     if(!headerStream)
     {
         // Something could not be written to headerStream
-        ExceptionObject exception(__FILE__, __LINE__);
-        std::stringstream errorMessage;
-        errorMessage << "File " << GetFileName()
-        << " could not be written : error while writing to headerStream.";
-        exception.SetDescription(errorMessage.str());
-        throw exception;
+        throw ExceptionObject(
+                  __FILE__,
+                  __LINE__,
+                  "File "s + GetFileName() + " could not be written : error while writing to headerStream."
+        );
     }
 
     std::string const header = headerStream.str();
@@ -755,36 +705,41 @@ void InrImageIO::WriteImageInformation()
     if(index == filename.length() - std::string(".inr.gz").length())
     {
         gzFile outputFile = gzopen(this->GetFileName(), "wb9");
-        if(outputFile == 0)
+        if(outputFile == nullptr)
         {
-            ExceptionObject exception(__FILE__, __LINE__);
-            std::stringstream errorMessage;
-            errorMessage << "File " << GetFileName()
-            << " could not be written : error writing header.";
-            exception.SetDescription(errorMessage.str());
-            throw exception;
+            throw ExceptionObject(
+                      __FILE__,
+                      __LINE__,
+                      "File "s + GetFileName() + " could not be written : error writing header."
+            );
         }
 
-        std::string const headerString = headerStream.str();
-        gzwrite(outputFile, const_cast<char*>(headerString.c_str()), std::uint32_t(headerString.length()));
+        std::string headerString = headerStream.str();
+        gzwrite(outputFile, headerString.c_str(), std::uint32_t(headerString.length()));
         gzclose(outputFile);
     }
     else
     {
         FILE* outputFile = fopen(this->GetFileName(), "wb");
-        if(outputFile == 0)
+        if(outputFile == nullptr)
         {
-            ExceptionObject exception(__FILE__, __LINE__);
-            std::stringstream errorMessage;
-            errorMessage << "File " << GetFileName()
-            << " could not be written : error writing header.";
-            exception.SetDescription(errorMessage.str());
-            throw exception;
+            throw ExceptionObject(
+                      __FILE__,
+                      __LINE__,
+                      "File "s + GetFileName() + " could not be written : error writing header."
+            );
         }
 
         std::string const headerString = headerStream.str();
-        fwrite(headerString.c_str(), sizeof(char), headerString.length(), outputFile);
-        fclose(outputFile);
+        if(fwrite(headerString.c_str(), sizeof(char), headerString.length(), outputFile) == 0)
+        {
+            perror("fwrite");
+        }
+
+        if(fclose(outputFile) != 0)
+        {
+            perror("fclose");
+        }
     }
 }
 
@@ -792,6 +747,8 @@ void InrImageIO::WriteImageInformation()
 
 void InrImageIO::Write(const void* buffer)
 {
+    using namespace std::literals::string_literals;
+
     this->WriteImageInformation();
     std::string const filename(GetFileName());
     std::string const suffix(".inr.gz");
@@ -799,22 +756,21 @@ void InrImageIO::Write(const void* buffer)
     if(index == filename.length() - suffix.length())
     {
         gzFile outputFile = gzopen(this->GetFileName(), "ab");
-        if(outputFile == 0)
+        if(outputFile == nullptr)
         {
-            ExceptionObject exception(__FILE__, __LINE__);
-            std::stringstream errorMessage;
-            errorMessage << "File " << GetFileName()
-            << " could not be written : error writing buffer.";
-            exception.SetDescription(errorMessage.str());
-            throw exception;
+            throw ExceptionObject(
+                      __FILE__,
+                      __LINE__,
+                      "File "s + GetFileName() + " could not be written : error writing buffer."
+            );
         }
 
         // Replace this line :
         // gzwrite(outputFile, const_cast<void*>(buffer), GetImageSizeInBytes());
         // by
-        int written        = 0;
-        long long int size =
-            ((GetImageSizeInBytes() > 1024 * 1024 * 10) ? (GetImageSizeInBytes() / 10) + 1 : GetImageSizeInBytes());
+        int written       = 0;
+        std::int64_t size =
+            ((GetImageSizeInBytes() > 1024LL * 1024 * 10) ? (GetImageSizeInBytes() / 10) + 1 : GetImageSizeInBytes());
         try
         {
             while(written < GetImageSizeInBytes())
@@ -823,8 +779,8 @@ void InrImageIO::Write(const void* buffer)
                 written +=
                     gzwrite(
                         outputFile,
-                        ((char*) buffer) + written,
-                        std::uint32_t(min(size, GetImageSizeInBytes() - written))
+                        reinterpret_cast<const char*>(buffer) + written,
+                        std::uint32_t(std::min(size, GetImageSizeInBytes() - written))
                     );
             }
         }
@@ -841,22 +797,21 @@ void InrImageIO::Write(const void* buffer)
     else
     {
         FILE* outputFile = fopen(this->GetFileName(), "ab");
-        if(outputFile == 0)
+        if(outputFile == nullptr)
         {
-            ExceptionObject exception(__FILE__, __LINE__);
-            std::stringstream errorMessage;
-            errorMessage << "File " << GetFileName()
-            << " could not be written : error writing buffer.";
-            exception.SetDescription(errorMessage.str());
-            throw exception;
+            throw ExceptionObject(
+                      __FILE__,
+                      __LINE__,
+                      "File "s + GetFileName() + " could not be written : error writing buffer."
+            );
         }
 
         // Replace this line :
         // fwrite(buffer, 1, GetImageSizeInBytes(), outputFile);
         // by :
-        int written        = 0;
-        long long int size =
-            ((GetImageSizeInBytes() > 1024 * 1024 * 10) ? (GetImageSizeInBytes() / 10) + 1 : GetImageSizeInBytes());
+        int written       = 0;
+        std::int64_t size =
+            ((GetImageSizeInBytes() > 1024LL * 1024 * 10) ? (GetImageSizeInBytes() / 10) + 1 : GetImageSizeInBytes());
         try
         {
             while(written < GetImageSizeInBytes())
@@ -864,22 +819,22 @@ void InrImageIO::Write(const void* buffer)
                 UpdateProgress(((float) written) / float(GetImageSizeInBytes()));
                 written +=
                     int(fwrite(
-                            ((char*) buffer) + written,
+                            reinterpret_cast<const char*>(buffer) + written,
                             1,
-                            std::size_t(min(size, GetImageSizeInBytes() - written)),
+                            std::size_t(std::min(size, GetImageSizeInBytes() - written)),
                             outputFile
                     ));
             }
         }
         catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
         {
-            fclose(outputFile);
+            std::ignore = fclose(outputFile);
             throw;
         }
         UpdateProgress(1.0);
         // End replace
 
-        fclose(outputFile);
+        std::ignore = fclose(outputFile);
     }
 }
 

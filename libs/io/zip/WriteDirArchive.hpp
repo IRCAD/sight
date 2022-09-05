@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,10 +50,10 @@ public:
     }
 
     /// Constructors. Initializes archive path and creates archive directories if doesn't exist.
-    IO_ZIP_API WriteDirArchive(const std::filesystem::path& archive);
+    IO_ZIP_API WriteDirArchive(std::filesystem::path archive);
 
     /// Destructor. Flush and close last output file stream.
-    IO_ZIP_API ~WriteDirArchive();
+    IO_ZIP_API ~WriteDirArchive() override;
 
     /**
      * @brief Creates a new file entry in archive and returns output stream for this file.
@@ -85,11 +85,11 @@ public:
     /**
      * @brief Returns archive path.
      */
-    IO_ZIP_API const std::filesystem::path getArchivePath() const override;
+    [[nodiscard]] IO_ZIP_API std::filesystem::path getArchivePath() const override;
 
 protected:
 
     std::filesystem::path m_archive;
 };
 
-}
+} // namespace sight::io::zip

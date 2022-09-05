@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "utestData/generator/Mesh.hpp"
 
 #include <core/tools/random/Generator.hpp>
@@ -27,10 +29,7 @@
 #include <cstdlib>
 #include <ctime>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 using core::tools::random::safeRand;
@@ -41,7 +40,7 @@ struct RandFloat
 
     float operator()()
     {
-        return (static_cast<float>(safeRand() % 101) - 50.f) / 500.f;
+        return (static_cast<float>(safeRand() % 101) - 50.F) / 500.F;
     }
 };
 
@@ -121,9 +120,15 @@ void Mesh::generateQuadMesh(
 void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, std::size_t nbPointsByEdge, float edgeDim)
 {
     const auto dumpLock = mesh->dump_lock();
-    data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
-    data::Mesh::size_t idx1, idx2, idx3, idx4;
-    const float step = edgeDim / static_cast<float>(nbPointsByEdge);
+    std::array<data::Mesh::position_t, 3> pt1 {};
+    std::array<data::Mesh::position_t, 3> pt2 {};
+    std::array<data::Mesh::position_t, 3> pt3 {};
+    std::array<data::Mesh::position_t, 3> pt4 {};
+    data::Mesh::size_t idx1 = 0;
+    data::Mesh::size_t idx2 = 0;
+    data::Mesh::size_t idx3 = 0;
+    data::Mesh::size_t idx4 = 0;
+    const float step        = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Y = edgeDim
     for(std::size_t x = 0 ; x < nbPointsByEdge ; x++)
@@ -146,19 +151,19 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, std:
             pt4[1] = edgeDim;
             pt4[2] = static_cast<float>(z + 1) * step;
 
-            idx1 = Mesh::addPoint(pt1, mesh, points);
-            idx2 = Mesh::addPoint(pt2, mesh, points);
-            idx3 = Mesh::addPoint(pt3, mesh, points);
-            idx4 = Mesh::addPoint(pt4, mesh, points);
+            idx1 = Mesh::addPoint(pt1.data(), mesh, points);
+            idx2 = Mesh::addPoint(pt2.data(), mesh, points);
+            idx3 = Mesh::addPoint(pt3.data(), mesh, points);
+            idx4 = Mesh::addPoint(pt4.data(), mesh, points);
 
-            const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
+            const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
 
             if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto R = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto G = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto B = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId, R, G, B, A);
             }
 
@@ -194,18 +199,18 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, std:
             pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = static_cast<float>(z + 1) * step;
 
-            idx1 = Mesh::addPoint(pt1, mesh, points);
-            idx2 = Mesh::addPoint(pt2, mesh, points);
-            idx3 = Mesh::addPoint(pt3, mesh, points);
-            idx4 = Mesh::addPoint(pt4, mesh, points);
+            idx1 = Mesh::addPoint(pt1.data(), mesh, points);
+            idx2 = Mesh::addPoint(pt2.data(), mesh, points);
+            idx3 = Mesh::addPoint(pt3.data(), mesh, points);
+            idx4 = Mesh::addPoint(pt4.data(), mesh, points);
 
-            const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
+            const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
             if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto R = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto G = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto B = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId, R, G, B, A);
             }
 
@@ -232,9 +237,15 @@ void Mesh::addTriangleMesh(
 {
     const auto dumpLock = mesh->dump_lock();
 
-    data::Mesh::position_t pt1[3], pt2[3], pt3[3], pt4[3];
-    data::Mesh::size_t idx1, idx2, idx3, idx4;
-    const float step = edgeDim / static_cast<float>(nbPointsByEdge);
+    std::array<data::Mesh::position_t, 3> pt1 {};
+    std::array<data::Mesh::position_t, 3> pt2 {};
+    std::array<data::Mesh::position_t, 3> pt3 {};
+    std::array<data::Mesh::position_t, 3> pt4 {};
+    data::Mesh::size_t idx1 = 0;
+    data::Mesh::size_t idx2 = 0;
+    data::Mesh::size_t idx3 = 0;
+    data::Mesh::size_t idx4 = 0;
+    const float step        = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Z = 0
     for(std::size_t x = 0 ; x < nbPointsByEdge ; x++)
@@ -257,20 +268,20 @@ void Mesh::addTriangleMesh(
             pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = 0;
 
-            idx1 = Mesh::addPoint(pt1, mesh, points);
-            idx2 = Mesh::addPoint(pt2, mesh, points);
-            idx3 = Mesh::addPoint(pt3, mesh, points);
-            idx4 = Mesh::addPoint(pt4, mesh, points);
+            idx1 = Mesh::addPoint(pt1.data(), mesh, points);
+            idx2 = Mesh::addPoint(pt2.data(), mesh, points);
+            idx3 = Mesh::addPoint(pt3.data(), mesh, points);
+            idx4 = Mesh::addPoint(pt4.data(), mesh, points);
 
-            const auto cellId1 = mesh->pushCell(idx1, idx4, idx2);
-            const auto cellId2 = mesh->pushCell(idx1, idx3, idx4);
+            const auto cellId1 = mesh->pushCell(idx1, idx4, idx2); // NOLINT(readability-suspicious-call-argument)
+            const auto cellId2 = mesh->pushCell(idx1, idx3, idx4); // NOLINT(readability-suspicious-call-argument)
 
             if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto R = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto G = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto B = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId1, R, G, B, A);
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
@@ -308,20 +319,20 @@ void Mesh::addTriangleMesh(
             pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = static_cast<float>(z + 1) * step;
 
-            idx1 = Mesh::addPoint(pt1, mesh, points);
-            idx2 = Mesh::addPoint(pt2, mesh, points);
-            idx3 = Mesh::addPoint(pt3, mesh, points);
-            idx4 = Mesh::addPoint(pt4, mesh, points);
+            idx1 = Mesh::addPoint(pt1.data(), mesh, points);
+            idx2 = Mesh::addPoint(pt2.data(), mesh, points);
+            idx3 = Mesh::addPoint(pt3.data(), mesh, points);
+            idx4 = Mesh::addPoint(pt4.data(), mesh, points);
 
-            const auto cellId1 = mesh->pushCell(idx2, idx4, idx3);
+            const auto cellId1 = mesh->pushCell(idx2, idx4, idx3); // NOLINT(readability-suspicious-call-argument)
             const auto cellId2 = mesh->pushCell(idx1, idx2, idx3);
 
             if(mesh->has<data::Mesh::Attributes::CELL_COLORS>())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto R = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto G = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto B = static_cast<std::uint8_t>(safeRand() % 255);
+                const auto A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId1, R, G, B, A);
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
@@ -350,7 +361,7 @@ data::Mesh::size_t Mesh::addPoint(
     RandFloat randFloat;
     std::array<float, 3> myPoint = {pt[0], pt[1], pt[2]};
 
-    PointsMapType::iterator it = points.find(myPoint);
+    auto it = points.find(myPoint);
     if(it != points.end())
     {
         return it->second;
@@ -359,10 +370,10 @@ data::Mesh::size_t Mesh::addPoint(
     const data::Mesh::point_t idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
     if(mesh->has<data::Mesh::Attributes::POINT_COLORS>())
     {
-        const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
-        const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
-        const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
-        const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
+        const auto R = static_cast<std::uint8_t>(safeRand() % 255);
+        const auto G = static_cast<std::uint8_t>(safeRand() % 255);
+        const auto B = static_cast<std::uint8_t>(safeRand() % 255);
+        const auto A = static_cast<std::uint8_t>(safeRand() % 255);
         mesh->setPointColor(idx, R, G, B, A);
     }
 
@@ -400,6 +411,4 @@ void Mesh::shakePoints(const data::Mesh::sptr& mesh)
 
 //------------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

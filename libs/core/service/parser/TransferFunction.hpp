@@ -26,10 +26,7 @@
 
 #include <service/IXMLParser.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 /**
@@ -45,13 +42,11 @@ public:
 
     /// Constructor : does nothing.
     TransferFunction()
-    {
-    }
+    = default;
 
     /// Destructor : does nothing.
-    virtual ~TransferFunction()
-    {
-    }
+    ~TransferFunction() override
+    = default;
 
     /**
      * @code{.xml}
@@ -95,6 +90,4 @@ protected:
     SERVICE_API void updating() override;
 };
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

@@ -27,13 +27,16 @@
 #include "data/timeline/GenericObject.hpp"
 #include "data/timeline/GenericObject.hxx"
 
+#include <array>
+
 namespace sight::data
 {
 
 /**
  * @brief   This class defines a timeline that stores groups of matrices.
  */
-class DATA_CLASS_API MatrixTL : public GenericTL<float [16]>
+class DATA_CLASS_API MatrixTL : public GenericTL<std::array<float,
+                                                            16> >
 {
 public:
 
@@ -44,7 +47,7 @@ public:
      * @param key Private construction key
      */
     MatrixTL(Object::Key key) :
-        GenericTL<float [16]>(key)
+        GenericTL<std::array<float, 16> >(key)
     {
     }
 };

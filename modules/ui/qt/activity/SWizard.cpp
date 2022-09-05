@@ -54,10 +54,7 @@
 #include <QObject>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 //------------------------------------------------------------------------------
@@ -76,10 +73,7 @@ using sight::activity::extension::Activity;
 
 //------------------------------------------------------------------------------
 
-SWizard::SWizard() noexcept :
-    m_mode(Mode::CREATE),
-    m_confirmUpdate(true),
-    m_isCancelable(true)
+SWizard::SWizard() noexcept
 {
     newSlot(s_CREATE_ACTIVITY_SLOT, &SWizard::createActivity, this);
     newSlot(s_UPDATE_ACTIVITY_SLOT, &SWizard::updateActivity, this);
@@ -92,9 +86,8 @@ SWizard::SWizard() noexcept :
 
 //------------------------------------------------------------------------------
 
-SWizard::~SWizard() noexcept
-{
-}
+SWizard::~SWizard() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -122,9 +115,9 @@ void SWizard::configuring()
     {
         const auto anotherIconCfg = itIcon->second.get_child("<xmlattr>");
 
-        const std::string type = anotherIconCfg.get<std::string>("type");
+        const auto type = anotherIconCfg.get<std::string>("type");
         SIGHT_ASSERT("'type' attribute must not be empty", !type.empty());
-        const std::string icon = anotherIconCfg.get<std::string>("icon");
+        const auto icon = anotherIconCfg.get<std::string>("icon");
         SIGHT_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
         const auto file = core::runtime::getResourceFilePath(icon);
@@ -144,7 +137,7 @@ void SWizard::starting()
 
     QWidget* const container = qtContainer->getQtContainer();
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
     m_title = new QLabel("");
@@ -173,7 +166,7 @@ void SWizard::starting()
 
     layout->addWidget(m_DataView, 1);
 
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    auto* buttonLayout = new QHBoxLayout();
     layout->addLayout(buttonLayout);
 
     if(m_isCancelable)
@@ -445,7 +438,8 @@ void SWizard::onBuildActivity()
                 {
                     return;
                 }
-                else if(button == QMessageBox::Yes)
+
+                if(button == QMessageBox::Yes)
                 {
                     m_actSeries = data::Object::copy(m_actSeries);
                     m_mode      = Mode::CREATE; // The new activity should be added in the seriesDB
@@ -524,6 +518,4 @@ void SWizard::onBuildActivity()
 
 //------------------------------------------------------------------------------
 
-} //namespace activity
-
-} //namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

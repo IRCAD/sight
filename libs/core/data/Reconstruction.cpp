@@ -44,10 +44,8 @@ const core::com::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SI
 
 //------------------------------------------------------------------------------
 
-Reconstruction::Reconstruction(data::Object::Key) :
-    m_bIsVisible(false),
-    m_sOrganName(""),
-    m_sStructureType(""),
+Reconstruction::Reconstruction(data::Object::Key /*unused*/) :
+
     m_material(data::factory::New<data::Material>()),
     m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
 {
@@ -60,8 +58,7 @@ Reconstruction::Reconstruction(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 Reconstruction::~Reconstruction()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

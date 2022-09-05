@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::activity::validator
-{
-
-namespace ut
+namespace sight::module::activity::validator::ut
 {
 
 /// Test the StereoCamera validator
@@ -40,12 +37,10 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void testValidator();
+    static void testValidator();
 };
 
-} //namespace ut
-
-} //namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ut

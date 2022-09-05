@@ -28,10 +28,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::LandmarksTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -56,12 +53,12 @@ void LandmarksTest::copyTest()
     const std::string GROUP1                = "group_1";
     const std::string GROUP2                = "group_2";
     const std::string GROUP3                = "group_3";
-    const data::Landmarks::ColorType COLOR1 = {{1.f, 0.0f, 0.0f, 1.0f}};
-    const data::Landmarks::ColorType COLOR2 = {{0.f, 1.0f, 0.0f, 1.0f}};
-    const data::Landmarks::ColorType COLOR3 = {{0.f, 0.0f, 1.0f, 1.0f}};
-    const data::Landmarks::SizeType SIZE1   = 3.45f;
-    const data::Landmarks::SizeType SIZE2   = 7.5f;
-    const data::Landmarks::SizeType SIZE3   = 1.3f;
+    const data::Landmarks::ColorType COLOR1 = {{1.F, 0.0F, 0.0F, 1.0F}};
+    const data::Landmarks::ColorType COLOR2 = {{0.F, 1.0F, 0.0F, 1.0F}};
+    const data::Landmarks::ColorType COLOR3 = {{0.F, 0.0F, 1.0F, 1.0F}};
+    const data::Landmarks::SizeType SIZE1   = 3.45F;
+    const data::Landmarks::SizeType SIZE2   = 7.5F;
+    const data::Landmarks::SizeType SIZE3   = 1.3F;
     const data::Landmarks::Shape SHAPE1     = data::Landmarks::Shape::SPHERE;
     const data::Landmarks::Shape SHAPE2     = data::Landmarks::Shape::CUBE;
     const data::Landmarks::Shape SHAPE3     = data::Landmarks::Shape::SPHERE;
@@ -150,12 +147,12 @@ void LandmarksTest::groupTest()
     const std::string GROUP2                = "group_2";
     const std::string GROUP3                = "group_3";
     const std::string NO_GROUP              = "no_group";
-    const data::Landmarks::ColorType COLOR1 = {{1.f, 0.0f, 0.0f, 1.0f}};
-    const data::Landmarks::ColorType COLOR2 = {{0.f, 1.0f, 0.0f, 1.0f}};
-    const data::Landmarks::ColorType COLOR3 = {{0.f, 0.0f, 1.0f, 1.0f}};
-    const data::Landmarks::SizeType SIZE1   = 3.45f;
-    const data::Landmarks::SizeType SIZE2   = 7.5f;
-    const data::Landmarks::SizeType SIZE3   = 1.3f;
+    const data::Landmarks::ColorType COLOR1 = {{1.F, 0.0F, 0.0F, 1.0F}};
+    const data::Landmarks::ColorType COLOR2 = {{0.F, 1.0F, 0.0F, 1.0F}};
+    const data::Landmarks::ColorType COLOR3 = {{0.F, 0.0F, 1.0F, 1.0F}};
+    const data::Landmarks::SizeType SIZE1   = 3.45F;
+    const data::Landmarks::SizeType SIZE2   = 7.5F;
+    const data::Landmarks::SizeType SIZE3   = 1.3F;
     const data::Landmarks::Shape SHAPE1     = data::Landmarks::Shape::SPHERE;
     const data::Landmarks::Shape SHAPE2     = data::Landmarks::Shape::CUBE;
     const data::Landmarks::Shape SHAPE3     = data::Landmarks::Shape::SPHERE;
@@ -369,6 +366,4 @@ void LandmarksTest::pointsTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

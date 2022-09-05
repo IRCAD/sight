@@ -60,9 +60,9 @@ public:
      * @param[in] roi region of interest.
      */
     FILTER_IMAGE_API MinMaxPropagation(
-        const data::Image::csptr& inImage,
-        const data::Image::sptr& outImage,
-        const data::Image::csptr& roi
+        data::Image::csptr inImage,
+        data::Image::sptr outImage,
+        data::Image::csptr roi
     );
 
     /**
@@ -78,9 +78,9 @@ public:
     FILTER_IMAGE_API ImageDiff propagate(
         SeedsType& seeds,
         data::Image::BufferType* value,
-        const double radius,
-        const bool overwrite,
-        const Mode mode
+        double radius,
+        bool overwrite,
+        Mode mode
     );
 
 private:

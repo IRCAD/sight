@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,13 +28,7 @@
 #include <filesystem>
 #include <fstream>
 
-namespace sight::core::memory
-{
-
-namespace stream
-{
-
-namespace in
+namespace sight::core::memory::stream::in
 {
 
 SPTR(std::istream) Raw::get()
@@ -49,8 +43,4 @@ SPTR(std::istream) Raw::get()
     return fs;
 }
 
-} // namespace in
-
-} // namespace stream
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::stream::in

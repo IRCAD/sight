@@ -28,14 +28,7 @@
 #include <filesystem>
 #include <string>
 
-namespace sight::core::tools
-{
-
-/**
- * @brief   Namespace core::tools::os contains tools methods which depend on os like get user application data
- * directory.
- */
-namespace os
+namespace sight::core::tools::os
 {
 
 /**
@@ -84,6 +77,4 @@ CORE_API std::string getUserDataDir(
  */
 CORE_API std::filesystem::path getSharedLibraryPath(const std::string& _libName);
 
-} // namespace os
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::os

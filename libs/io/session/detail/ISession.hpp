@@ -31,10 +31,7 @@
 
 #include <filesystem>
 
-namespace sight::io::session
-{
-
-namespace detail
+namespace sight::io::session::detail
 {
 
 /// Interface to define a location that holds what is needed to de/serialize a session.
@@ -49,10 +46,10 @@ public:
     constexpr static auto s_fields {"fields"};
 
     /// String serialization function
-    inline std::string toString() const override;
+    [[nodiscard]] inline std::string toString() const override;
 
     /// Return the default index file path inside the session archive
-    inline std::filesystem::path getIndexFilePath() const;
+    static inline std::filesystem::path getIndexFilePath();
 
     /// Salt the password, depending of the encryption level
     /// "PASSWORD" means encrypt if a password is provided, using the same key.
@@ -67,7 +64,7 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& password,
         const core::crypto::secure_string& salt,
-        const core::crypto::PasswordKeeper::EncryptionPolicy policy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
+        core::crypto::PasswordKeeper::EncryptionPolicy policy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
     );
 
 protected:
@@ -76,7 +73,7 @@ protected:
     IO_SESSION_API ISession() = default;
 
     /// Destructor
-    IO_SESSION_API virtual ~ISession() = default;
+    IO_SESSION_API ~ISession() override = default;
 };
 
 //------------------------------------------------------------------------------
@@ -88,7 +85,7 @@ inline std::string ISession::toString() const
 
 //------------------------------------------------------------------------------
 
-inline std::filesystem::path ISession::getIndexFilePath() const
+inline std::filesystem::path ISession::getIndexFilePath()
 {
     return "index.json";
 }
@@ -126,6 +123,4 @@ inline core::crypto::secure_string ISession::pickle(
     }
 }
 
-} // namespace detail
-
-} // namespace sight::io::session
+} // namespace sight::io::session::detail

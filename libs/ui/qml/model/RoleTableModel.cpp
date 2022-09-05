@@ -24,10 +24,7 @@
 
 #include <core/spyLog.hpp>
 
-namespace sight::ui::qml
-{
-
-namespace model
+namespace sight::ui::qml::model
 {
 
 RoleTableModel::RoleTableModel(QObject* parent) :
@@ -58,7 +55,7 @@ QVariant RoleTableModel::data(const QModelIndex& index, int role) const
     // check if the role exist
     if(!m_roles.contains(role))
     {
-        return QVariant();
+        return {};
     }
 
     // Check boundaries
@@ -66,7 +63,7 @@ QVariant RoleTableModel::data(const QModelIndex& index, int role) const
        || index.row() < 0
        || rowCount() <= index.row())
     {
-        return QVariant();
+        return {};
     }
 
     // Nominal case
@@ -108,6 +105,4 @@ bool RoleTableModel::isEmpty() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace model
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::model

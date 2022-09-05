@@ -32,10 +32,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::Os);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -83,11 +80,11 @@ void Os::getSharedLibraryPath()
 
     // Now load that library and check that we find it
 #if defined(WIN32)
-    const auto lib = "zstd";
+    const auto lib     = "zstd";
     const auto libPath = fs::weakly_canonical(fs::path(BOOST_LIB_DIR) / "zstd.dll");
 #else
-    const auto lib     = "boost_date_time";
-    const auto libPath = fs::path(BOOST_LIB_DIR) / "libboost_date_time.so.1.74.0";
+    const auto* const lib = "boost_date_time";
+    const auto libPath    = fs::path(BOOST_LIB_DIR) / "libboost_date_time.so.1.74.0";
 #endif
     auto handle = boost::dll::shared_library(libPath.string());
     CPPUNIT_ASSERT_MESSAGE("Could not load library for testing", handle);
@@ -96,6 +93,4 @@ void Os::getSharedLibraryPath()
     // cspell: enable
 }
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

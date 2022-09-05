@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,18 +23,18 @@
 #include "service/IHasServices.hpp"
 
 #include "service/IService.hpp"
-#include <service/registry/ObjectService.hpp>
 
 #include <core/runtime/Runtime.hpp>
+
+#include <service/registry/ObjectService.hpp>
 
 namespace sight::service
 {
 
 //------------------------------------------------------------------------------
 
-IHasServices::IHasServices() noexcept
-{
-}
+IHasServices::IHasServices() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

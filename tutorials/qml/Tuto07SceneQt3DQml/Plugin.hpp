@@ -45,7 +45,7 @@ public:
     TUTO07SCENEQT3DQML_API Plugin() noexcept;
 
     /// Destructor. Does nothing.
-    TUTO07SCENEQT3DQML_API ~Plugin() noexcept;
+    TUTO07SCENEQT3DQML_API ~Plugin() noexcept override;
 
 private:
 

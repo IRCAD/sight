@@ -123,10 +123,10 @@ public:
      */
     GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& mesh,
-        const std::uint8_t colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t colorA = 255
+        std::uint8_t colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t colorA = 255
     );
 
     /**
@@ -137,10 +137,10 @@ public:
     GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& _mesh,
         const std::vector<std::size_t>& _vectorNumTriangle,
-        const std::uint8_t _colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t _colorA = 255
+        std::uint8_t _colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t _colorA = 255
     );
 
     /**
@@ -150,10 +150,10 @@ public:
      */
     GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
-        const std::uint8_t colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t _colorA = 255
+        std::uint8_t colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t _colorA = 255
     );
     /**
      * @brief Colorize the cells in vectorNumTriangle
@@ -163,10 +163,10 @@ public:
     GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
         const std::vector<std::size_t>& triangleIndexVector,
-        const std::uint8_t colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t _colorA = 255
+        std::uint8_t colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t _colorA = 255
     );
 
     /*!

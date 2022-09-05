@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <gdcmDataSet.h>
 #include <gdcmTag.h>
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 class DicomAnonymizerTest : public CPPUNIT_NS::TestFixture
@@ -45,11 +42,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// Test anonymization of ImageSeries
-    void anonymizeImageSeriesTest();
+    static void anonymizeImageSeriesTest();
 
     /// Test anonymisation of DICOM folder
     void anonymizeDICOMTest();
@@ -62,6 +59,4 @@ private:
     std::set<std::string> m_uidContainer;
 };
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

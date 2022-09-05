@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void Matrix4ReaderService::info(std::ostream& _sstream)
 std::vector<std::string> Matrix4ReaderService::getSupportedExtensions()
 {
     std::vector<std::string> extensions;
-    extensions.push_back(".trf");
+    extensions.emplace_back(".trf");
     return extensions;
 }
 
@@ -154,4 +154,4 @@ void Matrix4ReaderService::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::io::matrix

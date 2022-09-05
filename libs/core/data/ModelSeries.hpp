@@ -150,4 +150,4 @@ inline void ModelSeries::setDicomReference(const DicomSeries::csptr& _reference)
 
 //-----------------------------------------------------------------------------
 
-} // Namespace fwMedData.
+} // namespace sight::data

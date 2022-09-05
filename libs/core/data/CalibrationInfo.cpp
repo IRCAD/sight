@@ -48,7 +48,7 @@ using constPointListContainerType = std::list<PointList::csptr>;
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::CalibrationInfo(data::Object::Key)
+CalibrationInfo::CalibrationInfo(data::Object::Key /*unused*/)
 {
     m_sigAddedRecord   = AddedRecordSignalType::New();
     m_sigRemovedRecord = RemovedRecordSignalType::New();
@@ -64,8 +64,7 @@ CalibrationInfo::CalibrationInfo(data::Object::Key)
 //------------------------------------------------------------------------------
 
 CalibrationInfo::~CalibrationInfo()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCop
     this->resetRecords();
     SIGHT_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
 
-    ImageContainerType::const_iterator imgIter = other->m_imageContainer.begin();
+    auto imgIter = other->m_imageContainer.begin();
     for(const data::PointList::sptr& pl : other->m_pointListContainer)
     {
         data::Image::sptr otherImg    = data::Object::copy(*imgIter, cache);
@@ -129,8 +128,8 @@ void CalibrationInfo::removeRecord(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_pointListContainer.size());
 
-    PointListContainerType::iterator plIt = m_pointListContainer.begin();
-    ImageContainerType::iterator imgIt    = m_imageContainer.begin();
+    auto plIt  = m_pointListContainer.begin();
+    auto imgIt = m_imageContainer.begin();
 
     std::advance(plIt, static_cast<PointListContainerType::iterator::difference_type>(idx));
     std::advance(imgIt, static_cast<ImageContainerType::iterator::difference_type>(idx));
@@ -202,7 +201,7 @@ data::PointList::csptr CalibrationInfo::getPointList(const data::Image::csptr& i
     {
     }
 
-    PointListContainerType::const_iterator plIt = m_pointListContainer.begin();
+    auto plIt = m_pointListContainer.begin();
     std::advance(plIt, static_cast<PointListContainerType::const_iterator::difference_type>(dist));
 
     if(it != m_imageContainer.end())
@@ -227,7 +226,7 @@ data::Image::csptr CalibrationInfo::getImage(const data::PointList::csptr& pl) c
     {
     }
 
-    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+    auto imgIt = m_imageContainer.begin();
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(dist));
 
     if(it != m_pointListContainer.end())
@@ -244,7 +243,7 @@ data::Image::sptr CalibrationInfo::getImage(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
 
-    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+    auto imgIt = m_imageContainer.begin();
 
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
 
@@ -257,7 +256,7 @@ data::Image::csptr CalibrationInfo::getImage(std::size_t idx) const
 {
     SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
 
-    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+    auto imgIt = m_imageContainer.begin();
 
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
 

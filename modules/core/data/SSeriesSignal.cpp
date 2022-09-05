@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SSeriesSignal.hpp"
 
 #include <core/com/Signal.hpp>
@@ -56,9 +58,8 @@ SSeriesSignal::SSeriesSignal() noexcept
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::~SSeriesSignal() noexcept
-{
-}
+SSeriesSignal::~SSeriesSignal() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -83,13 +84,14 @@ void SSeriesSignal::configuring()
         const service::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
-        const std::string mode = configFilter.get<std::string>("mode");
+        const auto mode = configFilter.get<std::string>("mode");
         SIGHT_ASSERT(
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
         );
         m_filterMode = mode;
 
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const ConfigType::value_type& v, configFilter.equal_range("type"))
         {
             m_types.push_back(v.second.get<std::string>(""));
@@ -107,14 +109,10 @@ void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSerie
     {
         const bool isIncludeMode = m_filterMode == "include";
 
-        std::string classname     = series->getClassname();
-        TypesType::iterator keyIt = std::find(m_types.begin(), m_types.end(), classname);
+        std::string classname = series->getClassname();
+        auto keyIt            = std::find(m_types.begin(), m_types.end(), classname);
 
-        if(keyIt != m_types.end() && isIncludeMode)
-        {
-            m_sigSeriesAdded->asyncEmit(series);
-        }
-        else if(keyIt == m_types.end() && !isIncludeMode)
+        if((keyIt != m_types.end() && isIncludeMode) || (keyIt == m_types.end() && !isIncludeMode))
         {
             m_sigSeriesAdded->asyncEmit(series);
         }

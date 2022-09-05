@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT NOLINTNEXTLINE
+
 #include "filter/image/MinMaxPropagation.hpp"
 
 #include <core/tools/Dispatcher.hpp>
@@ -45,26 +47,24 @@ class MinMaxPropagCriterion : public itk::ImageFunction<TImage,
 {
 public:
 
-    typedef MinMaxPropagCriterion Self;
-    typedef itk::ImageFunction<TImage, bool> Superclass;
-    typedef itk::SmartPointer<Self> Pointer;
-    typedef itk::SmartPointer<Self const> ConstPointer;
+    using Self         = MinMaxPropagCriterion;
+    using Superclass   = itk::ImageFunction<TImage, bool>;
+    using Pointer      = itk::SmartPointer<Self>;
+    using ConstPointer = itk::SmartPointer<const Self>;
 
     itkNewMacro(Self);
     itkTypeMacro(MinMaxPropagCriterion, ImageFunction);
 
-    typedef typename Superclass::InputPixelType PixelType;
-    typedef typename TImage::IndexType IndexType;
-    typedef typename TImage::SpacingType SpacingType;
+    using PixelType   = typename Superclass::InputPixelType;
+    using IndexType   = typename TImage::IndexType;
+    using SpacingType = typename TImage::SpacingType;
 
     //-----------------------------------------------------------------------------
 
     MinMaxPropagCriterion() :
         m_min(itk::NumericTraits<PixelType>::max()),
         m_max(itk::NumericTraits<PixelType>::min()),
-        m_useRadius(false),
-        m_radius(std::numeric_limits<double>::infinity()),
-        m_overwrite(false)
+        m_radius(std::numeric_limits<double>::infinity())
     {
     }
 
@@ -129,7 +129,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    bool Evaluate(const typename Superclass::PointType& point) const override
+    bool Evaluate(const typename Superclass::PointType& point) const override // NOLINT(readability-identifier-naming)
     {
         IndexType index;
         this->ConvertPointToNearestIndex(point, index);
@@ -138,7 +138,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    bool EvaluateAtIndex(const IndexType& index) const override
+    bool EvaluateAtIndex(const IndexType& index) const override // NOLINT(readability-identifier-naming)
     {
         const PixelType& currentValue = this->GetInputImage()->GetPixel(index);
 
@@ -161,16 +161,12 @@ public:
         }
 
         // Check if the max distance was reached
-        if(m_useRadius && !isInsideRadius(index))
-        {
-            return false;
-        }
-
-        return true;
+        return !(m_useRadius && !isInsideRadius(index));
     }
 
     //-----------------------------------------------------------------------------
 
+    // NOLINTNEXTLINE(readability-identifier-naming)
     bool EvaluateAtContinuousIndex(const typename Superclass::ContinuousIndexType& contIndex) const override
     {
         IndexType index;
@@ -213,7 +209,7 @@ public:
         const auto dumpLock = m_roi->dump_lock();
         const auto size     = m_roi->getSize();
 
-        const data::Image::BufferType* roiVal =
+        const auto* roiVal =
             reinterpret_cast<const data::Image::BufferType*>(
                 m_roi->getPixel(
                     std::size_t(index[0]) + std::size_t(index[1]) * size[0] + std::size_t(index[2])
@@ -234,11 +230,11 @@ private:
 
     std::vector<IndexType> m_seeds;
 
-    bool m_useRadius;
+    bool m_useRadius {false};
 
     double m_radius;
 
-    bool m_overwrite;
+    bool m_overwrite {false};
 };
 
 //-----------------------------------------------------------------------------
@@ -251,11 +247,11 @@ struct MinMaxPropagator
         data::Image::sptr outputImage;
         data::Image::csptr roi;
         ImageDiff diff;
-        data::Image::BufferType* value;
+        data::Image::BufferType* value {};
         MinMaxPropagation::SeedsType seeds;
-        double radius;
-        bool overwrite;
-        MinMaxPropagation::Mode mode;
+        double radius {};
+        bool overwrite {};
+        MinMaxPropagation::Mode mode {MinMaxPropagation::Mode::MINMAX};
     };
 
     //------------------------------------------------------------------------------
@@ -263,8 +259,8 @@ struct MinMaxPropagator
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
-        typedef MinMaxPropagCriterion<ImageType> CriterionType;
+        using ImageType     = typename itk::Image<PIXELTYPE, 3>;
+        using CriterionType = MinMaxPropagCriterion<ImageType>;
 
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.inputImage);
 
@@ -299,7 +295,7 @@ struct MinMaxPropagator
         {
             const typename ImageType::IndexType currentIndex = iter.GetIndex();
 
-            const std::size_t bufferIndex = static_cast<std::size_t>(itkImage->ComputeOffset(currentIndex));
+            const auto bufferIndex = static_cast<std::size_t>(itkImage->ComputeOffset(currentIndex));
 
             const data::Image::BufferType* pixBuf =
                 reinterpret_cast<data::Image::BufferType*>(params.outputImage->getPixel(bufferIndex));
@@ -316,13 +312,13 @@ struct MinMaxPropagator
 //-----------------------------------------------------------------------------
 
 MinMaxPropagation::MinMaxPropagation(
-    const data::Image::csptr& inImage,
-    const data::Image::sptr& outImage,
-    const data::Image::csptr& roi
+    data::Image::csptr inImage,
+    data::Image::sptr outImage,
+    data::Image::csptr roi
 ) :
-    m_inImage(inImage),
-    m_roi(roi),
-    m_outImage(outImage)
+    m_inImage(std::move(inImage)),
+    m_roi(std::move(roi)),
+    m_outImage(std::move(outImage))
 {
 }
 

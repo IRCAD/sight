@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 class MacrosTest : public CPPUNIT_NS::TestFixture
@@ -39,12 +36,10 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void factoryMacroTest();
+    static void factoryMacroTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

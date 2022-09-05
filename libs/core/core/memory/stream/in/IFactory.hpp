@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,17 +23,12 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/macros.hpp>
 
 #include <istream>
 
-namespace sight::core::memory
-{
-
-namespace stream
-{
-
-namespace in
+namespace sight::core::memory::stream::in
 {
 
 class CORE_CLASS_API IFactory
@@ -41,8 +36,7 @@ class CORE_CLASS_API IFactory
 public:
 
     virtual ~IFactory()
-    {
-    }
+    = default;
 
     SPTR(std::istream) operator()()
     {
@@ -54,8 +48,4 @@ protected:
     virtual SPTR(std::istream) get() = 0;
 };
 
-} // namespace in
-
-} // namespace stream
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::stream::in

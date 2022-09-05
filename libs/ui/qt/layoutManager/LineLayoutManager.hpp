@@ -47,7 +47,7 @@ public:
 
     UI_QT_API LineLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~LineLayoutManager();
+    UI_QT_API ~LineLayoutManager() override;
 
     /**
      * @brief Instantiate layout with parent container.

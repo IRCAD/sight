@@ -36,10 +36,7 @@
 #include <QObject>
 #include <QPointer>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 /**
@@ -200,9 +197,7 @@ private:
     data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, false, true};
     data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, false, true};
 
-    int oldIndex;
+    int oldIndex {};
 };
 
-} // video
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::ui::qt
-{
-
-namespace ut
+namespace sight::ui::qt::ut
 {
 
 class WorkerQtTest : public CPPUNIT_NS::TestFixture
@@ -52,11 +49,11 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void initTest();
-    void twiceInitTest();
+    static void initTest();
+    static void twiceInitTest();
     void basicTest();
 
     void postFromInsideTest();
@@ -69,6 +66,4 @@ protected:
     SPTR(core::thread::Worker) m_worker;
 };
 
-} //namespace ut
-
-} //namespace sight::ui::qt
+} // namespace sight::ui::qt::ut

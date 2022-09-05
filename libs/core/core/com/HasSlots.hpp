@@ -46,20 +46,18 @@ public:
     typedef std::shared_ptr<const HasSlots> csptr;
 
     HasSlots()
-    {
-    }
+    = default;
 
     virtual ~HasSlots()
-    {
-    }
+    = default;
 
-    SPTR(SlotBase) slot(const Slots::SlotKeyType& key) const
+    [[nodiscard]] SPTR(SlotBase) slot(const Slots::SlotKeyType& key) const
     {
         return m_slots[key];
     }
 
     template<typename SlotType>
-    SPTR(SlotType) slot(const Slots::SlotKeyType& key) const
+    [[nodiscard]] SPTR(SlotType) slot(const Slots::SlotKeyType& key) const
     {
         SPTR(SlotType) slot = std::dynamic_pointer_cast<SlotType>(this->slot(key));
         return slot;
@@ -74,6 +72,13 @@ public:
 
     template<typename F>
     SPTR(Slot<core::lambda_to_function_t<F> >) newSlot(const Slots::SlotKeyType& key, F f);
+
+    template<typename F>
+    auto newSlot(
+        const Slots::SlotKeyType& key,
+        F f
+    ) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
+                          SPTR(Slot<typename core::com::util::convert_function_type<F>::type>)>;
 
 protected:
 

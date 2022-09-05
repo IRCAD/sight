@@ -43,6 +43,8 @@
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 
+#include <memory>
+
 //-----------------------------------------------------------------------------
 
 namespace sight::module::viz::scene3d::adaptor
@@ -66,9 +68,8 @@ SVolumeRender::SVolumeRender() noexcept
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::~SVolumeRender() noexcept
-{
-}
+SVolumeRender::~SVolumeRender() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -108,10 +109,10 @@ void SVolumeRender::configuring()
 
         //SAT
         {
-            m_config.sat.size_ratio = config.get<float>(config::SAT_SIZE_RATIO, 0.25f);
+            m_config.sat.size_ratio = config.get<float>(config::SAT_SIZE_RATIO, 0.25F);
             m_config.sat.shells     = static_cast<unsigned>(config.get<int>(config::SAT_SHELLS, 4));
             m_config.sat.radius     = static_cast<unsigned>(config.get<int>(config::SAT_SHELL_RADIUS, 4));
-            m_config.sat.angle      = config.get<float>(config::SAT_CONE_ANGLE, 0.1f);
+            m_config.sat.angle      = config.get<float>(config::SAT_CONE_ANGLE, 0.1F);
             m_config.sat.samples    = static_cast<unsigned>(config.get<int>(config::SAT_CONE_SAMPLES, 50));
         }
 
@@ -169,19 +170,18 @@ void SVolumeRender::starting()
 
         const auto image = m_image.lock();
         const auto tf    = m_tf.lock();
-        m_volumeRenderer.reset(
-            new sight::viz::scene3d::vr::RayTracingVolumeRenderer(
-                this->getID(),
-                layer,
-                m_volumeSceneNode,
-                image.get_shared(),
-                tf.get_shared(),
-                m_config.dynamic,
-                m_config.preintegration,
-                m_config.shadows,
-                m_config.sat,
-                {} //Default shader
-            )
+        m_volumeRenderer = std::make_unique<sight::viz::scene3d::vr::RayTracingVolumeRenderer>(
+
+            this->getID(),
+            layer,
+            m_volumeSceneNode,
+            image.get_shared(),
+            tf.get_shared(),
+            m_config.dynamic,
+            m_config.preintegration,
+            m_config.shadows,
+            m_config.sat
+
         );
         m_volumeRenderer->update(tf.get_shared());
     }
@@ -224,9 +224,9 @@ void SVolumeRender::stopping()
 
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
-    const auto transformNode = this->getTransformNode();
+    auto* const transformNode = this->getTransformNode();
 
-    if(transformNode)
+    if(transformNode != nullptr)
     {
         m_sceneManager->getRootSceneNode()->removeChild(transformNode);
         this->getSceneManager()->destroySceneNode(static_cast<Ogre::SceneNode*>(transformNode));
@@ -570,7 +570,7 @@ void SVolumeRender::setIntParameter(int _val, std::string _key)
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_mutex);
 
-    const unsigned param = static_cast<unsigned>(_val);
+    const auto param = static_cast<unsigned>(_val);
 
     if(_key == "sampling")
     {
@@ -614,7 +614,7 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
     this->getRenderService()->makeCurrent();
     std::lock_guard swapLock(m_mutex);
 
-    const float param = static_cast<float>(_val);
+    const auto param = static_cast<float>(_val);
 
     if(_key == "colorBleedingFactor")
     {
@@ -636,7 +636,7 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 
 void SVolumeRender::createWidget()
 {
-    auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
+    auto clippingMxUpdate = [this]{updateClippingTM3D();};
 
     Ogre::Matrix4 ogreClippingMx = Ogre::Matrix4::IDENTITY;
 
@@ -785,7 +785,7 @@ void SVolumeRender::updateClippingTM3D()
 
 void SVolumeRender::setVisible(bool _visible)
 {
-    if(m_volumeSceneNode)
+    if(m_volumeSceneNode != nullptr)
     {
         m_volumeSceneNode->setVisible(_visible);
 

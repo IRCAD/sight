@@ -53,9 +53,8 @@ ImageInfo::ImageInfo() noexcept
 
 //------------------------------------------------------------------------------
 
-ImageInfo::~ImageInfo() noexcept
-{
-}
+ImageInfo::~ImageInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -65,9 +64,9 @@ void ImageInfo::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel(QObject::tr("intensity:"));
+    auto* staticText = new QLabel(QObject::tr("intensity:"));
     h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
 
     m_valueText = new QLineEdit();
@@ -114,8 +113,8 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
         m_valueText->setEnabled(imageIsValid);
         if(imageIsValid)
         {
-            const double* point          = info.m_worldPos;
-            const data::Image::Size size = image->getSize();
+            const std::array<double, 3>& point = info.m_worldPos;
+            const data::Image::Size size       = image->getSize();
 
             if(point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
@@ -181,4 +180,4 @@ service::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt::image

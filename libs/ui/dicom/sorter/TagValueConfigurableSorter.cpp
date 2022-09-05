@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,10 +37,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::ui::dicom::sorter::TagValueConfigurableSorter);
 
-namespace sight::ui::dicom
-{
-
-namespace sorter
+namespace sight::ui::dicom::sorter
 {
 
 const std::string TagValueConfigurableSorter::s_FILTER_NAME        = "Tag value configurable sorter";
@@ -57,8 +54,7 @@ TagValueConfigurableSorter::TagValueConfigurableSorter(filter::dicom::IFilter::K
 //-----------------------------------------------------------------------------
 
 TagValueConfigurableSorter::~TagValueConfigurableSorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -92,20 +88,20 @@ bool TagValueConfigurableSorter::isConfigurableWithGUI() const
 
 void TagValueConfigurableSorter::configureWithGUI()
 {
-    QDialog* dialog = new QDialog(qApp->activeWindow());
+    auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Configure"));
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     dialog->setLayout(mainLayout);
     dialog->setMinimumWidth(500);
 
     // Create tag selectors
-    ui::dicom::widget::QTagSelectorWidget* tagSelector =
+    auto* tagSelector =
         new ui::dicom::widget::QTagSelectorWidget();
     tagSelector->setTagValue(m_tag);
     mainLayout->addWidget(tagSelector);
 
     // Create buttons
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(dialog);
+    auto* buttonBox = new QDialogButtonBox(dialog);
     mainLayout->addWidget(buttonBox);
     QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
@@ -120,6 +116,4 @@ void TagValueConfigurableSorter::configureWithGUI()
     }
 }
 
-} // namespace sorter
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::sorter

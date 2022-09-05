@@ -53,8 +53,7 @@ FrameLayoutManager::FrameLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 //-----------------------------------------------------------------------------
 
 FrameLayoutManager::~FrameLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -62,11 +61,11 @@ void FrameLayoutManager::createFrame()
 {
     FrameInfo frameInfo = this->getFrameInfo();
 
-    ui::qt::QtMainFrame* mainframe = new ui::qt::QtMainFrame();
+    auto* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
     m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
 
-    ui::qt::QtMainFrame::CloseCallback fct = std::bind(&ui::qt::FrameLayoutManager::onCloseFrame, this);
+    ui::qt::QtMainFrame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
     mainframe->setCloseCallback(fct);
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
@@ -99,7 +98,7 @@ void FrameLayoutManager::createFrame()
     int posX = frameInfo.m_position.first;
     int posY = frameInfo.m_position.second;
     QPoint pos(posX, posY);
-    if(!this->isOnScreen(pos))
+    if(!sight::ui::qt::FrameLayoutManager::isOnScreen(pos))
     {
         QRect frame_rect(0, 0, sizeX, sizeY);
         frame_rect.moveCenter(QDesktopWidget().screenGeometry().center());
@@ -110,7 +109,7 @@ void FrameLayoutManager::createFrame()
 
     this->setState(frameInfo.m_state);
 
-    QWidget* qwidget = new QWidget(m_qtWindow);
+    auto* qwidget = new QWidget(m_qtWindow);
     m_qtWindow->setCentralWidget(qwidget);
 
     QObject::connect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));

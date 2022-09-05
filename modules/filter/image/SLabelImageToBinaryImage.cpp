@@ -37,22 +37,22 @@
 #include <algorithm>
 #include <bitset>
 #include <functional>
+#include <utility>
 
 namespace sight::module::filter::image
 {
 
-typedef std::function<std::uint8_t(const std::uint8_t&)> FunctionType;
+using FunctionType = std::function<std::uint8_t(const std::uint8_t&)>;
 
 class LambdaFunctor
 {
 public:
 
     LambdaFunctor()
-    {
-    }
+    = default;
 
-    LambdaFunctor(const FunctionType& _f) :
-        m_function(_f)
+    explicit LambdaFunctor(FunctionType _f) :
+        m_function(std::move(_f))
     {
     }
 
@@ -65,7 +65,7 @@ public:
 
     // Needs to be implemented because it is called by the itkUnaryFunctorImageFilter when setting the functor.
     // Always return true to force-set the functor.
-    inline bool operator!=(const LambdaFunctor&)
+    inline bool operator!=(const LambdaFunctor& /*unused*/)
     {
         return true;
     }
@@ -78,14 +78,12 @@ private:
 //------------------------------------------------------------------------------
 
 SLabelImageToBinaryImage::SLabelImageToBinaryImage()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 SLabelImageToBinaryImage::~SLabelImageToBinaryImage()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -106,7 +104,7 @@ void SLabelImageToBinaryImage::starting()
 
 void SLabelImageToBinaryImage::updating()
 {
-    typedef typename itk::Image<std::uint8_t, 3> ImageType;
+    using ImageType = typename itk::Image<std::uint8_t, 3>;
 
     const auto labelImage = m_labelImage.lock();
     SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", labelImage);
@@ -147,19 +145,23 @@ void SLabelImageToBinaryImage::updating()
                 labelSet.set(static_cast<std::uint8_t>(val), true);
             });
 
-        functor = FunctionType(
-            [labelSet](const std::uint8_t& _in)
+        functor = LambdaFunctor(
+            FunctionType(
+                [labelSet](const std::uint8_t& _in)
             {
                 return labelSet[_in] ? 255 : 0;
-            });
+            })
+        );
     }
     else
     {
-        functor = FunctionType(
-            [](const std::uint8_t& _in)
+        functor = LambdaFunctor(
+            FunctionType(
+                [](const std::uint8_t& _in)
             {
                 return _in > 0 ? 255 : 0;
-            });
+            })
+        );
     }
 
     typename ImageType::Pointer itkLabelImg = io::itk::moveToItk<ImageType>(labelImage.get_shared());

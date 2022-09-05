@@ -60,7 +60,7 @@ void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::KeyPress);
     sceneEvent.setButton(scene2d::data::Event::NoButton);
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
     sceneEvent.setKey(_event->key());
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
@@ -73,7 +73,7 @@ void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::KeyRelease);
     sceneEvent.setButton(scene2d::data::Event::NoButton);
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
     sceneEvent.setKey(_event->key());
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
@@ -102,8 +102,8 @@ void Scene2DGraphicsView::mousePressEvent(QMouseEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseButtonPress);
     sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
@@ -115,8 +115,8 @@ void Scene2DGraphicsView::mouseDoubleClickEvent(QMouseEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseButtonDoubleClick);
     sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
@@ -128,8 +128,8 @@ void Scene2DGraphicsView::mouseReleaseEvent(QMouseEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseButtonRelease);
     sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
@@ -141,8 +141,8 @@ void Scene2DGraphicsView::mouseMoveEvent(QMouseEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::MouseMove);
     sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(this->getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
@@ -155,14 +155,14 @@ void Scene2DGraphicsView::wheelEvent(QWheelEvent* _event)
     scene2d::data::Event sceneEvent;
     sceneEvent.setType((scrollUp) ? scene2d::data::Event::MouseWheelUp : scene2d::data::Event::MouseWheelDown);
     sceneEvent.setCoord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
-    sceneEvent.setModifier(this->getScene2DModifierFromEvent(_event));
+    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
     m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::enterEvent(QEvent*)
+void Scene2DGraphicsView::enterEvent(QEvent* /*event*/)
 {
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::EnterEvent);
@@ -171,7 +171,7 @@ void Scene2DGraphicsView::enterEvent(QEvent*)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::leaveEvent(QEvent*)
+void Scene2DGraphicsView::leaveEvent(QEvent* /*event*/)
 {
     scene2d::data::Event sceneEvent;
     sceneEvent.setType(scene2d::data::Event::LeaveEvent);

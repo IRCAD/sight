@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::IntegerTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -53,9 +50,9 @@ void IntegerTest::tearDown()
 
 void IntegerTest::methode1()
 {
-    const std::int64_t VALUES[] = {
+    const std::array VALUES {
         std::numeric_limits<std::int64_t>::min(),
-        -1654, 0, 123456,
+        std::int64_t(-1654), std::int64_t(0), std::int64_t(123456),
         std::numeric_limits<std::int64_t>::max()
     };
 
@@ -73,6 +70,4 @@ void IntegerTest::methode1()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

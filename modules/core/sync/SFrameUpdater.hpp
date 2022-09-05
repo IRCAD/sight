@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ public:
     MODULE_SYNC_API SFrameUpdater() noexcept;
 
     /// Destructorin
-    MODULE_SYNC_API virtual ~SFrameUpdater() noexcept;
+    MODULE_SYNC_API ~SFrameUpdater() noexcept override;
 
 protected:
 
@@ -115,12 +115,12 @@ private:
     service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Last timestamp
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     /// Hight resolution timer to log information about computing function time
     core::HiResTimer m_hiRestimer;
 
-    bool m_imageInitialized;
+    bool m_imageInitialized {false};
 
     sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_frameTL {this, "frameTL"};
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, "frame"};

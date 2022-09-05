@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 /**
@@ -45,13 +42,11 @@ public:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void toCv();
-    void fromCv();
+    static void toCv();
+    static void fromCv();
 };
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

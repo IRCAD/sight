@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::TransformTest);
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -91,6 +88,4 @@ void TransformTest::testConversion()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

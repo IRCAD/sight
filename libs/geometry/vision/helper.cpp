@@ -28,12 +28,10 @@
 
 #include <geometry/eigen/helper.hpp>
 
+#include <cmath>
 #include <thread>
 
-namespace sight::geometry::vision
-{
-
-namespace helper
+namespace sight::geometry::vision::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -50,7 +48,8 @@ ErrorAndPointsType computeReprojectionError(
     ErrorAndPointsType errorAndProjectedPoints;
     std::vector<cv::Point2f> imagePoints2;
     int totalPoints = 0;
-    double totalErr = 0, err;
+    double totalErr = 0;
+    double err      = NAN;
 
     //projection
     cv::projectPoints(
@@ -91,7 +90,10 @@ cv::Matx44f cameraPoseMonocular(
         _objectPoints.size() == _imagePoints.size()
     );
 
-    cv::Mat rvec, tvec, R, T;
+    cv::Mat rvec;
+    cv::Mat tvec;
+    cv::Mat R;
+    cv::Mat T;
     T = cv::Mat::eye(4, 4, CV_64F);
 
     //solvePnP
@@ -116,18 +118,21 @@ cv::Matx44f cameraPoseStereo(
     const cv::Mat& _distCoeffs2,
     const std::vector<cv::Point2f>& _imgPoints1,
     const std::vector<cv::Point2f>& _imgPoints2,
-    const cv::Mat& _R,
-    const cv::Mat& _T
+    const cv::Mat& _r,
+    const cv::Mat& _t
 )
 {
     //1. initialize solution with solvePnP
-    cv::Mat rvec, tvec, R, T;
+    cv::Mat rvec;
+    cv::Mat tvec;
+    cv::Mat R;
+    cv::Mat T;
     T = cv::Mat::eye(4, 4, CV_64F);
 
     cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
-    extrinsic(cv::Range(0, 3), cv::Range(0, 3)) = _R * 1;
-    extrinsic(cv::Range(0, 3), cv::Range(3, 4)) = _T * 1;
+    extrinsic(cv::Range(0, 3), cv::Range(0, 3)) = _r * 1;
+    extrinsic(cv::Range(0, 3), cv::Range(3, 4)) = _t * 1;
 
     cv::solvePnP(
         _objectPoints,
@@ -193,7 +198,7 @@ cv::Matx44f cameraPoseStereo(
     options.function_tolerance           = 1e-8;
     options.max_num_iterations           = 100;
 
-    int numthreads = std::thread::hardware_concurrency() / 2;
+    int numthreads = static_cast<int>(std::thread::hardware_concurrency() / 2);
 
     options.num_threads = numthreads;
 
@@ -327,7 +332,7 @@ data::PointList::sptr detectChessboard(
 
     cv::Mat detectionImage;
 
-    if(_scale < 1.f)
+    if(_scale < 1.F)
     {
         cv::resize(grayImg, detectionImage, cv::Size(), _scale, _scale);
     }
@@ -361,6 +366,4 @@ data::PointList::sptr detectChessboard(
 
 // ----------------------------------------------------------------------------
 
-} //namespace sight::geometry::vision
-
-} //namespace helper
+} // namespace sight::geometry::vision::helper

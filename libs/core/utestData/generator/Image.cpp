@@ -29,10 +29,7 @@
 #include <ctime>
 #include <random>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 using core::tools::random::safeRand;
@@ -185,6 +182,4 @@ void Image::randomizeArray(data::Array::sptr array, std::uint32_t seed)
 
 //------------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

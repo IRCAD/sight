@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <OgreRoot.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 class TextTest : public CPPUNIT_NS::TestFixture
@@ -43,9 +40,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void factoryTest();
+    static void factoryTest();
 };
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,7 @@
 
 #include <boost/tokenizer.hpp>
 
-#include <locale.h>
-
+#include <clocale>
 #include <filesystem>
 #include <iostream>
 #include <sstream>
@@ -41,9 +40,13 @@ namespace sight::ui::qt
 //-----------------------------------------------------------------------------
 
 App::App(int& argc, char** argv, bool guiEnabled) :
-    QApplication(argc, argv, guiEnabled)
+    QApplication(argc, argv, static_cast<int>(guiEnabled))
 {
-    setlocale(LC_ALL, "C");          // needed for mfo save process
+    if(setlocale(LC_ALL, "C") == nullptr) // needed for mfo save process
+    {
+        perror("setlocale");
+    }
+
     QLocale::setDefault(QLocale::C); // on Linux we need that as well...
 
     std::string appName = "No name";
@@ -55,7 +58,7 @@ App::App(int& argc, char** argv, bool guiEnabled) :
         appName = profile->getName();
     }
 
-    this->setApplicationName(QString::fromStdString(appName));
+    sight::ui::qt::App::setApplicationName(QString::fromStdString(appName));
 
     QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 }

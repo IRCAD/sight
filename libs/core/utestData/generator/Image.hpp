@@ -29,10 +29,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 /**
@@ -74,6 +71,4 @@ public:
     UTESTDATA_API static void randomizeArray(data::Array::sptr array, std::uint32_t seed = 0);
 };
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

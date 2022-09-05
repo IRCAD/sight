@@ -35,10 +35,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene2d::ut::ViewportTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::viz::scene2d
-{
-
-namespace ut
+namespace sight::viz::scene2d::ut
 {
 
 //------------------------------------------------------------------------------
@@ -83,6 +80,4 @@ void ViewportTest::testParser()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::ut

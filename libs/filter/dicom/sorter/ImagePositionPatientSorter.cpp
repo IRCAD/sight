@@ -36,10 +36,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::sorter::ImagePositionPatientSorter);
 
-namespace sight::filter::dicom
-{
-
-namespace sorter
+namespace sight::filter::dicom::sorter
 {
 
 const std::string ImagePositionPatientSorter::s_FILTER_NAME        = "Image position patient sorter";
@@ -49,16 +46,14 @@ const std::string ImagePositionPatientSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key) :
-    ISorter()
+ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSorter::~ImagePositionPatientSorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -83,11 +78,11 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
 {
     DicomSeriesContainerType result;
 
-    typedef std::map<double, core::memory::BufferObject::sptr> SortedDicomMapType;
+    using SortedDicomMapType = std::map<double, core::memory::BufferObject::sptr>;
     SortedDicomMapType sortedDicom;
 
     OFCondition status;
-    DcmDataset* dataset;
+    DcmDataset* dataset = nullptr;
 
     for(const auto& item : series->getDicomContainer())
     {
@@ -134,7 +129,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
             dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + 3);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + std::size_t(3));
         }
 
         //Compute Z direction (cross product)
@@ -169,6 +164,4 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     return result;
 }
 
-} // namespace sorter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::sorter

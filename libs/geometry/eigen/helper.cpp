@@ -24,10 +24,7 @@
 
 #include <Eigen/Geometry>
 
-namespace sight::geometry::eigen
-{
-
-namespace helper
+namespace sight::geometry::eigen::helper
 {
 
 //-------------------------------------------------------------------------------------------------
@@ -106,7 +103,7 @@ EigenMatrix toEigen(const std::array<float, 16>& _farray)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            mat(r, c) = static_cast<double>(_farray[4 * r + c]);
+            mat(r, c) = static_cast<double>(_farray[std::size_t(4) * r + c]);
         }
     }
 
@@ -123,7 +120,7 @@ EigenMatrix toEigen(const std::array<double, 16>& _farray)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            mat(r, c) = _farray[4 * r + c];
+            mat(r, c) = _farray[std::size_t(4) * r + c];
         }
     }
 
@@ -140,6 +137,4 @@ RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _farray)
 
 //-------------------------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::geometry::eigen
+} // namespace sight::geometry::eigen::helper

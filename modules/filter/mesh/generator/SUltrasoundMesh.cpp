@@ -33,10 +33,7 @@
 
 #include <boost/math/constants/constants.hpp>
 
-namespace sight::module::filter::mesh
-{
-
-namespace generator
+namespace sight::module::filter::mesh::generator
 {
 
 // -----------------------------------------------------------------------------
@@ -69,8 +66,7 @@ SUltrasoundMesh::SUltrasoundMesh() noexcept
 // -----------------------------------------------------------------------------
 
 SUltrasoundMesh::~SUltrasoundMesh()
-{
-}
+= default;
 
 // -----------------------------------------------------------------------------
 
@@ -93,8 +89,8 @@ void SUltrasoundMesh::configuring()
 void SUltrasoundMesh::starting()
 {
     // Allocate position array
-    const long x = static_cast<long>(m_resolutionX);
-    const long y = static_cast<long>(m_resolutionY);
+    const auto x = static_cast<std::int64_t>(m_resolutionX);
+    const auto y = static_cast<std::int64_t>(m_resolutionY);
     m_meshPositionArray.resize(boost::extents[x][y][3]);
 
     const auto mesh = m_mesh.lock();
@@ -152,7 +148,7 @@ void SUltrasoundMesh::updateMeshPosition()
         else
         {
             directionLive = direction;
-            centerLive    = centerPosition + (widthGrid * dWidth - double(m_width) / 2.f) * normal;
+            centerLive    = centerPosition + (widthGrid * dWidth - double(m_width) / 2.F) * normal;
         }
 
         for(unsigned int depthGrid = 0 ;
@@ -187,7 +183,7 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     );
 
     // pointer on the positions buffer
-    const float* pointsIn = static_cast<const float*>(m_meshPositionArray.data());
+    const auto* pointsIn = static_cast<const float*>(m_meshPositionArray.data());
 
     // points position
     auto pointsItr = _mesh->zip_range<data::iterator::point::xyz, data::iterator::point::uv>().begin();
@@ -215,9 +211,9 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     {
         for(std::size_t j = 0 ; j < height - 1 ; ++j)
         {
-            const data::Mesh::cell_t idx1 = data::Mesh::cell_t(j + i * height);
+            const auto idx1               = data::Mesh::cell_t(j + i * height);
             const data::Mesh::cell_t idx2 = idx1 + 1;
-            const data::Mesh::cell_t idx4 = data::Mesh::cell_t(idx1 + height);
+            const auto idx4               = data::Mesh::cell_t(idx1 + height);
             const data::Mesh::cell_t idx3 = idx4 + 1;
 
             cellsItr->pt[0] = idx1;
@@ -304,6 +300,4 @@ void SUltrasoundMesh::setBoolParameter(bool _val, std::string _key)
 
 // -----------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::module::filter::mesh
+} // namespace sight::module::filter::mesh::generator

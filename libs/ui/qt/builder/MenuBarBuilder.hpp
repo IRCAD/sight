@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <ui/base/builder/IMenuBarBuilder.hpp>
 #include <ui/base/container/fwContainer.hpp>
 #include <ui/base/container/fwMenuBar.hpp>
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 /**
@@ -49,7 +46,7 @@ public:
 
     UI_QT_API MenuBarBuilder(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~MenuBarBuilder();
+    UI_QT_API ~MenuBarBuilder() override;
 
     /**
      * @brief Instantiate layout with parent menuBar.
@@ -69,6 +66,4 @@ protected:
     ui::qt::container::QtContainer::sptr m_parent;
 };
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

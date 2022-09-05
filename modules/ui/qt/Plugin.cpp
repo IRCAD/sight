@@ -71,9 +71,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -93,9 +92,9 @@ void Plugin::start()
     auto workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
     core::thread::setDefaultWorker(workerQt);
 
-    workerQt->post(std::bind(&Plugin::loadStyleSheet, this));
+    workerQt->post([this](auto&& ...){loadStyleSheet();});
 
-    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::getCurrentProfile()->setRunCallback(run);
 }
 
 //-----------------------------------------------------------------------------

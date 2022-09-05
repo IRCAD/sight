@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::zip::ut::ArchiveTest);
 
-namespace sight::io::zip
-{
-
-namespace ut
+namespace sight::io::zip::ut
 {
 
 //------------------------------------------------------------------------------
@@ -232,6 +229,4 @@ void ArchiveTest::rawTest()
     std::filesystem::remove_all(folderPath);
 }
 
-} // namespace ut
-
-} // namespace sight::io::zip
+} // namespace sight::io::zip::ut

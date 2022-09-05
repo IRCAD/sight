@@ -41,22 +41,20 @@ const core::com::Slots::SlotKeyType SeriesRetriever::s_PROGRESS_CALLBACK_SLOT = 
 // ----------------------------------------------------------------------------
 
 SeriesRetriever::SeriesRetriever() :
-    m_path(""),
-    m_progressCallback(ProgressCallbackSlotType::sptr())
+    m_path("")
 {
 }
 
 // ----------------------------------------------------------------------------
 
 SeriesRetriever::~SeriesRetriever()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 void SeriesRetriever::initialize(
     const std::string& applicationTitle,
-    unsigned short applicationport,
+    std::uint16_t applicationport,
     int timeout,
     ProgressCallbackSlotType::sptr progressCallback
 )
@@ -133,10 +131,10 @@ OFCondition SeriesRetriever::handleSTORERequest(
     OFString tempStr;
 
     // Get Dataset
-    DcmDataset* dataset = new DcmDataset();
+    auto* dataset = new DcmDataset();
     if(this->receiveDIMSEDataset(&presID, &dataset).good())
     {
-        if(dataset != NULL)
+        if(dataset != nullptr)
         {
             //Find the series UID
             OFString seriesID;
@@ -162,7 +160,7 @@ OFCondition SeriesRetriever::handleSTORERequest(
             dataset->saveFile(filePath.c_str());
 
             // Send a store response
-            T_DIMSE_C_StoreRSP rsp;
+            T_DIMSE_C_StoreRSP rsp {};
             rsp.DimseStatus = STATUS_Success;
             cond            = this->sendSTOREResponse(presID, incomingMsg->msg.CStoreRQ, rsp.DimseStatus);
 
@@ -172,9 +170,6 @@ OFCondition SeriesRetriever::handleSTORERequest(
             {
                 const std::string msg = "Cannot send C-STORE Response to the server.";
                 throw io::dimse::exceptions::RequestFailure(msg);
-            }
-            else
-            {
             }
 
             // Notify callback

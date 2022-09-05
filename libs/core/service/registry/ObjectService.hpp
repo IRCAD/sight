@@ -43,7 +43,7 @@ namespace sight::data
 
 class Object;
 
-}
+} // namespace sight::data
 
 namespace sight::service
 {

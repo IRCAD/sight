@@ -41,17 +41,15 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() noexcept :
-    m_cancelled(false)
+SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() noexcept
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() noexcept
-{
-}
+SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

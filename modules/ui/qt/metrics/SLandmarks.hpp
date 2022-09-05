@@ -250,7 +250,7 @@ public:
     void selectPoint(std::string _groupName, std::size_t _index);
 
     /// Slot: deselects the currently selected item.
-    void deselectPoint(std::string, std::size_t);
+    void deselectPoint(std::string /*unused*/, std::size_t /*unused*/) const;
 
     /**
      * @brief Slot: adds a landmark group to the editor.
@@ -262,21 +262,21 @@ public:
      * @brief SLOT: removes a group from the editor.
      * @param _name The group name to remove.
      */
-    void removeGroup(std::string _name);
+    void removeGroup(std::string _name) const;
 
     /**
      * @brief SLOT: removes point from editor
      * @param _groupName the group name of the point the remove.
      * @param _index the index of the point to remove.
      */
-    void removePoint(std::string _groupName, std::size_t _index);
+    void removePoint(std::string _groupName, std::size_t _index) const;
 
     /**
      * @brief SLOT: renames a group in the editor.
      * @param _oldName the old name of the group.
      * @param _newName the new name of the group.
      */
-    void renameGroup(std::string _oldName, std::string _newName);
+    void renameGroup(std::string _oldName, std::string _newName) const;
 
     /**
      * @brief SLOT: updates a group properties in the editor.
@@ -358,10 +358,10 @@ public:
     bool m_advancedMode {false};
 
     /// Sets the default landmark size.
-    float m_defaultLandmarkSize {10.f};
+    float m_defaultLandmarkSize {10.F};
 
     /// Sets the default landmark opacity.
-    float m_defaultLandmarkOpacity {1.f};
+    float m_defaultLandmarkOpacity {1.F};
 
     /// Sets the text displayed at the top of this editor.
     std::string m_text {"Use 'Ctrl+Left Click' to add new landmarks"};
@@ -373,7 +373,7 @@ public:
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};
-    std::mt19937 m_generator {static_cast<std::uint32_t>(std::time(nullptr))};
+    std::mt19937 m_generator {std::random_device {}()};
 };
 
-} // sight::module::ui::qt::metrics
+} // namespace sight::module::ui::qt::metrics

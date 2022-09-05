@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) filter::dicom::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 FILTER_DICOM_API SPTR(filter::dicom::IFilter) New(const filter::dicom::registry::KeyType& classname);

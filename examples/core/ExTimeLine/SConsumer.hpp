@@ -32,12 +32,12 @@
  * Do not mark `EXTIMELINE` as incorrect.
  * cspell:ignore EXTIMELINE
  */
-namespace thread
+namespace sight::core::thread
 {
 
 class Timer;
 
-}
+} // namespace sight::core::thread
 
 namespace ExTimeLine
 {
@@ -75,7 +75,7 @@ public:
     SIGHT_DECLARE_SERVICE(SConsumer, sight::service::IService);
 
     EXTIMELINE_API SConsumer() noexcept;
-    EXTIMELINE_API virtual ~SConsumer() noexcept;
+    EXTIMELINE_API ~SConsumer() noexcept override;
 
 protected:
 
@@ -100,10 +100,10 @@ private:
     SPTR(sight::core::thread::Timer) m_timer;
 
     /// Id of the receiver
-    unsigned int m_receiverId;
+    unsigned int m_receiverId {};
 
     /// A message will be read every m_uiPeriod milliseconds.
-    unsigned int m_period;
+    unsigned int m_period {0};
 
     sight::data::ptr<ExTimeLine::MessageTL, sight::data::Access::in> m_timeline {this, "timeline"};
 };

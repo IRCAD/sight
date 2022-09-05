@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,10 +109,10 @@ protected:
 private:
 
     /// SLOT: selects a matrix.
-    void selectMatrix(int);
+    void selectMatrix(int /*index*/);
 
     ///SLOT: removes a matrix.
-    void removeMatrix(int);
+    void removeMatrix(int /*_index*/);
 
     typedef core::com::Signal<void (int, std::string)> MatrixAddedSignalType;
     typedef core::com::Signal<void (int)> MatrixRemovedSignalType;

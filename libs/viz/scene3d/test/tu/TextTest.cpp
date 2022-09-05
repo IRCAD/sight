@@ -38,10 +38,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::TextTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,7 +58,7 @@ void TextTest::tearDown()
 void TextTest::factoryTest()
 {
     // This is needed for the TextureManager to be instanced, no better way has be found.
-    auto ogreRoot = Utils::getOgreRoot();
+    auto* ogreRoot = Utils::getOgreRoot();
 
     sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
     Ogre::RenderWindow* ogreRenderWindow         = mgr->get("test");
@@ -77,7 +74,7 @@ void TextTest::factoryTest()
 
     auto& overlayManager = Ogre::OverlayManager::getSingleton();
 
-    auto overlayTextPanel =
+    auto* overlayTextPanel =
         static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "_GUI"));
 
     auto* const camera = sceneManager->createCamera("TestCamera");
@@ -115,6 +112,4 @@ void TextTest::factoryTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

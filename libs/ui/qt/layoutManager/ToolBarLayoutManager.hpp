@@ -31,10 +31,7 @@
 #include <ui/base/container/fwToolBar.hpp>
 #include <ui/base/layoutManager/IToolBarLayoutManager.hpp>
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 /**
@@ -52,7 +49,7 @@ public:
 
     UI_QT_API ToolBarLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~ToolBarLayoutManager();
+    UI_QT_API ~ToolBarLayoutManager() override;
 
     /**
      * @brief Instantiate actions with parent toolBar.
@@ -80,13 +77,11 @@ public:
     /**
      * @brief Set the action checked or not.
      */
-    UI_QT_API void menuItemSetChecked(ui::base::container::fwMenuItem::sptr, bool isChecked) override;
+    UI_QT_API void menuItemSetChecked(ui::base::container::fwMenuItem::sptr /*fwMenuItem*/, bool isChecked) override;
 
 protected:
 
     ui::qt::container::QtToolBarContainer::sptr m_parent;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

@@ -69,9 +69,8 @@ SManage::SManage() noexcept
 
 //-----------------------------------------------------------------------------
 
-SManage::~SManage() noexcept
-{
-}
+SManage::~SManage() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -405,4 +404,4 @@ void SManage::internalAdd(bool _copy)
 
 //-----------------------------------------------------------------------------
 
-} // sight::module::data
+} // namespace sight::module::data

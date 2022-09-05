@@ -43,13 +43,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace tid
+namespace sight::io::dicom::writer::tid
 {
 
 //------------------------------------------------------------------------------
@@ -66,8 +60,7 @@ Measurement::Measurement(
 //------------------------------------------------------------------------------
 
 Measurement::~Measurement()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -80,7 +73,7 @@ void Measurement::createNodes(
     if(distanceVector)
     {
         unsigned int id = 1;
-        for(data::Object::sptr object : *distanceVector)
+        for(const data::Object::sptr& object : *distanceVector)
         {
             data::PointList::sptr pointList = data::PointList::dynamicCast(object);
             if(pointList)
@@ -103,13 +96,14 @@ void Measurement::createMeasurement(
     const data::Point::sptr point1 = pointList->getPoints()[0];
     const data::Point::sptr point2 = pointList->getPoints()[1];
 
-    double coordinates[6];
-    coordinates[0] = point1->getCoord()[0];
-    coordinates[1] = point1->getCoord()[1];
-    coordinates[2] = point1->getCoord()[2];
-    coordinates[3] = point2->getCoord()[0];
-    coordinates[4] = point2->getCoord()[1];
-    coordinates[5] = point2->getCoord()[2];
+    std::array coordinates {
+        point1->getCoord()[0],
+        point1->getCoord()[1],
+        point1->getCoord()[2],
+        point2->getCoord()[0],
+        point2->getCoord()[1],
+        point2->getCoord()[2]
+    };
 
     const double distance = sqrt(
         (coordinates[0] - coordinates[3]) * (coordinates[0] - coordinates[3])
@@ -134,7 +128,7 @@ void Measurement::createMeasurement(
     if(useSCoord3D)
     {
         // Create SCoord Node
-        const float scoord[] = {
+        std::vector<float> scoordVector {
             static_cast<float>(point1->getCoord()[0]),
             static_cast<float>(point1->getCoord()[1]),
             static_cast<float>(point1->getCoord()[2]),
@@ -142,7 +136,6 @@ void Measurement::createMeasurement(
             static_cast<float>(point2->getCoord()[1]),
             static_cast<float>(point2->getCoord()[2])
         };
-        std::vector<float> scoordVector(scoord, scoord + 6);
         SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoordNode =
             std::make_shared<io::dicom::container::sr::DicomSRSCoord3DNode>(
                 io::dicom::container::DicomCodedAttribute("121230", "DCM", "Path"),
@@ -161,13 +154,12 @@ void Measurement::createMeasurement(
         );
 
         // Create SCoord Node
-        const float scoord[] = {
+        std::vector<float> scoordVector {
             static_cast<float>(point1->getCoord()[0]),
             static_cast<float>(point1->getCoord()[1]),
             static_cast<float>(point2->getCoord()[0]),
             static_cast<float>(point2->getCoord()[1])
         };
-        std::vector<float> scoordVector(scoord, scoord + 4);
         SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoordNode =
             std::make_shared<io::dicom::container::sr::DicomSRSCoordNode>(
                 io::dicom::container::DicomCodedAttribute("121230", "DCM", "Path"),
@@ -192,8 +184,4 @@ void Measurement::createMeasurement(
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::tid

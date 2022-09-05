@@ -29,10 +29,7 @@
 
 #include <optional>
 
-namespace sight::viz::scene2d
-{
-
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 /**
@@ -45,7 +42,7 @@ public:
     SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New<Viewport>);
 
     Viewport() = default;
-    Viewport(sight::data::Object::Key)
+    Viewport(sight::data::Object::Key /*unused*/)
     {
     }
 
@@ -55,14 +52,14 @@ public:
     double x() const;
     double y() const;
 
-    double x_or(double) const;
-    double y_or(double) const;
+    double x_or(double /*x*/) const;
+    double y_or(double /*y*/) const;
 
     double width() const;
     double height() const;
 
-    double width_or(double) const;
-    double height_or(double) const;
+    double width_or(double /*width*/) const;
+    double height_or(double /*height*/) const;
 
     double left() const;
     double top() const;
@@ -206,6 +203,4 @@ inline void Viewport::setHeight(double _height)
 
 //-----------------------------------------------------------------------------
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

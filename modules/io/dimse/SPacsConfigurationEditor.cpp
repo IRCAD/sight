@@ -50,14 +50,13 @@ static const service::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
 SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept
 {
-    m_slotShowDialog = this->newSlot(s_SHOW_DIALOG_SLOT, &SPacsConfigurationEditor::showDialog, this);
+    m_slotShowDialog = this->newSlot(s_SHOW_DIALOG_SLOT, &SPacsConfigurationEditor::showDialog);
 }
 
 //------------------------------------------------------------------------------
 
-SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
-{
-}
+SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -86,11 +85,11 @@ void SPacsConfigurationEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QGridLayout* gridLayout = new QGridLayout();
+    auto* gridLayout = new QGridLayout();
 
     m_SCUAppEntityTitleEdit = new QLineEdit();
     m_SCUAppEntityTitleEdit->setText(pacsConfiguration->getLocalApplicationTitle().c_str());
-    QLabel* const AETofSCU = new QLabel("AET of the SCU:");
+    auto* const AETofSCU = new QLabel("AET of the SCU:");
     AETofSCU->setToolTip("Application entity title of the client");
     AETofSCU->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(AETofSCU, 0, 0);
@@ -98,7 +97,7 @@ void SPacsConfigurationEditor::starting()
 
     m_SCPAppEntityTitleEdit = new QLineEdit();
     m_SCPAppEntityTitleEdit->setText(pacsConfiguration->getPacsApplicationTitle().c_str());
-    QLabel* const AETofSCP = new QLabel("AET of the SCP:");
+    auto* const AETofSCP = new QLabel("AET of the SCP:");
     AETofSCP->setToolTip("Application entity title of the PACS server");
     AETofSCP->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(AETofSCP, 1, 0);
@@ -106,7 +105,7 @@ void SPacsConfigurationEditor::starting()
 
     m_SCPHostNameEdit = new QLineEdit();
     m_SCPHostNameEdit->setText(pacsConfiguration->getPacsHostName().c_str());
-    QLabel* const hostNameOfSCP = new QLabel("Host name of the SCP:");
+    auto* const hostNameOfSCP = new QLabel("Host name of the SCP:");
     hostNameOfSCP->setToolTip("Host name of the PACS server");
     hostNameOfSCP->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(hostNameOfSCP, 2, 0);
@@ -115,7 +114,7 @@ void SPacsConfigurationEditor::starting()
     m_SCPPortEdit = new QSpinBox();
     m_SCPPortEdit->setRange(0, 65535);
     m_SCPPortEdit->setValue(pacsConfiguration->getPacsApplicationPort());
-    QLabel* const SCPPort = new QLabel("Port of the SCP");
+    auto* const SCPPort = new QLabel("Port of the SCP");
     SCPPort->setToolTip("Port of the PACS server");
     SCPPort->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(SCPPort, 3, 0);
@@ -123,7 +122,7 @@ void SPacsConfigurationEditor::starting()
 
     m_moveAppEntityTitleEdit = new QLineEdit();
     m_moveAppEntityTitleEdit->setText(pacsConfiguration->getMoveApplicationTitle().c_str());
-    QLabel* const AETOfMoveSCU = new QLabel("AET of the move SCU");
+    auto* const AETOfMoveSCU = new QLabel("AET of the move SCU");
     AETOfMoveSCU->setToolTip("Application entity title of the move client");
     AETOfMoveSCU->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(AETOfMoveSCU, 4, 0);
@@ -132,7 +131,7 @@ void SPacsConfigurationEditor::starting()
     m_movePort = new QSpinBox();
     m_movePort->setRange(0, 65535);
     m_movePort->setValue(pacsConfiguration->getMoveApplicationPort());
-    QLabel* const PortOfMoveSCU = new QLabel("Port of the move SCU:");
+    auto* const PortOfMoveSCU = new QLabel("Port of the move SCU:");
     PortOfMoveSCU->setToolTip("Port of the move client");
     PortOfMoveSCU->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(PortOfMoveSCU, 5, 0);
@@ -145,7 +144,7 @@ void SPacsConfigurationEditor::starting()
         (pacsConfiguration->getRetrieveMethod()
          == sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1
     );
-    QLabel* const RetrieveMethod = new QLabel("Retrieve method:");
+    auto* const RetrieveMethod = new QLabel("Retrieve method:");
     RetrieveMethod->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(RetrieveMethod, 6, 0);
     gridLayout->addWidget(m_retrieveMethodWidget, 6, 1);
@@ -369,7 +368,7 @@ void SPacsConfigurationEditor::onSCPPortChanged(int value)
 {
     const auto pacsConfiguration = m_config.lock();
 
-    pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
+    pacsConfiguration->setPacsApplicationPort(static_cast<std::uint16_t>(value));
 
     this->modifiedNotify(pacsConfiguration.get_shared());
 }
@@ -391,7 +390,7 @@ void SPacsConfigurationEditor::onMovePortChanged(int _value)
 {
     const auto pacsConfiguration = m_config.lock();
 
-    pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
+    pacsConfiguration->setMoveApplicationPort(static_cast<std::uint16_t>(_value));
 
     this->modifiedNotify(pacsConfiguration.get_shared());
 }

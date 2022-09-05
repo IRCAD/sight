@@ -35,10 +35,7 @@
 #include <filesystem>
 #include <map>
 
-namespace sight::module::ui::qt
-{
-
-namespace series
+namespace sight::module::ui::qt::series
 {
 
 /**
@@ -92,7 +89,7 @@ public:
     MODULE_UI_QT_API SelectorModel(QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    MODULE_UI_QT_API ~SelectorModel();
+    MODULE_UI_QT_API ~SelectorModel() override;
 
     /**
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
@@ -110,7 +107,7 @@ public:
     MODULE_UI_QT_API void clear();
 
     /// Returns item flags with non editable flag
-    Qt::ItemFlags flags(const QModelIndex& _index) const
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& _index) const override
     {
         return QStandardItemModel::flags(_index) & ~Qt::ItemIsEditable;
     }
@@ -235,7 +232,7 @@ QStandardItem* SelectorModel::getInfo(T _data, QString _separator)
         }
     }
 
-    QStandardItem* item = new QStandardItem(dataStr);
+    auto* item = new QStandardItem(dataStr);
     return item;
 }
 
@@ -269,6 +266,4 @@ inline void SelectorModel::setRemoveSerieIcon(const std::filesystem::path& _path
 
 //-----------------------------------------------------------------------------
 
-} // namespace series.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::series

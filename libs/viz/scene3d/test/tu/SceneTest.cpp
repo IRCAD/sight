@@ -31,13 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::SceneTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
-{
-
-namespace ut
+namespace sight::viz::scene3d::helper::ut
 {
 
 //------------------------------------------------------------------------------
@@ -54,28 +48,32 @@ void SceneTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+#define ASSERT_NOT_NULL(expr) if((expr) == nullptr){throw std::runtime_error(#expr " is null.");}
+
+//------------------------------------------------------------------------------
+
 void SceneTest::getNodeById()
 {
-    auto ogreRoot                    = Utils::getOgreRoot();
+    auto* ogreRoot                   = Utils::getOgreRoot();
     Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
 
     Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
-    CPPUNIT_ASSERT(nullptr != rootNode);
+    ASSERT_NOT_NULL(rootNode);
 
-    auto node1 = rootNode->createChildSceneNode("Node1");
-    auto node2 = rootNode->createChildSceneNode("Node2");
+    auto* node1 = rootNode->createChildSceneNode("Node1");
+    auto* node2 = rootNode->createChildSceneNode("Node2");
 
-    auto node1_1 = node1->createChildSceneNode("Node1_1");
-    auto node1_2 = node1->createChildSceneNode("Node1_2");
-    auto node1_3 = node1->createChildSceneNode("Node1_3");
+    auto* node1_1 = node1->createChildSceneNode("Node1_1");
+    auto* node1_2 = node1->createChildSceneNode("Node1_2");
+    auto* node1_3 = node1->createChildSceneNode("Node1_3");
 
-    auto node2_1 = node2->createChildSceneNode("Node2_1");
-    auto node2_2 = node2->createChildSceneNode("Node2_2");
+    auto* node2_1 = node2->createChildSceneNode("Node2_1");
+    auto* node2_2 = node2->createChildSceneNode("Node2_2");
 
-    auto node1_1_1 = node1_1->createChildSceneNode("Node1_1_1");
-    auto node1_2_1 = node1_2->createChildSceneNode("Node1_2_1");
-    auto node1_2_2 = node1_2->createChildSceneNode("Node1_2_2");
-    auto node2_2_1 = node2_2->createChildSceneNode("Node2_2_1");
+    auto* node1_1_1 = node1_1->createChildSceneNode("Node1_1_1");
+    auto* node1_2_1 = node1_2->createChildSceneNode("Node1_2_1");
+    auto* node1_2_2 = node1_2->createChildSceneNode("Node1_2_2");
+    auto* node2_2_1 = node2_2->createChildSceneNode("Node2_2_1");
 
     CPPUNIT_ASSERT_EQUAL(node1, viz::scene3d::helper::Scene::getNodeById("Node1", rootNode));
     CPPUNIT_ASSERT_EQUAL(node2, viz::scene3d::helper::Scene::getNodeById("Node2", rootNode));
@@ -108,8 +106,4 @@ void SceneTest::getNodeById()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace helper
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper::ut

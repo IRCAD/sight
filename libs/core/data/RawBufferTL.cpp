@@ -47,12 +47,11 @@ RawBufferTL::RawBufferTL(data::Object::Key key) :
 //------------------------------------------------------------------------------
 
 RawBufferTL::~RawBufferTL()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
+void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*cache*/)
 {
     RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
@@ -67,7 +66,7 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
 
-    for(TimelineType::value_type elt : other->m_timeline)
+    for(const TimelineType::value_type& elt : other->m_timeline)
     {
         SPTR(data::timeline::RawBuffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
@@ -114,10 +113,9 @@ SPTR(data::timeline::RawBuffer) RawBufferTL::createBuffer(core::HiResClock::HiRe
 {
     return std::make_shared<data::timeline::RawBuffer>(
         timestamp,
-        (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
+        reinterpret_cast<data::timeline::Buffer::BufferDataType>(m_pool->malloc()),
         m_pool->get_requested_size(),
-        boost::bind(&boost::pool<>::free, m_pool, _1)
-    );
+        [ObjectPtr = m_pool](auto&& PH1, auto&& ...){ObjectPtr->free(std::forward<decltype(PH1)>(PH1));});
 }
 
 //------------------------------------------------------------------------------
@@ -126,7 +124,7 @@ bool RawBufferTL::isObjectValid(const CSPTR(data::timeline::Object)& obj) const
 {
     CSPTR(data::timeline::RawBuffer) srcObj =
         std::dynamic_pointer_cast<const data::timeline::RawBuffer>(obj);
-    return srcObj != NULL;
+    return srcObj != nullptr;
 }
 
 //------------------------------------------------------------------------------

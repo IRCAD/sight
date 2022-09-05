@@ -30,10 +30,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -43,16 +40,13 @@ const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManagerBase::LineLayoutManagerBase() :
-    m_orientation(VERTICAL)
-{
-}
+LineLayoutManagerBase::LineLayoutManagerBase()
+= default;
 
 //-----------------------------------------------------------------------------
 
 LineLayoutManagerBase::~LineLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,7 +69,7 @@ void LineLayoutManagerBase::initialize(ConfigurationType configuration)
     m_orientation = (orientation == "vertical") ? VERTICAL : HORIZONTAL;
 
     m_views.clear();
-    for(ConfigurationType view : configuration->getElements())
+    for(const ConfigurationType& view : configuration->getElements())
     {
         if(view->getName() == "spacer")
         {
@@ -208,6 +202,4 @@ void LineLayoutManagerBase::initialize(ConfigurationType configuration)
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

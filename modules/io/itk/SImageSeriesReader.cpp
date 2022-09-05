@@ -57,9 +57,8 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SImageSeriesReader::SImageSeriesReader() noexcept
-{
-}
+SImageSeriesReader::SImageSeriesReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -197,4 +196,4 @@ void SImageSeriesReader::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace ioItk
+} // namespace sight::module::io::itk

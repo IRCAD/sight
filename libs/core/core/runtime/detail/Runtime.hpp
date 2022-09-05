@@ -27,10 +27,7 @@
 
 #include <regex>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 class ExtensionPoint;
@@ -85,7 +82,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    SPTR(core::runtime::Module) findModule(const std::string& identifier) const final;
+    [[nodiscard]] SPTR(core::runtime::Module) findModule(const std::string& identifier) const final;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -99,7 +96,7 @@ public:
      *
      * @return      a pointer to the created executable instance
      */
-    IExecutable* createExecutableInstance(const std::string& type);
+    [[nodiscard]] IExecutable* createExecutableInstance(const std::string& type) const;
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
@@ -116,8 +113,10 @@ public:
      *
      * @return  a pointer to the created executable instance
      */
-    IExecutable* createExecutableInstance(const std::string& type,
-                                          SPTR(ConfigurationElement) configurationElement);
+    [[nodiscard]] IExecutable* createExecutableInstance(
+        const std::string& type,
+        SPTR(ConfigurationElement) configurationElement
+    ) const;
 
     /**
      * @brief   Retrieves the iterator on the end of the extension collection.
@@ -132,16 +131,17 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    std::shared_ptr<Extension> findExtension(const std::string& identifier) const final;
+    [[nodiscard]] std::shared_ptr<Extension> findExtension(const std::string& identifier) const final;
 
     /// @copydoc core::runtime::Runtime::getModules
     core::runtime::Runtime::ModuleContainer getModules() final;
 
     /// @copydoc core::runtime::Runtime::getWorkingPath
-    std::filesystem::path getWorkingPath() const final;
+    [[nodiscard]] std::filesystem::path getWorkingPath() const final;
 
     /// @copydoc core::runtime::Runtime::getRepositoriesPath
-    std::vector<std::pair<std::filesystem::path, std::filesystem::path> > getRepositoriesPath() const final;
+    [[nodiscard]] std::vector<std::pair<std::filesystem::path,
+                                        std::filesystem::path> > getRepositoriesPath() const final;
     //@}
 
     /**
@@ -173,7 +173,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    std::shared_ptr<Module> findEnabledModule(const std::string& identifier) const;
+    [[nodiscard]] std::shared_ptr<Module> findEnabledModule(const std::string& identifier) const;
 
     //@}
 
@@ -204,7 +204,7 @@ public:
      *
      * @return      a sgared pointer to the found executable factory or null of none
      */
-    std::shared_ptr<ExecutableFactory> findExecutableFactory(const std::string& type) const;
+    [[nodiscard]] std::shared_ptr<ExecutableFactory> findExecutableFactory(const std::string& type) const;
 
     /**
      * @brief       Retrieves the plugin instance for the specified module.
@@ -213,7 +213,7 @@ public:
      *
      * @return      a shared pointer to a plugin instance or null if none
      */
-    std::shared_ptr<IPlugin> getPlugin(const std::shared_ptr<Module> module) const;
+    [[nodiscard]] std::shared_ptr<IPlugin> getPlugin(std::shared_ptr<Module> module) const;
 
     //@}
 
@@ -263,7 +263,7 @@ public:
      *
      * @return      a shared pointer to the found extension point instance or null if none
      */
-    std::shared_ptr<ExtensionPoint> findExtensionPoint(const std::string& identifier) const;
+    [[nodiscard]] std::shared_ptr<ExtensionPoint> findExtensionPoint(const std::string& identifier) const;
 
     /**
      * @brief   Retrieves the extension collection.
@@ -303,6 +303,4 @@ private:
     std::vector<std::pair<std::filesystem::path, std::filesystem::path> > m_repositories;
 };
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

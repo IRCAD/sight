@@ -31,15 +31,13 @@
 
 #include <utestData/generator/Image.hpp>
 
+#include <cmath>
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::MedicalImageHelpersTest);
 namespace medImHelper = sight::data::helper::MedicalImage;
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 using core::tools::random::safeRand;
@@ -136,7 +134,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 {
     {
         // Test on 3D image of type 'int16'
-        typedef std::int16_t Type;
+        using Type = std::int16_t;
 
         const Type MIN   = 45;
         const Type MAX   = 345;
@@ -163,10 +161,11 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
+            *itr = static_cast<Type>(MIN + (safeRand() % RANGE));
         }
 
-        Type resMin, resMax;
+        Type resMin = 0;
+        Type resMax = 0;
 
         image->at<Type>(156) = MIN;
         image->at<Type>(245) = MAX;
@@ -178,9 +177,9 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
     {
         // Test on 3D image of type 'float'
-        typedef float Type;
-        const Type MIN   = -12.3f;
-        const Type MAX   = 18.2f;
+        using Type = float;
+        const Type MIN   = -12.3F;
+        const Type MAX   = 18.2F;
         const Type RANGE = MAX - MIN;
 
         data::Image::sptr image = data::Image::New();
@@ -207,7 +206,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
             *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
-        Type resMin, resMax;
+        Type resMin = NAN;
+        Type resMax = NAN;
 
         image->at<Type>(16)  = MIN;
         image->at<Type>(286) = MAX;
@@ -220,7 +220,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
     {
         // test of 2D image of type 'uint8'
 
-        typedef std::uint8_t Type;
+        using Type = std::uint8_t;
 
         const Type MIN   = 3;
         const Type MAX   = 245;
@@ -250,7 +250,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
             *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
-        Type resMin, resMax;
+        Type resMin = 0;
+        Type resMax = 0;
 
         image->at<Type>(5)    = MIN;
         image->at<Type>(2155) = MAX;
@@ -294,12 +295,12 @@ void getPixelTestHelper(const P& pixelValue)
     const auto size                    = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
-    std::size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
-    const auto dumpLock = image->dump_lock();
-    auto imageBufferPtr = image->getBuffer();
-    SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr)
-                          + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
+    std::array<std::size_t, 3> coords {};
+    std::generate(coords.begin(), coords.end(), [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
+    const auto dumpLock  = image->dump_lock();
+    auto* imageBufferPtr = image->getBuffer();
+    SubPixel* pixelPtr   = static_cast<SubPixel*>(imageBufferPtr)
+                           + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
     std::copy(pixelValue.begin(), pixelValue.end(), pixelPtr);
 
     // Test that the helper returned pixel value is correct
@@ -337,8 +338,8 @@ void MedicalImageHelpersTest::getPixelTest()
         getPixelTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {5423.2f};
-        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        std::array<float, 1> pGray = {5423.2F};
+        std::array<float, 3> pRGB  = {42.0F, 1487.4F, 0.1445F};
         getPixelTestHelper(pGray);
         getPixelTestHelper(pRGB);
     }
@@ -360,8 +361,8 @@ void setPixelTestHelper(P& pixelValue)
     const auto size = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
-    std::size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
+    std::array<std::size_t, 3> coords {};
+    std::generate(coords.begin(), coords.end(), [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
     const std::size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     const auto dumpLock          = image->dump_lock();
     image->setPixel(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
@@ -402,8 +403,8 @@ void MedicalImageHelpersTest::setPixelTest()
         setPixelTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {5423.2f};
-        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        std::array<float, 1> pGray = {5423.2F};
+        std::array<float, 3> pRGB  = {42.0F, 1487.4F, 0.1445F};
         setPixelTestHelper(pGray);
         setPixelTestHelper(pRGB);
     }
@@ -433,7 +434,7 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
-            std::array<float, 3> pixelValue = {42.0f, 1487.4f, 0.1445f};
+            std::array<float, 3> pixelValue = {42.0F, 1487.4F, 0.1445F};
             image->setPixel(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
             isNull = medImHelper::isBufNull(pixBuf, 3);
@@ -478,7 +479,7 @@ void MedicalImageHelpersTest::testLandmarks()
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), points.size());
 
-    const auto point = points[0];
+    const auto& point = points[0];
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
@@ -664,7 +665,7 @@ void MedicalImageHelpersTest::testTransferFunction()
 
 void MedicalImageHelpersTest::computeHistogram()
 {
-    typedef signed short ImageType;
+    using ImageType = std::int16_t;
     const std::size_t sizeX     = 50;
     const std::size_t sizeY     = 50;
     const std::size_t sizeZ     = 50;
@@ -756,6 +757,4 @@ void MedicalImageHelpersTest::computeHistogram()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::data::tools
+} // namespace sight::data::tools::ut

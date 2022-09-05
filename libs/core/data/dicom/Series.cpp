@@ -85,4 +85,4 @@ data::ModelSeries::sptr Series::convertToModelSeries(const data::DicomSeries::cs
 
 // ----------------------------------------------------------------------------
 
-} //fwDicomTools
+} // namespace sight::data::dicom

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "service/parser/Vector.hpp"
 
 #include "service/macros.hpp"
@@ -28,10 +30,7 @@
 
 #include <boost/foreach.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -40,11 +39,9 @@ bool Vector::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgEl
 {
     bool isOk = true;
 
-    for(core::runtime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ;
-        configEltIter != _cfgElement->end() ;
-        ++configEltIter)
+    for(auto& configEltIter : *_cfgElement)
     {
-        std::string subElementName = (*configEltIter)->getName();
+        std::string subElementName = configEltIter->getName();
         if(subElementName != "service"
            && subElementName != "serviceVector")
         {
@@ -121,7 +118,7 @@ void Vector::createConfig(core::tools::Object::sptr _obj)
 
 void Vector::startConfig()
 {
-    for(service::IAppConfigManager::sptr ctm : m_ctmContainer)
+    for(const service::IAppConfigManager::sptr& ctm : m_ctmContainer)
     {
         ctm->start();
     }
@@ -131,7 +128,7 @@ void Vector::startConfig()
 
 void Vector::updateConfig()
 {
-    for(service::IAppConfigManager::sptr ctm : m_ctmContainer)
+    for(const service::IAppConfigManager::sptr& ctm : m_ctmContainer)
     {
         ctm->update();
     }
@@ -141,6 +138,7 @@ void Vector::updateConfig()
 
 void Vector::stopConfig()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
     {
         ctm->stop();
@@ -151,6 +149,7 @@ void Vector::stopConfig()
 
 void Vector::destroyConfig()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
     {
         ctm->destroy();
@@ -160,6 +159,4 @@ void Vector::destroyConfig()
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

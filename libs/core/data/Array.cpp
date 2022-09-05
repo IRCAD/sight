@@ -51,7 +51,7 @@ inline static std::size_t computeSize(
                 size.begin(),
                 size.end(),
                 static_cast<std::size_t>(1),
-                std::multiplies<data::Array::SizeType::value_type>()
+                std::multiplies<>()
             );
     }
 
@@ -77,7 +77,7 @@ data::Array::OffsetType Array::computeStrides(SizeType size, std::size_t sizeOfT
 
 //------------------------------------------------------------------------------
 
-Array::Array(data::Object::Key) :
+Array::Array(data::Object::Key /*unused*/) :
     m_bufferObject(core::memory::BufferObject::New())
 {
 }
@@ -286,7 +286,7 @@ std::size_t Array::getBufferOffset(const data::Array::IndexType& id) const
         id.end(),
         m_strides.begin(),
         offsets.begin(),
-        std::multiplies<OffsetType::value_type>()
+        std::multiplies<>()
     );
 
     const std::size_t offset = std::accumulate(offsets.begin(), offsets.end(), static_cast<std::size_t>(0));
@@ -383,7 +383,7 @@ void Array::dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks)
 
 Array::iterator<char> Array::begin()
 {
-    return iterator<char>(static_cast<char*>(getBuffer()));
+    return {static_cast<char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -399,7 +399,7 @@ Array::iterator<char> Array::end()
 
 Array::const_iterator<char> Array::begin() const
 {
-    return const_iterator<char>(static_cast<const char*>(getBuffer()));
+    return {static_cast<const char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------

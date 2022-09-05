@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include <core/com/Signals.hpp>
+#include <cmath>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include "SExtractDeviceInfo.hpp"
 
@@ -42,14 +43,12 @@ namespace sight::module::data
 //-----------------------------------------------------------------------------
 
 SExtractDeviceInfo::SExtractDeviceInfo()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 SExtractDeviceInfo::~SExtractDeviceInfo()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -125,8 +124,18 @@ void SExtractDeviceInfo::updating()
     SIGHT_DEBUG("Device: " + device);
 
     ConfigurationType config = m_devicesConfig[device];
-    std::size_t width, height;
-    double fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
+    std::size_t width        = 0;
+    std::size_t height       = 0;
+    double fx                = NAN;
+    double fy                = NAN;
+    double cx                = NAN;
+    double cy                = NAN;
+    double k1                = NAN;
+    double k2                = NAN;
+    double p1                = NAN;
+    double p2                = NAN;
+    double k3                = NAN;
+    double skew              = NAN;
     if(config)
     {
         ConfigurationType intrinsicCfg = config->findConfigurationElement("intrinsic");

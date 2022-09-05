@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,4 +134,4 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
     return defaultValue;
 }
 
-}
+} // namespace sight::core::runtime

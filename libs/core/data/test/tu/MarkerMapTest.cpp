@@ -27,25 +27,22 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::MarkerMapTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 static const data::MarkerMap::MarkerType marker101 = {{
-    {{1.23f, 1.4314f}},
-    {{2.45f, 1.42f}},
-    {{-1.3f, 1.24f}},
-    {{-10.23f, 1.4f}}
+    {{1.23F, 1.4314F}},
+    {{2.45F, 1.42F}},
+    {{-1.3F, 1.24F}},
+    {{-10.23F, 1.4F}}
 }
 };
 
 static const data::MarkerMap::MarkerType marker102 = {{
-    {{1.23f, 2.4314f}},
-    {{2.45f, 4.484f}},
-    {{-11.3f, 3.24f}},
-    {{100.23f, 1.4f}}
+    {{1.23F, 2.4314F}},
+    {{2.45F, 4.484F}},
+    {{-11.3F, 3.24F}},
+    {{100.23F, 1.4F}}
 }
 };
 
@@ -76,7 +73,7 @@ void MarkerMapTest::getterSetter()
 
     // Not-const getters
     {
-        auto marker = markerMap->getMarker("101");
+        auto* marker = markerMap->getMarker("101");
         CPPUNIT_ASSERT(marker101 == *marker);
         CPPUNIT_ASSERT(marker102 != *marker);
 
@@ -104,7 +101,7 @@ void MarkerMapTest::getterSetter()
     {
         data::MarkerMap::csptr constMarkerMap = markerMap;
 
-        auto marker = constMarkerMap->getMarker("101");
+        const auto* marker = constMarkerMap->getMarker("101");
         CPPUNIT_ASSERT(marker101 == *marker);
         CPPUNIT_ASSERT(marker102 != *marker);
 
@@ -167,6 +164,4 @@ void MarkerMapTest::deepCopyTest()
     CPPUNIT_ASSERT(markerMap1->getMarker("0") == markerMap2->getMarker("0"));
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

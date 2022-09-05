@@ -48,10 +48,7 @@
 
 #include <filesystem>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 static const core::com::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
@@ -217,6 +214,9 @@ void SCamera::onApply(int _index)
         case 2:
             this->onChooseStream();
             break;
+
+        default:
+            SIGHT_ASSERT("Invalid index: " << _index, false);
     }
 }
 
@@ -296,10 +296,8 @@ void SCamera::onChooseFile()
                                                                 {
                                                                     return entryPath;
                                                                 }
-                                                                else
-                                                                {
-                                                                    ++currentEntry;
-                                                                }
+
+                                                                ++currentEntry;
                                                             }
                                                         }
                                                     }
@@ -439,7 +437,7 @@ void SCamera::onChooseDevice()
     std::size_t count                       = 0;
     if(devices.isEmpty())
     {
-        auto errorMessageBox = new QMessageBox(
+        auto* errorMessageBox = new QMessageBox(
             QMessageBox::Critical,
             "Error",
             "No device available. Please connect a camera device and relaunch the application."
@@ -529,6 +527,4 @@ void SCamera::setPreference()
 
 //------------------------------------------------------------------------------
 
-} //namespace video
-
-} //namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

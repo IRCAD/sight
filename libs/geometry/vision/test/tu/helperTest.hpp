@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::vision
-{
-
-namespace ut
+namespace sight::geometry::vision::ut
 {
 
 class helperTest : public CPPUNIT_NS::TestFixture
@@ -45,18 +42,16 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void reprojectionRealDatasetTest1();
-    void reprojectionRealDatasetTest2();
-    void reprojectionIdentity();
-    void toolCalibrationBasic();
-    void toolCalibration();
-    void chessboardDetectionTest();
-    void chessboardDetectionScaleTest();
+    static void reprojectionRealDatasetTest1();
+    static void reprojectionRealDatasetTest2();
+    static void reprojectionIdentity();
+    static void toolCalibrationBasic();
+    static void toolCalibration();
+    static void chessboardDetectionTest();
+    static void chessboardDetectionScaleTest();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::vision
+} // namespace sight::geometry::vision::ut

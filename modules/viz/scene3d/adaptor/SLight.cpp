@@ -73,9 +73,8 @@ SLight::SLight(sight::viz::scene3d::ILight::Key /*key*/)
 
 //------------------------------------------------------------------------------
 
-SLight::~SLight() noexcept
-{
-}
+SLight::~SLight() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -121,7 +120,7 @@ void SLight::starting()
     m_lightNode = transNode->createChildSceneNode(this->getID() + "_light");
     m_lightNode->attachObject(m_light);
 
-    if(m_thetaOffset != 0.f || m_phiOffset != 0.f)
+    if(m_thetaOffset != 0.F || m_phiOffset != 0.F)
     {
         this->setThetaOffset(m_thetaOffset);
         this->setPhiOffset(m_phiOffset);
@@ -149,7 +148,7 @@ void SLight::starting()
         materialAdaptor->update();
 
         // Size, these value allow to display light with good enough ratio.
-        const float originRadius   = m_length * 0.1f;
+        const float originRadius   = m_length * 0.1F;
         const float cylinderLength = m_length - m_length / 10;
         const float cylinderRadius = m_length / 80;
         const float coneLength     = m_length - cylinderLength;
@@ -161,7 +160,7 @@ void SLight::starting()
         sight::viz::scene3d::helper::ManualObject::createSphere(
             m_lightPosition,
             materialAdaptor->getMaterialName(),
-            Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
+            Ogre::ColourValue(0.98F, 0.96F, 0.62F, 1.0F),
             originRadius,
             sample
         );
@@ -175,7 +174,7 @@ void SLight::starting()
         sight::viz::scene3d::helper::ManualObject::createCylinder(
             m_directionalFeedback.first,
             materialAdaptor->getMaterialName(),
-            Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+            Ogre::ColourValue(0.F, 0.F, 1.F, 1.0F),
             cylinderRadius,
             cylinderLength,
             sample
@@ -187,7 +186,7 @@ void SLight::starting()
         sight::viz::scene3d::helper::ManualObject::createCone(
             m_directionalFeedback.second,
             materialAdaptor->getMaterialName(),
-            Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+            Ogre::ColourValue(0.F, 0.F, 1.F, 1.0F),
             coneRadius,
             coneLength,
             sample
@@ -195,7 +194,7 @@ void SLight::starting()
         Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->getID() + "_coneNode");
 
         coneNode->attachObject(m_directionalFeedback.second);
-        coneNode->translate(0.f, 0.f, cylinderLength);
+        coneNode->translate(0.F, 0.F, cylinderLength);
         coneNode->yaw(Ogre::Degree(-90));
 
         m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
@@ -303,7 +302,7 @@ void SLight::switchOn(bool _on)
 {
     m_switchedOn = _on;
 
-    if(m_light)
+    if(m_light != nullptr)
     {
         m_light->setVisible(m_switchedOn);
         this->requestRender();
@@ -347,7 +346,7 @@ void SLight::setPhiOffset(float _phiOffset)
 void SLight::enableVisualFeedback(bool _enable)
 {
     m_visualFeedback = _enable;
-    if(m_lightPosition)
+    if(m_lightPosition != nullptr)
     {
         m_lightPosition->setVisible(m_visualFeedback);
         m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
@@ -360,7 +359,7 @@ void SLight::enableVisualFeedback(bool _enable)
 void SLight::setType(Ogre::Light::LightTypes _type)
 {
     m_lightType = _type;
-    if(m_directionalFeedback.first)
+    if(m_directionalFeedback.first != nullptr)
     {
         m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);
         m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == Ogre::Light::LT_DIRECTIONAL);

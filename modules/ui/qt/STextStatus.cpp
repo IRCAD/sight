@@ -42,9 +42,9 @@ static const core::com::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT = "setStr
 
 //-----------------------------------------------------------------------------
 
-STextStatus::STextStatus()
+STextStatus::STextStatus() :
+    m_labelStaticText(new QLabel())
 {
-    m_labelStaticText = new QLabel();
     m_labelStaticText->setStyleSheet("font-weight: bold;");
 
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &STextStatus::setDoubleParameter, this);
@@ -56,8 +56,7 @@ STextStatus::STextStatus()
 //------------------------------------------------------------------------------
 
 STextStatus::~STextStatus()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -100,7 +99,7 @@ void STextStatus::starting()
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QHBoxLayout* const layout = new QHBoxLayout();
+    auto* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);
     layout->addWidget(m_labelValue);
 

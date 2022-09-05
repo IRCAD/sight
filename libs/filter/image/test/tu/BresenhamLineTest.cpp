@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::BresenhamLineTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -218,6 +215,4 @@ void BresenhamLineTest::obliqueLineTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::filter::image
+} // namespace sight::filter::image::ut

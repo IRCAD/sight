@@ -24,10 +24,7 @@
 
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 //-----------------------------------------------------------------------------
@@ -44,7 +41,7 @@ void SViewportUpdater::starting()
     {
         // If the viewport Y and height are not set, scale the viewport to the height of the scene
         auto viewport = m_viewport.lock();
-        auto scene    = this->getScene2DRender()->getScene();
+        auto* scene   = this->getScene2DRender()->getScene();
 
         viewport->setY(viewport->y_or(scene->sceneRect().y()));
         viewport->setHeight(viewport->height_or(scene->sceneRect().height()));
@@ -76,6 +73,4 @@ service::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() cons
     return connections;
 }
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ public:
     SIGHT_DECLARE_CLASS(SingleFolder, ILocation);
 
     /// String serialization function
-    inline std::string toString() const override;
+    [[nodiscard]] inline std::string toString() const override;
 
     /// Sets folder
     inline void setFolder(const std::filesystem::path& folder);
 
     /// Gets folder
-    inline std::filesystem::path getFolder() const;
+    [[nodiscard]] inline std::filesystem::path getFolder() const;
 
 private:
 
@@ -72,4 +72,4 @@ inline std::filesystem::path SingleFolder::getFolder() const
     return m_folder;
 }
 
-} // namespace sight::io::base::location
+} // namespace sight::core::location

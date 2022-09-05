@@ -150,7 +150,7 @@ public:
     VIZ_SCENE3D_API IWindowInteractor();
 
     /// Destructor. Do nothing.
-    VIZ_SCENE3D_API virtual ~IWindowInteractor();
+    VIZ_SCENE3D_API ~IWindowInteractor() override;
 
     /// Call Ogre Widget render immediately
     VIZ_SCENE3D_API virtual void renderNow() = 0;

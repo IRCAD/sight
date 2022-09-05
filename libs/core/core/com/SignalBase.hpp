@@ -45,12 +45,10 @@ struct CORE_CLASS_API SignalBase : virtual core::BaseObject
     /**  @} */
 
     SignalBase()
-    {
-    }
+    = default;
 
-    virtual ~SignalBase()
-    {
-    }
+    ~SignalBase() override
+    = default;
 
     /**
      * @brief Connects the given slot.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,20 +24,10 @@
 
 #include "data/registry/detail.hpp"
 
-namespace sight::io::base
-{
-
-namespace reader
-{
-
-namespace registry
+namespace sight::io::base::reader::registry
 {
 
 #define SIGHT_REGISTER_IO_READER(classname) \
     static sight::io::base::reader::IObjectReader::Registry<classname> s__factory__record__ ## __LINE__;
 
-} // end namespace registry
-
-} // end namespace reader
-
-} // end namespace sight::io::base
+} // namespace sight::io::base::reader::registry

@@ -34,14 +34,12 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 SMatrixRegressor::SMatrixRegressor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 SMatrixRegressor::~SMatrixRegressor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,7 +73,7 @@ void SMatrixRegressor::updating()
     for(const auto& pt : pointList->getPoints())
     {
         const auto& ptCoords = pt->getCoord();
-        ptList.push_back(sight::filter::image::MatrixRegressor::PointType(ptCoords[0], ptCoords[1], ptCoords[2], 1.));
+        ptList.emplace_back(ptCoords[0], ptCoords[1], ptCoords[2], 1.);
     }
 
     if(!matrixList->empty() && !ptList.empty())

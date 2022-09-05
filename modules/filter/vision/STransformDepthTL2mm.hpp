@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ public:
     /**
      * @brief STransformDepthTL2mm destructor.
      */
-    MODULE_FILTER_VISION_API virtual ~STransformDepthTL2mm();
+    MODULE_FILTER_VISION_API ~STransformDepthTL2mm() override;
 
 protected:
 
@@ -100,7 +100,7 @@ private:
     void compute(core::HiResClock::HiResClockType timestamp);
 
     /// timestamp of the last process
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     static constexpr std::string_view s_CAMERA_SERIES_INPUT   = "cameraSeries";
     static constexpr std::string_view s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";

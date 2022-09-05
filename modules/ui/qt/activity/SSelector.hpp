@@ -33,10 +33,7 @@
 #include <QObject>
 #include <QPointer>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -147,6 +144,4 @@ private:
     QPointer<QButtonGroup> m_buttonGroup;
 };
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

@@ -28,10 +28,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -54,38 +51,36 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// Test to configure a service
-    void testServiceConfiguration();
+    static void testServiceConfiguration();
 
     /// Test add and remove service with multiple associated data
-    void testServiceCreationWithMultipleData();
+    static void testServiceCreationWithMultipleData();
 
     /// Test add and remove service using template methods
-    void testServiceCreationWithTemplateMethods();
+    static void testServiceCreationWithTemplateMethods();
 
     /// Test add and remove service with UUID
-    void testServiceCreationWithUUID();
+    static void testServiceCreationWithUUID();
 
     /// test start/stop/update service
-    void testStartStopUpdate();
+    static void testStartStopUpdate();
 
     /// test exceptions handling when starting/stopping/updating services
-    void testStartStopUpdateExceptions();
+    static void testStartStopUpdateExceptions();
 
     /// test sending/receiving message
-    void testCommunication();
+    static void testCommunication();
 
     /// test service with an input and an output
-    void testWithInAndOut();
+    static void testWithInAndOut();
 
 private:
 
     static void startStopUpdateExceptions(service::ut::TestService::sptr _service);
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

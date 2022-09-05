@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <core/Exception.hpp>
 
-namespace sight::filter::dicom
-{
-
-namespace exceptions
+namespace sight::filter::dicom::exceptions
 {
 
 /**
@@ -46,9 +43,7 @@ public:
     FILTER_DICOM_API FilterFailure(const std::string& message);
 
     /// Destructor
-    FILTER_DICOM_API virtual ~FilterFailure() noexcept;
+    FILTER_DICOM_API ~FilterFailure() noexcept override;
 };
 
-} // namespace exceptions
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::exceptions

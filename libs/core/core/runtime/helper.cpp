@@ -39,20 +39,19 @@ void ConfigurationElement2XML(core::runtime::ConfigurationElement::sptr _cfgElem
 {
     //ATTRIBUTES + VALUES
     std::map<std::string, std::string> attr = _cfgElement->getAttributes();
-    for(std::map<std::string, std::string>::iterator iter_attr_cfe = attr.begin() ; iter_attr_cfe != attr.end() ;
-        ++iter_attr_cfe)
+    for(auto& iter_attr_cfe : attr)
     {
         xmlSetProp(
             pNode,
-            xmlCharStrdup((iter_attr_cfe->first).c_str()),
-            xmlCharStrdup((iter_attr_cfe->second).c_str())
+            xmlCharStrdup((iter_attr_cfe.first).c_str()),
+            xmlCharStrdup((iter_attr_cfe.second).c_str())
         );
     }
 
     //ELEMENTS
-    for(core::runtime::ConfigurationElement::sptr elt : _cfgElement->getElements())
+    for(const core::runtime::ConfigurationElement::sptr& elt : _cfgElement->getElements())
     {
-        xmlNodePtr child = xmlNewNode(NULL, xmlCharStrdup(elt->getName().c_str()));
+        xmlNodePtr child = xmlNewNode(nullptr, xmlCharStrdup(elt->getName().c_str()));
 
         xmlAddChild(pNode, child);
 
@@ -83,7 +82,7 @@ ConfigurationElement::sptr getCfgAsAnExtension(ConfigurationElement::sptr config
 
         // Search for all matching contributions
         std::vector<ConfigurationElement::sptr> matchingCfg;
-        for(ConfigurationElement::sptr elt : cfgs)
+        for(const ConfigurationElement::sptr& elt : cfgs)
         {
             if(cfgContribution == elt->getExistingAttributeValue("id"))
             {
@@ -130,6 +129,7 @@ std::vector<std::string> getAllIdsForPoint(std::string _extension_pt)
     auto elements = core::runtime::getAllConfigurationElementsForPoint(_extension_pt);
 
     // Creates all contributed action instances.
+    ids.reserve(elements.size());
     for(const core::runtime::ConfigurationElement::sptr& elt : elements)
     {
         ids.push_back(elt->getAttributeValue("id"));
@@ -142,8 +142,8 @@ std::vector<std::string> getAllIdsForPoint(std::string _extension_pt)
 
 std::string getInfoForPoint(std::string _extension_pt)
 {
-    std::string info = "";
-    auto& runtime    = core::runtime::detail::Runtime::get();
+    std::string info;
+    auto& runtime = core::runtime::detail::Runtime::get();
     if(runtime.findExtensionPoint(_extension_pt))
     {
         // Collects all contributed actions
@@ -197,4 +197,4 @@ std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensionsForPoint
     return point->getAllExtensions();
 }
 
-} // namespace sight::core
+} // namespace sight::core::runtime

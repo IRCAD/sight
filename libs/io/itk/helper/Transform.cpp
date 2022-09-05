@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "io/itk/helper/Transform.hpp"
 
-namespace sight::io::itk
-{
-
-namespace helper
+namespace sight::io::itk::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -62,6 +59,4 @@ void Transform::convertFromITK(const MatrixType& _inTrf, data::Matrix4::sptr& _o
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::itk
+} // namespace sight::io::itk::helper

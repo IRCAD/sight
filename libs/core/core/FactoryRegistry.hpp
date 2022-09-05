@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,12 +50,10 @@ public:
     typedef std::vector<KeyType> KeyVectorType;
 
     FactoryRegistryBase()
-    {
-    }
+    = default;
 
     virtual ~FactoryRegistryBase()
-    {
-    }
+    = default;
 
     /**
      * @brief Add a factory to the registry.
@@ -74,7 +72,7 @@ public:
     {
         // get shared access
         core::mt::ReadLock lock(m_mutex);
-        typename RegistryType::const_iterator iter = m_registry.find(key);
+        auto iter = m_registry.find(key);
         FactoryType factory;
         if(iter != m_registry.end())
         {
@@ -95,8 +93,7 @@ public:
             m_registry.begin(),
             m_registry.end(),
             std::back_inserter(vectKeys),
-            std::bind(&RegistryType::value_type::first, std::placeholders::_1)
-        );
+            [](const auto& e){return e.first;});
         return vectKeys;
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 /**
@@ -52,10 +49,10 @@ public:
     }
 
     /// Constructor.
-    UI_BASE_API MenuBar(const std::string& sid);
+    UI_BASE_API MenuBar(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~MenuBar();
+    UI_BASE_API ~MenuBar() override;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwMenuBar::sptr getParent();
@@ -129,6 +126,4 @@ protected:
     std::string m_sid;
 };
 
-} // namespace registry
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::registry

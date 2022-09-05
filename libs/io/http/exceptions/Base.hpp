@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <core/Exception.hpp>
 
-namespace sight::io::http
-{
-
-namespace exceptions
+namespace sight::io::http::exceptions
 {
 
 /**
@@ -46,9 +43,7 @@ public:
     IO_HTTP_API Base(const std::string& message);
 
     /// Destructor
-    virtual ~Base() noexcept;
+    ~Base() noexcept override;
 };
 
-} // namespace exceptions
-
-} // namespace sight::io::http
+} // namespace sight::io::http::exceptions

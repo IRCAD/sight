@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::session::ut::SessionTest);
 
-namespace sight::module::io::session
-{
-
-namespace ut
+namespace sight::module::io::session::ut
 {
 
 //------------------------------------------------------------------------------
@@ -86,7 +83,7 @@ inline static service::IService::ConfigType getConfiguration(const bool read = t
 
 //------------------------------------------------------------------------------
 
-inline static void _basicTest(const bool raw = false)
+inline static void basicTest(const bool raw = false)
 {
     // Create a temporary directory
     const auto tmpfolder = core::tools::System::getTemporaryFolder("BasicTest");
@@ -160,18 +157,16 @@ inline static void _basicTest(const bool raw = false)
 
 void SessionTest::basicArchiveTest()
 {
-    _basicTest(false);
+    basicTest(false);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::basicRawTest()
 {
-    _basicTest(true);
+    basicTest(true);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::module::io::session
+} // namespace sight::module::io::session::ut

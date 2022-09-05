@@ -46,18 +46,17 @@ class CompositorListener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    CompositorListener(Ogre::Viewport*, SCompositorParameter::sptr _adaptor) :
+    CompositorListener(Ogre::Viewport* /*unused*/, SCompositorParameter::sptr _adaptor) :
         m_adaptor(_adaptor)
     {
     }
 
-    ~CompositorListener()
-    {
-    }
+    ~CompositorListener() override
+    = default;
 
     //------------------------------------------------------------------------------
 
-    void notifyMaterialRender(Ogre::uint32, Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat) override
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
@@ -66,7 +65,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyResourcesCreated(bool)
+    void notifyResourcesCreated(bool /*forResizeOnly*/) override
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
@@ -83,15 +82,13 @@ static const std::string s_COMPOSITOR_NAME_CONFIG = "compositorName";
 
 //------------------------------------------------------------------------------
 
-SCompositorParameter::SCompositorParameter() noexcept
-{
-}
+SCompositorParameter::SCompositorParameter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SCompositorParameter::~SCompositorParameter() noexcept
-{
-}
+SCompositorParameter::~SCompositorParameter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

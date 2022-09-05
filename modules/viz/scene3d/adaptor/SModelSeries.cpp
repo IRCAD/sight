@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,9 +58,8 @@ SModelSeries::SModelSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-SModelSeries::~SModelSeries() noexcept
-{
-}
+SModelSeries::~SModelSeries() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -84,9 +83,9 @@ void SModelSeries::configuring()
     m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
     m_isDynamicVertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
 
-    if(config.count(s_QUERY_CONFIG))
+    if(config.count(s_QUERY_CONFIG) != 0U)
     {
-        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        const auto hexaMask = config.get<std::string>(s_QUERY_CONFIG);
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
@@ -137,7 +136,7 @@ void SModelSeries::updating()
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 
-    for(auto reconstruction : modelSeries->getReconstructionDB())
+    for(const auto& reconstruction : modelSeries->getReconstructionDB())
     {
         auto adaptor = this->registerService<module::viz::scene3d::adaptor::SReconstruction>(
             "sight::module::viz::scene3d::adaptor::SReconstruction"
@@ -184,7 +183,7 @@ void SModelSeries::stopping()
 void SModelSeries::setVisible(bool _visible)
 {
     auto adaptors = this->getRegisteredServices();
-    for(auto adaptor : adaptors)
+    for(const auto& adaptor : adaptors)
     {
         auto recAdaptor = module::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
         recAdaptor->updateVisibility(!_visible);
@@ -200,7 +199,7 @@ void SModelSeries::showReconstructionsOnFieldChanged()
     const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 
     auto adaptors = this->getRegisteredServices();
-    for(auto adaptor : adaptors)
+    for(const auto& adaptor : adaptors)
     {
         auto recAdaptor = module::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
         recAdaptor->updateVisibility(!showRec);

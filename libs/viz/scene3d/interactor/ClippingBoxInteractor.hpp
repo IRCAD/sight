@@ -31,10 +31,7 @@
 
 #include <OGRE/OgreMovableObject.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace interactor
+namespace sight::viz::scene3d::interactor
 {
 
 /// Picks VR widgets and updates clipping cube.
@@ -58,22 +55,34 @@ public:
     VIZ_SCENE3D_API ~ClippingBoxInteractor() noexcept override;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
-    VIZ_SCENE3D_API void mouseMoveEvent(MouseButton, Modifier, int, int, int, int) override;
+    VIZ_SCENE3D_API void mouseMoveEvent(
+        MouseButton /*button*/,
+        Modifier /*_mods*/,
+        int /*x*/,
+        int /*y*/,
+        int /*dx*/,
+        int /*dy*/
+    ) override;
 
     /// Ends all interactions with the widget.
-    VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
+    VIZ_SCENE3D_API void buttonReleaseEvent(
+        MouseButton /*_button*/,
+        Modifier /*_mods*/,
+        int /*_x*/,
+        int /*_y*/
+    ) override;
 
     /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
-    VIZ_SCENE3D_API void buttonPressEvent(MouseButton, Modifier, int, int) override;
+    VIZ_SCENE3D_API void buttonPressEvent(MouseButton /*button*/, Modifier /*_mods*/, int /*x*/, int /*y*/) override;
 
     /// Sets the visibility of the box widget.
     VIZ_SCENE3D_API void setBoxVisibility(bool _visibility);
 
     /// Retrieves the positions of the box in model space.
-    VIZ_SCENE3D_API Ogre::AxisAlignedBox getClippingBox() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::AxisAlignedBox getClippingBox() const;
 
     /// Retrieves the current clipping transform.
-    VIZ_SCENE3D_API Ogre::Matrix4 getClippingTransform() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Matrix4 getClippingTransform() const;
 
     /// Sets the current clipping box positions from the input transform.
     VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clippingTrf);
@@ -96,6 +105,4 @@ private:
     Ogre::MovableObject* pickObject(int x, int y);
 };
 
-} // namespace interactor.
-
-} // namespace sight::viz::scene3d.
+} // namespace sight::viz::scene3d::interactor

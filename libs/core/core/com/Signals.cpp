@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,20 +31,12 @@ namespace sight::core::com
 {
 
 Signals::Signals()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 Signals::~Signals()
-{
-#if 0
-    for(SignalMapType::value_type elem : m_signals)
-    {
-        SIGHT_ASSERT("Signal '" << elem.first << "' has connected slots", elem.second->numConnections() == 0);
-    }
-#endif
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -58,14 +50,14 @@ Signals& Signals::operator()(const SignalKeyType& key, const SignalBase::sptr& S
 
 SignalBase::sptr Signals::operator[](const SignalKeyType& key) const
 {
-    SignalMapType::const_iterator it = m_signals.find(key);
+    auto it = m_signals.find(key);
 
     if(it != m_signals.end())
     {
         return it->second;
     }
 
-    return SignalBase::sptr();
+    return {};
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +65,7 @@ SignalBase::sptr Signals::operator[](const SignalKeyType& key) const
 Signals::SignalKeyContainerType Signals::getSignalKeys() const
 {
     Signals::SignalKeyContainerType SignalKeys;
-    for(SignalMapType::value_type elem : m_signals)
+    for(const SignalMapType::value_type& elem : m_signals)
     {
         SignalKeys.push_back(elem.first);
     }
@@ -83,15 +75,8 @@ Signals::SignalKeyContainerType Signals::getSignalKeys() const
 
 //-----------------------------------------------------------------------------
 
-Signals::Signals(const Signals&)
+Signals::Signals(const Signals& /*unused*/)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-Signals& Signals::operator=(const Signals&)
-{
-    return *this;
 }
 
 //-----------------------------------------------------------------------------

@@ -36,7 +36,7 @@ namespace sight::data
 
 class Series;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dimse
 {
@@ -92,7 +92,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DIMSE_API virtual ~SSeriesPusher() noexcept;
+    MODULE_IO_DIMSE_API ~SSeriesPusher() noexcept override;
 
 protected:
 
@@ -127,7 +127,7 @@ protected:
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    MODULE_IO_DIMSE_API void displayMessage(const std::string& message, bool error) const;
+    static MODULE_IO_DIMSE_API void displayMessage(const std::string& message, bool error);
 
     /**
      * @brief Progress callback
@@ -166,10 +166,10 @@ protected:
     core::thread::Worker::sptr m_pushSeriesWorker;
 
     /// Is pushing is set to true when we are pushing series
-    bool m_isPushing;
+    bool m_isPushing {false};
 
     /// Total number of instances that must be uploaded
-    long unsigned int m_instanceCount;
+    std::uint64_t m_instanceCount {};
 
     sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
     sight::data::ptr<sight::io::dimse::data::PacsConfiguration, sight::data::Access::in> m_config {this, "pacsConfig"};

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "Object.hpp"
 
 #include "UUID.hpp"
@@ -48,7 +50,7 @@ Object::sptr Object::fromUUID(const std::string& uuid)
         return found->second.lock();
     }
 
-    return Object::sptr();
+    return {};
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +85,7 @@ std::string Object::getUUID() const
     // As we don't modify the underlying object, but only store a non const weak pointer,
     // the "const" contract is not really broken in this method.
     // This is a compromise to allow a "lazy" uuid generation
-    s_uuid_to_wptr[uuid] = const_cast<Object*>(this)->getSptr();
+    s_uuid_to_wptr[uuid] = const_cast<Object*>(this)->getSptr(); // NOLINT(cppcoreguidelines-pro-type-const-cast)
 
     return uuid;
 }

@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::memory
-{
-
-namespace ut
+namespace sight::core::memory::ut
 {
 
 class BufferAllocationPolicyTest : public CPPUNIT_NS::TestFixture
@@ -37,9 +34,7 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void exceptionTest();
+    static void exceptionTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::ut

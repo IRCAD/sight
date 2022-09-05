@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,15 +25,12 @@
 namespace sight::module::io::document
 {
 
-using namespace core::runtime::utils;
-
 SIGHT_REGISTER_PLUGIN("sight::module::io::document::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

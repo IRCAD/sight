@@ -31,23 +31,19 @@
 
 SIGHT_REGISTER_IO_READER(sight::io::base::reader::ArrayReader);
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 //------------------------------------------------------------------------------
 
-ArrayReader::ArrayReader(io::base::reader::IObjectReader::Key)
+ArrayReader::ArrayReader(io::base::reader::IObjectReader::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 ArrayReader::~ArrayReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -88,6 +84,4 @@ std::string ArrayReader::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

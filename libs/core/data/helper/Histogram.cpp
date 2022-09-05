@@ -28,10 +28,7 @@
 
 #include <numeric>
 
-namespace sight::data
-{
-
-namespace helper
+namespace sight::data::helper
 {
 
 /**
@@ -43,7 +40,7 @@ struct ComputeHistogramFunctor
     struct Parameter
     {
         data::Image::csptr image;
-        double binsWidth;
+        double binsWidth {};
         std::vector<double> o_histogram;
         double o_min {std::numeric_limits<double>::max()};
         double o_max {std::numeric_limits<double>::lowest()};
@@ -68,7 +65,7 @@ struct ComputeHistogramFunctor
         const data::Image::const_iterator<T> end   = imgBegin + regionMax;
         for(auto itr = begin ; itr != end ; ++itr)
         {
-            const std::size_t index = static_cast<std::size_t>(static_cast<double>(*itr - min) * invBinsWidth);
+            const auto index = static_cast<std::size_t>(static_cast<double>(*itr - min) * invBinsWidth);
             ++values[i][index];
         }
     }
@@ -102,16 +99,20 @@ struct ComputeHistogramFunctor
                 }
 
                 rt(
-                    std::bind(
-                        &ComputeHistogramFunctor::countPixels<IMAGETYPE>,
-                        image->cbegin<IMAGETYPE>(),
-                        std::ref(values),
-                        min,
-                        invBinsWidth,
-                        std::placeholders::_1,
-                        std::placeholders::_2,
-                        std::placeholders::_3
-                    ),
+                    [capture0 = image->cbegin<IMAGETYPE>(), &values, min, invBinsWidth](std::ptrdiff_t PH1,
+                                                                                        std::ptrdiff_t PH2,
+                                                                                        std::size_t PH3, auto&& ...)
+                    {
+                        return ComputeHistogramFunctor::countPixels<IMAGETYPE>(
+                            capture0,
+                            values,
+                            min,
+                            invBinsWidth,
+                            PH1,
+                            PH2,
+                            PH3
+                        );
+                    },
                     image->cend<IMAGETYPE>() - image->cbegin<IMAGETYPE>()
                 );
 
@@ -185,6 +186,4 @@ Histogram::histogram_t Histogram::sample(std::size_t _binWidth) const
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper

@@ -28,10 +28,7 @@
 #include <thread>
 #include <vector>
 
-namespace sight::data
-{
-
-namespace thread
+namespace sight::data::thread
 {
 
 class RegionThreader
@@ -89,7 +86,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::size_t numberOfThread()
+    [[nodiscard]] std::size_t numberOfThread() const
     {
         return m_nbThread;
     }
@@ -99,6 +96,4 @@ protected:
     const std::size_t m_nbThread;
 };
 
-} // namespace thread
-
-} // namespace sight::data
+} // namespace sight::data::thread

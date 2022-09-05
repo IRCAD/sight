@@ -31,34 +31,36 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Object.hpp>
 
-namespace fwTools
+namespace sight::core::tools
 {
 
 class Object;
 
-}
+} // namespace sight::core::tools
 
 namespace sight::data
 {
 
 class Object;
 
-}
+} // namespace sight::data
 
-namespace fwRuntime
+namespace sight::core::runtime
 {
 
 struct ConfigurationElement;
 
-}
+} // namespace sight::core::runtime
 
-namespace sight::service
-{
-
-namespace helper
+namespace sight::core::com::helper
 {
 
 class SigSlotConnection;
+
+} // namespace sight::core::com::helper
+
+namespace sight::service::helper
+{
 
 /**
  * @brief Provides configuration element parsing tools.
@@ -154,6 +156,4 @@ public:
     SERVICE_API static void clearKeyProps();
 };
 
-} // namespace helper
-
-} // namespace sight::service
+} // namespace sight::service::helper

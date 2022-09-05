@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,9 +32,9 @@ namespace sight::core::com
 
 void SlotBase::run() const
 {
-    typedef SlotRun<void ()> SlotFuncType;
-    const SlotFuncType* fun = dynamic_cast<const SlotFuncType*>(this);
-    if(fun)
+    using SlotFuncType = SlotRun<void ()>;
+    const auto* fun = dynamic_cast<const SlotFuncType*>(this);
+    if(fun != nullptr)
     {
         fun->run();
     }
@@ -49,17 +49,15 @@ void SlotBase::run() const
 
 SlotBase::VoidSharedFutureType SlotBase::asyncRun() const
 {
-    typedef SlotRun<void ()> SlotFuncType;
-    const SlotFuncType* fun = dynamic_cast<const SlotFuncType*>(this);
-    if(fun)
+    using SlotFuncType = SlotRun<void ()>;
+    const auto* fun = dynamic_cast<const SlotFuncType*>(this);
+    if(fun != nullptr)
     {
         return fun->asyncRun();
     }
-    else
-    {
-        SIGHT_ERROR("failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName<void()>());
-        SIGHT_THROW_EXCEPTION(core::com::exception::BadRun("Failed to find right signature for asyncRun"));
-    }
+
+    SIGHT_ERROR("failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName<void()>());
+    SIGHT_THROW_EXCEPTION(core::com::exception::BadRun("Failed to find right signature for asyncRun"));
 }
 
 } // namespace sight::core::com

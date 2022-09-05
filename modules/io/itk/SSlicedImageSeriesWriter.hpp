@@ -61,7 +61,7 @@ public:
 
     MODULE_IO_ITK_API SSlicedImageSeriesWriter() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SSlicedImageSeriesWriter() noexcept;
+    MODULE_IO_ITK_API ~SSlicedImageSeriesWriter() noexcept override;
 
 protected:
 

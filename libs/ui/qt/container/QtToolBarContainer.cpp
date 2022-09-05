@@ -26,10 +26,7 @@
 #include <QMenu>
 #include <QToolBar>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
@@ -40,9 +37,8 @@ QtToolBarContainer::QtToolBarContainer(ui::base::GuiBaseObject::Key /*key*/) noe
 
 //-----------------------------------------------------------------------------
 
-QtToolBarContainer::~QtToolBarContainer() noexcept
-{
-}
+QtToolBarContainer::~QtToolBarContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -78,6 +74,4 @@ QToolBar* QtToolBarContainer::getQtToolBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

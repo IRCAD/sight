@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ReconstructionTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -93,6 +90,4 @@ void ReconstructionTest::image()
     CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

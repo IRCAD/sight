@@ -20,15 +20,17 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "viz/scene3d/vr/IVolumeRenderer.hpp"
 
 #include "viz/scene3d/Layer.hpp"
 
 #include <boost/algorithm/clamp.hpp>
-namespace sight::viz::scene3d
-{
 
-namespace vr
+#include <utility>
+
+namespace sight::viz::scene3d::vr
 {
 
 const std::array<Ogre::Vector3, 8> IVolumeRenderer::s_imagePositions =
@@ -46,7 +48,7 @@ const std::array<Ogre::Vector3, 8> IVolumeRenderer::s_imagePositions =
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::IVolumeRenderer(
-    const std::string& parentId,
+    std::string parentId,
     Ogre::SceneManager* const sceneManager,
     Ogre::SceneNode* const volumeNode,
     sight::data::Image::csptr image,
@@ -54,17 +56,15 @@ IVolumeRenderer::IVolumeRenderer(
     bool with_buffer,
     bool preintegration
 ) :
-    m_parentId(parentId),
+    m_parentId(std::move(parentId)),
     m_sceneManager(sceneManager),
     m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::TransferFunction>(tf)),
     m_with_buffer(with_buffer),
     m_preintegration(preintegration),
-    m_volumeSceneNode(volumeNode)
+    m_volumeSceneNode(volumeNode),
+    m_camera(m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)),
+    m_clippedImagePositions(s_imagePositions)
 {
-    m_camera = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-
-    m_clippedImagePositions = s_imagePositions;
-
     //Transfer function and preintegration table
     {
         m_preIntegrationTable.createTexture(m_parentId);
@@ -181,24 +181,24 @@ void IVolumeRenderer::updateSampleDistance()
 
     //Closest vertex
     {
-        const auto iterator = std::min_element(
+        const auto iterator = std::min_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
             m_clippedImagePositions.begin(),
             m_clippedImagePositions.end(),
             comp
         );
-        const std::size_t index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
+        const auto index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
         m_cameraInfo.closest       = *iterator;
         m_cameraInfo.closest_index = index;
     }
 
     //Furthest vertex
     {
-        const auto iterator = std::max_element(
+        const auto iterator = std::max_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
             m_clippedImagePositions.begin(),
             m_clippedImagePositions.end(),
             comp
         );
-        const std::size_t index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
+        const auto index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
 
         m_cameraInfo.furthest       = *iterator;
         m_cameraInfo.furthest_index = index;
@@ -212,7 +212,7 @@ void IVolumeRenderer::updateSampleDistance()
         );
 
     //Then simply uniformly divide it according to the total number of slices
-    m_sampleDistance = total_distance / m_nbSlices;
+    m_sampleDistance = total_distance / static_cast<float>(m_nbSlices);
 
     //Validation
     SIGHT_ASSERT("Sampled distance is NaN.", !std::isnan(m_sampleDistance)); //NaN
@@ -221,6 +221,4 @@ void IVolumeRenderer::updateSampleDistance()
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

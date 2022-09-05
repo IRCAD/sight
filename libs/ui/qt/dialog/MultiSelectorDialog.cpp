@@ -33,25 +33,19 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key /*key*/) :
-    m_message(""),
-    m_title("")
+MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 MultiSelectorDialog::~MultiSelectorDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -73,13 +67,13 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     QWidget* parent = qApp->activeWindow();
 
-    QDialog* dialog = new QDialog(parent);
+    auto* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
-    QListWidget* selectionList = new QListWidget(dialog);
-    for(Selections::value_type selection : m_selections)
+    auto* selectionList = new QListWidget(dialog);
+    for(const Selections::value_type& selection : m_selections)
     {
-        QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
+        auto* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
         item->setCheckState((selection.second ? Qt::Checked : Qt::Unchecked));
         selectionList->addItem(item);
     }
@@ -87,17 +81,17 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     QListWidgetItem* firstItem = selectionList->item(0);
     selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton     = new QPushButton(tr("Ok"));
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+    auto* okButton     = new QPushButton(tr("Ok"));
+    auto* cancelButton = new QPushButton(tr("Cancel"));
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
     h_layout->addWidget(okButton);
     h_layout->addWidget(cancelButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    auto* vLayout = new QVBoxLayout();
     if(!m_message.empty())
     {
-        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
+        auto* msgText = new QLabel(QString::fromStdString(m_message), dialog);
         vLayout->addWidget(msgText);
     }
 
@@ -110,10 +104,10 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
     Selections selections;
-    if(dialog->exec())
+    if(dialog->exec() != 0)
     {
         int indexItem = 0;
-        for(Selections::value_type selection : m_selections)
+        for(const Selections::value_type& selection : m_selections)
         {
             selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
             indexItem++;
@@ -132,6 +126,4 @@ void MultiSelectorDialog::setMessage(const std::string& msg)
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

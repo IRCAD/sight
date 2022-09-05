@@ -26,13 +26,7 @@
 
 #include <OGRE/OgreMaterial.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
-{
-
-namespace ut
+namespace sight::viz::scene3d::helper::ut
 {
 
 class ShadingTest : public CPPUNIT_NS::TestFixture
@@ -54,18 +48,18 @@ public:
     ShadingTest();
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void isColorTechnique();
     void isPeelTechnique();
     void isGeometricTechnique();
     void isDepthOnlyTechnique();
-    void getPermutation();
-    void getR2VBGeometryProgramName();
-    void setPermutationInProgramName();
-    void setTechniqueInProgramName();
-    void createObjectFromShaderParameter();
+    static void getPermutation();
+    static void getR2VBGeometryProgramName();
+    static void setPermutationInProgramName();
+    static void setTechniqueInProgramName();
+    static void createObjectFromShaderParameter();
 
 private:
 
@@ -73,8 +67,4 @@ private:
     Ogre::MaterialPtr m_material;
 };
 
-} //namespace ut
-
-} //namespace helper
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper::ut

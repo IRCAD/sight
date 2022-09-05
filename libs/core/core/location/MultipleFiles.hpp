@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,13 +39,13 @@ public:
     SIGHT_DECLARE_CLASS(MultipleFiles, ILocation);
 
     /// String serialization function
-    inline std::string toString() const override;
+    [[nodiscard]] inline std::string toString() const override;
 
     /// Sets the file paths
     inline void setFiles(const std::vector<std::filesystem::path>& filePaths);
 
     /// Gets the file paths
-    inline std::vector<std::filesystem::path> getFiles() const;
+    [[nodiscard]] inline std::vector<std::filesystem::path> getFiles() const;
 
     /// Appends one file path
     inline void addFile(const std::filesystem::path& filePaths);
@@ -99,4 +99,4 @@ inline void MultipleFiles::addFile(const std::filesystem::path& filePaths)
     m_files.push_back(filePaths);
 }
 
-} // namespace sight::io::base::location
+} // namespace sight::core::location

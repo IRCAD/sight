@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 /**
@@ -63,7 +60,7 @@ public:
     MODULE_UI_BASE_API STimestampSlotCaller();
 
     /// Destructor
-    MODULE_UI_BASE_API ~STimestampSlotCaller();
+    MODULE_UI_BASE_API ~STimestampSlotCaller() override;
 
 protected:
 
@@ -90,6 +87,4 @@ protected:
     SlotInfoContainerType m_slotInfos;
 };
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

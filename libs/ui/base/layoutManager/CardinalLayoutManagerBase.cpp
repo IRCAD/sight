@@ -30,10 +30,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -54,14 +51,12 @@ const std::map<std::string, CardinalLayoutManagerBase::Align> CardinalLayoutMana
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManagerBase::CardinalLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManagerBase::~CardinalLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -74,7 +69,7 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
 
     std::vector<ConfigurationType> vectViews = configuration->find("view");
     m_views.clear();
-    for(ConfigurationType view : vectViews)
+    for(const ConfigurationType& view : vectViews)
     {
         ViewInfo vi;
         if(view->hasAttribute("align"))
@@ -189,6 +184,4 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

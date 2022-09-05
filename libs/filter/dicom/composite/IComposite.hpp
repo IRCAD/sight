@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::filter::dicom
-{
-
-namespace composite
+namespace sight::filter::dicom::composite
 {
 
 /**
@@ -45,7 +42,7 @@ public:
     typedef std::vector<filter::dicom::IFilter::sptr> FilterContainerType;
 
     /// Destructor
-    FILTER_DICOM_API virtual ~IComposite();
+    FILTER_DICOM_API ~IComposite() override;
 
     /// Return filter type
     FILTER_DICOM_API FilterType getFilterType() const override;
@@ -88,6 +85,4 @@ protected:
     FilterContainerType m_filterContainer;
 };
 
-} // namespace composite
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::composite

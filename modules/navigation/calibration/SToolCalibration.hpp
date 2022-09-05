@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_NAVIGATION_CALIBRATION_API virtual ~SToolCalibration() noexcept;
+    MODULE_NAVIGATION_CALIBRATION_API ~SToolCalibration() noexcept override;
 
 protected:
 
@@ -85,7 +85,7 @@ protected:
     MODULE_NAVIGATION_CALIBRATION_API void stopping() override;
 
     /// Registers matrix slot
-    MODULE_NAVIGATION_CALIBRATION_API virtual void computeRegistration(core::HiResClock::HiResClockType timestamp)
+    MODULE_NAVIGATION_CALIBRATION_API void computeRegistration(core::HiResClock::HiResClockType timestamp)
     override;
 
 private:
@@ -105,4 +105,4 @@ private:
     sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_matricesVector {this, s_MATRICES_VECTOR_INPUT};
 };
 
-}
+} // namespace sight::module::navigation::calibration

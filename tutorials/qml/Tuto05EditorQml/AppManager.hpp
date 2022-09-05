@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
     TUTO05EDITORQML_API AppManager() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO05EDITORQML_API ~AppManager() noexcept;
+    TUTO05EDITORQML_API ~AppManager() noexcept override;
 
 public Q_SLOTS:
 

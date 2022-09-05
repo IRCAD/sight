@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class DoubleTest : public CPPUNIT_NS::TestFixture
@@ -40,12 +37,10 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void methode1();
+    static void methode1();
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

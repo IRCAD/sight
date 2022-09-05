@@ -114,20 +114,20 @@ private:
     cv::Mat m_lastCorners;
 
     /// Waiting time between to frames.
-    unsigned int m_latency;
+    unsigned int m_latency {333};
 
     /// Factor of re-scale: resize image to keep good balance between computation time and feature tracking quality.
-    float m_imageScaleFactor;
+    float m_imageScaleFactor {3.6F};
 
     /// Optical flow can only be computed if a frame is already present (see: m_lastGrayImg).
     /// True if it is, False otherwise
-    bool m_initialization;
+    bool m_initialization {false};
 
     /// Stores last behavior (true if motion, false otherwise).
-    bool m_motion;
+    bool m_motion {false};
 
     /// Stores last processed frame timestamp.
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     static constexpr std::string_view s_FRAME_TIMELINE_INPUT = "timeline";
 

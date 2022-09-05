@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::FactoryRegistryTest);
 
-namespace sight::core
-{
-
-namespace ut
+namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
@@ -62,7 +59,7 @@ class ObjectTest
 {
 public:
 
-    typedef std::shared_ptr<ObjectTest> sptr;
+    using sptr = std::shared_ptr<ObjectTest>;
 
     ObjectTest() :
         m_name("ObjectTest")
@@ -71,14 +68,14 @@ public:
         ++s_counter;
     }
 
-    ObjectTest(const std::string& name) :
-        m_name(name)
+    explicit ObjectTest(std::string name) :
+        m_name(std::move(name))
     {
         core::mt::ScopedLock lock(s_mutex);
         ++s_counter;
     }
 
-    ObjectTest(int msec) :
+    explicit ObjectTest(int msec) :
         m_name("ObjectTest+sleep")
     {
         core::mt::ScopedLock lock(s_mutex);
@@ -87,12 +84,11 @@ public:
     }
 
     virtual ~ObjectTest()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
-    virtual std::string getName() const
+    [[nodiscard]] virtual std::string getName() const
     {
         return m_name;
     }
@@ -109,20 +105,19 @@ class DerivedObjectTest : public ObjectTest
 {
 public:
 
-    typedef std::shared_ptr<DerivedObjectTest> sptr;
+    using sptr = std::shared_ptr<DerivedObjectTest>;
 
-    DerivedObjectTest() :
-        ObjectTest()
+    DerivedObjectTest()
     {
         m_name = "DerivedObjectTest";
     }
 
-    DerivedObjectTest(const std::string& name) :
+    explicit DerivedObjectTest(const std::string& name) :
         ObjectTest(name)
     {
     }
 
-    DerivedObjectTest(int msec) :
+    explicit DerivedObjectTest(int msec) :
         ObjectTest(msec)
     {
     }
@@ -134,20 +129,20 @@ void FactoryRegistryTest::pointerTest()
 {
     ObjectTest::s_counter = 0;
 
-    typedef core::FactoryRegistry<ObjectTest::sptr()> FactoryType;
+    using FactoryType = core::FactoryRegistry<ObjectTest::sptr()>;
     FactoryType objectTestFactory;
     objectTestFactory.addFactory(
         "ObjectTest",
         []() -> ObjectTest::sptr
-            {
-                return std::make_shared<ObjectTest>();
-            });
+        {
+            return std::make_shared<ObjectTest>();
+        });
     objectTestFactory.addFactory(
         "DerivedObjectTest",
         []() -> DerivedObjectTest::sptr
-            {
-                return std::make_shared<DerivedObjectTest>();
-            });
+        {
+            return std::make_shared<DerivedObjectTest>();
+        });
 
     FactoryType::KeyVectorType keys = {"ObjectTest", "DerivedObjectTest"};
     std::sort(keys.begin(), keys.end());
@@ -185,15 +180,15 @@ void FactoryRegistryTest::valueTest()
     objectTestFactory.addFactory(
         "ObjectTest",
         []() -> ObjectTest
-            {
-                return ObjectTest();
-            });
+        {
+            return {};
+        });
     objectTestFactory.addFactory(
         "DerivedObjectTest",
         []() -> DerivedObjectTest
-            {
-                return DerivedObjectTest();
-            });
+        {
+            return {};
+        });
 
     ObjectTest objectTest1 = objectTestFactory.create("ObjectTest");
     CPPUNIT_ASSERT_EQUAL(1, ObjectTest::s_counter);
@@ -225,15 +220,15 @@ void FactoryRegistryTest::argTest()
     objectTestFactory.addFactory(
         "ObjectTest",
         [](const std::string& name) -> ObjectTest::sptr
-            {
-                return std::make_shared<ObjectTest>(name);
-            });
+        {
+            return std::make_shared<ObjectTest>(name);
+        });
     objectTestFactory.addFactory(
         "DerivedObjectTest",
         [](const std::string& name) -> DerivedObjectTest::sptr
-            {
-                return std::make_shared<DerivedObjectTest>(name);
-            });
+        {
+            return std::make_shared<DerivedObjectTest>(name);
+        });
 
     std::string objTest1("ObjectTest1");
     std::string objTest2("ObjectTest2");
@@ -258,16 +253,16 @@ void FactoryRegistryTest::argTest()
 
 //-----------------------------------------------------------------------------
 
-typedef core::FactoryRegistry<ObjectTest::sptr(int)> ThreadSafetyTestFactoryType;
+using ThreadSafetyTestFactoryType = core::FactoryRegistry<ObjectTest::sptr(int)>;
 
 struct UseFactoryThread
 {
-    typedef std::shared_ptr<UseFactoryThread> sptr;
-    typedef std::vector<ObjectTest::sptr> ObjectVectorType;
+    using sptr             = std::shared_ptr<UseFactoryThread>;
+    using ObjectVectorType = std::vector<ObjectTest::sptr>;
 
-    UseFactoryThread(const ThreadSafetyTestFactoryType& factory, std::string objType = "ObjectTest") :
+    explicit UseFactoryThread(const ThreadSafetyTestFactoryType& factory, std::string objType = "ObjectTest") :
         m_factory(factory),
-        m_objectType(objType)
+        m_objectType(std::move(objType))
     {
     }
 
@@ -294,10 +289,10 @@ const int UseFactoryThread::s_NB_OBJECTS = 10;
 
 struct PopulateRegistryThread
 {
-    typedef std::shared_ptr<PopulateRegistryThread> sptr;
-    typedef std::vector<ObjectTest::sptr> ObjectVectorType;
+    using sptr             = std::shared_ptr<PopulateRegistryThread>;
+    using ObjectVectorType = std::vector<ObjectTest::sptr>;
 
-    PopulateRegistryThread(ThreadSafetyTestFactoryType& factory) :
+    explicit PopulateRegistryThread(ThreadSafetyTestFactoryType& factory) :
         m_factory(factory)
     {
     }
@@ -315,9 +310,9 @@ struct PopulateRegistryThread
             m_factory.addFactory(
                 name,
                 [](int msec) -> ObjectTest::sptr
-                    {
-                        return std::make_shared<ObjectTest>(msec);
-                    });
+                {
+                    return std::make_shared<ObjectTest>(msec);
+                });
             SIGHT_WARN("added " + name + "... ");
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -339,19 +334,19 @@ void FactoryRegistryTest::threadSafetyTest()
     objectTestFactory.addFactory(
         "ObjectTest",
         [](int msec) -> ObjectTest::sptr
-            {
-                return std::make_shared<ObjectTest>(msec);
-            });
+        {
+            return std::make_shared<ObjectTest>(msec);
+        });
     objectTestFactory.addFactory(
         "DerivedObjectTest",
         [](int msec) -> DerivedObjectTest::sptr
-            {
-                return std::make_shared<DerivedObjectTest>(msec);
-            });
+        {
+            return std::make_shared<DerivedObjectTest>(msec);
+        });
 
     const int NB_THREAD(10);
 
-    typedef std::vector<UseFactoryThread::sptr> UseFactoryThreadVector;
+    using UseFactoryThreadVector = std::vector<UseFactoryThread::sptr>;
     std::vector<std::thread> tg;
 
     UseFactoryThreadVector objects;
@@ -360,11 +355,11 @@ void FactoryRegistryTest::threadSafetyTest()
         UseFactoryThread::sptr uft;
 
         uft = std::make_shared<UseFactoryThread>(objectTestFactory);
-        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft)));
+        tg.emplace_back([uft](auto&& ...){uft->run();});
         objects.push_back(uft);
 
         uft = std::make_shared<UseFactoryThread>(objectTestFactory, "DerivedObjectTest");
-        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft)));
+        tg.emplace_back([uft](auto&& ...){uft->run();});
         objects.push_back(uft);
     }
 
@@ -373,7 +368,7 @@ void FactoryRegistryTest::threadSafetyTest()
         PopulateRegistryThread::sptr pft;
 
         pft = std::make_shared<PopulateRegistryThread>(std::ref(objectTestFactory));
-        tg.push_back(std::thread(std::bind(&PopulateRegistryThread::run, pft)));
+        tg.emplace_back([pft](auto&& ...){pft->run();});
     }
 
     for(auto& t : tg)
@@ -396,6 +391,4 @@ void FactoryRegistryTest::threadSafetyTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core
+} // namespace sight::core::ut

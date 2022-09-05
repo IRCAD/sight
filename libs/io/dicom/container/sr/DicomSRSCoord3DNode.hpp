@@ -28,13 +28,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 /**
@@ -50,22 +44,22 @@ public:
     IO_DICOM_API DicomSRSCoord3DNode(
         const DicomCodedAttribute& codedAttribute,
         const std::string& relationship,
-        const std::string& graphicType,
-        const GraphicDataContainerType graphicDataContainer,
-        const std::string& frameOfReferenceUID
+        std::string graphicType,
+        GraphicDataContainerType graphicDataContainer,
+        std::string frameOfReferenceUID
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomSRSCoord3DNode();
+    IO_DICOM_API ~DicomSRSCoord3DNode() override;
 
     /**
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
+    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
 
     /// Get Frame of reference UID
-    const std::string& getFrameOfReferenceUID() const
+    [[nodiscard]] const std::string& getFrameOfReferenceUID() const
     {
         return m_frameOfReferenceUID;
     }
@@ -77,7 +71,7 @@ public:
     }
 
     /// Get Graphic type
-    const std::string& getGraphicType() const
+    [[nodiscard]] const std::string& getGraphicType() const
     {
         return m_graphicType;
     }
@@ -89,7 +83,7 @@ public:
     }
 
     /// Get Graphic data container
-    const GraphicDataContainerType& getGraphicDataContainer() const
+    [[nodiscard]] const GraphicDataContainerType& getGraphicDataContainer() const
     {
         return m_graphicDataContainer;
     }
@@ -103,7 +97,7 @@ public:
 protected:
 
     /// Dump function
-    virtual void print(std::ostream& os) const;
+    void print(std::ostream& os) const override;
 
     /// Referenced Frame of Reference UID
     std::string m_frameOfReferenceUID;
@@ -115,8 +109,4 @@ protected:
     GraphicDataContainerType m_graphicDataContainer;
 };
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

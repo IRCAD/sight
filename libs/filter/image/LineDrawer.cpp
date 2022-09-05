@@ -26,14 +26,16 @@
 
 #include <data/helper/MedicalImage.hpp>
 
+#include <utility>
+
 namespace sight::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
-LineDrawer::LineDrawer(const data::Image::sptr& img, const data::Image::csptr& roi) :
-    m_image(img),
-    m_roiImage(roi)
+LineDrawer::LineDrawer(data::Image::sptr img, data::Image::csptr roi) :
+    m_image(std::move(img)),
+    m_roiImage(std::move(roi))
 {
     m_useROI = data::helper::MedicalImage::checkImageValidity(m_roiImage);
 
@@ -83,8 +85,8 @@ bool LineDrawer::drawEllipse(
             double dy = y / height;
             if(dx * dx + dy * dy <= 1)
             {
-                point[firstDim]  = static_cast<data::Image::IndexType>(origX + x);
-                point[secondDim] = static_cast<data::Image::IndexType>(origY + y);
+                point[firstDim]  = static_cast<data::Image::IndexType>(origX) + static_cast<data::Image::IndexType>(x);
+                point[secondDim] = static_cast<data::Image::IndexType>(origY) + static_cast<data::Image::IndexType>(y);
 
                 const data::Image::IndexType index = point[0] + point[1] * m_yPitch + point[2] * m_zPitch;
 
@@ -110,7 +112,7 @@ bool LineDrawer::drawPixel(
 
     if(m_useROI)
     {
-        const data::Image::BufferType* roiVal =
+        const auto* roiVal =
             reinterpret_cast<const data::Image::BufferType*>(m_roiImage->getPixel(index));
         if(data::helper::MedicalImage::isBufNull(roiVal, m_roiTypeSize))
         {
@@ -147,7 +149,8 @@ ImageDiff LineDrawer::draw(
 {
     ImageDiff diff(m_imageTypeSize, 128);
 
-    std::size_t dim0, dim1;
+    std::size_t dim0 = 0;
+    std::size_t dim1 = 0;
 
     switch(orientation)
     {
@@ -174,8 +177,8 @@ ImageDiff LineDrawer::draw(
 
     BresenhamLine::PathType path = BresenhamLine::draw(orientation, startCoord, endCoord);
 
-    BresenhamLine::PathType::iterator pixel    = path.begin();
-    BresenhamLine::PathType::iterator endPixel = path.end();
+    auto pixel    = path.begin();
+    auto endPixel = path.end();
 
     bool modified = false;
 

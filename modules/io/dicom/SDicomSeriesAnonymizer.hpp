@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,14 +34,14 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::data
 {
 
 class SeriesDB;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicom
 {
@@ -102,7 +102,7 @@ protected:
     SPTR(JobCreatedSignal) m_sigJobCreated;
 
     /// Cancel information for jobs
-    bool m_cancelled;
+    bool m_cancelled {false};
 
     sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
     sight::data::ptr<sight::data::Vector, sight::data::Access::inout> m_selectedSeries {this, "selectedSeries"};

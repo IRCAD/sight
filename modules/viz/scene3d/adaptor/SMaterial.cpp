@@ -77,9 +77,8 @@ SMaterial::SMaterial() noexcept
 
 //------------------------------------------------------------------------------
 
-SMaterial::~SMaterial() noexcept
-{
-}
+SMaterial::~SMaterial() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -204,7 +203,7 @@ void SMaterial::updating()
 {
     const auto material = m_materialData.lock();
 
-    if(m_r2vbObject)
+    if(m_r2vbObject != nullptr)
     {
         m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType());
     }
@@ -262,7 +261,8 @@ void SMaterial::createShaderParameterAdaptors()
                                               == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
                                                                             :
                                               "geometry";
-            const core::tools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
+            const core::tools::fwID::IDType id =
+                std::string(this->getID()).append("_").append(shaderTypeStr).append("-").append(constantName);
 
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
@@ -332,7 +332,7 @@ void SMaterial::setTextureName(const std::string& _textureName)
 
 void SMaterial::updateField(data::Object::FieldsContainerType _fields)
 {
-    for(auto elt : _fields)
+    for(const auto& elt : _fields)
     {
         if(elt.first == "ogreMaterial")
         {

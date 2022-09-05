@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <limits>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class MeshTest : public CPPUNIT_NS::TestFixture
@@ -52,17 +49,15 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void insertion();
-    void copy();
-    void allocationTest();
+    static void copy();
+    static void allocationTest();
     void iteratorTest();
-    void iteratorCopyTest();
-    void benchmarkIterator();
+    static void iteratorCopyTest();
+    static void benchmarkIterator();
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

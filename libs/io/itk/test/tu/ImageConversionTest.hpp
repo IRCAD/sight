@@ -28,10 +28,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 class ImageConversionTest : public CPPUNIT_NS::TestFixture
@@ -45,11 +42,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
-    void testConversion();
+    void setUp() override;
+    void tearDown() override;
+    static void testConversion();
     void stressTest();
-    void testConversion2D();
+    static void testConversion2D();
 
     static void roundSpacing(data::Image::sptr image);
 
@@ -57,8 +54,6 @@ public:
     void stressTestForAType();
 };
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut
 
 #include "ImageConversionTest.hxx"

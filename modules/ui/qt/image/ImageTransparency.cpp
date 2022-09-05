@@ -44,15 +44,13 @@
 namespace sight::module::ui::qt::image
 {
 
-ImageTransparency::ImageTransparency() noexcept
-{
-}
+ImageTransparency::ImageTransparency() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-ImageTransparency::~ImageTransparency() noexcept
-{
-}
+ImageTransparency::~ImageTransparency() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -64,9 +62,9 @@ void ImageTransparency::starting()
         this->getContainer()
     );
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel(QObject::tr("Transparency: "));
+    auto* staticText = new QLabel(QObject::tr("Transparency: "));
     h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
 
     m_valueSlider = new QSlider(Qt::Horizontal);
@@ -241,4 +239,4 @@ service::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() con
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt::image

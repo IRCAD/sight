@@ -41,6 +41,7 @@
 #include <itkJPEGImageIOFactory.h>
 #include <itkNumericSeriesFileNames.h>
 
+#include <cmath>
 #include <filesystem>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::itk::JpgImageWriter);
@@ -57,8 +58,7 @@ JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key /*key*/)
 //------------------------------------------------------------------------------
 
 JpgImageWriter::~JpgImageWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -91,9 +91,9 @@ struct JpgITKSaverFunctor
         assert(imageIOWrite.IsNotNull());
 
         // create writer
-        typedef ::itk::Image<PIXELTYPE, 3> itkImageType;
-        typedef ::itk::Image<unsigned char, 2> Image2DType;
-        typedef typename ::itk::ImageSeriesWriter<itkImageType, Image2DType> WriterType;
+        using itkImageType = ::itk::Image<PIXELTYPE, 3>;
+        using Image2DType  = ::itk::Image<unsigned char, 2>;
+        using WriterType   = typename ::itk::ImageSeriesWriter<itkImageType, Image2DType>;
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
@@ -104,11 +104,12 @@ struct JpgITKSaverFunctor
         // create itk Image
         typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(image);
 
-        typedef ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType> RescaleFilterType;
+        using RescaleFilterType = ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType>;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
-        double min, max;
-        auto tf = data::helper::MedicalImage::getTransferFunction(*image);
+        double min = NAN;
+        double max = NAN;
+        auto tf    = data::helper::MedicalImage::getTransferFunction(*image);
 
         if(tf)
         {
@@ -129,7 +130,7 @@ struct JpgITKSaverFunctor
 
         writer->SetInput(rescaleFilter->GetOutput());
 
-        typedef ::itk::NumericSeriesFileNames NameGeneratorType;
+        using NameGeneratorType = ::itk::NumericSeriesFileNames;
 
         NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 

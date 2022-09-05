@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 using core::tools::random::safeRand;
@@ -53,16 +50,16 @@ void CameraTest::tearDown()
 
 data::Camera::sptr initCamera()
 {
-    const double CX                             = safeRand() % 10000 / 100;
-    const double CY                             = safeRand() % 10000 / 100;
-    const double FX                             = safeRand() % 10000 / 100;
-    const double FY                             = safeRand() % 10000 / 100;
-    const double SKEW                           = safeRand() % 10000 / 100;
-    const double K1                             = safeRand() % 10000 / 100;
-    const double K2                             = safeRand() % 10000 / 100;
-    const double P1                             = safeRand() % 10000 / 100;
-    const double P2                             = safeRand() % 10000 / 100;
-    const double K3                             = safeRand() % 10000 / 100;
+    const double CX                             = safeRand() % 10000 / 100.;
+    const double CY                             = safeRand() % 10000 / 100.;
+    const double FX                             = safeRand() % 10000 / 100.;
+    const double FY                             = safeRand() % 10000 / 100.;
+    const double SKEW                           = safeRand() % 10000 / 100.;
+    const double K1                             = safeRand() % 10000 / 100.;
+    const double K2                             = safeRand() % 10000 / 100.;
+    const double P1                             = safeRand() % 10000 / 100.;
+    const double P2                             = safeRand() % 10000 / 100.;
+    const double K3                             = safeRand() % 10000 / 100.;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -70,7 +67,7 @@ data::Camera::sptr initCamera()
     const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
-    const float MAXIMUMFRAMERATE                = 30.f;
+    const float MAXIMUMFRAMERATE                = 30.F;
     const data::Camera::PixelFormat PIXELFORMAT = data::Camera::RGBA32;
     const std::string VIDEOFILE                 = "/tmp/video.mp4";
     const std::string STREAMURL                 = "rtsp://192.168.0.1/h264.sdp";
@@ -102,16 +99,16 @@ data::Camera::sptr initCamera()
 
 void CameraTest::paramTest()
 {
-    const double CX                             = safeRand() % 10000 / 100;
-    const double CY                             = safeRand() % 10000 / 100;
-    const double FX                             = safeRand() % 10000 / 100;
-    const double FY                             = safeRand() % 10000 / 100;
-    const double SKEW                           = safeRand() % 10000 / 100;
-    const double K1                             = safeRand() % 10000 / 100;
-    const double K2                             = safeRand() % 10000 / 100;
-    const double P1                             = safeRand() % 10000 / 100;
-    const double P2                             = safeRand() % 10000 / 100;
-    const double K3                             = safeRand() % 10000 / 100;
+    const double CX                             = safeRand() % 10000 / 100.;
+    const double CY                             = safeRand() % 10000 / 100.;
+    const double FX                             = safeRand() % 10000 / 100.;
+    const double FY                             = safeRand() % 10000 / 100.;
+    const double SKEW                           = safeRand() % 10000 / 100.;
+    const double K1                             = safeRand() % 10000 / 100.;
+    const double K2                             = safeRand() % 10000 / 100.;
+    const double P1                             = safeRand() % 10000 / 100.;
+    const double P2                             = safeRand() % 10000 / 100.;
+    const double K3                             = safeRand() % 10000 / 100.;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -119,7 +116,7 @@ void CameraTest::paramTest()
     const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
-    const float MAXIMUMFRAMERATE                = 30.f;
+    const float MAXIMUMFRAMERATE                = 30.F;
     const data::Camera::PixelFormat PIXELFORMAT = data::Camera::RGBA32;
     const std::string VIDEOFILE                 = "/tmp/video.mp4";
     const std::string STREAMURL                 = "rtsp://192.168.0.1/h264.sdp";
@@ -221,6 +218,4 @@ void CameraTest::deepCopyTest()
     CPPUNIT_ASSERT(*camera == *camera2);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

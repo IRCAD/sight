@@ -35,13 +35,13 @@ namespace sight::module::utest
 struct MODULE_UTEST_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    MODULE_UTEST_API ~Plugin() noexcept;
+    MODULE_UTEST_API ~Plugin() noexcept override;
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
-    MODULE_UTEST_API void start();
+    MODULE_UTEST_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_UTEST_API void stop() noexcept;
+    MODULE_UTEST_API void stop() noexcept override;
 };
 
-} // namespace sight::module::service
+} // namespace sight::module::utest

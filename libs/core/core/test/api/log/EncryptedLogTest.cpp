@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "EncryptedLogTest.hpp"
 
 #include <core/crypto/Base64.hpp>
@@ -38,27 +40,24 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::log::ut::EncryptedLogTest);
 
-namespace sight::core::log
-{
-
-namespace ut
+namespace sight::core::log::ut
 {
 
 constexpr static auto PASSWORD = "This_is_a_password";
 
 //------------------------------------------------------------------------------
 
-inline static std::smatch parse_log_line(const std::string& line)
+inline static std::smatch parseLogLine(const std::string& line)
 {
     static const std::regex regex =
         []
         {
-            constexpr auto date_group      = "\\[([^\\]]*)\\]";
-            constexpr auto time_group      = "\\[([^\\]]*)\\]";
-            constexpr auto process_group   = "\\[([^\\]]*)\\]";
-            constexpr auto thread_group    = "\\[([^\\]]*)\\]";
-            constexpr auto level_group     = "\\[([^\\]]*)\\] ";
-            constexpr auto file_line_group = "\\[([^\\]]*):([^\\]]*)\\] ";
+            constexpr auto date_group      = R"(\[([^\]]*)\])";
+            constexpr auto time_group      = R"(\[([^\]]*)\])";
+            constexpr auto process_group   = R"(\[([^\]]*)\])";
+            constexpr auto thread_group    = R"(\[([^\]]*)\])";
+            constexpr auto level_group     = R"(\[([^\]]*)\] )";
+            constexpr auto file_line_group = R"(\[([^\]]*):([^\]]*)\] )";
             constexpr auto message_group   = "(.*)";
 
             std::stringstream ss;
@@ -101,14 +100,14 @@ inline static std::filesystem::path decrypt(
     auto child = boost::process::child(
         logger_path,
         boost::process::args = {
-                "-b",
-                "-i",
-                core::crypto::to_base64(log_archive.string()),
-                "-p",
-                core::crypto::to_base64(password).c_str(),
-                "-d",
-                core::crypto::to_base64(log_archive.parent_path().string())
-            },
+            "-b",
+            "-i",
+            core::crypto::to_base64(log_archive.string()),
+            "-p",
+            core::crypto::to_base64(password).c_str(), // NOLINT(readability-redundant-string-cstr)
+            "-d",
+            core::crypto::to_base64(log_archive.parent_path().string())
+        },
         boost::process::std_out > boost::process::null,
         boost::process::std_err > remote_err,
         boost::process::std_in < boost::process::null
@@ -136,7 +135,7 @@ inline static std::filesystem::path decrypt(
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path setup_encrypted_log()
+inline static std::filesystem::path setupEncryptedLog()
 {
     // Create a temporary directory
     const auto& tmp_folder = core::tools::System::getTemporaryFolder();
@@ -159,7 +158,7 @@ inline static std::filesystem::path setup_encrypted_log()
 
 //------------------------------------------------------------------------------
 
-inline static void stop_logger()
+inline static void stopLogger()
 {
     auto& log = core::log::SpyLogger::get();
 
@@ -184,7 +183,7 @@ inline static void stop_logger()
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline static void test_log_archive(
+inline static void testLogArchive(
     const std::filesystem::path& log_archive,
     const char* const password,
     const T& messages
@@ -207,7 +206,7 @@ inline static void test_log_archive(
         std::string line;
         std::getline(decrypted_stream, line);
 
-        const auto& smatch = parse_log_line(line);
+        const auto& smatch = parseLogLine(line);
 
         CPPUNIT_ASSERT_EQUAL(message, smatch[8].str());
 
@@ -244,14 +243,14 @@ void EncryptedLogTest::log_without_sink_test()
 void EncryptedLogTest::nominal_test()
 {
     // Start logger
-    setup_encrypted_log();
+    setupEncryptedLog();
 
     // Write a simple trace message
     auto& log = core::log::SpyLogger::get();
     CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::UUID::generateUUID(), SIGHT_SOURCE_FILE, __LINE__));
 
     // Final cleanup
-    stop_logger();
+    stopLogger();
 }
 
 //------------------------------------------------------------------------------
@@ -274,7 +273,7 @@ void EncryptedLogTest::bad_path_test()
     log.stop_logger();
 
     // Final cleanup
-    stop_logger();
+    stopLogger();
 }
 
 //------------------------------------------------------------------------------
@@ -282,7 +281,7 @@ void EncryptedLogTest::bad_path_test()
 void EncryptedLogTest::basic_decryption_test()
 {
     // Start logger
-    setup_encrypted_log();
+    setupEncryptedLog();
 
     // Write a simple trace message
     auto& log = core::log::SpyLogger::get();
@@ -306,10 +305,10 @@ void EncryptedLogTest::basic_decryption_test()
     log.stop_logger();
 
     // Try to decrypt the log archive
-    test_log_archive(log_archive, PASSWORD, messages);
+    testLogArchive(log_archive, PASSWORD, messages);
 
     // Final cleanup
-    stop_logger();
+    stopLogger();
 }
 
 //------------------------------------------------------------------------------
@@ -317,7 +316,7 @@ void EncryptedLogTest::basic_decryption_test()
 void EncryptedLogTest::password_change_decryption_test()
 {
     // Start logger
-    setup_encrypted_log();
+    setupEncryptedLog();
 
     // Write a simple trace message
     auto& log = core::log::SpyLogger::get();
@@ -362,15 +361,13 @@ void EncryptedLogTest::password_change_decryption_test()
     log.stop_logger();
 
     // Try to decrypt the first log archive
-    test_log_archive(first_log_archive, PASSWORD, first_messages);
+    testLogArchive(first_log_archive, PASSWORD, first_messages);
 
     // Try to decrypt the last log archive
-    test_log_archive(last_log_archive, NEW_PASSWORD, last_messages);
+    testLogArchive(last_log_archive, NEW_PASSWORD, last_messages);
 
     // Final cleanup
-    stop_logger();
+    stopLogger();
 }
 
-} //namespace ut
-
-} //namespace sight::core::log
+} // namespace sight::core::log::ut

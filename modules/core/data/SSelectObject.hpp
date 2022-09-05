@@ -57,7 +57,7 @@ public:
     MODULE_DATA_API SSelectObject() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API virtual ~SSelectObject() noexcept;
+    MODULE_DATA_API ~SSelectObject() noexcept override;
 
     /**
      * @name Slots
@@ -100,4 +100,4 @@ private:
     sight::data::ptr<sight::data::Object, sight::data::Access::out> m_object {this, "object"};
 };
 
-} // sight::module::data
+} // namespace sight::module::data

@@ -185,10 +185,10 @@ private:
     MarkerIDVectorType m_markers;
 
     /// True if tracker is initialized
-    bool m_isInitialized;
+    bool m_isInitialized {false};
 
     /// Display markers in the image or not
-    bool m_debugMarkers;
+    bool m_debugMarkers {false};
 
     /// aruco detector parameters structure
     cv::Ptr<cv::aruco::DetectorParameters> m_detectorParams;

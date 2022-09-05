@@ -39,14 +39,12 @@ namespace sight::module::io::vision
 // ----------------------------------------------------------------------------
 
 SOpenCVWriter::SOpenCVWriter()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 SOpenCVWriter::~SOpenCVWriter()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
@@ -159,7 +157,7 @@ void SOpenCVWriter::updating()
         }
     }
 
-    cv::FileStorage fs(this->getFile().string().c_str(), cv::FileStorage::WRITE);
+    cv::FileStorage fs(this->getFile().string(), cv::FileStorage::WRITE);
 
     fs << "nbCameras" << static_cast<int>(numberOfCameras);
 

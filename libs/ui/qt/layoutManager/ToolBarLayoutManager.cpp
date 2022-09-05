@@ -43,23 +43,19 @@ fwGuiRegisterMacro(
     sight::ui::base::layoutManager::IToolBarLayoutManager::REGISTRY_KEY
 );
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 //-----------------------------------------------------------------------------
 
-ToolBarLayoutManager::ToolBarLayoutManager(ui::base::GuiBaseObject::Key)
+ToolBarLayoutManager::ToolBarLayoutManager(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ToolBarLayoutManager::~ToolBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -94,7 +90,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     }
 
-    QActionGroup* actionGroup  = 0;
+    QActionGroup* actionGroup  = nullptr;
     unsigned int menuItemIndex = 0;
     for(ui::base::layoutManager::IToolBarLayoutManager::ActionInfo& actionInfo : m_actionInfo)
     {
@@ -102,7 +98,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         {
             if(actionInfo.m_size > 0)
             {
-                QWidget* widget = new QWidget(toolBar);
+                auto* widget = new QWidget(toolBar);
                 widget->setObjectName(qId + '/' + actionInfo.m_name.c_str());
                 widget->setMinimumWidth(actionInfo.m_size);
                 toolBar->addWidget(widget);
@@ -112,22 +108,22 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
                 toolBar->addSeparator();
             }
 
-            actionGroup = 0;
+            actionGroup = nullptr;
         }
         else if(actionInfo.m_isSpacer)
         {
-            QWidget* spacer = new QWidget(toolBar);
+            auto* spacer = new QWidget(toolBar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             toolBar->addWidget(spacer);
-            actionGroup = 0;
+            actionGroup = nullptr;
         }
         else if(actionInfo.m_isMenu)
         {
             ui::qt::container::QtMenuContainer::sptr menu = ui::qt::container::QtMenuContainer::New();
-            QMenu* qtMenu                                 = new QMenu(toolBar);
+            auto* qtMenu                                  = new QMenu(toolBar);
             menu->setQtMenu(qtMenu);
 
-            QToolButton* toolButton = new QToolButton(toolBar);
+            auto* toolButton = new QToolButton(toolBar);
             toolButton->setObjectName(qId + '/' + actionInfo.m_name.c_str());
             if(toolBar->orientation() == Qt::Horizontal)
             {
@@ -157,7 +153,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         else if(actionInfo.m_isEditor)
         {
             ui::qt::container::QtContainer::sptr container = ui::qt::container::QtContainer::New();
-            QWidget* widget                                = new QWidget(toolBar);
+            auto* widget                                   = new QWidget(toolBar);
             widget->setObjectName(qId + '/' + actionInfo.m_name.c_str());
             container->setQtContainer(widget);
 
@@ -178,7 +174,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         else
         {
             ui::qt::container::QtMenuItemContainer::sptr menuItem = ui::qt::container::QtMenuItemContainer::New();
-            QAction* action;
+            QAction* action                                       = nullptr;
             if(!actionInfo.m_icon.empty())
             {
                 QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
@@ -210,7 +206,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
 
             if(actionInfo.m_isRadio)
             {
-                if(!actionGroup)
+                if(actionGroup == nullptr)
                 {
                     actionGroup = new QActionGroup(toolBar);
                 }
@@ -244,7 +240,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
     {
         int max         = -1;
         const auto list = toolBar->findChildren<QToolButton*>();
-        for(const auto tb : list)
+        for(auto* const tb : list)
         {
             // Check width if horizontal toolbar, height for vertical.
             const auto size =
@@ -252,7 +248,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             max = std::max(max, size);
         }
 
-        for(const auto tb : list)
+        for(auto* const tb : list)
         {
             // Set minimum width on horizontal toolbar, set minimum height for vertical.
             (toolBar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
@@ -301,6 +297,4 @@ void ToolBarLayoutManager::menuItemSetChecked(ui::base::container::fwMenuItem::s
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

@@ -88,7 +88,7 @@ public:
     MODULE_IO_DIMSE_API SSliceIndexDicomEditor() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API virtual ~SSliceIndexDicomEditor() noexcept;
+    MODULE_IO_DIMSE_API ~SSliceIndexDicomEditor() noexcept override;
 
 protected:
 
@@ -157,10 +157,10 @@ private:
     unsigned int m_delay {500};
 
     /// Defines the DICOM reader implementation.
-    std::string m_dicomReaderImplementation {""};
+    std::string m_dicomReaderImplementation;
 
     /// Contains the optional configuration to set to reader implementation.
-    std::string m_readerConfig {""};
+    std::string m_readerConfig;
 
     /// Contains the DICOM reader.
     sight::io::base::service::IReader::sptr m_dicomReader;

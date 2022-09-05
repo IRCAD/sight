@@ -53,7 +53,7 @@ public:
     DATA_API Plane(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Plane();
+    DATA_API ~Plane() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -106,7 +106,7 @@ protected:
     PointContainer m_vPoints;
 
     //! flag if the plane is an intersection (else an union)
-    bool m_isIntersection;
+    bool m_isIntersection {true};
 }; // end class Plane
 
 //-----------------------------------------------------------------------------

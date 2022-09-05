@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 #include <chrono>
 #include <cstdlib>
 
-namespace sight::core
-{
-
-namespace HiResClock
+namespace sight::core::HiResClock
 {
 
 //------------------------------------------------------------------------------
@@ -60,6 +57,4 @@ HiResClockType getTimeInSec()
     return static_cast<HiResClockType>(res);
 }
 
-} //namespace HiResClock
-
-} //namespace sight::core
+} // namespace sight::core::HiResClock

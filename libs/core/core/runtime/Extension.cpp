@@ -53,9 +53,8 @@ Extension::Extension(
     ModuleElement(module),
     m_id(filterID(id)),
     m_point(filterID(point)),
-    m_xmlDoc(xmlNewDoc(BAD_CAST "1.0")),
-    m_xmlNode(xmlCopyNode(xmlNode, 1)),
-    m_validity(UnknownValidity)
+    m_xmlDoc(xmlNewDoc(reinterpret_cast<const xmlChar*>("1.0"))),
+    m_xmlNode(xmlCopyNode(xmlNode, 1))
 {
     xmlDocSetRootElement(m_xmlDoc, m_xmlNode);
 }
@@ -121,7 +120,7 @@ Extension::Validity Extension::validate()
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>
     validator->clearErrorLog();
-    if(validator->validate(m_xmlNode) == true)
+    if(validator->validate(m_xmlNode))
     {
         m_validity = Valid;
     }
@@ -137,12 +136,6 @@ Extension::Validity Extension::validate()
     }
 
     return m_validity;
-}
-
-//------------------------------------------------------------------------------
-
-void Extension::operator=(const Extension&) noexcept
-{
 }
 
 //------------------------------------------------------------------------------

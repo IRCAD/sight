@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     MODULE_UI_BASE_API CrossTypeAction() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~CrossTypeAction() noexcept;
+    MODULE_UI_BASE_API ~CrossTypeAction() noexcept override;
 
 protected:
 
@@ -86,4 +86,4 @@ private:
     CrossTypeModifiedSignalType::sptr m_sigCrossTypeModified; ///< Signal emitted when cross type is modified
 };
 
-} // uiVisu
+} // namespace sight::module::ui::base::viz

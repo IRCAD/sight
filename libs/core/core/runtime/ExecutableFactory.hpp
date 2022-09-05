@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::core::runtime
 
 class IExecutable;
 
-}
+} // namespace sight::core::runtime
 
 namespace sight::core::runtime
 {
@@ -63,14 +63,14 @@ public:
      *
      * @return  a pointer to an executable instance
      */
-    virtual IExecutable* createExecutable() const = 0;
+    [[nodiscard]] virtual IExecutable* createExecutable() const = 0;
 
     /**
      * @brief   Retrieves the type of executable the factory is able to create.
      *
      * @return  a string containing an executable type
      */
-    CORE_API const std::string getType() const;
+    [[nodiscard]] CORE_API std::string getType() const;
 
 private:
 

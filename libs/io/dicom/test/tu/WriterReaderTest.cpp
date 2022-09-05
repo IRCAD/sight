@@ -53,10 +53,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::WriterReaderTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -150,7 +147,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     }
 
     data::SeriesDB::sptr seriesDB;
-    seriesDB = this->createSeriesDB();
+    seriesDB = sight::io::dicom::ut::WriterReaderTest::createSeriesDB();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
@@ -260,6 +257,4 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

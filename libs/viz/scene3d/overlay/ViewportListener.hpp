@@ -52,10 +52,10 @@ public:
 private:
 
     /// Called right before rendering in the viewport. Activates the overlays enabled for this viewport.
-    virtual void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;
+    void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;
 
     /// Called right after rendering in the viewport. Disables the overlays enabled for this viewport.
-    virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;
+    void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;
 
     /// Maps each viewport to the overlays enabled on it.
     ViewportOverlaysMapType& m_viewportLayerMap;

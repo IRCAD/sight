@@ -55,7 +55,7 @@ public:
     /**
      * @brief destructor
      */
-    DATA_API virtual ~ReconstructionTraits();
+    DATA_API ~ReconstructionTraits() override;
 
     /**
      * @{

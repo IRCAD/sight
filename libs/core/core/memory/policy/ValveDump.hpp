@@ -31,10 +31,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::core::memory
-{
-
-namespace policy
+namespace sight::core::memory::policy
 {
 
 /**
@@ -57,41 +54,41 @@ public:
 
     ValveDump();
 
-    virtual void allocationRequest(
+    void allocationRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
-    virtual void setRequest(
+    void setRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
-    virtual void reallocateRequest(
+    void reallocateRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType newSize
     ) override;
 
-    virtual void destroyRequest(
+    void destroyRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    virtual void lockRequest(
+    void lockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    virtual void unlockRequest(
+    void unlockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    virtual void dumpSuccess(
+    void dumpSuccess(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    virtual void restoreSuccess(
+    void restoreSuccess(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
@@ -99,7 +96,7 @@ public:
     void refresh() override;
 
     bool setParam(const std::string& name, const std::string& value) override;
-    std::string getParam(const std::string& name, bool* ok = NULL) const override;
+    std::string getParam(const std::string& name, bool* ok = nullptr) const override;
     const core::memory::IPolicy::ParamNamesType& getParamNames() const override;
 
 protected:
@@ -111,11 +108,9 @@ protected:
     void apply(std::size_t supplement = 0);
 
     std::size_t m_minFreeMem;
-    std::size_t m_hysteresisOffset;
+    std::size_t m_hysteresisOffset {0};
 };
 
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy
 
 #include "ValveDump.hxx"

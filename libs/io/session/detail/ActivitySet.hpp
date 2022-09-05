@@ -26,20 +26,17 @@
 
 #include <data/ActivitySet.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ActivitySet
+namespace sight::io::session::detail::ActivitySet
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto activity_set = Helper::safeCast<data::ActivitySet>(object);
@@ -56,11 +53,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::ActivitySet::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -95,6 +92,4 @@ inline static data::ActivitySet::sptr deserialize(
     return activity_set;
 }
 
-} // namespace detail::ActivitySet
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ActivitySet

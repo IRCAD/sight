@@ -43,8 +43,7 @@ RawMessage::RawMessage(std::string const& bodyType)
 //-----------------------------------------------------------------------------
 
 RawMessage::~RawMessage()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -64,7 +63,7 @@ void RawMessage::append(const char* data, std::size_t size)
 
 RawMessage::Pointer RawMessage::New(std::string const& bodyType)
 {
-    return RawMessage::Pointer(new RawMessage(bodyType));
+    return {new RawMessage(bodyType)};
 }
 
 //-----------------------------------------------------------------------------
@@ -92,13 +91,13 @@ int RawMessage::GetBodyPackSize()
 
 int RawMessage::PackBody()
 {
-    uint32_t* size;
-    char* str;
+    uint32_t* size = nullptr;
+    char* str      = nullptr;
 
     this->AllocatePack();
-    size  = (uint32_t*) (m_Body);
+    size  = reinterpret_cast<uint32_t*>(m_Body);
     *size = std::uint32_t(m_msg.size());
-    str   = (char*) (m_Body + sizeof(uint32_t));
+    str   = reinterpret_cast<char*>(m_Body + sizeof(uint32_t));
     if(*size > 0)
     {
         std::copy(m_msg.begin(), m_msg.end(), str);
@@ -111,12 +110,12 @@ int RawMessage::PackBody()
 
 int RawMessage::UnpackBody()
 {
-    uint32_t* size;
-    char* str;
+    uint32_t* size = nullptr;
+    char* str      = nullptr;
 
     m_msg.clear();
-    size = (uint32_t*) (m_Body);
-    str  = (char*) (m_Body + sizeof(uint32_t));
+    size = reinterpret_cast<uint32_t*>(m_Body);
+    str  = reinterpret_cast<char*>(m_Body + sizeof(uint32_t));
     if(*size > 0)
     {
         m_msg.resize(*size);

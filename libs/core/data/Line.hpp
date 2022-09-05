@@ -49,7 +49,7 @@ public:
     DATA_API Line(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Line();
+    DATA_API ~Line() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "io/dicom/container/DicomSurface.hpp"
 #include "io/dicom/writer/ie/Surface.hpp"
 
@@ -46,13 +48,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -60,15 +56,15 @@ namespace ie
 Surface::Surface(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+    SPTR(io::dicom::container::DicomInstance)imageInstance,
     const data::ModelSeries::csptr& series,
     const core::log::Logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
     io::dicom::writer::ie::InformationEntity<data::ModelSeries>(writer, instance, series,
-                                                                logger, progress, cancel),
-    m_imageInstance(imageInstance)
+                                                                logger, std::move(progress), std::move(cancel)),
+    m_imageInstance(std::move(imageInstance))
 {
     SIGHT_ASSERT("Image instance should not be null.", imageInstance);
 }
@@ -76,8 +72,7 @@ Surface::Surface(
 //------------------------------------------------------------------------------
 
 Surface::~Surface()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -159,7 +154,7 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
     //====================
     // Write segmentations
     //====================
-    unsigned short segmentNumber = 1;
+    std::uint16_t segmentNumber  = 1;
     const auto& reconstructionDB = m_object->getReconstructionDB();
     for(const auto& reconstruction : reconstructionDB)
     {
@@ -299,9 +294,9 @@ void writePrivateTags(
 )
 {
     // Private group
-    const auto reservedGroup    = 0x5649;
-    const auto reservingElement = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
-    const auto privateCreator   = "Sight";
+    const auto reservedGroup         = 0x5649;
+    const auto reservingElement      = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
+    const auto* const privateCreator = "Sight";
 
     // Reserve group
     {
@@ -322,7 +317,7 @@ void writePrivateTags(
     const double volume = reconstruction->getComputedMaskVolume();
     if(volume > 0)
     {
-        gdcm::Attribute<reservedGroup, 0x1001, gdcm::VR::OD, gdcm::VM::VM1> attribute;
+        gdcm::Attribute<reservedGroup, 0x1001, gdcm::VR::OD, gdcm::VM::VM1> attribute {};
         attribute.SetValue(volume);
         dataset.Insert(attribute.GetAsDataElement());
     }
@@ -334,7 +329,7 @@ void Surface::writeSegmentSequence(
     const data::Reconstruction::csptr& reconstruction,
     gdcm::Item& segmentItem,
     const gdcm::SmartPointer<gdcm::Segment>& segment,
-    unsigned short segmentNumber
+    std::uint16_t segmentNumber
 )
 {
     // Retrieve segment dataset
@@ -445,7 +440,7 @@ void Surface::writeSurfaceSequence(
     const data::Reconstruction::csptr& reconstruction,
     gdcm::Item& surfaceItem,
     const gdcm::SmartPointer<gdcm::Surface>& surface,
-    unsigned short segmentNumber
+    std::uint16_t segmentNumber
 )
 {
     // Retrieve surface dataset
@@ -499,7 +494,7 @@ void Surface::writeSurfaceSequence(
     // Create one item
     gdcm::Item pointsItem;
     pointsItem.SetVLToUndefined();
-    using ulong = unsigned long;
+    using ulong = unsigned long; // NOLINT(google-runtime-int)
     //======================================
     // Table C.27-2. Points Macro Attributes
     //======================================
@@ -586,8 +581,4 @@ void Surface::writeSurfaceSequence(
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

@@ -35,14 +35,12 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 IActivitySequencer::IActivitySequencer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IActivitySequencer::~IActivitySequencer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -66,8 +64,8 @@ int IActivitySequencer::parseActivities(data::SeriesDB& seriesDB)
             helper.remove(series);
             helper.notify();
         }
-        else if(!(static_cast<std::size_t>(lastActivityIndex + 1) < m_activityIds.size()
-                  && m_activityIds[static_cast<std::size_t>(lastActivityIndex + 1)] == activity->getActivityConfigId()))
+        else if(!(static_cast<std::size_t>(lastActivityIndex) + 1 < m_activityIds.size()
+                  && m_activityIds[static_cast<std::size_t>(lastActivityIndex) + 1] == activity->getActivityConfigId()))
         {
             // Remove the wrong data
             SIGHT_ERROR("The activity '" + activity->getActivityConfigId() + "' is unknown, it will be removed")
@@ -78,7 +76,7 @@ int IActivitySequencer::parseActivities(data::SeriesDB& seriesDB)
         }
         else
         {
-            const bool ok = this->validateActivity(activity).first;
+            const bool ok = sight::activity::IActivitySequencer::validateActivity(activity).first;
             if(ok)
             {
                 ++lastActivityIndex;
@@ -103,7 +101,7 @@ void IActivitySequencer::storeActivityData(
 )
 {
     // Retrives the current activity data
-    const std::size_t currentIdx = static_cast<std::size_t>(index);
+    const auto currentIdx = static_cast<std::size_t>(index);
     SIGHT_ASSERT("SeriesDB does not contain enough series.", seriesDB.size() > currentIdx);
     data::Series::sptr series           = seriesDB.getContainer()[currentIdx];
     data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
@@ -218,7 +216,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
             {
                 (*composite)[req.name] = m_requirements[req.name];
             }
-            else if(req.create == true || (req.minOccurs == 0 && req.maxOccurs == 0))
+            else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
                 // create the new data
                 auto newObj = data::factory::New(req.type);

@@ -37,10 +37,7 @@
 
 #include <ui/base/Cursor.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -57,9 +54,8 @@ SDBMerger::SDBMerger() noexcept :
 
 //------------------------------------------------------------------------------
 
-SDBMerger::~SDBMerger() noexcept
-{
-}
+SDBMerger::~SDBMerger() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -158,6 +154,4 @@ void SDBMerger::forwardJob(core::jobs::IJob::sptr iJob)
 //------------------------------------------------------------------------------
 //
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

@@ -53,9 +53,8 @@ SFrustumList::SFrustumList() noexcept
 
 //-----------------------------------------------------------------------------
 
-SFrustumList::~SFrustumList() noexcept
-{
-}
+SFrustumList::~SFrustumList() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -140,7 +139,7 @@ void SFrustumList::stopping()
 
 void SFrustumList::setVisible(bool _visible)
 {
-    for(auto camera : m_frustumList)
+    for(auto* camera : m_frustumList)
     {
         camera->setDebugDisplayEnabled(_visible);
     }
@@ -165,20 +164,20 @@ void SFrustumList::addFrustum()
     ogreCamera->setDebugDisplayEnabled(m_isVisible);
 
     // Clipping
-    if(m_near != 0.f)
+    if(m_near != 0.F)
     {
         ogreCamera->setNearClipDistance(m_near);
     }
 
-    if(m_far != 0.f)
+    if(m_far != 0.F)
     {
         ogreCamera->setFarClipDistance(m_far);
     }
 
     // Set data to camera
-    const float width  = static_cast<float>(cameraData->getWidth());
-    const float height = static_cast<float>(cameraData->getHeight());
-    Ogre::Matrix4 m    =
+    const auto width  = static_cast<float>(cameraData->getWidth());
+    const auto height = static_cast<float>(cameraData->getHeight());
+    Ogre::Matrix4 m   =
         sight::viz::scene3d::helper::Camera::computeProjectionMatrix(*cameraData, width, height, m_near, m_far);
     ogreCamera->setCustomProjectionMatrix(true, m);
 
@@ -227,7 +226,7 @@ void SFrustumList::addFrustum()
 
 void SFrustumList::clear()
 {
-    for(auto camera : m_frustumList)
+    for(auto* camera : m_frustumList)
     {
         this->getSceneManager()->destroyCamera(camera);
     }

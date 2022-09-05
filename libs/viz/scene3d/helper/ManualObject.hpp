@@ -26,10 +26,7 @@
 
 #include <Ogre.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 class ManualObject
@@ -48,9 +45,9 @@ public:
     VIZ_SCENE3D_API static void createCylinder(
         Ogre::ManualObject* _object,
         const std::string& _material,
-        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _radius                   = 1.f,
-        float _length                   = 100.f,
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
+        float _radius                   = 1.F,
+        float _length                   = 100.F,
         unsigned int _sample            = 64
     );
 
@@ -66,9 +63,9 @@ public:
     VIZ_SCENE3D_API static void createCone(
         Ogre::ManualObject* _object,
         const std::string& _material,
-        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _radius                   = 1.f,
-        float _length                   = 100.f,
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
+        float _radius                   = 1.F,
+        float _length                   = 100.F,
         unsigned int _sample            = 64
     );
 
@@ -82,8 +79,8 @@ public:
     VIZ_SCENE3D_API static void createCube(
         Ogre::ManualObject* _object,
         const std::string& _material,
-        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _length                   = 100.f
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
+        float _length                   = 100.F
     );
 
     /**
@@ -97,12 +94,10 @@ public:
     VIZ_SCENE3D_API static void createSphere(
         Ogre::ManualObject* _object,
         const std::string& _material,
-        const Ogre::ColourValue& _color = Ogre::ColourValue(1.f, 1.f, 1.f),
-        float _radius                   = 100.f,
+        const Ogre::ColourValue& _color = Ogre::ColourValue(1.F, 1.F, 1.F),
+        float _radius                   = 100.F,
         unsigned int _sample            = 50
     );
 };
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

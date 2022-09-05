@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -79,7 +76,7 @@ public:
     MODULE_VIZ_SCENE2D_API SGrid2D() noexcept;
 
     /// Basic destructor, do nothing
-    MODULE_VIZ_SCENE2D_API virtual ~SGrid2D() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SGrid2D() noexcept override;
 
 protected:
 
@@ -104,22 +101,22 @@ private:
     void draw();
 
     /// Returns x-axis starting value
-    float getXStartVal();
+    float getXStartVal() const;
 
     /// Returns x-axis ending value
-    float getXEndVal();
+    float getXEndVal() const;
 
     /// Returns y-axis starting value
-    float getYStartVal();
+    float getYStartVal() const;
 
     /// Returns y-axis ending value
-    float getYEndVal();
+    float getYEndVal() const;
 
     /// Slot: This method is used to set the grid spacing from two double parameters.
     void setGridSpacing(double _x, double _y, std::string _key);
 
     /// Bounds of the grid and spacing values for each axis.
-    float m_xMin, m_xMax, m_yMin, m_yMax, m_xSpacing, m_ySpacing;
+    float m_xMin {0.F}, m_xMax {0.F}, m_yMin {0.F}, m_yMax {0.F}, m_xSpacing {10.F}, m_ySpacing {10.F};
 
     /// The pen.
     QPen m_pen;
@@ -128,9 +125,7 @@ private:
     std::vector<QGraphicsItem*> m_lines;
 
     /// The layer.
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer {nullptr};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

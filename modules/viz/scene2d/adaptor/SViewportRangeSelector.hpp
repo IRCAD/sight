@@ -31,10 +31,7 @@
 
 namespace s2d = sight::viz::scene2d;
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -162,7 +159,7 @@ private:
     QGraphicsItemGroup* m_layer {nullptr};
 
     /// Defines the initial position of the shutter on the X axis.
-    double m_initialX {0.f};
+    double m_initialX {0.F};
 
     /// Defines the initial width of the shutter.
     double m_initialWidth {1.};
@@ -194,6 +191,4 @@ private:
     data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT, true, true};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

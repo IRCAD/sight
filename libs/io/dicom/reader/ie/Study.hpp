@@ -26,13 +26,7 @@
 
 #include <data/Study.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -63,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Study();
+    IO_DICOM_API ~Study() override;
 
     /**
      * @brief Read General Study Module tags
@@ -78,8 +72,4 @@ public:
     IO_DICOM_API virtual void readPatientStudyModule();
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

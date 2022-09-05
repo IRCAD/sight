@@ -24,10 +24,7 @@
 
 #include <memory>
 
-namespace sight::viz::scene2d
-{
-
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 /**
@@ -48,27 +45,23 @@ public:
     /**
      * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
      */
-    Axis() :
-        m_origin(0.f),
-        m_scale(1.f),
-        m_scaleType(LINEAR)
-    {
-    }
+    Axis()
+    = default;
 
     /// Get m_origin attribute.
-    double getOrigin() const;
+    [[nodiscard]] double getOrigin() const;
 
     /// Set m_origin attribute.
     void setOrigin(double origin);
 
     /// Get m_scale attribute.
-    double getScale() const;
+    [[nodiscard]] double getScale() const;
 
     /// Set m_scale attribute.
     void setScale(double scale);
 
     /// Get m_scaleType attribute.
-    ScaleType getScaleType() const;
+    [[nodiscard]] ScaleType getScaleType() const;
 
     /// Set m_scaleType attribute.
     void setScaleType(ScaleType scaleType);
@@ -76,10 +69,10 @@ public:
 private:
 
     /// The origin and scale.
-    double m_origin, m_scale;
+    double m_origin {0.F}, m_scale {1.F};
 
     /// The scaleType (LINEAR/LOG).
-    ScaleType m_scaleType;
+    ScaleType m_scaleType {LINEAR};
 };
 
 //-----------------------------------------------------------------------------
@@ -126,6 +119,4 @@ inline void Axis::setScaleType(ScaleType scaleType)
 
 //-----------------------------------------------------------------------------
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

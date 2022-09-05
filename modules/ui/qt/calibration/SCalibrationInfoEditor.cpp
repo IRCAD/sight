@@ -88,8 +88,8 @@ void SCalibrationInfoEditor::updating()
 
         if(plList1.size() != plList2.size())
         {
-            const auto errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
-                                "Your images may be out of sync.";
+            const auto* const errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
+                                       "Your images may be out of sync.";
 
             sight::ui::base::dialog::MessageDialog::show(
                 "Inputs do not match",
@@ -101,10 +101,10 @@ void SCalibrationInfoEditor::updating()
     else
     {
         std::size_t captureIdx = 0;
-        for(auto it1 = plList1.begin() ; it1 != plList1.end() ; ++it1)
+        for(const auto& it1 : plList1)
         {
             QString countString;
-            std::size_t count = (*it1)->getPoints().size();
+            std::size_t count = it1->getPoints().size();
             countString = QString("%1. %2 element%3").arg(captureIdx).arg(count).arg(count > 1 ? "s" : "");
 
             m_capturesListWidget->addItem(countString);
@@ -132,13 +132,13 @@ void SCalibrationInfoEditor::starting()
     // Creation of the Qt elements
 
     // Main container, VBox
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    auto* vLayout = new QVBoxLayout();
 
     //   First HBox, displays number of items and the remove button
-    QHBoxLayout* nbItemsHBox = new QHBoxLayout();
+    auto* nbItemsHBox = new QHBoxLayout();
 
     //     Fill the nbItemsHBox
-    QLabel* label = new QLabel("nb captures:");
+    auto* label = new QLabel("nb captures:");
     nbItemsHBox->addWidget(label);
 
     const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
@@ -182,7 +182,7 @@ void SCalibrationInfoEditor::remove()
 
     if(row >= 0)
     {
-        const std::size_t idx = static_cast<std::size_t>(row);
+        const auto idx = static_cast<std::size_t>(row);
 
         {
             const auto calInfo1 = m_calibrationInfo1.lock();
@@ -265,7 +265,7 @@ void SCalibrationInfoEditor::getSelection()
 
     if(row >= 0)
     {
-        const std::size_t idx = static_cast<std::size_t>(row);
+        const auto idx = static_cast<std::size_t>(row);
 
         const auto calInfo1 = m_calibrationInfo1.lock();
         SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
@@ -292,11 +292,11 @@ service::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections(
 
 // ----------------------------------------------------------------------------
 
-void SCalibrationInfoEditor::onItemDoubleClicked(QListWidgetItem*)
+void SCalibrationInfoEditor::onItemDoubleClicked(QListWidgetItem* /*unused*/)
 {
     this->getSelection();
 }
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt::calibration

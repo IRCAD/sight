@@ -32,24 +32,20 @@ SIGHT_REGISTER_PLUGIN("sight::module::appXml::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept :
-    m_configurationName(""),
-    m_parametersName("")
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void Plugin::start()
 {
     auto worker = core::thread::getDefaultWorker();
-    worker->post(std::bind(&Plugin::run, this));
+    worker->post([this](auto&& ...){run();});
 }
 
 //------------------------------------------------------------------------------

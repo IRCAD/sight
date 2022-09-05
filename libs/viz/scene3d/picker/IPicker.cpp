@@ -38,23 +38,18 @@
 #include <cmath>
 #include <tuple>
 
-namespace sight::viz::scene3d
-{
-
-namespace picker
+namespace sight::viz::scene3d::picker
 {
 
 // ----------------------------------------------------------------------------
 
 IPicker::IPicker()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 IPicker::~IPicker()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +68,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
     viz::scene3d::CollisionTools tool = viz::scene3d::CollisionTools(m_sceneManager, _queryMask);
 
-    float distance(-1.f);
+    float distance(-1.F);
     bool entityFound(false);
     std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) = tool.raycast(vpRay, _queryMask);
 
@@ -123,8 +118,8 @@ Ogre::Vector2 IPicker::getIntersectionInViewSpace() const
     Ogre::Vector3 point = projMatrix * (viewMatrix * m_rayIntersect);
 
     Ogre::Vector2 screenSpacePoint = Ogre::Vector2::ZERO;
-    screenSpacePoint.x = (point.x / 2.f) + 0.5f;
-    screenSpacePoint.y = (point.y / 2.f) + 0.5f;
+    screenSpacePoint.x = (point.x / 2.F) + 0.5F;
+    screenSpacePoint.y = (point.y / 2.F) + 0.5F;
 
     return screenSpacePoint;
 }
@@ -155,13 +150,11 @@ void IPicker::setSceneManager(Ogre::SceneManager* _sceneMgr)
 
 //-----------------------------------------------------------------------------
 
-bool IPicker::hasSceneManager()
+bool IPicker::hasSceneManager() const
 {
     return m_hasSceneManager;
 }
 
 // ----------------------------------------------------------------------------
 
-} // namespace interactor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::picker

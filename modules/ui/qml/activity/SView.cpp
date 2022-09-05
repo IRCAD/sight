@@ -54,8 +54,7 @@ SView::SView()
 //------------------------------------------------------------------------------
 
 SView::~SView()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -95,11 +94,11 @@ void SView::notifyActivityCreation()
 
 void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 {
-    bool isValid;
+    bool isValid = false;
     std::string message;
 
     // check if the activity can be launched
-    std::tie(isValid, message) = this->validateActivity(activitySeries);
+    std::tie(isValid, message) = sight::module::ui::qml::activity::SView::validateActivity(activitySeries);
 
     if(isValid)
     {

@@ -42,9 +42,12 @@ public:
     typedef SmartPointer<Self> Pointer;
     typedef SmartPointer<const Self> ConstPointer;
 
+    InrImageIOFactory(const Self&) = delete; //purposely not implemented
+    void operator=(const Self&)    = delete; //purposely not implemented
+
     /** Class methods used to interface with the registered factories. */
-    const char* GetITKSourceVersion(void) const override;
-    const char* GetDescription(void) const override;
+    const char* GetITKSourceVersion() const override;
+    const char* GetDescription() const override;
 
     /** Method for class instantiation. */
     itkFactorylessNewMacro(Self)
@@ -53,7 +56,7 @@ public:
     itkTypeMacro(InrImageIOFactory, ObjectFactoryBase)
 
     /** Register one factory of this type  */
-    static void RegisterOneFactory(void)
+    static void RegisterOneFactory()
     {
         InrImageIOFactory::Pointer metaFactory = InrImageIOFactory::New();
         ObjectFactoryBase::RegisterFactory(metaFactory);
@@ -62,13 +65,8 @@ public:
 protected:
 
     InrImageIOFactory();
-    ~InrImageIOFactory();
+    ~InrImageIOFactory() override;
     void PrintSelf(std::ostream& os, Indent indent) const override;
-
-private:
-
-    InrImageIOFactory(const Self&); //purposely not implemented
-    void operator=(const Self&);    //purposely not implemented
 };
 
 } // end namespace itk

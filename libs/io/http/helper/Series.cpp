@@ -33,10 +33,7 @@
 
 #include <boost/foreach.hpp>
 
-namespace sight::io::http
-{
-
-namespace helper
+namespace sight::io::http::helper
 {
 
 // ----------------------------------------------------------------------------
@@ -113,6 +110,4 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
     return result;
 }
 
-} //helper
-
-} //fwNetworkIO
+} // namespace sight::io::http::helper

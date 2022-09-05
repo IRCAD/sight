@@ -39,7 +39,7 @@ const core::com::Signals::SignalKeyType ResectionDB::s_SAFE_PART_ADDED_SIG = "sa
 
 //------------------------------------------------------------------------------
 
-ResectionDB::ResectionDB(data::Object::Key)
+ResectionDB::ResectionDB(data::Object::Key /*unused*/)
 {
     m_sigResectionAdded = ResectionAddedSignalType::New();
     m_sigSafePartAdded  = SafePartAddedSignalType::New();
@@ -51,8 +51,7 @@ ResectionDB::ResectionDB(data::Object::Key)
 //------------------------------------------------------------------------------
 
 ResectionDB::~ResectionDB()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

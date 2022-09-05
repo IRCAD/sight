@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,16 +43,15 @@ struct OpenGLRunner final : public QRunnable
     // Constructor.
     OpenGLRunner(OpenGLWorker* _worker, sight::viz::scene3d::IGraphicsWorker::TaskType _task) :
         m_worker(_worker),
-        m_task(_task)
+        m_task(std::move(_task))
     {
     }
 
 //------------------------------------------------------------------------------
 
     // Destructor.
-    ~OpenGLRunner() final
-    {
-    }
+    ~OpenGLRunner() final =
+        default;
 
 //------------------------------------------------------------------------------
 
@@ -110,7 +109,7 @@ OpenGLWorker::~OpenGLWorker()
 
 void OpenGLWorker::pushTask(sight::viz::scene3d::IGraphicsWorker::TaskType _task)
 {
-    OpenGLRunner* runner = new OpenGLRunner(this, _task);
+    auto* runner = new OpenGLRunner(this, _task);
     runner->setAutoDelete(true); // Let the thread pool delete the runner once it has finished running.
 
     m_threadPool->start(runner, QThread::Priority::HighestPriority);

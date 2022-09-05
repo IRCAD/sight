@@ -63,7 +63,7 @@ public:
     /**
      * @brief Destructor if a connection is opened the destructor close it
      */
-    IO_IGTL_API ~Client();
+    IO_IGTL_API ~Client() override;
 
     /**
      * @brief method to connect client to a server by using hostname and port
@@ -83,7 +83,7 @@ public:
      *
      * @return a boolean to say if the client is connected or not
      */
-    IO_IGTL_API bool isConnected() const;
+    [[nodiscard]] IO_IGTL_API bool isConnected() const;
 
 private:
 

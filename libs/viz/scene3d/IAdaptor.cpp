@@ -54,9 +54,8 @@ IAdaptor::IAdaptor() noexcept
 
 //------------------------------------------------------------------------------
 
-IAdaptor::~IAdaptor() noexcept
-{
-}
+IAdaptor::~IAdaptor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -190,7 +189,7 @@ void IAdaptor::hide()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setVisible(bool)
+void IAdaptor::setVisible(bool /*unused*/)
 {
     SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }

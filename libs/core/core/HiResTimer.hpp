@@ -45,7 +45,7 @@ public:
      * @{ */
 
     CORE_API HiResTimer();
-    CORE_API virtual ~HiResTimer();
+    CORE_API ~HiResTimer() override;
 
     /**  @} */
 
@@ -99,19 +99,19 @@ private:
     /**
      * @brief Last start time.
      */
-    core::HiResClock::HiResClockType m_startTimeInMicroSec;
+    core::HiResClock::HiResClockType m_startTimeInMicroSec {};
     /**
      * @brief Last "break" time.
      */
-    core::HiResClock::HiResClockType m_endTimeInMicroSec;
+    core::HiResClock::HiResClockType m_endTimeInMicroSec {};
     /**
      * @brief accumulated running time.
      */
-    core::HiResClock::HiResClockType m_cumulTimeInMicroSec;
+    core::HiResClock::HiResClockType m_cumulTimeInMicroSec {};
     /**
      * @brief timer status.
      */
-    bool m_stopped;
+    bool m_stopped {true};
 };
 
 } //namespace sight::core

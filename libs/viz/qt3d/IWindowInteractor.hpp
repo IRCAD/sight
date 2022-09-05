@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace Qt3DExtras
 
 class Qt3DWindow;
 
-}
+} // namespace Qt3DExtras
 
 namespace sight::viz::qt3d
 {
@@ -81,7 +81,7 @@ public:
     VIZ_QT3D_API IWindowInteractor();
 
     /// Destructor. Do nothing.
-    VIZ_QT3D_API virtual ~IWindowInteractor();
+    VIZ_QT3D_API ~IWindowInteractor() override;
 
     /// Creates an interactor and installs it in window.
     VIZ_QT3D_API virtual void createContainer(ui::base::container::fwContainer::sptr _parent) = 0;

@@ -42,7 +42,7 @@ namespace Qt3DExtras
 
 class Qt3DWindow;
 
-}
+} // namespace Qt3DExtras
 
 namespace sight::viz::qt3d
 {
@@ -52,7 +52,7 @@ namespace core
 
 class GenericScene;
 
-}
+} // namespace core
 
 /**
  * @brief Renders a generic scene with Qt3D API

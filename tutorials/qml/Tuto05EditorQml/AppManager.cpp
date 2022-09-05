@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,8 @@
 
 #include <QVariant>
 
-using namespace sight;
+namespace data = sight::data;
+namespace ui   = sight::ui;
 
 namespace Tuto05EditorQml
 {
@@ -35,15 +36,13 @@ static const std::string s_EDITED_STRING = "editedString";
 
 //------------------------------------------------------------------------------
 
-AppManager::AppManager() noexcept
-{
-}
+AppManager::AppManager() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-AppManager::~AppManager() noexcept
-{
-}
+AppManager::~AppManager() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

@@ -45,10 +45,10 @@ Job::sptr Job::New(const std::string& name, Job::Task task, const core::thread::
 
 //------------------------------------------------------------------------------
 
-Job::Job(const std::string& name, Job::Task task, const core::thread::Worker::sptr& worker) :
+Job::Job(const std::string& name, Job::Task task, core::thread::Worker::sptr worker) :
     IJob(name),
-    m_task(task),
-    m_worker(worker)
+    m_task(std::move(task)),
+    m_worker(std::move(worker))
 {
     m_totalWorkUnits = 100;
 }
@@ -79,10 +79,8 @@ IJob::SharedFuture Job::runImpl()
         {
             return m_worker->postTask<void>(jobTask);
         }
-        else
-        {
-            jobTask();
-        }
+
+        jobTask();
     }
     else
     {

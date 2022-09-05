@@ -31,9 +31,7 @@ namespace sight::ui::history
 
 UndoRedoManager::UndoRedoManager(std::size_t maxMemory, std::size_t maxCommands) :
     m_maxMemory(maxMemory),
-    m_maxCommands(maxCommands == 0 ? 1 : maxCommands),
-    m_usedMemory(0),
-    m_commandIndex(-1)
+    m_maxCommands(maxCommands == 0 ? 1 : maxCommands)
 {
     SIGHT_ASSERT("The number of commands must be greater than 0", maxCommands > 0);
 }
@@ -170,7 +168,7 @@ void UndoRedoManager::setHistorySize(std::size_t histSize)
 
 void UndoRedoManager::popFront()
 {
-    CommandHistoryType::iterator it = m_commandQueue.begin();
+    auto it = m_commandQueue.begin();
 
     m_usedMemory -= (*it)->getSize();
     m_commandQueue.pop_front();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 class SeriesDBReaderTest : public CPPUNIT_NS::TestFixture
@@ -53,96 +50,94 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// Read JMS Series
-    void readJMSSeriesDBTest();
+    static void readJMSSeriesDBTest();
 
     /// Read CT Series (01-CT-DICOM_LIVER)
-    void readCTSeriesDBTest();
+    static void readCTSeriesDBTest();
 
     /// Read MR Series (46-MR-BARRE-MONO2-12-shoulder) (Rotated)
-    void readMRSeriesDBTest();
+    static void readMRSeriesDBTest();
 
     /// Read OT Series (42-OT-BARRE-MONO2-8-colon) (Secondary capture)
-    void readOTSeriesDBTest();
+    static void readOTSeriesDBTest();
 
     /// Read SEG Series (71-CT-DICOM_SEG)
-    void readSEGSeriesDBTest();
+    static void readSEGSeriesDBTest();
 
     /// Read SF Series (71-CT-DICOM_SF)
-    void readSFSeriesDBTest();
+    static void readSFSeriesDBTest();
 
     /// Read SR Series (71-CT-DICOM_SR)
-    void readSRSeriesDBTest();
+    static void readSRSeriesDBTest();
 
     /// Read SR Series (71-CT-DICOM_3DSR)
-    void read3DSRSeriesDBTest();
+    static void read3DSRSeriesDBTest();
 
     /// Read disabled Series (Try to read MR when only CT is enabled)
-    void readDisabledSeriesDBTest();
+    static void readDisabledSeriesDBTest();
 
     /// Read MR Series with DICOMDIR (82-MR-SAGITTAL-KNEE-DICOMDIR)
-    void readMRSeriesWithDicomDirDBTest();
+    static void readMRSeriesWithDicomDirDBTest();
 
     /// Read multiple rescale Series (83-CT-MultipleRescale)
-    void readMultipleRescaleSeriesDBTest();
+    static void readMultipleRescaleSeriesDBTest();
 
     /// Read CT with surview Series (84-CT-Surview)
-    void readCTWithSurviewSeriesDBTest();
+    static void readCTWithSurviewSeriesDBTest();
 
     /// Read MR with temporal position identifier Series (85-MR-TemporalPosition)
-    void readMRWithTemporalPositionSeriesDBTest();
+    static void readMRWithTemporalPositionSeriesDBTest();
 
     /// Read CT image 01 for stability issue (86-CT-Skull)
-    void readCTSeriesDBIssue01Test();
+    static void readCTSeriesDBIssue01Test();
 
 protected:
 
     /// Read and check JMS series
-    void readJMSSeries();
+    static void readJMSSeries();
 
     /// Read and check CT series (01-CT-DICOM_LIVER)
-    void readCTSeries();
+    static void readCTSeries();
 
     /// Read and check MR series (46-MR-BARRE-MONO2-12-shoulder)
-    void readMRSeries();
+    static void readMRSeries();
 
     /// Read and check OT series (42-OT-BARRE-MONO2-8-colon) (Secondary capture)
-    void readOTSeries();
+    static void readOTSeries();
 
     /// Read and check SEG series (71-CT-DICOM_SEG)
-    void readSEGSeries();
+    static void readSEGSeries();
 
     /// Read and check SF series (71-CT-DICOM_SF)
-    void readSFSeries();
+    static void readSFSeries();
 
     /// Read and check SF series (71-CT-DICOM_SR)
-    void readSRSeries();
+    static void readSRSeries();
 
     /// Read and check SF series (71-CT-DICOM_3DSR)
-    void read3DSRSeries();
+    static void read3DSRSeries();
 
     /// Read disabled series (Try to read MR when only CT is enabled)
-    void readDisabledSeries();
+    static void readDisabledSeries();
 
     /// Read MR Series with DICOMDIR (82-MR-SAGITTAL-KNEE-DICOMDIR)
-    void readMRSeriesWithDicomDir();
+    static void readMRSeriesWithDicomDir();
 
     /// Read multiple rescale series (83-CT-MultipleRescale)
-    void readMultipleRescaleSeries();
+    static void readMultipleRescaleSeries();
 
     /// Read CT with surview Series (84-CT-Surview)
-    void readCTWithSurviewSeries();
+    static void readCTWithSurviewSeries();
 
     /// Read MR with temporal position identifier Series (85-MR-TemporalPosition)
-    void readMRWithTemporalPositionSeries();
+    static void readMRWithTemporalPositionSeries();
 
     /// Read CT image 01 for stability issue (86-CT-Skull)
-    void readCTSeriesDBIssue01();
+    static void readCTSeriesDBIssue01();
 };
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

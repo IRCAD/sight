@@ -39,15 +39,13 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-SOrientationMarker::SOrientationMarker() noexcept
-{
-}
+SOrientationMarker::SOrientationMarker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SOrientationMarker::~SOrientationMarker() noexcept
-{
-}
+SOrientationMarker::~SOrientationMarker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -145,7 +143,7 @@ void SOrientationMarker::updateCameraMatrix()
     // Inverse camera matrix (since we move the mesh)
     m_sceneNode->rotate(orientation.Inverse());
     // Place it at a fixed position
-    m_sceneNode->translate(0.f, 0.f, m_markerDepth);
+    m_sceneNode->translate(0.F, 0.F, m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +157,7 @@ void SOrientationMarker::stopping()
 
 void SOrientationMarker::setVisible(bool _visible)
 {
-    if(m_sceneNode)
+    if(m_sceneNode != nullptr)
     {
         m_sceneNode->setVisible(_visible);
     }

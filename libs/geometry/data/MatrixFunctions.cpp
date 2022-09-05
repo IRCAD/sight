@@ -121,7 +121,7 @@ fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::geometry
+} // namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 

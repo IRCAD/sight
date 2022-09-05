@@ -54,7 +54,7 @@
         #define DEBUG_BREAK() __debugbreak()
     #else
         #include <csignal>
-        #define DEBUG_BREAK() std::raise(SIGTRAP)
+        #define DEBUG_BREAK() do{std::ignore = std::raise(SIGTRAP); std::abort();}while(0)
     #endif
 
     #define SPYLOG_ABORT() DEBUG_BREAK()
@@ -102,17 +102,20 @@ constexpr static const char* strip_source_path(const char* const path)
             // If the path is shorter than the sight source directory, we return the path
             return path;
         }
-        else if((path_c == '/' || path_c == '\\') && source_c != '/' && source_c != '\\')
+
+        if((path_c == '/' || path_c == '\\') && source_c != '/' && source_c != '\\')
         {
             // If current path character is a path deliminator and the current source character is not, we return path
             return path;
         }
-        else if(path_c != '/' && path_c != '\\' && (source_c == '/' || source_c == '\\'))
+
+        if(path_c != '/' && path_c != '\\' && (source_c == '/' || source_c == '\\'))
         {
             // If path character is not a path deliminator and the current source character is one, we return path
             return path;
         }
-        else if(path_c != '/' && path_c != '\\' && source_c != '/' && source_c != '\\' && path_c != source_c)
+
+        if(path_c != '/' && path_c != '\\' && source_c != '/' && source_c != '\\' && path_c != source_c)
         {
             // If path character is not a path deliminator and the current source character is also not, we return path
             // if they are different

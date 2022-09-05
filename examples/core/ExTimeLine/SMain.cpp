@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,15 +31,13 @@ namespace ExTimeLine
 
 //------------------------------------------------------------------------------
 
-SMain::SMain() noexcept
-{
-}
+SMain::SMain() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SMain::~SMain() noexcept
-{
-}
+SMain::~SMain() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +56,7 @@ void SMain::stopping()
 void SMain::updating()
 {
     // This allows us to block the main thread...
-    getchar();
+    std::ignore = getchar();
 }
 
 //------------------------------------------------------------------------------

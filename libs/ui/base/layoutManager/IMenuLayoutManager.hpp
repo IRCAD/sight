@@ -37,10 +37,7 @@
 
 #include <filesystem>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -71,25 +68,19 @@ public:
     public:
 
         ActionInfo() :
-            m_name(""),
-            m_shortcut(""),
-            m_icon(""),
-            m_isCheckable(false),
-            m_isRadio(false),
-            m_type(DEFAULT),
-            m_isSeparator(false),
-            m_isMenu(false)
+
+            m_icon("")
         {
         }
 
         std::string m_name;
         std::string m_shortcut;
         std::filesystem::path m_icon;
-        bool m_isCheckable;
-        bool m_isRadio;
-        ActionType m_type;
-        bool m_isSeparator;
-        bool m_isMenu;
+        bool m_isCheckable {false};
+        bool m_isRadio {false};
+        ActionType m_type {DEFAULT};
+        bool m_isSeparator {false};
+        bool m_isMenu {false};
     };
 
     UI_BASE_API const static RegistryKeyType REGISTRY_KEY;
@@ -98,7 +89,7 @@ public:
     UI_BASE_API IMenuLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IMenuLayoutManager();
+    UI_BASE_API ~IMenuLayoutManager() override;
 
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
@@ -207,6 +198,4 @@ protected:
     CallbacksType m_callbacks;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

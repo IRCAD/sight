@@ -40,14 +40,12 @@ namespace sight::core::runtime
 //------------------------------------------------------------------------------
 
 Convert::Convert()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 Convert::~Convert()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -57,7 +55,7 @@ void Convert::fromConfigurationElementToXml(
 )
 {
     //NAME
-    xmlNodePtr pNode = xmlNewNode(NULL, xmlCharStrdup(_cfgElement->getName().c_str()));
+    xmlNodePtr pNode = xmlNewNode(nullptr, xmlCharStrdup(_cfgElement->getName().c_str()));
     xmlAddChild(_node, pNode);
 
     std::string nodeValue = _cfgElement->getValue();
@@ -68,22 +66,20 @@ void Convert::fromConfigurationElementToXml(
 
     std::map<std::string, std::string> attr_cfe = _cfgElement->getAttributes();
 
-    for(std::map<std::string, std::string>::iterator iter_attr_cfe = attr_cfe.begin() ;
-        iter_attr_cfe != attr_cfe.end() ;
-        ++iter_attr_cfe)
+    for(auto& iter_attr_cfe : attr_cfe)
     {
         //ATTRIBUTES + VALUES
         xmlSetProp(
             pNode,
-            xmlCharStrdup((iter_attr_cfe->first).c_str()),
-            xmlCharStrdup((iter_attr_cfe->second).c_str())
+            xmlCharStrdup((iter_attr_cfe.first).c_str()),
+            xmlCharStrdup((iter_attr_cfe.second).c_str())
         );
-        if((iter_attr_cfe->first) == std::string("class"))
+        if((iter_attr_cfe.first) == std::string("class"))
         {
             xmlSetProp(
                 pNode,
-                xmlCharStrdup((iter_attr_cfe->first).c_str()),
-                xmlCharStrdup((iter_attr_cfe->second).c_str())
+                xmlCharStrdup((iter_attr_cfe.first).c_str()),
+                xmlCharStrdup((iter_attr_cfe.second).c_str())
             );
         }
     }
@@ -95,11 +91,9 @@ void Convert::fromConfigurationElementToXml(
         !(!nodeValue.empty() && _cfgElement->size())
     );
 
-    for(std::vector<core::runtime::ConfigurationElement::sptr>::iterator iter_cfeC = _cfgElement->begin() ;
-        iter_cfeC != _cfgElement->end() ;
-        ++iter_cfeC)
+    for(auto& iter_cfeC : *_cfgElement)
     {
-        fromConfigurationElementToXml((*iter_cfeC), pNode);
+        fromConfigurationElementToXml(iter_cfeC, pNode);
     }
 }
 
@@ -107,11 +101,11 @@ void Convert::fromConfigurationElementToXml(
 
 xmlNodePtr Convert::runningModulesToXml()
 {
-    xmlNodePtr node_root      = xmlNewNode(NULL, xmlCharStrdup(MODULE_RC_PREFIX));
-    xmlNodePtr activated_Node = xmlNewNode(NULL, xmlCharStrdup("Activated"));
+    xmlNodePtr node_root      = xmlNewNode(nullptr, xmlCharStrdup(MODULE_RC_PREFIX));
+    xmlNodePtr activated_Node = xmlNewNode(nullptr, xmlCharStrdup("Activated"));
     xmlAddChild(node_root, activated_Node);
 
-    xmlNodePtr inactivated_Node = xmlNewNode(NULL, xmlCharStrdup("Inactivated"));
+    xmlNodePtr inactivated_Node = xmlNewNode(nullptr, xmlCharStrdup("Inactivated"));
     xmlAddChild(node_root, inactivated_Node);
 
     bool enable_Value        = false; // the 'do while' loop stop if enable_Value==false.
@@ -122,7 +116,7 @@ xmlNodePtr Convert::runningModulesToXml()
         for(const auto& module : runtime.getModules())
         {
             //MODULE
-            xmlNodePtr moduleNode = xmlNewNode(NULL, xmlCharStrdup(module->getIdentifier().c_str()));
+            xmlNodePtr moduleNode = xmlNewNode(nullptr, xmlCharStrdup(module->getIdentifier().c_str()));
             if(enable_Value)
             {
                 xmlAddChild(activated_Node, moduleNode);
@@ -133,11 +127,11 @@ xmlNodePtr Convert::runningModulesToXml()
             }
 
             //EXTENSIONS POINTS
-            xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode(NULL, xmlCharStrdup("Extensions_Points"));
+            xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode(nullptr, xmlCharStrdup("Extensions_Points"));
             xmlAddChild(moduleNode, extensionPoint_activated_list_Node);
 
             const auto moduleImpl = std::dynamic_pointer_cast<core::runtime::detail::Module>(module);
-            for(std::set<std::shared_ptr<core::runtime::detail::ExtensionPoint> >::const_iterator
+            for(auto
                 iter_extensionPoints
                     =
                         moduleImpl->extensionPointsBegin() ;
@@ -147,7 +141,7 @@ xmlNodePtr Convert::runningModulesToXml()
                 //EXTENSIONS POINTS
                 std::string str = "Identifier : " + (*iter_extensionPoints)->getIdentifier();
                 //-----DEBUG------
-                xmlNodePtr extensionPointsNode = xmlNewNode(NULL, xmlCharStrdup(str.c_str()));
+                xmlNodePtr extensionPointsNode = xmlNewNode(nullptr, xmlCharStrdup(str.c_str()));
                 //xmlNodePtr extensionPointsNode = xmlNewNode( NULL,  xmlCharStrdup(
                 // (str.substr(str.find_last_of("::")+1)).c_str() ) ) ;
                 //-----DEBUG------
@@ -158,21 +152,18 @@ xmlNodePtr Convert::runningModulesToXml()
 
                 std::vector<core::runtime::ConfigurationElement::sptr> AllConfigElement =
                     ((*iter_extensionPoints)->getAllConfigurationElements());
-                for(std::vector<core::runtime::ConfigurationElement::sptr>::const_iterator iter_config_elem =
-                        AllConfigElement.begin() ;
-                    iter_config_elem != AllConfigElement.end() ;
-                    ++iter_config_elem)
+                for(auto& iter_config_elem : AllConfigElement)
                 {
                     //CONFIGURATIONS ELEMENTS
-                    Convert::fromConfigurationElementToXml((*iter_config_elem), extensionPointsNode);
+                    Convert::fromConfigurationElementToXml(iter_config_elem, extensionPointsNode);
                 }
             } //end extensionsPoints parsing
 
             //Extensions
-            xmlNodePtr extension_activated_list_Node = xmlNewNode(NULL, xmlCharStrdup("Extensions"));
+            xmlNodePtr extension_activated_list_Node = xmlNewNode(nullptr, xmlCharStrdup("Extensions"));
             xmlAddChild(moduleNode, extension_activated_list_Node);
 
-            for(std::set<std::shared_ptr<core::runtime::Extension> >::const_iterator iter_extension =
+            for(auto iter_extension =
                     moduleImpl->extensionsBegin() ;
                 iter_extension != moduleImpl->extensionsEnd() ;
                 ++iter_extension)
@@ -180,17 +171,17 @@ xmlNodePtr Convert::runningModulesToXml()
                 if(((*iter_extension)->isEnabled()) == enable_Value)
                 {
                     std::string str          = (*iter_extension)->getPoint();
-                    xmlNodePtr extensionNode = xmlNewNode(NULL, xmlCharStrdup((str.c_str())));
+                    xmlNodePtr extensionNode = xmlNewNode(nullptr, xmlCharStrdup((str.c_str())));
 
                     // Adds node if not exist
-                    xmlNodePtr node;
+                    xmlNodePtr node = nullptr;
                     bool found_node = false;
                     for(node = extension_activated_list_Node->children ;
-                        node ;
+                        node != nullptr ;
                         node = node->next)
                     {
                         if((node->type == XML_ELEMENT_NODE)
-                           && !(xmlStrcmp(node->name, xmlCharStrdup((str.c_str())))))
+                           && ((xmlStrcmp(node->name, xmlCharStrdup((str.c_str())))) == 0))
                         {
                             extensionNode = node;
                             found_node    = true;
@@ -205,12 +196,9 @@ xmlNodePtr Convert::runningModulesToXml()
 
                     //end adds node
 
-                    for(std::vector<core::runtime::ConfigurationElement::sptr>::iterator iter_cfe_extension =
-                            (*iter_extension)->begin() ;
-                        iter_cfe_extension != (*iter_extension)->end() ;
-                        ++iter_cfe_extension)
+                    for(auto& iter_cfe_extension : *(*iter_extension))
                     {
-                        Convert::fromConfigurationElementToXml((*iter_cfe_extension), extensionNode);
+                        Convert::fromConfigurationElementToXml(iter_cfe_extension, extensionNode);
                     }
                 }
             } //end Extensions parsing
@@ -218,19 +206,19 @@ xmlNodePtr Convert::runningModulesToXml()
             //cleaning : delete empty node (or if contain empty node)
             // xmlKeepBlanksDefault(0)  don't work; only for  TEXT NODES
             // xmlIsBlankNode too, work only for Text-Nodes
-            if(!(extensionPoint_activated_list_Node->children))
+            if((extensionPoint_activated_list_Node->children) == nullptr)
             {
                 xmlUnlinkNode(extensionPoint_activated_list_Node);
                 xmlFreeNode(extensionPoint_activated_list_Node);
             }
 
-            if(!(extension_activated_list_Node->children))
+            if((extension_activated_list_Node->children) == nullptr)
             {
                 xmlUnlinkNode(extension_activated_list_Node);
                 xmlFreeNode(extension_activated_list_Node);
             }
 
-            if(!(moduleNode->children))
+            if((moduleNode->children) == nullptr)
             {
                 xmlUnlinkNode(moduleNode);
                 xmlFreeNode(moduleNode);
@@ -248,7 +236,7 @@ xmlNodePtr Convert::runningModulesToXml()
 
 xmlNodePtr Convert::toXml(core::runtime::ConfigurationElement::sptr _cfgElement)
 {
-    xmlNodePtr tmp = xmlNewNode(NULL, xmlCharStrdup("Configurations_Elements"));
+    xmlNodePtr tmp = xmlNewNode(nullptr, xmlCharStrdup("Configurations_Elements"));
     core::runtime::Convert::fromConfigurationElementToXml(_cfgElement, tmp);
     return tmp;
 }
@@ -278,7 +266,7 @@ boost::property_tree::ptree Convert::toPropertyTree(core::runtime::Configuration
     std::string propertyName  = _cfgElement->getName();
     std::string propertyValue = _cfgElement->getValue();
 
-    typedef std::map<std::string, std::string> AttributeMatType;
+    using AttributeMatType = std::map<std::string, std::string>;
 
     if(!propertyValue.empty())
     {
@@ -287,9 +275,9 @@ boost::property_tree::ptree Convert::toPropertyTree(core::runtime::Configuration
 
     AttributeMatType attr = _cfgElement->getAttributes();
 
-    for(AttributeMatType::iterator iter = attr.begin() ; iter != attr.end() ; ++iter)
+    for(auto& iter : attr)
     {
-        ptAttr.put(iter->first, iter->second);
+        ptAttr.put(iter.first, iter.second);
     }
 
     if(!ptAttr.empty())
@@ -297,7 +285,7 @@ boost::property_tree::ptree Convert::toPropertyTree(core::runtime::Configuration
         pt.put_child(propertyName + ".<xmlattr>", ptAttr);
     }
 
-    for(auto iterElement : _cfgElement->getElements())
+    for(const auto& iterElement : _cfgElement->getElements())
     {
         const std::string childName = iterElement->getName();
         boost::property_tree::ptree ptChild;
@@ -311,7 +299,7 @@ boost::property_tree::ptree Convert::toPropertyTree(core::runtime::Configuration
             ptChild = *child;
         }
 
-        pt.add_child(propertyName + "." + childName, ptChild);
+        pt.add_child(std::string(propertyName).append(".").append(childName), ptChild);
     }
 
     return pt;
@@ -328,9 +316,9 @@ core::runtime::ConfigurationElement::sptr Convert::fromPropertyTree(boost::prope
 
     xmlDocPtr doc = xmlParseMemory(xml.c_str(), static_cast<int>(xml.size()));
 
-    if(doc == NULL)
+    if(doc == nullptr)
     {
-        return core::runtime::ConfigurationElement::sptr();
+        return {};
     }
 
     xmlNodePtr root = xmlDocGetRootElement(doc);

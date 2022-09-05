@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "DataConverter.hpp"
 
 #include <core/LazyInstantiator.hpp>
@@ -50,14 +52,12 @@ void DataConverter::registerConverter(converter::IConverter::sptr c)
 //-----------------------------------------------------------------------------
 
 DataConverter::DataConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 DataConverter::~DataConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     int igtlCode,
     int igtlSubCode,
     const std::string& errMsg
-) const
+)
 {
     ::igtl::StatusMessage::Pointer statusMsg;
 
@@ -108,7 +108,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     statusMsg->SetCode(igtlCode);
     statusMsg->SetErrorName(errMsg.c_str());
     statusMsg->SetSubCode(igtlSubCode);
-    return ::igtl::MessageBase::Pointer(statusMsg);
+    return ::igtl::MessageBase::Pointer(statusMsg); // NOLINT(modernize-return-braced-init-list)
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         msg->SetType(static_cast<int>(i), m_converters[i]->getIgtlType().c_str());
     }
 
-    return ::igtl::MessageBase::Pointer(msg);
+    return ::igtl::MessageBase::Pointer(msg); // NOLINT(modernize-return-braced-init-list)
 }
 
 } //namespace sight::io::igtl::detail

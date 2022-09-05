@@ -26,10 +26,7 @@
 
 #include <QDebug>
 
-namespace sight::ui::qml
-{
-
-namespace model
+namespace sight::ui::qml::model
 {
 
 RoleListModel::RoleListModel(QObject* parent) :
@@ -52,7 +49,7 @@ QVariant RoleListModel::data(const QModelIndex& index, int role) const
     // check if the role exist
     if(!m_roles.contains(role))
     {
-        return QVariant();
+        return {};
     }
 
     // Check boundaries
@@ -60,7 +57,7 @@ QVariant RoleListModel::data(const QModelIndex& index, int role) const
        || index.row() < 0
        || rowCount() <= index.row())
     {
-        return QVariant();
+        return {};
     }
 
     // Nominal case
@@ -102,6 +99,4 @@ bool RoleListModel::isEmpty() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace model
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::model

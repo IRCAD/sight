@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
     MODULE_DATA_API IWrapperSrv();
 
     ///@brief IWrapperSrv destructor. Do nothing.
-    MODULE_DATA_API virtual ~IWrapperSrv();
+    MODULE_DATA_API ~IWrapperSrv() override;
 };
 
-}
+} // namespace sight::module::data

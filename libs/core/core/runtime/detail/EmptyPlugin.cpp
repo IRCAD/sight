@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include "core/runtime/utils/GenericExecutableFactoryRegistry.hpp"
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 //------------------------------------------------------------------------------
@@ -42,6 +39,4 @@ void EmptyPlugin::stop() noexcept
 {
 }
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/operations.hpp"
+
 #include <core/spyLog.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
@@ -37,14 +38,12 @@ namespace sight::core::runtime
 //------------------------------------------------------------------------------
 
 Runtime::Runtime()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 Runtime::~Runtime()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -79,7 +78,7 @@ std::shared_ptr<Extension> Runtime::findExtension(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const std::filesystem::path&)
+void Runtime::setWorkingPath(const std::filesystem::path& /*unused*/)
 {
 }
 

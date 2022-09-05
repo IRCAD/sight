@@ -22,14 +22,11 @@
 
 #include "core/memory/BufferObject.hpp"
 
-namespace scm = sight::core::memory;
-
 namespace sight::core::memory
 {
 
 BufferObject::BufferObject() :
-    m_buffer(0),
-    m_size(0),
+
     m_bufferManager(core::memory::BufferManager::getDefault()),
     m_allocPolicy(core::memory::BufferNoAllocPolicy::New())
 {
@@ -88,14 +85,14 @@ void BufferObject::setBuffer(
 
 BufferObject::Lock BufferObject::lock()
 {
-    return BufferObject::Lock(this->getSptr());
+    return {this->getSptr()};
 }
 
 //------------------------------------------------------------------------------
 
 BufferObject::ConstLock BufferObject::lock() const
 {
-    return BufferObject::ConstLock(this->getConstSptr());
+    return {this->getConstSptr()};
 }
 
 //------------------------------------------------------------------------------

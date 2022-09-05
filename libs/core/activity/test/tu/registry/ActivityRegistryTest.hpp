@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::activity
-{
-
-namespace ut
+namespace sight::activity::ut
 {
 
 struct ActivityRegistryTestPimpl;
@@ -45,8 +42,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void registryTest();
 
@@ -55,6 +52,4 @@ protected:
     SPTR(ActivityRegistryTestPimpl) m_pimpl;
 };
 
-} //namespace ut
-
-} //namespace sight::activity
+} // namespace sight::activity::ut

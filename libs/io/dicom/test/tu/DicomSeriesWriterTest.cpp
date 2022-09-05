@@ -41,10 +41,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomSeriesWriterTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -56,10 +53,8 @@ void DicomSeriesWriterTest::setUp()
         std::cout << std::endl << "Ignoring slow " << std::endl;
         return;
     }
-    else
-    {
-        std::cout << std::endl << "Executing slow tests.." << std::endl;
-    }
+
+    std::cout << std::endl << "Executing slow tests.." << std::endl;
 
     // Set up context before running a test.
     data::SeriesDB::sptr srcSeriesDB    = data::SeriesDB::New();
@@ -201,6 +196,4 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

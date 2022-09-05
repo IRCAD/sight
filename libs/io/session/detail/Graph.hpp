@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,7 @@
 #include <data/Graph.hpp>
 #include <data/Node.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Graph
+namespace sight::io::session::detail::Graph
 {
 
 constexpr static auto s_Up {"Up"};
@@ -40,11 +37,11 @@ constexpr static auto s_Down {"Down"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto graph = Helper::safeCast<data::Graph>(object);
@@ -76,11 +73,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Graph::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -134,6 +131,4 @@ inline static data::Graph::sptr deserialize(
     return graph;
 }
 
-} // namespace detail::Graph
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Graph

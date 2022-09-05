@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::log::ut::LoggerTest);
 
-namespace sight::core::log
-{
-
-namespace ut
+namespace sight::core::log::ut
 {
 
 //------------------------------------------------------------------------------
@@ -98,7 +95,7 @@ void LoggerTest::simpleLoggerTest()
     CPPUNIT_ASSERT_EQUAL(critical4, logger->getLog(8).getMessage());
 
     // Check level types
-    core::log::Logger::IteratorType it = logger->begin();
+    auto it = logger->begin();
     CPPUNIT_ASSERT_EQUAL(core::log::Log::INFORMATION, (it++)->getLevel());
     CPPUNIT_ASSERT_EQUAL(core::log::Log::CRITICAL, (it++)->getLevel());
     CPPUNIT_ASSERT_EQUAL(core::log::Log::WARNING, (it++)->getLevel());
@@ -131,6 +128,4 @@ void LoggerTest::simpleLoggerTest()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::core::log
+} // namespace sight::core::log::ut

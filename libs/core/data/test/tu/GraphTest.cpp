@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::GraphTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -130,7 +127,7 @@ void GraphTest::limitCase1()
     data::Edge::sptr e1(data::Edge::New());
     e1->setIdentifiers("sizex", "threshold");
 
-    bool success;
+    bool success = false;
 
     CPPUNIT_ASSERT_EQUAL((std::size_t) 0, g->getNbNodes());
     CPPUNIT_ASSERT_EQUAL((std::size_t) 0, g->getNbEdges());
@@ -222,7 +219,6 @@ void GraphTest::limitCase2()
 {
     // G :
     // n1 --e1--> n2
-    using namespace sight::data;
     data::Graph::sptr g(data::Graph::New());
 
     data::Node::sptr n1(data::Node::New());
@@ -246,7 +242,7 @@ void GraphTest::limitCase2()
     CPPUNIT_ASSERT_EQUAL((std::size_t) 2, g->getNbNodes());
     CPPUNIT_ASSERT_EQUAL((std::size_t) 1, g->getNbEdges());
 
-    bool success;
+    bool success = false;
     success = g->removeNode(n1);
     CPPUNIT_ASSERT_EQUAL(success, false);
     CPPUNIT_ASSERT_EQUAL((std::size_t) 2, g->getNbNodes());
@@ -267,6 +263,4 @@ void GraphTest::limitCase2()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

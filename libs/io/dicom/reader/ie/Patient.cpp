@@ -27,13 +27,7 @@
 #include <data/DicomSeries.hpp>
 #include <data/Patient.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -55,8 +49,7 @@ Patient::Patient(
 //------------------------------------------------------------------------------
 
 Patient::~Patient()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -86,8 +79,4 @@ void Patient::readPatientModule()
     m_object->setSex(sex);
 }
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

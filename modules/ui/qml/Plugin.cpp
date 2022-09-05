@@ -59,9 +59,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::qml::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ void Plugin::start()
     iconPath.append(QString::fromStdString(path.string()));
     QIcon::setThemeSearchPaths(iconPath);
 
-    profile->setRunCallback(std::bind(&Plugin::run, this));
+    profile->setRunCallback(run);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,4 +126,4 @@ int Plugin::run() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qml

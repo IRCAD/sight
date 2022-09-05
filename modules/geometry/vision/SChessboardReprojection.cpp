@@ -62,8 +62,7 @@ SChessboardReprojection::SChessboardReprojection()
 //-----------------------------------------------------------------------------
 
 SChessboardReprojection::~SChessboardReprojection()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -114,10 +113,12 @@ void SChessboardReprojection::updating()
     SIGHT_ASSERT("Missing 'camera'.", camera);
 
     cv::Size imgSize;
-    cv::Mat cameraMx, distortionCoefficients;
+    cv::Mat cameraMx;
+    cv::Mat distortionCoefficients;
     std::tie(cameraMx, imgSize, distortionCoefficients) = io::opencv::Camera::copyToCv(camera.get_shared());
 
-    cv::Mat rvec, tvec;
+    cv::Mat rvec;
+    cv::Mat tvec;
 
     std::vector<cv::Point2d> detectedPts;
     io::opencv::PointList::copyToCv(detectedChessboard.get_shared(), detectedPts);
@@ -272,7 +273,8 @@ void SChessboardReprojection::toggleDistortion()
 
 void SChessboardReprojection::updateChessboardSize()
 {
-    unsigned long width(0), height(0);
+    std::uint64_t width(0);
+    std::uint64_t height(0);
     double squareSize(0.);
 
     try
@@ -291,11 +293,11 @@ void SChessboardReprojection::updateChessboardSize()
 
     data::PointList::sptr chessboardModelPl = data::PointList::New();
 
-    for(unsigned long i = 0 ; i < height - 1 ; ++i)
+    for(std::uint64_t i = 0 ; i < height - 1 ; ++i)
     {
         const double x = double(i) * squareSize;
 
-        for(unsigned long j = 0 ; j < width - 1 ; ++j)
+        for(std::uint64_t j = 0 ; j < width - 1 ; ++j)
         {
             const double y = double(j) * squareSize;
             m_chessboardModel.push_back(cv::Point3d(x, y, 0.));

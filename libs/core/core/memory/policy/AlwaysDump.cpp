@@ -25,10 +25,7 @@
 #include "core/memory/policy/BarrierDump.hpp"
 #include "core/memory/policy/registry/macros.hpp"
 
-namespace sight::core::memory
-{
-
-namespace policy
+namespace sight::core::memory::policy
 {
 
 fwMemoryPolicyRegisterMacro(core::memory::policy::AlwaysDump);
@@ -164,7 +161,7 @@ void AlwaysDump::refresh()
 std::string AlwaysDump::getParam(const std::string& name, bool* ok) const
 {
     SIGHT_NOT_USED(name);
-    if(ok)
+    if(ok != nullptr)
     {
         *ok = false;
     }
@@ -174,6 +171,4 @@ std::string AlwaysDump::getParam(const std::string& name, bool* ok) const
 
 //------------------------------------------------------------------------------
 
-} // namespace policy
-
-} //namespace sight::core::memory
+} // namespace sight::core::memory::policy

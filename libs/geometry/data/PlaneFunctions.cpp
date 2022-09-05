@@ -25,7 +25,7 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-#define EPSILON 0.00000001
+constexpr double EPSILON = 0.00000001;
 
 namespace sight::geometry::data
 {

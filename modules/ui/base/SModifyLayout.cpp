@@ -36,15 +36,13 @@ namespace sight::module::ui::base
 
 //-----------------------------------------------------------------------------
 
-SModifyLayout::SModifyLayout() noexcept
-{
-}
+SModifyLayout::SModifyLayout() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SModifyLayout::~SModifyLayout() noexcept
-{
-}
+SModifyLayout::~SModifyLayout() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -71,7 +69,7 @@ void SModifyLayout::info(std::ostream& _sstream)
 
 void SModifyLayout::updating()
 {
-    for(MoveSrvVectType::value_type elt : m_moveSrv)
+    for(const MoveSrvVectType::value_type& elt : m_moveSrv)
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
@@ -85,7 +83,7 @@ void SModifyLayout::updating()
         service->update();
     }
 
-    for(EnableSrvVectType::value_type elt : m_enableSrv)
+    for(const EnableSrvVectType::value_type& elt : m_enableSrv)
     {
         std::string uid = elt.first;
         bool isEnable   = elt.second;
@@ -110,7 +108,7 @@ void SModifyLayout::updating()
         }
     }
 
-    for(ShowSrvVectType::value_type elt : m_showSrvWid)
+    for(const ShowSrvVectType::value_type& elt : m_showSrvWid)
     {
         std::string wid                                         = elt.first;
         boost::logic::tribool isVisible                         = elt.second;
@@ -132,7 +130,7 @@ void SModifyLayout::updating()
         }
     }
 
-    for(ShowSrvVectType::value_type elt : m_showSrvSid)
+    for(const ShowSrvVectType::value_type& elt : m_showSrvSid)
     {
         std::string uid                 = elt.first;
         boost::logic::tribool isVisible = elt.second;
@@ -168,7 +166,7 @@ void SModifyLayout::configuring()
     if(!vectConfig.empty())
     {
         ConfigurationType config = vectConfig.at(0);
-        for(ConfigurationType actionCfg : config->getElements())
+        for(const ConfigurationType& actionCfg : config->getElements())
         {
             if(actionCfg->getName() == "move")
             {

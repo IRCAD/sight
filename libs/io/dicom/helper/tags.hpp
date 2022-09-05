@@ -30,10 +30,7 @@
 #include <string>
 #include <vector>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -70,6 +67,4 @@ typedef std::vector<gdcm::Tag> PrivateTagVecType;
  */
 IO_DICOM_API PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath);
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

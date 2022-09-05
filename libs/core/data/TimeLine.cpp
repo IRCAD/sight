@@ -33,7 +33,7 @@ const core::com::Signals::SignalKeyType TimeLine::s_CLEARED_SIG        = "object
 
 //------------------------------------------------------------------------------
 
-TimeLine::TimeLine(data::Object::Key)
+TimeLine::TimeLine(data::Object::Key /*unused*/)
 {
     newSignal<ObjectPushedSignalType>(s_OBJECT_PUSHED_SIG);
     newSignal<ObjectRemovedSignalType>(s_OBJECT_REMOVED_SIG);
@@ -43,8 +43,7 @@ TimeLine::TimeLine(data::Object::Key)
 //------------------------------------------------------------------------------
 
 TimeLine::~TimeLine()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

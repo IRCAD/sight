@@ -28,10 +28,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
@@ -51,9 +48,8 @@ SSignal::SSignal() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SSignal::~SSignal() noexcept
-{
-}
+SSignal::~SSignal() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -99,6 +95,4 @@ void SSignal::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

@@ -33,10 +33,7 @@
 #include <OGRE/OgreTextureUnitState.h>
 #include <OGRE/Overlay/OgreFontManager.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 //------------------------------------------------------------------------------
@@ -123,6 +120,4 @@ Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class MarkerMapTest : public CPPUNIT_NS::TestFixture
@@ -41,14 +38,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void getterSetter();
-    void shallowCopyTest();
-    void deepCopyTest();
+    static void getterSetter();
+    static void shallowCopyTest();
+    static void deepCopyTest();
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

@@ -70,7 +70,7 @@ public:
     SERVICE_API SConfigController() noexcept;
 
     /// Destructor. Does nothing.
-    SERVICE_API virtual ~SConfigController() noexcept;
+    SERVICE_API ~SConfigController() noexcept override;
 
 protected:
 
@@ -113,4 +113,4 @@ private:
     service::helper::ConfigLauncher::uptr m_configLauncher;
 };
 
-} // fwServices
+} // namespace sight::service

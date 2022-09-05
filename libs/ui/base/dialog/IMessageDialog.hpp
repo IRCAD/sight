@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <string>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -68,7 +65,7 @@ public:
     /// Constructor. Do nothing.
     UI_BASE_API IMessageDialog();
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IMessageDialog();
+    UI_BASE_API ~IMessageDialog() override;
 
     typedef std::string FactoryRegistryKeyType;
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
@@ -95,6 +92,4 @@ public:
     UI_BASE_API virtual Buttons show() = 0;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

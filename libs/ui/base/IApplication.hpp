@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
     /// Constructor. Do nothing.
     UI_BASE_API IApplication();
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IApplication();
+    UI_BASE_API ~IApplication() override;
 
     /// Tells the application to exit with a returncode
     UI_BASE_API virtual void exit(int returncode) = 0;
@@ -57,7 +57,7 @@ public:
 protected:
 
     /// Asks confirmation before exiting application.
-    bool m_confirm;
+    bool m_confirm {false};
 };
 
 } // namespace sight::ui::base

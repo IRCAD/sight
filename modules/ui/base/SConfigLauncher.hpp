@@ -77,7 +77,7 @@ public:
     MODULE_UI_BASE_API SConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SConfigLauncher() noexcept;
+    MODULE_UI_BASE_API ~SConfigLauncher() noexcept override;
 
     /// Set the action service is activated/disable.
     MODULE_UI_BASE_API void setChecked(bool isChecked) override;
@@ -139,4 +139,4 @@ protected:
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 
-} // gui
+} // namespace sight::module::ui::base

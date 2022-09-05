@@ -35,7 +35,7 @@ namespace sight::data
 
 class Image;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::itk
 {
@@ -65,7 +65,7 @@ public:
 
     MODULE_IO_ITK_API SImageReader() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SImageReader() noexcept;
+    MODULE_IO_ITK_API ~SImageReader() noexcept override;
 
     MODULE_IO_ITK_API static bool loadImage(const std::filesystem::path& imgFile, const SPTR(data::Image)& img);
 

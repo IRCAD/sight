@@ -46,21 +46,21 @@ namespace factory
 class R2VBRenderable;
 class Text;
 
-}
+} // namespace factory
 namespace vr
 {
 
 class GridProxyGeometryFactory;
 
-}
+} // namespace vr
 namespace compositor
 {
 
 class MaterialMgrListener;
 
-}
+} // namespace compositor
 
-}
+} // namespace sight::viz::scene3d
 
 namespace sight::viz::scene3d
 {

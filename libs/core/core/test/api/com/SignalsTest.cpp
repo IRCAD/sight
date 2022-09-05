@@ -30,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SignalsTest);
 
-namespace sight::core::com
-{
-
-namespace ut
+namespace sight::core::com::ut
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +56,7 @@ void SignalsTest::buildTest()
     core::com::Signal<void()>::sptr sig = core::com::Signal<void()>::New();
     CPPUNIT_ASSERT(sig);
 
-    typedef void Signature(int, float);
+    using Signature = void (int, float);
     core::com::Signal<Signature>::sptr sig2 = core::com::Signal<Signature>::New();
     CPPUNIT_ASSERT(sig2);
 
@@ -77,7 +74,7 @@ void SignalsTest::buildTest()
 
 struct SignalsTestHasSignals : public HasSignals
 {
-    typedef core::com::Signal<void ()> SignalType;
+    using SignalType = core::com::Signal<void ()>;
 
     SignalsTestHasSignals()
     {
@@ -88,7 +85,7 @@ struct SignalsTestHasSignals : public HasSignals
 
 struct SignalsTestHasSignals2 : public HasSignals
 {
-    typedef core::com::Signal<void ()> SignalType;
+    using SignalType = core::com::Signal<void ()>;
 
     SignalsTestHasSignals2()
     {
@@ -100,9 +97,7 @@ struct SignalsTestHasSignals2 : public HasSignals
 struct SignalsTestA
 {
     SignalsTestA()
-    {
-        m_val = false;
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -111,7 +106,7 @@ struct SignalsTestA
         m_val = !m_val;
     }
 
-    bool m_val;
+    bool m_val {false};
 };
 //-----------------------------------------------------------------------------
 
@@ -141,6 +136,4 @@ void SignalsTest::hasSignalsTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core::com
+} // namespace sight::core::com::ut

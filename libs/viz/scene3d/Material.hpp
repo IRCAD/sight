@@ -33,8 +33,6 @@
 namespace sight::viz::scene3d
 {
 
-class R2VBRenderable;
-
 /**
  * @brief   Manages a generic material
  */
@@ -79,7 +77,7 @@ public:
     void setPrimitiveType(data::Mesh::CellType _type);
 
     /// Sets the size of the mesh. This is used either to adjust the size of normals or to expand billboards
-    void setMeshSize(const float _size);
+    void setMeshSize(float _size);
 
     /// Set the diffuse texture
     VIZ_SCENE3D_API void setDiffuseTexture(const Ogre::TexturePtr& _texture);
@@ -119,7 +117,7 @@ private:
     std::string m_perPrimitiveColorTextureName;
 
     /// Size of the mesh, used either to adjust the size of normals or to expand billboards
-    Ogre::Real m_meshSize {1.f};
+    Ogre::Real m_meshSize {1.F};
 
     /// Name of the material template
     std::string m_templateName;

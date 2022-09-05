@@ -104,7 +104,7 @@ private:
     std::size_t m_height {8};
 
     /// Scale applied to the images before running the detection algorithm.
-    float m_scale {1.f};
+    float m_scale {1.F};
 };
 
 } // namespace sight::module::io::vision

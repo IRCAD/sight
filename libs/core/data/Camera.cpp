@@ -43,15 +43,7 @@ const core::com::Signals::SignalKeyType Camera::s_ID_MODIFIED_SIG          = "id
 
 //------------------------------------------------------------------------------
 
-Camera::Camera() :
-    m_width(0),
-    m_height(0),
-    m_skew(0.),
-    m_isCalibrated(false),
-    m_maxFrameRate(30.f),
-    m_pixelFormat(INVALID),
-    m_cameraSource(UNKNOWN),
-    m_scale(1.)
+Camera::Camera()
 {
     m_intrinsic.fill(0.);
     m_distortionCoefficient.fill(0.);
@@ -62,15 +54,7 @@ Camera::Camera() :
 
 //------------------------------------------------------------------------------
 
-Camera::Camera(data::Object::Key) :
-    m_width(0),
-    m_height(0),
-    m_skew(0.),
-    m_isCalibrated(false),
-    m_maxFrameRate(30.f),
-    m_pixelFormat(INVALID),
-    m_cameraSource(UNKNOWN),
-    m_scale(1.)
+Camera::Camera(data::Object::Key /*unused*/)
 {
     m_intrinsic.fill(0.);
     m_distortionCoefficient.fill(0.);
@@ -81,13 +65,12 @@ Camera::Camera(data::Object::Key) :
 
 // -------------------------------------------------------------------------
 
-Camera::~Camera() noexcept
-{
-}
+Camera::~Camera() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-typedef boost::bimaps::bimap<Camera::PixelFormat, std::string> PixelFormatTranslatorType;
+using PixelFormatTranslatorType = boost::bimaps::bimap<Camera::PixelFormat, std::string>;
 PixelFormatTranslatorType pixelFormatTranslator =
     boost::assign::list_of<PixelFormatTranslatorType::relation>
         (Camera::PixelFormat::INVALID, std::string("INVALID"))

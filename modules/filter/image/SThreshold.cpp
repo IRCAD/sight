@@ -33,16 +33,13 @@ namespace sight::module::filter::image
 
 //-----------------------------------------------------------------------------
 
-SThreshold::SThreshold() noexcept :
-    m_threshold(50.0)
-{
-}
+SThreshold::SThreshold() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SThreshold::~SThreshold() noexcept
-{
-}
+SThreshold::~SThreshold() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +83,7 @@ struct ThresholdFilter
 {
     struct Parameter
     {
-        double thresholdValue;      ///< threshold value.
+        double thresholdValue {};   ///< threshold value.
         data::Image::csptr imageIn; ///< image source
         data::Image::sptr imageOut; ///< image target: contains the result of the filter
     };
@@ -98,9 +95,9 @@ struct ThresholdFilter
     template<class PIXELTYPE>
     void operator()(Parameter& param)
     {
-        const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
-        data::Image::csptr imageIn     = param.imageIn;
-        data::Image::sptr imageOut     = param.imageOut;
+        const auto thresholdValue  = static_cast<PIXELTYPE>(param.thresholdValue);
+        data::Image::csptr imageIn = param.imageIn;
+        data::Image::sptr imageOut = param.imageOut;
         SIGHT_ASSERT("Sorry, image must be 3D", imageIn->numDimensions() == 3);
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer

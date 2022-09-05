@@ -49,15 +49,13 @@
 namespace sight::module::ui::qt::reconstruction
 {
 
-SOrganMaterialEditor::SOrganMaterialEditor() noexcept
-{
-}
+SOrganMaterialEditor::SOrganMaterialEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SOrganMaterialEditor::~SOrganMaterialEditor() noexcept
-{
-}
+SOrganMaterialEditor::~SOrganMaterialEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -96,8 +94,8 @@ void SOrganMaterialEditor::starting()
     m_ambientColourButton->setToolTip(tr("Selected organ's ambient color"));
     m_ambientColourButton->setMinimumSize(m_ambientColourButton->sizeHint());
 
-    const char* transparency        = "Transparency";
-    QLabel* const transparencyLabel = new QLabel(tr((std::string(transparency) + " : ").c_str()));
+    const char* transparency      = "Transparency";
+    auto* const transparencyLabel = new QLabel(tr((std::string(transparency) + " : ").c_str()));
     m_opacitySlider = new QSlider(Qt::Horizontal);
     m_opacitySlider->setObjectName(serviceID + "/" + transparency);
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
@@ -110,14 +108,14 @@ void SOrganMaterialEditor::starting()
     m_transparencyValue->setObjectName(serviceID + "/transparencyValue");
     m_transparencyValue->setMinimumSize(m_transparencyValue->sizeHint());
 
-    QVBoxLayout* const mainLayout = new QVBoxLayout();
+    auto* const mainLayout = new QVBoxLayout();
 
-    QHBoxLayout* const buttonLayout = new QHBoxLayout();
+    auto* const buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(m_diffuseColourButton, 0);
     buttonLayout->addWidget(m_ambientColourButton, 0);
     mainLayout->addLayout(buttonLayout, 0);
 
-    QHBoxLayout* const transparencyLayout = new QHBoxLayout();
+    auto* const transparencyLayout = new QHBoxLayout();
     transparencyLayout->addWidget(transparencyLabel, 0);
     transparencyLayout->addWidget(m_opacitySlider, 1);
     transparencyLayout->addWidget(m_transparencyValue, 0);
@@ -210,9 +208,9 @@ void SOrganMaterialEditor::onAmbientColorButton()
     {
         data::mt::locked_ptr<data::Material> lock(material);
 
-        const int red   = static_cast<int>(material->ambient()->red() * 255.f);
-        const int green = static_cast<int>(material->ambient()->green() * 255.f);
-        const int blue  = static_cast<int>(material->ambient()->blue() * 255.f);
+        const int red   = static_cast<int>(material->ambient()->red() * 255.F);
+        const int green = static_cast<int>(material->ambient()->green() * 255.F);
+        const int blue  = static_cast<int>(material->ambient()->blue() * 255.F);
 
         // Create Color choice dialog.
         auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
@@ -251,7 +249,7 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 
     data::mt::locked_ptr<data::Material> lock(material);
 
-    material->diffuse()->alpha() = static_cast<float>(_value) / 100.f;
+    material->diffuse()->alpha() = static_cast<float>(_value) / 100.F;
     std::stringstream ss;
     ss << _value << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -278,16 +276,16 @@ void SOrganMaterialEditor::refreshMaterial()
         material = reconstruction->getMaterial();
     }
 
-    int alpha;
+    int alpha = 0;
     {
         data::mt::locked_ptr<const data::Material> lock(material);
 
         {
             const QColor materialDiffuseColor = QColor(
-                static_cast<int>(material->diffuse()->red() * 255.f),
-                static_cast<int>(material->diffuse()->green() * 255.f),
-                static_cast<int>(material->diffuse()->blue() * 255.f),
-                static_cast<int>(material->diffuse()->alpha() * 255.f)
+                static_cast<int>(material->diffuse()->red() * 255.F),
+                static_cast<int>(material->diffuse()->green() * 255.F),
+                static_cast<int>(material->diffuse()->blue() * 255.F),
+                static_cast<int>(material->diffuse()->alpha() * 255.F)
             );
 
             const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
@@ -298,10 +296,10 @@ void SOrganMaterialEditor::refreshMaterial()
 
         {
             const QColor materialAmbientColor = QColor(
-                static_cast<int>(material->ambient()->red() * 255.f),
-                static_cast<int>(material->ambient()->green() * 255.f),
-                static_cast<int>(material->ambient()->blue() * 255.f),
-                static_cast<int>(material->ambient()->alpha() * 255.f)
+                static_cast<int>(material->ambient()->red() * 255.F),
+                static_cast<int>(material->ambient()->green() * 255.F),
+                static_cast<int>(material->ambient()->blue() * 255.F),
+                static_cast<int>(material->ambient()->alpha() * 255.F)
             );
 
             const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
@@ -310,7 +308,7 @@ void SOrganMaterialEditor::refreshMaterial()
             m_ambientColourButton->setIcon(QIcon(pix));
         }
 
-        alpha = static_cast<int>(material->diffuse()->alpha() * 100.f);
+        alpha = static_cast<int>(material->diffuse()->alpha() * 100.F);
     }
 
     m_opacitySlider->setValue(alpha);
@@ -335,4 +333,4 @@ void SOrganMaterialEditor::materialNotification()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt::reconstruction

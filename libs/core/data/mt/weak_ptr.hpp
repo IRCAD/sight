@@ -32,22 +32,19 @@ namespace registry
 
 class ObjectService;
 
-}
+} // namespace registry
 class IService;
 
-}
+} // namespace sight::service
 
 namespace sight::activity
 {
 
 class IActivityLauncher;
 
-}
+} // namespace sight::activity
 
-namespace sight::data
-{
-
-namespace mt
+namespace sight::data::mt
 {
 
 template<class DATATYPE>
@@ -102,18 +99,18 @@ public:
     }
 
     /// Default constructors, destructor and assignment operators
-    weak_ptr()                           = default;
-    weak_ptr(const weak_ptr&)            = default;
-    weak_ptr(weak_ptr&&)                 = default;
+    weak_ptr()                = default;
+    weak_ptr(const weak_ptr&) = default;
+    weak_ptr(weak_ptr&&) noexcept = default;
     weak_ptr& operator=(const weak_ptr&) = default;
-    weak_ptr& operator=(weak_ptr&&)      = default;
-    ~weak_ptr()                          = default;
+    weak_ptr& operator=(weak_ptr&&) noexcept = default;
+    ~weak_ptr() = default;
 
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
     [[nodiscard]] locked_ptr<std::add_const_t<DATATYPE> > const_lock() const noexcept;
 
     /// Returns true if the weak pointer has expired
-    inline bool expired() const noexcept
+    [[nodiscard]] inline bool expired() const noexcept
     {
         return m_data.expired();
     }
@@ -139,14 +136,14 @@ private:
 
     /// Convenience getter for weak_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    inline std::weak_ptr<DATATYPE> getWeak() const noexcept
+    [[nodiscard]] inline std::weak_ptr<DATATYPE> getWeak() const noexcept
     {
         return m_data;
     }
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    inline std::shared_ptr<DATATYPE> getShared() const noexcept
+    [[nodiscard]] inline std::shared_ptr<DATATYPE> getShared() const noexcept
     {
         return m_data.lock();
     }
@@ -173,6 +170,4 @@ inline locked_ptr<std::add_const_t<DATATYPE> > weak_ptr<DATATYPE>::const_lock() 
 
 //-----------------------------------------------------------------------------
 
-} // namespace mt
-
-} // namespace sight::data
+} // namespace sight::data::mt

@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT NOLINTNEXTLINE
+
 #include "ui/base/Preferences.hpp"
 
 #include "ui/base/dialog/InputDialog.hpp"
@@ -39,7 +41,6 @@
 namespace sight::ui::base
 {
 
-using core::crypto::obfuscated_string;
 using core::crypto::secure_string;
 using core::crypto::PasswordKeeper;
 
@@ -70,7 +71,7 @@ bool Preferences::s_is_enabled {false};
 
 //------------------------------------------------------------------------------
 
-inline static bool must_encrypt()
+inline static bool mustEncrypt()
 {
     return (s_password_keeper && !s_password_keeper->get_password().empty())
            || s_encryption_policy == PasswordKeeper::EncryptionPolicy::FORCED;
@@ -78,7 +79,7 @@ inline static bool must_encrypt()
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path compute_preferences_filepath()
+inline static std::filesystem::path computePreferencesFilepath()
 {
     // Get the profile
     const auto& profile = core::runtime::getCurrentProfile();
@@ -97,7 +98,7 @@ inline static std::filesystem::path compute_preferences_filepath()
     );
 
     // Build the preferences filepath
-    const auto& preferences_filepath = data_directory + "/" + (must_encrypt() ? s_encrypted_file : s_preferences_file);
+    const auto& preferences_filepath = data_directory + "/" + (mustEncrypt() ? s_encrypted_file : s_preferences_file);
     SIGHT_THROW_IF(
         "Preferences file '" + preferences_filepath + "' already exists and is not a regular file",
         std::filesystem::exists(preferences_filepath)
@@ -109,7 +110,7 @@ inline static std::filesystem::path compute_preferences_filepath()
 
 //------------------------------------------------------------------------------
 
-inline static secure_string compute_password()
+inline static secure_string computePassword()
 {
     if(s_encryption_policy == PasswordKeeper::EncryptionPolicy::FORCED
        && (!s_password_keeper || s_password_keeper->get_password().empty()))
@@ -120,12 +121,14 @@ inline static secure_string compute_password()
         }
         else
         {
+            // NOLINTNEXTLINE(readability-redundant-string-cstr)
             return PasswordKeeper::get_pseudo_password_hash(core::runtime::getCurrentProfile()->getName().c_str());
         }
     }
     else if(s_encryption_policy == PasswordKeeper::EncryptionPolicy::SALTED)
     {
         return PasswordKeeper::get_pseudo_password_hash(
+            // NOLINTNEXTLINE(readability-redundant-string-cstr)
             s_password_keeper->get_password() + core::runtime::getCurrentProfile()->getName().c_str()
         );
     }
@@ -137,7 +140,7 @@ inline static secure_string compute_password()
 
 //------------------------------------------------------------------------------
 
-inline static void set_password_nolock(const core::crypto::secure_string& password)
+inline static void setPasswordNolock(const core::crypto::secure_string& password)
 {
     if(password.empty())
     {
@@ -187,22 +190,21 @@ Preferences::Preferences()
                        || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ONCE
                            && password.empty()))
                     {
-                        sight::ui::base::dialog::InputDialog inputDialog;
                         const auto& new_password = secure_string(
-                            inputDialog.showInputDialog(
+                            sight::ui::base::dialog::InputDialog::showInputDialog(
                                 "Enter Password",
                                 "Password:",
-                                password.c_str(),
+                                password.c_str(), // NOLINT(readability-redundant-string-cstr)
                                 sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
                             )
                         );
 
-                        set_password_nolock(new_password);
+                        setPasswordNolock(new_password);
                         PasswordKeeper::set_global_password(new_password);
                     }
                     else if(!s_password_keeper)
                     {
-                        set_password_nolock(password);
+                        setPasswordNolock(password);
                     }
                 }
 
@@ -210,12 +212,12 @@ Preferences::Preferences()
                 {
                     s_preferences = std::make_unique<boost::property_tree::ptree>();
 
-                    const auto& preferences_filepath = compute_preferences_filepath();
+                    const auto& preferences_filepath = computePreferencesFilepath();
 
                     if(std::filesystem::exists(preferences_filepath))
                     {
                         // If a password has been set or if the encryption is "forced" open as an encrypted file
-                        if(must_encrypt())
+                        if(mustEncrypt())
                         {
                             // Open the archive that holds the property tree
                             auto archive = io::zip::ArchiveReader::get(preferences_filepath);
@@ -223,7 +225,7 @@ Preferences::Preferences()
                             // Create the input stream, with a password, allowing decoding an encrypted file
                             auto istream = archive->openFile(
                                 s_preferences_file,
-                                compute_password()
+                                computePassword()
                             );
 
                             // Read the property tree from the archive
@@ -280,10 +282,8 @@ Preferences::Preferences()
                                 // Exit from lambda
                                 return;
                             }
-                            else
-                            {
-                                s_is_enabled = false;
-                            }
+
+                            s_is_enabled = false;
                         }
                     }
 
@@ -318,9 +318,9 @@ Preferences::~Preferences()
     // Check if we must save the modifications
     if(s_is_enabled && s_is_preferences_modified)
     {
-        const auto& preferences_filepath = compute_preferences_filepath();
+        const auto& preferences_filepath = computePreferencesFilepath();
 
-        if(must_encrypt())
+        if(mustEncrypt())
         {
             // Delete the preferences file, since minizip is unable to replace file.
             // Doing otherwise will result with many preferences.json inside the archive, which cannot be read back
@@ -332,7 +332,7 @@ Preferences::~Preferences()
             // Create the output stream, with a password, resulting in an encrypted file
             auto ostream = archive->openFile(
                 s_preferences_file,
-                compute_password()
+                computePassword()
             );
 
             // Read the property tree from the archive
@@ -408,7 +408,7 @@ void Preferences::throw_if_disabled()
 void Preferences::set_password(const core::crypto::secure_string& password)
 {
     std::unique_lock guard(s_preferences_mutex);
-    set_password_nolock(password);
+    setPasswordNolock(password);
 }
 
 //------------------------------------------------------------------------------

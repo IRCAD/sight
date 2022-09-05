@@ -47,7 +47,7 @@ namespace sight::module::ui::qt
 //------------------------------------------------------------------------------
 
 SShowAbout::SShowAbout() noexcept :
-    m_bServiceIsConfigured(false),
+
     m_fsAboutPath(""),
     m_title("About"),
     m_size(500, 300)
@@ -56,9 +56,8 @@ SShowAbout::SShowAbout() noexcept :
 
 //------------------------------------------------------------------------------
 
-SShowAbout::~SShowAbout() noexcept
-{
-}
+SShowAbout::~SShowAbout() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +72,7 @@ void SShowAbout::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    typedef SPTR(core::runtime::ConfigurationElement) ConfigurationElement;
+    using ConfigurationElement = std::shared_ptr<core::runtime::ConfigurationElement>;
 
     ConfigurationElement cfgFilename = m_configuration->findConfigurationElement("filename");
     ConfigurationElement cfgTitle    = m_configuration->findConfigurationElement("title");
@@ -110,7 +109,7 @@ void SShowAbout::updating()
 {
     SIGHT_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured);
 
-    QDialog* dialog = new QDialog(qApp->activeWindow());
+    auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString::fromStdString(m_title));
     QUrl url = QUrl::fromLocalFile(QString::fromStdString(m_fsAboutPath.string()));
 #if defined(QT_WEBKIT)
@@ -119,7 +118,7 @@ void SShowAbout::updating()
     htmlView->load(url);
     QObject::connect(htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onUrlClicked(const QUrl&)));
 #else
-    QTextBrowser* htmlView = new QTextBrowser(dialog);
+    auto* htmlView = new QTextBrowser(dialog);
     htmlView->setSource(url);
     htmlView->setOpenExternalLinks(true);
     htmlView->setMinimumSize(m_size);
@@ -127,17 +126,17 @@ void SShowAbout::updating()
     searchPaths.append(QString::fromStdString(m_fsAboutPath.parent_path().string()));
     htmlView->setSearchPaths(searchPaths);
 #endif
-    QPushButton* okButton = new QPushButton(QObject::tr("Ok"));
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* okButton = new QPushButton(QObject::tr("Ok"));
+    auto* h_layout = new QHBoxLayout();
     h_layout->addStretch();
     h_layout->addWidget(okButton);
     h_layout->setContentsMargins(5, 5, 5, 5);
 
-    QFrame* line = new QFrame(dialog);
+    auto* line = new QFrame(dialog);
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(htmlView, 0);
     layout->addWidget(line, 0);
     layout->addLayout(h_layout, 0);

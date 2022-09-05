@@ -36,11 +36,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void nominalTest();
-    void copyTest();
+    static void nominalTest();
+    static void copyTest();
 };
 
 } // namespace sight::data::ut

@@ -82,9 +82,8 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~SCalibrationInfoEditor() noexcept
-    {
-    }
+    MODULE_UI_QT_API ~SCalibrationInfoEditor() noexcept override =
+        default;
 
 protected:
 
@@ -132,14 +131,14 @@ private Q_SLOTS:
     /**
      * @brief Slot called when an element is double-clicked in the list widget.
      */
-    void onItemDoubleClicked(QListWidgetItem*);
+    void onItemDoubleClicked(QListWidgetItem* /*unused*/);
 
 private:
 
     /**
      * @brief Index of the last acquisition.
      */
-    int m_captureIdx;
+    int m_captureIdx {};
 
     /**
      * @brief Label displaying the number of point acquisitions.

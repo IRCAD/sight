@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ class MODULE_UI_BASE_CLASS_API Plugin : public core::runtime::Plugin
 public:
 
     ///@brief  Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~Plugin() noexcept;
+    MODULE_UI_BASE_API ~Plugin() noexcept override;
 
     /**
      * @brief This method is used by runtime to initialize the module.
@@ -48,12 +48,12 @@ public:
      * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
-    MODULE_UI_BASE_API void start();
+    MODULE_UI_BASE_API void start() override;
 
     /**
      * @brief This method is used by runtime to close the module. Do nothing.
      */
-    MODULE_UI_BASE_API void stop() noexcept;
+    MODULE_UI_BASE_API void stop() noexcept override;
 };
 
 } // namespace sight::module::ui::base

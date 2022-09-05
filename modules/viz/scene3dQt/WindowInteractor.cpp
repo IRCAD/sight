@@ -56,17 +56,15 @@ EventDispatcher::EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type
 
 //------------------------------------------------------------------------------
 
-bool EventDispatcher::eventFilter(QObject*, QEvent* event)
+bool EventDispatcher::eventFilter(QObject* /*watched*/, QEvent* event)
 {
     if(m_eventsToDispatch.contains(event->type()))
     {
         m_dispatchedTo->event(event);
         return true;
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 
 namespace sight::module::viz::scene3dQt
@@ -76,6 +74,7 @@ namespace sight::module::viz::scene3dQt
 
 WindowInteractor::WindowInteractor(
     sight::viz::scene3d::IWindowInteractor::Key
+    /*unused*/
 )
 {
 }
@@ -86,7 +85,7 @@ WindowInteractor::~WindowInteractor()
 {
     // Delete the window container if it is not attached to the parent container.
     // i.e. it is shown in fullscreen.
-    if(m_windowContainer && m_windowContainer->parent() == nullptr)
+    if((m_windowContainer != nullptr) && m_windowContainer->parent() == nullptr)
     {
         delete m_windowContainer;
     }
@@ -117,7 +116,7 @@ void WindowInteractor::createContainer(
     SIGHT_ASSERT("Invalid parent.", _parent);
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(_parent);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     m_parentContainer->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -244,7 +243,7 @@ void WindowInteractor::onInteracted(sight::viz::scene3d::IWindowInteractor::Inte
     service::IService::sptr renderService                = m_renderService.lock();
     sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
 
-    for(auto layerMap : ogreRenderService->getLayers())
+    for(const auto& layerMap : ogreRenderService->getLayers())
     {
         sight::viz::scene3d::Layer::sptr layer = layerMap.second;
         layer->slot<sight::viz::scene3d::Layer::InteractionSlotType>(sight::viz::scene3d::Layer::s_INTERACTION_SLOT)->

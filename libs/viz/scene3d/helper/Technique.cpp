@@ -24,10 +24,7 @@
 
 #include <core/spyLog.hpp>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 //------------------------------------------------------------------------------
@@ -48,6 +45,4 @@ Ogre::Technique* Technique::copyToMaterial(
     return newTech;
 }
 
-} // fwRenderOgre
-
-} // helper
+} // namespace sight::viz::scene3d::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,7 @@
 #include "core/memory/IPolicy.hpp"
 #include "core/memory/policy/registry/detail.hpp"
 
-namespace sight::core::memory
-{
-
-namespace policy
-{
-
-namespace factory
+namespace sight::core::memory::policy::factory
 {
 
 //------------------------------------------------------------------------------
@@ -41,8 +35,4 @@ core::memory::IPolicy::sptr New(const core::memory::policy::registry::KeyType& c
     return core::memory::policy::registry::get()->create(classname);
 }
 
-} // namespace factory
-
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy::factory

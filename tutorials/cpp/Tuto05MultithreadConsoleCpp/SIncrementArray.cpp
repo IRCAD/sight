@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,17 +39,15 @@ static const std::string s_ARRAY_INOUT = "array";
 
 //------------------------------------------------------------------------------
 
-SIncrementArray::SIncrementArray() noexcept :
-    m_periodInMillisec(500)
+SIncrementArray::SIncrementArray() noexcept
 {
     newSlot(s_START_TIMER_SLOT, &SIncrementArray::startTimer, this);
 }
 
 //------------------------------------------------------------------------------
 
-SIncrementArray::~SIncrementArray() noexcept
-{
-}
+SIncrementArray::~SIncrementArray() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +60,7 @@ void SIncrementArray::configuring()
 void SIncrementArray::starting()
 {
     m_timer = m_associatedWorker->createTimer();
-    m_timer->setFunction(std::bind(&SIncrementArray::updating, this));
+    m_timer->setFunction([this](auto&& ...){updating();});
     m_timer->setDuration(std::chrono::milliseconds(m_periodInMillisec));
 }
 

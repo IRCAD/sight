@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,8 +49,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) viz::scene3d::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::IWindowInteractor) New(
@@ -79,11 +78,13 @@ SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims);
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR(CLASSNAME) viz::scene3d::offscreenInteractorMgrFactory::New(std::pair<unsigned int, unsigned int>);
+friend SPTR(CLASSNAME) viz::scene3d::offscreenInteractorMgrFactory::New(
+    std::pair<unsigned int,
+              unsigned int> /*_dims*/
+);
 
 Key()
-{
-}
+= default;
 };
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::IWindowInteractor) New(
@@ -115,8 +116,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) viz::scene3d::lightFactory::New();
 
 Key()
-{
-}
+= default;
 };
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::ILight) New(

@@ -38,10 +38,7 @@
 #include <exception>
 #include <memory>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 //------------------------------------------------------------------------------
@@ -59,13 +56,13 @@ SPTR(Module) Module::getLoadingModule()
 
 Module::Module(
     const std::filesystem::path& location,
-    const std::string& id,
-    const std::string& c,
+    std::string id,
+    std::string c,
     int priority
 ) :
     m_resourcesLocation(location.lexically_normal()),
-    m_identifier(id),
-    m_class(c),
+    m_identifier(std::move(id)),
+    m_class(std::move(c)),
     m_priority(priority)
 {
     // Post-condition.
@@ -258,7 +255,7 @@ void Module::addRequirement(const std::string& requirement)
 
 //------------------------------------------------------------------------------
 
-const std::string Module::getClass() const
+std::string Module::getClass() const
 {
     return m_class;
 }
@@ -272,7 +269,7 @@ const std::string& Module::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-const std::string Module::getLibraryName() const
+std::string Module::getLibraryName() const
 {
     return m_library ? m_library->getName().string() : "";
 }
@@ -303,7 +300,7 @@ SPTR(IPlugin) Module::getPlugin() const
 void Module::loadLibraries()
 {
     // Ensure the module is enabled.
-    if(m_enabled == false)
+    if(!m_enabled)
     {
         throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
     }
@@ -315,7 +312,7 @@ void Module::loadLibraries()
     m_loadingModule = shared_from_this();
 
     // Loads the library
-    if(m_library && m_library->isLoaded() == false)
+    if(m_library && !m_library->isLoaded())
     {
         try
         {
@@ -341,7 +338,7 @@ void Module::loadLibraries()
     m_loadingModule.reset();
 
     // Post-condition
-    assert(m_loadingModule == 0);
+    assert(m_loadingModule == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -388,7 +385,7 @@ void Module::start()
 {
     if(!m_started)
     {
-        if(m_enabled == false)
+        if(!m_enabled)
         {
             throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
         }
@@ -444,7 +441,7 @@ void Module::startPlugin()
     }
 
     // Ensures that a plugin has been created.
-    if(plugin == 0)
+    if(plugin == nullptr)
     {
         throw RuntimeException(getModuleStr(m_identifier) + ": unable to create a plugin instance.");
     }
@@ -524,9 +521,9 @@ void Module::addParameter(const std::string& identifier, const std::string& valu
 
 //------------------------------------------------------------------------------
 
-const std::string Module::getParameterValue(const std::string& identifier) const
+std::string Module::getParameterValue(const std::string& identifier) const
 {
-    ParameterContainer::const_iterator found = m_parameters.find(identifier);
+    auto found = m_parameters.find(identifier);
 
     return (found != m_parameters.end()) ? found->second : std::string();
 }
@@ -554,12 +551,4 @@ std::string Module::getModuleStr(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-void Module::operator=(const Module&)
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

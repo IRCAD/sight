@@ -51,9 +51,8 @@ SMatrixList::SMatrixList() noexcept
 
 //-----------------------------------------------------------------------------
 
-SMatrixList::~SMatrixList() noexcept
-{
-}
+SMatrixList::~SMatrixList() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -192,4 +191,4 @@ void SMatrixList::removeMatrix(int _index)
 
 //-----------------------------------------------------------------------------
 
-} // maths
+} // namespace sight::module::geometry::base

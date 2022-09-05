@@ -76,7 +76,7 @@ public:
     MODULE_GEOMETRY_VISION_API SOpenCVExtrinsic() noexcept;
 
     /// Destructor.
-    MODULE_GEOMETRY_VISION_API virtual ~SOpenCVExtrinsic() noexcept;
+    MODULE_GEOMETRY_VISION_API ~SOpenCVExtrinsic() noexcept override;
 
 protected:
 
@@ -115,16 +115,16 @@ private:
     std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
-    unsigned int m_width;
+    unsigned int m_width {11};
 
     /// Height of the chessboard used for calibration
-    unsigned int m_height;
+    unsigned int m_height {8};
 
     /// Size of the chessboard'square used for calibration
-    float m_squareSize;
+    float m_squareSize {20.0};
 
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
-    std::size_t m_camIndex;
+    std::size_t m_camIndex {1};
 
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, "calibrationInfo1"};
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, "calibrationInfo2"};

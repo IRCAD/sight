@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::ImageTypeSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string ImageTypeSplitter::s_FILTER_NAME        = "Image type splitter";
@@ -51,8 +48,7 @@ ImageTypeSplitter::ImageTypeSplitter(filter::dicom::IFilter::Key key) :
 //-----------------------------------------------------------------------------
 
 ImageTypeSplitter::~ImageTypeSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -77,6 +73,4 @@ bool ImageTypeSplitter::isConfigurationRequired() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

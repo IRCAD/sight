@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,9 +53,8 @@ SResizeViewport::SResizeViewport() noexcept
 
 //------------------------------------------------------------------------------
 
-SResizeViewport::~SResizeViewport() noexcept
-{
-}
+SResizeViewport::~SResizeViewport() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -66,21 +65,21 @@ void SResizeViewport::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    float xPos = config.get<float>(s_H_OFFSET_CONFIG, 0.f);
-    float yPos = config.get<float>(s_V_OFFSET_CONFIG, 0.f);
+    float xPos = config.get<float>(s_H_OFFSET_CONFIG, 0.F);
+    float yPos = config.get<float>(s_V_OFFSET_CONFIG, 0.F);
 
-    const float width  = config.get<float>(s_WIDTH_CONFIG, 1.f);
-    const float height = config.get<float>(s_HEIGHT_CONFIG, 1.f);
+    const float width  = config.get<float>(s_WIDTH_CONFIG, 1.F);
+    const float height = config.get<float>(s_HEIGHT_CONFIG, 1.F);
 
     const std::map<std::string, float> horizAlignToX {
         {"left", xPos},
-        {"center", 0.5f - width * 0.5f + xPos},
-        {"right", 1.f - width - xPos}
+        {"center", 0.5F - width * 0.5F + xPos},
+        {"right", 1.F - width - xPos}
     };
 
     const std::map<std::string, float> vertAlignToY {
-        {"bottom", 1.f - height - yPos},
-        {"center", 0.5f - height * 0.5f + yPos},
+        {"bottom", 1.F - height - yPos},
+        {"center", 0.5F - height * 0.5F + yPos},
         {"top", yPos}
     };
 

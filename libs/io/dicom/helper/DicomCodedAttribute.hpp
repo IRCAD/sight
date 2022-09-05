@@ -27,10 +27,7 @@
 
 #include <gdcmSegment.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -69,6 +66,4 @@ public:
     IO_DICOM_API static bool checkAndFormatEntry(std::string& entry, bool multipleValue = false);
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

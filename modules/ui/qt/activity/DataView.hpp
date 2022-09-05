@@ -34,10 +34,7 @@
 #include <QTabWidget>
 #include <QTreeWidget>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -94,10 +91,10 @@ public:
      * @brief Creates the tabbed widget.
      * @param _parent the parent of this widget.
      */
-    MODULE_UI_QT_API DataView(QWidget* _parent = 0);
+    MODULE_UI_QT_API DataView(QWidget* _parent = nullptr);
 
     /// Destroys the tabbed widget.
-    MODULE_UI_QT_API virtual ~DataView();
+    MODULE_UI_QT_API ~DataView() override;
 
     /**
      * @brief Creates all tabs from an activity information.
@@ -196,7 +193,7 @@ private:
      * @param _ioSelectorSrvConfig the IO selector configuration.
      * @return the object read by the selector.
      */
-    data::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
+    static data::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
 
     /// Removes the selected object in the current tree.
     void removeSelectedObjects();
@@ -236,6 +233,4 @@ private:
     ObjectIconMapType m_objectIcons;
 };
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

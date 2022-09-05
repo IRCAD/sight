@@ -30,6 +30,7 @@
 #include <glm/geometric.hpp>
 #include <glm/vec3.hpp>
 
+#include <cmath>
 #include <list>
 
 namespace sight::geometry::data
@@ -38,14 +39,9 @@ namespace sight::geometry::data
 //-----------------------------------------------------------------------------
 
 PointList::PointList()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
-
-PointList::~PointList()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -129,8 +125,8 @@ void PointList::associate(
         const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
         // Add the point to vector/list
-        vec1.push_back(glm::dvec3(tmp1[0], tmp1[1], tmp1[2]));
-        list2.push_back(glm::dvec3(tmp2[0], tmp2[1], tmp2[2]));
+        vec1.emplace_back(tmp1[0], tmp1[1], tmp1[2]);
+        list2.emplace_back(tmp2[0], tmp2[1], tmp2[2]);
     }
 
     std::size_t index = 0;
@@ -140,7 +136,7 @@ void PointList::associate(
         double distanceMin = std::numeric_limits<double>::max();
         std::list<glm::dvec3>::iterator itClosestPoint;
 
-        std::list<glm::dvec3>::iterator it2 = list2.begin();
+        auto it2 = list2.begin();
         for( ; it2 != list2.end() ; it2++)
         {
             const glm::dvec3 point2 = *it2;
@@ -168,7 +164,7 @@ void PointList::associate(
 
 //------------------------------------------------------------------------------
 
-const sight::data::Point::sptr PointList::removeClosestPoint(
+sight::data::Point::sptr PointList::removeClosestPoint(
     const sight::data::PointList::sptr& _pointList,
     const sight::data::Point::csptr& _point,
     float _delta
@@ -176,7 +172,7 @@ const sight::data::Point::sptr PointList::removeClosestPoint(
 {
     // Initial data
     const auto& list = _pointList->getPoints();
-    if(list.size() > 0)
+    if(!list.empty())
     {
         const auto& coord1 = _point->getCoord();
         const glm::vec3 p1 {coord1[0], coord1[1], coord1[2]};
@@ -193,7 +189,7 @@ const sight::data::Point::sptr PointList::removeClosestPoint(
             const auto& coord2 = list[i]->getCoord();
             const glm::vec3 p2 {coord2[0], coord2[1], coord2[2]};
 
-            float tempClosest;
+            float tempClosest = NAN;
             if((tempClosest = glm::distance(p1, p2)) < _delta && tempClosest < closest)
             {
                 closest      = tempClosest;

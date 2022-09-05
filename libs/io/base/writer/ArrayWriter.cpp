@@ -30,23 +30,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::ArrayWriter);
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 //------------------------------------------------------------------------------
 
-ArrayWriter::ArrayWriter(io::base::writer::IObjectWriter::Key)
+ArrayWriter::ArrayWriter(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 ArrayWriter::~ArrayWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -76,6 +72,4 @@ std::string ArrayWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

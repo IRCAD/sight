@@ -37,10 +37,10 @@ namespace sight::module::ui::qt::calibration
 
 // -------------------------------------------------------------------------
 
-SIntrinsicEdition::SIntrinsicEdition()
+SIntrinsicEdition::SIntrinsicEdition() :
+    m_dialog(new SUpdateIntrinsicDialog())
 {
     core::com::HasSlots::m_slots.setWorker(m_associatedWorker);
-    m_dialog = new SUpdateIntrinsicDialog();
 
     QObject::connect(
         m_dialog,
@@ -161,4 +161,4 @@ void SIntrinsicEdition::updating()
 
 // -------------------------------------------------------------------------
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

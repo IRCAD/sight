@@ -35,21 +35,19 @@ namespace sight::data
 template<class BUFFER_TYPE>
 GenericTL<BUFFER_TYPE>::GenericTL(data::Object::Key key) :
     BufferTL(key),
-    m_maxElementNum(~0u)
+    m_maxElementNum(~0U)
 {
 }
 
 //------------------------------------------------------------------------------
 
-template<class BUFFER_TYPE>
-GenericTL<BUFFER_TYPE>::~GenericTL()
-{
-}
+template<class BUFFER_TYPE> GenericTL<BUFFER_TYPE>::~GenericTL()
+= default;
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
+void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*cache*/)
 {
     GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
@@ -64,7 +62,7 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
-    for(TimelineType::value_type elt : other->m_timeline)
+    for(const TimelineType::value_type& elt : other->m_timeline)
     {
         SPTR(BufferType) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
@@ -124,8 +122,7 @@ GenericTL<BUFFER_TYPE>::createBuffer(core::HiResClock::HiResClockType timestamp)
         timestamp,
         (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
-        boost::bind(&boost::pool<>::free, m_pool, _1)
-    );
+        [ObjectPtr = m_pool](auto&& PH1, auto&& ...){ObjectPtr->free(std::forward<decltype(PH1)>(PH1));});
     return obj;
 }
 
@@ -135,7 +132,7 @@ template<class BUFFER_TYPE>
 bool GenericTL<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::Object)& obj) const
 {
     CSPTR(BufferType) srcObj = std::dynamic_pointer_cast<const BufferType>(obj);
-    return srcObj != NULL;
+    return srcObj != nullptr;
 }
 
 //------------------------------------------------------------------------------

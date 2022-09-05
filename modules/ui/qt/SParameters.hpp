@@ -150,7 +150,7 @@ public:
     MODULE_UI_QT_API SParameters() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_QT_API virtual ~SParameters() noexcept;
+    MODULE_UI_QT_API ~SParameters() noexcept override;
 
     /// Configure the editor.
     MODULE_UI_QT_API void configuring() override;
@@ -173,7 +173,7 @@ private Q_SLOTS:
      * @param _widget Child widget.
      * @param _reverse Reverse the state check.
      */
-    void onDependsChanged(QCheckBox* _checkBox, QWidget* _widget, bool _reverse);
+    static void onDependsChanged(QCheckBox* _checkBox, QWidget* _widget, bool _reverse);
 
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
@@ -183,7 +183,7 @@ private Q_SLOTS:
      * @param _value Value of the combo box.
      * @param _reverse Reverse the state check.
      */
-    void onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const std::string& _value, bool _reverse);
+    static void onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const std::string& _value, bool _reverse);
 
     /// This method is called when a boolean value changes
     void onChangeBoolean(int value);
@@ -204,10 +204,10 @@ private Q_SLOTS:
     void onChangeEnum(int value);
 
     /// This method is called to connect sliders to their labels
-    void onSliderMapped(QLabel* label, QSlider* slider);
+    static void onSliderMapped(QLabel* label, QSlider* slider);
 
     /// This method is called to connect double sliders to their labels
-    void onDoubleSliderMapped(QLabel* label, QSlider* slider);
+    static void onDoubleSliderMapped(QLabel* label, QSlider* slider);
 
     /// This method is called to connect reset buttons and checkboxes
     void onResetBooleanMapped(QWidget* widget);
@@ -222,10 +222,10 @@ private Q_SLOTS:
     void onResetDoubleMapped(QWidget* widget);
 
     /// This method is called when the integer slider range is modified, it updates the min and max labels
-    void onSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
+    static void onSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
 
     /// This method is called when the double slider range is modified, it updates the min and max labels
-    void onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
+    static void onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
 
 private:
 
@@ -308,7 +308,7 @@ private:
     );
 
     /// Parses the string for an enum
-    void parseEnumString(
+    static void parseEnumString(
         const std::string& options,
         std::vector<std::string>& values,
         std::vector<std::string>& data,
@@ -329,7 +329,7 @@ private:
     void emitIntegerSignal(QObject* widget);
 
     /// Emit the signal(s) for the double widget
-    void emitDoubleSignal(QObject* spinbox);
+    void emitDoubleSignal(QObject* widget);
 
     /// Emit the signal for the color widget
     void emitColorSignal(const QColor color, const std::string& key);
@@ -367,7 +367,7 @@ private:
     void setEnumParameter(std::string val, std::string key);
 
     /// SLOT: This method sets an enum parameter using the index of the enum
-    void setEnumIndexParameter(int, std::string key);
+    void setEnumIndexParameter(int /*val*/, std::string key);
 
     /// SLOT: This method sets the enum values
     void setEnumValues(std::string options, std::string key);
@@ -407,13 +407,13 @@ private:
     void blockSignals(bool block);
 
     /// if true, the signals are not emitted
-    bool m_blockSignals;
+    bool m_blockSignals {false};
 };
 
 //------------------------------------------------------------------------------
 
 template<>
-inline QString SParameters::valueToStringLabel<int>(int value, std::uint8_t)
+inline QString SParameters::valueToStringLabel<int>(int value, std::uint8_t /*unused*/)
 {
     return QString("%1").arg(value);
 }

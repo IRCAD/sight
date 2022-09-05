@@ -26,22 +26,19 @@
 
 #include <cmath>
 
-namespace sight::geometry::glm
-{
-
-namespace ut
+namespace sight::geometry::glm::ut
 {
 
 // To avoid using indexes in our vectors (for mathematical clarity).
 // x, y , z.
-#define X 0
-#define Y 1
-#define Z 2
+constexpr int X = 0;
+constexpr int Y = 1;
+constexpr int Z = 2;
 // u, v, w.
-#define U X
-#define V Y
-#define W Z
-#define H 3
+constexpr int U = X;
+constexpr int V = Y;
+constexpr int W = Z;
+constexpr int H = 3;
 
 const static double s_EPSILON = 10e-9;
 
@@ -321,6 +318,4 @@ void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::geometry::glm
+} // namespace sight::geometry::glm::ut

@@ -35,25 +35,21 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-namespace sight::activity
-{
-
-namespace builder
+namespace sight::activity::builder
 {
 
 fwActivitiesBuilderRegisterMacro(activity::builder::ActivitySeries, "::activity::builder::ActivitySeries");
 
 //-----------------------------------------------------------------------------
 
-ActivitySeries::ActivitySeries(activity::IBuilder::Key)
+ActivitySeries::ActivitySeries(activity::IBuilder::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ActivitySeries::~ActivitySeries()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -67,7 +63,7 @@ data::Composite::sptr vectorToComposite(
 
     SIGHT_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs);
 
-    ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
+    auto iter = req.keys.begin();
 
     for(const data::Object::sptr& obj : *vector)
     {
@@ -150,6 +146,4 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::activity
+} // namespace sight::activity::builder

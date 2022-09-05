@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ProxyTest);
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -58,12 +55,8 @@ void ProxyTest::tearDown()
 
 struct ProxyTestClass
 {
-    ProxyTestClass() :
-        m_methodSum(0),
-        m_methodSquare(0),
-        m_methodDoNothing(0)
-    {
-    }
+    ProxyTestClass()
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -91,9 +84,9 @@ struct ProxyTestClass
         ++m_methodDoNothing;
     }
 
-    int m_methodSum;
-    int m_methodSquare;
-    int m_methodDoNothing;
+    int m_methodSum {0};
+    int m_methodSquare {0};
+    int m_methodDoNothing {0};
 };
 
 //------------------------------------------------------------------------------
@@ -159,6 +152,4 @@ void ProxyTest::basicTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::core::runtime
 
 class Module;
 
-}
+} // namespace sight::core::runtime
 
 namespace sight::core::runtime
 {
@@ -50,7 +50,7 @@ public:
      *
      * @return  a pointer to a module instance
      */
-    CORE_API std::shared_ptr<Module> getModule() const;
+    [[nodiscard]] CORE_API std::shared_ptr<Module> getModule() const;
 
     /**
      * @brief   Tells if the element is enabled or not.
@@ -63,7 +63,7 @@ public:
      *
      * @return  true or false
      */
-    CORE_API bool isEnabled() const;
+    [[nodiscard]] CORE_API bool isEnabled() const;
 
     /**
      * @brief       Set if the element is enabled or not.
@@ -72,7 +72,7 @@ public:
      *
      * @param[in]   enable To know if module element is enabled
      */
-    CORE_API void setEnable(const bool enable);
+    CORE_API void setEnable(bool enable);
 
 protected:
 
@@ -98,7 +98,7 @@ protected:
 private:
 
     std::weak_ptr<Module> m_module; ///< Weak pointer to the module managing the element
-    bool m_enable;                  ///< to know if module element is enabled
+    bool m_enable {true};           ///< to know if module element is enabled
 };
 
 } // namespace sight::core::runtime

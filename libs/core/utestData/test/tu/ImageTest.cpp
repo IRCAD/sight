@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::utestData::ut::ImageTest);
 
-namespace sight::utestData
-{
-
-namespace ut
+namespace sight::utestData::ut
 {
 
 //------------------------------------------------------------------------------
@@ -163,6 +160,4 @@ void ImageTest::stressTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::utestData
+} // namespace sight::utestData::ut

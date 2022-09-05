@@ -43,10 +43,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::itk::ut::IoItkTest);
 
-namespace sight::module::io::itk
-{
-
-namespace ut
+namespace sight::module::io::itk::ut
 {
 
 static const double EPSILON = 0.00001;
@@ -185,7 +182,7 @@ void IoItkTest::testSaveLoadNifti()
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
-    const data::Image::Origin origin = {0.5f, 0.2f, 1.2f};
+    const data::Image::Origin origin = {0.5F, 0.2F, 1.2F};
     image->setOrigin(origin);
 
     // save image in inr
@@ -404,6 +401,4 @@ void IoItkTest::SeriesDBInrTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::itk
+} // namespace sight::module::io::itk::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,6 +47,9 @@ public:
     /// Constructor, does nothing
     CORE_API Signals();
 
+    /// Copy constructor forbidden
+    Signals& operator=(const Signals&) = delete;
+
     /// Constructor, check if all signals are disconnected
     CORE_API virtual ~Signals();
 
@@ -57,15 +60,12 @@ public:
     CORE_API SPTR(SignalBase) operator[](const SignalKeyType& key) const;
 
     /// Returns all SignalKeyType registered in m_signals
-    CORE_API SignalKeyContainerType getSignalKeys() const;
+    [[nodiscard]] CORE_API SignalKeyContainerType getSignalKeys() const;
 
 protected:
 
     /// Copy constructor forbidden
-    Signals(const Signals&);
-
-    /// Copy constructor forbidden
-    Signals& operator=(const Signals&);
+    Signals(const Signals& /*unused*/);
 
     /// Association < key , SPTR( SignalBase ) >
     SignalMapType m_signals;

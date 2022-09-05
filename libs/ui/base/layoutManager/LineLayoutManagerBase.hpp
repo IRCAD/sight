@@ -29,10 +29,7 @@
 
 #include <list>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -80,7 +77,7 @@ public:
     UI_BASE_API LineLayoutManagerBase();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~LineLayoutManagerBase();
+    UI_BASE_API ~LineLayoutManagerBase() override;
 
     /**
      * @brief Initialize Line layout manager before the creation of layout.
@@ -148,9 +145,7 @@ private:
     /// Save layout configuration definition
     std::list<ViewInfo> m_views;
 
-    Orientation m_orientation;
+    Orientation m_orientation {VERTICAL};
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

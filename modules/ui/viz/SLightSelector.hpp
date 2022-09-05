@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/ILight.hpp>
 #include <viz/scene3d/Layer.hpp>
-
-#include <ui/base/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -73,7 +73,7 @@ public:
     MODULE_UI_VIZ_API SLightSelector() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_VIZ_API virtual ~SLightSelector() noexcept;
+    MODULE_UI_VIZ_API ~SLightSelector() noexcept override;
 
 protected:
 
@@ -105,15 +105,15 @@ private Q_SLOTS:
 
     /// SLOT: called when the add light button is clicked.
     /// Adds a new light to the current scene.
-    void onAddLight(bool);
+    void onAddLight(bool /*unused*/);
 
     /// SLOT: called when the remove light button is clicked.
     /// Removes the selected light.
-    void onRemoveLight(bool);
+    void onRemoveLight(bool /*unused*/);
 
     /// SLOT: called when the scene ambient color button is clicked.
     /// Opens a color picker and lets the user choose a new ambient color.
-    void onEditAmbientColor(bool);
+    void onEditAmbientColor(bool /*unused*/);
 
     /// SLOT: called when the "check all" button is clicked.
     /// Call onCheckAllBoxes(true).
@@ -190,9 +190,9 @@ Q_OBJECT
 
 public:
 
-    NewLightDialog(QWidget* parent = 0);
+    NewLightDialog(QWidget* parent = nullptr);
 
-    ~NewLightDialog();
+    ~NewLightDialog() override;
 
 private Q_SLOTS:
 

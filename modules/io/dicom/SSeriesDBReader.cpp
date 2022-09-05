@@ -54,19 +54,15 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::SSeriesDBReader() noexcept :
-    m_showLogDialog(true),
-    m_enableBufferRotation(true),
-    m_dicomDirSupport(USER_SELECTION)
+SSeriesDBReader::SSeriesDBReader() noexcept
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::~SSeriesDBReader() noexcept
-{
-}
+SSeriesDBReader::~SSeriesDBReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

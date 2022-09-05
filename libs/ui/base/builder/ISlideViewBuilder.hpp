@@ -28,10 +28,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 /**
@@ -92,7 +89,7 @@ public:
     UI_BASE_API ISlideViewBuilder();
 
     /// Destroyes the builder.
-    UI_BASE_API virtual ~ISlideViewBuilder();
+    UI_BASE_API ~ISlideViewBuilder() override;
 
     /// Returns the generic container.
     UI_BASE_API virtual ui::base::container::fwContainer::sptr getContainer() const;
@@ -154,6 +151,4 @@ protected:
     std::string m_styleSheet;
 };
 
-} // namespace builder.
-
-} // namespace sight::ui::base.
+} // namespace sight::ui::base::builder

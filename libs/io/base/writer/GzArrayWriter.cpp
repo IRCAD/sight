@@ -31,23 +31,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::GzArrayWriter);
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 //------------------------------------------------------------------------------
 
-GzArrayWriter::GzArrayWriter(io::base::writer::IObjectWriter::Key)
+GzArrayWriter::GzArrayWriter(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 GzArrayWriter::~GzArrayWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -59,7 +55,7 @@ void GzArrayWriter::write()
 
     /// test if can open archive
     gzFile rawFile = gzopen(this->getFile().string().c_str(), "wb1");
-    if(rawFile == 0)
+    if(rawFile == nullptr)
     {
         std::string str = "GzArrayWriter::write unable to open ";
         str += getFile().string();
@@ -92,6 +88,4 @@ std::string GzArrayWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,13 @@ namespace sight::ui::qml
 
 //-----------------------------------------------------------------------------
 
-IQmlEditor::IQmlEditor() noexcept
-{
-}
+IQmlEditor::IQmlEditor() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-IQmlEditor::~IQmlEditor() noexcept
-{
-}
+IQmlEditor::~IQmlEditor() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -54,4 +52,4 @@ void IQmlEditor::stopping()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::ui::qml

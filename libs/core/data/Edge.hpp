@@ -51,7 +51,7 @@ public:
      */
     DATA_API Edge(Object::Key key);
     /// Destructor
-    DATA_API virtual ~Edge();
+    DATA_API ~Edge() override;
 
     /// @brief do a shallow copy of edge
     DATA_API void shallowCopy(const Object::csptr& _source) override;

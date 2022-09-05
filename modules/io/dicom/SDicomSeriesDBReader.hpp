@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::data
 {
@@ -44,7 +44,7 @@ namespace sight::data
 class SeriesDB;
 class Patient;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicom
 {
@@ -139,13 +139,13 @@ private:
     SPTR(JobCreatedSignal) m_sigJobCreated;
 
     /// Cancel information for jobs
-    bool m_cancelled;
+    bool m_cancelled {false};
 
     /// Show log dialog
-    bool m_showLogDialog;
+    bool m_showLogDialog {true};
 
     /// Specify how to use dicomdir files
-    DicomDirSupport m_dicomDirSupport;
+    DicomDirSupport m_dicomDirSupport {USER_SELECTION};
 };
 
 } // namespace sight::module::io::dicom

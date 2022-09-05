@@ -28,10 +28,7 @@
 #include <core/base.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::activity
-{
-
-namespace builder
+namespace sight::activity::builder
 {
 
 /**
@@ -53,18 +50,16 @@ public:
     ACTIVITY_API ActivitySeriesInitData(activity::IBuilder::Key key);
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~ActivitySeriesInitData();
+    ACTIVITY_API ~ActivitySeriesInitData() override;
 
     /**
      * @brief Instanciates a new object where requirement maxOccurs and minOccurs are both set to 0.
      * @see activity::builder::ActivitySeries::buildData
      */
-    ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
+    ACTIVITY_API data::ActivitySeries::sptr buildData(
         const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection
     ) const override;
 };
 
-} // namespace builder
-
-} // namespace sight::activity
+} // namespace sight::activity::builder

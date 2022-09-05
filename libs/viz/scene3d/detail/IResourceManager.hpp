@@ -86,14 +86,14 @@ public:
     Ogre::SharedPtr<RESOURCE> instantiate(CSPTR(OBJECT), const std::string& suffixId = "");
 
     /// Removes a reference to a GPU resource. If this was the last reference, it destroys it.
-    void release(Ogre::SharedPtr<RESOURCE>);
+    void release(Ogre::SharedPtr<RESOURCE> /*_resource*/);
 
     /// Returns true if the GPU resource is out of date
-    bool updateNeeded(Ogre::SharedPtr<RESOURCE>) const;
+    [[nodiscard]] bool updateNeeded(Ogre::SharedPtr<RESOURCE> /*_resource*/) const;
 
     /// Loads the texture into GPU memory if the GPU resource is out of date
     /// @returns True if the GPU resource has been updated, false if it was already up-to-date
-    std::pair<bool, typename LOADER::return_t> load(Ogre::SharedPtr<RESOURCE>);
+    std::pair<bool, typename LOADER::return_t> load(Ogre::SharedPtr<RESOURCE> /*_resource*/);
 
     /**
      * @brief Gets the unique instance of this class.
@@ -149,7 +149,7 @@ Ogre::SharedPtr<RESOURCE> IResourceManager<OBJECT, RESOURCE, LOADER>::instantiat
         true
     );
 
-    m_registry[full_id] = {resource, _object, 1, ~0ul, {}};
+    m_registry[full_id] = {resource, _object, 1, ~0UL, {}};
 
     return resource;
 }

@@ -38,10 +38,7 @@ static const double s_EPSILON = 1e-5;
 #define ASSERT_COLOR_EQUALS(c1, c2) \
     CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, s_EPSILON)));
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -105,14 +102,14 @@ void TransferFunctionTest::classicGetSetTest()
     data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
 
     // Test getTFData()
-    const auto tfData                            = tf->pieces().front();
-    TransferFunction::data_t::const_iterator itr = tfData->cbegin();
-    const TransferFunction::value_t key1         = itr->first;
-    const TransferFunction::value_t key2         = (++itr)->first;
+    const auto tfData                    = tf->pieces().front();
+    auto itr                             = tfData->cbegin();
+    const TransferFunction::value_t key1 = itr->first;
+    const TransferFunction::value_t key2 = (++itr)->first;
 
-    TransferFunction::data_t::const_iterator itrColor = tfData->cbegin();
-    const TransferFunction::color_t color1            = itrColor->second;
-    const TransferFunction::color_t color2            = (++itrColor)->second;
+    auto itrColor                          = tfData->cbegin();
+    const TransferFunction::color_t color1 = itrColor->second;
+    const TransferFunction::color_t color2 = (++itrColor)->second;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, key1, 1e-10);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, key2, 1e-10);
@@ -137,19 +134,19 @@ void TransferFunctionTest::classicGetSetTest()
 
 void TransferFunctionTest::shallowAndDeepCopyTest()
 {
-    const data::TransferFunction::sptr tf = this->createTFColor();
+    const data::TransferFunction::sptr tf = sight::data::ut::TransferFunctionTest::createTFColor();
     tf->setLevel(900.6);
     tf->setWindow(-200.02);
 
-    this->checkTFColor(tf);
+    sight::data::ut::TransferFunctionTest::checkTFColor(tf);
 
     const data::TransferFunction::sptr shallowCopyTf = data::TransferFunction::New();
     shallowCopyTf->shallowCopy(tf);
-    this->checkTFColor(shallowCopyTf);
+    sight::data::ut::TransferFunctionTest::checkTFColor(shallowCopyTf);
     CPPUNIT_ASSERT_EQUAL(tf->pieces()[0], shallowCopyTf->pieces()[0]);
 
     const data::TransferFunction::sptr deepCopyTf = data::Object::copy(tf);
-    this->checkTFColor(deepCopyTf);
+    sight::data::ut::TransferFunctionTest::checkTFColor(deepCopyTf);
     // Pointer addresses must be different
     CPPUNIT_ASSERT(tf->pieces()[0] != deepCopyTf->pieces()[0]);
 }
@@ -517,6 +514,4 @@ void TransferFunctionTest::piecewiseFunctionTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(50.0, pieces[1]->window(), s_EPSILON);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

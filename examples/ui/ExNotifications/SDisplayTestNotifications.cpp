@@ -33,8 +33,6 @@ namespace ExNotifications
 static const sight::core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 static const sight::core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
-using namespace sight;
-
 //------------------------------------------------------------------------------
 
 SDisplayTestNotifications::SDisplayTestNotifications() noexcept
@@ -45,9 +43,8 @@ SDisplayTestNotifications::SDisplayTestNotifications() noexcept
 
 //------------------------------------------------------------------------------
 
-SDisplayTestNotifications::~SDisplayTestNotifications() noexcept
-{
-}
+SDisplayTestNotifications::~SDisplayTestNotifications() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -90,7 +87,7 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
         }
         else
         {
-            SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
+            SIGHT_ERROR(std::string("Value '").append(_val).append("' is not handled for key ").append(_key));
         }
     }
     else if(_key == "type")
@@ -109,7 +106,7 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
         }
         else
         {
-            SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
+            SIGHT_ERROR(std::string("Value '").append(_val).append("' is not handled for key ").append(_key));
         }
     }
     else

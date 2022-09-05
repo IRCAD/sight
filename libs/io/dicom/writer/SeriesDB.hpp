@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 /**
@@ -58,7 +55,7 @@ public:
     IO_DICOM_API SeriesDB(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor
-    IO_DICOM_API ~SeriesDB();
+    IO_DICOM_API ~SeriesDB() override;
 
     /**
      * @brief Manage writing tools to save every series.
@@ -96,9 +93,7 @@ protected:
     );
 
     /// Fiducials Export Mode
-    io::dicom::writer::Series::FiducialsExportMode m_fiducialsExportMode;
+    io::dicom::writer::Series::FiducialsExportMode m_fiducialsExportMode {io::dicom::writer::Series::SPATIAL_FIDUCIALS};
 };
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

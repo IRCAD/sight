@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 #include <QPropertyAnimation>
 #include <QWindow>
 
-namespace sight::ui::qt
-{
-
-namespace widget
+namespace sight::ui::qt::widget
 {
 
 //-----------------------------------------------------------------------------
@@ -109,8 +106,7 @@ void SlideBar::init()
 //-----------------------------------------------------------------------------
 
 SlideBar::~SlideBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -277,15 +273,15 @@ void SlideBar::slide(bool _visible)
         this->setWindowOpacity(m_isShown ? m_opacity : 0);
 
         // Set animation to slide the widget and update the opacity
-        QParallelAnimationGroup* animations = new QParallelAnimationGroup();
+        auto* animations = new QParallelAnimationGroup();
 
         // slide animation
-        QPropertyAnimation* geomAnimation = new QPropertyAnimation(this, "geometry");
+        auto* geomAnimation = new QPropertyAnimation(this, "geometry");
         geomAnimation->setDuration(500);
         geomAnimation->setEasingCurve(QEasingCurve::InBack);
         geomAnimation->setStartValue(this->geometry());
 
-        if(_visible == true)
+        if(_visible)
         {
             geomAnimation->setEndValue(m_shownPosition);
         }
@@ -298,7 +294,7 @@ void SlideBar::slide(bool _visible)
         }
 
         // opacity animation
-        QPropertyAnimation* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");
+        auto* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");
         opacityAnimation->setDuration(500);
         opacityAnimation->setEndValue(_visible ? m_opacity : 0);
 
@@ -346,6 +342,4 @@ bool SlideBar::eventFilter(QObject* _obj, QEvent* _event)
 
 //-----------------------------------------------------------------------------
 
-} // namespace widget
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::widget

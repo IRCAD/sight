@@ -32,10 +32,7 @@
 #include <ui/base/container/fwMenuBar.hpp>
 #include <ui/base/layoutManager/IMenuBarLayoutManager.hpp>
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 /**
@@ -53,7 +50,7 @@ public:
 
     UI_QT_API MenuBarLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~MenuBarLayoutManager();
+    UI_QT_API ~MenuBarLayoutManager() override;
 
     /**
      * @brief Instantiate menu with parent menuBar.
@@ -83,6 +80,4 @@ protected:
     ui::qt::container::QtMenuBarContainer::sptr m_parent;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

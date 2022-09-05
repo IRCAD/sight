@@ -33,13 +33,7 @@
 
 #include <vector>
 
-namespace sight::geometry::vision
-{
-
-/**
- * @brief helper contains useful functions related to calibration or 3d reconstruction.
- */
-namespace helper
+namespace sight::geometry::vision::helper
 {
 
 typedef std::pair<double, std::vector<cv::Point2f> > ErrorAndPointsType;
@@ -78,7 +72,7 @@ GEOMETRY_VISION_API cv::Matx44f cameraPoseMonocular(
     const std::vector<cv::Point2f>& _imagePoints,
     const cv::Mat _cameraMatrix,
     const cv::Mat& _distCoeffs,
-    const int _flag = cv::SOLVEPNP_ITERATIVE
+    int _flag = cv::SOLVEPNP_ITERATIVE
 );
 
 /**
@@ -139,6 +133,4 @@ GEOMETRY_VISION_API sight::data::PointList::sptr detectChessboard(
     float _scale
 );
 
-}
-
-} //namespace sight::geometry::vision
+} // namespace sight::geometry::vision::helper

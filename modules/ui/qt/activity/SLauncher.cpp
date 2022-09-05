@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SLauncher.hpp"
 
 #include <activity/IActivityValidator.hpp>
@@ -60,10 +62,7 @@
 
 Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 //------------------------------------------------------------------------------
@@ -93,9 +92,8 @@ SLauncher::SLauncher() noexcept :
 
 //------------------------------------------------------------------------------
 
-SLauncher::~SLauncher() noexcept
-{
-}
+SLauncher::~SLauncher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -117,7 +115,7 @@ void SLauncher::stopping()
 void SLauncher::configuring()
 {
     this->sight::ui::base::IAction::initialize();
-    typedef service::IService::ConfigType ConfigType;
+    using ConfigType = service::IService::ConfigType;
 
     m_parameters.clear();
     if(this->getConfigTree().count("config") > 0)
@@ -139,6 +137,7 @@ void SLauncher::configuring()
         if(config.count("parameters") == 1)
         {
             const service::IService::ConfigType& configParameters = config.get_child("parameters");
+            // NOLINTNEXTLINE(bugprone-branch-clone)
             BOOST_FOREACH(const ConfigType::value_type& v, configParameters.equal_range("parameter"))
             {
                 ParametersType::value_type parameter(v.second);
@@ -153,13 +152,14 @@ void SLauncher::configuring()
             const service::IService::ConfigType& configFilter = config.get_child("filter");
             SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
-            const std::string mode = configFilter.get<std::string>("mode");
+            const auto mode = configFilter.get<std::string>("mode");
             SIGHT_ASSERT(
                 "'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
                 mode == "include" || mode == "exclude"
             );
             m_filterMode = mode;
 
+            // NOLINTNEXTLINE(bugprone-branch-clone)
             BOOST_FOREACH(const ConfigType::value_type& v, configFilter.equal_range("id"))
             {
                 m_keys.push_back(v.second.get<std::string>(""));
@@ -172,6 +172,7 @@ void SLauncher::configuring()
         {
             m_quickLaunch.clear();
             const service::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
+            // NOLINTNEXTLINE(bugprone-branch-clone)
             BOOST_FOREACH(const ConfigType::value_type& v, configQuickLaunch.equal_range("association"))
             {
                 const service::IService::ConfigType& association = v.second;
@@ -180,8 +181,8 @@ void SLauncher::configuring()
                 SIGHT_FATAL_IF("The attribute \"type\" is missing", xmlattr.count("type") != 1);
                 SIGHT_FATAL_IF("The attribute \"id\" is missing", xmlattr.count("id") != 1);
 
-                std::string type = xmlattr.get<std::string>("type");
-                std::string id   = xmlattr.get<std::string>("id");
+                auto type = xmlattr.get<std::string>("type");
+                auto id   = xmlattr.get<std::string>("id");
 
                 m_quickLaunch[type] = id;
             }
@@ -197,10 +198,10 @@ ActivityInfo SLauncher::show(const ActivityInfoContainer& infos)
 {
     QWidget* parent = qApp->activeWindow();
 
-    QDialog* dialog = new QDialog(parent);
+    auto* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
 
-    QStandardItemModel* model = new QStandardItemModel(dialog);
+    auto* model = new QStandardItemModel(dialog);
     for(const ActivityInfo& info : infos)
     {
         std::string text;
@@ -213,13 +214,13 @@ ActivityInfo SLauncher::show(const ActivityInfoContainer& infos)
             text = info.title + (info.description.empty() ? "" : "\n" + info.description);
         }
 
-        QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
+        auto* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
         item->setData(QVariant::fromValue(info));
         item->setEditable(false);
         model->appendRow(item);
     }
 
-    QListView* selectionList = new QListView();
+    auto* selectionList = new QListView();
     selectionList->setIconSize(QSize(100, 100));
     selectionList->setUniformItemSizes(true);
     selectionList->setModel(model);
@@ -230,14 +231,14 @@ ActivityInfo SLauncher::show(const ActivityInfoContainer& infos)
         selectionList->selectionModel()->select(index, QItemSelectionModel::Select);
     }
 
-    QPushButton* okButton     = new QPushButton("Ok");
-    QPushButton* cancelButton = new QPushButton("Cancel");
+    auto* okButton     = new QPushButton("Ok");
+    auto* cancelButton = new QPushButton("Cancel");
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
     h_layout->addWidget(okButton);
     h_layout->addWidget(cancelButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    auto* vLayout = new QVBoxLayout();
     vLayout->addWidget(selectionList);
     vLayout->addLayout(h_layout);
 
@@ -247,7 +248,7 @@ ActivityInfo SLauncher::show(const ActivityInfoContainer& infos)
     QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
     ActivityInfo info;
-    if(dialog->exec())
+    if(dialog->exec() != 0)
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
         QStandardItem* item      = model->itemFromIndex(currentIndex);
@@ -268,17 +269,13 @@ SLauncher::ActivityInfoContainer SLauncher::getEnabledActivities(const ActivityI
     {
         const bool isIncludeMode = m_filterMode == "include";
 
-        for(ActivityInfoContainer::const_iterator iter = infos.begin() ; iter != infos.end() ; ++iter)
+        for(const auto& info : infos)
         {
-            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), iter->id);
+            auto keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
 
-            if(keyIt != m_keys.end() && isIncludeMode)
+            if((keyIt != m_keys.end() && isIncludeMode) || (keyIt == m_keys.end() && !isIncludeMode))
             {
-                configs.push_back(*iter);
-            }
-            else if(keyIt == m_keys.end() && !isIncludeMode)
-            {
-                configs.push_back(*iter);
+                configs.push_back(info);
             }
         }
     }
@@ -348,16 +345,9 @@ void SLauncher::updateState()
         {
             const bool isIncludeMode = m_filterMode == "include";
 
-            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), as->getActivityConfigId());
+            auto keyIt = std::find(m_keys.begin(), m_keys.end(), as->getActivityConfigId());
 
-            if(keyIt != m_keys.end() && isIncludeMode)
-            {
-                isEnabled = true;
-            }
-            else if(keyIt == m_keys.end() && !isIncludeMode)
-            {
-                isEnabled = true;
-            }
+            isEnabled = ((keyIt != m_keys.end()) != isIncludeMode);
 
             isEnabled &= Activity::getDefault()->hasInfo(
                 as->getActivityConfigId()
@@ -420,7 +410,7 @@ void SLauncher::buildActivity(
     // Applies activity validator on activity series to check the data
     if(!info.validatorsImpl.empty())
     {
-        for(std::string validatorImpl : info.validatorsImpl)
+        for(const std::string& validatorImpl : info.validatorsImpl)
         {
             /// Process activity validator
             IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
@@ -455,8 +445,8 @@ void SLauncher::buildActivity(
     {
         sight::ui::base::LockAction lock(this->getSptr());
 
-        const std::string viewConfigID = msg.getAppConfigID();
-        auto replacementMap            = msg.getReplacementMap();
+        const std::string& viewConfigID = msg.getAppConfigID();
+        auto replacementMap             = msg.getReplacementMap();
         replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
         service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
@@ -515,7 +505,7 @@ bool SLauncher::launchAS(const data::Vector::csptr& selection)
     dataCount = Activity::getDefault()->getDataCount(selection);
     if(dataCount.size() == 1)
     {
-        for(data::Object::sptr obj : *selection)
+        for(const data::Object::sptr& obj : *selection)
         {
             data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast(obj);
             if(!as)
@@ -523,11 +513,9 @@ bool SLauncher::launchAS(const data::Vector::csptr& selection)
                 launchAS = false;
                 break;
             }
-            else
-            {
-                this->launchActivitySeries(as);
-                launchAS = true;
-            }
+
+            this->launchActivitySeries(as);
+            launchAS = true;
         }
     }
 
@@ -583,7 +571,7 @@ void SLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
     // Applies activity validator on activity series to check the data
     if(!info.validatorsImpl.empty())
     {
-        for(std::string validatorImpl : info.validatorsImpl)
+        for(const std::string& validatorImpl : info.validatorsImpl)
         {
             /// Process activity validator
             IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
@@ -625,6 +613,4 @@ service::IService::KeyConnectionsMap SLauncher::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace sight::module
+} // namespace sight::module::ui::qt::activity

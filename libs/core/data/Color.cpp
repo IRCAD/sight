@@ -34,7 +34,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Color::Color(data::Object::Key)
+Color::Color(data::Object::Key /*unused*/)
 {
     m_vRGBA.fill(1.0);
 }
@@ -56,8 +56,7 @@ Color::sptr Color::New(
 //------------------------------------------------------------------------------
 
 Color::~Color()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -109,10 +108,13 @@ void Color::setRGBA(const std::string& hexaColor)
         && (hexaColor.length() == 7 || hexaColor.length() == 9)
     );
 
-    const std::string redString = hexaColor.substr(1, 2);
+    const std::string redString   = hexaColor.substr(1, 2);
     const std::string greenString = hexaColor.substr(3, 2);
-    const std::string blueString = hexaColor.substr(5, 2);
-    std::int32_t r, g, b, a = 255;
+    const std::string blueString  = hexaColor.substr(5, 2);
+    std::int32_t r                = 0;
+    std::int32_t g                = 0;
+    std::int32_t b                = 0;
+    std::int32_t a                = 255;
 
     std::istringstream iss;
     iss.str(redString);
@@ -133,10 +135,10 @@ void Color::setRGBA(const std::string& hexaColor)
     }
 
     this->setRGBA(
-        static_cast<float>(r) / 255.0f,
-        static_cast<float>(g) / 255.0f,
-        static_cast<float>(b) / 255.0f,
-        static_cast<float>(a) / 255.0f
+        static_cast<float>(r) / 255.0F,
+        static_cast<float>(g) / 255.0F,
+        static_cast<float>(b) / 255.0F,
+        static_cast<float>(a) / 255.0F
     );
 }
 

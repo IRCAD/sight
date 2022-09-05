@@ -29,10 +29,7 @@
 
 #include <filesystem>
 
-namespace sight::io::base
-{
-
-namespace ut
+namespace sight::io::base::ut
 {
 
 // Defines a Writer class, with a dummy openLocationDialog implementation
@@ -41,6 +38,11 @@ class STestWriter : public sight::io::base::service::IWriter
 public:
 
     SIGHT_DECLARE_SERVICE(STestWriter, sight::io::base::service::IWriter);
+
+    STestWriter(sight::io::base::service::IOPathType pt) :
+        m_pathType(pt)
+    {
+    }
 
     //------------------------------------------------------------------------------
 
@@ -101,8 +103,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // Tests the correct-ness of types
     void test_typeOK();
@@ -124,6 +126,4 @@ protected:
     std::filesystem::path m_rootPath;
 };
 
-} //namespace ut
-
-} //namespace sight::io::base
+} // namespace sight::io::base::ut

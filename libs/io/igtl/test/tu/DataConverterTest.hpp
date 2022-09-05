@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace ut
+namespace sight::io::igtl::detail::ut
 {
 
 class DataConverterTest : public CPPUNIT_NS::TestFixture
@@ -45,19 +42,17 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void imageConverterTest();
-    void matrixConverterTest();
-    void pointListConverterTest();
-    void stringConverterTest();
-    void lineConverterTest();
-    void scalarConverterTest();
-    void meshConverterTest();
-    void compositeConverterTest();
+    static void imageConverterTest();
+    static void matrixConverterTest();
+    static void pointListConverterTest();
+    static void stringConverterTest();
+    static void lineConverterTest();
+    static void scalarConverterTest();
+    static void meshConverterTest();
+    static void compositeConverterTest();
 };
 
-}
-
-}
+} // namespace sight::io::igtl::detail::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/IObjectReader.hpp"
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -51,8 +48,7 @@ public:
 
     /// Constructor. Does nothing.
     GenericObjectReader()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -62,9 +58,8 @@ public:
     }
 
     /// Destructor. Does nothing.
-    virtual ~GenericObjectReader()
-    {
-    }
+    ~GenericObjectReader() override
+    = default;
 
     /**
      * @brief m_object setter.
@@ -90,6 +85,4 @@ public:
     }
 };
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

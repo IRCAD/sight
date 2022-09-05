@@ -39,10 +39,7 @@
 
 #include <ui/base/dialog/InputDialog.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 //------------------------------------------------------------------------------
@@ -60,9 +57,8 @@ SExport::SExport()
 
 //------------------------------------------------------------------------------
 
-SExport::~SExport() noexcept
-{
-}
+SExport::~SExport() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +85,7 @@ void SExport::starting()
     this->actionServiceStarting();
     auto seriesDB = m_seriesDB.lock();
 
-    for(data::Series::sptr series : seriesDB->getContainer())
+    for(const data::Series::sptr& series : seriesDB->getContainer())
     {
         if(series == this->getSeries())
         {
@@ -176,7 +172,7 @@ data::Series::sptr SExport::getSeries()
 
 void SExport::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
 {
-    for(data::Series::sptr series : addedSeries)
+    for(const data::Series::sptr& series : addedSeries)
     {
         if(series == this->getSeries())
         {
@@ -189,7 +185,7 @@ void SExport::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
 
 void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
 {
-    for(data::Series::sptr series : removedSeries)
+    for(const data::Series::sptr& series : removedSeries)
     {
         if(series == this->getSeries())
         {
@@ -200,6 +196,4 @@ void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
 
 //------------------------------------------------------------------------------
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

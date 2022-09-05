@@ -28,6 +28,7 @@
 
 #include <glm/glm.hpp>
 
+#include <cmath>
 #include <list>
 #include <map>
 #include <set>
@@ -50,7 +51,11 @@ bool intersect_triangle(
 {
     const double Epsilon = 0.000001;
 
-    fwVec3d edge1, edge2, tvec, pvec, qvec;
+    fwVec3d edge1;
+    fwVec3d edge2;
+    fwVec3d tvec;
+    fwVec3d pvec;
+    fwVec3d qvec;
 
     /* find vectors for two edges sharing vert0 */
     edge1 = _vert1 - _vert0;
@@ -98,7 +103,9 @@ bool intersect_triangle(
 
 bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertexIndex, const fwVec3d& _p)
 {
-    const unsigned int X = 0, Y = 1, Z = 2;
+    const unsigned int X         = 0;
+    const unsigned int Y         = 1;
+    const unsigned int Z         = 2;
     const std::size_t ElementNbr = _vertexIndex.size();
     if(ElementNbr == 0)
     {
@@ -136,13 +143,13 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 const double Delta2 = P2[axe] - _p[axe];
                 const double Delta3 = P3[axe] - _p[axe];
 
-                if(Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f)
+                if(Delta1 >= 0.F && Delta2 >= 0.F && Delta3 >= 0.F)
                 {
                     stop = true;
                     break;
                 }
 
-                if(Delta1 < 0.f && Delta2 < 0.f && Delta3 < 0.f)
+                if(Delta1 < 0.F && Delta2 < 0.F && Delta3 < 0.F)
                 {
                     stop = true;
                     break;
@@ -153,15 +160,17 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
             {
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
-                fwVec3d dir = {0.f, 0.f, 1.f};
+                fwVec3d dir   = {0.F, 0.F, 1.F};
                 fwVec3d vert0 = {P1[0], P1[1], P1[2]};
                 fwVec3d vert1 = {P2[0], P2[1], P2[2]};
                 fwVec3d vert2 = {P3[0], P3[1], P3[2]};
-                double t, u, v;
+                double t      = NAN;
+                double u      = NAN;
+                double v      = NAN;
                 if(intersect_triangle(orig, dir, vert0, vert1, vert2, t, u, v))
                 {
                     // We only keep points below _p (following Oz axis).
-                    if(t < 0.f)
+                    if(t < 0.F)
                     {
                         ++intersectionNbr;
                     }
@@ -177,8 +186,8 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
 
 bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 {
-    typedef std::pair<int, int> Edge; // always Edge.first < Edge.second !!
-    typedef boost::unordered_map<Edge, int> EdgeHistogram;
+    using Edge          = std::pair<int, int>; // always Edge.first < Edge.second !!
+    using EdgeHistogram = boost::unordered_map<Edge, int>;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
@@ -210,8 +219,8 @@ void findBorderEdges(
     std::vector<std::vector<std::pair<std::size_t, std::size_t> > >& contours
 )
 {
-    typedef std::pair<std::size_t, std::size_t> Edge;
-    typedef std::vector<Edge> Contour; // at Border
+    using Edge    = std::pair<std::size_t, std::size_t>;
+    using Contour = std::vector<Edge>; // at Border
 
     std::map<Edge, int> edgesHistogram;
     for(fwVertexIndex::value_type vertex : _vertexIndex)
@@ -268,9 +277,9 @@ void findBorderEdges(
 
 bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 {
-    typedef std::pair<std::size_t, std::size_t> Edge;
-    typedef std::vector<Edge> Contour; // at Border
-    typedef std::vector<Contour> Contours;
+    using Edge     = std::pair<std::size_t, std::size_t>;
+    using Contour  = std::vector<Edge>; // at Border
+    using Contours = std::vector<Contour>;
 
     Contours contours;
     findBorderEdges(_vertexIndex, contours);

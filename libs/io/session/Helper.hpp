@@ -30,10 +30,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-namespace sight::io::session
-{
-
-namespace Helper
+namespace sight::io::session::Helper
 {
 
 constexpr static auto s_Value {"Value"};
@@ -146,11 +143,11 @@ inline static typename T::csptr safeCast(sight::data::Object::csptr object)
 /// @param[in] password (optional) the password to use if encryption is enabled
 template<typename T>
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto& casted = safeCast<T>(object);
@@ -169,11 +166,11 @@ inline static void serialize(
 /// @param[in] password (optional) the password used for encryption
 template<typename T>
 inline static typename T::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -188,6 +185,4 @@ inline static typename T::sptr deserialize(
     return casted;
 }
 
-} // namespace Helper
-
-} // namespace sight::io
+} // namespace sight::io::session::Helper

@@ -29,13 +29,7 @@
 
 #include <functional>
 
-namespace sight::core::memory
-{
-
-namespace stream
-{
-
-namespace in
+namespace sight::core::memory::stream::in
 {
 
 class CORE_CLASS_API Buffer : public IFactory
@@ -50,15 +44,11 @@ public:
 
 protected:
 
-    CORE_API SPTR(std::istream) get();
+    CORE_API SPTR(std::istream) get() override;
 
     void* m_buf;
     std::size_t m_size;
     CounterFactoryType m_counterFactory;
 };
 
-} // namespace in
-
-} // namespace stream
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::stream::in

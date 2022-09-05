@@ -100,7 +100,7 @@ Plane::~Plane()
         Ogre::MeshManager::getSingleton().remove(m_slicePlane);
     }
 
-    if(m_border)
+    if(m_border != nullptr)
     {
         m_sceneManager->destroyManualObject(m_border);
     }
@@ -133,7 +133,7 @@ void Plane::initializeMaterial()
 
     m_texMaterial = defaultMat->clone(m_slicePlaneName + "_TextMaterial");
 
-    const Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
     const int orientationIndex = static_cast<int>(m_orientation);
@@ -271,7 +271,7 @@ void Plane::initializePlane()
 
     if(m_displayBorder)
     {
-        if(m_border)
+        if(m_border != nullptr)
         {
             m_sceneManager->destroyManualObject(m_border);
             m_border = nullptr;
@@ -284,43 +284,43 @@ void Plane::initializePlane()
 
         if(m_orientation == OrientationMode::X_AXIS)
         {
-            m_border->position(Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
-            m_border->position(Ogre::Vector3(0.f, m_height / 2.f, -m_width / 2.f));
-            m_border->position(Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f));
-            m_border->position(Ogre::Vector3(0.f, -m_height / 2.f, m_width / 2.f));
-            m_border->position(Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
+            m_border->position(Ogre::Vector3(0.F, -m_height / 2.F, -m_width / 2.F));
+            m_border->position(Ogre::Vector3(0.F, m_height / 2.F, -m_width / 2.F));
+            m_border->position(Ogre::Vector3(0.F, m_height / 2.F, m_width / 2.F));
+            m_border->position(Ogre::Vector3(0.F, -m_height / 2.F, m_width / 2.F));
+            m_border->position(Ogre::Vector3(0.F, -m_height / 2.F, -m_width / 2.F));
             m_border->setBoundingBox(
                 Ogre::AxisAlignedBox(
-                    Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f),
-                    Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f)
+                    Ogre::Vector3(0.F, -m_height / 2.F, -m_width / 2.F),
+                    Ogre::Vector3(0.F, m_height / 2.F, m_width / 2.F)
                 )
             );
         }
         else if(m_orientation == OrientationMode::Y_AXIS)
         {
-            m_border->position(Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
-            m_border->position(Ogre::Vector3(m_width / 2.f, 0.f, -m_height / 2.f));
-            m_border->position(Ogre::Vector3(m_width / 2.f, 0.f, m_height / 2.f));
-            m_border->position(Ogre::Vector3(-m_width / 2.f, 0.f, m_height / 2.f));
-            m_border->position(Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.F, 0.F, -m_height / 2.F));
+            m_border->position(Ogre::Vector3(m_width / 2.F, 0.F, -m_height / 2.F));
+            m_border->position(Ogre::Vector3(m_width / 2.F, 0.F, m_height / 2.F));
+            m_border->position(Ogre::Vector3(-m_width / 2.F, 0.F, m_height / 2.F));
+            m_border->position(Ogre::Vector3(-m_width / 2.F, 0.F, -m_height / 2.F));
             m_border->setBoundingBox(
                 Ogre::AxisAlignedBox(
-                    Ogre::Vector3(-m_height / 2.f, 0.f, -m_width / 2.f),
-                    Ogre::Vector3(m_height / 2.f, 0.f, m_width / 2.f)
+                    Ogre::Vector3(-m_height / 2.F, 0.F, -m_width / 2.F),
+                    Ogre::Vector3(m_height / 2.F, 0.F, m_width / 2.F)
                 )
             );
         }
         else
         {
-            m_border->position(Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
-            m_border->position(Ogre::Vector3(m_width / 2.f, -m_height / 2.f, 0.f));
-            m_border->position(Ogre::Vector3(m_width / 2.f, m_height / 2.f, 0.f));
-            m_border->position(Ogre::Vector3(-m_width / 2.f, m_height / 2.f, 0.f));
-            m_border->position(Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->position(Ogre::Vector3(-m_width / 2.F, -m_height / 2.F, 0.F));
+            m_border->position(Ogre::Vector3(m_width / 2.F, -m_height / 2.F, 0.F));
+            m_border->position(Ogre::Vector3(m_width / 2.F, m_height / 2.F, 0.F));
+            m_border->position(Ogre::Vector3(-m_width / 2.F, m_height / 2.F, 0.F));
+            m_border->position(Ogre::Vector3(-m_width / 2.F, -m_height / 2.F, 0.F));
             m_border->setBoundingBox(
                 Ogre::AxisAlignedBox(
-                    Ogre::Vector3(-m_height / 2.f, -m_width / 2.f, 0.f),
-                    Ogre::Vector3(m_height / 2.f, m_width / 2.f, 0.f)
+                    Ogre::Vector3(-m_height / 2.F, -m_width / 2.F, 0.F),
+                    Ogre::Vector3(m_height / 2.F, m_width / 2.F, 0.F)
                 )
             );
         }
@@ -388,7 +388,7 @@ void Plane::setRelativePosition(float _relativePosition)
     else if(_relativePosition >= 1)
     {
         // as close as possible from 1, but smaller.
-        m_relativePosition = 0.999999999999999f;
+        m_relativePosition = 0.999999999999999F;
     }
     else
     {
@@ -402,7 +402,7 @@ void Plane::setTFData(const viz::scene3d::TransferFunction& _tfTexture)
 {
     const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(auto* const tech : techniques)
     {
         SIGHT_ASSERT("Technique is not set", tech);
 
@@ -425,7 +425,7 @@ void Plane::moveToOriginPosition()
 
 double Plane::getSliceWorldPosition() const
 {
-    Ogre::Real position = 0.f;
+    Ogre::Real position = 0.F;
 
     switch(m_orientation)
     {
@@ -504,7 +504,7 @@ void Plane::enableAlpha(bool _enable)
             Ogre::Pass* const pass = tech->getPass(0);
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
-            pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", static_cast<int>(_enable));
         }
     }
 }
@@ -515,7 +515,7 @@ void Plane::setEntityOpacity(float _f)
 {
     m_entityOpacity = _f;
 
-    Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
     Ogre::Technique* tech = m_texMaterial->getTechnique(0);
@@ -527,7 +527,7 @@ void Plane::setEntityOpacity(float _f)
         Ogre::Pass* pass = tech->getPass(0);
 
         // We don't want a depth check if we have non-OIT transparency
-        const bool needDepthCheck = (m_entityOpacity - 1.f) < std::numeric_limits<float>::epsilon();
+        const bool needDepthCheck = (m_entityOpacity - 1.F) < std::numeric_limits<float>::epsilon();
         pass->setDepthCheckEnabled(needDepthCheck);
     }
 }
@@ -545,7 +545,7 @@ void Plane::changeSlice(float sliceIndex)
 {
     const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(auto* const tech : techniques)
     {
         SIGHT_ASSERT("Technique is not set", tech);
 
@@ -567,9 +567,9 @@ void Plane::changeSlice(float sliceIndex)
 
 Ogre::MovablePlane Plane::setDimensions()
 {
-    Ogre::Real tex_width  = static_cast<Ogre::Real>(m_texture->getWidth());
-    Ogre::Real tex_height = static_cast<Ogre::Real>(m_texture->getHeight());
-    Ogre::Real tex_depth  = static_cast<Ogre::Real>(m_texture->getDepth());
+    auto tex_width  = static_cast<Ogre::Real>(m_texture->getWidth());
+    auto tex_height = static_cast<Ogre::Real>(m_texture->getHeight());
+    auto tex_depth  = static_cast<Ogre::Real>(m_texture->getDepth());
 
     Ogre::MovablePlane plane(Ogre::Vector3::ZERO, 0);
     switch(m_orientation)

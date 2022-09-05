@@ -39,10 +39,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ActivityRegistryTest);
 
-namespace sight::activity
-{
-
-namespace ut
+namespace sight::activity::ut
 {
 
 struct ActivityRegistryTestPimpl
@@ -77,7 +74,7 @@ void ActivityRegistryTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-struct activities_less_than_key
+struct ActivitiesLessThanKey
 {
     //------------------------------------------------------------------------------
 
@@ -100,7 +97,7 @@ void ActivityRegistryTest::registryTest()
     // 1 image
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(4), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry1"), activities.at(0).id);
@@ -111,7 +108,7 @@ void ActivityRegistryTest::registryTest()
     // 2 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry3"), activities.at(0).id);
@@ -121,7 +118,7 @@ void ActivityRegistryTest::registryTest()
     // 3 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -129,7 +126,7 @@ void ActivityRegistryTest::registryTest()
     // 4 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -138,7 +135,7 @@ void ActivityRegistryTest::registryTest()
     // 5 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -147,7 +144,7 @@ void ActivityRegistryTest::registryTest()
     // 6 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -156,7 +153,7 @@ void ActivityRegistryTest::registryTest()
     // 7 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -165,7 +162,7 @@ void ActivityRegistryTest::registryTest()
     // 8 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -174,7 +171,7 @@ void ActivityRegistryTest::registryTest()
     // 9 images
     v->push_back(data::Image::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry4"), activities.at(0).id);
@@ -182,7 +179,7 @@ void ActivityRegistryTest::registryTest()
     // 9 images, 1 mesh
     v->push_back(data::Mesh::New());
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), activities.size());
 
@@ -192,7 +189,7 @@ void ActivityRegistryTest::registryTest()
     v->push_back(data::Mesh::New());
 
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
     CPPUNIT_ASSERT_EQUAL(std::string("TestRegistry2"), activities.at(0).id);
@@ -204,7 +201,7 @@ void ActivityRegistryTest::registryTest()
     v->push_back(data::ModelSeries::New());
 
     activities = m_pimpl->activities->getInfos(v);
-    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+    std::sort(activities.begin(), activities.end(), ActivitiesLessThanKey());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), activities.size());
     const activity::extension::ActivityInfo& info = activities[0];
@@ -216,6 +213,4 @@ void ActivityRegistryTest::registryTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::activity
+} // namespace sight::activity::ut

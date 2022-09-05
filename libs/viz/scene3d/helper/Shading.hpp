@@ -31,10 +31,7 @@
 
 #include <string>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 class Shading
@@ -182,6 +179,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

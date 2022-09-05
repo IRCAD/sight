@@ -43,6 +43,12 @@ public:
 
     typedef std::map<core::Type, std::uint8_t> TypeConverterMap;
 
+    /// Not implemented
+    ImageTypeConverter() = delete;
+
+    /// Not implemented
+    ~ImageTypeConverter() = delete;
+
     /**
      * @brief init type converter map for conversion between core::Type and igtlImage enum Type
      *
@@ -68,12 +74,6 @@ public:
     static std::uint8_t getIgtlType(const core::Type& type);
 
 private:
-
-    /// Not implemented
-    ImageTypeConverter();
-
-    /// Not implemented
-    ~ImageTypeConverter();
 
     /// type converter map between igtl pixel type and Sight pixel type
     static TypeConverterMap s_typeConverterMap;

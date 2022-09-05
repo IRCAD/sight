@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,30 +36,25 @@
 #include "core/runtime/detail/io/Validator.hpp"
 
 #include <core/base.hpp>
+#include <utility>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace io
+namespace sight::core::runtime::detail::io
 {
 
 //------------------------------------------------------------------------------
 
-Validator::Validator(const Validator& validator)
+Validator::Validator(const Validator& validator) :
+    m_xsd_content(validator.m_xsd_content),
+    m_schemaParserContext(validator.m_schemaParserContext),
+    m_schema(validator.m_schema)
 {
-    m_xsd_content         = validator.m_xsd_content;
-    m_schemaParserContext = validator.m_schemaParserContext;
-    m_schema              = validator.m_schema;
 }
 
 //------------------------------------------------------------------------------
 
-Validator::Validator(const std::string& buffer)
+Validator::Validator(std::string buffer) :
+    m_xsd_content(std::move(buffer))
 {
-    m_xsd_content = buffer;
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +63,7 @@ Validator::Validator(const std::filesystem::path& path)
 {
     std::string strPath(path.string());
     // Checks the path validity.
-    if(std::filesystem::exists(path) == false || std::filesystem::is_directory(path))
+    if(!std::filesystem::exists(path) || std::filesystem::is_directory(path))
     {
         throw RuntimeException(strPath + ": is not a valid path to an xml schema file.");
     }
@@ -79,8 +74,7 @@ Validator::Validator(const std::filesystem::path& path)
 //------------------------------------------------------------------------------
 
 Validator::~Validator()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -91,7 +85,7 @@ void Validator::clearErrorLog()
 
 //------------------------------------------------------------------------------
 
-const std::string Validator::getErrorLog() const
+std::string Validator::getErrorLog() const
 {
     return m_errorLog.str();
 }
@@ -142,12 +136,12 @@ void Validator::initializeContext()
 
 bool Validator::validate(const std::filesystem::path& xmlFile)
 {
-    int result;
+    int result = 0;
 
     initializeContext();
 
     xmlDocPtr xmlDoc = xmlParseFile(xmlFile.string().c_str());
-    if(xmlDoc == NULL)
+    if(xmlDoc == nullptr)
     {
         throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string());
     }
@@ -182,7 +176,7 @@ bool Validator::validate(const std::filesystem::path& xmlFile)
 
 bool Validator::validate(xmlNodePtr node)
 {
-    int result;
+    int result = 0;
 
     initializeContext();
 
@@ -210,7 +204,7 @@ bool Validator::validate(xmlNodePtr node)
 
 void Validator::ErrorHandler(void* userData, xmlErrorPtr error)
 {
-    Validator* validator = (Validator*) userData;
+    auto* validator = reinterpret_cast<Validator*>(userData);
 
     validator->m_errorLog << "At line " << error->line << ": " << error->message;
 }
@@ -224,8 +218,4 @@ std::string Validator::getXsdContent()
 
 //------------------------------------------------------------------------------
 
-} // namespace io
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::io

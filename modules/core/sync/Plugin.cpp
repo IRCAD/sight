@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,8 @@ namespace sight::module::sync
 
 SIGHT_REGISTER_PLUGIN("sight::module::sync::Plugin");
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

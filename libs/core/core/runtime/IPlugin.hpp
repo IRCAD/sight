@@ -40,7 +40,7 @@ struct CORE_CLASS_API IPlugin : public IExecutable
     /**
      * @brief   Destructor : does nothing.
      */
-    CORE_API virtual ~IPlugin();
+    CORE_API ~IPlugin() override;
 
     /**
      * @brief   Notifies the plugin about its start.

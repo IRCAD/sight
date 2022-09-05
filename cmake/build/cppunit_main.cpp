@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include <core/log/SpyLogger.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
@@ -37,32 +39,27 @@
 
 struct Options
 {
-    bool verbose;
-    bool xmlReport;
-    bool listTests;
+    bool verbose {false};
+    bool xmlReport {false};
+    bool listTests {false};
     std::string xmlReportFile;
     std::vector<std::string> testsToRun;
 
-    Options() :
-        verbose(false),
-        xmlReport(false),
-        listTests(false)
-    {
-    }
+    Options() = default;
 
     //------------------------------------------------------------------------------
 
-    bool parse(int argc, char* argv[])
+    bool parse(const std::vector<char*>& argv)
     {
-        if(argc < 1)
+        if(argv.empty())
         {
             return true;
         }
 
-        const std::string programName(*argv != 0 ? *argv : "test_runner");
+        const std::string programName(argv[0] != nullptr ? argv[0] : "test_runner");
 
-        char** args    = argv + 1;
-        char** argsEnd = argv + argc;
+        auto args    = argv.begin() + 1;
+        auto argsEnd = argv.end();
         while(args < argsEnd)
         {
             std::string arg(*args);
@@ -82,7 +79,8 @@ struct Options
                 << std::endl;
                 return false;
             }
-            else if(arg == "--verbose" || arg == "-v")
+
+            if(arg == "--verbose" || arg == "-v")
             {
                 this->verbose = true;
             }
@@ -92,7 +90,7 @@ struct Options
             }
             else if(arg == "-o")
             {
-                args++;
+                ++args;
                 if(args >= argsEnd)
                 {
                     std::cerr << "value for -o is missing" << std::endl;
@@ -110,7 +108,7 @@ struct Options
                 this->testsToRun.push_back(arg);
             }
 
-            args++;
+            ++args;
         }
 
         return true;
@@ -121,33 +119,35 @@ struct Options
 
 void init_log_output()
 {
-    auto& logger = sight::core::log::SpyLogger::get();
-
     std::string logFile = "fwTest.log";
 
     FILE* pFile = fopen(logFile.c_str(), "w");
-    if(pFile == NULL)
+    if(pFile == nullptr)
     {
         std::error_code err;
         std::filesystem::path sysTmp = std::filesystem::temp_directory_path(err);
         if(err.value() != 0)
         {
             // replace log file appender by stream appender: current dir and temp dir unreachable
-            logger.add_console_log();
+            sight::core::log::SpyLogger::add_console_log();
         }
         else
         {
             // creates fwTest.log in temp directory: current dir unreachable
             sysTmp  = sysTmp / logFile;
             logFile = sysTmp.string();
-            logger.add_file_log(logFile);
+            sight::core::log::SpyLogger::add_file_log(logFile);
         }
     }
     else
     {
         // creates fwTest.log in the current directory
-        fclose(pFile);
-        logger.add_file_log(logFile);
+        if(fclose(pFile) != 0)
+        {
+            perror("fclose");
+        }
+
+        sight::core::log::SpyLogger::add_file_log(logFile);
     }
 }
 
@@ -156,7 +156,7 @@ void init_log_output()
 void init_runtime()
 {
     // This variable is set when configuring this file in the fw_test() CMake macro
-    static const std::string moduleName = "@TESTED_MODULE@";
+    static const std::string moduleName = "@TESTED_MODULE@"; // NOLINT(readability-redundant-string-init)
     if(!moduleName.empty())
     {
         SIGHT_INFO("Automatic loading of module '" + moduleName + "'");
@@ -170,7 +170,7 @@ void init_runtime()
 void shutdown_runtime()
 {
     // This variable is set when configuring this file in the fw_test() CMake macro
-    static const std::string moduleName = "@TESTED_MODULE@";
+    static const std::string moduleName = "@TESTED_MODULE@"; // NOLINT(readability-redundant-string-init)
     if(!moduleName.empty())
     {
         sight::core::runtime::shutdown();
@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
     const std::string testExecutable = (argc >= 1) ? std::string(argv[0]) : "unknown";
     options.xmlReportFile = testExecutable + "-cppunit-report.xml";
 
-    if(!options.parse(argc, argv))
+    if(!options.parse(std::vector(argv, argv + argc)))
     {
         return 1;
     }
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
 
     if(options.testsToRun.empty())
     {
-        options.testsToRun.push_back("");
+        options.testsToRun.emplace_back();
     }
 
     for(const std::string& test : options.testsToRun)
@@ -269,7 +269,7 @@ int main(int argc, char* argv[])
         file.close();
     }
 
-    if(result.testFailuresTotal())
+    if(result.testFailuresTotal() != 0)
     {
         return 1;
     }

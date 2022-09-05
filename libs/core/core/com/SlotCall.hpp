@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::core::thread
 
 class Worker;
 
-}
+} // namespace sight::core::thread
 
 namespace sight::core::com
 {
@@ -63,9 +63,8 @@ struct CORE_CLASS_API SlotCall<R(A ...)>: SlotRun<void(A ...)>
     {
     }
 
-    virtual ~SlotCall()
-    {
-    }
+    ~SlotCall() override
+    = default;
 
     /**
      * @brief Call the Slot with the given parameters.

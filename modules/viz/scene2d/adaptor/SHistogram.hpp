@@ -29,10 +29,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -134,7 +131,7 @@ private:
     QPen m_cursorBorderColor;
 
     /// Point size of the cursor shown on mouse hover
-    double m_cursorSize {6.f};
+    double m_cursorSize {6.F};
 
     /// Defines the color used for graphic item's inner color.
     QPen m_cursorLabelColor;
@@ -166,6 +163,4 @@ private:
     data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, s_VIEWPORT_INOUT};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

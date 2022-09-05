@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::igtl
-{
-
-namespace ut
+namespace sight::io::igtl::ut
 {
 
 class ClientServerTest : public CPPUNIT_NS::TestFixture
@@ -43,17 +40,15 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
-    void clientToServer();
-    void clientToServerTimeout();
-    void serverToClient();
-    void clientHeaderExceptionTest();
-    void serverHeaderExceptionTest();
-    void clientBodyExceptionTest();
-    void serverBodyExceptionTest();
+    void setUp() override;
+    void tearDown() override;
+    static void clientToServer();
+    static void clientToServerTimeout();
+    static void serverToClient();
+    static void clientHeaderExceptionTest();
+    static void serverHeaderExceptionTest();
+    static void clientBodyExceptionTest();
+    static void serverBodyExceptionTest();
 };
 
-} // namespace ut
-
-} // namespace sight::io::igtl
+} // namespace sight::io::igtl::ut

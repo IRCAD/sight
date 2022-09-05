@@ -39,13 +39,10 @@
 #include <gdcmSurfaceHelper.h>
 #include <gdcmSurfaceReader.h>
 
-namespace sight::io::dicom
-{
+#include <memory>
+#include <utility>
 
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
@@ -64,8 +61,7 @@ SurfaceSegmentationIOD::SurfaceSegmentationIOD(
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +71,7 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
-    SPTR(gdcm::SurfaceReader) reader = std::shared_ptr<gdcm::SurfaceReader>(new gdcm::SurfaceReader);
+    SPTR(gdcm::SurfaceReader) reader = std::make_shared<gdcm::SurfaceReader>();
 
     // Dicom container
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
@@ -162,8 +158,4 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

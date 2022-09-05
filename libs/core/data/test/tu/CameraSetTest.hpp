@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class CameraSetTest : public CPPUNIT_NS::TestFixture
@@ -41,14 +38,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void cameraTest();
-    void shallowCopyTest();
-    void deepCopyTest();
+    static void cameraTest();
+    static void shallowCopyTest();
+    static void deepCopyTest();
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

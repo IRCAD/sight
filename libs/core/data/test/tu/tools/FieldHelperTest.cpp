@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::FieldHelperTest);
 
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -275,6 +272,4 @@ void FieldHelperTest::testHelper()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data::tools
+} // namespace sight::data::tools::ut

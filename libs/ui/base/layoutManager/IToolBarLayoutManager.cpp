@@ -26,10 +26,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY =
@@ -38,14 +35,12 @@ const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY
 //-----------------------------------------------------------------------------
 
 IToolBarLayoutManager::IToolBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IToolBarLayoutManager::~IToolBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -181,19 +176,19 @@ void IToolBarLayoutManager::initialize(ConfigurationType configuration)
 
 void IToolBarLayoutManager::destroyActions()
 {
-    for(ui::base::container::fwMenuItem::sptr menuItem : m_menuItems)
+    for(const ui::base::container::fwMenuItem::sptr& menuItem : m_menuItems)
     {
         menuItem->destroyContainer();
     }
 
     m_menuItems.clear();
-    for(ui::base::container::fwMenu::sptr menu : m_menus)
+    for(const ui::base::container::fwMenu::sptr& menu : m_menus)
     {
         menu->destroyContainer();
     }
 
     m_menus.clear();
-    for(ui::base::container::fwContainer::sptr container : m_containers)
+    for(const ui::base::container::fwContainer::sptr& container : m_containers)
     {
         container->destroyContainer();
     }
@@ -224,6 +219,4 @@ std::vector<ui::base::container::fwContainer::sptr> IToolBarLayoutManager::getCo
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

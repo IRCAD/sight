@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,6 +19,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINT
 
 #pragma once
 
@@ -40,8 +42,7 @@ class LocalCommand : public ::itk::Command
 public:
 
     LocalCommand()
-    {
-    }
+    = default;
 
     typedef LocalCommand Self;
     typedef ::itk::SmartPointer<LocalCommand> Pointer;
@@ -49,10 +50,10 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void Execute(::itk::Object* caller, const ::itk::EventObject&) override
+    void Execute(const ::itk::Object* caller, const ::itk::EventObject& /*event*/) override
     {
-        auto* po = dynamic_cast<::itk::LightProcessObject*>(caller);
-        if(!po)
+        const auto* po = dynamic_cast<const ::itk::LightProcessObject*>(caller);
+        if(po == nullptr)
         {
             return;
         }
@@ -63,10 +64,10 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void Execute(const ::itk::Object* caller, const ::itk::EventObject& event) override
+    void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
     {
-        auto* po = dynamic_cast<::itk::LightProcessObject*>(const_cast<::itk::Object*>(caller));
-        Execute(po, event);
+        const ::itk::Object* constCaller = caller;
+        Execute(constCaller, event);
     }
 
     std::string m_msg;
@@ -82,15 +83,14 @@ ProgressItkToFw<OBSERVEE>::ProgressItkToFw(
     std::string msg
 ) :
     m_observee(observee),
-    m_obsTag(std::numeric_limits<unsigned long>::max()),
-    m_initialized(false)
+    m_obsTag(std::numeric_limits<std::uint64_t>::max())
 {
     typename LocalCommand::Pointer itkCallBack;
     itkCallBack            = LocalCommand::New();
     itkCallBack->m_msg     = msg;
     itkCallBack->m_adviser = observer;
     m_obsTag               = m_observee->AddObserver(::itk::ProgressEvent(), itkCallBack);
-    m_initialized          = true;
+    m_initialized          = true; // NOLINT(cppcoreguidelines-prefer-member-initializer)
 }
 
 //------------------------------------------------------------------------------
@@ -104,4 +104,4 @@ ProgressItkToFw<OBSERVEE>::~ProgressItkToFw()
     }
 }
 
-} // namespace sight::io
+} // namespace sight::io::itk

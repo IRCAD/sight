@@ -29,10 +29,7 @@
 #include <gdcmDataSet.h>
 #include <gdcmSequenceOfItems.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -129,15 +126,8 @@ protected:
         // Code Meaning - Type 1
         auto codeMeaning = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0104>(itemDataset);
 
-        return io::dicom::container::DicomCodedAttribute(
-            codeValue,
-            codingSchemeDesignator,
-            codeMeaning,
-            codingSchemeVersion
-        );
+        return {codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion};
     }
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

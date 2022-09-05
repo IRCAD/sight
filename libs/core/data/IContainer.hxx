@@ -69,7 +69,7 @@ constexpr IContainer<C>::IContainer() :
 }
 
 template<class C>
-inline IContainer<C>::IContainer(Object::Key) :
+inline IContainer<C>::IContainer(Object::Key /*unused*/) :
     IContainer<C>::IContainer()
 {
 }
@@ -93,7 +93,7 @@ inline IContainer<C>::IContainer(C&& container) :
 template<class C>
 constexpr bool IContainer<C>::operator==(const IContainer& other) const noexcept
 {
-    if(!core::tools::is_equal(static_cast<ContainerWrapper<C> >(*this), static_cast<ContainerWrapper<C> >(other)))
+    if(!core::tools::is_equal(*this, other))
     {
         return false;
     }

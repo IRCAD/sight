@@ -45,15 +45,13 @@ static const std::string s_RetrieveMethod("retrieveMethod");
 
 //------------------------------------------------------------------------------
 
-SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept
-{
-}
+SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SPacsConfigurationInitializer::~SPacsConfigurationInitializer() noexcept
-{
-}
+SPacsConfigurationInitializer::~SPacsConfigurationInitializer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -79,11 +77,11 @@ void SPacsConfigurationInitializer::configuring()
     m_SCPAppEntityTitle = config.get<std::string>(s_PacsApplicationTitle);
 
     // Pacs port.
-    const std::string pacsApplicationPort = config.get<std::string>(s_PacsApplicationPort);
+    const auto pacsApplicationPort = config.get<std::string>(s_PacsApplicationPort);
     m_SCPPort = static_cast<decltype(m_SCPPort)>(std::stoi(pacsApplicationPort));
 
     // Retrieve Method.
-    const std::string retrieveMethod = config.get<std::string>(s_RetrieveMethod);
+    const auto retrieveMethod = config.get<std::string>(s_RetrieveMethod);
     m_retrieveMethod = (retrieveMethod == "MOVE")
                        ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
                        : (sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD);
@@ -92,7 +90,7 @@ void SPacsConfigurationInitializer::configuring()
     m_moveAppEntityTitle = config.get<std::string>(s_MoveApplicationTitle);
 
     // Move application port.
-    const std::string moveApplicationPort = config.get<std::string>(s_MoveApplicationPort);
+    const auto moveApplicationPort = config.get<std::string>(s_MoveApplicationPort);
     m_movePort = static_cast<decltype(m_movePort)>(std::stoi(moveApplicationPort));
 
     // Preference Key.

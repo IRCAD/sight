@@ -40,12 +40,9 @@ namespace sight::data
 
 class Camera;
 
-}
+} // namespace sight::data
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 /**
@@ -81,6 +78,4 @@ private:
     QListWidget* m_camSettings;
 };
 
-} // video
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

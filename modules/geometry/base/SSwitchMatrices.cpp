@@ -35,8 +35,7 @@ const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchT
 
 // ----------------------------------------------------------------------------
 
-SSwitchMatrices::SSwitchMatrices() noexcept :
-    m_indexOfDesiredMatrix(0)
+SSwitchMatrices::SSwitchMatrices() noexcept
 {
     newSlot(s_SWITCH_SLOT, &SSwitchMatrices::switchMatrix, this);
     newSlot(s_SWITCH_TO_SLOT, &SSwitchMatrices::switchToMatrix, this);

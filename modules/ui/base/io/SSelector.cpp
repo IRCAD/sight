@@ -45,13 +45,10 @@
 #include <sstream>
 #include <string>
 
-namespace sight::module::ui::base
+namespace sight::module::ui::base::io
 {
 
-namespace io
-{
-
-using namespace sight::io;
+namespace io = sight::io;
 
 //------------------------------------------------------------------------------
 
@@ -63,9 +60,7 @@ static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
 //------------------------------------------------------------------------------
 
-SSelector::SSelector() :
-    m_mode(READER_MODE),
-    m_servicesAreExcluded(true)
+SSelector::SSelector()
 {
     m_sigJobCreated   = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
     m_sigJobFailed    = newSignal<JobFailedSignalType>(JOB_FAILED_SIGNAL);
@@ -76,9 +71,8 @@ SSelector::SSelector() :
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector() noexcept
-{
-}
+SSelector::~SSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -106,7 +100,7 @@ void SSelector::configuring()
     const auto selectionCfg = srvConfig.equal_range("addSelection");
     for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
     {
-        const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
+        const auto service = itSelection->second.get<std::string>("<xmlattr>.service");
         m_selectedServices.push_back(service);
         SIGHT_DEBUG("add selection => " + service);
 
@@ -114,18 +108,20 @@ void SSelector::configuring()
         if(!configId.empty())
         {
             m_serviceToConfig[service] = configId;
-            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG(
+                std::string("add config '").append(configId).append("' for service '").append(service).append("'")
+            );
         }
     }
 
     const auto configCfg = srvConfig.equal_range("config");
     for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
     {
-        const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
-        const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
+        const auto service  = itCfg->second.get<std::string>("<xmlattr>.service");
+        const auto configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
         m_serviceToConfig[service] = configId;
-        SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
+        SIGHT_DEBUG(std::string("add config '").append(configId).append("' for service '").append(service).append("'"));
     }
 }
 
@@ -197,20 +193,20 @@ void SSelector::updating()
             std::string infoUser =
                 service::extension::Factory::getDefault()->getServiceDescription(serviceId);
 
-            std::map<std::string, std::string>::const_iterator iter = m_serviceToConfig.find(serviceId);
+            auto iter = m_serviceToConfig.find(serviceId);
             if(iter != m_serviceToConfig.end())
             {
                 infoUser = service::extension::Config::getDefault()->getConfigDesc(iter->second);
             }
 
-            if(infoUser != "")
+            if(!infoUser.empty())
             {
-                availableExtensionsMap.push_back(std::pair<std::string, std::string>(serviceId, infoUser));
+                availableExtensionsMap.emplace_back(serviceId, infoUser);
                 availableExtensionsSelector.push_back(infoUser);
             }
             else
             {
-                availableExtensionsMap.push_back(std::pair<std::string, std::string>(serviceId, serviceId));
+                availableExtensionsMap.emplace_back(serviceId, serviceId);
                 availableExtensionsSelector.push_back(serviceId);
             }
         }
@@ -245,8 +241,8 @@ void SSelector::updating()
             {
                 bool extensionIdFound = false;
 
-                typedef std::pair<std::string, std::string> PairType;
-                for(PairType pair : availableExtensionsMap)
+                using PairType = std::pair<std::string, std::string>;
+                for(const PairType& pair : availableExtensionsMap)
                 {
                     if(pair.second == selection)
                     {
@@ -444,6 +440,4 @@ void SSelector::forwardJob(core::jobs::IJob::sptr iJob)
 
 //------------------------------------------------------------------------------
 
-} // namespace io
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::io

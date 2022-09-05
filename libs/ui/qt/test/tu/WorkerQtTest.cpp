@@ -35,6 +35,7 @@
 #include <QSharedPointer>
 #include <QTimer>
 
+#include <array>
 #include <functional>
 #include <thread>
 
@@ -52,11 +53,8 @@ namespace ut
 
 struct TestHandler
 {
-    TestHandler() :
-        m_step(0),
-        m_threadCheckOk(true)
-    {
-    }
+    TestHandler()
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -81,8 +79,8 @@ struct TestHandler
         m_workerThreadId = id;
     }
 
-    int m_step;
-    bool m_threadCheckOk;
+    int m_step {0};
+    bool m_threadCheckOk {true};
     core::thread::ThreadIdType m_workerThreadId;
 };
 
@@ -91,18 +89,17 @@ struct TestHandler
 void WorkerQtTest::setUp()
 {
     // Set up context before running a test.
-    static char arg1[] = "WorkerQtTest";
+    static std::string arg1 = "WorkerQtTest";
 #if defined(__linux)
-    static char arg2[] = "-platform";
-    static char arg3[] = "offscreen";
-    char* argv[]       = {arg1, arg2, arg3, nullptr};
-    int argc           = 3;
+    static std::string arg2 = "-platform";
+    static std::string arg3 = "offscreen";
+    std::array argv         = {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
 #else
-    char* argv[] = {arg1, 0};
-    int argc     = 1;
+    std::array argv = {arg1.data(), static_cast<char*>(nullptr)};
 #endif
+    int argc = int(argv.size() - 1);
 
-    CPPUNIT_ASSERT(qApp == NULL);
+    CPPUNIT_ASSERT(qApp == nullptr);
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
         [](int& argc, char** argv)
         {
@@ -113,7 +110,7 @@ void WorkerQtTest::setUp()
 #endif
             return QSharedPointer<QApplication>(new ui::qt::App(argc, argv, guiEnabled));
         };
-    m_worker = ui::qt::getQtWorker(argc, argv, callback, "", "");
+    m_worker = ui::qt::getQtWorker(argc, argv.data(), callback, "", "");
 }
 
 //-----------------------------------------------------------------------------
@@ -122,21 +119,21 @@ void WorkerQtTest::tearDown()
 {
     // Clean up after the test run.
     m_worker.reset();
-    CPPUNIT_ASSERT(qApp == NULL);
+    CPPUNIT_ASSERT(qApp == nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
 void WorkerQtTest::initTest()
 {
-    CPPUNIT_ASSERT(qApp != NULL);
+    CPPUNIT_ASSERT(qApp != nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
 void WorkerQtTest::twiceInitTest()
 {
-    CPPUNIT_ASSERT(qApp != NULL);
+    CPPUNIT_ASSERT(qApp != nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,18 +141,20 @@ void WorkerQtTest::twiceInitTest()
 void runBasicTest(TestHandler& handler, core::thread::Worker::sptr worker)
 {
     handler.setWorkerId(worker->getThreadId());
-    worker->post(std::bind(&TestHandler::nextStep, std::ref(handler)));
-    worker->post(std::bind(&TestHandler::nextStep, std::ref(handler)));
-    worker->post(std::bind(&TestHandler::nextStep, std::ref(handler)));
+    worker->post([&handler]{handler.nextStep();});
+    worker->post([&handler]{handler.nextStep();});
+    worker->post([&handler]{handler.nextStep();});
 
-    worker->post(std::bind(&QApplication::quit));
+    worker->post([]{return QApplication::quit();});
 }
 
 //-----------------------------------------------------------------------------
 
-#define RUN_BASIC_TEST_CHECKS(handler) \
-    CPPUNIT_ASSERT_EQUAL(3, handler.m_step); \
-    CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk)
+void runBasicTestChecks(const TestHandler& handler)
+{
+    CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -167,7 +166,7 @@ void WorkerQtTest::basicTest()
 
     m_worker->getFuture().wait();
 
-    RUN_BASIC_TEST_CHECKS(handler);
+    runBasicTestChecks(handler);
 }
 
 //-----------------------------------------------------------------------------
@@ -176,11 +175,11 @@ void WorkerQtTest::postFromInsideTest()
 {
     TestHandler handler;
 
-    m_worker->post(std::bind(runBasicTest, std::ref(handler), m_worker));
+    m_worker->post([&handler, this]{return runBasicTest(handler, m_worker);});
 
     m_worker->getFuture().wait();
 
-    RUN_BASIC_TEST_CHECKS(handler);
+    runBasicTestChecks(handler);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,7 +193,7 @@ void doNothing()
 void runFromOutsideTest(TestHandler& handler, core::thread::Worker::sptr worker)
 {
     //waiting for WorkerQt to start
-    worker->postTask<void>(std::bind(doNothing)).wait();
+    worker->postTask<void>([]{return doNothing();}).wait();
 
     runBasicTest(handler, worker);
 }
@@ -205,30 +204,35 @@ void WorkerQtTest::postFromOutsideTest()
 {
     TestHandler handler;
 
-    std::thread testThread(std::bind(runFromOutsideTest, std::ref(handler), m_worker));
+    std::thread testThread([&handler, this]{return runFromOutsideTest(handler, m_worker);});
 
     m_worker->getFuture().wait();
 
-    RUN_BASIC_TEST_CHECKS(handler);
+    runBasicTestChecks(handler);
 
     testThread.join();
 }
 
 //-----------------------------------------------------------------------------
 
-#define QT_TEST_START \
-    try
-
-#define QT_TEST_END \
-    catch(CppUnit::Exception& e) \
-    { \
-        std::cerr << e.what() << std::endl; \
-        exception = e; \
-        QApplication::exit(1); \
-        return; \
-    }
-
 static CppUnit::Exception exception;
+
+//------------------------------------------------------------------------------
+
+static inline void qtTest(const std::function<void()>& f)
+{
+    try
+    {
+        f();
+    }
+    catch(CppUnit::Exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        exception = e;
+        QApplication::exit(1);
+        return;
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -236,17 +240,18 @@ void runBasicTimerTest(
     TestHandler& handler,
     const core::thread::Timer::sptr& timer,
     core::thread::Timer::TimeDurationType
+    /*unused*/
 )
 {
     timer->start();
 
-    QT_TEST_START
-    {
-        CPPUNIT_ASSERT(timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
-    }
-    QT_TEST_END
+    qtTest(
+        [&]
+            {
+                CPPUNIT_ASSERT(timer->isRunning());
+                CPPUNIT_ASSERT(handler.m_threadCheckOk);
+                CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+            });
 }
 
 //-----------------------------------------------------------------------------
@@ -255,32 +260,32 @@ void oneShotBasicTimerTest(
     int& i,
     TestHandler& handler,
     const core::thread::Timer::sptr& timer,
-    core::thread::Timer::TimeDurationType,
+    core::thread::Timer::TimeDurationType /*unused*/,
     const core::thread::Worker::sptr& worker
 )
 {
     handler.nextStepNoSleep();
 
-    QT_TEST_START
-    {
-        CPPUNIT_ASSERT(timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
-    }
-    QT_TEST_END;
+    qtTest(
+        [&]
+            {
+                CPPUNIT_ASSERT(timer->isRunning());
+                CPPUNIT_ASSERT(handler.m_threadCheckOk);
+                CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
+            });
 
     if(++i == 50)
     {
         timer->stop();
 
-        QT_TEST_START
-        {
-            CPPUNIT_ASSERT(!timer->isRunning());
-            CPPUNIT_ASSERT(handler.m_threadCheckOk);
-            CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
-        }
-        QT_TEST_END;
-        worker->post(std::bind(&QApplication::quit));
+        qtTest(
+            [&]
+                {
+                    CPPUNIT_ASSERT(!timer->isRunning());
+                    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+                    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+                });
+        worker->post([]{return QApplication::quit();});
     }
 }
 
@@ -297,22 +302,14 @@ void WorkerQtTest::basicTimerTest()
 
     int i = 1;
     timer->setFunction(
-        std::bind(
-            &oneShotBasicTimerTest,
-            std::ref(i),
-            handler,
-            std::ref(timer),
-            duration,
-            std::ref(m_worker)
-        )
-    );
+        [&i, &handler, &timer, duration, this]{return oneShotBasicTimerTest(i, handler, timer, duration, m_worker);});
     timer->setDuration(duration);
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-    m_worker->post(std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration));
+    m_worker->post([&handler, &timer, duration]{return runBasicTimerTest(handler, timer, duration);});
 
     core::thread::Worker::FutureType future = m_worker->getFuture();
     future.wait();

@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MinMaxPropagationTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -283,6 +280,4 @@ void MinMaxPropagationTest::radiusTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut

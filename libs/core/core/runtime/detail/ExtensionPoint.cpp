@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,22 +27,21 @@
 #include "core/runtime/operations.hpp"
 #include "core/runtime/RuntimeException.hpp"
 
-namespace sight::core::runtime
-{
+#include <utility>
 
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 //------------------------------------------------------------------------------
 
 ExtensionPoint::ExtensionPoint(
-    const std::shared_ptr<Module> bundle,
+    const std::shared_ptr<Module> module,
     const std::string& id,
-    const std::filesystem::path& schema
+    std::filesystem::path schema
 ) :
-    ModuleElement(bundle),
+    ModuleElement(module),
     m_id(filterID(id)),
-    m_schema(schema)
+    m_schema(std::move(schema))
 {
 }
 
@@ -82,12 +81,4 @@ std::shared_ptr<io::Validator> ExtensionPoint::getExtensionValidator() const
 
 //------------------------------------------------------------------------------
 
-void ExtensionPoint::operator=(const ExtensionPoint&) noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

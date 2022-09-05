@@ -42,15 +42,14 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-InrImageWriter::InrImageWriter(io::base::writer::IObjectWriter::Key)
+InrImageWriter::InrImageWriter(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 InrImageWriter::~InrImageWriter()
-{
-}
+= default;
 
 struct InrSaverFunctor
 {
@@ -76,8 +75,8 @@ struct InrSaverFunctor
         assert(imageIOWrite.IsNotNull());
 
         // create writer
-        typedef ::itk::Image<PIXELTYPE, 3> itkImageType;
-        typedef typename ::itk::ImageFileWriter<itkImageType> WriterType;
+        using itkImageType = ::itk::Image<PIXELTYPE, 3>;
+        using WriterType   = typename ::itk::ImageFileWriter<itkImageType>;
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
@@ -124,10 +123,8 @@ std::string InrImageWriter::extension() const
     {
         return ".inr.gz";
     }
-    else
-    {
-        return getFile().filename().extension().string();
-    }
+
+    return getFile().filename().extension().string();
 }
 
 //------------------------------------------------------------------------------

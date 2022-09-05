@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <condition_variable>
 #include <mutex>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -51,9 +48,9 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
-    void registerKeyTest();
+    void setUp() override;
+    void tearDown() override;
+    static void registerKeyTest();
     void registerConnectionTest();
 
 private:
@@ -69,6 +66,4 @@ private:
     data::Object::csptr m_obj;
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

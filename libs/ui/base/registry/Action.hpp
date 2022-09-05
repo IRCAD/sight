@@ -25,10 +25,7 @@
 #include "ui/base/config.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 /**
@@ -48,10 +45,10 @@ public:
     }
 
     /// Constructor.
-    UI_BASE_API Action(const std::string& sid);
+    UI_BASE_API Action(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~Action();
+    UI_BASE_API ~Action() override;
 
     /// Method called when the action service is stopping
     UI_BASE_API void actionServiceStopping();
@@ -74,6 +71,4 @@ protected:
     std::string m_sid;
 };
 
-} // namespace registry
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::registry

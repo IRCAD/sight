@@ -76,32 +76,32 @@ public:
         const MultiResolutionParametersType& _multiResolutionParameters,
         RealType _samplingPercentage    = 1.0,
         double _minStep                 = 0.0001,
-        unsigned long _maxIterations    = 200,
+        std::uint64_t _maxIterations    = 200,
         IterationCallbackType _callback = nullptr
     );
 
     FILTER_IMAGE_API void stopRegistration();
 
     /// Current metric evaluated by the optimizer.
-    FILTER_IMAGE_API RealType getCurrentMetricValue() const;
+    [[nodiscard]] FILTER_IMAGE_API RealType getCurrentMetricValue() const;
 
     /// Current set of parameters used to evaluate the metric in the optimizer.
-    FILTER_IMAGE_API const OptimizerType::ParametersType& getCurrentParameters() const;
+    [[nodiscard]] FILTER_IMAGE_API const OptimizerType::ParametersType& getCurrentParameters() const;
 
     /// Gradient descent relaxation factor.
-    FILTER_IMAGE_API RealType getRelaxationFactor() const;
+    [[nodiscard]] FILTER_IMAGE_API RealType getRelaxationFactor() const;
 
     /// Gradient descent learning rate.
-    FILTER_IMAGE_API RealType getLearningRate() const;
+    [[nodiscard]] FILTER_IMAGE_API RealType getLearningRate() const;
 
     /// Gradient magnitude tolerance.
-    FILTER_IMAGE_API RealType getGradientMagnitudeTolerance() const;
+    [[nodiscard]] FILTER_IMAGE_API RealType getGradientMagnitudeTolerance() const;
 
     /// Current optimizer iteration.
-    FILTER_IMAGE_API itk::SizeValueType getCurrentIteration() const;
+    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType getCurrentIteration() const;
 
     /// Current multi-resolution level.
-    FILTER_IMAGE_API itk::SizeValueType getCurrentLevel() const;
+    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType getCurrentLevel() const;
 
     /// Current registration result.
     FILTER_IMAGE_API void getCurrentMatrix(const data::Matrix4::sptr& _trf) const;
@@ -124,4 +124,4 @@ private:
     static double computeVolume(const data::Image::csptr& _img);
 };
 
-} // itkRegistrationOp
+} // namespace sight::filter::image

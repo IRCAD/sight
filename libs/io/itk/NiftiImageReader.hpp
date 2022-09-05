@@ -48,7 +48,7 @@ public:
 
     IO_ITK_API NiftiImageReader(io::base::reader::IObjectReader::Key key);
 
-    IO_ITK_API ~NiftiImageReader();
+    IO_ITK_API ~NiftiImageReader() override;
 
     IO_ITK_API void read() override;
 };

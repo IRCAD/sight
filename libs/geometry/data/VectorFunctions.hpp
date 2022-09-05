@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ GEOMETRY_DATA_API fwVec3d operator*(const fwVec3d& _vec, double _val);
  *  @param [in] _vec
  *  @return the result of the operation _vec*val
  */
-GEOMETRY_DATA_API fwVec3d operator*(const double _val, const fwVec3d& _vec);
+GEOMETRY_DATA_API fwVec3d operator*(double _val, const fwVec3d& _vec);
 
 /**
  *  @brief operator / between fwVec3d and value.
@@ -151,7 +151,7 @@ GEOMETRY_DATA_API fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2);
  *  @param [in] _vec2
  *  @return return 1 if equal 0 otherwise.
  */
-GEOMETRY_DATA_API int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API bool operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
 
 /**
  *  @brief Compare two fwVec3d data.
@@ -159,4 +159,4 @@ GEOMETRY_DATA_API int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
  *  @param [in] _vec2
  *  @return 1 if different.
  */
-GEOMETRY_DATA_API int operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2);
+GEOMETRY_DATA_API bool operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2);

@@ -284,7 +284,7 @@ public:
      *
      * @param own New ownership value
      */
-    DATA_API void setIsBufferOwner(const bool own);
+    DATA_API void setIsBufferOwner(bool own);
 
     /**
      * @brief Getter for array's buffer ownership
@@ -535,7 +535,7 @@ protected:
     /// Not implemented
     Array(const Array&);
 
-    const Array& operator=(const Array&);
+    Array& operator=(const Array&);
 
 private:
 
@@ -591,7 +591,7 @@ template<typename T>
 inline const T& Array::at(const Array::IndexType& id) const
 {
     const bool isIndexInBounds =
-        std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
+        std::equal(id.begin(), id.end(), m_size.begin(), std::less<>());
     SIGHT_THROW_EXCEPTION_IF(Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,10 @@ namespace sight::core::tools
 {
 
 ProgressAdviser::ProgressAdviser()
-{
-}
+= default;
 
 ProgressAdviser::~ProgressAdviser()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -48,4 +46,4 @@ void ProgressAdviser::notifyProgress(float percent, const std::string& msg) cons
     m_progressSignal(percent, msg);
 }
 
-}
+} // namespace sight::core::tools

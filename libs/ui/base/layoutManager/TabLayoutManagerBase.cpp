@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -37,14 +34,12 @@ const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY =
 //-----------------------------------------------------------------------------
 
 TabLayoutManagerBase::TabLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 TabLayoutManagerBase::~TabLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -150,6 +145,4 @@ void TabLayoutManagerBase::initialize(ConfigurationType configuration)
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

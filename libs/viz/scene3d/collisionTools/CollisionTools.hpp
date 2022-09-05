@@ -92,13 +92,13 @@ public:
      * @param _rayHeightLevel The height level of the ray.
      * @return True if an entity collide the ray.
      */
-    VIZ_SCENE3D_API bool collidesWithEntity(
+    [[nodiscard]] VIZ_SCENE3D_API bool collidesWithEntity(
         const Ogre::Vector3& _fromPoint,
         const Ogre::Vector3& _toPoint,
-        const Ogre::uint32 _queryMask,
-        const float _collisionRadius = 2.5f,
-        const float _rayHeightLevel  = 0.0f
-    );
+        Ogre::uint32 _queryMask,
+        float _collisionRadius = 2.5F,
+        float _rayHeightLevel  = 0.0F
+    ) const;
 
     /**
      * @brief Check for collisions with entities along a ray define by a mouse position.
@@ -113,8 +113,8 @@ public:
         Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
-        const Ogre::uint32 _queryMask
-    );
+        Ogre::uint32 _queryMask
+    ) const;
 
     /**
      * @brief raycastFromPoint Check for collisions with entities along a ray define by an origin and a direction.
@@ -124,11 +124,11 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
+    [[nodiscard]] VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
         const Ogre::Vector3& _point,
         const Ogre::Vector3& _normal,
-        const Ogre::uint32 _queryMask
-    );
+        Ogre::uint32 _queryMask
+    ) const;
 
     /**
      * @brief Check for collisions with entities along a ray.
@@ -137,10 +137,10 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(
+    [[nodiscard]] VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(
         const Ogre::Ray& _ray,
-        const Ogre::uint32 _queryMask
-    );
+        Ogre::uint32 _queryMask
+    ) const;
 
 private:
 
@@ -161,10 +161,10 @@ private:
         const Ogre::Vector3& _a,
         const Ogre::Vector3& _b,
         const Ogre::Vector3& _c,
-        const float _closestDistance,
+        float _closestDistance,
         bool _positiveSide,
         bool _negativeSide
     );
 };
 
-} // namespace sight::viz
+} // namespace sight::viz::scene3d

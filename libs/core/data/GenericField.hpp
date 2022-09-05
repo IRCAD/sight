@@ -87,7 +87,7 @@ public:
         try
         {
             // Try to cast in the same type
-            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+            const auto& other_field = dynamic_cast<const GenericField<T>&>(other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -121,7 +121,7 @@ public:
         try
         {
             // Try to cast in the same type
-            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+            const auto& other_field = dynamic_cast<const GenericField<T>&>(other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -154,7 +154,7 @@ public:
         try
         {
             // Try to cast in the same type
-            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+            const auto& other_field = dynamic_cast<const GenericField<T>&>(other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -218,9 +218,9 @@ public:
 protected:
 
     template<typename GT>
-    static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value);
+    static typename GT::sptr GenericFieldFactory(typename GT::ValueType value);
 
-    static sptr GenericFieldFactory(const T value);
+    static sptr GenericFieldFactory(T value);
 
     /**
      * @brief Constructor.
@@ -234,9 +234,8 @@ protected:
     /**
      * @brief Destructor.
      */
-    virtual ~GenericField() noexcept
-    {
-    }
+    ~GenericField() noexcept override =
+        default;
 
     //------------------------------------------------------------------------------
 

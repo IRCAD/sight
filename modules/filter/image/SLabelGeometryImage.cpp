@@ -47,8 +47,7 @@ SLabelGeometryImage::SLabelGeometryImage()
 //-----------------------------------------------------------------------------
 
 SLabelGeometryImage::~SLabelGeometryImage()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -60,11 +59,11 @@ void SLabelGeometryImage::configuring()
         SIGHT_ASSERT("pointList is needed in output key", m_configuration->findConfigurationElement("out"));
         std::vector<core::runtime::ConfigurationElement::sptr> clusterVect = clusters->find("cluster");
 
-        SIGHT_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
+        SIGHT_ASSERT("Clusters must have cluster tag.", !clusterVect.empty());
 
-        for(std::size_t i = 0 ; i < clusterVect.size() ; ++i)
+        for(auto& i : clusterVect)
         {
-            std::string clusterStr = clusterVect[i]->getValue();
+            std::string clusterStr = i->getValue();
             std::vector<std::size_t> clusterLabels;
             const boost::char_separator<char> separator(",");
             const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};

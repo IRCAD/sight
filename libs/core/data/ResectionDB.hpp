@@ -50,7 +50,7 @@ public:
     DATA_API ResectionDB(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~ResectionDB();
+    DATA_API ~ResectionDB() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

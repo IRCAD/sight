@@ -26,13 +26,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -61,7 +55,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Image();
+    IO_DICOM_API ~Image() override;
 
     /**
      * @brief Write General Image Module tags
@@ -134,8 +128,4 @@ public:
     IO_DICOM_API virtual void writeMRImageModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

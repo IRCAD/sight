@@ -24,10 +24,7 @@
 
 #include <vtkLookupTable.h>
 
-namespace sight::io::vtk
-{
-
-namespace helper
+namespace sight::io::vtk::helper
 {
 
 //------------------------------------------------------------------------------
@@ -97,6 +94,4 @@ void TransferFunction::toBWVtkLookupTable(
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::helper

@@ -44,8 +44,7 @@ Aggregator::sptr Aggregator::New(const std::string& name)
 //------------------------------------------------------------------------------
 
 Aggregator::Aggregator()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -79,7 +78,7 @@ IJob::SharedFuture Aggregator::runImpl()
             this->finish();
 
             // forwards exceptions that might have been thrown
-            for(SharedFuture f : futures)
+            for(const SharedFuture& f : futures)
             {
                 f.get();
             }
@@ -112,7 +111,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
         m_jobInfo[iJob.get()] = JobInfo(*iJob);
         auto& jobInfo = m_jobInfo[iJob.get()];
 
-        this->setTotalWorkUnitsUpgradeLock(m_totalWorkUnits + (jobInfo.totalWork ? normValue : 0), lock);
+        this->setTotalWorkUnitsUpgradeLock(m_totalWorkUnits + (jobInfo.totalWork != 0U ? normValue : 0), lock);
         lock.lock();
         // doneWork call after setTotalWorkUnitsUpgradeLock, because
         // doneWork value can be thresholded by setTotalWorkUnitsUpgradeLock
@@ -153,11 +152,11 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
                 if(oldTotalWorkUnits != newTotalWorkUnits)
                 {
-                    if(oldTotalWorkUnits && 0 == newTotalWorkUnits)
+                    if((oldTotalWorkUnits != 0U) && 0 == newTotalWorkUnits)
                     {
                         workUnits -= normValue;
                     }
-                    else if(0 == oldTotalWorkUnits && newTotalWorkUnits)
+                    else if(0 == oldTotalWorkUnits && (newTotalWorkUnits != 0U))
                     {
                         workUnits += normValue;
                     }
@@ -173,7 +172,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
             });
 
         auto iJobName = iJob->getName();
-        iJobName = iJobName.empty() ? "" : "[" + iJobName + "] ";
+        iJobName = iJobName.empty() ? "" : std::string("[").append(iJobName).append("] ");
         iJob->addLogHook(
             [ = ](IJob& /* job */, const std::string& message)
             {

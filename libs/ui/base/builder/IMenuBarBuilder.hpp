@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 /**
@@ -52,7 +49,7 @@ public:
     UI_BASE_API IMenuBarBuilder();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IMenuBarBuilder();
+    UI_BASE_API ~IMenuBarBuilder() override;
 
     /**
      * @brief Returns the builded menu bar.
@@ -86,6 +83,4 @@ protected:
     std::string m_backgroundColor;
 };
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

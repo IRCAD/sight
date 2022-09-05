@@ -35,7 +35,7 @@ namespace sight::data
 
 class SeriesDB;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicom
 {
@@ -103,7 +103,9 @@ private:
     bool selectFiducialsExportMode();
 
     /// Fiducial Export Mode
-    sight::io::dicom::writer::Series::FiducialsExportMode m_fiducialsExportMode;
+    sight::io::dicom::writer::Series::FiducialsExportMode m_fiducialsExportMode {sight::io::dicom::writer::Series::
+                                                                                 COMPREHENSIVE_3D_SR
+    };
 };
 
 } // namespace sight::module::io::dicom

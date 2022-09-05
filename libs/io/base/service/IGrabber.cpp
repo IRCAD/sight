@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,9 +70,8 @@ IGrabber::IGrabber() noexcept
 
 // ----------------------------------------------------------------------------
 
-IGrabber::~IGrabber() noexcept
-{
-}
+IGrabber::~IGrabber() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
@@ -118,7 +117,7 @@ void IGrabber::clearTimeline(data::FrameTL& _tl)
         const core::HiResClock::HiResClockType timestamp = _tl.getNewerTimestamp() + 1;
 
         SPTR(data::FrameTL::BufferType) buffer = _tl.createBuffer(timestamp);
-        auto destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
+        auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
         std::fill(destBuffer, destBuffer + _tl.getWidth() * _tl.getHeight() * _tl.numComponents(), 0);
 

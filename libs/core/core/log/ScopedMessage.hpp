@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <string>
 
-namespace sight::core
-{
-
-namespace log
+namespace sight::core::log
 {
 
 class SpyLogger;
@@ -56,7 +53,7 @@ public:
     {
     } // avoid compiler warnings like "variable X never used"
 
-    CORE_API virtual ~ScopedMessage();
+    CORE_API ~ScopedMessage() override;
 
 protected:
 
@@ -68,6 +65,4 @@ protected:
     core::HiResTimer m_timer;
 };
 
-} // namespace log
-
-} // namespace sight::core
+} // namespace sight::core::log

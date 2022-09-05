@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include "core/memory/BufferInfo.hpp"
 #include "core/memory/BufferManager.hpp"
 #include "core/memory/policy/factory/new.hpp"
+
 #include <core/base.hpp>
 
 namespace sight::core::memory
@@ -70,7 +71,7 @@ public:
     virtual void refresh() = 0;
 
     virtual bool setParam(const std::string& name, const std::string& value) = 0;
-    virtual std::string getParam(const std::string& name, bool* ok           = NULL) const = 0;
+    virtual std::string getParam(const std::string& name, bool* ok           = nullptr) const = 0;
     virtual const ParamNamesType& getParamNames() const                      = 0;
 
     template<typename T>

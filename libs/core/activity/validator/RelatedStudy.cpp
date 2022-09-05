@@ -30,30 +30,26 @@
 
 #include <boost/algorithm/string.hpp>
 
-namespace sight::activity
-{
-
-namespace validator
+namespace sight::activity::validator
 {
 
 fwActivitiesValidatorRegisterMacro(sight::activity::validator::RelatedStudy);
 
 //-----------------------------------------------------------------------------
 
-RelatedStudy::RelatedStudy(activity::IValidator::Key)
+RelatedStudy::RelatedStudy(activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 RelatedStudy::~RelatedStudy()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType RelatedStudy::validate(
-    const activity::extension::ActivityInfo&,
+    const activity::extension::ActivityInfo& /*activityInfo*/,
     const data::Vector::csptr& currentSelection
 ) const
 {
@@ -99,6 +95,4 @@ IValidator::ValidationType RelatedStudy::validate(
 
 //-----------------------------------------------------------------------------
 
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <vtkAlgorithmOutput.h>
 #include <vtkPolyData.h>
 
-namespace sight::module::filter::mesh
-{
-
-namespace generator
+namespace sight::module::filter::mesh::generator
 {
 
 /**
@@ -103,7 +100,7 @@ protected:
 private:
 
     /// Updates the height of the cylinder.
-    void updateHeight(double);
+    void updateHeight(double /*height*/);
 
     /// radius of the cylinder.
     double m_radius {1.0};
@@ -121,16 +118,16 @@ private:
     bool m_needleMode {false};
 
     /// Needle base color.
-    unsigned char m_needleColor[4] {255, 255, 255, 255};
+    std::array<unsigned char, 4> m_needleColor {255, 255, 255, 255};
 
     /// Needle minor steps color.
-    unsigned char m_needleMinorStepsColor[4] {175, 175, 175, 255};
+    std::array<unsigned char, 4> m_needleMinorStepsColor {175, 175, 175, 255};
 
     /// Needle minor steps length.
     double m_needleMinorStepsLength {10.0};
 
     /// Needle major steps color.
-    unsigned char m_needleMajorStepsColor[4] {255, 0, 0, 255};
+    std::array<unsigned char, 4> m_needleMajorStepsColor {255, 0, 0, 255};
 
     /// Needle major steps, i.e. put a major step every 5 minor steps by default.
     unsigned int m_needleMajorSteps {5};
@@ -161,9 +158,9 @@ private:
      *
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the filtered and colored object.
      */
-    vtkSmartPointer<vtkPolyData> filterAndColorSourceObject(
+    static vtkSmartPointer<vtkPolyData> filterAndColorSourceObject(
         vtkAlgorithmOutput* _sourceAlgorithm,
-        const unsigned char _rgba[4]
+        const std::array<unsigned char, 4>& _rgba
     );
 
     /**
@@ -174,11 +171,9 @@ private:
      *
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the torus.
      */
-    vtkSmartPointer<vtkPolyData> generateTorus(double _center, const unsigned char _rgba[4]);
+    vtkSmartPointer<vtkPolyData> generateTorus(double _center, const std::array<unsigned char, 4>& _rgba) const;
 
     sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
 };
 
-} // namespace generator
-
-} // namespace sight::module::filter::mesh
+} // namespace sight::module::filter::mesh::generator

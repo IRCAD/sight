@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #pragma once
 
 #include "io/igtl/detail/converter/IConverter.hpp"
@@ -33,10 +35,9 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 
-namespace sight::io::igtl::detail
-{
+#include <utility>
 
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 /**
@@ -54,23 +55,22 @@ public:
         BOOST_STATIC_ASSERT(boost::is_base_of<data::Object, FwDataObjectType>::value);
     }
 
-    ScalarConverter(const std::string& a) :
-        m_igtlType(a)
+    ScalarConverter(std::string a) :
+        m_igtlType(std::move(a))
     {
         BOOST_STATIC_ASSERT(boost::is_base_of<data::Object, FwDataObjectType>::value);
     }
 
     /// Destructor
-    virtual ~ScalarConverter()
-    {
-    }
+    ~ScalarConverter() override
+    = default;
 
     /**
      * @brief convert a igtl::RawMessage(which contain scalar) to a FwDataObjectType
      *
      * @return an data::Integer converted from an igtl::RawMessage
      */
-    data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+    [[nodiscard]] data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const override
     {
         typename FwDataObjectType::sptr obj = FwDataObjectType::New();
 
@@ -86,7 +86,7 @@ public:
      *
      * @return an  igtl::RawMessage converted from an data::Integer
      */
-    ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const
+    [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override
     {
         RawMessage::Pointer msg;
         typename FwDataObjectType::csptr obj = FwDataObjectType::dynamicConstCast(src);
@@ -94,7 +94,7 @@ public:
         msg = RawMessage::New(m_igtlType);
         RawMessage::RawDataType content = helper::ScalarToBytes<ScalarType>::toBytes(ScalarType(obj->getValue()));
         msg->append(content);
-        return ::igtl::MessageBase::Pointer(msg);
+        return ::igtl::MessageBase::Pointer(msg); // NOLINT(modernize-return-braced-init-list)
     }
 
     /**
@@ -112,7 +112,7 @@ public:
      *
      * @return the igtlType supported for conversion
      */
-    const std::string& getIgtlType() const
+    [[nodiscard]] const std::string& getIgtlType() const override
     {
         return m_igtlType;
     }
@@ -122,7 +122,7 @@ public:
      *
      * @return the fwData Object type supported for conversion
      */
-    const std::string& getFwDataObjectType() const
+    [[nodiscard]] const std::string& getFwDataObjectType() const override
     {
         return FwDataObjectType::classname();
     }
@@ -146,9 +146,8 @@ public:
     }
 
     /// Destructor
-    virtual ~IntConverter()
-    {
-    }
+    ~IntConverter() override
+    = default;
 
     /**
      * @brief create a new IntConverter smart pointer
@@ -174,9 +173,8 @@ public:
     }
 
     /// Destructor
-    virtual ~FloatConverter()
-    {
-    }
+    ~FloatConverter() override
+    = default;
 
     /**
      * @brief create a new FloatConverter smart pointer
@@ -189,6 +187,4 @@ public:
     }
 };
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

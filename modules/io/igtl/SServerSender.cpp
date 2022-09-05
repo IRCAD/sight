@@ -48,8 +48,7 @@ SServerSender::SServerSender()
 //-----------------------------------------------------------------------------
 
 SServerSender::~SServerSender()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +85,7 @@ void SServerSender::starting()
 
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));
+        m_serverFuture = std::async(std::launch::async, [this](auto&& ...){m_server->runServer();});
         m_sigConnected->asyncEmit();
     }
     catch(core::Exception& e)

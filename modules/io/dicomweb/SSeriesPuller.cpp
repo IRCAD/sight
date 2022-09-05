@@ -47,17 +47,13 @@ namespace sight::module::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-SSeriesPuller::SSeriesPuller() noexcept :
-    m_isPulling(false),
-    m_seriesIndex(0)
-{
-}
+SSeriesPuller::SSeriesPuller() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSeriesPuller::~SSeriesPuller() noexcept
-{
-}
+SSeriesPuller::~SSeriesPuller() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -66,7 +62,7 @@ void SSeriesPuller::configuring()
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SIGHT_ASSERT("The service module::io::dicomweb::SSeriesPuller must have a \"config\" element.", config);
 
-    bool success;
+    bool success = false;
 
     // Dicom Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
@@ -77,7 +73,7 @@ void SSeriesPuller::configuring()
 
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server"))
+    if(configuration.count("server") != 0U)
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
@@ -270,7 +266,7 @@ void SSeriesPuller::pullSeries()
                     << "Pacs host name: " << m_serverHostname << "\n"
                     << "Pacs port: " << m_serverPort << "\n";
 
-                    this->displayErrorMessage(ss.str());
+                    sight::module::io::dicomweb::SSeriesPuller::displayErrorMessage(ss.str());
                     SIGHT_WARN(exception.what());
                 }
 
@@ -283,7 +279,7 @@ void SSeriesPuller::pullSeries()
                     const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
 
                     /// GET all Instances by Series.
-                    const std::string& instancesUrl(pacsServer + "/series/" + seriesUID);
+                    const std::string& instancesUrl(std::string(pacsServer).append("/series/").append(seriesUID));
                     const QByteArray& instancesAnswer =
                         m_clientQt.get(sight::io::http::Request::New(instancesUrl));
                     jsonResponse = QJsonDocument::fromJson(instancesAnswer);
@@ -296,7 +292,8 @@ void SSeriesPuller::pullSeries()
                         const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
 
                         /// GET DICOM Instance file.
-                        const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
+                        const std::string instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID).
+                                                      append("/file"));
 
                         try
                         {
@@ -308,7 +305,7 @@ void SSeriesPuller::pullSeries()
                             ss << "Content not found:  \n"
                             << "Unable download the DICOM instance. \n";
 
-                            this->displayErrorMessage(ss.str());
+                            sight::module::io::dicomweb::SSeriesPuller::displayErrorMessage(ss.str());
                             SIGHT_WARN(exception.what());
                         }
 
@@ -317,7 +314,7 @@ void SSeriesPuller::pullSeries()
                         QDir().mkpath(instancePath.string().c_str());
                         // Move dicom file to the created dicom folder
                         instancePath /= m_path.filename();
-                        QFile().rename(m_path.string().c_str(), instancePath.string().c_str());
+                        QFile::rename(m_path.string().c_str(), instancePath.string().c_str());
                         m_path = m_path.parent_path() / seriesInstancesUID;
                     }
                 }
@@ -337,7 +334,7 @@ void SSeriesPuller::pullSeries()
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        this->displayErrorMessage(ss.str());
+        sight::module::io::dicomweb::SSeriesPuller::displayErrorMessage(ss.str());
         SIGHT_WARN(exception.what());
         m_isPulling = false;
     }
@@ -389,7 +386,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::displayErrorMessage(const std::string& message) const
+void SSeriesPuller::displayErrorMessage(const std::string& message)
 {
     SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;

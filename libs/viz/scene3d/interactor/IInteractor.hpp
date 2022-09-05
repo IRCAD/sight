@@ -181,7 +181,7 @@ protected:
 private:
 
     /// Checks if the cursor is on top of the given viewport.
-    static bool isInViewport(int _mouseX, int _mouseY, const Ogre::Viewport* const _vp);
+    static bool isInViewport(int _mouseX, int _mouseY, const Ogre::Viewport* _vp);
 };
 
 //------------------------------------------------------------------------------

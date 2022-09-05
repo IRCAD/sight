@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,15 @@
 
 #include <fstream>
 
-namespace sight::viz::qt3d
+namespace sight::viz::qt3d::techniques
 {
 
-namespace techniques
-{
-
-Lighting::Lighting()
+Lighting::Lighting() :
+    m_renderPass(new Qt3DRender::QRenderPass()),
+    m_edgeRenderPass(new Qt3DRender::QRenderPass()),
+    m_normalPass(new Qt3DRender::QRenderPass()),
+    m_cellNormalPass(new Qt3DRender::QRenderPass()),
+    m_rasterModeRenderState(new Qt3DRender::QRasterMode())
 {
     // Specifies graphics API to use with this technique.
     this->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
@@ -50,10 +52,10 @@ Lighting::Lighting()
     this->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
 
     // Light parameters. May be reworked when adding light management to qt3d sight features.
-    m_lightPosition = new Qt3DRender::QParameter(QStringLiteral("u_f3LightPosition"), QVector3D(0.0f, 0.0f, 0.0f));
+    m_lightPosition = new Qt3DRender::QParameter(QStringLiteral("u_f3LightPosition"), QVector3D(0.0F, 0.0F, 0.0F));
     this->addParameter(m_lightPosition);
 
-    m_lightIntensity = new Qt3DRender::QParameter(QStringLiteral("u_f3LightIntensity"), QVector3D(0.0f, 0.0f, 0.0f));
+    m_lightIntensity = new Qt3DRender::QParameter(QStringLiteral("u_f3LightIntensity"), QVector3D(0.0F, 0.0F, 0.0F));
     this->addParameter(m_lightIntensity);
 
     // Lighting mode parameter.
@@ -70,7 +72,7 @@ Lighting::Lighting()
     const auto fragmentShaderNormalPath = core::runtime::getLibraryResourceFilePath(
         "viz_qt3d/glsl/normalVisu_FP.glsl"
     );
-    Qt3DRender::QShaderProgram* const normalShaderProgram = new Qt3DRender::QShaderProgram();
+    auto* const normalShaderProgram = new Qt3DRender::QShaderProgram();
     normalShaderProgram->setVertexShaderCode(
         Qt3DRender::QShaderProgram::loadSource(
             QUrl::fromLocalFile(
@@ -105,7 +107,6 @@ Lighting::Lighting()
         )
     );
 
-    m_normalPass = new Qt3DRender::QRenderPass();
     m_normalPass->setShaderProgram(normalShaderProgram);
     this->addRenderPass(m_normalPass);
 
@@ -119,7 +120,7 @@ Lighting::Lighting()
     const auto fragmentShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
         "viz_qt3d/glsl/normalVisu_FP.glsl"
     );
-    Qt3DRender::QShaderProgram* const cellNormalShaderProgram = new Qt3DRender::QShaderProgram();
+    auto* const cellNormalShaderProgram = new Qt3DRender::QShaderProgram();
     cellNormalShaderProgram->setVertexShaderCode(
         Qt3DRender::QShaderProgram::loadSource(
             QUrl::fromLocalFile(
@@ -156,7 +157,6 @@ Lighting::Lighting()
         )
     );
 
-    m_cellNormalPass = new Qt3DRender::QRenderPass();
     m_cellNormalPass->setShaderProgram(cellNormalShaderProgram);
     this->addRenderPass(m_cellNormalPass);
 
@@ -167,7 +167,7 @@ Lighting::Lighting()
     const auto fragmentShaderPath = core::runtime::getLibraryResourceFilePath(
         "viz_qt3d/glsl/defaultRender_FP.glsl"
     );
-    Qt3DRender::QShaderProgram* const renderShaderProgram = new Qt3DRender::QShaderProgram();
+    auto* const renderShaderProgram = new Qt3DRender::QShaderProgram();
     renderShaderProgram->setVertexShaderCode(
         Qt3DRender::QShaderProgram::loadSource(
             QUrl::fromLocalFile(
@@ -191,7 +191,6 @@ Lighting::Lighting()
         )
     );
 
-    m_renderPass = new Qt3DRender::QRenderPass();
     m_renderPass->setShaderProgram(renderShaderProgram);
     this->addRenderPass(m_renderPass);
 
@@ -202,7 +201,7 @@ Lighting::Lighting()
     const auto edgeFragmentShaderPath = core::runtime::getLibraryResourceFilePath(
         "viz_qt3d/glsl/edgeRender_FP.glsl"
     );
-    Qt3DRender::QShaderProgram* const edgeShaderProgram = new Qt3DRender::QShaderProgram();
+    auto* const edgeShaderProgram = new Qt3DRender::QShaderProgram();
     edgeShaderProgram->setVertexShaderCode(
         Qt3DRender::QShaderProgram::loadSource(
             QUrl::fromLocalFile(
@@ -226,16 +225,14 @@ Lighting::Lighting()
         )
     );
 
-    m_edgeRenderPass = new Qt3DRender::QRenderPass();
     m_edgeRenderPass->setShaderProgram(edgeShaderProgram);
-    auto edgeRasterMode = new Qt3DRender::QRasterMode();
+    auto* edgeRasterMode = new Qt3DRender::QRasterMode();
     edgeRasterMode->setRasterMode(Qt3DRender::QRasterMode::Lines);
     m_edgeRenderPass->addRenderState(edgeRasterMode);
     this->addRenderPass(m_edgeRenderPass);
 
     // Adds QRasterMode render state to m_renderPass to control polygon mode.
     // Sets polygon mode default value to "surface".
-    m_rasterModeRenderState = new Qt3DRender::QRasterMode();
     m_rasterModeRenderState->setRasterMode(Qt3DRender::QRasterMode::Fill);
     m_renderPass->addRenderState(m_rasterModeRenderState);
 
@@ -248,8 +245,7 @@ Lighting::Lighting()
 }
 
 Lighting::~Lighting()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -358,6 +354,4 @@ void Lighting::updateRasterMode(int _rasterMode)
     }
 }
 
-} // namespace techniques.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::techniques

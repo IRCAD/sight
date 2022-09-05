@@ -158,8 +158,8 @@ void MIPMatchingRegistration<PIX>::registerImage(
         std::multiplies<double>()
     );
 
-    data::Image::csptr fixed  = _fixed,
-                       moving = _moving;
+    data::Image::csptr fixed  = _fixed;
+    data::Image::csptr moving = _moving;
 
     // Resample the image with the smallest voxels to match the other's voxel size.
     if(fixedVoxelVolume < movingVoxelVolume)
@@ -233,7 +233,7 @@ typename MIPMatchingRegistration<PIX>::Image2DType::PointType MIPMatchingRegistr
     auto correlation = CorrelationFilterType::New();
     correlation->SetFixedImage(img);
     correlation->SetMovingImage(_template);
-    correlation->SetRequiredFractionOfOverlappingPixels(0.2f);
+    correlation->SetRequiredFractionOfOverlappingPixels(0.2F);
     correlation->Update();
 
     // Find the position with the best correlation.
@@ -244,8 +244,8 @@ typename MIPMatchingRegistration<PIX>::Image2DType::PointType MIPMatchingRegistr
 
     // Go from pixel coordinates back to physical coordinates
     auto spacing = img->GetSpacing();
-    maxIdx[0] -= (templateSize[0] - 1);
-    maxIdx[1] -= (templateSize[1] - 1);
+    maxIdx[0] -= static_cast<std::int64_t>(templateSize[0] - 1);
+    maxIdx[1] -= static_cast<std::int64_t>(templateSize[1] - 1);
     Image2DType::PointType p;
     p[0] = static_cast<double>(maxIdx[0]) * spacing[0];
     p[1] = static_cast<double>(maxIdx[1]) * spacing[1];
@@ -254,4 +254,4 @@ typename MIPMatchingRegistration<PIX>::Image2DType::PointType MIPMatchingRegistr
     return p;
 }
 
-} // itkRegistrationOp
+} // namespace sight::filter::image

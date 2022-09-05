@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ public:
     SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::base::IAction);
     MODULE_UI_QT_API SShowHelp() noexcept;
 
-    MODULE_UI_QT_API virtual ~SShowHelp() noexcept;
+    MODULE_UI_QT_API ~SShowHelp() noexcept override;
 
 protected:
 
@@ -75,7 +75,7 @@ private:
      * @brief the m_bServiceIsConfigured value is \b true
      * if the help files path is known.
      */
-    bool m_bServiceIsConfigured;
+    bool m_bServiceIsConfigured {false};
 
     /**
      * @brief help files path.

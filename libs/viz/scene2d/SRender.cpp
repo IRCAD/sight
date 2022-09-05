@@ -43,25 +43,22 @@
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
 
+#include <cmath>
+
 namespace sight::viz::scene2d
 {
 
 SRender::SRender() noexcept :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
-    m_scene(nullptr),
-    m_view(nullptr),
-    m_antialiasing(false),
-    m_background("#000000"),
-    m_aspectRatioMode(Qt::IgnoreAspectRatio)
+    m_background("#000000")
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SRender::~SRender() noexcept
-{
-}
+SRender::~SRender() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -124,7 +121,7 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
             });
 
         // Process interaction on all adaptors until one has accepted the event.
-        for(viz::scene2d::IAdaptor::sptr adaptor : orderedAdaptors)
+        for(const viz::scene2d::IAdaptor::sptr& adaptor : orderedAdaptors)
         {
             adaptor->processInteraction(_event);
             if(_event.isAccepted())
@@ -166,7 +163,7 @@ scene2d::vec2d_t SRender::mapToScene(const scene2d::vec2d_t& coord, bool clip) c
         }
     }
 
-    return scene2d::vec2d_t(qps.x(), qps.y());
+    return {qps.x(), qps.y()};
 }
 
 //-----------------------------------------------------------------------------
@@ -233,7 +230,7 @@ void SRender::startContext()
     auto qtContainer = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Convert the background color
-    std::uint8_t color[4];
+    std::array<std::uint8_t, 4> color {};
     sight::data::tools::Color::hexaStringToRGBA(m_background, color);
 
     m_scene = new QGraphicsScene(m_sceneStart.x, m_sceneStart.y, m_sceneWidth.x, m_sceneWidth.y);
@@ -244,7 +241,7 @@ void SRender::startContext()
     m_view->setSceneRender(viz::scene2d::SRender::dynamicCast(this->getSptr()));
     m_view->setRenderHint(QPainter::Antialiasing, m_antialiasing);
 
-    QVBoxLayout* layout = new QVBoxLayout;
+    auto* layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->setLayout(layout);
 
@@ -360,7 +357,10 @@ void SRender::configureAdaptor(ConfigurationType _conf)
 void SRender::updateSceneSize(float ratioPercent)
 {
     QRectF rec = m_scene->itemsBoundingRect();
-    qreal x, y, w, h;
+    qreal x    = NAN;
+    qreal y    = NAN;
+    qreal w    = NAN;
+    qreal h    = NAN;
     rec.getRect(&x, &y, &w, &h);
 
     if(ratioPercent != 0)

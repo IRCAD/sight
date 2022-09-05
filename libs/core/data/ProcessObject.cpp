@@ -36,41 +36,27 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-ProcessObject::ProcessObject(data::Object::Key)
+ProcessObject::ProcessObject(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 ProcessObject::~ProcessObject()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 data::Object::sptr ProcessObject::getValue(const ParamNameType& name, const ProcessObjectMapType& params)
 {
     data::Object::sptr object;
-    ProcessObjectMapType::const_iterator iter = params.find(name);
+    auto iter = params.find(name);
     if(iter != params.end())
     {
         object = iter->second;
     }
 
     return object;
-}
-
-//------------------------------------------------------------------------------
-
-data::Object::csptr ProcessObject::getValue(const ParamNameType& name, const ProcessObjectMapType& params) const
-{
-    const auto& iter = params.find(name);
-    if(iter != params.cend())
-    {
-        return iter->second;
-    }
-
-    return data::Object::csptr();
 }
 
 //------------------------------------------------------------------------------
@@ -129,15 +115,14 @@ void ProcessObject::setOutputValue(const ParamNameType& name, data::Object::sptr
 
 //------------------------------------------------------------------------------
 
-ProcessObject::ParamNameVectorType ProcessObject::getParamNames(const ProcessObjectMapType& params) const
+ProcessObject::ParamNameVectorType ProcessObject::getParamNames(const ProcessObjectMapType& params)
 {
     ParamNameVectorType names;
     std::transform(
         params.begin(),
         params.end(),
         std::back_inserter(names),
-        std::bind(&ProcessObjectMapType::value_type::first, std::placeholders::_1)
-    );
+        [](const auto& e){return e.first;});
     return names;
 }
 
@@ -159,14 +144,14 @@ ProcessObject::ParamNameVectorType ProcessObject::getOutputsParamNames() const
 
 void ProcessObject::clearInputs()
 {
-    this->clearParams(m_outputs);
+    sight::data::ProcessObject::clearParams(m_outputs);
 }
 
 //------------------------------------------------------------------------------
 
 void ProcessObject::clearOutputs()
 {
-    this->clearParams(m_inputs);
+    sight::data::ProcessObject::clearParams(m_inputs);
 }
 
 //------------------------------------------------------------------------------

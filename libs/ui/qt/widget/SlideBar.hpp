@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 #include <QApplication>
 #include <QWidget>
 
-namespace sight::ui::qt
-{
-
-namespace widget
+namespace sight::ui::qt::widget
 {
 
 /// This class allows to display a slide widget. The slide widget can be displayed over all others widgets.
@@ -98,7 +95,7 @@ public:
     );
 
     /// Destroyes the widget.
-    UI_QT_API virtual ~SlideBar();
+    UI_QT_API ~SlideBar() override;
 
     /// Updates the widget position relative of the parent.
     UI_QT_API void updatePosition();
@@ -107,7 +104,7 @@ public:
     UI_QT_API void setVisible(bool _visible) override;
 
     /// Gets if the widget is shown.
-    inline bool isShown() const;
+    [[nodiscard]] inline bool isShown() const;
 
 private:
 
@@ -181,6 +178,4 @@ bool SlideBar::isShown() const
     return m_isShown;
 }
 
-} // namespace widget.
-
-} // namespace sight::ui::qt.
+} // namespace sight::ui::qt::widget

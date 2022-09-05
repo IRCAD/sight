@@ -59,7 +59,7 @@ protected:
 
     UI_BASE_API IMenu();
 
-    UI_BASE_API virtual ~IMenu();
+    UI_BASE_API ~IMenu() override;
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -125,7 +125,7 @@ private:
     ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the actions if the service is stopped
-    bool m_hideActions;
+    bool m_hideActions {false};
 };
 
 } // namespace sight::ui::base

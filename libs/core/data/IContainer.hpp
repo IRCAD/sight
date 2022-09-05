@@ -226,10 +226,8 @@ public:
         {
             return C::erase(it);
         }
-        else
-        {
-            return C::end();
-        }
+
+        return C::end();
     }
 };
 
@@ -661,7 +659,7 @@ public:
     inline explicit IContainer(Object::Key key);
     inline explicit IContainer(const C& container);
     inline explicit IContainer(C&& container);
-    inline virtual ~IContainer() noexcept = default;
+    inline ~IContainer() noexcept override = default;
 
     /// To allow assignment from STL containers
     using ContainerWrapper<C>::ContainerWrapper;

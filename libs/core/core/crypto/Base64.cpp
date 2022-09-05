@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@ namespace sight::core::crypto
 
 //------------------------------------------------------------------------------
 template<typename T>
-inline static T from_base64(const T& message)
+inline static T fromBase64(const T& message)
 {
     const std::size_t message_size = message.size();
 
@@ -83,20 +83,20 @@ inline static T from_base64(const T& message)
 
 secure_string from_base64(const secure_string& message)
 {
-    return from_base64<secure_string>(message);
+    return fromBase64<secure_string>(message);
 }
 
 //------------------------------------------------------------------------------
 
 std::string from_base64(const std::string& message)
 {
-    return from_base64<std::string>(message);
+    return fromBase64<std::string>(message);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-T to_base64(const T& message)
+T toBase64(const T& message)
 {
     // Compute the output size
     const std::size_t predicted = 4 * ((message.size() + 2) / 3);
@@ -121,14 +121,14 @@ T to_base64(const T& message)
 
 secure_string to_base64(const secure_string& message)
 {
-    return to_base64<secure_string>(message);
+    return toBase64<secure_string>(message);
 }
 
 //------------------------------------------------------------------------------
 
 std::string to_base64(const std::string& message)
 {
-    return to_base64<std::string>(message);
+    return toBase64<std::string>(message);
 }
 
 } // namespace sight::core::crypto

@@ -50,9 +50,7 @@ const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
-IGuiContainer::IGuiContainer() :
-    m_viewLayoutManagerIsCreated(false),
-    m_hasToolBar(false)
+IGuiContainer::IGuiContainer()
 {
     newSlot(s_SET_ENABLED_SLOT, &IGuiContainer::setEnabled, this);
     newSlot(s_ENABLE_SLOT, &IGuiContainer::enable, this);
@@ -65,8 +63,7 @@ IGuiContainer::IGuiContainer() :
 //-----------------------------------------------------------------------------
 
 IGuiContainer::~IGuiContainer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -368,4 +365,4 @@ void IGuiContainer::hide()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

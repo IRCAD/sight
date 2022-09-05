@@ -39,24 +39,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::Series);
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 //------------------------------------------------------------------------------
 
-Series::Series(io::base::writer::IObjectWriter::Key) :
-    m_fiducialsExportMode(SPATIAL_FIDUCIALS)
+Series::Series(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -123,7 +118,7 @@ void Series::write()
 
 //------------------------------------------------------------------------------
 
-bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
+bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries)
 {
     data::Image::csptr image = imageSeries->getImage();
     SIGHT_ASSERT("Image not instanced", image);
@@ -132,7 +127,7 @@ bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
     const auto distances     = data::helper::MedicalImage::getDistances(*image);
 
     // Check if image has landmark and distance
-    return (pl && pl->getPoints().size() > 0) || distances;
+    return (pl && !pl->getPoints().empty()) || distances;
 }
 
 //------------------------------------------------------------------------------
@@ -147,11 +142,9 @@ SPTR(io::dicom::container::DicomInstance) Series::getImageInstance()
 
 std::string Series::extension() const
 {
-    return std::string("");
+    return {""};
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

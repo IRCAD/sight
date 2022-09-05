@@ -55,7 +55,7 @@ public:
     MODULE_VIZ_SAMPLE_API SImage() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SAMPLE_API virtual ~SImage() noexcept;
+    MODULE_VIZ_SAMPLE_API ~SImage() noexcept override;
 
 protected:
 

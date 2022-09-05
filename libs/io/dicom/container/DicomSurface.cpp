@@ -26,21 +26,16 @@
 
 #include <geometry/data/Mesh.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace container
+namespace sight::io::dicom::container
 {
 
 //------------------------------------------------------------------------------
 
 struct CellDataOffsetGenerator
 {
-    data::Mesh::cell_t current;
-    CellDataOffsetGenerator() :
-        current(0)
-    {
-    }
+    data::Mesh::cell_t current {0};
+    CellDataOffsetGenerator()
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -64,14 +59,14 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
         const auto end   = mesh->cend<data::iterator::point::xyz>();
 
         // Retrieve & copy data
-        m_pointBuffer.reserve(mesh->numPoints() * 3);
+        m_pointBuffer.reserve(mesh->numPoints() * std::size_t(3));
         m_pointBuffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
     }
 
     // Cells
     {
         // Retrieve & copy data
-        m_cellBuffer.resize(mesh->numCells() * 3);
+        m_cellBuffer.resize(mesh->numCells() * std::size_t(3));
 
         std::size_t index = 0;
         for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
@@ -90,7 +85,7 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
         const auto end   = mesh->cend<data::iterator::point::nxyz>();
 
         // Retrieve & copy data
-        m_normalBuffer.reserve(mesh->numPoints() * 3);
+        m_normalBuffer.reserve(mesh->numPoints() * std::size_t(3));
         m_normalBuffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
     }
 }
@@ -114,7 +109,7 @@ DicomSurface::DicomSurface(
     m_cellBuffer.assign(cellBuffer, cellBuffer + cellBufferSize);
 
     // Normals
-    if(normalBuffer)
+    if(normalBuffer != nullptr)
     {
         m_normalBuffer.reserve(pointBufferSize);
         m_normalBuffer.assign(normalBuffer, normalBuffer + pointBufferSize);
@@ -124,8 +119,7 @@ DicomSurface::DicomSurface(
 //------------------------------------------------------------------------------
 
 DicomSurface::~DicomSurface()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -223,6 +217,4 @@ std::size_t DicomSurface::getNormalBufferSize() const
 
 //------------------------------------------------------------------------------
 
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container

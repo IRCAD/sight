@@ -27,7 +27,8 @@
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
 
-using namespace sight;
+namespace data    = sight::data;
+namespace service = sight::service;
 
 namespace Tuto01DataServiceBasicCpp
 {
@@ -36,9 +37,8 @@ SIGHT_REGISTER_PLUGIN("Tuto01DataServiceBasicCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

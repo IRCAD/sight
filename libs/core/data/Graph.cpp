@@ -46,7 +46,7 @@ const core::com::Signals::SignalKeyType Graph::s_UPDATED_SIG = "updated";
 
 //------------------------------------------------------------------------------
 
-Graph::Graph(data::Object::Key) :
+Graph::Graph(data::Object::Key /*unused*/) :
     m_sigUpdated(UpdatedSignalType::New())
 {
     m_signals(s_UPDATED_SIG, m_sigUpdated);
@@ -55,8 +55,7 @@ Graph::Graph(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 Graph::~Graph()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -96,15 +95,13 @@ const Graph::NodeContainer& Graph::getNodes() const
 
 bool Graph::haveConnectedEdges(Node::csptr node) const
 {
-    for(const auto& connection : m_connections)
-    {
-        if(connection.second.first == node || connection.second.second == node)
+    return std::any_of(
+        m_connections.begin(),
+        m_connections.end(),
+        [&](const auto& connection)
         {
-            return true;
-        }
-    }
-
-    return false;
+            return connection.second.first == node || connection.second.second == node;
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -124,10 +121,8 @@ Edge::sptr Graph::makeConnection(
     {
         return nEdge; // success return new Edge
     }
-    else
-    {
-        return data::Edge::sptr(); // failure
-    }
+
+    return {}; // failure
 }
 
 //------------------------------------------------------------------------------
@@ -208,17 +203,15 @@ Node::sptr Graph::getNode(Edge::sptr edge, bool upStream)
     // check edge is valid ?
     if(i == m_connections.end())
     {
-        return Node::sptr();
+        return {};
     }
 
     if(upStream)
     {
         return (*i).second.first;
     }
-    else
-    {
-        return (*i).second.second;
-    }
+
+    return (*i).second.second;
 }
 
 //------------------------------------------------------------------------------

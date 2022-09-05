@@ -28,10 +28,7 @@
 
 #include <cstdint>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 class Mesh
@@ -53,6 +50,4 @@ public:
     );
 };
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,10 +35,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::LineFunctionsTest);
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -136,7 +133,7 @@ void LineFunctionsTest::checkGetClosestPoints()
 
         geometry::data::normalize(line2.second);
 
-        bool bIntersection;
+        bool bIntersection = false;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoints");
@@ -169,7 +166,7 @@ void LineFunctionsTest::checkIntersect1()
         fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d pt  = {{5, 10, 0}};
 
-        bool bIntersection;
+        bool bIntersection = false;
         bIntersection = geometry::data::intersect(line, 11.0, pt);
         CPPUNIT_ASSERT(bIntersection == true);
 
@@ -184,7 +181,7 @@ void LineFunctionsTest::checkIntersect1()
         geometry::data::normalize(line.second);
         fwVec3d pt = {{1, 42, 2}};
 
-        bool bIntersection;
+        bool bIntersection = false;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::intersect1");
@@ -232,7 +229,7 @@ void LineFunctionsTest::checkIntersect2()
 
         geometry::data::normalize(direction);
 
-        bool bIntersection;
+        bool bIntersection = false;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::intersect1");
@@ -261,6 +258,4 @@ void LineFunctionsTest::checkIntersect3()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

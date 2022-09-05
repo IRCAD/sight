@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::SigSlotConnectionTest);
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -83,6 +80,4 @@ void SigSlotConnectionTest::basicTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

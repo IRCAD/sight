@@ -42,19 +42,19 @@ namespace sight::module::viz::scene3d::adaptor
 
 struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Listener
 {
-    virtual ~FragmentsInfoMaterialListener()
-    {
-    }
+    ~FragmentsInfoMaterialListener() override
+    = default;
 
     //------------------------------------------------------------------------------
 
-    virtual Ogre::Technique* handleSchemeNotFound(
-        unsigned short,
+    Ogre::Technique* handleSchemeNotFound(
+        std::uint16_t /*schemeIndex*/,
         const Ogre::String& _schemeName,
         Ogre::Material* _originalMaterial,
-        unsigned short,
+        std::uint16_t /*lodIndex*/,
         const Ogre::Renderable*
-)
+        /*rend*/
+    ) override
     {
         Ogre::Technique* newTech = nullptr;
 
@@ -68,7 +68,7 @@ struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Liste
             );
 
             const Ogre::Technique::Passes& passes = newTech->getPasses();
-            for(const auto pass : passes)
+            for(auto* const pass : passes)
             {
                 pass->setCullingMode(Ogre::CULL_NONE);
                 pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
@@ -84,15 +84,13 @@ static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = null
 
 //-----------------------------------------------------------------------------
 
-SFragmentsInfo::SFragmentsInfo() noexcept
-{
-}
+SFragmentsInfo::SFragmentsInfo() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SFragmentsInfo::~SFragmentsInfo() noexcept
-{
-}
+SFragmentsInfo::~SFragmentsInfo() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -271,7 +269,7 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
 
     Ogre::CompositionTechnique* const technique = m_compositor->createTechnique();
 
-    Ogre::CompositionTechnique::TextureDefinition* globalTarget;
+    Ogre::CompositionTechnique::TextureDefinition* globalTarget = nullptr;
     globalTarget        = technique->createTextureDefinition(m_targetName);
     globalTarget->scope = Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
     globalTarget->formatList.push_back(Ogre::PixelFormat::PF_A8B8G8R8);
@@ -291,7 +289,7 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
         globalTarget->formatList.push_back(Ogre::PixelFormat::PF_FLOAT32_R);
 
         const std::string localName("local_RTT");
-        Ogre::CompositionTechnique::TextureDefinition* localTarget;
+        Ogre::CompositionTechnique::TextureDefinition* localTarget = nullptr;
         localTarget        = technique->createTextureDefinition(localName);
         localTarget->scope = Ogre::CompositionTechnique::TextureScope::TS_LOCAL;
         localTarget->formatList.push_back(Ogre::PixelFormat::PF_DEPTH32);
@@ -318,7 +316,7 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
 
     if(retrievePrimitiveID)
     {
-        Ogre::CompositionTechnique::TextureDefinition* globalTargetPrimitiveID;
+        Ogre::CompositionTechnique::TextureDefinition* globalTargetPrimitiveID = nullptr;
         globalTargetPrimitiveID        = technique->createTextureDefinition(m_targetPrimitiveIDName);
         globalTargetPrimitiveID->scope = Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
         globalTargetPrimitiveID->formatList.push_back(Ogre::PixelFormat::PF_R32_SINT);
@@ -366,7 +364,10 @@ void SFragmentsInfo::destroyCompositor()
 
 void SFragmentsInfo::viewportDimensionsChanged(Ogre::Viewport* _viewport)
 {
-    int left, top, width, height;
+    int left   = 0;
+    int top    = 0;
+    int width  = 0;
+    int height = 0;
     _viewport->getActualDimensions(left, top, width, height);
 
     // Sometimes, the size can be null, we need to avoid resizing since a global texture needs absolute values.
@@ -379,7 +380,7 @@ void SFragmentsInfo::viewportDimensionsChanged(Ogre::Viewport* _viewport)
 
 //-----------------------------------------------------------------------------
 
-void SFragmentsInfo::postRenderTargetUpdate(const Ogre::RenderTargetEvent&)
+void SFragmentsInfo::postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/)
 {
     this->updating();
 }

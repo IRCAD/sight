@@ -42,9 +42,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3d::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -93,8 +92,8 @@ void Plugin::stop() noexcept
 void SightOgreListener::messageLogged(
     const Ogre::String& _message,
     Ogre::LogMessageLevel _lml,
-    bool,
-    const Ogre::String&,
+    bool /*maskDebug*/,
+    const Ogre::String& /*logName*/,
     bool& _skipThisMessage
 )
 {

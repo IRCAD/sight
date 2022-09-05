@@ -48,4 +48,4 @@ public:
     MODULE_NAVIGATION_OPENVSLAM_API void stop() noexcept final;
 };
 
-} // namespace orbSlamTracker
+} // namespace sight::module::navigation::openvslam

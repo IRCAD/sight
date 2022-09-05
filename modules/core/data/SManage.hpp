@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -111,7 +111,7 @@ public:
     MODULE_DATA_API SManage() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API virtual ~SManage() noexcept;
+    MODULE_DATA_API ~SManage() noexcept override;
 
     /**
      * @name Slots
@@ -186,4 +186,4 @@ private:
     sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_container {this, "container"};
 };
 
-} // sight::module::data
+} // namespace sight::module::data

@@ -24,8 +24,6 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/Utils.hpp"
 
-#include <viz/scene3d/ogre.hpp>
-
 namespace sight::viz::scene3d::detail
 {
 

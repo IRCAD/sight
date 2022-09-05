@@ -31,10 +31,7 @@
 
 #include <thread>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 SIGHT_REGISTER_DATA(Buffer);
@@ -53,11 +50,8 @@ SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SShow2Test, service::ut::Buffe
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-SBasicTest::SBasicTest() :
-    m_updateFinished(false),
-    m_swapFinished(false)
-{
-}
+SBasicTest::SBasicTest()
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +69,7 @@ void SBasicTest::stopping()
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::swapping(std::string_view)
+void SBasicTest::swapping(std::string_view /*unused*/)
 {
     std::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;
@@ -113,9 +107,7 @@ const core::com::Slots::SlotKeyType SShowTest::s_CHANGE_SLOT = "change";
 
 //------------------------------------------------------------------------------
 
-SShowTest::SShowTest() :
-    m_receiveCount(0),
-    m_changeCount(0)
+SShowTest::SShowTest()
 {
     m_slotChange = core::com::newSlot(&SShowTest::change, this);
     core::com::HasSlots::m_slots(s_CHANGE_SLOT, m_slotChange);
@@ -176,8 +168,7 @@ const core::com::Slots::SlotKeyType SShow2Test::s_UPDATE_BUFFER_SLOT = "updateBu
 
 //------------------------------------------------------------------------------
 
-SShow2Test::SShow2Test() :
-    m_receiveCount(0)
+SShow2Test::SShow2Test()
 {
     newSlot(s_UPDATE_BUFFER_SLOT, &SShow2Test::updateBuffer, this);
 }
@@ -212,6 +203,4 @@ void SShow2Test::updateBuffer()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

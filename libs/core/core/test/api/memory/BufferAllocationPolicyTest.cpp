@@ -52,4 +52,4 @@ void BufferAllocationPolicyTest::exceptionTest()
     CPPUNIT_ASSERT_THROW(noAllocP->reallocate(buffer, 1), core::memory::exception::Memory);
 }
 
-}
+} // namespace sight::core::memory::ut

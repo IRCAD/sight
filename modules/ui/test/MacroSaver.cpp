@@ -31,6 +31,8 @@
 #include <QMetaEnum>
 #include <QTest>
 
+#include <utility>
+
 const QEvent::Type ListWidgetClick = static_cast<QEvent::Type>(QEvent::registerEventType());
 
 //------------------------------------------------------------------------------
@@ -54,7 +56,7 @@ QString modifiersToString(Qt::KeyboardModifiers modifiers)
     {
         for(const auto& [name, value] : modifiersList)
         {
-            if(modifiers & value)
+            if((modifiers & value) != 0U)
             {
                 if(!res.isEmpty())
                 {
@@ -119,9 +121,9 @@ InteractionMouse::InteractionMouse(QPoint from, QPoint to, Qt::MouseButton butto
 
 //------------------------------------------------------------------------------
 
-InteractionKeyboard::InteractionKeyboard(Qt::Key key, const QString& sequence) :
+InteractionKeyboard::InteractionKeyboard(Qt::Key key, QString sequence) :
     key(key),
-    sequence(sequence)
+    sequence(std::move(sequence))
 {
 }
 
@@ -134,8 +136,8 @@ bool InteractionKeyboard::isPrintable()
 
 //------------------------------------------------------------------------------
 
-InteractionListWidgetClick::InteractionListWidgetClick(const QString& name) :
-    name(name)
+InteractionListWidgetClick::InteractionListWidgetClick(QString name) :
+    name(std::move(name))
 {
 }
 
@@ -235,7 +237,7 @@ bool MacroSaver::eventFilter(QObject* target, QEvent* e)
 {
     if(e->type() == QEvent::ChildAdded)
     {
-        QChildEvent* ce = dynamic_cast<QChildEvent*>(e);
+        auto* ce = dynamic_cast<QChildEvent*>(e);
         infect(ce->child());
         if(m_mainWindow == nullptr)
         {
@@ -338,11 +340,13 @@ QVector<FindStrategy> MacroSaver::find(QObject* o)
     {
         return {{FindStrategyType::ROOT, className, "", 0}};
     }
-    else if(o == qApp->activeModalWidget())
+
+    if(o == qApp->activeModalWidget())
     {
         return {{FindStrategyType::ACTIVE_MODAL_WIDGET, className, w->windowTitle(), 0}};
     }
-    else if(o->objectName() != "")
+
+    if(o->objectName() != "")
     {
         QVector<FindStrategy> res {{FindStrategyType::OBJECT_NAME, className, o->objectName().toLatin1(), 0}};
         if(findChild(m_mainWindow, className, o->objectName()) == o)
@@ -360,21 +364,25 @@ QVector<FindStrategy> MacroSaver::find(QObject* o)
 
         return res;
     }
-    else if(findChildren(m_mainWindow, className).size() == 1)
+
+    if(findChildren(m_mainWindow, className).size() == 1)
     {
         return {{FindStrategyType::GLOBAL_TYPE, className, "", 0}};
     }
-    else if(w != nullptr && w->actions().size() == 1)
+
+    if(w != nullptr && w->actions().size() == 1)
     {
         QVector<FindStrategy> res {{FindStrategyType::ACTION, className, "", 0}};
         res.append(find(w->actions()[0]));
         return res;
     }
-    else if(o->parent() == nullptr)
+
+    if(o->parent() == nullptr)
     {
         return {{FindStrategyType::CANT_BE_FOUND, className, "", 0}};
     }
-    else if(findChildren(o->parent(), className, "", Qt::FindDirectChildrenOnly).size() == 1)
+
+    if(findChildren(o->parent(), className, "", Qt::FindDirectChildrenOnly).size() == 1)
     {
         QVector<FindStrategy> res {{FindStrategyType::LOCAL_TYPE, className, "", 0}};
         res.append(find(o->parent()));
@@ -472,7 +480,8 @@ void MacroSaver::save()
                 // This mouse button press event is the last event, it won't be ended with a release. Ignore it.
                 continue;
             }
-            else if(m_interactions[i + 1]->type == QEvent::Type::MouseButtonRelease)
+
+            if(m_interactions[i + 1]->type == QEvent::Type::MouseButtonRelease)
             {
                 // A mouse button press immediately followed with a mouse button release is a simple mouse click.
                 postInteractions.emplace_back(
@@ -618,7 +627,7 @@ void MacroSaver::save()
                 else if(strat.type == FindStrategyType::ACTIVE_MODAL_WIDGET)
                 {
                     write(cpp, 8, "tester.take<QWidget*>(");
-                    write(cpp, 12, QString("\"\\\"%1\\\" window\", ").arg(strat.string));
+                    write(cpp, 12, QString(R"("\"%1\" window", )").arg(strat.string));
                     write(cpp, 12, "[]() -> QWidget* {return qApp->activeModalWidget();},");
                     write(
                         cpp,
@@ -800,8 +809,8 @@ std::shared_ptr<PreInteraction> MacroSaver::createInteraction(QObject* target, Q
         case QEvent::MouseButtonRelease:
         case QEvent::MouseMove:
         {
-            QMouseEvent* me = dynamic_cast<QMouseEvent*>(e);
-            QListWidget* lw = qobject_cast<QListWidget*>(target->parent());
+            auto* me = dynamic_cast<QMouseEvent*>(e);
+            auto* lw = qobject_cast<QListWidget*>(target->parent());
             if(lw != nullptr)
             {
                 if(e->type() == QEvent::MouseButtonPress)
@@ -814,30 +823,26 @@ std::shared_ptr<PreInteraction> MacroSaver::createInteraction(QObject* target, Q
                         lw->itemAt(me->pos())->text()
                     );
                 }
-                else
-                {
-                    return nullptr;
-                }
+
+                return nullptr;
             }
-            else
-            {
-                return std::make_shared<PreInteractionMouse>(
-                    reinterpret_cast<intptr_t>(target),
-                    find(target),
-                    me->modifiers(),
-                    e->type(),
-                    me->pos(),
-                    me->pos(),
-                    me->button()
-                );
-            }
+
+            return std::make_shared<PreInteractionMouse>(
+                reinterpret_cast<intptr_t>(target),
+                find(target),
+                me->modifiers(),
+                e->type(),
+                me->pos(),
+                me->pos(),
+                me->button()
+            );
         }
 
         case QEvent::KeyPress:
         case QEvent::KeyRelease:
         {
-            QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
-            QObject* receiver;
+            auto* ke          = dynamic_cast<QKeyEvent*>(e);
+            QObject* receiver = nullptr;
             if(qApp->focusWidget() == nullptr)
             {
                 receiver = target;
@@ -853,26 +858,25 @@ std::shared_ptr<PreInteraction> MacroSaver::createInteraction(QObject* target, Q
                 // Ignore modifier keys
                 return nullptr;
             }
-            else if(e->type() == QEvent::KeyPress && !m_interactions.empty()
-                    && m_interactions.back()->type == QEvent::KeyPress
-                    && std::static_pointer_cast<PreInteractionKeyboard>(m_interactions.back())->key == ke->key()
-                    && !ke->isAutoRepeat())
+
+            if(e->type() == QEvent::KeyPress && !m_interactions.empty()
+               && m_interactions.back()->type == QEvent::KeyPress
+               && std::static_pointer_cast<PreInteractionKeyboard>(m_interactions.back())->key == ke->key()
+               && !ke->isAutoRepeat())
             {
                 // Ignore duplicates (if the same key is pressed multiple times in a row without any releases, it must
                 // be an auto repeat, else it means the event was duplicated).
                 return nullptr;
             }
-            else
-            {
-                return std::make_shared<PreInteractionKeyboard>(
-                    reinterpret_cast<intptr_t>(receiver),
-                    find(receiver),
-                    ke->modifiers(),
-                    e->type(),
-                    static_cast<Qt::Key>(ke->key()),
-                    ke->text()
-                );
-            }
+
+            return std::make_shared<PreInteractionKeyboard>(
+                reinterpret_cast<intptr_t>(receiver),
+                find(receiver),
+                ke->modifiers(),
+                e->type(),
+                static_cast<Qt::Key>(ke->key()),
+                ke->text()
+            );
         }
 
         default:

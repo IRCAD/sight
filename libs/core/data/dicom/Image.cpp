@@ -28,11 +28,11 @@ namespace sight::data::dicom
 {
 
 Image::Image(
-    unsigned short samplesPerPixel,
-    unsigned short bitsAllocated,
-    unsigned short bitsStored,
-    unsigned short highBit,
-    unsigned short pixelRepresentation,
+    std::uint16_t samplesPerPixel,
+    std::uint16_t bitsAllocated,
+    std::uint16_t bitsStored,
+    std::uint16_t highBit,
+    std::uint16_t pixelRepresentation,
     double rescaleSlope,
     double rescaleIntercept
 ) :
@@ -49,8 +49,7 @@ Image::Image(
 //-----------------------------------------------------------------------------
 
 Image::~Image()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -72,9 +71,9 @@ core::Type Image::findImageTypeFromMinMaxValues() const
         }
         else
         {
-            const int64_t min =
+            const auto min =
                 static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMin()) + m_rescaleIntercept);
-            const int64_t max =
+            const auto max =
                 static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMax()) + m_rescaleIntercept);
 
             SIGHT_ASSERT("Min must be lower than max.", min <= max);
@@ -134,9 +133,10 @@ int64_t Image::getPixelMin() const
 
     if(m_pixelRepresentation == 1)
     {
-        return (int64_t) (~(((1ull << m_bitsStored) - 1) >> 1));
+        return (int64_t) (~(((1ULL << m_bitsStored) - 1) >> 1));
     }
-    else if(m_pixelRepresentation == 0)
+
+    if(m_pixelRepresentation == 0)
     {
         return 0;
     }
@@ -154,15 +154,16 @@ int64_t Image::getPixelMax() const
 
     if(m_pixelRepresentation == 1)
     {
-        return (int64_t) (((1ull << m_bitsStored) - 1) >> 1);
+        return (int64_t) (((1ULL << m_bitsStored) - 1) >> 1);
     }
-    else if(m_pixelRepresentation == 0)
+
+    if(m_pixelRepresentation == 0)
     {
-        return (int64_t) ((1ull << m_bitsStored) - 1);
+        return (int64_t) ((1ULL << m_bitsStored) - 1);
     }
 
     SIGHT_ASSERT("Unable to determine maximum value of pixel", 0);
     return 0;
 }
 
-} //fwDicomTools
+} // namespace sight::data::dicom

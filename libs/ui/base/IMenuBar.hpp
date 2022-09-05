@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ protected:
 
     UI_BASE_API IMenuBar();
 
-    UI_BASE_API virtual ~IMenuBar();
+    UI_BASE_API ~IMenuBar() override;
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -106,7 +106,7 @@ private:
     ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the menu if the service is stopped
-    bool m_hideMenus;
+    bool m_hideMenus {false};
 };
 
 } // namespace sight::ui::base

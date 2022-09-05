@@ -25,6 +25,7 @@
 
 #include <openssl/evp.h>
 
+#include <array>
 #include <cstring>
 
 namespace sight::core::crypto
@@ -33,7 +34,7 @@ namespace sight::core::crypto
 // en/decrypt a message using the given password.
 // Uses function pointers to minimize code duplication
 template<typename T>
-inline static T xx_crypt(
+inline static T xxCrypt(
     decltype(&::EVP_DecryptInit_ex) xxCryptInit,
     decltype(&::EVP_DecryptUpdate) xxCryptUpdate,
     decltype(&::EVP_DecryptFinal_ex) xxCryptFinal,
@@ -50,15 +51,15 @@ inline static T xx_crypt(
     EVP_add_cipher(EVP_aes_256_cbc());
 
     // Initialize key (265 bits) and iv(128 bits)
-    unsigned char key[HASH_SIZE];
-    unsigned char iv[EVP_MAX_IV_LENGTH] = {0};
+    std::array<unsigned char, HASH_SIZE> key {};
+    std::array<unsigned char, EVP_MAX_IV_LENGTH> iv = {0};
 
     // Compute password hash and randomize initialization vector
     hash(password, key);
 
     // Initialize the output with size of the original message expanded to block size
     T output;
-    output.resize(message.size() + sizeof(iv));
+    output.resize(message.size() + iv.size());
 
     int processed_size = static_cast<int>(output.size());
 
@@ -66,7 +67,7 @@ inline static T xx_crypt(
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
 
     // Initialize en/decryption
-    xxCryptInit(ctx, EVP_aes_256_cbc(), NULL, key, iv);
+    xxCryptInit(ctx, EVP_aes_256_cbc(), nullptr, key.data(), iv.data());
 
     // Update en/decryption
     xxCryptUpdate(
@@ -88,12 +89,12 @@ inline static T xx_crypt(
     );
 
     // Adjust output to the real size
-    output.resize(static_cast<std::size_t>(processed_size + remaining_size));
+    output.resize(static_cast<std::size_t>(processed_size) + static_cast<std::size_t>(remaining_size));
 
     // Cleaning
     EVP_CIPHER_CTX_free(ctx);
-    OPENSSL_cleanse(key, sizeof(key));
-    OPENSSL_cleanse(iv, sizeof(iv));
+    OPENSSL_cleanse(key.data(), key.size());
+    OPENSSL_cleanse(iv.data(), iv.size());
 
     return output;
 }
@@ -102,7 +103,7 @@ inline static T xx_crypt(
 
 std::string decrypt(const std::string& message, const secure_string& password)
 {
-    return xx_crypt<std::string>(
+    return xxCrypt<std::string>(
         &::EVP_DecryptInit_ex,
         &::EVP_DecryptUpdate,
         &::EVP_DecryptFinal_ex,
@@ -115,7 +116,7 @@ std::string decrypt(const std::string& message, const secure_string& password)
 
 secure_string decrypt(const secure_string& message, const secure_string& password)
 {
-    return xx_crypt<secure_string>(
+    return xxCrypt<secure_string>(
         &::EVP_DecryptInit_ex,
         &::EVP_DecryptUpdate,
         &::EVP_DecryptFinal_ex,
@@ -135,7 +136,7 @@ secure_string decrypt(const char* const message, const secure_string& password)
 
 std::string encrypt(const std::string& message, const secure_string& password)
 {
-    return xx_crypt<std::string>(
+    return xxCrypt<std::string>(
         &::EVP_EncryptInit_ex,
         &::EVP_EncryptUpdate,
         &::EVP_EncryptFinal_ex,
@@ -148,7 +149,7 @@ std::string encrypt(const std::string& message, const secure_string& password)
 
 secure_string encrypt(const secure_string& message, const secure_string& password)
 {
-    return xx_crypt<secure_string>(
+    return xxCrypt<secure_string>(
         &::EVP_EncryptInit_ex,
         &::EVP_EncryptUpdate,
         &::EVP_EncryptFinal_ex,

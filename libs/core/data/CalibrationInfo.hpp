@@ -74,7 +74,7 @@ public:
     ///Constructor
     DATA_API CalibrationInfo(Object::Key key);
     ///Destructor
-    DATA_API ~CalibrationInfo();
+    DATA_API ~CalibrationInfo() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

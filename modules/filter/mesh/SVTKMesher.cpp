@@ -52,17 +52,15 @@ namespace sight::module::filter::mesh
 static const sight::core::com::Slots::SlotKeyType s_UPDATE_THRESHOLD_SLOT = "updateThreshold";
 //-----------------------------------------------------------------------------
 
-SVTKMesher::SVTKMesher() noexcept :
-    m_reduction(0)
+SVTKMesher::SVTKMesher() noexcept
 {
     newSlot(s_UPDATE_THRESHOLD_SLOT, &SVTKMesher::updateThreshold, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SVTKMesher::~SVTKMesher() noexcept
-{
-}
+SVTKMesher::~SVTKMesher() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

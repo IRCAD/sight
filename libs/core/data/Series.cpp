@@ -40,7 +40,7 @@ Series::Series() :
 {
 }
 
-Series::Series(Object::Key) :
+Series::Series(Object::Key /*unused*/) :
     Series()
 {
 }
@@ -48,8 +48,7 @@ Series::Series(Object::Key) :
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

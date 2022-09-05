@@ -28,13 +28,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 /**
@@ -48,20 +42,20 @@ public:
     IO_DICOM_API DicomSRCodeNode(
         const DicomCodedAttribute& codedAttribute,
         const std::string& relationship,
-        const DicomCodedAttribute& codedEntry
+        DicomCodedAttribute codedEntry
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomSRCodeNode();
+    IO_DICOM_API ~DicomSRCodeNode() override;
 
     /**
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
+    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
 
     /// Get Coded Entry
-    const DicomCodedAttribute& getCodedEntry() const
+    [[nodiscard]] const DicomCodedAttribute& getCodedEntry() const
     {
         return m_codedEntry;
     }
@@ -75,14 +69,10 @@ public:
 protected:
 
     /// Dump function
-    virtual void print(std::ostream& os) const;
+    void print(std::ostream& os) const override;
 
     /// Coded Entry
     DicomCodedAttribute m_codedEntry;
 };
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

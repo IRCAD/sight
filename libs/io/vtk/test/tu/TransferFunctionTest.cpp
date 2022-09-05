@@ -26,15 +26,12 @@
 
 #include <io/vtk/helper/TransferFunction.hpp>
 
-using sight::io::vtk::helper::TransferFunction;
+#include <cmath>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::TransferFunctionTest);
 
-namespace sight::io::vtk
-{
-
-namespace ut
+namespace sight::io::vtk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -83,26 +80,26 @@ void TransferFunctionTest::toVtkLookupTableTest()
     data::TransferFunction::sptr tf    = this->createTFColor();
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
 
-    double color[3];
-    double opacity;
+    std::array<double, 3> color {};
+    double opacity        = NAN;
     double colorTolerance = 1.0 / 255.0;
 
     io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, true, 4096);
-    lt->GetColor(0, color);
+    lt->GetColor(0, color.data());
     opacity = lt->GetOpacity(0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[1], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, opacity, colorTolerance);
 
-    lt->GetColor(200, color);
+    lt->GetColor(200, color.data());
     opacity = lt->GetOpacity(200);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[1], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, opacity, colorTolerance);
 
-    lt->GetColor(150, color);
+    lt->GetColor(150, color.data());
     opacity = lt->GetOpacity(150);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, color[1], colorTolerance);
@@ -111,7 +108,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
 
     tf->pieces()[0]->setInterpolationMode(data::TransferFunction::InterpolationMode::NEAREST);
     io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, true, 4096);
-    lt->GetColor(120, color);
+    lt->GetColor(120, color.data());
     opacity = lt->GetOpacity(120);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[1], colorTolerance);
@@ -145,25 +142,25 @@ void TransferFunctionTest::toBWVtkLookupTableTest()
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
     io::vtk::helper::TransferFunction::toBWVtkLookupTable(0.0, 100.0, lt, 4096);
 
-    double color[3];
-    double opacity;
+    std::array<double, 3> color {};
+    double opacity        = NAN;
     double colorTolerance = 1.0 / 255.0;
 
-    lt->GetColor(0, color);
+    lt->GetColor(0, color.data());
     opacity = lt->GetOpacity(0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[1], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, opacity, colorTolerance);
 
-    lt->GetColor(100, color);
+    lt->GetColor(100, color.data());
     opacity = lt->GetOpacity(100);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[1], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, opacity, colorTolerance);
 
-    lt->GetColor(50, color);
+    lt->GetColor(50, color.data());
     opacity = lt->GetOpacity(50);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, color[0], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, color[1], colorTolerance);
@@ -173,6 +170,4 @@ void TransferFunctionTest::toBWVtkLookupTableTest()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::ut

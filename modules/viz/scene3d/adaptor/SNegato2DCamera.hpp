@@ -92,7 +92,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier, int _delta, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, int _delta, int _x, int _y) override;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -108,7 +108,7 @@ public:
      */
     MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
         IInteractor::MouseButton _button,
-        Modifier,
+        Modifier /*_mods*/,
         int _x,
         int _y,
         int _dx,
@@ -122,7 +122,12 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonPressEvent(
+        IInteractor::MouseButton _button,
+        Modifier /*_mods*/,
+        int _x,
+        int _y
+    ) override;
 
     /**
      * @brief Disables mouse movements.
@@ -130,7 +135,12 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
+        IInteractor::MouseButton _button,
+        Modifier /*_mods*/,
+        int _x,
+        int _y
+    ) override;
 
     /**
      * @brief Resets the camera when the 'R' key is pressed.
@@ -138,7 +148,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y) override;
 
 protected:
 
@@ -182,7 +192,7 @@ private:
     void moveBack();
 
     /// Updates the transfer function window and level by adding the input values.
-    void updateWindowing(double _windowDelta, double _levelDelta);
+    void updateWindowing(double _dw, double _dl);
 
     /// Defines the current interaction status.
     bool m_isInteracting {false};
@@ -194,10 +204,10 @@ private:
     int m_priority {0};
 
     /// Defines the transfer function window value at the time the interaction started.
-    double m_initialWindow {0.f};
+    double m_initialWindow {0.F};
 
     /// Defines the transfer function level value at the time the interaction started.
-    double m_initialLevel {0.f};
+    double m_initialLevel {0.F};
 
     /// Defines the mouse position at the time the windowing interaction started.
     Ogre::Vector2i m_initialPos {-1, -1};

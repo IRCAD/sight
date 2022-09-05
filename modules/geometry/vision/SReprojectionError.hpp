@@ -126,10 +126,10 @@ private:
     void setBoolParameter(bool _val, std::string _key);
 
     /// Last timestamp
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     /// Marker pattern width.
-    double m_patternWidth;
+    double m_patternWidth {80};
 
     /// 3D object points
     std::vector<cv::Point3f> m_objectPoints;
@@ -140,7 +140,7 @@ private:
     /// Color of the reprojection circle
     cv::Scalar m_cvColor;
     /// if true: display circle centered at reprojection point.
-    bool m_display;
+    bool m_display {true};
     /// extrinsic matrix (can be identity)
     cv::Mat m_cvExtrinsic;
 

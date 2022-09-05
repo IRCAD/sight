@@ -58,9 +58,8 @@ SListView::SListView() noexcept
 
 //------------------------------------------------------------------------------
 
-SListView::~SListView() noexcept
-{
-}
+SListView::~SListView() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -69,11 +68,11 @@ bool SListView::eventFilter(QObject* watched, QEvent* event)
     // filter "del" key release event in order to delete the current selected item of the list.
     if(watched == m_listWidget && event->type() == QEvent::KeyRelease)
     {
-        QKeyEvent* eventKey = static_cast<QKeyEvent*>(event);
+        auto* eventKey = static_cast<QKeyEvent*>(event);
         if(eventKey->key() == Qt::Key_Delete)
         {
             const QList<QListWidgetItem*>& listItem = m_listWidget->selectedItems();
-            if(listItem.size() > 0)
+            if(!listItem.empty())
             {
                 this->removeItem(m_listWidget->row(listItem.first()));
                 return true;
@@ -130,7 +129,7 @@ void SListView::updating()
 void SListView::insertItem(int index, std::string value)
 {
     // insert item at the index position of the list
-    QListWidgetItem* newItem = new QListWidgetItem(QString::fromStdString(value));
+    auto* newItem = new QListWidgetItem(QString::fromStdString(value));
     m_listWidget->insertItem(index, newItem);
 
     // notify

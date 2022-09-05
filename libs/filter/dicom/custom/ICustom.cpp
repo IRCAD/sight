@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,16 @@
 
 #include "filter/dicom/custom/ICustom.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace custom
+namespace sight::filter::dicom::custom
 {
 
 ICustom::ICustom()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ICustom::~ICustom()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -45,6 +40,4 @@ IFilter::FilterType ICustom::getFilterType() const
     return IFilter::CUSTOM;
 }
 
-} // namespace custom
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::custom

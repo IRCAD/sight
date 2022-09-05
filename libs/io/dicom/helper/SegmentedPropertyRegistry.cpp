@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -43,8 +40,7 @@ const SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::s_DEFAULT_
 //------------------------------------------------------------------------------
 
 SegmentedPropertyRegistry::SegmentedPropertyRegistry()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -248,50 +244,51 @@ SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::getEntry(const s
 
 //------------------------------------------------------------------------------
 
-#define GET_ENTRY_VALUE(index) \
-    const auto it = m_registry.find(structureType); \
-    if(it != m_registry.end()) \
-    { \
-        return it->second[index]; \
-    } \
+std::string SegmentedPropertyRegistry::getEntryValue(std::size_t index, const std::string& structureType) const
+{
+    const auto it = m_registry.find(structureType);
+    if(it != m_registry.end())
+    {
+        return it->second[index];
+    }
+
     return s_DEFAULT_ENTRY_VALUE[index];
+}
 
 //------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getPropertyType(const std::string& structureType) const
 {
-    GET_ENTRY_VALUE(0);
+    return getEntryValue(0, structureType);
 }
 
 //------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getPropertyCategory(const std::string& structureType) const
 {
-    GET_ENTRY_VALUE(1);
+    return getEntryValue(1, structureType);
 }
 
 //------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getPropertyTypeModifiers(const std::string& structureType) const
 {
-    GET_ENTRY_VALUE(2);
+    return getEntryValue(2, structureType);
 }
 
 //------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getAnatomicRegion(const std::string& structureType) const
 {
-    GET_ENTRY_VALUE(3);
+    return getEntryValue(3, structureType);
 }
 
 //------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getAnatomicRegionModifiers(const std::string& structureType) const
 {
-    GET_ENTRY_VALUE(4);
+    return getEntryValue(4, structureType);
 }
-
-#undef GET_ENTRY_VALUE
 
 //------------------------------------------------------------------------------
 
@@ -326,6 +323,4 @@ std::string SegmentedPropertyRegistry::getStructureType(
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

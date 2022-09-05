@@ -46,7 +46,7 @@ namespace sight::data::ut
 //------------------------------------------------------------------------------
 
 template<class C>
-inline static void test_container(const C& source, const C& modified_source)
+inline static void testContainer(const C& source, const C& modified_source)
 {
     class Container : public IContainer<C>
     {
@@ -173,33 +173,33 @@ inline static void test_container(const C& source, const C& modified_source)
 //------------------------------------------------------------------------------
 
 template<class C>
-inline static void test_dispatcher(
+inline static void testDispatcher(
     const std::initializer_list<C>& original_list,
     const std::initializer_list<C>& modified_list
 )
 {
-    test_container<std::vector<C> >(original_list, modified_list);
-    test_container<std::deque<C> >(original_list, modified_list);
-    test_container<std::list<C> >(original_list, modified_list);
-    test_container<std::set<C> >(original_list, modified_list);
-    test_container<std::multiset<C> >(original_list, modified_list);
-    test_container<std::unordered_set<C> >(original_list, modified_list);
-    test_container<std::unordered_multiset<C> >(original_list, modified_list);
-    test_container<sequenced_set<C> >(original_list, modified_list);
+    testContainer<std::vector<C> >(original_list, modified_list);
+    testContainer<std::deque<C> >(original_list, modified_list);
+    testContainer<std::list<C> >(original_list, modified_list);
+    testContainer<std::set<C> >(original_list, modified_list);
+    testContainer<std::multiset<C> >(original_list, modified_list);
+    testContainer<std::unordered_set<C> >(original_list, modified_list);
+    testContainer<std::unordered_multiset<C> >(original_list, modified_list);
+    testContainer<sequenced_set<C> >(original_list, modified_list);
 }
 
 //------------------------------------------------------------------------------
 
 template<class Key, class T>
-inline static void map_test_dispatcher(
+inline static void mapTestDispatcher(
     const std::initializer_list<std::pair<const Key, T> >& original_list,
     const std::initializer_list<std::pair<const Key, T> >& modified_list
 )
 {
-    test_container<std::map<Key, T> >(original_list, modified_list);
-    test_container<std::multimap<Key, T> >(original_list, modified_list);
-    test_container<std::unordered_map<Key, T> >(original_list, modified_list);
-    test_container<std::unordered_multimap<Key, T> >(original_list, modified_list);
+    testContainer<std::map<Key, T> >(original_list, modified_list);
+    testContainer<std::multimap<Key, T> >(original_list, modified_list);
+    testContainer<std::unordered_map<Key, T> >(original_list, modified_list);
+    testContainer<std::unordered_multimap<Key, T> >(original_list, modified_list);
 }
 
 //------------------------------------------------------------------------------
@@ -218,17 +218,17 @@ void IContainerTest::tearDown()
 
 void IContainerTest::array_test()
 {
-    test_container(
+    testContainer(
         std::array<int, 3>({1, 2, 3}),
         std::array<int, 3>({4, 5, 6})
     );
 
-    test_container(
+    testContainer(
         std::array<Integer::sptr, 3>({Integer::New(1), Integer::New(2), Integer::New(3)}),
         std::array<Integer::sptr, 3>({Integer::New(4), Integer::New(5), Integer::New(6)})
     );
 
-    test_container(
+    testContainer(
         std::array<std::shared_ptr<int>, 3>(
         {
             std::make_shared<int>(1),
@@ -248,12 +248,12 @@ void IContainerTest::array_test()
 
 void IContainerTest::generic_test()
 {
-    test_dispatcher<int>(
+    testDispatcher<int>(
         {1, 2, 3},
         {4, 5, 6
         });
 
-    test_dispatcher<Integer::sptr>(
+    testDispatcher<Integer::sptr>(
         {
             Integer::New(1),
             Integer::New(2),
@@ -265,7 +265,7 @@ void IContainerTest::generic_test()
             Integer::New(6)
         });
 
-    test_dispatcher<std::shared_ptr<int> >(
+    testDispatcher<std::shared_ptr<int> >(
         {
             std::make_shared<int>(1),
             std::make_shared<int>(2),
@@ -282,9 +282,9 @@ void IContainerTest::generic_test()
 
 void IContainerTest::map_test()
 {
-    map_test_dispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
+    mapTestDispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
 
-    map_test_dispatcher<int, Integer::sptr>(
+    mapTestDispatcher<int, Integer::sptr>(
         {
             {1, Integer::New(1)},
             {2, Integer::New(2)},
@@ -296,7 +296,7 @@ void IContainerTest::map_test()
             {6, Integer::New(6)}
         });
 
-    map_test_dispatcher<int, std::shared_ptr<int> >(
+    mapTestDispatcher<int, std::shared_ptr<int> >(
         {
             {1, std::make_shared<int>(1)},
             {2, std::make_shared<int>(2)},

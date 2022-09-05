@@ -32,10 +32,7 @@
 #include <filesystem>
 #include <fstream>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -44,14 +41,14 @@ gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
 {
     SIGHT_ASSERT("Group and element can not be empty", !group.empty() && !element.empty());
 
-    typedef std::uint16_t DestType;
-    DestType groupDest;
-    DestType elementDest;
+    using DestType = std::uint16_t;
+    DestType groupDest   = 0;
+    DestType elementDest = 0;
 
     try
     {
-        const unsigned long groupL   = std::stoul(group, nullptr, 16);
-        const unsigned long elementL = std::stoul(element, nullptr, 16);
+        const std::uint64_t groupL   = std::stoul(group, nullptr, 16);
+        const std::uint64_t elementL = std::stoul(element, nullptr, 16);
 
         groupDest   = boost::numeric_cast<DestType>(groupL);
         elementDest = boost::numeric_cast<DestType>(elementL);
@@ -60,7 +57,8 @@ gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
-                "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()
+                std::string("Unable to read DICOM tag from '").append(group).append(",").append(element).append("' : ")
+                .append(e.what())
             )
         );
     }
@@ -68,7 +66,8 @@ gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
-                "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()
+                std::string("Unable to read DICOM tag from '").append(group).append(",").append(element).append("' : ")
+                .append(e.what())
             )
         );
     }
@@ -76,12 +75,13 @@ gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
-                "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()
+                std::string("Unable to read DICOM tag from '").append(group).append(",").append(element).append("' : ")
+                .append(e.what())
             )
         );
     }
 
-    return gdcm::Tag(groupDest, elementDest);
+    return {groupDest, elementDest};
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +114,4 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

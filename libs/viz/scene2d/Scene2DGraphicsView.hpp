@@ -76,8 +76,8 @@ protected:
     scene2d::data::Viewport m_viewport;
     WPTR(viz::scene2d::SRender) m_scene2DRender;
 
-    scene2d::data::Event::Button getScene2DButtonFromEvent(QMouseEvent* _event);
-    scene2d::data::Event::Modifier getScene2DModifierFromEvent(QInputEvent* _event);
+    static scene2d::data::Event::Button getScene2DButtonFromEvent(QMouseEvent* _event);
+    static scene2d::data::Event::Modifier getScene2DModifierFromEvent(QInputEvent* _event);
 };
 
 } // namespace sight::viz::scene2d

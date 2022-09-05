@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,10 @@
 #pragma once
 
 #include "service/IService.hpp"
-#include <service/registry/ObjectService.hpp>
 
 #include <core/tools/Object.hpp>
+
+#include <service/registry/ObjectService.hpp>
 
 namespace sight::service
 {
@@ -67,4 +68,4 @@ SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::service

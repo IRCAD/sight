@@ -24,7 +24,8 @@
 
 #include <data/Mesh.hpp>
 
-using namespace sight;
+namespace service = sight::service;
+namespace data    = sight::data;
 
 namespace Tuto06SceneQt3DCpp
 {
@@ -33,15 +34,13 @@ SIGHT_REGISTER_PLUGIN("Tuto06SceneQt3DCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

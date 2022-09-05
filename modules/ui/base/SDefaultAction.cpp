@@ -37,9 +37,8 @@ SDefaultAction::SDefaultAction() noexcept
 
 //-----------------------------------------------------------------------------
 
-SDefaultAction::~SDefaultAction() noexcept
-{
-}
+SDefaultAction::~SDefaultAction() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,4 +74,4 @@ void SDefaultAction::info(std::ostream& _sstream)
     _sstream << "Default button" << std::endl;
 }
 
-}
+} // namespace sight::module::ui::base

@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::TypeTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -129,6 +126,4 @@ void TypeTest::typeToStringTest()
     CPPUNIT_ASSERT_EQUAL("2.000000"s, core::Type::DOUBLE.toString(&floating));
 }
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

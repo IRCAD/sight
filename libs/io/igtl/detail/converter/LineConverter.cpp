@@ -32,10 +32,7 @@
 
 #include <algorithm>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string LineConverter::s_IGTL_TYPE          = "POSITION";
@@ -44,21 +41,19 @@ const std::string LineConverter::s_FWDATA_OBJECT_TYPE = data::Line::classname();
 converterRegisterMacro(io::igtl::detail::converter::LineConverter);
 
 LineConverter::LineConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 LineConverter::~LineConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    float pos[3];
-    float direction[4];
+    std::array<float, 3> pos {};
+    std::array<float, 4> direction {};
 
     ::igtl::PositionMessage::Pointer dest;
     data::Line::csptr srcLine = data::Line::dynamicConstCast(src);
@@ -67,43 +62,45 @@ LineConverter::~LineConverter()
     std::transform(
         srcLine->getPosition()->getCoord().begin(),
         srcLine->getPosition()->getCoord().end(),
-        &pos[0],
+        pos.data(),
         boost::numeric_cast<double, float>
     );
     std::transform(
         srcLine->getDirection()->getCoord().begin(),
         srcLine->getDirection()->getCoord().end(),
-        &direction[0],
+        direction.data(),
         boost::numeric_cast<double, float>
     );
-    dest->SetPosition(pos);
-    dest->SetQuaternion(direction); // We use the quaternion to store the direction
-    return ::igtl::MessageBase::Pointer(dest.GetPointer());
+    dest->SetPosition(pos.data());
+    dest->SetQuaternion(direction.data()); // We use the quaternion to store the direction
+    return {dest.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
 data::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    float igtlPos[3];
-    float igtlDirection[4];
+    std::array<float, 3> igtlPos {};
+    // While we only use the first three elements of direction, igtl::PositionMessage::GetQuaternion requires a
+    // four-element array.
+    std::array<float, 4> igtlDirection {};
 
     data::Line::sptr dest                    = data::Line::New();
-    ::igtl::PositionMessage* msg             = dynamic_cast< ::igtl::PositionMessage*>(src.GetPointer());
+    auto* msg                                = dynamic_cast< ::igtl::PositionMessage*>(src.GetPointer());
     ::igtl::PositionMessage::Pointer srcLine = ::igtl::PositionMessage::Pointer(msg);
     dest->setPosition(data::Point::New());
     dest->setDirection(data::Point::New());
-    srcLine->GetPosition(igtlPos);
-    srcLine->GetQuaternion(igtlDirection);
+    srcLine->GetPosition(igtlPos.data());
+    srcLine->GetQuaternion(igtlDirection.data());
     std::transform(
-        &igtlPos[0],
-        &igtlPos[3],
+        igtlPos.begin(),
+        igtlPos.end(),
         dest->getPosition()->getCoord().begin(),
         boost::numeric_cast<float, double>
     );
     std::transform(
-        &igtlDirection[0],
-        &igtlDirection[3],
+        igtlDirection.begin(),
+        igtlDirection.begin() + 3,
         dest->getDirection()->getCoord().begin(),
         boost::numeric_cast<float, double>
     );
@@ -132,6 +129,4 @@ std::string const& LineConverter::getFwDataObjectType() const
     return LineConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

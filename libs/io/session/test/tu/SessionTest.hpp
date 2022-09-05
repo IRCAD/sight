@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::session
-{
-
-namespace ut
+namespace sight::io::session::ut
 {
 
 class SessionTest : public CPPUNIT_NS::TestFixture
@@ -91,61 +88,59 @@ public:
 public:
 
     // Interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // Tests
-    void booleanTest();
-    void integerTest();
-    void floatTest();
-    void stringTest();
-    void compositeTest();
-    void meshTest();
-    void equipmentTest();
-    void patientTest();
-    void studyTest();
-    void seriesTest();
-    void activitySeriesTest();
-    void arrayTest();
-    void imageTest();
-    void vectorTest();
-    void pointTest();
-    void pointListTest();
-    void calibrationInfoTest();
-    void cameraTest();
-    void cameraSeriesTest();
-    void colorTest();
-    void edgeTest();
-    void portTest();
-    void nodeTest();
-    void graphTest();
-    void landmarksTest();
-    void lineTest();
-    void materialTest();
-    void matrix4Test();
-    void planeTest();
-    void planeListTest();
-    void processObjectTest();
-    void reconstructionTest();
-    void structureTraitsTest();
-    void structureTraitsDictionaryTest();
-    void reconstructionTraitsTest();
-    void resectionTest();
-    void resectionDBTest();
-    void roiTraitsTest();
-    void seriesDBTest();
-    void tagTest();
-    void transferFunctionTest();
-    void dicomSeriesTest();
-    void imageSeriesTest();
-    void modelSeriesTest();
-    void activitySetTest();
-    void cameraSetTest();
-    void seriesSetTest();
+    static void booleanTest();
+    static void integerTest();
+    static void floatTest();
+    static void stringTest();
+    static void compositeTest();
+    static void meshTest();
+    static void equipmentTest();
+    static void patientTest();
+    static void studyTest();
+    static void seriesTest();
+    static void activitySeriesTest();
+    static void arrayTest();
+    static void imageTest();
+    static void vectorTest();
+    static void pointTest();
+    static void pointListTest();
+    static void calibrationInfoTest();
+    static void cameraTest();
+    static void cameraSeriesTest();
+    static void colorTest();
+    static void edgeTest();
+    static void portTest();
+    static void nodeTest();
+    static void graphTest();
+    static void landmarksTest();
+    static void lineTest();
+    static void materialTest();
+    static void matrix4Test();
+    static void planeTest();
+    static void planeListTest();
+    static void processObjectTest();
+    static void reconstructionTest();
+    static void structureTraitsTest();
+    static void structureTraitsDictionaryTest();
+    static void reconstructionTraitsTest();
+    static void resectionTest();
+    static void resectionDBTest();
+    static void roiTraitsTest();
+    static void seriesDBTest();
+    static void tagTest();
+    static void transferFunctionTest();
+    static void dicomSeriesTest();
+    static void imageSeriesTest();
+    static void modelSeriesTest();
+    static void activitySetTest();
+    static void cameraSetTest();
+    static void seriesSetTest();
 
-    void customSerializerTest();
+    static void customSerializerTest();
 };
 
-} // namespace ut
-
-} // namespace sight::io::session
+} // namespace sight::io::session::ut

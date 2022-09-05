@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SParameters.hpp"
 
 #include <core/com/Signal.hxx>
@@ -76,8 +78,7 @@ static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "se
 
 //-----------------------------------------------------------------------------
 
-SParameters::SParameters() noexcept :
-    m_blockSignals(false)
+SParameters::SParameters() noexcept
 {
     newSignal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG);
     newSignal<ColorChangedSignalType>(COLOR_CHANGED_SIG);
@@ -109,9 +110,8 @@ SParameters::SParameters() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SParameters::~SParameters() noexcept
-{
-}
+SParameters::~SParameters() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -133,7 +133,7 @@ void SParameters::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(QString::fromStdString(serviceID));
 
-    QGridLayout* layout = new QGridLayout();
+    auto* layout = new QGridLayout();
 
     service::IService::ConfigType config               = this->getConfigTree();
     const service::IService::ConfigType& parametersCfg = config.get_child("parameters");
@@ -143,15 +143,16 @@ void SParameters::starting()
     this->blockSignals(true);
 
     // Create widgets
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const auto& param, parametersCfg.equal_range("param"))
     {
         const service::IService::ConfigType& cfg = param.second;
 
-        const std::string name         = cfg.get<std::string>("<xmlattr>.name");
-        const std::string key          = cfg.get<std::string>("<xmlattr>.key");
-        const std::string type         = cfg.get<std::string>("<xmlattr>.type");
-        const std::string defaultValue = cfg.get<std::string>("<xmlattr>.defaultValue");
-        const bool resetButton         = cfg.get<bool>("<xmlattr>.reset", true);
+        const auto name         = cfg.get<std::string>("<xmlattr>.name");
+        const auto key          = cfg.get<std::string>("<xmlattr>.key");
+        const auto type         = cfg.get<std::string>("<xmlattr>.type");
+        const auto defaultValue = cfg.get<std::string>("<xmlattr>.defaultValue");
+        const bool resetButton  = cfg.get<bool>("<xmlattr>.reset", true);
 
         if(!name.empty())
         {
@@ -201,7 +202,10 @@ void SParameters::starting()
             }
             else
             {
-                SIGHT_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
+                SIGHT_ERROR(
+                    std::string("Unknown widget type : '").append(widget).append("' for ").append(name)
+                    .append(". Must be 'spin' or 'slider'.")
+                );
             }
         }
         else if(type == "int" || type == "int2" || type == "int3")
@@ -237,18 +241,21 @@ void SParameters::starting()
             }
             else
             {
-                SIGHT_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
+                SIGHT_ERROR(
+                    std::string("Unknown widget type : '").append(widget).append("' for ").append(name)
+                    .append(". Must be 'spin' or 'slider'.")
+                );
             }
         }
         else if(type == "enum")
         {
-            const std::string options = cfg.get<std::string>("<xmlattr>.values");
+            const auto options = cfg.get<std::string>("<xmlattr>.values");
 
             //split values separated by ',', ' ', ';'
             std::vector<std::string> values;
             std::vector<std::string> data;
 
-            this->parseEnumString(options, values, data);
+            sight::module::ui::qt::SParameters::parseEnumString(options, values, data);
 
             this->createEnumWidget(*layout, row, key, defaultValue, values, data);
         }
@@ -256,11 +263,12 @@ void SParameters::starting()
         ++row;
     }
 
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const auto& param, parametersCfg.equal_range("param"))
     {
         const service::IService::ConfigType& cfg = param.second;
 
-        const std::string key          = cfg.get<std::string>("<xmlattr>.key");
+        const auto key                 = cfg.get<std::string>("<xmlattr>.key");
         const std::string depends      = cfg.get<std::string>("<xmlattr>.depends", "");
         const std::string dependsValue = cfg.get<std::string>("<xmlattr>.dependsValue", "");
         const bool dependsreverse      = cfg.get<bool>("<xmlattr>.dependsReverse", false);
@@ -274,12 +282,14 @@ void SParameters::starting()
                 if(widget != nullptr)
                 {
                     QString foundedKey = widget->property("key").toString();
-                    if(key.compare(foundedKey.toStdString()) == 0)
+                    if(key == foundedKey.toStdString())
                     {
                         break;
                     }
                 }
             }
+
+            SIGHT_ASSERT("widget is null", widget != nullptr);
 
             QWidget* dependsWidget = nullptr;
             for(int i = 0 ; i < layout->count() ; ++i)
@@ -288,7 +298,7 @@ void SParameters::starting()
                 if(dependsWidget != nullptr)
                 {
                     QString foundedKey = dependsWidget->property("key").toString();
-                    if(depends.compare(foundedKey.toStdString()) == 0)
+                    if(depends == foundedKey.toStdString())
                     {
                         break;
                     }
@@ -296,7 +306,7 @@ void SParameters::starting()
             }
 
             widget->installEventFilter(this);
-            QCheckBox* checkBox = qobject_cast<QCheckBox*>(dependsWidget);
+            auto* checkBox = qobject_cast<QCheckBox*>(dependsWidget);
             if(checkBox != nullptr)
             {
                 QObject::connect(
@@ -311,7 +321,7 @@ void SParameters::starting()
             }
             else
             {
-                QComboBox* comboBox = qobject_cast<QComboBox*>(dependsWidget);
+                auto* comboBox = qobject_cast<QComboBox*>(dependsWidget);
                 if(comboBox != nullptr)
                 {
                     QObject::connect(
@@ -346,15 +356,16 @@ void SParameters::updating()
     const service::IService::ConfigType& parametersCfg = config.get_child("parameters");
 
     // emit signal for each widget
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const auto& param, parametersCfg.equal_range("param"))
     {
         const service::IService::ConfigType& cfg = param.second;
 
-        const std::string key  = cfg.get<std::string>("<xmlattr>.key");
-        const std::string type = cfg.get<std::string>("<xmlattr>.type");
+        const auto key  = cfg.get<std::string>("<xmlattr>.key");
+        const auto type = cfg.get<std::string>("<xmlattr>.type");
 
-        QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-        if(child)
+        auto* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+        if(child != nullptr)
         {
             if(type == "bool")
             {
@@ -374,7 +385,7 @@ void SParameters::updating()
             }
             else if(type == "color")
             {
-                const QColor colorQt = child->property("color").value<QColor>();
+                const auto colorQt = child->property("color").value<QColor>();
                 this->emitColorSignal(colorQt, key);
             }
             else if(type == "double" || type == "double2" || type == "double3")
@@ -387,7 +398,7 @@ void SParameters::updating()
             }
             else if(type == "enum")
             {
-                QComboBox* box = qobject_cast<QComboBox*>(child);
+                auto* box = qobject_cast<QComboBox*>(child);
 
                 SIGHT_ASSERT("Widget must be a QComboBox", box);
 
@@ -424,14 +435,14 @@ bool SParameters::eventFilter(QObject* _watched, QEvent* _event)
 {
     if(_event->type() == ::QEvent::EnabledChange)
     {
-        QCheckBox* checkBox = qobject_cast<QCheckBox*>(_watched);
+        auto* checkBox = qobject_cast<QCheckBox*>(_watched);
         if(checkBox != nullptr)
         {
             checkBox->stateChanged(checkBox->isChecked() ? Qt::Checked : Qt::Unchecked);
         }
         else
         {
-            QComboBox* comboBox = qobject_cast<QComboBox*>(_watched);
+            auto* comboBox = qobject_cast<QComboBox*>(_watched);
             if(comboBox != nullptr)
             {
                 comboBox->currentIndexChanged(comboBox->currentIndex());
@@ -452,11 +463,11 @@ void SParameters::onDependsChanged(QCheckBox* _checkBox, QWidget* _widget, bool 
     }
     else if(_reverse)
     {
-        _widget->setDisabled(_checkBox->checkState());
+        _widget->setDisabled(_checkBox->checkState() != 0U);
     }
     else
     {
-        _widget->setEnabled(_checkBox->checkState());
+        _widget->setEnabled(_checkBox->checkState() != 0U);
     }
 }
 
@@ -470,11 +481,11 @@ void SParameters::onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const
     }
     else if(_reverse)
     {
-        _widget->setDisabled(_comboBox->currentText().toStdString().compare(_value) == 0);
+        _widget->setDisabled(_comboBox->currentText().toStdString() == _value);
     }
     else
     {
-        _widget->setEnabled(_comboBox->currentText().toStdString().compare(_value) == 0);
+        _widget->setEnabled(_comboBox->currentText().toStdString() == _value);
     }
 }
 
@@ -485,7 +496,7 @@ void SParameters::onChangeEnum(int value)
     const QObject* sender = this->sender();
     const QString key     = sender->property("key").toString();
 
-    const QComboBox* box = dynamic_cast<const QComboBox*>(sender);
+    const auto* box = dynamic_cast<const QComboBox*>(sender);
 
     SIGHT_ASSERT("Wrong widget type", box);
 
@@ -529,13 +540,13 @@ void SParameters::onColorButton()
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
-    const QColor oldColor = sender->property("color").value<QColor>();
-    const QColor colorQt  = QColorDialog::getColor(oldColor, container);
+    const auto oldColor  = sender->property("color").value<QColor>();
+    const QColor colorQt = QColorDialog::getColor(oldColor, container);
     if(colorQt.isValid())
     {
         const QString key = sender->property("key").toString();
 
-        QPushButton* colourButton = dynamic_cast<QPushButton*>(sender);
+        auto* colourButton = dynamic_cast<QPushButton*>(sender);
         colourButton->setProperty("color", colorQt);
 
         int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
@@ -550,7 +561,7 @@ void SParameters::onColorButton()
 
 //-----------------------------------------------------------------------------
 
-void SParameters::onChangeInteger(int)
+void SParameters::onChangeInteger(int /*unused*/)
 {
     QObject* sender = this->sender();
     this->emitIntegerSignal(sender);
@@ -562,19 +573,21 @@ void SParameters::emitIntegerSignal(QObject* widget)
 {
     if(!m_blockSignals)
     {
+        SIGHT_ASSERT("widget is null", widget != nullptr);
+
         const QString key = widget->property("key").toString();
         const int count   = widget->property("count").toInt();
 
         SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
-        const QSpinBox* spinbox = dynamic_cast<const QSpinBox*>(widget);
-        const QSlider* slider   = dynamic_cast<const QSlider*>(widget);
+        const auto* spinbox = dynamic_cast<const QSpinBox*>(widget);
+        const auto* slider  = dynamic_cast<const QSlider*>(widget);
         SIGHT_ASSERT("Wrong widget type", spinbox || slider);
 
         if(count == 1)
         {
-            int value;
-            if(spinbox)
+            int value = 0;
+            if(spinbox != nullptr)
             {
                 value = spinbox->value();
             }
@@ -588,10 +601,10 @@ void SParameters::emitIntegerSignal(QObject* widget)
         }
         else
         {
-            int value1;
-            int value2;
+            int value1 = 0;
+            int value2 = 0;
 
-            if(spinbox)
+            if(spinbox != nullptr)
             {
                 const QSpinBox* spin1 = widget->property("widget#0").value<QSpinBox*>();
                 const QSpinBox* spin2 = widget->property("widget#1").value<QSpinBox*>();
@@ -622,8 +635,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
             }
             else
             {
-                int value3;
-                if(spinbox)
+                int value3 = 0;
+                if(spinbox != nullptr)
                 {
                     const QSpinBox* spin3 = widget->property("widget#2").value<QSpinBox*>();
                     value3 = spin3->value();
@@ -651,7 +664,7 @@ void SParameters::emitIntegerSignal(QObject* widget)
 
 //-----------------------------------------------------------------------------
 
-void SParameters::onChangeDouble(double)
+void SParameters::onChangeDouble(double /*unused*/)
 {
     QObject* sender = this->sender();
     this->emitDoubleSignal(sender);
@@ -666,16 +679,16 @@ void SParameters::emitDoubleSignal(QObject* widget)
         const QString key = widget->property("key").toString();
         const int count   = widget->property("count").toInt();
 
-        QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(widget);
-        QSlider* slider         = qobject_cast<QSlider*>(widget);
+        auto* spinbox = qobject_cast<QDoubleSpinBox*>(widget);
+        auto* slider  = qobject_cast<QSlider*>(widget);
 
-        if(slider)
+        if(slider != nullptr)
         {
-            const double value = this->getDoubleSliderValue(slider);
+            const double value = sight::module::ui::qt::SParameters::getDoubleSliderValue(slider);
             this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key.toStdString());
             SIGHT_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")");
         }
-        else if(spinbox)
+        else if(spinbox != nullptr)
         {
             SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
@@ -733,9 +746,9 @@ void SParameters::emitDoubleSignal(QObject* widget)
 
 //-----------------------------------------------------------------------------
 
-void SParameters::onChangeDoubleSlider(int)
+void SParameters::onChangeDoubleSlider(int /*unused*/)
 {
-    QSlider* sender = qobject_cast<QSlider*>(this->sender());
+    auto* sender = qobject_cast<QSlider*>(this->sender());
     this->emitDoubleSignal(sender);
 }
 
@@ -783,8 +796,8 @@ void SParameters::onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, 
 
 void SParameters::onResetBooleanMapped(QWidget* widget)
 {
-    QCheckBox* checkbox = qobject_cast<QCheckBox*>(widget);
-    if(checkbox)
+    auto* checkbox = qobject_cast<QCheckBox*>(widget);
+    if(checkbox != nullptr)
     {
         int value = checkbox->property("defaultValue").toInt();
         checkbox->setCheckState(Qt::CheckState(value));
@@ -792,7 +805,7 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
         const QString key = checkbox->property("key").toString();
         if(!m_blockSignals)
         {
-            this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(value, key.toStdString());
+            this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(value != 0, key.toStdString());
             SIGHT_DEBUG(
                 "[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (value ? "true" : "false") << ", "
                 << key.toStdString() << ")"
@@ -805,11 +818,11 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
 
 void SParameters::onResetColorMapped(QWidget* widget)
 {
-    QPushButton* colourButton = qobject_cast<QPushButton*>(widget);
-    if(colourButton)
+    auto* colourButton = qobject_cast<QPushButton*>(widget);
+    if(colourButton != nullptr)
     {
-        const QColor color = colourButton->property("defaultValue").value<QColor>();
-        const QString key  = colourButton->property("key").toString();
+        const auto color  = colourButton->property("defaultValue").value<QColor>();
+        const QString key = colourButton->property("key").toString();
 
         int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
         QPixmap pix(iconSize, iconSize);
@@ -840,32 +853,32 @@ void SParameters::onResetColorMapped(QWidget* widget)
 
 void SParameters::onResetIntegerMapped(QWidget* widget)
 {
-    QSlider* slider   = dynamic_cast<QSlider*>(widget);
-    QSpinBox* spinbox = dynamic_cast<QSpinBox*>(widget);
+    auto* slider  = dynamic_cast<QSlider*>(widget);
+    auto* spinbox = dynamic_cast<QSpinBox*>(widget);
     this->blockSignals(true);
-    if(slider)
+    if(slider != nullptr)
     {
         const int value = slider->property("defaultValue").toInt();
         slider->setValue(value);
     }
-    else if(spinbox)
+    else if(spinbox != nullptr)
     {
         const QString key = spinbox->property("key").toString();
         const int value   = spinbox->property("defaultValue").toInt();
         const int count   = spinbox->property("count").toInt();
         SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
-        QSpinBox* spin1 = spinbox->property("widget#0").value<QSpinBox*>();
+        auto* spin1 = spinbox->property("widget#0").value<QSpinBox*>();
         spin1->setValue(value);
 
         if(count > 1)
         {
-            QSpinBox* spin2 = spinbox->property("widget#1").value<QSpinBox*>();
+            auto* spin2 = spinbox->property("widget#1").value<QSpinBox*>();
             spin2->setValue(value);
 
             if(count == 3)
             {
-                QSpinBox* spin3 = spinbox->property("widget#2").value<QSpinBox*>();
+                auto* spin3 = spinbox->property("widget#2").value<QSpinBox*>();
                 spin3->setValue(value);
             }
         }
@@ -879,11 +892,11 @@ void SParameters::onResetIntegerMapped(QWidget* widget)
 
 void SParameters::onResetDoubleMapped(QWidget* widget)
 {
-    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(widget);
-    QSlider* slider         = qobject_cast<QSlider*>(widget);
+    auto* spinbox = qobject_cast<QDoubleSpinBox*>(widget);
+    auto* slider  = qobject_cast<QSlider*>(widget);
 
     this->blockSignals(true);
-    if(slider)
+    if(slider != nullptr)
     {
         const double value      = slider->property("defaultValue").toDouble();
         const double min        = slider->property("min").toDouble();
@@ -892,24 +905,24 @@ void SParameters::onResetDoubleMapped(QWidget* widget)
         const int sliderVal     = int(std::round(((value - min) / valueRange) * double(slider->maximum())));
         slider->setValue(sliderVal);
     }
-    else if(spinbox)
+    else if(spinbox != nullptr)
     {
         const QString key  = spinbox->property("key").toString();
         const double value = spinbox->property("defaultValue").toDouble();
         const int count    = spinbox->property("count").toInt();
         SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
-        QDoubleSpinBox* spin1 = spinbox->property("widget#0").value<QDoubleSpinBox*>();
+        auto* spin1 = spinbox->property("widget#0").value<QDoubleSpinBox*>();
         spin1->setValue(value);
 
         if(count > 1)
         {
-            QDoubleSpinBox* spin2 = spinbox->property("widget#1").value<QDoubleSpinBox*>();
+            auto* spin2 = spinbox->property("widget#1").value<QDoubleSpinBox*>();
             spin2->setValue(value);
 
             if(count == 3)
             {
-                QDoubleSpinBox* spin3 = spinbox->property("widget#2").value<QDoubleSpinBox*>();
+                auto* spin3 = spinbox->property("widget#2").value<QDoubleSpinBox*>();
                 spin3->setValue(value);
             }
         }
@@ -923,9 +936,9 @@ void SParameters::onResetDoubleMapped(QWidget* widget)
 
 QPushButton* SParameters::createResetButton(const std::string& key)
 {
-    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
-    QPushButton* resetButton    = new QPushButton("R");
-    resetButton->setObjectName(QString::fromStdString(serviceID + "/Reset " + key));
+    std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+    auto* resetButton     = new QPushButton("R");
+    resetButton->setObjectName(QString::fromStdString(serviceID.append("/Reset ").append(key)));
     resetButton->setFocusPolicy(Qt::NoFocus);
     resetButton->setToolTip("Reset to the default value.");
     resetButton->setMaximumWidth(20);
@@ -943,7 +956,7 @@ void SParameters::createBoolWidget(
     bool addResetButton
 )
 {
-    QCheckBox* checkbox = new QCheckBox();
+    auto* checkbox = new QCheckBox();
     checkbox->setTristate(false);
     checkbox->setObjectName(QString::fromStdString(key));
 
@@ -979,7 +992,7 @@ void SParameters::createColorWidget(
     bool addResetButton
 )
 {
-    QPushButton* colourButton = new QPushButton("Color");
+    auto* colourButton = new QPushButton("Color");
     colourButton->setObjectName(QString::fromStdString(key));
     colourButton->setToolTip(tr("Selected color"));
     colourButton->setMinimumSize(120, 35);
@@ -987,14 +1000,14 @@ void SParameters::createColorWidget(
     std::string colorStr = "#ffffffff";
     if(!defaultValue.empty())
     {
-        std::uint8_t color[4];
+        std::array<std::uint8_t, 4> color {};
 
         data::tools::Color::hexaStringToRGBA(defaultValue, color);
 
         colorStr = defaultValue;
     }
 
-    std::uint8_t color[4];
+    std::array<std::uint8_t, 4> color {};
     data::tools::Color::hexaStringToRGBA(colorStr, color);
 
     const int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
@@ -1038,12 +1051,12 @@ void SParameters::createDoubleWidget(
     bool addResetButton
 )
 {
-    QDoubleSpinBox* spinboxes[3];
+    std::array<QDoubleSpinBox*, 3> spinboxes {};
 
     // Spinboxes
-    for(int i = 0 ; i < count ; ++i)
+    for(std::size_t i = 0 ; i < std::size_t(count) ; ++i)
     {
-        QDoubleSpinBox* spinbox = new QDoubleSpinBox();
+        auto* spinbox = new QDoubleSpinBox();
         spinboxes[i] = spinbox;
 
         auto countDecimals = [](double _num) -> int
@@ -1051,7 +1064,7 @@ void SParameters::createDoubleWidget(
                                  std::stringstream out;
                                  out << _num;
                                  const std::string s = out.str();
-                                 const std::string t = s.substr(s.find(".") + 1);
+                                 const std::string t = s.substr(s.find('.') + 1);
                                  return static_cast<int>(t.length());
                              };
 
@@ -1069,7 +1082,7 @@ void SParameters::createDoubleWidget(
         spinbox->setProperty("count", count);
         spinbox->setProperty("defaultValue", spinbox->value());
 
-        layout.addWidget(spinbox, row, 2 + i);
+        layout.addWidget(spinbox, row, 2 + int(i));
 
         QObject::connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onChangeDouble(double)));
     }
@@ -1078,9 +1091,9 @@ void SParameters::createDoubleWidget(
     spinbox->setObjectName(QString::fromStdString(key));
 
     // Set a property with a pointer on each member of the group
-    for(int i = 0 ; i < count ; ++i)
+    for(std::size_t i = 0 ; i < std::size_t(count) ; ++i)
     {
-        for(int j = 0 ; j < count ; ++j)
+        for(std::size_t j = 0 ; j < std::size_t(count) ; ++j)
         {
             const std::string propName = std::string("widget#") + std::to_string(j);
             spinboxes[i]->setProperty(propName.c_str(), QVariant::fromValue<QDoubleSpinBox*>(spinboxes[j]));
@@ -1115,7 +1128,7 @@ void SParameters::createDoubleSliderWidget(
 {
     const double valueRange = max - min;
 
-    QSlider* slider = new QSlider(Qt::Horizontal);
+    auto* slider = new QSlider(Qt::Horizontal);
     slider->setObjectName(QString::fromStdString(key));
 
     slider->setProperty("key", QString::fromStdString(key));
@@ -1137,21 +1150,21 @@ void SParameters::createDoubleSliderWidget(
     font.setPointSize(7);
     font.setItalic(true);
 
-    QLabel* minValueLabel = new QLabel();
+    auto* minValueLabel = new QLabel();
     minValueLabel->setFont(font);
     minValueLabel->setText(QString::number(min, 'g', decimals));
     minValueLabel->setToolTip("Minimum value.");
 
-    QLabel* maxValueLabel = new QLabel();
+    auto* maxValueLabel = new QLabel();
     maxValueLabel->setFont(font);
     maxValueLabel->setText(QString::number(max, 'g', decimals));
     maxValueLabel->setToolTip("Maximum value.");
 
-    QLabel* valueLabel = new QLabel();
+    auto* valueLabel = new QLabel();
     valueLabel->setStyleSheet("QLabel { font: bold; }");
     valueLabel->setText(QString::number(defaultValue, 'f', decimals));
     valueLabel->setToolTip("Current value.");
-    this->setLabelMinimumSize(valueLabel, min, max, decimals);
+    sight::module::ui::qt::SParameters::setLabelMinimumSize(valueLabel, min, max, decimals);
 
     layout.addWidget(minValueLabel, row, 1);
     layout.addWidget(slider, row, 2);
@@ -1204,7 +1217,7 @@ void SParameters::createIntegerSliderWidget(
     bool onRelease
 )
 {
-    QSlider* slider = new QSlider(Qt::Horizontal);
+    auto* slider = new QSlider(Qt::Horizontal);
     slider->setObjectName(QString::fromStdString(key));
     slider->setMinimum(min);
     slider->setMaximum(max);
@@ -1217,21 +1230,21 @@ void SParameters::createIntegerSliderWidget(
     font.setPointSize(7);
     font.setItalic(true);
 
-    QLabel* minValueLabel = new QLabel();
+    auto* minValueLabel = new QLabel();
     minValueLabel->setFont(font);
     minValueLabel->setText(QString::number(slider->minimum()));
     minValueLabel->setToolTip("Minimum value.");
 
-    QLabel* maxValueLabel = new QLabel();
+    auto* maxValueLabel = new QLabel();
     maxValueLabel->setFont(font);
     maxValueLabel->setText(QString::number(slider->maximum()));
     maxValueLabel->setToolTip("Maximum value.");
 
-    QLabel* valueLabel = new QLabel();
+    auto* valueLabel = new QLabel();
     valueLabel->setStyleSheet("QLabel { font: bold; }");
     valueLabel->setText(QString("%1").arg(slider->value()));
     valueLabel->setToolTip("Current value.");
-    this->setLabelMinimumSize(valueLabel, min, max);
+    sight::module::ui::qt::SParameters::setLabelMinimumSize(valueLabel, min, max);
 
     layout.addWidget(minValueLabel, row, 1);
     layout.addWidget(slider, row, 2);
@@ -1288,12 +1301,12 @@ void SParameters::createIntegerSpinWidget(
     bool addResetButton
 )
 {
-    QSpinBox* spinboxes[3];
+    std::array<QSpinBox*, 3> spinboxes {};
 
     // Spinboxes
-    for(int i = 0 ; i < count ; ++i)
+    for(std::size_t i = 0 ; i < std::size_t(count) ; ++i)
     {
-        QSpinBox* spinbox = new QSpinBox();
+        auto* spinbox = new QSpinBox();
         spinboxes[i] = spinbox;
 
         spinbox->setMinimum(min);
@@ -1304,7 +1317,7 @@ void SParameters::createIntegerSpinWidget(
         spinbox->setProperty("count", count);
         spinbox->setProperty("defaultValue", spinbox->value());
 
-        layout.addWidget(spinbox, row, i + 2);
+        layout.addWidget(spinbox, row, int(i) + 2);
 
         // Connect spinbox value with our editor
         QObject::connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
@@ -1314,9 +1327,9 @@ void SParameters::createIntegerSpinWidget(
     spinbox->setObjectName(QString::fromStdString(key));
 
     // Set a property with a pointer on each member of the group
-    for(int i = 0 ; i < count ; ++i)
+    for(std::size_t i = 0 ; i < std::size_t(count) ; ++i)
     {
-        for(int j = 0 ; j < count ; ++j)
+        for(std::size_t j = 0 ; j < std::size_t(count) ; ++j)
         {
             const std::string propName = std::string("widget#") + std::to_string(j);
             spinboxes[i]->setProperty(propName.c_str(), QVariant::fromValue<QSpinBox*>(spinboxes[j]));
@@ -1383,7 +1396,7 @@ void SParameters::createEnumWidget(
     const std::vector<std::string>& data
 )
 {
-    QComboBox* menu = new QComboBox();
+    auto* menu = new QComboBox();
     menu->setObjectName(QString::fromStdString(key));
 
     menu->setProperty("key", QString(key.c_str()));
@@ -1432,10 +1445,10 @@ double SParameters::getDoubleSliderValue(const QSlider* slider)
 void SParameters::setBoolParameter(bool val, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child      = this->getParamWidget(key);
-    QCheckBox* checkbox = qobject_cast<QCheckBox*>(child);
+    QWidget* child = this->getParamWidget(key);
+    auto* checkbox = qobject_cast<QCheckBox*>(child);
 
-    if(checkbox)
+    if(checkbox != nullptr)
     {
         checkbox->setCheckState(val ? Qt::Checked : Qt::Unchecked);
     }
@@ -1448,10 +1461,10 @@ void SParameters::setBoolParameter(bool val, std::string key)
 void SParameters::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child           = this->getParamWidget(key);
-    QPushButton* colorButton = qobject_cast<QPushButton*>(child);
+    QWidget* child    = this->getParamWidget(key);
+    auto* colorButton = qobject_cast<QPushButton*>(child);
 
-    if(colorButton)
+    if(colorButton != nullptr)
     {
         const int iconSize = colorButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
         QPixmap pix(iconSize, iconSize);
@@ -1472,14 +1485,14 @@ void SParameters::setDoubleParameter(double val, std::string key)
     this->blockSignals(true);
     QWidget* child = this->getParamWidget(key);
 
-    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
-    QSlider* slider         = qobject_cast<QSlider*>(child);
+    auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+    auto* slider  = qobject_cast<QSlider*>(child);
 
-    if(spinbox)
+    if(spinbox != nullptr)
     {
         spinbox->setValue(val);
     }
-    else if(slider)
+    else if(slider != nullptr)
     {
         const double min        = slider->property("min").toDouble();
         const double max        = slider->property("max").toDouble();
@@ -1502,10 +1515,10 @@ void SParameters::setDouble2Parameter(double val0, double val1, std::string key)
     this->blockSignals(true);
     QWidget* child = this->getParamWidget(key);
 
-    if(child)
+    if(child != nullptr)
     {
-        QDoubleSpinBox* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
-        QDoubleSpinBox* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
+        auto* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
+        auto* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
 
         spin0->setValue(val0);
         spin1->setValue(val1);
@@ -1521,11 +1534,11 @@ void SParameters::setDouble3Parameter(double val0, double val1, double val2, std
     this->blockSignals(true);
     QWidget* child = this->getParamWidget(key);
 
-    if(child)
+    if(child != nullptr)
     {
-        QDoubleSpinBox* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
-        QDoubleSpinBox* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
-        QDoubleSpinBox* spin2 = child->property("widget#2").value<QDoubleSpinBox*>();
+        auto* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
+        auto* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
+        auto* spin2 = child->property("widget#2").value<QDoubleSpinBox*>();
 
         spin0->setValue(val0);
         spin1->setValue(val1);
@@ -1542,14 +1555,14 @@ void SParameters::setIntParameter(int val, std::string key)
     this->blockSignals(true);
     QWidget* child = this->getParamWidget(key);
 
-    QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
-    QSlider* slider   = qobject_cast<QSlider*>(child);
+    auto* spinbox = qobject_cast<QSpinBox*>(child);
+    auto* slider  = qobject_cast<QSlider*>(child);
 
-    if(spinbox)
+    if(spinbox != nullptr)
     {
         spinbox->setValue(val);
     }
-    else if(slider)
+    else if(slider != nullptr)
     {
         slider->setValue(val);
     }
@@ -1568,10 +1581,10 @@ void SParameters::setInt2Parameter(int val0, int val1, std::string key)
     this->blockSignals(true);
     QWidget* child = this->getParamWidget(key);
 
-    if(child)
+    if(child != nullptr)
     {
-        QSpinBox* spin0 = child->property("widget#0").value<QSpinBox*>();
-        QSpinBox* spin1 = child->property("widget#1").value<QSpinBox*>();
+        auto* spin0 = child->property("widget#0").value<QSpinBox*>();
+        auto* spin1 = child->property("widget#1").value<QSpinBox*>();
 
         spin0->setValue(val0);
         spin1->setValue(val1);
@@ -1587,11 +1600,11 @@ void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key
     this->blockSignals(true);
     QWidget* widget = this->getParamWidget(key);
 
-    if(widget)
+    if(widget != nullptr)
     {
-        QSpinBox* spin0 = widget->property("widget#0").value<QSpinBox*>();
-        QSpinBox* spin1 = widget->property("widget#1").value<QSpinBox*>();
-        QSpinBox* spin2 = widget->property("widget#2").value<QSpinBox*>();
+        auto* spin0 = widget->property("widget#0").value<QSpinBox*>();
+        auto* spin1 = widget->property("widget#1").value<QSpinBox*>();
+        auto* spin2 = widget->property("widget#2").value<QSpinBox*>();
 
         spin0->setValue(val0);
         spin1->setValue(val1);
@@ -1609,9 +1622,9 @@ void SParameters::setEnumParameter(std::string val, std::string key)
 
     QWidget* widget = this->getParamWidget(key);
 
-    QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+    auto* combobox = qobject_cast<QComboBox*>(widget);
 
-    if(combobox)
+    if(combobox != nullptr)
     {
         // Find first in text
         auto res = combobox->findText(QString::fromStdString(val));
@@ -1627,7 +1640,11 @@ void SParameters::setEnumParameter(std::string val, std::string key)
         }
         else
         {
-            SIGHT_WARN("value '" + val + "' isn't found in Enum ComboBox '" + key + "'.");
+            SIGHT_WARN(
+                std::string("value '").append(val).append("' isn't found in Enum ComboBox '").append(key).append(
+                    "'."
+                )
+            );
         }
     }
 
@@ -1642,9 +1659,9 @@ void SParameters::setEnumIndexParameter(int val, std::string key)
 
     QWidget* widget = this->getParamWidget(key);
 
-    QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+    auto* combobox = qobject_cast<QComboBox*>(widget);
 
-    if(combobox)
+    if(combobox != nullptr)
     {
         combobox->setCurrentIndex(val);
     }
@@ -1660,9 +1677,9 @@ void SParameters::setEnumValues(std::string options, std::string key)
 
     QWidget* widget = this->getParamWidget(key);
 
-    QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+    auto* combobox = qobject_cast<QComboBox*>(widget);
 
-    if(combobox)
+    if(combobox != nullptr)
     {
         combobox->clear();
 
@@ -1723,28 +1740,28 @@ void SParameters::setIntMinParameter(int min, std::string key)
 {
     QWidget* child = this->getParamWidget(key);
 
-    QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
-    QSlider* slider   = qobject_cast<QSlider*>(child);
+    auto* spinbox = qobject_cast<QSpinBox*>(child);
+    auto* slider  = qobject_cast<QSlider*>(child);
 
-    if(spinbox)
+    if(spinbox != nullptr)
     {
         const int count = child->property("count").toInt();
-        QSpinBox* spin0 = child->property("widget#0").value<QSpinBox*>();
+        auto* spin0     = child->property("widget#0").value<QSpinBox*>();
         spin0->setMinimum(min);
 
         if(count >= 2)
         {
-            QSpinBox* spin1 = child->property("widget#1").value<QSpinBox*>();
+            auto* spin1 = child->property("widget#1").value<QSpinBox*>();
             spin1->setMinimum(min);
         }
 
         if(count >= 3)
         {
-            QSpinBox* spin2 = child->property("widget#2").value<QSpinBox*>();
+            auto* spin2 = child->property("widget#2").value<QSpinBox*>();
             spin2->setMinimum(min);
         }
     }
-    else if(slider)
+    else if(slider != nullptr)
     {
         slider->setMinimum(min);
     }
@@ -1760,29 +1777,29 @@ void SParameters::setIntMaxParameter(int max, std::string key)
 {
     QWidget* child = this->getParamWidget(key);
 
-    QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
-    QSlider* slider   = qobject_cast<QSlider*>(child);
+    auto* spinbox = qobject_cast<QSpinBox*>(child);
+    auto* slider  = qobject_cast<QSlider*>(child);
 
-    if(spinbox)
+    if(spinbox != nullptr)
     {
         const int count = child->property("count").toInt();
 
-        QSpinBox* spin0 = child->property("widget#0").value<QSpinBox*>();
+        auto* spin0 = child->property("widget#0").value<QSpinBox*>();
         spin0->setMaximum(max);
 
         if(count >= 2)
         {
-            QSpinBox* spin1 = child->property("widget#1").value<QSpinBox*>();
+            auto* spin1 = child->property("widget#1").value<QSpinBox*>();
             spin1->setMaximum(max);
         }
 
         if(count >= 3)
         {
-            QSpinBox* spin2 = child->property("widget#2").value<QSpinBox*>();
+            auto* spin2 = child->property("widget#2").value<QSpinBox*>();
             spin2->setMaximum(max);
         }
     }
-    else if(slider)
+    else if(slider != nullptr)
     {
         slider->setMaximum(max);
     }
@@ -1798,29 +1815,29 @@ void SParameters::setDoubleMinParameter(double min, std::string key)
 {
     QWidget* child = this->getParamWidget(key);
 
-    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
-    QSlider* slider         = qobject_cast<QSlider*>(child);
+    auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+    auto* slider  = qobject_cast<QSlider*>(child);
 
-    if(spinbox)
+    if(spinbox != nullptr)
     {
         const int count = child->property("count").toInt();
 
-        QDoubleSpinBox* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
+        auto* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
         spin0->setMinimum(min);
 
         if(count >= 2)
         {
-            QDoubleSpinBox* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
+            auto* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
             spin1->setMinimum(min);
         }
 
         if(count >= 3)
         {
-            QDoubleSpinBox* spin2 = child->property("widget#2").value<QDoubleSpinBox*>();
+            auto* spin2 = child->property("widget#2").value<QDoubleSpinBox*>();
             spin2->setMinimum(min);
         }
     }
-    else if(slider)
+    else if(slider != nullptr)
     {
         const double value = getDoubleSliderValue(slider);
         slider->setProperty("min", min);
@@ -1838,29 +1855,29 @@ void SParameters::setDoubleMaxParameter(double max, std::string key)
 {
     QWidget* child = this->getParamWidget(key);
 
-    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
-    QSlider* slider         = qobject_cast<QSlider*>(child);
+    auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+    auto* slider  = qobject_cast<QSlider*>(child);
 
-    if(spinbox)
+    if(spinbox != nullptr)
     {
         const int count = child->property("count").toInt();
 
-        QDoubleSpinBox* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
+        auto* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
         spin0->setMaximum(max);
 
         if(count >= 2)
         {
-            QDoubleSpinBox* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
+            auto* spin1 = child->property("widget#1").value<QDoubleSpinBox*>();
             spin1->setMaximum(max);
         }
 
         if(count >= 3)
         {
-            QDoubleSpinBox* spin2 = child->property("widget#2").value<QDoubleSpinBox*>();
+            auto* spin2 = child->property("widget#2").value<QDoubleSpinBox*>();
             spin2->setMaximum(max);
         }
     }
-    else if(slider)
+    else if(slider != nullptr)
     {
         const double value = getDoubleSliderValue(slider);
         slider->setProperty("max", max);
@@ -1933,7 +1950,7 @@ QWidget* SParameters::getParamWidget(const std::string& key)
     auto qtContainer      = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     const QWidget* widget = qtContainer->getQtContainer();
 
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    auto* child = widget->findChild<QWidget*>(QString::fromStdString(key));
     SIGHT_ERROR_IF("Widget '" + key + "' is not found", !child);
 
     return child;

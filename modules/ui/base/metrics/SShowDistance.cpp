@@ -49,9 +49,8 @@ SShowDistance::SShowDistance() noexcept
 
 //------------------------------------------------------------------------------
 
-SShowDistance::~SShowDistance() noexcept
-{
-}
+SShowDistance::~SShowDistance() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -116,7 +115,7 @@ service::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-void SShowDistance::showDistance(bool)
+void SShowDistance::showDistance(bool /*unused*/)
 {
     const auto image          = m_image.lock();
     const auto show_distances = data::helper::MedicalImage::getDistanceVisibility(*image);

@@ -26,10 +26,7 @@
 
 #include <utestData/generator/Image.hpp>
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -61,6 +58,4 @@ void ImageConversionTest::stressTestForAType()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

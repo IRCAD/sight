@@ -27,10 +27,7 @@
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreTechnique.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 class Technique
@@ -52,6 +49,4 @@ public:
     );
 };
 
-} // fwRenderOgre
-
-} // helper
+} // namespace sight::viz::scene3d::helper

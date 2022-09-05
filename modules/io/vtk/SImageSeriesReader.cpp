@@ -82,14 +82,14 @@ void SImageSeriesReader::openLocationDialog()
     // Initialize the available extensions for BitmapImageReader
     std::vector<std::string> ext;
     sight::io::vtk::BitmapImageReader::getAvailableExtensions(ext);
-    std::string availableExtensions = "";
+    std::string availableExtensions;
 
-    if(ext.size() > 0)
+    if(!ext.empty())
     {
         availableExtensions = "*" + ext.at(0);
         for(std::size_t i = 1 ; i < ext.size() ; i++)
         {
-            availableExtensions = availableExtensions + " *" + ext.at(i);
+            availableExtensions.append(" *").append(ext.at(i));
         }
     }
 
@@ -218,4 +218,4 @@ void SImageSeriesReader::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace ioVtk
+} // namespace sight::module::io::vtk

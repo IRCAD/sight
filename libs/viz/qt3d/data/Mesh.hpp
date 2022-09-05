@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class QBuffer;
 class QGeometryRenderer;
 class QGeometry;
 
-}
+} // namespace Qt3DRender
 
 namespace sight::viz::qt3d
 {
@@ -51,7 +51,7 @@ namespace core
 
 class GenericScene;
 
-}
+} // namespace core
 
 namespace data
 {
@@ -78,10 +78,10 @@ public:
     VIZ_QT3D_QT_API ~Mesh() override;
 
     /// @returns mesh material.
-    VIZ_QT3D_QT_API viz::qt3d::data::Material* getMaterial() const;
+    [[nodiscard]] VIZ_QT3D_QT_API viz::qt3d::data::Material* getMaterial() const;
 
     /// @returns the scene associated with the mesh.
-    VIZ_QT3D_QT_API sight::viz::qt3d::core::GenericScene* getScene() const;
+    [[nodiscard]] VIZ_QT3D_QT_API sight::viz::qt3d::core::GenericScene* getScene() const;
 
     /// Updates mesh material.
     VIZ_QT3D_QT_API void setMaterial(viz::qt3d::data::Material* _material);

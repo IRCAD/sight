@@ -55,7 +55,7 @@ public:
     DATA_API Node(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Node();
+    DATA_API ~Node() override;
 
     /// Add an input port
     DATA_API void addInputPort(const Port::sptr& port);

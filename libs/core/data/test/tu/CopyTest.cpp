@@ -57,10 +57,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CopyTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -79,40 +76,106 @@ void CopyTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
+template<typename T>
+void fieldDeepCopy()
+{
+    SIGHT_WARN("Testing : " << core::Demangler(typeid(T)).getClassname());
+    typename T::sptr object = T::New();
+    typename T::sptr deepCopyObject;
+
+    typename T::sptr field1 = T::New();
+    typename T::sptr field2 = T::New();
+    typename T::sptr field3 = T::New();
+
+    object->setField("F1", field1);
+    object->setField("F2", field2);
+    object->setField("F3", field3);
+
+    deepCopyObject = data::Object::copy(object);
+    CPPUNIT_ASSERT_EQUAL(object->getClassname(), deepCopyObject->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getFields().size(), deepCopyObject->getFields().size());
+    CPPUNIT_ASSERT(object->getField("F1") != deepCopyObject->getField("F1"));
+    CPPUNIT_ASSERT(object->getField("F2") != deepCopyObject->getField("F2"));
+    CPPUNIT_ASSERT(object->getField("F3") != deepCopyObject->getField("F3"));
+
+    CPPUNIT_ASSERT_EQUAL(object->getField("F1")->getClassname(), deepCopyObject->getField("F1")->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getField("F2")->getClassname(), deepCopyObject->getField("F2")->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getField("F3")->getClassname(), deepCopyObject->getField("F3")->getClassname());
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+void fieldCopy()
+{
+    SIGHT_WARN("Testing : " << core::Demangler(typeid(T)).getClassname());
+    typename T::sptr object            = T::New();
+    typename T::sptr deepCopyObject    = T::New();
+    typename T::sptr shallowCopyObject = T::New();
+
+    typename T::sptr field1 = T::New();
+    typename T::sptr field2 = T::New();
+    typename T::sptr field3 = T::New();
+
+    object->setField("F1", field1);
+    object->setField("F2", field2);
+    object->setField("F3", field3);
+
+    deepCopyObject = data::Object::copy(object);
+    CPPUNIT_ASSERT_EQUAL(object->getClassname(), deepCopyObject->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getFields().size(), deepCopyObject->getFields().size());
+    CPPUNIT_ASSERT(object->getField("F1") != deepCopyObject->getField("F1"));
+    CPPUNIT_ASSERT(object->getField("F2") != deepCopyObject->getField("F2"));
+    CPPUNIT_ASSERT(object->getField("F3") != deepCopyObject->getField("F3"));
+
+    CPPUNIT_ASSERT_EQUAL(object->getField("F1")->getClassname(), deepCopyObject->getField("F1")->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getField("F2")->getClassname(), deepCopyObject->getField("F2")->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getField("F3")->getClassname(), deepCopyObject->getField("F3")->getClassname());
+
+    shallowCopyObject->shallowCopy(object);
+    CPPUNIT_ASSERT_EQUAL(object->getClassname(), shallowCopyObject->getClassname());
+    CPPUNIT_ASSERT_EQUAL(object->getFields().size(), shallowCopyObject->getFields().size());
+    CPPUNIT_ASSERT_EQUAL(object->getField("F1"), shallowCopyObject->getField("F1"));
+    CPPUNIT_ASSERT_EQUAL(object->getField("F2"), shallowCopyObject->getField("F2"));
+    CPPUNIT_ASSERT_EQUAL(object->getField("F3"), shallowCopyObject->getField("F3"));
+}
+
+//------------------------------------------------------------------------------
+
 void CopyTest::fieldCopyTest()
 {
-    __FWDATA_UT_FIELD_DEEP_COPY_MACRO(data::Array);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Boolean);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Color);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Composite);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Float);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Graph);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Image);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Integer);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Line);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Material);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Mesh);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Plane);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::PlaneList);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Point);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::PointList);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Reconstruction);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Resection);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::ResectionDB);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::String);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::TransferFunction);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Matrix4);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Vector);
+    fieldDeepCopy<data::Array>();
+    fieldCopy<data::Boolean>();
+    fieldCopy<data::Color>();
+    fieldCopy<data::Composite>();
+    fieldCopy<data::Float>();
+    fieldCopy<data::Graph>();
+    fieldCopy<data::Image>();
+    fieldCopy<data::Integer>();
+    fieldCopy<data::Line>();
+    fieldCopy<data::Material>();
+    fieldCopy<data::Mesh>();
+    fieldCopy<data::Plane>();
+    fieldCopy<data::PlaneList>();
+    fieldCopy<data::Point>();
+    fieldCopy<data::PointList>();
+    fieldCopy<data::Reconstruction>();
+    fieldCopy<data::Resection>();
+    fieldCopy<data::ResectionDB>();
+    fieldCopy<data::String>();
+    fieldCopy<data::TransferFunction>();
+    fieldCopy<data::Matrix4>();
+    fieldCopy<data::Vector>();
 
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Edge);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Node);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Port);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::ProcessObject);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::ReconstructionTraits);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::ROITraits);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraits);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraitsDictionary);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::Tag);
+    fieldCopy<data::Edge>();
+    fieldCopy<data::Node>();
+    fieldCopy<data::Port>();
+    fieldCopy<data::ProcessObject>();
+    fieldCopy<data::ReconstructionTraits>();
+    fieldCopy<data::ROITraits>();
+    fieldCopy<data::StructureTraits>();
+    fieldCopy<data::StructureTraitsDictionary>();
+    fieldCopy<data::Tag>();
 }
 
 //-----------------------------------------------------------------------------
@@ -150,6 +213,4 @@ void CopyTest::severalReferencesCopyTest()
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], (*vectorCopy)[1]);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

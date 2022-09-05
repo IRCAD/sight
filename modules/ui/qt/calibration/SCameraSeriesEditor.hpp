@@ -77,9 +77,8 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~SCameraSeriesEditor() noexcept
-    {
-    }
+    MODULE_UI_QT_API ~SCameraSeriesEditor() noexcept override =
+        default;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -126,7 +125,7 @@ protected:
     QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
 
     /// Index of the camera in cameraSeries used to display extrinsic matrix.
-    std::size_t m_camIndex;
+    std::size_t m_camIndex {1};
 
     static constexpr std::string_view s_CAMERASERIES = "cameraSeries";
     data::ptr<data::CameraSeries, data::Access::in> m_cameraSeries {this, s_CAMERASERIES, true};

@@ -51,11 +51,11 @@ public:
      */
     FILTER_IMAGE_API static data::PointList::sptr extract(
         const data::Image::csptr& _image,
-        const double _threshold,
-        const double _radiusMin,
-        const double _radiusMax,
-        const double _elongationMin,
-        const double _elongationMax
+        double _threshold,
+        double _radiusMin,
+        double _radiusMax,
+        double _elongationMin,
+        double _elongationMax
     );
 };
 

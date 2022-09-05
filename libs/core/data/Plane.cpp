@@ -38,8 +38,7 @@ const core::com::Signals::SignalKeyType Plane::s_SELECTED_SIG = "selected";
 
 //------------------------------------------------------------------------------
 
-Plane::Plane(data::Object::Key) :
-    m_isIntersection(true)
+Plane::Plane(data::Object::Key /*unused*/)
 {
     m_vPoints[0] = data::Point::New();
     m_vPoints[1] = data::Point::New();
@@ -51,8 +50,7 @@ Plane::Plane(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 Plane::~Plane()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

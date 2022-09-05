@@ -131,7 +131,7 @@ private:
     std::size_t m_fontSize {16};
 
     /// Defines the position of the text.
-    Ogre::Vector2 m_position {0.f, 0.f};
+    Ogre::Vector2 m_position {0.F, 0.F};
 
     /// Defines the vertical alignment type (top, center or bottom).
     std::string m_verticalAlignment;

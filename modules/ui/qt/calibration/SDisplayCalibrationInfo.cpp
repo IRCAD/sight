@@ -58,9 +58,8 @@ SDisplayCalibrationInfo::SDisplayCalibrationInfo() noexcept
 
 //------------------------------------------------------------------------------
 
-SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept
-{
-}
+SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -156,4 +155,4 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 
 //------------------------------------------------------------------------------
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

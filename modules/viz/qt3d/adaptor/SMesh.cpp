@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,9 +58,8 @@ SMesh::SMesh() noexcept
 
 //-----------------------------------------------------------------------------
 
-SMesh::~SMesh() noexcept
-{
-}
+SMesh::~SMesh() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -137,7 +136,7 @@ void SMesh::updating()
                 return srv->getMaterialName() == m_materialName;
             });
 
-        auto materialAdaptor = *result;
+        const auto& materialAdaptor = *result;
 
         SIGHT_ASSERT(
             "SMaterial adaptor managing material'" + m_materialName + "' is not found",

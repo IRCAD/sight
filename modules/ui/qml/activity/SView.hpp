@@ -151,4 +151,4 @@ private:
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
 };
 
-} // uiActivitiesQml
+} // namespace sight::module::ui::qml::activity

@@ -62,21 +62,21 @@ public:
     MODULE_UI_VIZ_API SScreenSelector();
 
     /// Destructor.
-    MODULE_UI_VIZ_API virtual ~SScreenSelector() final;
+    MODULE_UI_VIZ_API ~SScreenSelector() final;
 
 protected:
 
     /// Configures the selection mode.
-    MODULE_UI_VIZ_API virtual void configuring() final;
+    MODULE_UI_VIZ_API void configuring() final;
 
     /// Starts the action service.
-    MODULE_UI_VIZ_API virtual void starting() final;
+    MODULE_UI_VIZ_API void starting() final;
 
     /// Selects a screen based on the selection mode.
-    MODULE_UI_VIZ_API virtual void updating() final;
+    MODULE_UI_VIZ_API void updating() final;
 
     /// Stops the action service.
-    MODULE_UI_VIZ_API virtual void stopping() final;
+    MODULE_UI_VIZ_API void stopping() final;
 
 private:
 
@@ -84,7 +84,7 @@ private:
     using ScreenSelectedSignalType = core::com::Signal<void (int)>;
 
     /// Prompts a dialog letting the user select a screen if there are multiple monitors.
-    int selectScreen() const;
+    static int selectScreen();
 
     /// Signal sent when a screen is selected.
     ScreenSelectedSignalType::sptr m_screenSelectedSig;

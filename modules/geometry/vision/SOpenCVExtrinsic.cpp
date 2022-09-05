@@ -53,11 +53,7 @@ static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "erro
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
-    m_width(11),
-    m_height(8),
-    m_squareSize(20.0),
-    m_camIndex(1)
+SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
@@ -65,9 +61,8 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept
-{
-}
+SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -132,12 +127,11 @@ void SOpenCVExtrinsic::updating()
         {
             for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
-                points.push_back(
-                    cv::Point3f(
-                        static_cast<float>(x) * m_squareSize,
-                        static_cast<float>(y) * m_squareSize,
-                        0
-                    )
+                points.emplace_back(
+                    static_cast<float>(x) * m_squareSize,
+                    static_cast<float>(y) * m_squareSize,
+                    0.F
+
                 );
             }
         }
@@ -157,30 +151,28 @@ void SOpenCVExtrinsic::updating()
 
             for( ; itr1 != itrEnd1 && itr2 != itrEnd2 ; ++itr1, ++itr2)
             {
-                data::PointList::csptr ptList1 = *itr1;
-                data::PointList::csptr ptList2 = *itr2;
+                const data::PointList::csptr& ptList1 = *itr1;
+                const data::PointList::csptr& ptList2 = *itr2;
                 std::vector<cv::Point2f> imgPoint1;
                 std::vector<cv::Point2f> imgPoint2;
 
                 for(data::Point::csptr point : ptList1->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    imgPoint1.push_back(
-                        cv::Point2f(
-                            static_cast<float>(point->getCoord()[0]),
-                            static_cast<float>(point->getCoord()[1])
-                        )
+                    imgPoint1.emplace_back(
+                        static_cast<float>(point->getCoord()[0]),
+                        static_cast<float>(point->getCoord()[1])
+
                     );
                 }
 
                 for(data::Point::csptr point : ptList2->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    imgPoint2.push_back(
-                        cv::Point2f(
-                            static_cast<float>(point->getCoord()[0]),
-                            static_cast<float>(point->getCoord()[1])
-                        )
+                    imgPoint2.emplace_back(
+                        static_cast<float>(point->getCoord()[0]),
+                        static_cast<float>(point->getCoord()[1])
+
                     );
                 }
 

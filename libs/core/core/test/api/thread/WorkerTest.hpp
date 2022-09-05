@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::thread
-{
-
-namespace ut
+namespace sight::core::thread::ut
 {
 
 class WorkerTest : public CPPUNIT_NS::TestFixture
@@ -42,14 +39,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void basicTest();
-    void timerTest();
-    void registryTest();
+    static void basicTest();
+    static void timerTest();
+    static void registryTest();
 };
 
-} //namespace ut
-
-} //namespace sight::core::thread
+} // namespace sight::core::thread::ut

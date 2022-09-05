@@ -45,34 +45,34 @@ std::filesystem::path Tester::s_imageOutputPath = std::filesystem::temp_director
 std::string modifiersToString(Qt::KeyboardModifiers modifiers)
 {
     std::vector<std::string> strings;
-    if(modifiers & Qt::ShiftModifier)
+    if((modifiers& Qt::ShiftModifier) != 0U)
     {
-        strings.push_back("Shift");
+        strings.emplace_back("Shift");
     }
 
-    if(modifiers & Qt::ControlModifier)
+    if((modifiers& Qt::ControlModifier) != 0U)
     {
-        strings.push_back("Control");
+        strings.emplace_back("Control");
     }
 
-    if(modifiers & Qt::AltModifier)
+    if((modifiers& Qt::AltModifier) != 0U)
     {
-        strings.push_back("Alt");
+        strings.emplace_back("Alt");
     }
 
-    if(modifiers & Qt::MetaModifier)
+    if((modifiers& Qt::MetaModifier) != 0U)
     {
-        strings.push_back("Meta");
+        strings.emplace_back("Meta");
     }
 
-    if(modifiers & Qt::KeypadModifier)
+    if((modifiers& Qt::KeypadModifier) != 0U)
     {
-        strings.push_back("Keypad");
+        strings.emplace_back("Keypad");
     }
 
-    if(modifiers & Qt::GroupSwitchModifier)
+    if((modifiers& Qt::GroupSwitchModifier) != 0U)
     {
-        strings.push_back("GroupSwitch");
+        strings.emplace_back("GroupSwitch");
     }
 
     std::string res;
@@ -93,7 +93,7 @@ std::string modifiersToString(Qt::KeyboardModifiers modifiers)
             }
         }
 
-        res = res + " key" + (strings.size() > 1 ? "s" : "");
+        res.append(" key").append(strings.size() > 1 ? "s" : "");
     }
 
     return res;
@@ -146,7 +146,7 @@ void MouseClick::interactWith(T thing) const
 
 std::string MouseClick::toString() const
 {
-    std::string res = "";
+    std::string res;
     if(m_button == Qt::LeftButton)
     {
         res += "left click";
@@ -217,8 +217,9 @@ void MouseDrag::interactWith(T thing) const
 
 std::string MouseDrag::toString() const
 {
-    std::string res;
-    res = res + "drag mouse from " + pointToString(m_from) + " to " + pointToString(m_to) + " while holding ";
+    std::string res =
+        std::string("drag mouse from ").append(pointToString(m_from)).append(" to ").append(pointToString(m_to))
+        .append(" while holding ");
     if(m_button == Qt::LeftButton)
     {
         res += "left";
@@ -246,8 +247,8 @@ std::string MouseDrag::toString() const
     return res;
 }
 
-KeyboardSequence::KeyboardSequence(const std::string& text, Qt::KeyboardModifiers modifiers) :
-    m_text(text),
+KeyboardSequence::KeyboardSequence(std::string text, Qt::KeyboardModifiers modifiers) :
+    m_text(std::move(text)),
     m_modifiers(modifiers)
 {
 }
@@ -351,7 +352,7 @@ std::string KeyboardClick::toString() const
 
 TestEvent::TestEvent(std::function<void()> f) :
     QEvent(QEvent::User),
-    m_function(f)
+    m_function(std::move(f))
 {
 }
 
@@ -368,14 +369,12 @@ bool TestEventFilter::eventFilter(QObject* obj, QEvent* event)
 {
     if(event->type() == QEvent::User)
     {
-        TestEvent* testEvent = dynamic_cast<TestEvent*>(event);
+        auto* testEvent = dynamic_cast<TestEvent*>(event);
         testEvent->function()();
         return true;
     }
-    else
-    {
-        return QObject::eventFilter(obj, event);
-    }
+
+    return QObject::eventFilter(obj, event);
 }
 
 TesterAssertionFailed::TesterAssertionFailed(const std::string& msg) :
@@ -385,13 +384,13 @@ TesterAssertionFailed::TesterAssertionFailed(const std::string& msg) :
 
 //------------------------------------------------------------------------------
 
-bool alwaysTrue(QObject*)
+bool alwaysTrue(QObject* /*unused*/)
 {
     return true;
 }
 
-Tester::Tester(const std::string& testName, bool verboseMode) :
-    m_testName(testName),
+Tester::Tester(std::string testName, bool verboseMode) :
+    m_testName(std::move(testName)),
     m_verboseMode(verboseMode)
 {
 }
@@ -725,12 +724,10 @@ double Tester::compareImagesPixelPerfect(QImage a, QImage b, bool strict)
         {
             return 0;
         }
-        else
-        {
-            const QSize size = a.size().boundedTo(b.size());
-            a = a.scaled(size);
-            b = b.scaled(size);
-        }
+
+        const QSize size = a.size().boundedTo(b.size());
+        a = a.scaled(size);
+        b = b.scaled(size);
     }
 
     int identicalPixels = 0;
@@ -738,7 +735,7 @@ double Tester::compareImagesPixelPerfect(QImage a, QImage b, bool strict)
     {
         for(int x = 0 ; x < a.width() ; x++)
         {
-            identicalPixels += (a.pixelColor(x, y) == b.pixelColor(x, y));
+            identicalPixels += static_cast<int>(a.pixelColor(x, y) == b.pixelColor(x, y));
         }
     }
 
@@ -755,12 +752,10 @@ double Tester::compareImagesMSE(QImage a, QImage b, bool strict)
         {
             return 0;
         }
-        else
-        {
-            const QSize size = a.size().boundedTo(b.size());
-            a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        }
+
+        const QSize size = a.size().boundedTo(b.size());
+        a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
     double res = 0;
@@ -790,12 +785,10 @@ double Tester::compareImagesCosine(QImage a, QImage b, bool strict)
         {
             return 0;
         }
-        else
-        {
-            const QSize size = a.size().boundedTo(b.size());
-            a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        }
+
+        const QSize size = a.size().boundedTo(b.size());
+        a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
     double pa = 0;
@@ -857,12 +850,10 @@ double Tester::compareImagesCorrelation(QImage a, QImage b, bool strict)
         {
             return 0;
         }
-        else
-        {
-            const QSize size = a.size().boundedTo(b.size());
-            a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        }
+
+        const QSize size = a.size().boundedTo(b.size());
+        a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
     double res = 0;
@@ -903,7 +894,7 @@ void Tester::fail(const std::string& message)
 
 std::string Tester::generateFailureMessage()
 {
-    std::string message = "";
+    std::string message;
     if(m_graphicComponent != nullptr)
     {
         message += "GIVEN: " + m_componentDescription + '\n';
@@ -1058,7 +1049,7 @@ QImage Tester::voodooize(const QImage& img)
         //  - Top right: Do nothing
         //  - Bottom left: Flip vertically and rotate to the right
         //  - Bottom right: Impossible to put it to the right place
-        res = res.mirrored((i == 0 && (edge & 1)), (edge == 2 || (i == 0 && edge == 3)));
+        res = res.mirrored((i == 0 && ((edge & 1) != 0)), (edge == 2 || (i == 0 && edge == 3)));
         if(i == 1 && edge == 2)
         {
             res = res.transformed(QTransform().rotate(-90));
@@ -1106,28 +1097,28 @@ QPoint Tester::centerOf(const QWidget* widget)
 
 QPoint Tester::leftOf(const QWidget* widget)
 {
-    return QPoint(1, centerOf(widget).y());
+    return {1, centerOf(widget).y()};
 }
 
 //------------------------------------------------------------------------------
 
 QPoint Tester::rightOf(const QWidget* widget)
 {
-    return QPoint(widget->width() - 1, centerOf(widget).y());
+    return {widget->width() - 1, centerOf(widget).y()};
 }
 
 //------------------------------------------------------------------------------
 
 QPoint Tester::topOf(const QWidget* widget)
 {
-    return QPoint(centerOf(widget).x(), 1);
+    return {centerOf(widget).x(), 1};
 }
 
 //------------------------------------------------------------------------------
 
 QPoint Tester::bottomOf(const QWidget* widget)
 {
-    return QPoint(centerOf(widget).x(), widget->height() - 1);
+    return {centerOf(widget).x(), widget->height() - 1};
 }
 
 //------------------------------------------------------------------------------

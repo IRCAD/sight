@@ -35,10 +35,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::ResourceTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 static Ogre::RenderWindow* s_window = nullptr;
@@ -117,6 +114,4 @@ void ResourceTest::tfTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

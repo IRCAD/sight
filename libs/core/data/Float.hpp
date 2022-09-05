@@ -43,7 +43,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const float val = 0.f)
+    static sptr New(const float val = 0.F)
     {
         return GenericFieldFactory<Float>(val);
     }
@@ -57,7 +57,7 @@ public:
     /**
      * @brief Destructor.
      */
-    DATA_API virtual ~Float() noexcept = default;
+    DATA_API ~Float() noexcept override = default;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

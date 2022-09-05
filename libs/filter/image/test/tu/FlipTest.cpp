@@ -31,10 +31,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::FlipTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -256,6 +253,4 @@ void FlipTest::flipEmptyImageTest()
 
 //------------------------------------------------------------------------------
 
-} // ut
-
-} // imageFilterOp
+} // namespace sight::filter::image::ut

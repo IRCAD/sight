@@ -30,20 +30,18 @@
 
 #include <QGraphicsItemGroup>
 
+#include <cmath>
+
 namespace sight::viz::scene2d
 {
 
-IAdaptor::IAdaptor() noexcept :
-    m_zValue(0.f),
-    m_opacity(1.f)
-{
-}
+IAdaptor::IAdaptor() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::~IAdaptor() noexcept
-{
-}
+IAdaptor::~IAdaptor() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -87,7 +85,7 @@ double IAdaptor::getViewSizeRatio() const
 
 vec2d_t IAdaptor::viewToViewport(const scene2d::data::Viewport& viewport) const
 {
-    auto view = this->getScene2DRender()->getView();
+    auto* view = this->getScene2DRender()->getView();
 
     const double viewportHeight = viewport.height();
     const double viewportWidth  = viewport.width();
@@ -106,7 +104,8 @@ vec2d_t IAdaptor::mapAdaptorToScene(
     const vec2d_t& _xy
 ) const
 {
-    double x, y;
+    double x = NAN;
+    double y = NAN;
 
     if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
@@ -146,7 +145,7 @@ vec2d_t IAdaptor::mapAdaptorToScene(
         y = m_yAxis->getScale() * _xy.y;
     }
 
-    return vec2d_t(x, y);
+    return {x, y};
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +153,8 @@ vec2d_t IAdaptor::mapAdaptorToScene(
 vec2d_t IAdaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
-    double x, y;
+    double x = NAN;
+    double y = NAN;
     if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
     {
         x = 10. * std::exp(_xy.x) / m_xAxis->getScale();
@@ -173,7 +173,7 @@ vec2d_t IAdaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
         y = _xy.y / m_yAxis->getScale();
     }
 
-    return vec2d_t(x, y);
+    return {x, y};
 }
 
 //-----------------------------------------------------------------------------
@@ -183,7 +183,7 @@ void IAdaptor::configureParams()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
-    if(config.count("xAxis"))
+    if(config.count("xAxis") != 0U)
     {
         m_xAxis = this->getScene2DRender()->getAxis(config.get<std::string>("xAxis"));
         SIGHT_ASSERT("xAxis not found", m_xAxis);
@@ -193,7 +193,7 @@ void IAdaptor::configureParams()
         m_xAxis = std::make_shared<scene2d::data::Axis>();
     }
 
-    if(config.count("yAxis"))
+    if(config.count("yAxis") != 0U)
     {
         m_yAxis = this->getScene2DRender()->getAxis(config.get<std::string>("yAxis"));
         SIGHT_ASSERT("yAxis not found", m_xAxis);
@@ -203,12 +203,12 @@ void IAdaptor::configureParams()
         m_yAxis = std::make_shared<scene2d::data::Axis>();
     }
 
-    if(config.count("zValue"))
+    if(config.count("zValue") != 0U)
     {
         m_zValue = config.get<float>("zValue");
     }
 
-    if(config.count("opacity"))
+    if(config.count("opacity") != 0U)
     {
         m_opacity = config.get<float>("opacity");
     }
@@ -216,7 +216,7 @@ void IAdaptor::configureParams()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::processInteraction(scene2d::data::Event&)
+void IAdaptor::processInteraction(scene2d::data::Event& /*unused*/)
 {
 }
 

@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ActivitySeriesTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -87,6 +84,4 @@ void ActivitySeriesTest::dataTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

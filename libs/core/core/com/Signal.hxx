@@ -62,7 +62,7 @@ void Signal<R(A ...)>::disconnect(SlotBase::sptr slot)
 {
     core::mt::ReadToWriteLock lock(m_connectionsMutex);
 
-    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+    auto iter = m_connections.find(slot);
 
     if(iter != m_connections.end())
     {
@@ -108,7 +108,7 @@ void Signal<R(A ...)>::emit(A ... a) const
 {
     core::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
-    typename SlotContainerType::const_iterator end = m_slots.end();
+    auto end = m_slots.end();
     for(iter = m_slots.begin() ; iter != end ; ++iter)
     {
         if((*iter)->first)
@@ -125,7 +125,7 @@ void Signal<R(A ...)>::asyncEmit(A ... a) const
 {
     core::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
-    typename SlotContainerType::const_iterator end = m_slots.end();
+    auto end = m_slots.end();
     for(iter = m_slots.begin() ; iter != end ; ++iter)
     {
         if((*iter)->first)
@@ -211,7 +211,7 @@ Connection Signal<R(A ...)>::getConnection(SlotBase::sptr slot, bool throws)
     core::mt::ReadLock lock(m_connectionsMutex);
     Connection connection;
 
-    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+    auto iter = m_connections.find(slot);
 
     if(iter == m_connections.end())
     {

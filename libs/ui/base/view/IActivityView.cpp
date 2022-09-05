@@ -39,10 +39,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::ui::base
-{
-
-namespace view
+namespace sight::ui::base::view
 {
 
 const core::com::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
@@ -59,8 +56,7 @@ IActivityView::IActivityView()
 //-----------------------------------------------------------------------------
 
 IActivityView::~IActivityView()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -88,10 +84,10 @@ void IActivityView::launchActivitySeries(data::Series::sptr series)
 
 bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) const
 {
-    bool isValid;
+    bool isValid = false;
     std::string message;
 
-    std::tie(isValid, message) = this->activity::IActivityLauncher::validateActivity(activitySeries);
+    std::tie(isValid, message) = activity::IActivityLauncher::validateActivity(activitySeries);
 
     if(!isValid)
     {
@@ -124,6 +120,4 @@ data::ActivitySeries::sptr IActivityView::createMainActivity() const
     return actSeries;
 }
 
-} // namespace view
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::view

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::custom::NoFilter);
 
-namespace sight::filter::dicom
-{
-
-namespace custom
+namespace sight::filter::dicom::custom
 {
 
 const std::string NoFilter::s_FILTER_NAME        = "No filter";
@@ -38,16 +35,14 @@ const std::string NoFilter::s_FILTER_DESCRIPTION = "No filter.";
 
 //-----------------------------------------------------------------------------
 
-NoFilter::NoFilter(filter::dicom::IFilter::Key) :
-    ICustom()
+NoFilter::NoFilter(filter::dicom::IFilter::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 NoFilter::~NoFilter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -68,6 +63,7 @@ std::string NoFilter::getDescription() const
 NoFilter::DicomSeriesContainerType NoFilter::apply(
     const data::DicomSeries::sptr& series,
     const core::log::Logger::sptr&
+    /*logger*/
 )
 const
 {
@@ -76,6 +72,4 @@ const
     return result;
 }
 
-} // namespace custom
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::custom

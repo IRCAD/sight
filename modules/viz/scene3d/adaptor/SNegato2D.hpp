@@ -188,7 +188,7 @@ private:
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
 
     /// Stores the current slice index for each axis.
-    std::vector<float> m_currentSliceIndex {0.f, 0.f, 0.f};
+    std::vector<float> m_currentSliceIndex {0.F, 0.F, 0.F};
 
     /// Defines the image orientation.
     OrientationMode m_orientation {OrientationMode::Z_AXIS};

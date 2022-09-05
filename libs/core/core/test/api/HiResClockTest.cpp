@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::HisResClockTest);
 
-namespace sight::core
-{
-
-namespace ut
+namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
@@ -57,7 +54,7 @@ void HisResClockTest::tearDown()
 void HisResClockTest::getTimeTest()
 {
     {
-        const unsigned short time = 1;
+        const std::uint16_t time = 1;
 
         const double start = HiResClock::getTimeInSec();
         std::this_thread::sleep_for(std::chrono::seconds(time));
@@ -67,7 +64,7 @@ void HisResClockTest::getTimeTest()
     }
 
     {
-        const unsigned short time = 1000;
+        const std::uint16_t time = 1000;
 
         const double start = HiResClock::getTimeInMilliSec();
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
@@ -89,6 +86,4 @@ void HisResClockTest::getTimeTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core
+} // namespace sight::core::ut

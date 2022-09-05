@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::FwIDTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -91,11 +88,10 @@ void FwIDTest::objectFwIDTest()
 
 void FwIDTest::concurrentAccessOnFwIDMapTest()
 {
-    const auto fn = std::bind(&FwIDTest::runFwIDCreation, this);
     std::vector<std::future<void> > futures;
     for(unsigned int i = 0 ; i < 10 ; ++i)
     {
-        futures.push_back(std::async(std::launch::async, fn));
+        futures.push_back(std::async(std::launch::async, runFwIDCreation));
     }
 
     for(auto& future : futures)
@@ -144,6 +140,4 @@ void FwIDTest::runFwIDCreation()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

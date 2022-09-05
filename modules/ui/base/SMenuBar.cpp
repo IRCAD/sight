@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,15 +29,13 @@ namespace sight::module::ui::base
 
 //-----------------------------------------------------------------------------
 
-SMenuBar::SMenuBar() noexcept
-{
-}
+SMenuBar::SMenuBar() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SMenuBar::~SMenuBar() noexcept
-{
-}
+SMenuBar::~SMenuBar() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -68,4 +66,4 @@ void SMenuBar::updating()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::module::ui::base

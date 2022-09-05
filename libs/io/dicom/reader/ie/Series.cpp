@@ -34,13 +34,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -62,8 +56,7 @@ Series::Series(
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -197,8 +190,4 @@ void Series::readGeneralSeriesModule()
     }
 }
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

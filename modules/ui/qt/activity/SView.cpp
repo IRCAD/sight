@@ -36,10 +36,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
@@ -56,8 +53,7 @@ SView::SView()
 //------------------------------------------------------------------------------
 
 SView::~SView()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -85,13 +81,13 @@ void SView::starting()
     auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     parentContainer->getQtContainer()->setObjectName(serviceID);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     if(m_border >= 0)
     {
         layout->setContentsMargins(m_border, m_border, m_border, m_border);
     }
 
-    QWidget* widget = new QWidget();
+    auto* widget = new QWidget();
     layout->addWidget(widget);
     widget->setObjectName(serviceID + "/container");
 
@@ -178,6 +174,4 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

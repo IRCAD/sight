@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DOCUMENT_API ~SPdfWriter() noexcept;
+    MODULE_IO_DOCUMENT_API ~SPdfWriter() noexcept override;
 
 protected:
 
@@ -158,7 +158,7 @@ private:
      * @brief scaleQImage: applies a scale the QImages
      * @param A QImage and a factor of scaling.
      */
-    static void scaleQImage(QImage& qImage, const int scale);
+    static void scaleQImage(QImage& qImage, int scale);
 
     /**
      * @brief List of images IDs to export into the PDF.
@@ -181,4 +181,4 @@ private:
     data::ptr_vector<data::Image, sight::data::Access::in> m_images {this, s_IMAGE_INPUT};
 };
 
-} // namespace sight::module
+} // namespace sight::module::io::document

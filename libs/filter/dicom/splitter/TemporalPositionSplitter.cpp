@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::TemporalPositionSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string TemporalPositionSplitter::s_FILTER_NAME        = "Temporal position splitter";
@@ -49,8 +46,7 @@ TemporalPositionSplitter::TemporalPositionSplitter(filter::dicom::IFilter::Key k
 //-----------------------------------------------------------------------------
 
 TemporalPositionSplitter::~TemporalPositionSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,6 +71,4 @@ bool TemporalPositionSplitter::isConfigurationRequired() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

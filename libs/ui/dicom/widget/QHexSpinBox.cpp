@@ -22,10 +22,7 @@
 
 #include "ui/dicom/widget/QHexSpinBox.hpp"
 
-namespace sight::ui::dicom
-{
-
-namespace widget
+namespace sight::ui::dicom::widget
 {
 
 //-----------------------------------------------------------------------------
@@ -48,7 +45,7 @@ QValidator::State QHexSpinBox::validate(QString& text, int& pos) const
 
 int QHexSpinBox::valueFromText(const QString& text) const
 {
-    bool ok;
+    bool ok = false;
     return text.toInt(&ok, 16);
 }
 
@@ -65,6 +62,4 @@ QString QHexSpinBox::textFromValue(int value) const
     return res;
 }
 
-} // namespace widget
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::widget

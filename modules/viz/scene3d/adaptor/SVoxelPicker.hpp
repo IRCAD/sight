@@ -146,7 +146,7 @@ private:
     );
 
     /// Defines the orientation of the image used to pick on the current slice.
-    OrientationMode m_orientation;
+    OrientationMode m_orientation {OrientationMode::X_AXIS};
 
     /// Defines the picker mode.
     bool m_mode2D {true};

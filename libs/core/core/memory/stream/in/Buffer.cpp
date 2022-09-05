@@ -28,20 +28,16 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
-namespace sight::core::memory
-{
+#include <utility>
 
-namespace stream
-{
-
-namespace in
+namespace sight::core::memory::stream::in
 {
 
 struct HoldCounterStream : boost::iostreams::stream<boost::iostreams::array_source>
 {
-    HoldCounterStream(char* buf, std::size_t size, const Buffer::LockType& lock) :
+    HoldCounterStream(char* buf, std::size_t size, Buffer::LockType lock) :
         boost::iostreams::stream<boost::iostreams::array_source>(buf, size),
-        m_counter(lock)
+        m_counter(std::move(lock))
     {
     }
 
@@ -52,7 +48,7 @@ struct HoldCounterStream : boost::iostreams::stream<boost::iostreams::array_sour
 
 Buffer::LockType noFactory()
 {
-    return Buffer::LockType();
+    return {};
 }
 
 Buffer::Buffer(void* buf, std::size_t size) :
@@ -66,24 +62,18 @@ Buffer::Buffer(void* buf, std::size_t size) :
 Buffer::Buffer(void* buf, std::size_t size, CounterFactoryType counterFactory) :
     m_buf(buf),
     m_size(size),
-    m_counterFactory(counterFactory)
+    m_counterFactory(std::move(counterFactory))
 {
     SIGHT_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 SPTR(std::istream) Buffer::get()
 {
-    namespace io = boost::iostreams;
-
-    typedef HoldCounterStream ArrayStreamType;
+    using ArrayStreamType               = HoldCounterStream;
     SPTR(ArrayStreamType) arrayInStream =
         std::make_shared<ArrayStreamType>(static_cast<char*>(m_buf), m_size, m_counterFactory());
 
     return arrayInStream;
 }
 
-} // namespace in
-
-} // namespace stream
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::stream::in

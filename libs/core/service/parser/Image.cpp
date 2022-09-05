@@ -28,10 +28,7 @@
 #include <data/Image.hpp>
 #include <data/tools/Color.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -42,11 +39,11 @@ void Image::createConfig(core::tools::Object::sptr _obj)
     SIGHT_ASSERT("Image does not exist.", image);
 
     const auto config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
-        const std::string colorStr = config.get<std::string>("color");
+        const auto colorStr = config.get<std::string>("color");
 
-        std::uint8_t color[4];
+        std::array<std::uint8_t, 4> color {};
         data::tools::Color::hexaStringToRGBA(colorStr, color);
 
         // Initialize with a dummy 4x4 black image
@@ -70,6 +67,4 @@ void Image::createConfig(core::tools::Object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

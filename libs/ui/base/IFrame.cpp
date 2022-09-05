@@ -54,8 +54,7 @@ ui::base::container::fwContainer::wptr IFrame::m_progressWidget =
     std::weak_ptr<ui::base::container::fwContainer>();
 
 IFrame::IFrame() :
-    m_hasMenuBar(false),
-    m_hasToolBar(false),
+
     m_closePolicy("exit")
 {
     m_sigClosed = newSignal<ClosedSignalType>(s_CLOSED_SIG);
@@ -68,8 +67,7 @@ IFrame::IFrame() :
 //-----------------------------------------------------------------------------
 
 IFrame::~IFrame()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -118,8 +116,10 @@ void IFrame::initialize()
         }
 
         SIGHT_ASSERT(
-            "[" + this->getID() + "' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
-            + CLOSE_POLICY_NOTIFY + "', '" + CLOSE_POLICY_EXIT + "' or '" + CLOSE_POLICY_MESSAGE + "'",
+            std::string("[").append(this->getID()).append("' ] Invalid onclose value, actual: '") << m_closePolicy
+            << std::string("', accepted: '").append(CLOSE_POLICY_NOTIFY).append("', '").append(CLOSE_POLICY_EXIT).append(
+                "' or '"
+            ).append(CLOSE_POLICY_MESSAGE).append("'"),
             m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
             || m_closePolicy == CLOSE_POLICY_MESSAGE
         );
@@ -168,15 +168,15 @@ void IFrame::create()
 
     if(m_closePolicy == CLOSE_POLICY_EXIT)
     {
-        fct = std::bind(&ui::base::IFrame::onCloseExit, this);
+        fct = onCloseExit;
     }
     else if(m_closePolicy == CLOSE_POLICY_NOTIFY)
     {
-        fct = std::bind(&ui::base::IFrame::onCloseNotify, this);
+        fct = [this](auto&& ...){onCloseNotify();};
     }
     else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
     {
-        fct = std::bind(&ui::base::IFrame::onCloseMessage, this);
+        fct = onCloseMessage;
         auto app = ui::base::Application::New();
         app->setConfirm(true);
     }
@@ -258,12 +258,12 @@ void IFrame::destroy()
 
 //-----------------------------------------------------------------------------
 
-void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
+void IFrame::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     SIGHT_ASSERT(
         "[" + this->getID() + "' ] Wrong configuration name, expected: 'frame', actual: '"
-        + frameConfig->getName() + "'",
-        frameConfig->getName() == "frame"
+        + layoutConfig->getName() + "'",
+        layoutConfig->getName() == "frame"
     );
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY
@@ -274,7 +274,7 @@ void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
         m_frameLayoutManager
     );
 
-    m_frameLayoutManager->initialize(frameConfig);
+    m_frameLayoutManager->initialize(layoutConfig);
 }
 
 //-----------------------------------------------------------------------------
@@ -370,4 +370,4 @@ void IFrame::hide()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

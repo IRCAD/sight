@@ -31,7 +31,7 @@ namespace sight::data
 
 class Reconstruction;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
@@ -45,12 +45,9 @@ class ImageSeries;
 class ModelSeries;
 class ActivitySeries;
 
-}
+} // namespace sight::data
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 /**
@@ -69,9 +66,9 @@ public:
      * @return The created SeriesDB
      */
     UTESTDATA_API static SPTR(data::SeriesDB) createSeriesDB(
-        const unsigned char nbImgSeries,
-        const unsigned char nbModelSeries,
-        const unsigned char nbActivitySeries
+        unsigned char nbImgSeries,
+        unsigned char nbModelSeries,
+        unsigned char nbActivitySeries
     );
 
     /// Returns a Patient with dummy informations
@@ -109,6 +106,4 @@ public:
     UTESTDATA_API static void generateReconstruction(SPTR(data::Reconstruction) rec, int index = -1);
 };
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

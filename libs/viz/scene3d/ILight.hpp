@@ -108,7 +108,7 @@ public:
     VIZ_SCENE3D_API ILight();
 
     /// Does nothing.
-    VIZ_SCENE3D_API virtual ~ILight();
+    VIZ_SCENE3D_API ~ILight() override;
 
     /**
      * @brief Gets the name of the light.

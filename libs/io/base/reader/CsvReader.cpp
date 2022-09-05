@@ -30,10 +30,7 @@
 #include <fstream>
 #include <string>
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 //------------------------------------------------------------------------------
@@ -50,13 +47,12 @@ CsvReader::CsvReader(const std::filesystem::path& csvPath) :
 //------------------------------------------------------------------------------
 
 CsvReader::~CsvReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-typedef boost::char_separator<char> CharSeparatorType;
-typedef boost::tokenizer<CharSeparatorType> TokenizerType;
+using CharSeparatorType = boost::char_separator<char>;
+using TokenizerType     = boost::tokenizer<CharSeparatorType>;
 
 //------------------------------------------------------------------------------
 
@@ -87,6 +83,4 @@ CsvReader::TokenContainerType CsvReader::getLine(const std::string& separator)
 
 //------------------------------------------------------------------------------
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

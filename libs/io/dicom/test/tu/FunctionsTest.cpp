@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::FunctionsTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -64,6 +61,4 @@ void FunctionsTest::generateStudyInstanceUidTest()
     CPPUNIT_ASSERT(16 == id.length());
 }
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

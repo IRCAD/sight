@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ public:
 
     MODULE_UI_QT_API ImageTransparency() noexcept;
 
-    MODULE_UI_QT_API virtual ~ImageTransparency() noexcept;
+    MODULE_UI_QT_API ~ImageTransparency() noexcept override;
 
 protected:
 
@@ -126,4 +126,4 @@ private:
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE, true};
 };
 
-} // uiImageQt
+} // namespace sight::module::ui::qt::image

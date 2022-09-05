@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "io/dimse/exceptions/NegociateAssociationFailure.hpp"
 
-namespace sight::io::dimse
-{
-
-namespace exceptions
+namespace sight::io::dimse::exceptions
 {
 
 NegociateAssociationFailure::NegociateAssociationFailure(const std::string& message) :
@@ -35,10 +32,7 @@ NegociateAssociationFailure::NegociateAssociationFailure(const std::string& mess
 
 // ----------------------------------------------------------------------------
 
-NegociateAssociationFailure::~NegociateAssociationFailure() noexcept
-{
-}
+NegociateAssociationFailure::~NegociateAssociationFailure() noexcept =
+    default;
 
-} //exceptions
-
-} //fwPacsIO
+} // namespace sight::io::dimse::exceptions

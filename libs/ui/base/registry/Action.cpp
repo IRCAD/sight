@@ -30,24 +30,20 @@
 
 #include <utility>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 //-----------------------------------------------------------------------------
 
-Action::Action(const std::string& sid) :
-    m_sid(sid)
+Action::Action(std::string sid) :
+    m_sid(std::move(sid))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 Action::~Action()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -86,6 +82,4 @@ void Action::actionServiceSetVisible(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::registry

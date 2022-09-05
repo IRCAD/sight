@@ -35,16 +35,13 @@
 namespace sight::ui::base
 {
 
-IToolBar::IToolBar() :
-    m_hideActions(false)
-{
-}
+IToolBar::IToolBar()
+= default;
 
 //-----------------------------------------------------------------------------
 
 IToolBar::~IToolBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -266,4 +263,4 @@ void IToolBar::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

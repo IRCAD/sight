@@ -37,10 +37,10 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void dateTest();
-    void timeTest();
-    void dateAndTimeTest();
-    void toStringTest();
+    static void dateTest();
+    static void timeTest();
+    static void dateAndTimeTest();
+    static void toStringTest();
 };
 
 } // namespace sight::core::tools::ut

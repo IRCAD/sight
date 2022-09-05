@@ -31,7 +31,7 @@ namespace sight::core::thread
 
 class Worker;
 
-} //namespace thread
+} // namespace sight::core::thread
 
 namespace sight::module::ui::qt
 {
@@ -46,15 +46,15 @@ public:
     /**
      * @brief   destructor
      */
-    MODULE_UI_QT_API ~Plugin() noexcept;
+    MODULE_UI_QT_API ~Plugin() noexcept override;
 
     // Overrides
-    MODULE_UI_QT_API void start();
+    MODULE_UI_QT_API void start() override;
 
     // Overrides
-    MODULE_UI_QT_API void stop() noexcept;
+    MODULE_UI_QT_API void stop() noexcept override;
 
-    MODULE_UI_QT_API int run() noexcept;
+    static MODULE_UI_QT_API int run() noexcept;
 
 protected:
 

@@ -48,12 +48,11 @@
 
 #include <algorithm>
 #include <map>
+#include <memory>
 #include <string>
+#include <utility>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 //-----------------------------------------------------------------------------
@@ -70,22 +69,21 @@ std::weak_ptr<Layer> m_layer;
 std::string m_currentMtlName;
 
 /// Frame ID.
-int m_frameId;
+int m_frameId {0};
 
 public:
 
     /// Constructor
-    CameraListener(const RayTracingVolumeRenderer& renderer, const Layer::wptr& layer) :
+    CameraListener(const RayTracingVolumeRenderer& renderer, Layer::wptr layer) :
         m_renderer(renderer),
-        m_layer(layer),
-        m_currentMtlName("VolIllum"),
-        m_frameId(0)
+        m_layer(std::move(layer)),
+        m_currentMtlName("VolIllum")
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void cameraPreRenderScene(Ogre::Camera*)
+    void cameraPreRenderScene(Ogre::Camera* /*cam*/) override
     {
         if(auto layer = m_layer.lock())
         {
@@ -140,11 +138,17 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
     sight::data::TransferFunction::csptr tf,
     bool buffer,
     bool preintegration,
-    const std::optional<shadows_parameters_t> shadows,
-    const std::optional<IllumAmbientOcclusionSAT::sat_parameters_t>& sat,
-    const std::optional<std::string>& shader
+    std::optional<shadows_parameters_t> shadows,
+    std::optional<IllumAmbientOcclusionSAT::sat_parameters_t> sat,
+    std::optional<std::string> shader
 ) :
-    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, image, tf, buffer, preintegration),
+    IVolumeRenderer(parentId,
+                    layer->getSceneManager(),
+                    parentNode,
+                    image,
+                    tf,
+                    buffer,
+                    preintegration),
     m_shader(shader.value_or("RayTracedVolume_FP.glsl")),
     m_shadows({shadows.value_or(shadows_parameters_t {})}),
     m_layer(layer),
@@ -597,7 +601,7 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 
 void RayTracingVolumeRenderer::clipImage(const Ogre::AxisAlignedBox& clippingBox)
 {
-    const Ogre::AxisAlignedBox maxBoxSize(Ogre::Vector3::ZERO, Ogre::Vector3(1.f, 1.f, 1.f));
+    const Ogre::AxisAlignedBox maxBoxSize(Ogre::Vector3::ZERO, Ogre::Vector3(1.F, 1.F, 1.F));
     const Ogre::AxisAlignedBox clampedClippingBox = maxBoxSize.intersection(clippingBox);
 
     IVolumeRenderer::clipImage(clampedClippingBox);
@@ -744,7 +748,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
             );
             vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
-            if(m_options.vertex.size() > 0)
+            if(!m_options.vertex.empty())
             {
                 vsp->setParameter("preprocessor_defines", m_options.vertex);
             }
@@ -759,7 +763,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                 gpm.createProgram(fpName, RESOURCE_GROUP, "glsl", Ogre::GPT_FRAGMENT_PROGRAM);
             fsp->setSourceFile(m_shader);
 
-            if(m_options.fragment.size() > 0)
+            if(!m_options.fragment.empty())
             {
                 fsp->setParameter("preprocessor_defines", m_options.fragment);
             }
@@ -841,7 +845,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
         fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
         fsp->setParameter("attach", "DepthPeelingCommon_FP");
 
-        if(m_options.fragment.size() > 0)
+        if(!m_options.fragment.empty())
         {
             fsp->setParameter("preprocessor_defines", m_options.fragment);
         }
@@ -968,29 +972,30 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
 
 void RayTracingVolumeRenderer::updateOptions()
 {
-    std::ostringstream vpPPDefs, fpPPDefs;
+    std::ostringstream vpPPDefs;
+    std::ostringstream fpPPDefs;
 
     vpPPDefs.str("");
     fpPPDefs.str("");
 
     if(m_shadows.parameters.ao.enabled)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << defines::AO;
+        fpPPDefs << (fpPPDefs.str().empty() ? "" : ",") << defines::AO;
     }
 
     if(m_shadows.parameters.colour_bleeding.enabled)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << defines::COLOR_BLEEDING;
+        fpPPDefs << (fpPPDefs.str().empty() ? "" : ",") << defines::COLOR_BLEEDING;
     }
 
     if(m_shadows.parameters.soft_shadows)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << defines::SHADOWS;
+        fpPPDefs << (fpPPDefs.str().empty() ? "" : ",") << defines::SHADOWS;
     }
 
     if(m_preintegration)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << defines::PREINTEGRATION;
+        fpPPDefs << (fpPPDefs.str().empty() ? "" : ",") << defines::PREINTEGRATION;
     }
 
     const std::string vertex   = vpPPDefs.str();
@@ -1052,7 +1057,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     //Camera listener
     if(m_cameraListener == nullptr)
     {
-        m_cameraListener.reset(new CameraListener(*this, m_layer));
+        m_cameraListener = std::make_unique<CameraListener>(*this, m_layer);
         m_camera->addListener(m_cameraListener.get());
     }
 }
@@ -1091,6 +1096,4 @@ void RayTracingVolumeRenderer::updateVolumeIlluminationMaterial()
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

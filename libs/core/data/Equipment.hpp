@@ -46,7 +46,7 @@ public:
     DATA_API Equipment(Object::Key _key);
 
     /// Destroys the equipment.
-    DATA_API virtual ~Equipment();
+    DATA_API ~Equipment() override;
 
     /**
      * @brief Defines shallow copy.

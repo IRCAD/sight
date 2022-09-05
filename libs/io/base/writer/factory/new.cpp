@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,7 @@
 
 #include "io/base/writer/IObjectWriter.hpp"
 
-namespace sight::io::base
-{
-
-namespace writer
-{
-
-namespace factory
+namespace sight::io::base::writer::factory
 {
 
 //------------------------------------------------------------------------------
@@ -40,8 +34,4 @@ io::base::writer::IObjectWriter::sptr New(const io::base::writer::registry::KeyT
     return io::base::writer::registry::get()->create(classname);
 }
 
-} // namespace factory
-
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer::factory

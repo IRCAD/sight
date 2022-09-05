@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,7 @@ SScreenSelector::SScreenSelector()
 //------------------------------------------------------------------------------
 
 SScreenSelector::~SScreenSelector()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +80,7 @@ void SScreenSelector::updating()
     int screenNum = -1;
     if(m_mode == "select")
     {
-        screenNum = this->selectScreen();
+        screenNum = sight::module::ui::viz::SScreenSelector::selectScreen();
     }
     else
     {
@@ -115,7 +114,7 @@ void SScreenSelector::stopping()
 
 //------------------------------------------------------------------------------
 
-int SScreenSelector::selectScreen() const
+int SScreenSelector::selectScreen()
 {
     QStringList screenNames;
     int screenNumber = 0;

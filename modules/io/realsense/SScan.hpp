@@ -268,7 +268,7 @@ private:
         // spacial filter settings
         std::uint8_t spacialMagnitude {2}; ///<  Number of filter iterations [1-5]
         /// Alpha factor in an exponential moving average with Alpha=1 - no filter. Alpha = 0 - infinite filter [0.25-1]
-        float spacialSmoothAlpha {0.5f};
+        float spacialSmoothAlpha {0.5F};
 
         /// Step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
         std::uint8_t spacialSmoothDelta {20};
@@ -280,7 +280,7 @@ private:
 
         // temporal filter settings
         /// Alpha factor in an exponential moving average with Alpha=1 - no filter . Alpha = 0 - infinite filter [0-1]
-        float temporalSmoothAlpha {0.4f};
+        float temporalSmoothAlpha {0.4F};
 
         /// Step-size boundary. Establishes the threshold used to preserve surfaces (edges) [1-100]
         std::uint8_t temporalSmoothDelta {20};
@@ -319,7 +319,7 @@ private:
     }
 
     /// Does nothing (re-implemented from IGrabber)
-    void setPosition(int64_t) override
+    void setPosition(int64_t /*position*/) override
     {
     }
 
@@ -338,7 +338,7 @@ private:
      * @todo This function should be merged in module::io::qt::SCamera, or in a more generic "camera selector".
      * @return a string containing the serial number of selected camera.
      */
-    std::string selectDevice();
+    static std::string selectDevice();
 
     /**
      * @brief initialize is called at "startCamera" and will do the initialization of sight data.
@@ -393,20 +393,20 @@ private:
     // Slots
 
     ///SLOT: When "boolean" parameter changes
-    void setBoolParameter(bool, std::string);
+    void setBoolParameter(bool /*_value*/, std::string /*_key*/);
 
     /// SLOT: When "enum" parameter changes
-    void setEnumParameter(std::string, std::string);
+    void setEnumParameter(std::string /*_value*/, std::string /*_key*/);
 
     ///SLOT: When "int" parameter changes
-    void setIntParameter(int, std::string);
+    void setIntParameter(int /*_value*/, std::string /*_key*/);
 
     ///SLOT: When "double" parameter changes
-    void setDoubleParameter(double, std::string);
+    void setDoubleParameter(double /*_value*/, std::string /*_key*/);
 
     /// Pop a message dialog to the user with _message.
     /// Title is set to "RealSense Error".
-    void popMessageDialog(const std::string& _message);
+    static void popMessageDialog(const std::string& _message);
 
     // Members
 
@@ -419,7 +419,7 @@ private:
     std::thread m_thread;
 
     /// Determine depth value corresponding to one meter.
-    float m_depthScale = 0.f;
+    float m_depthScale = 0.F;
 
     /// Handle on which frame the pointcloud is mapped.
     PointcloudColormapEnumType m_pointcloudColorMap = PointcloudColormap::COLOR;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 /**
@@ -71,7 +68,7 @@ public:
     MODULE_UI_BASE_API SExport();
 
     /// Destructor
-    MODULE_UI_BASE_API virtual ~SExport() noexcept;
+    MODULE_UI_BASE_API ~SExport() noexcept override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -130,6 +127,4 @@ private:
     data::ptr<data::Series, data::Access::inout> m_series {this, "series"};
 };
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

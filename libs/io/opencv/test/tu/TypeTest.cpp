@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::TypeTest);
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //------------------------------------------------------------------------------
@@ -49,26 +46,26 @@ void TypeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-template<typename _T, std::size_t _NUM_COMPONENTS>
+template<typename T, std::size_t NUM_COMPONENTS>
 void testToCv(std::int32_t _expectedType)
 {
-    core::Type type        = core::Type::get<_T>();
-    const auto imageFormat = io::opencv::Type::toCv(type, _NUM_COMPONENTS);
+    core::Type type        = core::Type::get<T>();
+    const auto imageFormat = io::opencv::Type::toCv(type, NUM_COMPONENTS);
     CPPUNIT_ASSERT_EQUAL(_expectedType, imageFormat);
 }
 
 //------------------------------------------------------------------------------
 
-template<typename _EXPECTED_T, uint8_t _EXPECTED_NUM_COMPONENTS>
+template<typename EXPECTED_T, uint8_t EXPECTED_NUM_COMPONENTS>
 void testFromCv(std::int32_t _cvType)
 {
-    core::Type expectedType = core::Type::get<_EXPECTED_T>();
+    core::Type expectedType = core::Type::get<EXPECTED_T>();
     const auto format       = io::opencv::Type::fromCv(_cvType);
     const auto type         = format.first;
     const auto comp         = format.second;
 
     CPPUNIT_ASSERT_EQUAL(expectedType, type);
-    CPPUNIT_ASSERT_EQUAL(_EXPECTED_NUM_COMPONENTS, comp);
+    CPPUNIT_ASSERT_EQUAL(EXPECTED_NUM_COMPONENTS, comp);
 }
 
 //------------------------------------------------------------------------------
@@ -151,6 +148,4 @@ void TypeTest::fromCv()
     testFromCv<double, 4>(CV_64FC4);
 }
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

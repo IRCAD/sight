@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace sight::data
 
 class Camera;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::video
 {
@@ -110,7 +110,7 @@ public:
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_VIDEO_API virtual ~SGrabberProxy() noexcept;
+    MODULE_IO_VIDEO_API ~SGrabberProxy() noexcept override;
 
     /**
      * @name Slots API
@@ -124,16 +124,16 @@ public:
 protected:
 
     /// Does nothing.
-    MODULE_IO_VIDEO_API virtual void starting() final;
+    MODULE_IO_VIDEO_API void starting() final;
 
     /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
-    MODULE_IO_VIDEO_API virtual void stopping() final;
+    MODULE_IO_VIDEO_API void stopping() final;
 
     /// Does nothing.
-    MODULE_IO_VIDEO_API virtual void updating() final;
+    MODULE_IO_VIDEO_API void updating() final;
 
     /// Parses the XML configuration of the service.
-    MODULE_IO_VIDEO_API virtual void configuring() final;
+    MODULE_IO_VIDEO_API void configuring() final;
 
     /**
      * @name Slots methods
@@ -141,19 +141,19 @@ protected:
      * @{
      */
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API virtual void startCamera() final;
+    MODULE_IO_VIDEO_API void startCamera() final;
 
     /// Stop camera.
-    MODULE_IO_VIDEO_API virtual void stopCamera() final;
+    MODULE_IO_VIDEO_API void stopCamera() final;
 
     /// Pause camera.
-    MODULE_IO_VIDEO_API virtual void pauseCamera() final;
+    MODULE_IO_VIDEO_API void pauseCamera() final;
 
     /// Enable/disable loop in video.
-    MODULE_IO_VIDEO_API virtual void toggleLoopMode() final;
+    MODULE_IO_VIDEO_API void toggleLoopMode() final;
 
     /// Set the new position in the video.
-    MODULE_IO_VIDEO_API virtual void setPosition(std::int64_t position) final;
+    MODULE_IO_VIDEO_API void setPosition(std::int64_t position) final;
 
     /// Get the previous image in frame by frame mode.
     MODULE_IO_VIDEO_API void previousImage() override;
@@ -187,7 +187,7 @@ private:
     void modifyPosition(int64_t position);
 
     /// Duration of the video has changed.
-    void modifyDuration(int64_t position);
+    void modifyDuration(int64_t duration);
 
     /// The playback has started in the sub-service.
     void fwdStartCamera();

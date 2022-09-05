@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::ImageDiffCommandTest);
 
-namespace sight::ui::history
-{
-
-namespace ut
+namespace sight::ui::history::ut
 {
 
 //------------------------------------------------------------------------------
@@ -67,7 +64,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     std::uint8_t NEWVALUE = 1;
 
-    data::Image::BufferType* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
+    auto* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
 
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
@@ -136,7 +133,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     std::uint8_t NEWVALUE = 1;
 
-    data::Image::BufferType* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
+    auto* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
 
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
@@ -167,6 +164,4 @@ void ImageDiffCommandTest::getSizeTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace registrationOp
+} // namespace sight::ui::history::ut

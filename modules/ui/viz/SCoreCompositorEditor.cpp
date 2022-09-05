@@ -52,16 +52,13 @@ namespace sight::module::ui::viz
 
 //------------------------------------------------------------------------------
 
-SCoreCompositorEditor::SCoreCompositorEditor() noexcept :
-    m_isLayerSelected(false)
-{
-}
+SCoreCompositorEditor::SCoreCompositorEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SCoreCompositorEditor::~SCoreCompositorEditor() noexcept
-{
-}
+SCoreCompositorEditor::~SCoreCompositorEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -73,16 +70,16 @@ void SCoreCompositorEditor::starting()
         this->getContainer()
     );
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
 
-    QLabel* labelLayerSelector = new QLabel(tr("3D layer selected"));
+    auto* labelLayerSelector = new QLabel(tr("3D layer selected"));
     layout->addWidget(labelLayerSelector);
     m_layersBox = new QComboBox();
     layout->addWidget(m_layersBox);
 
     // Transparency depth management
     {
-        QLabel* labelTransparency = new QLabel(tr("Transparency depth"));
+        auto* labelTransparency = new QLabel(tr("Transparency depth"));
         layout->addWidget(labelTransparency);
         m_transparencyDepthSlider = new QSlider(Qt::Horizontal);
         layout->addWidget(m_transparencyDepthSlider);
@@ -95,8 +92,8 @@ void SCoreCompositorEditor::starting()
 
     // Transparency selector
     {
-        QGroupBox* groupBox         = new QGroupBox(tr("Transparency technique"));
-        QVBoxLayout* layoutGroupBox = new QVBoxLayout();
+        auto* groupBox       = new QGroupBox(tr("Transparency technique"));
+        auto* layoutGroupBox = new QVBoxLayout();
         groupBox->setLayout(layoutGroupBox);
         layout->addWidget(groupBox);
 
@@ -191,7 +188,7 @@ void SCoreCompositorEditor::refreshRenderers()
     service::registry::ObjectService::ServiceVectorType renderers =
         service::OSR::getServices("sight::viz::scene3d::SRender");
 
-    for(auto srv : renderers)
+    for(const auto& srv : renderers)
     {
         sight::viz::scene3d::SRender::sptr render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
@@ -200,9 +197,9 @@ void SCoreCompositorEditor::refreshRenderers()
             // Adds default layers (3D scene)
             if(layerMap.second->isCoreCompositorEnabled())
             {
-                const std::string id       = layerMap.first;
-                const std::string renderID = render->getID();
-                m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
+                const std::string id = layerMap.first;
+                std::string renderID = render->getID();
+                m_layersBox->addItem(QString::fromStdString(renderID.append(" : ").append(id)));
                 m_layers.push_back(layerMap.second);
             }
         }
@@ -228,7 +225,7 @@ void SCoreCompositorEditor::updating()
 
 void SCoreCompositorEditor::onSelectedLayerItem(int index)
 {
-    using namespace sight::viz::scene3d::compositor;
+    namespace compositor = sight::viz::scene3d::compositor;
 
     if(!m_isLayerSelected)
     {
@@ -256,27 +253,27 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     {
         switch(layer->getTransparencyTechnique())
         {
-            case DEFAULT:
+            case compositor::DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
                 break;
 
-            case DEPTHPEELING:
+            case compositor::DEPTHPEELING:
                 m_transparencyButtonGroup->button(1)->setChecked(true);
                 break;
 
-            case DUALDEPTHPEELING:
+            case compositor::DUALDEPTHPEELING:
                 m_transparencyButtonGroup->button(2)->setChecked(true);
                 break;
 
-            case WEIGHTEDBLENDEDOIT:
+            case compositor::WEIGHTEDBLENDEDOIT:
                 m_transparencyButtonGroup->button(3)->setChecked(true);
                 break;
 
-            case HYBRIDTRANSPARENCY:
+            case compositor::HYBRIDTRANSPARENCY:
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
 
-            case CELLSHADING_DEPTHPEELING:
+            case compositor::CELLSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
@@ -300,7 +297,7 @@ void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 
 void SCoreCompositorEditor::onEditTransparency(int index)
 {
-    using namespace sight::viz::scene3d::compositor;
+    namespace compositor = sight::viz::scene3d::compositor;
 
     auto layer = m_currentLayer.lock();
     if(layer)
@@ -309,28 +306,31 @@ void SCoreCompositorEditor::onEditTransparency(int index)
         switch(index)
         {
             case 0:
-                transparencyUpdated = layer->setTransparencyTechnique(DEFAULT);
+                transparencyUpdated = layer->setTransparencyTechnique(compositor::DEFAULT);
                 break;
 
             case 1:
-                transparencyUpdated = layer->setTransparencyTechnique(DEPTHPEELING);
+                transparencyUpdated = layer->setTransparencyTechnique(compositor::DEPTHPEELING);
                 break;
 
             case 2:
-                transparencyUpdated = layer->setTransparencyTechnique(DUALDEPTHPEELING);
+                transparencyUpdated = layer->setTransparencyTechnique(compositor::DUALDEPTHPEELING);
                 break;
 
             case 3:
-                transparencyUpdated = layer->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
+                transparencyUpdated = layer->setTransparencyTechnique(compositor::WEIGHTEDBLENDEDOIT);
                 break;
 
             case 4:
-                transparencyUpdated = layer->setTransparencyTechnique(HYBRIDTRANSPARENCY);
+                transparencyUpdated = layer->setTransparencyTechnique(compositor::HYBRIDTRANSPARENCY);
                 break;
 
             case 5:
-                transparencyUpdated = layer->setTransparencyTechnique(CELLSHADING_DEPTHPEELING);
+                transparencyUpdated = layer->setTransparencyTechnique(compositor::CELLSHADING_DEPTHPEELING);
                 break;
+
+            default:
+                transparencyUpdated = false;
         }
 
         if(!transparencyUpdated)

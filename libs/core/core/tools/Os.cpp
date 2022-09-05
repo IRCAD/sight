@@ -32,12 +32,8 @@
 #else
 #   include <link.h>
 #endif
-#include <regex>
 
-namespace sight::core::tools
-{
-
-namespace os
+namespace sight::core::tools::os
 {
 
 //------------------------------------------------------------------------------
@@ -71,7 +67,7 @@ std::string getEnv(const std::string& name, bool* ok)
     {
         *ok = exists;
     }
-    return std::string(exists ? value : "");
+    return {exists ? value : ""};
 #endif
 }
 
@@ -169,7 +165,7 @@ struct FindModuleFunctor
 {
     //------------------------------------------------------------------------------
 
-    static int callback(struct dl_phdr_info* info, std::size_t, void*)
+    static int callback(struct dl_phdr_info* info, std::size_t /*unused*/, void* /*unused*/)
     {
         const std::string libName(info->dlpi_name);
         const std::regex matchModule(s_libName);
@@ -197,12 +193,11 @@ std::filesystem::path getSharedLibraryPath(const std::string& _libName)
 #if defined(WIN32)
     return _getWin32SharedLibraryPath(_libName);
 #else
-    FindModuleFunctor functor;
     FindModuleFunctor::s_location.clear();
     FindModuleFunctor::s_libName = _libName;
     dl_iterate_phdr(&FindModuleFunctor::callback, nullptr);
 
-    if(functor.s_location.empty())
+    if(sight::core::tools::os::FindModuleFunctor::s_location.empty())
     {
         SIGHT_THROW_EXCEPTION(
             core::Exception(
@@ -211,10 +206,8 @@ std::filesystem::path getSharedLibraryPath(const std::string& _libName)
             )
         );
     }
-    return functor.s_location;
+    return sight::core::tools::os::FindModuleFunctor::s_location;
 #endif
 }
 
-} // namespace os
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::os

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,15 +39,11 @@ struct TaskHandler
     /// Copy constructor, moves task.
     TaskHandler(const TaskHandler& that);
 
+    /// Copy constructor forbidden.
+    TaskHandler& operator=(const TaskHandler&) = delete;
+
     /// Executes intern packaged task.
     void operator()() const;
-
-    protected:
-
-        /// Copy constructor forbidden.
-        TaskHandler& operator=(const TaskHandler&)
-        {
-        }
 
     private:
 

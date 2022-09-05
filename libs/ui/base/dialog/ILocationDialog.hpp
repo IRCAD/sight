@@ -30,10 +30,7 @@
 #include <filesystem>
 #include <string>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -69,7 +66,7 @@ public:
     UI_BASE_API static const std::string DLG_DEFAULT_FILE;
     UI_BASE_API static const std::string DLG_DEFAULT_DIRECTORY;
 
-    UI_BASE_API virtual ~ILocationDialog();
+    UI_BASE_API ~ILocationDialog() override;
 
     UI_BASE_API ILocationDialog();
 
@@ -83,7 +80,7 @@ public:
     UI_BASE_API virtual void setDefaultLocation(core::location::ILocation::sptr loc);
 
     /// get the default location for the dialog (from preferences or specified by user)
-    UI_BASE_API virtual const core::location::ILocation::sptr getDefaultLocation();
+    UI_BASE_API virtual core::location::ILocation::sptr getDefaultLocation();
 
     /// save the specified default location for the dialog in preferences (if available)
     UI_BASE_API virtual void saveDefaultLocation(core::location::ILocation::sptr loc);
@@ -123,6 +120,4 @@ private:
     core::location::ILocation::sptr m_defaultLocaction;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

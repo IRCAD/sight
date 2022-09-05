@@ -26,13 +26,7 @@
 
 #include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -61,7 +55,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Series();
+    IO_DICOM_API ~Series() override;
 
     /**
      * @brief Write General Series Module tags
@@ -88,8 +82,4 @@ public:
     IO_DICOM_API virtual void writeSpatialFiducialsSeriesModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

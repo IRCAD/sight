@@ -74,4 +74,4 @@ protected:
     ProgessSignal m_progressSignal;
 };
 
-}
+} // namespace sight::core::tools

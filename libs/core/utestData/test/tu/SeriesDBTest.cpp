@@ -38,10 +38,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::utestData::ut::SeriesDBTest);
 
-namespace sight::utestData
-{
-
-namespace ut
+namespace sight::utestData::ut
 {
 
 //------------------------------------------------------------------------------
@@ -82,7 +79,7 @@ void SeriesDBTest::generationTest()
 
     unsigned int count = 1;
     std::stringstream str;
-    for(data::Series::sptr series : seriesContainer)
+    for(const data::Series::sptr& series : seriesContainer)
     {
         str.str("");
         str.width(4);
@@ -152,6 +149,4 @@ void SeriesDBTest::generationTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::utestData
+} // namespace sight::utestData::ut

@@ -94,7 +94,7 @@ public:
     DATA_API SeriesDB(Object::Key _key);
 
     /// Destroys the series DB.
-    DATA_API virtual ~SeriesDB();
+    DATA_API ~SeriesDB() override;
 
     /**
      * @brief Defines shallow copy.
@@ -280,4 +280,4 @@ inline void SeriesDB::setContainer(const SeriesDB::ContainerType& _val)
 
 //-----------------------------------------------------------------------------
 
-} // Namespace fwMedData.
+} // namespace sight::data

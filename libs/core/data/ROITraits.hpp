@@ -57,7 +57,7 @@ public:
     /**
      * @brief destructor
      */
-    DATA_API virtual ~ROITraits();
+    DATA_API ~ROITraits() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,24 +31,20 @@
 
 #include <utility>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 //-----------------------------------------------------------------------------
 
-MenuBar::MenuBar(const std::string& sid) :
-    m_sid(sid)
+MenuBar::MenuBar(std::string sid) :
+    m_sid(std::move(sid))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 MenuBar::~MenuBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -85,7 +81,7 @@ void MenuBar::initialize(core::runtime::ConfigurationElement::sptr configuration
     unsigned int index = 0;
     // initialize m_menuSids map with configuration
     std::vector<ConfigurationType> vectMenus = configuration->find("menu");
-    for(ConfigurationType menu : vectMenus)
+    for(const ConfigurationType& menu : vectMenus)
     {
         SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have 'sid' attribute", menu->hasAttribute("sid"));
 
@@ -116,7 +112,7 @@ void MenuBar::initialize(core::runtime::ConfigurationElement::sptr configuration
 void MenuBar::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 {
     ui::base::container::fwMenu::sptr menu;
-    for(SIDMenuMapType::value_type sid : m_menuSids)
+    for(const SIDMenuMapType::value_type& sid : m_menuSids)
     {
         SIGHT_ASSERT(
             "The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
@@ -149,7 +145,7 @@ void MenuBar::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 
 void MenuBar::unmanage()
 {
-    for(SIDMenuMapType::value_type sid : m_menuSids)
+    for(const SIDMenuMapType::value_type& sid : m_menuSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -167,6 +163,4 @@ void MenuBar::unmanage()
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::registry

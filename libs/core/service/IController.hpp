@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ protected:
     SERVICE_API IController();
 
     ///@brief IController destructor. Do nothing.
-    SERVICE_API virtual ~IController();
+    SERVICE_API ~IController() override;
 };
 
-}
+} // namespace sight::service

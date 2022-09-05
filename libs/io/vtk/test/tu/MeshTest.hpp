@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::vtk
-{
-
-namespace ut
+namespace sight::io::vtk::ut
 {
 
 /**
@@ -59,26 +56,24 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void testMeshToVtk();
-    void testMeshToGrid();
-    void testSyntheticMesh();
-    void testExportImportSyntheticMesh();
-    void testPointCloud();
-    void testReadVtkFile();
-    void testReadVtpFile();
-    void testReadObjFile();
-    void testReadPlyFile();
-    void testReadStlFile();
-    void testWriteVtkFile();
-    void testWriteVtpFile();
-    void testWriteObjFile();
-    void testWritePlyFile();
-    void testWriteStlFile();
+    static void testMeshToVtk();
+    static void testMeshToGrid();
+    static void testSyntheticMesh();
+    static void testExportImportSyntheticMesh();
+    static void testPointCloud();
+    static void testReadVtkFile();
+    static void testReadVtpFile();
+    static void testReadObjFile();
+    static void testReadPlyFile();
+    static void testReadStlFile();
+    static void testWriteVtkFile();
+    static void testWriteVtpFile();
+    static void testWriteObjFile();
+    static void testWritePlyFile();
+    static void testWriteStlFile();
 };
 
-} // namespace ut
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::ut

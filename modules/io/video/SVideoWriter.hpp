@@ -60,7 +60,7 @@ public:
     MODULE_IO_VIDEO_API SVideoWriter() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_IO_VIDEO_API virtual ~SVideoWriter() noexcept;
+    MODULE_IO_VIDEO_API ~SVideoWriter() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     MODULE_IO_VIDEO_API service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -100,7 +100,7 @@ private:
     void stopRecord();
 
     /// SLOT: Starts/stops recording, according to the parameter value
-    void record(bool);
+    void record(bool /*state*/);
 
     /// SLOT: Toggles recording.
     void toggleRecording();
@@ -127,4 +127,4 @@ private:
     static const std::string s_AVC1_CODEC;
 };
 
-} // videoOpenCV
+} // namespace sight::module::io::video

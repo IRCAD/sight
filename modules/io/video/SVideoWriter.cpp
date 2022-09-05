@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "SVideoWriter.hpp"
 
 #include <core/com/Slot.hpp>
@@ -63,9 +65,8 @@ SVideoWriter::SVideoWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-SVideoWriter::~SVideoWriter() noexcept
-{
-}
+SVideoWriter::~SVideoWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -134,7 +135,7 @@ void SVideoWriter::writeBuffer(int width, int height, CSPTR(data::FrameTL::Buffe
 
     const cv::Mat image(
         cv::Size(width, height),
-        m_imageType, const_cast<std::uint8_t*>(imageBuffer),
+        m_imageType, const_cast<std::uint8_t*>(imageBuffer), // NOLINT(cppcoreguidelines-pro-type-const-cast)
         cv::Mat::AUTO_STEP
     );
     if(m_imageType == CV_16UC1)

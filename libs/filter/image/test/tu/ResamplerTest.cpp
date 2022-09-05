@@ -32,10 +32,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ResamplerTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -185,7 +182,7 @@ void ResamplerTest::rotateTest()
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
-    const float value = 1.f;
+    const float value = 1.F;
 
     const auto dumpLock = imageIn->dump_lock();
 
@@ -231,12 +228,12 @@ void ResamplerTest::rotateTest()
                 if(i == 0)
                 {
                     // The negative Z face must be 'white'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 1.f, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 1.F, valueOut);
                 }
                 else
                 {
                     // Everything else should be 'black'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 0.f, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 0.F, valueOut);
                 }
             }
         }
@@ -245,6 +242,4 @@ void ResamplerTest::rotateTest()
 
 //------------------------------------------------------------------------------
 
-} // ut
-
-} // itkRegistrationOp
+} // namespace sight::filter::image::ut

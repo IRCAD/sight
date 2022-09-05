@@ -215,7 +215,7 @@ private:
 
         Ogre::SceneNode* m_node {nullptr};            /*!< Contains the node of the landmark */
         Ogre::ManualObject* m_object {nullptr};       /*!< Contains the manual object that represent the landmark */
-        std::string m_groupName {""};                 /*!< Defines the group name of the landmark */
+        std::string m_groupName;                      /*!< Defines the group name of the landmark */
         std::size_t m_index {0};                      /*!< Defines the index of the landmark */
         sight::viz::scene3d::Text* m_label {nullptr}; /*!< Defines the text label of the landmark (can be nullptr) */
     };
@@ -241,7 +241,7 @@ private:
      * @param _cam camera from which to extract the direction vector.
      * @return A vector representing the camera direction
      */
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const _cam);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
 
     /**
      * @brief SLOT: removes an entire group.
@@ -356,7 +356,7 @@ private:
      */
     void hideMyLandmark(
         std::shared_ptr<Landmark> _landmark,
-        const bool imageLock,
+        bool imageLock,
         data::Landmarks::csptr _landmarks
     );
 
@@ -391,7 +391,7 @@ private:
     OrientationMode m_orientation {OrientationMode::Z_AXIS};
 
     /// Stores the current position index for each axis.
-    std::array<float, 3> m_currentSlicePos {0.f, 0.f, 0.f};
+    std::array<float, 3> m_currentSlicePos {0.F, 0.F, 0.F};
 
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};

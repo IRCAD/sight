@@ -52,9 +52,8 @@ SConfigLauncher::SConfigLauncher() noexcept
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::~SConfigLauncher() noexcept
-{
-}
+SConfigLauncher::~SConfigLauncher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -127,4 +126,4 @@ void SConfigLauncher::stopConfig()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::base

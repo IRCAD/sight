@@ -41,16 +41,16 @@ public:
     UI_HISTORY_API ImageDiffCommand(const data::Image::sptr& img, filter::image::ImageDiff diff);
 
     /// The diff size.
-    UI_HISTORY_API virtual std::size_t getSize() const;
+    [[nodiscard]] UI_HISTORY_API std::size_t getSize() const override;
 
     /// Apply diff.
-    UI_HISTORY_API virtual bool redo();
+    UI_HISTORY_API bool redo() override;
 
     /// Revert diff.
-    UI_HISTORY_API virtual bool undo();
+    UI_HISTORY_API bool undo() override;
 
     /// Returns "ImageDiff".
-    UI_HISTORY_API virtual const std::string getDescription() const;
+    [[nodiscard]] UI_HISTORY_API std::string getDescription() const override;
 
 private:
 

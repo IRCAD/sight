@@ -37,7 +37,7 @@ data::Vector::sptr IBuilder::getType(
     SIGHT_ASSERT("currentSelection not instanced", currentSelection);
 
     data::Vector::sptr subSelection = data::Vector::New();
-    for(data::Vector::value_type obj : *currentSelection)
+    for(const data::Vector::value_type& obj : *currentSelection)
     {
         SIGHT_ASSERT("Object not instanced in selection", obj);
         if(obj->isA(type))

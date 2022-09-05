@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::activity
-{
-
-namespace builder
+namespace sight::activity::builder
 {
 
 fwActivitiesBuilderRegisterMacro(
@@ -48,8 +45,7 @@ ActivitySeriesInitData::ActivitySeriesInitData(activity::IBuilder::Key key) :
 //-----------------------------------------------------------------------------
 
 ActivitySeriesInitData::~ActivitySeriesInitData()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -77,6 +73,4 @@ data::ActivitySeries::sptr ActivitySeriesInitData::buildData(
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::activity
+} // namespace sight::activity::builder

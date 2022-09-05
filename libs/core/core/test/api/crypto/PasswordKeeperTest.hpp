@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::crypto
-{
-
-namespace ut
+namespace sight::core::crypto::ut
 {
 
 class PasswordKeeperTest : public CPPUNIT_NS::TestFixture
@@ -40,14 +37,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // Interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // Tests
-    void globalTest();
-    void localTest();
+    static void globalTest();
+    static void localTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::crypto
+} // namespace sight::core::crypto::ut

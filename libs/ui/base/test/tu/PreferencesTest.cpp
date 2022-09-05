@@ -38,10 +38,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::ut::PreferencesTest);
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 //------------------------------------------------------------------------------
@@ -101,8 +98,11 @@ void PreferencesTest::simpleTest()
         ui::base::Preferences preferences;
 
         // Check get value from an empty preferences file
-        CPPUNIT_ASSERT_THROW(preferences.get<std::string>(root_key), boost::property_tree::ptree_error);
-        CPPUNIT_ASSERT_NO_THROW(preferences.get(root_key, string_value));
+        CPPUNIT_ASSERT_THROW(
+            auto p = preferences.get<std::string>(root_key),
+            boost::property_tree::ptree_error
+        );
+        CPPUNIT_ASSERT_NO_THROW(std::string p = preferences.get(root_key, string_value));
 
         const auto& same_value = preferences.get(root_key, string_value);
         CPPUNIT_ASSERT_EQUAL(string_value, same_value);
@@ -111,7 +111,7 @@ void PreferencesTest::simpleTest()
         CPPUNIT_ASSERT_NO_THROW(
             preferences.put(string_key, string_value);
         );
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -206,8 +206,11 @@ void PreferencesTest::encryptedTest()
         ui::base::Preferences preferences;
 
         // Check get value from an empty preferences file
-        CPPUNIT_ASSERT_THROW(preferences.get<std::string>(root_key), boost::property_tree::ptree_error);
-        CPPUNIT_ASSERT_NO_THROW(preferences.get(root_key, string_value));
+        CPPUNIT_ASSERT_THROW(
+            auto p = preferences.get<std::string>(root_key),
+            boost::property_tree::ptree_error
+        );
+        CPPUNIT_ASSERT_NO_THROW(std::string p = preferences.get(root_key, string_value));
 
         const auto& same_value = preferences.get(root_key, string_value);
         CPPUNIT_ASSERT_EQUAL(string_value, same_value);
@@ -216,7 +219,7 @@ void PreferencesTest::encryptedTest()
         CPPUNIT_ASSERT_NO_THROW(
             preferences.put(string_key, string_value);
         );
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -274,7 +277,7 @@ void PreferencesTest::forcedEncryptionTest()
         );
 
         // check the value
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -292,12 +295,10 @@ void PreferencesTest::forcedEncryptionTest()
         ui::base::Preferences preferences;
 
         // check the value
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
 }
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

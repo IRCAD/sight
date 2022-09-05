@@ -29,13 +29,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 /**
@@ -67,7 +61,7 @@ public:
     }
 
     /// Get Sub node container
-    const SubNodeContainer& getSubNodeContainer() const
+    [[nodiscard]] const SubNodeContainer& getSubNodeContainer() const
     {
         return m_subNodeContainer;
     }
@@ -79,7 +73,7 @@ public:
     }
 
     /// Get Coded attribute
-    const DicomCodedAttribute& getCodedAttribute() const
+    [[nodiscard]] const DicomCodedAttribute& getCodedAttribute() const
     {
         return m_codedAttribute;
     }
@@ -91,7 +85,7 @@ public:
     }
 
     /// Get Type
-    const std::string& getType() const
+    [[nodiscard]] const std::string& getType() const
     {
         return m_type;
     }
@@ -103,7 +97,7 @@ public:
     }
 
     /// Get Relationship
-    const std::string& getRelationship() const
+    [[nodiscard]] const std::string& getRelationship() const
     {
         return m_relationship;
     }
@@ -118,9 +112,9 @@ protected:
 
     /// Constructor
     DicomSRNode(
-        const DicomCodedAttribute& codedAttribute,
-        const std::string& type,
-        const std::string& relationship = ""
+        DicomCodedAttribute codedAttribute,
+        std::string type,
+        std::string relationship = ""
     );
 
     /// Destructor
@@ -134,7 +128,7 @@ protected:
      * @param[in] dataset Destination dataset
      * @param[in] codedAttribute Coded attribute to write
      */
-    gdcm::SmartPointer<gdcm::SequenceOfItems> createConceptNameCodeSequence(
+    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> createConceptNameCodeSequence(
         const DicomCodedAttribute& codedAttribute
     ) const;
 
@@ -158,8 +152,4 @@ protected:
     std::string m_relationship;
 };
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

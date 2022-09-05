@@ -29,8 +29,6 @@
 
 #include <service/IService.hpp>
 
-using sight::viz::scene2d::vec2d_t;
-
 namespace sight::viz::scene2d
 {
 
@@ -62,7 +60,7 @@ protected:
     VIZ_SCENE2D_API IAdaptor() noexcept;
 
     /// Basic destructor, do nothing.
-    VIZ_SCENE2D_API virtual ~IAdaptor() noexcept;
+    VIZ_SCENE2D_API ~IAdaptor() noexcept override;
 
     /**
      * @brief Parse the xml configuration for Axis, z value and opacity
@@ -99,10 +97,10 @@ protected:
 
     /// The adaptor zValue (depth within the scene).
     /// The adaptor with the highest zValue is displayed on top of all adaptors.
-    float m_zValue;
+    float m_zValue {0.F};
 
     /// Opacity of the adaptor. Default value set to 1 (opaque).
-    float m_opacity;
+    float m_opacity {1.F};
 };
 
 //------------------------------------------------------------------------------

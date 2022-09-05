@@ -22,6 +22,7 @@
 
 #include "SUltrasoundImage.hpp"
 
+#include <cmath>
 #include <io/opencv/Image.hpp>
 
 #include <core/com/Signal.hxx>
@@ -71,17 +72,16 @@ SUltrasoundImage::SUltrasoundImage() noexcept
     newSignal<IntegerChangedSignalType>(s_INTEGER_CHANGED_SIG);
 
     // Extraction corner reference points of US image initialization.
-    for(std::size_t i = 0 ; i < m_echoRefPoints.size() ; ++i)
+    for(auto& m_echoRefPoint : m_echoRefPoints)
     {
-        m_echoRefPoints[i] = {{0.0, 0.0, 0.0}};
+        m_echoRefPoint = {{0.0, 0.0, 0.0}};
     }
 }
 
 // -----------------------------------------------------------------------------
 
-SUltrasoundImage::~SUltrasoundImage() noexcept
-{
-}
+SUltrasoundImage::~SUltrasoundImage() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -185,7 +185,7 @@ void SUltrasoundImage::updating()
 
 // -----------------------------------------------------------------------------
 
-cv::Vec2d SUltrasoundImage::computeLineEquation(const cv::Vec2d& p1, const cv::Vec2d& p2) const
+cv::Vec2d SUltrasoundImage::computeLineEquation(const cv::Vec2d& p1, const cv::Vec2d& p2)
 {
     double diff = p2[0] - p1[0];
     cv::Vec2d eq;
@@ -217,7 +217,7 @@ cv::Vec2d SUltrasoundImage::computeLineEquation(const cv::Vec2d& p1, const cv::V
 
 // -----------------------------------------------------------------------------
 
-cv::Vec2d SUltrasoundImage::computeLinesIntersection(const cv::Vec2d& eql1, const cv::Vec2d& eql2) const
+cv::Vec2d SUltrasoundImage::computeLinesIntersection(const cv::Vec2d& eql1, const cv::Vec2d& eql2)
 {
     // { y = a1x + b1
     // { y = a2x + b2
@@ -243,7 +243,7 @@ std::vector<cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
     const cv::Vec2d& eql,
     const cv::Vec2d& center,
     const double R
-) const
+)
 {
     // Work on:
     // { ax + b = y
@@ -263,14 +263,15 @@ std::vector<cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
     // We only handle the case where we are 2 intersections.
     if(delta > std::numeric_limits<double>::epsilon())
     {
-        double x, y;
+        double x = NAN;
+        double y = NAN;
         x = (-B - sqrt(delta)) / (2.0 * A);
         y = eql[0] * x + eql[1];
-        inter.push_back(cv::Vec2d(x, y));
+        inter.emplace_back(x, y);
 
         x = (-B + sqrt(delta)) / (2.0 * A);
         y = eql[0] * x + eql[1];
-        inter.push_back(cv::Vec2d(x, y));
+        inter.emplace_back(x, y);
     }
 
     return inter;
@@ -281,7 +282,14 @@ std::vector<cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
 void SUltrasoundImage::process(const cv::Mat& input)
 {
     // Process the input image with OpenCV.
-    cv::Mat gray, thresh, lowThresh, canny, stats, centroids, labels, binaryConvex;
+    cv::Mat gray;
+    cv::Mat thresh;
+    cv::Mat lowThresh;
+    cv::Mat canny;
+    cv::Mat stats;
+    cv::Mat centroids;
+    cv::Mat labels;
+    cv::Mat binaryConvex;
 
     cv::cvtColor(input, gray, cv::COLOR_RGB2GRAY);
 
@@ -324,7 +332,8 @@ void SUltrasoundImage::process(const cv::Mat& input)
     // Construct element type
     int elementType = cv::MORPH_CROSS;
     // Choose element size
-    int elementDilateSize(3), elementErodeSize(5);
+    int elementDilateSize(3);
+    int elementErodeSize(5);
     // Construct dilatation and erosion elements
     cv::Mat elementDilate = cv::getStructuringElement(
         elementType,
@@ -341,10 +350,8 @@ void SUltrasoundImage::process(const cv::Mat& input)
     cv::erode(lowThresh, lowThresh, elementErode);
 
     // Compute final lines
-    for(std::size_t i = 0 ; i < lines.size() ; i++)
+    for(auto l : lines)
     {
-        cv::Vec4d l = lines.at(i);
-
         cv::Vec2d pt1(l[0], l[1]);
         cv::Vec2d pt2(l[2], l[3]);
 
@@ -428,9 +435,9 @@ void SUltrasoundImage::process(const cv::Mat& input)
 
     /* Display information about the intersection lines found */
     SIGHT_DEBUG("Number of lines found: " << foundLines.size());
-    for(std::size_t i = 0 ; i < foundLines.size() ; i++)
+    for(auto& foundLine : foundLines)
     {
-        cv::Vec2f v = foundLines.at(i);
+        cv::Vec2f v = foundLine;
         SIGHT_DEBUG(" - " << v[0] << " * x + " << v[1]);
     }
 
@@ -467,18 +474,19 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
     // We initialize a probeSettings structure with the previous parameters.
     ProbeSimulationSettings probeSettings = m_probeSettings;
 
-    int nbHorizontalLines(0), nbVerticalLines(0);
+    int nbHorizontalLines(0);
+    int nbVerticalLines(0);
     cv::Vec2d meanCenter(0.0, 0.0);
-    for(std::size_t i = 0 ; i < lines.size() ; i++)
+    for(auto& line : lines)
     {
-        if(std::isinf(lines.at(i)[0]))
+        if(std::isinf(line[0]))
         {
-            meanCenter[1] += lines.at(i)[1];
+            meanCenter[1] += line[1];
             nbHorizontalLines++;
         }
         else
         {
-            meanCenter[0] += lines.at(i)[0];
+            meanCenter[0] += line[0];
             nbVerticalLines++;
         }
     }
@@ -486,12 +494,14 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
     meanCenter[0] /= nbVerticalLines;
     meanCenter[1] /= nbHorizontalLines;
 
-    double meanLeftX(0.0), meanRightX(0.0), meanTopY(0.0), meanBottomY(0.0);
-    int nbLeftLines(0), nbTopLines(0);
-    for(std::size_t i = 0 ; i < lines.size() ; i++)
+    double meanLeftX(0.0);
+    double meanRightX(0.0);
+    double meanTopY(0.0);
+    double meanBottomY(0.0);
+    int nbLeftLines(0);
+    int nbTopLines(0);
+    for(auto currentLine : lines)
     {
-        cv::Vec2d currentLine = lines.at(i);
-
         // It means that it's a vertical line
         if(std::isinf(currentLine[1]))
         {
@@ -651,7 +661,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
 
     // Compute the inner radius.
     // Go straight down from the center of the circle previously found.
-    int iIn;
+    int iIn = 0;
     for(iIn = 0 ; iIn < thresh.rows ; iIn++)
     {
         // You can now access the pixel value
@@ -663,7 +673,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         }
     }
 
-    double innerRadius;
+    double innerRadius         = NAN;
     cv::Vec2d interInnerCircle = center;
     interInnerCircle[1] = static_cast<double>(iIn);
 
@@ -726,7 +736,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     SIGHT_DEBUG("A:" << m_echoRefPoints[0][0] << " " << m_echoRefPoints[0][1]);
     SIGHT_DEBUG("B:" << m_echoRefPoints[1][0] << " " << m_echoRefPoints[1][1]);
 
-    fwVec3d AmC, BmC;
+    fwVec3d AmC;
+    fwVec3d BmC;
     glm::dvec3 BmA;
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
@@ -739,7 +750,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
 
     BmA = glm::normalize(BmA);
 
-    glm::dvec3 v1, v2;
+    glm::dvec3 v1;
+    glm::dvec3 v2;
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
@@ -754,7 +766,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     probeSettings.angle = static_cast<int>(std::nearbyint(glm::degrees(glm::angle(v1, v2))));
 
     // Compute the outer radius.
-    int iOut;
+    int iOut = 0;
     for(iOut = binaryConvex.rows - 1 ; iOut >= 0 ; iOut--)
     {
         // You can now access the pixel value
@@ -985,7 +997,7 @@ void SUltrasoundImage::resetEchoPlane()
 
 // -----------------------------------------------------------------------------
 
-double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vector<cv::Vec2d>& arcPoint) const
+double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vector<cv::Vec2d>& arcPoint)
 {
     cv::Vec2d arcPointMinY = arcPoint[1];
     if(arcPoint[0][1] > arcPoint[1][1])
@@ -1001,17 +1013,15 @@ double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vec
 
 // -----------------------------------------------------------------------------
 
-bool SUltrasoundImage::isDataUnderArc(const cv::Mat& input, const std::vector<cv::Point2d>& points) const
+bool SUltrasoundImage::isDataUnderArc(const cv::Mat& input, const std::vector<cv::Point2d>& points)
 {
-    for(std::size_t i = 0 ; i < points.size() ; ++i)
-    {
-        if(input.at<uchar>(static_cast<int>(points[i].y), static_cast<int>(points[i].x)) != 0)
+    return std::any_of(
+        points.begin(),
+        points.end(),
+        [&](const auto& point)
         {
-            return true;
-        }
-    }
-
-    return false;
+            return input.at<uchar>(static_cast<int>(point.y), static_cast<int>(point.x)) != 0;
+        });
 }
 
 // -----------------------------------------------------------------------------
@@ -1051,9 +1061,9 @@ void SUltrasoundImage::updateBeamExtractionMap()
                            static_cast<int>(m_probeSettings.matrixDepth));
     m_extractionMap = cv::Mat(mapSize, CV_32FC2);
 
-    const float halfAngle  = static_cast<float>(m_probeSettings.angle) * 0.5f;
-    const float angleBegin = glm::radians(90.f - halfAngle);
-    const float angleEnd   = glm::radians(90.f + halfAngle);
+    const float halfAngle  = static_cast<float>(m_probeSettings.angle) * 0.5F;
+    const float angleBegin = glm::radians(90.F - halfAngle);
+    const float angleEnd   = glm::radians(90.F + halfAngle);
 
     const float angleStep = (angleEnd - angleBegin) / static_cast<float>(mapSize.width - 1);
 
@@ -1078,7 +1088,7 @@ void SUltrasoundImage::updateBeamExtractionMap()
         else
         {
             const float distanceToCenterLine = static_cast<float>(i) * widthRatio
-                                               - static_cast<float>(m_probeSettings.width) * 0.5f;
+                                               - static_cast<float>(m_probeSettings.width) * 0.5F;
 
             currentCenter = m_probeSettings.centerPosition + distanceToCenterLine * m_probeSettings.normal;
         }
@@ -1099,4 +1109,4 @@ void SUltrasoundImage::updateBeamExtractionMap()
 
 // -----------------------------------------------------------------------------
 
-} // cvSegmentation
+} // namespace sight::module::filter::vision

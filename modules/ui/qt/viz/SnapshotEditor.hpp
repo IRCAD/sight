@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
     MODULE_UI_QT_API SnapshotEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SnapshotEditor() noexcept;
+    MODULE_UI_QT_API ~SnapshotEditor() noexcept override;
 
 protected:
 
@@ -98,7 +98,7 @@ protected Q_SLOTS:
 
 private:
 
-    std::string requestFileName();
+    static std::string requestFileName();
 
     /**
      * @name Signals
@@ -117,4 +117,4 @@ private:
     QPointer<QPushButton> m_snapButton;
 };
 
-} // uiVisuQt
+} // namespace sight::module::ui::qt::viz

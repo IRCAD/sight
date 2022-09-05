@@ -36,16 +36,7 @@
 
 #include <optional>
 
-namespace sight::data
-{
-
-namespace helper
-{
-
-/**
- * @brief   Helpers for medical image.
- */
-namespace MedicalImage
+namespace sight::data::helper::MedicalImage
 {
 
 typedef enum
@@ -97,7 +88,7 @@ DATA_API bool checkImageSliceIndex(data::Image::sptr _pImg);
  * @param len unsigned int length, as begin+len.
  * @return boolean, true if null, false otherwise.
  */
-DATA_API bool isBufNull(const data::Image::BufferType* buf, const unsigned int len);
+DATA_API bool isBufNull(const data::Image::BufferType* buf, unsigned int len);
 
 /**
  * @brief Return a buffer of image type's size, containing 'value' casted to image data type
@@ -116,7 +107,7 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(data::Image::sptr image, T & 
  * @param[out] _max : maximum value
  */
 template<typename MINMAXTYPE>
-void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+void getMinMax(data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
 /**
  * @brief Check if the image has a transfer function pool
@@ -297,9 +288,9 @@ public:
     {
         unsigned char imageTypeSize = sizeof(IMAGE);
 
-        IMAGE val = core::tools::numericRoundCast<IMAGE>(param.value);
+        auto val = core::tools::numericRoundCast<IMAGE>(param.value);
 
-        data::Image::BufferType* buf = reinterpret_cast<data::Image::BufferType*>(&val);
+        auto* buf = reinterpret_cast<data::Image::BufferType*>(&val);
 
         SPTR(data::Image::BufferType) res(new data::Image::BufferType[imageTypeSize]);
         std::copy(buf, buf + imageTypeSize, res.get());
@@ -337,7 +328,7 @@ public:
     template<typename IMAGE>
     void operator()(Param& param)
     {
-        IMAGE* buffer                 = static_cast<IMAGE*>(param.image->getBuffer());
+        auto* buffer                  = static_cast<IMAGE*>(param.image->getBuffer());
         const INT_INDEX& p            = param.point;
         const data::Image::Size& size = param.image->getSize();
         const int& sx                 = size[0];
@@ -392,7 +383,7 @@ public:
     void operator()(Param& param)
     {
         const auto dumpLock = param.image->lock();
-        IMAGE* buffer       = static_cast<IMAGE*>(param.image->getBuffer());
+        auto* buffer        = static_cast<IMAGE*>(param.image->getBuffer());
         const INT_INDEX& p  = param.point;
         const auto& size    = param.image->getSize();
         const int& sx       = size[0];
@@ -479,21 +470,25 @@ public:
         const data::Image::csptr image = param.image;
         const auto dumpLock            = image->dump_lock();
 
-        result_vector_t min_result, max_result;
+        result_vector_t min_result;
+        result_vector_t max_result;
 
         sight::data::thread::RegionThreader rt;
         min_result.resize(rt.numberOfThread());
         max_result.resize(rt.numberOfThread());
         rt(
-            std::bind(
-                &MinMaxFunctor::getMinMax<IMAGE>,
-                image->cbegin<IMAGE>(),
-                std::ref(min_result),
-                std::ref(max_result),
-                std::placeholders::_1,
-                std::placeholders::_2,
-                std::placeholders::_3
-            ),
+            [capture0 = image->cbegin<IMAGE>(), &min_result, &max_result](std::ptrdiff_t PH1, std::ptrdiff_t PH2,
+                                                                          std::size_t PH3, auto&& ...)
+            {
+                return MinMaxFunctor::getMinMax<IMAGE>(
+                    capture0,
+                    min_result,
+                    max_result,
+                    PH1,
+                    PH2,
+                    PH3
+                );
+            },
             image->cend<IMAGE>() - image->cbegin<IMAGE>()
         );
 
@@ -513,8 +508,4 @@ void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, MinMaxFunctor<MINMAXTYPE> >::invoke(type, param);
 }
 
-} // namespace MedicalImage
-
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper::MedicalImage

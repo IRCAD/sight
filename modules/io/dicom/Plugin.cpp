@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,11 +29,8 @@ namespace sight::module::io::dicom
 
 SIGHT_REGISTER_PLUGIN("sight::module::io::dicom::Plugin");
 
-using namespace core::runtime::utils;
-
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

@@ -29,21 +29,20 @@
 namespace Tuto06GuiQml
 {
 
-using namespace sight;
+namespace ui   = sight::ui;
+namespace core = sight::core;
 
 SIGHT_REGISTER_PLUGIN("Tuto06GuiQml::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

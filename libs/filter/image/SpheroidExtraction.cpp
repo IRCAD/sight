@@ -42,11 +42,11 @@ struct SpheroidExtractor
     {
         data::Image::csptr inputImage;
         data::PointList::sptr outputPointList;
-        double threshold;
-        double radiusMin;
-        double radiusMax;
-        double elongationMin;
-        double elongationMax;
+        double threshold {};
+        double radiusMin {};
+        double radiusMax {};
+        double elongationMin {};
+        double elongationMax {};
     };
 
     //------------------------------------------------------------------------------
@@ -54,15 +54,15 @@ struct SpheroidExtractor
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
-        typedef typename itk::Image<std::uint16_t, 3> BinaryImageType;
+        using ImageType       = typename itk::Image<PIXELTYPE, 3>;
+        using BinaryImageType = typename itk::Image<std::uint16_t, 3>;
 
         typename ImageType::Pointer inputImage = io::itk::moveToItk<ImageType>(params.inputImage);
 
         typename itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::Pointer thresholdFilter =
             itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::New();
 
-        PIXELTYPE threshold = PIXELTYPE(params.threshold);
+        auto threshold = PIXELTYPE(params.threshold);
         thresholdFilter->SetLowerThreshold(threshold);
         thresholdFilter->SetUpperThreshold(threshold * PIXELTYPE(10));
         thresholdFilter->SetInsideValue(255);
@@ -80,7 +80,7 @@ struct SpheroidExtractor
         cc->FullyConnectedOn();
         cc->Update();
 
-        typedef itk::LabelGeometryImageFilter<BinaryImageType, ImageType> LabelStatsFilterType;
+        using LabelStatsFilterType = itk::LabelGeometryImageFilter<BinaryImageType, ImageType>;
         typename LabelStatsFilterType::Pointer labelGeometryFilter = LabelStatsFilterType::New();
 
         labelGeometryFilter->SetInput(cc->GetOutput());
@@ -125,7 +125,7 @@ struct SpheroidExtractor
             {
                 const auto centroidPoint = labelGeometryFilter->GetCentroid(labelValue);
 
-                std::array<double, 3> realPointCoords;
+                std::array<double, 3> realPointCoords {};
                 for(std::uint8_t i = 0 ; i < 3 ; ++i)
                 {
                     realPointCoords[i] = double(centroidPoint[i]) * inputImage->GetSpacing()[i]

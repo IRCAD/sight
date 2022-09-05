@@ -58,7 +58,7 @@ public:
 
     /// Constructor. It open the archive and create all resources needed to access it.
     /// @param archivePath path of the archive file. The file will be kept opened as long as the instance lives.
-    RawArchiveReader(const std::filesystem::path& root) :
+    explicit RawArchiveReader(const std::filesystem::path& root) :
         ArchiveReader(root),
         m_root(root)
     {
@@ -78,7 +78,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool isRaw() const override
+    [[nodiscard]] bool isRaw() const override
     {
         return true;
     }
@@ -100,7 +100,7 @@ public:
     ZipHandle& operator=(const ZipHandle&) = delete;
     ZipHandle& operator=(ZipHandle&&)      = delete;
 
-    inline ZipHandle(const std::filesystem::path& archive_path) :
+    inline explicit ZipHandle(const std::filesystem::path& archive_path) :
         m_archive_path(archive_path.string())
     {
         // Create zip reader instance
@@ -166,23 +166,23 @@ public:
     inline ZipFileHandle(
         std::shared_ptr<ZipHandle> zip_handle,
         const std::filesystem::path& file_path,
-        const core::crypto::secure_string& password = ""
+        core::crypto::secure_string password = ""
     ) :
-        m_file_path(file_path.string()),
-        m_password(password),
-        m_zip_handle(zip_handle)
+        m_filePath(file_path.string()),
+        m_password(std::move(password)),
+        m_zipHandle(std::move(zip_handle))
     {
         // Set encryption
-        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, m_password.empty() ? nullptr : m_password.c_str());
+        mz_zip_reader_set_password(m_zipHandle->m_zip_reader, m_password.empty() ? nullptr : m_password.c_str());
 
-        auto result = mz_zip_reader_locate_entry(m_zip_handle->m_zip_reader, m_file_path.c_str(), 0);
+        auto result = mz_zip_reader_locate_entry(m_zipHandle->m_zip_reader, m_filePath.c_str(), 0);
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
                 "Cannot locate file '"
-                + m_file_path
+                + m_filePath
                 + "' in archive '"
-                + m_zip_handle->m_archive_path
+                + m_zipHandle->m_archive_path
                 + "'. Error code: "
                 + std::to_string(result),
                 result
@@ -190,14 +190,14 @@ public:
             result != MZ_OK
         );
 
-        result = mz_zip_reader_entry_open(m_zip_handle->m_zip_reader);
+        result = mz_zip_reader_entry_open(m_zipHandle->m_zip_reader);
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
                 "Cannot open file '"
-                + m_file_path
+                + m_filePath
                 + "' from archive '"
-                + m_zip_handle->m_archive_path
+                + m_zipHandle->m_archive_path
                 + "'. Error code: "
                 + std::to_string(result),
                 result
@@ -208,17 +208,17 @@ public:
 
     inline ~ZipFileHandle()
     {
-        const auto result = mz_zip_reader_entry_close(m_zip_handle->m_zip_reader);
+        const auto result = mz_zip_reader_entry_close(m_zipHandle->m_zip_reader);
 
         // Restore defaults
-        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, nullptr);
+        mz_zip_reader_set_password(m_zipHandle->m_zip_reader, nullptr);
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
                 "Cannot close file '"
-                + m_file_path
+                + m_filePath
                 + "' from archive '"
-                + m_zip_handle->m_archive_path
+                + m_zipHandle->m_archive_path
                 + "'. Error code: "
                 + std::to_string(result),
                 result
@@ -232,13 +232,13 @@ private:
     friend class ZipSource;
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
-    const std::string m_file_path;
+    const std::string m_filePath;
 
     // The password must be kept alive since minizip doesn't copy it
     const core::crypto::secure_string m_password;
 
     // Zip handles pack which contains the zip writer
-    const std::shared_ptr<ZipHandle> m_zip_handle;
+    const std::shared_ptr<ZipHandle> m_zipHandle;
 };
 
 class ZipSource final
@@ -250,8 +250,8 @@ public:
     using category  = boost::iostreams::source_tag;
 
     // BEWARE: Boost make shallow copies of the ZipSource...
-    ZipSource(const std::shared_ptr<ZipFileHandle> zip_file_handle) :
-        m_zip_file_handle(zip_file_handle)
+    explicit ZipSource(std::shared_ptr<ZipFileHandle> zip_file_handle) :
+        m_zipFileHandle(std::move(zip_file_handle))
     {
     }
 
@@ -259,7 +259,7 @@ public:
     std::streamsize read(char* buffer, std::streamsize size)
     {
         const auto read = mz_zip_reader_entry_read(
-            m_zip_file_handle->m_zip_handle->m_zip_reader,
+            m_zipFileHandle->m_zipHandle->m_zip_reader,
             buffer,
             std::int32_t(size)
         );
@@ -267,9 +267,9 @@ public:
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
                 "Cannot read in file '"
-                + m_zip_file_handle->m_file_path
+                + m_zipFileHandle->m_filePath
                 + "' in archive '"
-                + m_zip_file_handle->m_zip_handle->m_archive_path
+                + m_zipFileHandle->m_zipHandle->m_archive_path
                 + "'. Error code: "
                 + std::to_string(read),
                 read
@@ -282,7 +282,7 @@ public:
 
 private:
 
-    const std::shared_ptr<ZipFileHandle> m_zip_file_handle;
+    const std::shared_ptr<ZipFileHandle> m_zipFileHandle;
 };
 
 class ZipArchiveReader final : public ArchiveReader
@@ -298,9 +298,9 @@ public:
     ZipArchiveReader& operator=(const ZipArchiveReader&) = delete;
     ZipArchiveReader& operator=(ZipArchiveReader&&)      = delete;
 
-    inline ZipArchiveReader(const std::filesystem::path& archive_path) :
+    inline explicit ZipArchiveReader(const std::filesystem::path& archive_path) :
         ArchiveReader(archive_path),
-        m_zip_handle(std::make_shared<ZipHandle>(archive_path))
+        m_zipHandle(std::make_shared<ZipHandle>(archive_path))
     {
     }
 
@@ -314,7 +314,7 @@ public:
     ) override
     {
         const auto zip_file_handle = std::make_shared<ZipFileHandle>(
-            m_zip_handle,
+            m_zipHandle,
             file_path,
             password
         );
@@ -324,14 +324,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool isRaw() const override
+    [[nodiscard]] inline bool isRaw() const override
     {
         return false;
     }
 
 private:
 
-    std::shared_ptr<ZipHandle> m_zip_handle;
+    std::shared_ptr<ZipHandle> m_zipHandle;
 };
 
 } // anonymous namespace
@@ -352,10 +352,8 @@ ArchiveReader::uptr ArchiveReader::get(
     {
         return std::make_unique<RawArchiveReader>(archivePath);
     }
-    else
-    {
-        return std::make_unique<ZipArchiveReader>(archivePath);
-    }
+
+    return std::make_unique<ZipArchiveReader>(archivePath);
 }
 
 } // namespace sight::io::zip

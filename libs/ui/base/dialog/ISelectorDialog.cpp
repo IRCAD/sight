@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,15 @@
 
 #include "ui/base/dialog/ISelectorDialog.hpp"
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 const ISelectorDialog::FactoryRegistryKeyType ISelectorDialog::REGISTRY_KEY = "sight::ui::base::dialog::SelectorDialog";
 
 ISelectorDialog::ISelectorDialog()
-{
-}
+= default;
 
 ISelectorDialog::~ISelectorDialog()
-{
-}
+= default;
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,18 +68,16 @@ IWindowInteractor::sptr IWindowInteractor::createOffscreenManager(
 //-----------------------------------------------------------------------------
 
 IWindowInteractor::IWindowInteractor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IWindowInteractor::~IWindowInteractor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-void IWindowInteractor::setFullscreen(bool, int)
+void IWindowInteractor::setFullscreen(bool /*unused*/, int /*unused*/)
 {
     SIGHT_ERROR("Fullscreen not supported.");
 }

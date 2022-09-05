@@ -61,7 +61,7 @@ public:
     VIZ_SCENE3D_API IParameter() noexcept;
 
     /// Destructor. Does nothing
-    VIZ_SCENE3D_API virtual ~IParameter() noexcept;
+    VIZ_SCENE3D_API ~IParameter() noexcept override;
 
     /// Set the shaderType by passing the value of the ShaderEnumType of this adaptor.
     VIZ_SCENE3D_API void setShaderType(Ogre::GpuProgramType shaderType);
@@ -131,13 +131,13 @@ private:
     /// Parameter name
     std::string m_defaultValue;
     /// Stores the value of the enum representing the shader's type.
-    Ogre::GpuProgramType m_shaderType;
+    Ogre::GpuProgramType m_shaderType {Ogre::GPT_FRAGMENT_PROGRAM};
     /// Pointer on the material
     Ogre::MaterialPtr m_material;
     /// Pointer on a texture if the parameter is an image
     Ogre::TexturePtr m_texture;
     /// Dirty flag to know if we must trigger an update or not
-    bool m_dirty;
+    bool m_dirty {true};
 
     data::ptr<data::Object, data::Access::inout> m_parameter {this, s_PARAMETER_INOUT, true};
 };
@@ -149,4 +149,4 @@ inline void IParameter::setDirty()
     m_dirty = true;
 }
 
-} // fwRenderOgre
+} // namespace sight::viz::scene3d

@@ -93,7 +93,7 @@ public:
     MODULE_GEOMETRY_VISION_API SDistortion() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_GEOMETRY_VISION_API virtual ~SDistortion() noexcept;
+    MODULE_GEOMETRY_VISION_API ~SDistortion() noexcept override;
 
     /**
      * @brief Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
@@ -157,4 +157,4 @@ private:
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_map {this, s_MAP_INOUT};
 };
 
-} // videoCalibration
+} // namespace sight::module::geometry::vision

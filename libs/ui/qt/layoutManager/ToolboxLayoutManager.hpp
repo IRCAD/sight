@@ -47,7 +47,7 @@ public:
 
     UI_QT_API ToolboxLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~ToolboxLayoutManager();
+    UI_QT_API ~ToolboxLayoutManager() override;
 
     /**
      * @brief Instantiate layout with parent container.

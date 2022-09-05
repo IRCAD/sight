@@ -29,9 +29,8 @@ namespace sight::module::io::itk
 
 SIGHT_REGISTER_PLUGIN("sight::module::io::itk::Plugin");
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

@@ -34,10 +34,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -233,7 +230,7 @@ private:
     typedef sight::activity::extension::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    sight::activity::extension::ActivityInfo show(const ActivityInfoContainer& infos);
+    static sight::activity::extension::ActivityInfo show(const ActivityInfoContainer& infos);
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
@@ -263,6 +260,4 @@ private:
     data::ptr<data::Vector, sight::data::Access::in> m_series {this, s_SERIES};
 };
 
-} //action
-
-} // gui
+} // namespace sight::module::ui::qt::activity

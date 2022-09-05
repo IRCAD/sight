@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
      * @param _sharedContext context to share resources with or nullptr for no context sharing.
      * @pre if a _sharedContext is used then it must be on the same thread as the one calling this method.
      */
-    static QOpenGLContext* createOgreGLContext(QOpenGLContext* const _sharedContext = nullptr);
+    static QOpenGLContext* createOgreGLContext(QOpenGLContext* _sharedContext = nullptr);
 
 private:
 

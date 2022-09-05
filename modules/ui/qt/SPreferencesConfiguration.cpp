@@ -60,9 +60,8 @@ SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 
 //------------------------------------------------------------------------------
 
-SPreferencesConfiguration::~SPreferencesConfiguration() noexcept
-{
-}
+SPreferencesConfiguration::~SPreferencesConfiguration() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -288,9 +287,9 @@ void SPreferencesConfiguration::updating()
             QObject::connect(
                 directorySelector.data(),
                 &QPushButton::clicked,
-                [this, pref]()
+                [pref]()
                 {
-                    this->onSelectDir(pref.m_lineEdit);
+                    sight::module::ui::qt::SPreferencesConfiguration::onSelectDir(pref.m_lineEdit);
                 });
         }
         else if(pref.m_type == PreferenceType::FILE)
@@ -302,9 +301,9 @@ void SPreferencesConfiguration::updating()
             QObject::connect(
                 directorySelector.data(),
                 &QPushButton::clicked,
-                [this, pref]()
+                [pref]()
                 {
-                    this->onSelectFile(pref.m_lineEdit);
+                    sight::module::ui::qt::SPreferencesConfiguration::onSelectFile(pref.m_lineEdit);
                 });
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)

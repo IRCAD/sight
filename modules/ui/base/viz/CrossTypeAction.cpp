@@ -44,9 +44,9 @@ namespace sight::module::ui::base::viz
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0f},
-    {std::string("half"), 0.5f},
-    {std::string("hide"), 0.0f
+std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0F},
+    {std::string("half"), 0.5F},
+    {std::string("hide"), 0.0F
     }
 };
 
@@ -59,9 +59,8 @@ CrossTypeAction::CrossTypeAction() noexcept
 
 //------------------------------------------------------------------------------
 
-CrossTypeAction::~CrossTypeAction() noexcept
-{
-}
+CrossTypeAction::~CrossTypeAction() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -103,10 +102,10 @@ void CrossTypeAction::updating()
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::info(std::ostream&)
+void CrossTypeAction::info(std::ostream& /*_sstream*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-} // uiVisu
+} // namespace sight::module::ui::base::viz

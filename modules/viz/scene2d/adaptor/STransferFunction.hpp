@@ -30,10 +30,7 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -88,7 +85,7 @@ public:
     MODULE_VIZ_SCENE2D_API STransferFunction() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE2D_API virtual ~STransferFunction() noexcept;
+    MODULE_VIZ_SCENE2D_API ~STransferFunction() noexcept override;
 
 protected:
 
@@ -124,6 +121,8 @@ protected:
     void stopping() override;
 
 private:
+
+    using vec2d_t = sight::viz::scene2d::vec2d_t;
 
     /// Represents a sub-TF which is a TF of the input composite.
     struct PieceView
@@ -164,7 +163,7 @@ private:
      * @brief Creates lines and gradient polygons of a pieceView.
      * @param _pieceView the pieceView used to create the gradient and store the generated graphic item.
      */
-    void createTFPolygon(PieceView* const _pieceView);
+    void createTFPolygon(PieceView* _pieceView);
 
     /**
      * @brief Removes all graphic gradient in @ref m_pieceView from the layer and deletes them.
@@ -186,8 +185,8 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    void buildLinearPolygons(
-        PieceView* const _pieceView,
+    static void buildLinearPolygons(
+        PieceView* _pieceView,
         QVector<QPointF>& _position,
         QLinearGradient& _grad,
         double _distanceMax
@@ -200,8 +199,8 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    void buildNearestPolygons(
-        PieceView* const _pieceView,
+    static void buildNearestPolygons(
+        PieceView* _pieceView,
         QVector<QPointF>& _position,
         QLinearGradient& _grad,
         double _distanceMax
@@ -217,7 +216,7 @@ private:
      *
      * @param _pieceView the new current pieceView.
      */
-    void setCurrentTF(PieceView* const _pieceView);
+    void setCurrentTF(PieceView* _pieceView);
 
     /**
      * @brief Get pieceView that match the clicked coord of the event.
@@ -255,7 +254,7 @@ private:
      * @param _pieceView the selected pieceView.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonClickOnPointEvent(PieceView* const _pieceView, std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint);
+    void leftButtonClickOnPointEvent(PieceView* _pieceView, std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint);
 
     /**
      * @brief Move @ref m_capturedTFPoint to the new mouse position and update the related TF.
@@ -264,7 +263,7 @@ private:
      * @pre m_capturedTFPoint must be previously sets.
      * @see leftButtonClickOnPointEvent(PieceView* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
      */
-    void mouseMoveOnPointEvent(PieceView* const _pieceView, const sight::viz::scene2d::data::Event& _event);
+    void mouseMoveOnPointEvent(PieceView* _pieceView, const sight::viz::scene2d::data::Event& _event);
 
     /**
      * @brief Resets the captured TF point highlighting and sets @ref m_capturedTFPoint to null.
@@ -280,7 +279,7 @@ private:
      * @param _TFPoint the selected TF point.
      */
     void rightButtonClickOnPointEvent(
-        PieceView* const _pieceView,
+        PieceView* _pieceView,
         std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
     );
 
@@ -290,7 +289,7 @@ private:
      * @param _TFPoint the selected TF point.
      */
     void leftButtonDoubleClickOnPointEvent(
-        PieceView* const _pieceView,
+        PieceView* _pieceView,
         std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
     );
 
@@ -384,7 +383,7 @@ private:
     void updateTF();
 
     /// Defines the size of TF points in a ratio relative to the window.
-    float m_pointSize {0.03f};
+    float m_pointSize {0.03F};
 
     /// Defines the pen used by gradients.
     QPen m_polygonsPen;
@@ -393,7 +392,7 @@ private:
     QPen m_pointsPen;
 
     /// Defines the opacity used for TF except for the current one.
-    float m_secondOpacity {0.0f};
+    float m_secondOpacity {0.0F};
 
     /// Sets if interactions are enable or not.
     bool m_interactive {true};
@@ -402,7 +401,7 @@ private:
     std::vector<PieceView*> m_pieceView;
 
     /// Stores the main layer.
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer {};
 
     /**
      * We never know if a single click might be followed by another single click effectively resulting in a double
@@ -431,6 +430,4 @@ private:
     data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_CURRENT_TF_INOUT, true};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

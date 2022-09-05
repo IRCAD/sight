@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#define FUSION_MAX_VECTOR_SIZE 20
+// cspell:ignore NOLINTNEXTLINE NOLINT
 
 #include <iostream>
 #include <fstream>
@@ -29,8 +29,8 @@
 
 #ifdef DEBUG
 static std::stringstream spiritDebugStream;
-  #define BOOST_SPIRIT_DEBUG_OUT spiritDebugStream
-  #define BOOST_SPIRIT_DEBUG
+  #define BOOST_SPIRIT_DEBUG_OUT spiritDebugStream // NOLINT(cppcoreguidelines-macro-usage): needed by Boost
+  #define BOOST_SPIRIT_DEBUG                       // NOLINT(cppcoreguidelines-macro-usage): needed by Boost
 #endif
 
 #include <boost/algorithm/string.hpp>
@@ -70,13 +70,13 @@ SIGHT_REGISTER_IO_READER(sight::io::base::reader::DictionaryReader);
 namespace sight::io::base
 {
 
-struct line
+struct Line
 {
     std::string type;
-    double red;
-    double green;
-    double blue;
-    double alpha;
+    double red {};
+    double green {};
+    double blue {};
+    double alpha {};
     std::string category;
     std::string organClass;
     std::string attachment;
@@ -87,10 +87,10 @@ struct line
     std::string propertyType;
 };
 
-}
+} // namespace sight::io::base
 
 BOOST_FUSION_ADAPT_STRUCT(
-    sight::io::base::line,
+    sight::io::base::Line,
     (std::string, type)
         (double, red)
         (double, green)
@@ -131,7 +131,7 @@ template<typename MapType>
 std::string getValues(const MapType& m)
 {
     std::stringstream str;
-    typedef typename MapType::const_iterator const_iterator;
+    using const_iterator = typename MapType::const_iterator;
     const_iterator iter = m.begin();
     str << "( " << iter->first;
     for( ; iter != m.end() ; ++iter)
@@ -152,11 +152,11 @@ namespace qi    = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 template<typename Iterator>
-struct line_parser : qi::grammar<Iterator,
-                                 std::vector<line>()>
+struct LineParser : qi::grammar<Iterator,
+                                std::vector<Line>()>
 {
-    line_parser() :
-        line_parser::base_type(lines)
+    LineParser() :
+        LineParser::base_type(lines)
     {
         using qi::int_;
         using qi::lit;
@@ -173,6 +173,7 @@ struct line_parser : qi::grammar<Iterator,
 
         error.clear();
 
+        // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
         lines   = +(line[phx::push_back(qi::_val, qi::_1)] | comment) >> eoi;
         comment = *blank >> lit('#') >> *(char_ - eol) >> +qi::eol;
 
@@ -241,8 +242,8 @@ struct line_parser : qi::grammar<Iterator,
     qi::rule<Iterator, std::string()> trimmedString;
     qi::rule<Iterator, std::string()> stringSet;
 
-    qi::rule<Iterator, io::base::line()> line;
-    qi::rule<Iterator, std::vector<io::base::line>()> lines;
+    qi::rule<Iterator, io::base::Line()> line;
+    qi::rule<Iterator, std::vector<io::base::Line>()> lines;
     std::stringstream error;
 };
 
@@ -251,7 +252,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::string> parse(std::string& buf, std::vector<io::base::line>& lines)
+std::pair<bool, std::string> parse(std::string& buf, std::vector<io::base::Line>& lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -259,8 +260,8 @@ std::pair<bool, std::string> parse(std::string& buf, std::vector<io::base::line>
 
     using boost::spirit::qi::phrase_parse;
 
-    typedef std::string::const_iterator iterator_type;
-    typedef io::base::line_parser<iterator_type> line_parser;
+    using iterator_type = std::string::const_iterator;
+    using line_parser   = io::base::LineParser<iterator_type>;
 
     iterator_type iter = buf.begin();
     iterator_type end  = buf.end();
@@ -275,15 +276,14 @@ std::pair<bool, std::string> parse(std::string& buf, std::vector<io::base::line>
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader(io::base::reader::IObjectReader::Key)
+DictionaryReader::DictionaryReader(io::base::reader::IObjectReader::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 DictionaryReader::~DictionaryReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -307,12 +307,12 @@ void DictionaryReader::read()
     file.seekg(0, std::ios::beg);
 
     buf.resize(static_cast<std::size_t>(length));
-    char* buffer = &buf[0];
+    char* buffer = buf.data();
 
     file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
-    std::vector<io::base::line> dico_lines;
+    std::vector<io::base::Line> dico_lines;
     std::pair<bool, std::string> result = parse(buf, dico_lines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
@@ -321,7 +321,7 @@ void DictionaryReader::read()
     // File the dictionary Structure
     data::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
-    for(io::base::line line : dico_lines)
+    for(io::base::Line line : dico_lines)
     {
         data::StructureTraits::sptr newOrgan = data::StructureTraits::New();
         newOrgan->setType(line.type);
@@ -332,16 +332,18 @@ void DictionaryReader::read()
         data::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter =
             data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
         std::string availableValues = getValues(data::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
-        error = "Organ class " + classReformated + " isn't available. Authorized type are " + availableValues;
+        error =
+            std::string("Organ class ").append(classReformated).append(" isn't available. Authorized type are ")
+            .append(availableValues);
         SIGHT_THROW_IF(error, !(strClassIter != data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
         newOrgan->setColor(
             data::Color::New(
-                static_cast<float>(line.red) / 255.0f,
-                static_cast<float>(line.green) / 255.0f,
-                static_cast<float>(line.blue) / 255.0f,
-                static_cast<float>(line.alpha) / 100.0f
+                static_cast<float>(line.red) / 255.0F,
+                static_cast<float>(line.green) / 255.0F,
+                static_cast<float>(line.blue) / 255.0F,
+                static_cast<float>(line.alpha) / 100.0F
             )
         );
         std::vector<std::string> categorylist;
@@ -358,7 +360,8 @@ void DictionaryReader::read()
                 data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right
             );
             error =
-                "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
+                std::string("Category ").append(catReformated).append(" isn't available. Authorized type are ")
+                .append(availableValues);
             SIGHT_THROW_IF(error, !(strCategoryIter != data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }

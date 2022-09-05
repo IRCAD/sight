@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ public:
     /**
      * @brief Call for finishing observer progress
      */
-    CORE_API void finish();
+    CORE_API void finish() override;
 
     /**
      * @brief return a progress Callback function.
@@ -95,7 +95,7 @@ protected:
      *
      * @return future of the task
      */
-    CORE_API virtual SharedFuture runImpl();
+    CORE_API SharedFuture runImpl() override;
 
     /// Task type
     typedef std::packaged_task<void ()> PackagedTask;

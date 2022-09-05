@@ -25,6 +25,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <array>
 #include <thread>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::HiResTimerTest);
@@ -65,26 +66,26 @@ struct TestData
 
 void HiResTimerTest::getTimeTest()
 {
-    const TestData data[] = {
+    const std::array data {
         // Start the timer, stop the timer and get the time
-        {1, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInSec},
-        {1000, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMilliSec},
-        {1000000, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMicroSec},
+        TestData {1, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInSec},
+        TestData {1000, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMilliSec},
+        TestData {1000000, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMicroSec},
 
         // Start the timer, reset it in the middle, stop it and get the time
-        {1, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInSec},
-        {1000, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInMilliSec},
-        {1000000, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInMicroSec},
+        TestData {1, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInSec},
+        TestData {1000, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInMilliSec},
+        TestData {1000000, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInMicroSec},
 
         // Start the timer and get the time
-        {1, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInSec},
-        {1000, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMilliSec},
-        {1000000, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMicroSec},
+        TestData {1, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInSec},
+        TestData {1000, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMilliSec},
+        TestData {1000000, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMicroSec},
 
         // Reset the timer and get the time
-        {1, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInSec},
-        {1000, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInMilliSec},
-        {1000000, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInMicroSec}
+        TestData {1, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInSec},
+        TestData {1000, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInMilliSec},
+        TestData {1000000, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInMicroSec}
     };
 
     for(size_t i = 0 ; i < sizeof(data) / sizeof(data[0]) ; i++)
@@ -124,4 +125,4 @@ void HiResTimerTest::getTimeTest()
     }
 }
 
-} // namespace sight::core
+} // namespace sight::core::ut

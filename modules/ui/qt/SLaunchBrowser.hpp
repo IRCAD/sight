@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
     MODULE_UI_QT_API SLaunchBrowser() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SLaunchBrowser() noexcept;
+    MODULE_UI_QT_API ~SLaunchBrowser() noexcept override;
 
 protected:
 
@@ -77,4 +77,4 @@ private:
     std::string m_url;
 };
 
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt

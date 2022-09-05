@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
     MODULE_UI_VIZ_API SMaterialSelector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API virtual ~SMaterialSelector() noexcept;
+    MODULE_UI_VIZ_API ~SMaterialSelector() noexcept override;
 
     /**
      * @name Signals API
@@ -120,4 +120,4 @@ private:
     data::ptr<data::Reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
 };
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

@@ -46,10 +46,9 @@
 #include <vtkTriangleFilter.h>
 #include <vtkUnsignedCharArray.h>
 
-namespace sight::module::filter::mesh
-{
+#include <cmath>
 
-namespace generator
+namespace sight::module::filter::mesh::generator
 {
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
@@ -63,9 +62,8 @@ SNeedle::SNeedle() noexcept
 
 // ------------------------------------------------------------------------------
 
-SNeedle::~SNeedle() noexcept
-{
-}
+SNeedle::~SNeedle() noexcept =
+    default;
 
 // ------------------------------------------------------------------------------
 
@@ -200,7 +198,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
     // Appender object to append cylinders, torus and cone to generate a needle
     vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
 
-    double center;
+    double center = NAN;
     // Sweep the needle along its axis without the tip cylinder that will be replaced by a cone
     for(int cylinderIndex = (nbOfEntireParts - 2) ; cylinderIndex >= 0 ; --cylinderIndex)
     {
@@ -247,7 +245,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
     // Put the cone in the right direction and remove its bottom cap (avoiding ugly effects because of wrong normal
     // computations)
     cone->SetDirection(0, 1, 0);
-    cone->SetCapping(false);
+    cone->SetCapping(0);
     vtkSmartPointer<vtkPolyData> polyData = filterAndColorSourceObject(cone->GetOutputPort(), m_needleColor);
     appender->AddInputData(polyData);
     appender->Update();
@@ -290,7 +288,7 @@ vtkSmartPointer<T> SNeedle::constructSourceObject(double _height, double _center
 
 vtkSmartPointer<vtkPolyData> SNeedle::filterAndColorSourceObject(
     vtkAlgorithmOutput* _sourceAlgorithm,
-    const unsigned char _rgba[4]
+    const std::array<unsigned char, 4>& _rgba
 )
 {
     // vtkXxxSource give us a polyData with a POLYGON cell type
@@ -319,7 +317,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::filterAndColorSourceObject(
 
 // ------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> SNeedle::generateTorus(double _center, const unsigned char _rgba[4])
+vtkSmartPointer<vtkPolyData> SNeedle::generateTorus(double _center, const std::array<unsigned char, 4>& _rgba) const
 {
     vtkSmartPointer<vtkParametricTorus> torus = vtkSmartPointer<vtkParametricTorus>::New();
 
@@ -354,6 +352,4 @@ void SNeedle::updateHeight(double height)
 
 // ------------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::module::filter::mesh
+} // namespace sight::module::filter::mesh::generator

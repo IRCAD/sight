@@ -24,10 +24,7 @@
 
 #include <QMenu>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
@@ -38,9 +35,8 @@ QtMenuContainer::QtMenuContainer(ui::base::GuiBaseObject::Key /*key*/) noexcept
 
 //-----------------------------------------------------------------------------
 
-QtMenuContainer::~QtMenuContainer() noexcept
-{
-}
+QtMenuContainer::~QtMenuContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -74,6 +70,4 @@ QMenu* QtMenuContainer::getQtMenu()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

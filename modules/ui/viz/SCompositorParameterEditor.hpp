@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/scene3d/Layer.hpp>
-#include <viz/scene3d/SRender.hpp>
-
 #include <ui/base/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <QVBoxLayout>
 
@@ -56,7 +56,7 @@ public:
     MODULE_UI_VIZ_API SCompositorParameterEditor() noexcept;
 
     /// Destructor. Destroy UI
-    MODULE_UI_VIZ_API virtual ~SCompositorParameterEditor() noexcept;
+    MODULE_UI_VIZ_API ~SCompositorParameterEditor() noexcept override;
 
     /**
      * @name Slots API
@@ -101,10 +101,10 @@ private:
 
     ShaderEditorInfo m_editorInfo;
 
-    QVBoxLayout* m_sizer;
+    QVBoxLayout* m_sizer {};
 
     /// Name of the layer when we configure it in XML
     std::string m_layerID;
 };
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

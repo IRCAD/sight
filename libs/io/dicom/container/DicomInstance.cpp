@@ -35,17 +35,15 @@
 #include <gdcmScanner.h>
 #include <gdcmUIDGenerator.h>
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace container
+namespace sight::io::dicom::container
 {
 
 //------------------------------------------------------------------------------
 
 DicomInstance::DicomInstance() :
-    m_isMultiFiles(true),
-    m_SOPClassUID(""),
+
     m_logger(nullptr)
 {
 }
@@ -54,14 +52,13 @@ DicomInstance::DicomInstance() :
 
 DicomInstance::DicomInstance(
     const data::Series::csptr& series,
-    const core::log::Logger::sptr& logger,
+    core::log::Logger::sptr logger,
     bool isMultiFiles
 ) :
     m_isMultiFiles(isMultiFiles),
-    m_SOPClassUID(""),
     m_studyInstanceUID(series->getStudy()->getInstanceUID()),
     m_seriesInstanceUID(series->getInstanceUID()),
-    m_logger(logger)
+    m_logger(std::move(logger))
 {
     // Compute SOPClassUID
     this->computeSOPClassUID(series);
@@ -78,12 +75,12 @@ DicomInstance::DicomInstance(
 
 DicomInstance::DicomInstance(
     const data::DicomSeries::csptr& dicomSeries,
-    const core::log::Logger::sptr& logger
+    core::log::Logger::sptr logger
 ) :
     m_isMultiFiles(dicomSeries->getDicomContainer().size() > 1),
     m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
     m_seriesInstanceUID(dicomSeries->getInstanceUID()),
-    m_logger(logger)
+    m_logger(std::move(logger))
 {
     SIGHT_ASSERT("DicomSeries is not instantiated", dicomSeries);
 
@@ -99,19 +96,18 @@ DicomInstance::DicomInstance(
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(const DicomInstance& dicomInstance)
+DicomInstance::DicomInstance(const DicomInstance& dicomInstance) :
+    m_isMultiFiles(dicomInstance.m_isMultiFiles),
+    m_SOPClassUID(dicomInstance.m_SOPClassUID),
+    m_SOPInstanceUIDContainer(dicomInstance.m_SOPInstanceUIDContainer),
+    m_logger(dicomInstance.m_logger)
 {
-    m_isMultiFiles            = dicomInstance.m_isMultiFiles;
-    m_SOPClassUID             = dicomInstance.m_SOPClassUID;
-    m_SOPInstanceUIDContainer = dicomInstance.m_SOPInstanceUIDContainer;
-    m_logger                  = dicomInstance.m_logger;
 }
 
 //------------------------------------------------------------------------------
 
 DicomInstance::~DicomInstance()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +118,7 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
     data::ModelSeries::csptr modelSeries = data::ModelSeries::dynamicCast(series);
 
     // Create result
-    std::string sopClassUID = "";
+    std::string sopClassUID;
 
     if(imageSeries)
     {
@@ -138,7 +134,7 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
         mediaStorage.GuessFromModality(series->getModality().c_str(), dimension);
 
         // Identify the SOPClassUID from a guess
-        if(mediaStorage != gdcm::MediaStorage::MS_END && mediaStorage.GetString() != 0)
+        if(mediaStorage != gdcm::MediaStorage::MS_END && mediaStorage.GetString() != nullptr)
         {
             sopClassUID = mediaStorage.GetString();
         }
@@ -237,6 +233,4 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
 
 //------------------------------------------------------------------------------
 
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container

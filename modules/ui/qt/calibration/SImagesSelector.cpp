@@ -44,8 +44,7 @@ const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 
 //------------------------------------------------------------------------------
-SImagesSelector::SImagesSelector() noexcept :
-    m_captureIdx(0)
+SImagesSelector::SImagesSelector() noexcept
 {
     newSlot(s_ADD_SLOT, &SImagesSelector::add, this);
     newSlot(s_REMOVE_SLOT, &SImagesSelector::remove, this);
@@ -54,9 +53,8 @@ SImagesSelector::SImagesSelector() noexcept :
 
 //------------------------------------------------------------------------------
 
-SImagesSelector::~SImagesSelector() noexcept
-{
-}
+SImagesSelector::~SImagesSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -76,13 +74,13 @@ void SImagesSelector::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main container, VBox
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    auto* vLayout = new QVBoxLayout();
 
     //   First HBox, displays number of items and the remove button
-    QHBoxLayout* nbItemsHBox = new QHBoxLayout();
+    auto* nbItemsHBox = new QHBoxLayout();
 
     //     Fill the nbItemsHBox
-    QLabel* label = new QLabel("nb captures:");
+    auto* label = new QLabel("nb captures:");
     nbItemsHBox->addWidget(label);
 
     m_nbCapturesLabel = new QLabel("0");
@@ -116,7 +114,7 @@ void SImagesSelector::updating()
 
     m_capturesListWidget->clear();
     unsigned int captureIdx = 0;
-    for(data::Object::sptr obj : *vector)
+    for(const data::Object::sptr& obj : *vector)
     {
         data::Image::sptr image = data::Image::dynamicCast(obj);
         if(image)
@@ -183,7 +181,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     size[1] = frameTL->getHeight();
     size[2] = 1;
 
-    data::Image::PixelFormat format;
+    data::Image::PixelFormat format {data::Image::PixelFormat::UNDEFINED};
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
     switch(frameTL->numComponents())
@@ -215,7 +213,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     const auto dumpLock = image->dump_lock();
 
     const std::uint8_t* frameBuff = &buffer->getElement(0);
-    std::uint8_t* imgBuffer       = static_cast<std::uint8_t*>(image->getBuffer());
+    auto* imgBuffer               = static_cast<std::uint8_t*>(image->getBuffer());
     std::copy(frameBuff, frameBuff + buffer->getSize(), imgBuffer);
 
     const auto vector = m_selected_image.lock();

@@ -31,10 +31,7 @@
 #include <service/IAppConfigManager.hpp>
 #include <service/IXMLParser.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 /**
@@ -51,15 +48,13 @@ public:
      * @brief   Constructor : does nothing.
      */
     Vector()
-    {
-    }
+    = default;
 
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~Vector()
-    {
-    }
+    ~Vector() override
+    = default;
 
     SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
 
@@ -83,11 +78,9 @@ protected:
 private:
 
     /// To verify some conditions in xml file
-    bool refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement);
+    static bool refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement);
 
     std::vector<service::IAppConfigManager::sptr> m_ctmContainer;
 };
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

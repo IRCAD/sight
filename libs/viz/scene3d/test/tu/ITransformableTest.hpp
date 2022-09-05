@@ -23,13 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
-{
-
-namespace ut
+namespace sight::viz::scene3d::helper::ut
 {
 
 class ITransformableTest : public CPPUNIT_NS::TestFixture
@@ -41,14 +35,10 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void transformNodeTest();
+    static void transformNodeTest();
 };
 
-} //namespace ut
-
-} //namespace helper
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper::ut

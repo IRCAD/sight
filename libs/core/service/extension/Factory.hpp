@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #pragma once
 
 #include "service/config.hpp"
@@ -44,7 +46,7 @@ namespace extension
  * The Factory is a registry of all the services. It allows to retrieve the informations necessary to
  * instantiate the services.
  */
-class SERVICE_CLASS_API Factory : public core::BaseObject
+class SERVICE_CLASS_API Factory : public core::BaseObject // NOLINT(bugprone-forward-declaration-namespace)
 {
 public:
 
@@ -143,7 +145,7 @@ private:
      * @brief print services informations
      * @warning not thread-safe
      */
-    void printInfoMap(const SrvRegContainer& src) const;
+    static void printInfoMap(const SrvRegContainer& src);
 
     /**
      * @brief Trace services not declared in plugin.xml

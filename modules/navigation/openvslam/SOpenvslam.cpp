@@ -49,6 +49,8 @@
 #include <openvslam/publish/map_publisher.h>
 #include <openvslam/system.h>
 
+#include <memory>
+
 namespace sight::module::navigation::openvslam
 {
 
@@ -120,7 +122,7 @@ SOpenvslam::SOpenvslam() noexcept
     m_pointcloudWorker = core::thread::Worker::New();
 
     m_timer = m_pointcloudWorker->createTimer();
-    m_timer->setFunction(std::bind(&SOpenvslam::updatePointCloud, this));
+    m_timer->setFunction([this](auto&& ...){updatePointCloud();});
     m_timer->setDuration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
 }
 
@@ -247,7 +249,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
             m_initializerParameters
         );
 
-        m_slamSystem = std::unique_ptr< ::openvslam::system>(new ::openvslam::system(config, m_vocabularyPath));
+        m_slamSystem = std::make_unique< ::openvslam::system>(config, m_vocabularyPath);
 
         m_slamSystem->startup();
 
@@ -301,9 +303,12 @@ void SOpenvslam::stopTracking()
             const std::string baseFilename =
                 m_trajectoriesSavePath->getFile().filename().replace_extension("").string();
 
-            m_slamSystem->save_frame_trajectory(folder + "/" + baseFilename + "_frames_traj.txt", m_trajectoriesFormat);
             m_slamSystem->save_frame_trajectory(
-                folder + "/" + baseFilename + "_keyframes_traj.txt",
+                std::string(folder).append("/").append(baseFilename).append("_frames_traj.txt"),
+                m_trajectoriesFormat
+            );
+            m_slamSystem->save_frame_trajectory(
+                std::string(folder).append("/").append(baseFilename).append("_keyframes_traj.txt"),
                 m_trajectoriesFormat
             );
             m_trajectoriesSavePath.reset();
@@ -468,7 +473,7 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SIGHT_ERROR("Value'" + _val + "' is not handled for key '" + _key + "'");
+            SIGHT_ERROR(std::string("Value'").append(_val).append("' is not handled for key '").append(_key).append("'"));
         }
     }
     else
@@ -595,11 +600,11 @@ void SOpenvslam::saveTrajectories()
         //cspell: disable
         // Save frame & keyframes trajectory using choosen folder and basename
         m_slamSystem->save_frame_trajectory(
-            trajectories_folder + "/" + trajectories_filename + "_frames_traj.txt",
+            std::string(trajectories_folder).append("/").append(trajectories_filename).append("_frames_traj.txt"),
             m_trajectoriesFormat
         );
         m_slamSystem->save_frame_trajectory(
-            trajectories_folder + "/" + trajectories_filename + "_keyframes_traj.txt",
+            std::string(trajectories_folder).append("/").append(trajectories_filename).append("_keyframes_traj.txt"),
             m_trajectoriesFormat
         );
         //cspell: enable
@@ -685,14 +690,14 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
     if(m_slamSystem && !m_isPaused)
     {
         // Use a lambda expression to scope the lock of timeline and preserve constness of imgLeft.
-        const cv::Mat imgLeft = [&]() -> const cv::Mat
+        const cv::Mat imgLeft = [&]() -> cv::Mat
                                 {
                                     const auto frameTL     = m_timeline.lock();
                                     const auto bufferFrame = frameTL->getClosestBuffer(timestamp);
                                     if(bufferFrame == nullptr)
                                     {
                                         // return empty image.
-                                        return cv::Mat();
+                                        return {};
                                     }
 
                                     const std::uint8_t* frameData = &bufferFrame->getElement(0);
@@ -765,7 +770,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
         }
 
         const auto floatObj = m_scale.lock();
-        float scale         = 1.0f;
+        float scale         = 1.0F;
         if(floatObj)
         {
             // FIXME : Arbitrary scale, the real scale should be computed with respect to a real object in the 3D Scene.
@@ -786,13 +791,13 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             {
                 const auto inv = pos.inverse();
 
-                float matrix[16];
+                std::array<float, 16> matrix {};
 
-                for(int i = 0 ; i < 4 ; ++i)
+                for(std::size_t i = 0 ; i < 4 ; ++i)
                 {
-                    for(int j = 0 ; j < 4 ; ++j)
+                    for(std::size_t j = 0 ; j < 4 ; ++j)
                     {
-                        matrix[i * 4 + j] = static_cast<float>(inv(i, j));
+                        matrix[i * 4 + j] = static_cast<float>(inv(std::int64_t(i), std::int64_t(j)));
                     }
                 }
 
@@ -850,7 +855,7 @@ void SOpenvslam::updatePointCloud()
 
     if(!m_isPaused && pointcloud.get_shared())
     {
-        float scale = 1.f;
+        float scale = 1.F;
         {
             const auto s = m_scale.lock();
             if(s && s->value() > 0)
@@ -880,9 +885,9 @@ void SOpenvslam::updatePointCloud()
         unsigned int i = 0;
         if(m_localMap)
         {
-            for(const auto lm : local_landmarks)
+            for(auto* const lm : local_landmarks)
             {
-                if(!lm || lm->will_be_erased())
+                if((lm == nullptr) || lm->will_be_erased())
                 {
                     continue;
                 }
@@ -900,9 +905,9 @@ void SOpenvslam::updatePointCloud()
         }
         else
         {
-            for(const auto lm : landmarks)
+            for(auto* const lm : landmarks)
             {
-                if(!lm || lm->will_be_erased())
+                if((lm == nullptr) || lm->will_be_erased())
                 {
                     continue;
                 }

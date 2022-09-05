@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,9 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hpp>
 
-namespace sight::service
-{
+#include <utility>
 
-namespace helper
+namespace sight::service::helper
 {
 
 /// Helper class to register proxy connections.
@@ -53,18 +52,17 @@ struct ProxyConnections
     {
     }
 
-    ProxyConnections(const std::string& channel) :
-        m_channel(channel)
+    ProxyConnections(std::string channel) :
+        m_channel(std::move(channel))
     {
     }
 
     ~ProxyConnections()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
-    void addSignalConnection(UIDType uid, KeyType key)
+    void addSignalConnection(const UIDType& uid, const KeyType& key)
     {
         m_signals.push_back(std::make_pair(uid, key));
     }
@@ -78,7 +76,7 @@ struct ProxyConnections
 
     //------------------------------------------------------------------------------
 
-    void addSlotConnection(UIDType uid, KeyType key)
+    void addSlotConnection(const UIDType& uid, const KeyType& key)
     {
         m_slots.push_back(std::make_pair(uid, key));
     }
@@ -92,12 +90,10 @@ struct ProxyConnections
 
     //------------------------------------------------------------------------------
 
-    bool empty() const
+    [[nodiscard]] bool empty() const
     {
         return m_slots.empty() && m_signals.empty();
     }
 };
 
-} // namespace helper
-
-} // namespace sight::service
+} // namespace sight::service::helper

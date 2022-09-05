@@ -54,7 +54,7 @@ public:
     /// this constructor launches as much as possible workers
     CORE_API Pool();
     /// this constructor launches some amount of workers
-    CORE_API Pool(std::size_t);
+    CORE_API Pool(std::size_t /*_threads*/);
     /// the destructor joins all threads
     CORE_API ~Pool();
 
@@ -86,8 +86,7 @@ auto Pool::post(F&& f, Args&& ... args)
     using return_type = typename std::result_of<F(Args ...)>::type;
 
     auto task = std::make_shared<std::packaged_task<return_type()> >(
-        std::bind(std::forward<F>(f), std::forward<Args>(args) ...)
-    );
+        [&, f]{return f(std::forward<Args>(args) ...);});
 
     std::shared_future<return_type> res = task->get_future();
     {

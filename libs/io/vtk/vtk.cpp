@@ -19,6 +19,9 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINTNEXTLINE
+
 #include "io/vtk/vtk.hpp"
 
 #include <data/helper/MedicalImage.hpp>
@@ -89,7 +92,7 @@ TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::fwToolsToVtkMap::key_type& key
 )
 {
-    fwToolsToVtkMap::const_iterator it = s_toVtk.find(key);
+    auto it = s_toVtk.find(key);
     SIGHT_THROW_IF("Unknown Type: " << key, it == s_toVtk.end());
     return it->second;
 }
@@ -100,7 +103,7 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::VtkTofwToolsMap::key_type& key
 )
 {
-    VtkTofwToolsMap::const_iterator it = s_fromVtk.find(key);
+    auto it = s_fromVtk.find(key);
     SIGHT_THROW_IF("Unknown Type: " << key, it == s_fromVtk.end());
     return it->second;
 }
@@ -166,7 +169,7 @@ void toVTKImage(data::Image::csptr data, vtkImageData* dst)
 template<typename IMAGETYPE>
 void* newBuffer(std::size_t size)
 {
-    IMAGETYPE* destBuffer;
+    IMAGETYPE* destBuffer = nullptr;
     try
     {
         destBuffer = new IMAGETYPE[size];
@@ -189,15 +192,17 @@ void* newBuffer(std::size_t size)
 template<typename IMAGETYPE>
 void fromRGBBuffer(void* input, std::size_t size, void*& destBuffer)
 {
-    if(destBuffer == NULL)
+    if(destBuffer == nullptr)
     {
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
-    IMAGETYPE* inputTyped = static_cast<IMAGETYPE*>(input);
-    IMAGETYPE* finalPtr = static_cast<IMAGETYPE*>(destBuffer) + size;
-    IMAGETYPE valR, valG, valB;
+    auto* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
+    auto* inputTyped      = static_cast<IMAGETYPE*>(input);
+    IMAGETYPE* finalPtr   = static_cast<IMAGETYPE*>(destBuffer) + size;
+    IMAGETYPE valR;
+    IMAGETYPE valG;
+    IMAGETYPE valB;
 
     while(destBufferTyped < finalPtr)
     {
@@ -213,14 +218,14 @@ void fromRGBBuffer(void* input, std::size_t size, void*& destBuffer)
 template<typename IMAGETYPE>
 void fromRGBBufferColor(void* input, std::size_t size, void*& destBuffer)
 {
-    if(destBuffer == NULL)
+    if(destBuffer == nullptr)
     {
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
-    IMAGETYPE* inputTyped      = static_cast<IMAGETYPE*>(input);
-    IMAGETYPE* finalPtr        = static_cast<IMAGETYPE*>(destBuffer) + size;
+    auto* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
+    auto* inputTyped      = static_cast<IMAGETYPE*>(input);
+    IMAGETYPE* finalPtr   = static_cast<IMAGETYPE*>(destBuffer) + size;
 
     while(destBufferTyped < finalPtr)
     {
@@ -278,14 +283,14 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
             source->GetDimensions(),
             source->GetDimensions() + static_cast<std::size_t>(dim),
             std::max(static_cast<std::size_t>(3), static_cast<std::size_t>(nbComponents)),
-            std::multiplies<std::size_t>()
+            std::multiplies<>()
         )
     );
     const void* input = source->GetScalarPointer();
 
     if(size != 0)
     {
-        void* destBuffer;
+        void* destBuffer = nullptr;
 
         sight::data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
         if(nbComponents == 1)
@@ -382,6 +387,7 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
 
     // no copy, no buffer destruction/management
     // Remove const of the pointer.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     _pImageImport->SetImportVoidPointer(const_cast<void*>(_pDataImage->getBuffer()));
 
     // used to set correct pixeltype to VtkImage

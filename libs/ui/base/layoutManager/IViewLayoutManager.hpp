@@ -32,10 +32,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -53,7 +50,7 @@ public:
     UI_BASE_API IViewLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IViewLayoutManager();
+    UI_BASE_API ~IViewLayoutManager() override;
 
     /**
      * @brief Configure the layout before creation.
@@ -89,6 +86,4 @@ protected:
     std::vector<ui::base::container::fwContainer::sptr> m_subViews;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

@@ -30,15 +30,14 @@ SIGHT_REGISTER_DATA(sight::data::Study)
 namespace sight::data
 {
 
-Study::Study(data::Object::Key)
+Study::Study(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Study::~Study()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

@@ -59,15 +59,13 @@ static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::SQueryEditor() noexcept
-{
-}
+SQueryEditor::SQueryEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::~SQueryEditor() noexcept
-{
-}
+SQueryEditor::~SQueryEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -102,7 +100,7 @@ void SQueryEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QVBoxLayout* const mainLayout = new QVBoxLayout();
+    auto* const mainLayout = new QVBoxLayout();
 
     m_searchEdit = new QLineEdit();
     m_searchEdit->setPlaceholderText("Find by name, birth date, ID, date, description or modality");
@@ -118,7 +116,7 @@ void SQueryEditor::starting()
         }
     }
 
-    QHBoxLayout* const search_layout = new QHBoxLayout();
+    auto* const search_layout = new QHBoxLayout();
     search_layout->setObjectName("SQueryEditor_search");
 
     search_layout->addWidget(m_searchEdit);
@@ -130,25 +128,25 @@ void SQueryEditor::starting()
 
     if(m_advanced)
     {
-        QHBoxLayout* const advancedLayout = new QHBoxLayout();
+        auto* const advancedLayout = new QHBoxLayout();
         advancedLayout->setObjectName("SQueryEditor_advanced");
 
-        QVBoxLayout* const labelLayout = new QVBoxLayout();
+        auto* const labelLayout = new QVBoxLayout();
         labelLayout->setObjectName("SQueryEditor_labels");
 
-        QLabel* const dateLabel = new QLabel("Date of the study");
+        auto* const dateLabel = new QLabel("Date of the study");
         dateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const nameLabel = new QLabel("Patient's name");
+        auto* const nameLabel = new QLabel("Patient's name");
         nameLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const birthDateLabel = new QLabel("Patient's birth date");
+        auto* const birthDateLabel = new QLabel("Patient's birth date");
         birthDateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const idLabel = new QLabel("Patient's ID");
+        auto* const idLabel = new QLabel("Patient's ID");
         idLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const seriesUIDLabel = new QLabel("Series's ID");
+        auto* const seriesUIDLabel = new QLabel("Series's ID");
         seriesUIDLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const descriptionLabel = new QLabel("Series's description");
+        auto* const descriptionLabel = new QLabel("Series's description");
         descriptionLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const modalityLabel = new QLabel("Modality");
+        auto* const modalityLabel = new QLabel("Modality");
         modalityLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
         labelLayout->addWidget(dateLabel);
@@ -160,19 +158,19 @@ void SQueryEditor::starting()
         labelLayout->addWidget(descriptionLabel);
         labelLayout->addWidget(modalityLabel);
 
-        QHBoxLayout* const dateLayout = new QHBoxLayout();
+        auto* const dateLayout = new QHBoxLayout();
 
-        QVBoxLayout* const dateLabelLayout = new QVBoxLayout();
+        auto* const dateLabelLayout = new QVBoxLayout();
 
-        QLabel* const fromLabel = new QLabel("from");
+        auto* const fromLabel = new QLabel("from");
         fromLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QLabel* const toLabel = new QLabel("to");
+        auto* const toLabel = new QLabel("to");
         toLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
         dateLabelLayout->addWidget(fromLabel);
         dateLabelLayout->addWidget(toLabel);
 
-        QVBoxLayout* const dateEditLayout = new QVBoxLayout();
+        auto* const dateEditLayout = new QVBoxLayout();
 
         m_beginStudyDateEdit = new QDateEdit();
         m_beginStudyDateEdit->setDate(QDate());
@@ -186,19 +184,19 @@ void SQueryEditor::starting()
         dateLayout->addLayout(dateLabelLayout, 0);
         dateLayout->addLayout(dateEditLayout, 1);
 
-        QVBoxLayout* const editLayout = new QVBoxLayout();
+        auto* const editLayout = new QVBoxLayout();
         editLayout->setObjectName("SQueryEditor_editors");
 
         m_patientNameEdit = new QLineEdit();
 
-        QHBoxLayout* const birthDateEditLayout = new QHBoxLayout();
+        auto* const birthDateEditLayout = new QHBoxLayout();
 
         m_birthDateEdit = new QDateEdit();
         m_birthDateEdit->setDate(QDate());
         m_birthDateEdit->setDisplayFormat("MM.dd.yyyy");
         m_birthDateEdit->setEnabled(false);
 
-        QCheckBox* const birthDateEnabler = new QCheckBox();
+        auto* const birthDateEnabler = new QCheckBox();
 
         birthDateEditLayout->addWidget(birthDateEnabler, 0);
         birthDateEditLayout->addWidget(m_birthDateEdit, 1);
@@ -265,7 +263,7 @@ void SQueryEditor::executeQueryAsync()
 {
     if(!m_isQuerying)
     {
-        m_requestWorker->post(std::bind(&module::io::dimse::SQueryEditor::executeQuery, this));
+        m_requestWorker->post([this](auto&& ...){executeQuery();});
     }
     else
     {
@@ -321,15 +319,15 @@ void SQueryEditor::executeQuery()
     try
     {
         // Execute find requests.
-        const std::string searchValue      = standardise(m_searchEdit->text().toStdString());
-        std::string beginDataSearchValue   = "";
-        std::string endDateSearchValue     = "";
-        std::string nameSearchValue        = "";
-        std::string birthDateSearchValue   = "";
-        std::string patientUIDSearchValue  = "";
-        std::string seriesUIDSearchValue   = "";
-        std::string descriptionSearchValue = "";
-        std::string modalitySearchValue    = "";
+        const std::string searchValue = standardise(m_searchEdit->text().toStdString());
+        std::string beginDataSearchValue;
+        std::string endDateSearchValue;
+        std::string nameSearchValue;
+        std::string birthDateSearchValue;
+        std::string patientUIDSearchValue;
+        std::string seriesUIDSearchValue;
+        std::string descriptionSearchValue;
+        std::string modalitySearchValue;
 
         if(m_advanced)
         {
@@ -402,12 +400,7 @@ void SQueryEditor::executeQuery()
                     {
                         OFString data;
                         _res->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data);
-                        if(data.compare(seriesUID) == 0)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                        return data == seriesUID;
                     });
                 // If it's not already added, we check if the series match advanced request.
                 if(findedIt == seriesResponse.end())
@@ -514,7 +507,7 @@ void SQueryEditor::executeQuery()
         sight::io::dimse::helper::Series::releaseResponses(responses);
 
         // Check whether the instance number start at 1 or 0.
-        for(data::Series::sptr s : series)
+        for(const data::Series::sptr& s : series)
         {
             data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
             SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
@@ -564,7 +557,7 @@ void SQueryEditor::updateSeriesDB(const data::SeriesDB::ContainerType& _series)
 
 void SQueryEditor::enableBirthDateEdit(int _enable)
 {
-    m_birthDateEdit->setEnabled(_enable);
+    m_birthDateEdit->setEnabled(_enable != 0);
 }
 
 } // namespace sight::module::io::dimse

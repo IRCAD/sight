@@ -53,10 +53,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomAnonymizerTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -167,7 +164,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     m_uidContainer.clear();
     std::vector<std::filesystem::path> oldFilenames;
     io::dicom::helper::DicomSearch::searchRecursively(srcPath, oldFilenames, true);
-    for(std::filesystem::path filename : oldFilenames)
+    for(const std::filesystem::path& filename : oldFilenames)
     {
         // Try to open the file
         gdcm::Reader reader;
@@ -286,7 +283,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     // Read DICOM files
     std::vector<std::filesystem::path> filenames;
     io::dicom::helper::DicomSearch::searchRecursively(path, filenames, true);
-    for(std::filesystem::path filename : filenames)
+    for(const std::filesystem::path& filename : filenames)
     {
         this->testAnonymizedFile(filename);
     }
@@ -328,17 +325,11 @@ std::string getDummyValue(const gdcm::Tag& tag)
             return "19000101000000.000000";
 
         case gdcm::VR::FD:
-            return "0";
-
         case gdcm::VR::FL:
-            return "0";
-
         case gdcm::VR::IS:
             return "0";
 
         case gdcm::VR::LO:
-            return "ANONYMIZED";
-
         case gdcm::VR::LT:
             return "ANONYMIZED";
 
@@ -346,8 +337,6 @@ std::string getDummyValue(const gdcm::Tag& tag)
             return "00H00H";
 
         case gdcm::VR::OF:
-            return "0";
-
         case gdcm::VR::OW:
             return "0";
 
@@ -729,6 +718,4 @@ void DicomAnonymizerTest::testAnonymizedFile(const std::filesystem::path& filena
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

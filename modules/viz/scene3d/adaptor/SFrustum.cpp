@@ -46,15 +46,13 @@ static const std::string s_COLOR_CONFIG = "color";
 
 //-----------------------------------------------------------------------------
 
-SFrustum::SFrustum() noexcept
-{
-}
+SFrustum::SFrustum() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SFrustum::~SFrustum() noexcept
-{
-}
+SFrustum::~SFrustum() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -107,12 +105,12 @@ void SFrustum::starting()
     m_ogreCamera->setVisible(m_isVisible);
 
     // Clipping
-    if(m_near != 0.f)
+    if(m_near != 0.F)
     {
         m_ogreCamera->setNearClipDistance(m_near);
     }
 
-    if(m_far != 0.f)
+    if(m_far != 0.F)
     {
         m_ogreCamera->setFarClipDistance(m_far);
     }
@@ -173,8 +171,8 @@ void SFrustum::setOgreCamFromData()
 
     if(camera->getIsCalibrated())
     {
-        const float width  = static_cast<float>(camera->getWidth());
-        const float height = static_cast<float>(camera->getHeight());
+        const auto width  = static_cast<float>(camera->getWidth());
+        const auto height = static_cast<float>(camera->getHeight());
 
         Ogre::Matrix4 m =
             sight::viz::scene3d::helper::Camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);

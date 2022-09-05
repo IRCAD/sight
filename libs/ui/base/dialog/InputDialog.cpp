@@ -24,10 +24,7 @@
 
 #include <core/thread/Worker.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -50,10 +47,10 @@ InputDialog::InputDialog()
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IInputDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::IInputDialog::dynamicCast(guiObj);
-            })
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IInputDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::IInputDialog::dynamicCast(guiObj);
+        })
     );
 }
 
@@ -69,22 +66,21 @@ InputDialog::InputDialog(
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IInputDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::IInputDialog::dynamicCast(guiObj);
-                m_implementation->setTitle(title);
-                m_implementation->setMessage(message);
-                m_implementation->setInput(text);
-                m_implementation->setEchoMode(echoMode);
-            })
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IInputDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::IInputDialog::dynamicCast(guiObj);
+            m_implementation->setTitle(title);
+            m_implementation->setMessage(message);
+            m_implementation->setInput(text);
+            m_implementation->setEchoMode(echoMode);
+        })
     );
 }
 
 //-----------------------------------------------------------------------------
 
 InputDialog::~InputDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -93,9 +89,9 @@ void InputDialog::setTitle(const std::string& title)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setTitle(title);
-            })
+        {
+            m_implementation->setTitle(title);
+        })
     ).wait();
 }
 
@@ -106,9 +102,9 @@ void InputDialog::setMessage(const std::string& msg)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setMessage(msg);
-            })
+        {
+            m_implementation->setMessage(msg);
+        })
     ).wait();
 }
 
@@ -119,9 +115,9 @@ void InputDialog::setInput(const std::string& text)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setInput(text);
-            })
+        {
+            m_implementation->setInput(text);
+        })
     ).wait();
 }
 
@@ -132,9 +128,9 @@ void InputDialog::setEchoMode(EchoMode echoMode)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setEchoMode(echoMode);
-            })
+        {
+            m_implementation->setEchoMode(echoMode);
+        })
     ).wait();
 }
 
@@ -142,7 +138,7 @@ void InputDialog::setEchoMode(EchoMode echoMode)
 
 std::string InputDialog::getInput()
 {
-    std::function<std::string()> func = std::bind(&IInputDialog::getInput, m_implementation);
+    std::function<std::string()> func = [this](auto&& ...){return m_implementation->getInput();};
     std::shared_future<std::string> f =
         core::thread::getDefaultWorker()->postTask<std::string>(func);
     f.wait();
@@ -151,6 +147,4 @@ std::string InputDialog::getInput()
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

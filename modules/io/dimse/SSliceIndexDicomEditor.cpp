@@ -47,15 +47,13 @@ static const std::string s_READER_CONFIG       = "readerConfig";
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept
-{
-}
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
-{
-}
+SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +120,7 @@ void SSliceIndexDicomEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
 
     m_slider = new QSlider(Qt::Horizontal);
     layout->addWidget(m_slider, 1);
@@ -228,7 +226,7 @@ void SSliceIndexDicomEditor::retrieveSlice()
     // If the slice is not pulled, pull it.
     if(!isInstanceAvailable)
     {
-        m_requestWorker->post(std::bind(&SSliceIndexDicomEditor::pullSlice, this, selectedSliceIndex));
+        m_requestWorker->post([this, selectedSliceIndex](auto&& ...){pullSlice(selectedSliceIndex);});
     }
     else
     {
@@ -365,14 +363,14 @@ void SSliceIndexDicomEditor::readSlice(
         return;
     }
 
-    fs.write(buffer, long(bufferSize));
+    fs.write(buffer, std::int64_t(bufferSize));
     fs.close();
 
     // Read the image.
     m_dicomReader->setFolder(tmpPath);
     m_dicomReader->update().wait();
 
-    if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
+    if(!m_dicomReader->hasFailed() && !m_seriesDB->getContainer().empty())
     {
         // Copy the read series to the image.
         const auto imageSeries           = data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
@@ -382,8 +380,8 @@ void SSliceIndexDicomEditor::readSlice(
         image->deepCopy(newImage);
 
         data::Integer::sptr axialIndex    = data::Integer::New(0);
-        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize()[0] / 2);
-        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize()[1] / 2);
+        data::Integer::sptr frontalIndex  = data::Integer::New(static_cast<std::int64_t>(image->getSize()[0] / 2));
+        data::Integer::sptr sagittalIndex = data::Integer::New(static_cast<std::int64_t>(image->getSize()[1] / 2));
 
         data::helper::MedicalImage::setSliceIndex(
             *image,

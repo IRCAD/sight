@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 SIGHT_REGISTER_DATA(sight::viz::scene2d::data::Viewport);
 
-namespace sight::viz::scene2d
-{
-
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 //------------------------------------------------------------------------------
@@ -72,6 +69,4 @@ void Viewport::cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCop
     m_height = other->m_height;
 }
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

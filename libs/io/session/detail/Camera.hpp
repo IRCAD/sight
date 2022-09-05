@@ -26,10 +26,7 @@
 
 #include <data/Camera.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Camera
+namespace sight::io::session::detail::Camera
 {
 
 constexpr static auto s_Width {"Width"};
@@ -57,11 +54,11 @@ constexpr static auto s_Scale {"Scale"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto camera = Helper::safeCast<data::Camera>(object);
@@ -100,11 +97,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Camera::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -144,6 +141,4 @@ inline static data::Camera::sptr deserialize(
     return camera;
 }
 
-} // namespace detail::Camera
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Camera

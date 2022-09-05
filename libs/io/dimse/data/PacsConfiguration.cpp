@@ -27,28 +27,17 @@
 
 SIGHT_REGISTER_DATA(sight::io::dimse::data::PacsConfiguration);
 
-namespace sight::io::dimse
+namespace sight::io::dimse::data
 {
 
-namespace data
-{
-
-PacsConfiguration::PacsConfiguration(sight::data::Object::Key /*key*/) :
-    m_localApplicationTitle(""),
-    m_pacsHostName(""),
-    m_pacsApplicationTitle(""),
-    m_pacsApplicationPort(0),
-    m_moveApplicationTitle(""),
-    m_moveApplicationPort(0),
-    m_retrieveMethod(MOVE_RETRIEVE_METHOD)
+PacsConfiguration::PacsConfiguration(sight::data::Object::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 PacsConfiguration::~PacsConfiguration()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -98,6 +87,4 @@ void PacsConfiguration::cachedDeepCopy(const Object::csptr& _source, DeepCopyCac
 
 //------------------------------------------------------------------------------
 
-} //namespace data
-
-} //namespace sight::io::dimse
+} // namespace sight::io::dimse::data

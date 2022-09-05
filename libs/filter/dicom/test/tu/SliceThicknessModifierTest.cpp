@@ -37,10 +37,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::SliceThicknessModifierTest);
 
-namespace sight::filter::dicom
-{
-
-namespace ut
+namespace sight::filter::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -99,8 +96,8 @@ void SliceThicknessModifierTest::simpleApplication()
     dicomSeries = dicomSeriesContainer[0];
 
     // Check that the computed value has been added to the DicomSeries
-    const double delta          = 1e-8;
-    const double sliceThickness =
+    const double delta        = 1e-8;
+    const auto sliceThickness =
         boost::lexical_cast<double>(dicomSeries->getComputedTagValues().at("SliceThickness"));
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8, sliceThickness, delta);
 }
@@ -142,6 +139,4 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::ut

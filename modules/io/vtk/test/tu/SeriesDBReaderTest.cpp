@@ -46,10 +46,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::SeriesDBReaderTest);
 
 static const double epsilon = 0.00001;
 
-namespace sight::module::io::vtk
-{
-
-namespace ut
+namespace sight::module::io::vtk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -190,6 +187,4 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

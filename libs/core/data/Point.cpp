@@ -37,7 +37,7 @@ namespace sight::data
 static constexpr std::string_view field_label_id = "m_labelId";
 //------------------------------------------------------------------------------
 
-Point::Point(data::Object::Key)
+Point::Point(data::Object::Key /*unused*/)
 {
     m_vCoord[0] = 0.0;
     m_vCoord[1] = 0.0;
@@ -89,8 +89,7 @@ Point::sptr Point::New(const Point::sptr& p)
 //------------------------------------------------------------------------------
 
 Point::~Point()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

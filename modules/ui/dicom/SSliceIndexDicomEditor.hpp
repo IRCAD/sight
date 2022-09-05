@@ -47,28 +47,28 @@ namespace sight::data
 class Composite;
 class Integer;
 
-}
+} // namespace sight::data
 
-namespace thread
+namespace sight::core::thread
 {
 
 class Timer;
 
-}
+} // namespace sight::core::thread
 
 namespace sight::data
 {
 
 class SeriesDB;
 
-}
+} // namespace sight::data
 
-namespace fwRuntime
+namespace sight::core::runtime
 {
 
 struct ConfigurationElement;
 
-}
+} // namespace sight::core::runtime
 
 namespace sight::module::ui::dicom
 {
@@ -124,7 +124,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_UI_DICOM_API virtual ~SSliceIndexDicomEditor() noexcept;
+    MODULE_UI_DICOM_API ~SSliceIndexDicomEditor() noexcept override;
 
 protected:
 
@@ -156,7 +156,7 @@ protected:
      * @brief Display error message
      * @param[in] message Message that must be displayed
      */
-    MODULE_UI_DICOM_API void displayErrorMessage(const std::string& message) const;
+    static MODULE_UI_DICOM_API void displayErrorMessage(const std::string& message);
 
 private Q_SLOTS:
 
@@ -178,7 +178,7 @@ private:
     QPointer<QLineEdit> m_sliceIndexLineEdit;
 
     /// Number of instances
-    std::size_t m_numberOfSlices;
+    std::size_t m_numberOfSlices {};
 
     /// IODICOM Reader
     std::string m_dicomReaderType;
@@ -200,7 +200,7 @@ private:
     SPTR(core::thread::Timer) m_delayTimer2;
 
     /// Delay
-    std::size_t m_delay;
+    std::size_t m_delay {500};
 
     /// Optional configuration to set to reader implementation
     SPTR(core::runtime::ConfigurationElement) m_readerConfig;

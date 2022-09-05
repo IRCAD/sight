@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,15 +46,14 @@ namespace sight::module::viz::qt3d
 
 //-----------------------------------------------------------------------------
 
-WindowInteractor::WindowInteractor(sight::viz::qt3d::IWindowInteractor::Key)
+WindowInteractor::WindowInteractor(sight::viz::qt3d::IWindowInteractor::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 WindowInteractor::~WindowInteractor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -63,7 +62,7 @@ void WindowInteractor::createContainer(ui::base::container::fwContainer::sptr _p
     SIGHT_ASSERT("Invalid parent.", _parent);
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(_parent);
 
-    auto view3D = new Qt3DExtras::Qt3DWindow();
+    auto* view3D = new Qt3DExtras::Qt3DWindow();
     this->set3DView(view3D);
 }
 

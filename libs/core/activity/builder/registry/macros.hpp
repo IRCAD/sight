@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,21 +27,11 @@
 
 #include <boost/preprocessor/cat.hpp>
 
-namespace sight::activity
-{
-
-namespace builder
-{
-
-namespace registry
+namespace sight::activity::builder::registry
 {
 
 #define fwActivitiesBuilderRegisterMacro(BuilderClassname, BuilderFunctorKey) \
     static activity::IBuilder::Registry<BuilderClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BuilderFunctorKey);
 
-} // end namespace registry
-
-} // end namespace builder
-
-} // end namespace sight::activity
+} // namespace sight::activity::builder::registry

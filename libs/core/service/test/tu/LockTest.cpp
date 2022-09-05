@@ -47,10 +47,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::LockTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 class LockedService : public service::IService
@@ -63,9 +60,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(LockedService, service::IService);
 
-    LockedService() noexcept
-    {
-    }
+    LockedService() noexcept =
+        default;
 
     std::atomic_bool m_started {false};
     std::atomic_bool m_stopped {false};
@@ -73,7 +69,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void starting() final
+    void starting() final
     {
         // Reading should not be blocked by other reader
         auto input = m_input.lock();
@@ -87,7 +83,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void stopping() final
+    void stopping() final
     {
         // Reading should not be blocked by other reader
         auto sharedOutput = m_output.lock();
@@ -103,19 +99,19 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() final
+    void configuring() final
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void reconfiguring() final
+    void reconfiguring() final
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void updating() final
+    void updating() final
     {
     }
 
@@ -145,7 +141,7 @@ void LockTest::tearDown()
     // unregister the services that have not been unregistered because a test failed.
 
     const auto& services = service::OSR::getServices<service::IService>();
-    for(auto service : services)
+    for(const auto& service : services)
     {
         if(service->isStarted())
         {
@@ -293,11 +289,11 @@ void LockTest::testDumpLock()
 
         mesh->reserve(3, 1, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS);
 
-        data::Mesh::position_t A[3] = {0., 0., 0.};
-        data::Mesh::position_t B[3] = {1., 0., 0.};
-        data::Mesh::position_t C[3] = {1., 1., 0.};
+        const std::array<data::Mesh::position_t, 3> A = {0., 0., 0.};
+        const std::array<data::Mesh::position_t, 3> B = {1., 0., 0.};
+        const std::array<data::Mesh::position_t, 3> C = {1., 1., 0.};
 
-        data::Mesh::point_t ids[3];
+        std::array<data::Mesh::point_t, 3> ids {};
 
         ids[0] = mesh->pushPoint(A);
         ids[1] = mesh->pushPoint(B);
@@ -309,7 +305,7 @@ void LockTest::testDumpLock()
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(B));
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(C));
 
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(ids, 3));
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(std::vector(ids.begin(), ids.end())));
 
         const std::array<data::Mesh::color_t, 4> color = {255, 0, 0, 255};
 
@@ -325,7 +321,7 @@ void LockTest::testDumpLock()
     {
         try
         {
-            mesh->pushPoint(0.f, 0.f, 0.f);
+            mesh->pushPoint(0.F, 0.F, 0.F);
         }
         catch(data::Exception&)
         {
@@ -412,6 +408,4 @@ void LockTest::testThreadedLock()
     service::OSR::unregisterService(lockedService);
 }
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

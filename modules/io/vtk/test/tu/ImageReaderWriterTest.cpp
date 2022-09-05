@@ -42,10 +42,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ImageReaderWriterTes
 
 static const double epsilon = 0.00001;
 
-namespace sight::module::io::vtk
-{
-
-namespace ut
+namespace sight::module::io::vtk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -323,11 +320,11 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 
     // Test all teh available extensions
     std::vector<std::string> extensions;
-    extensions.push_back("bmp");
-    extensions.push_back("jpeg");
-    extensions.push_back("jpg");
-    extensions.push_back("png");
-    extensions.push_back("tiff");
+    extensions.emplace_back("bmp");
+    extensions.emplace_back("jpeg");
+    extensions.emplace_back("jpg");
+    extensions.emplace_back("png");
+    extensions.emplace_back("tiff");
 
     for(const std::string& ext : extensions)
     {
@@ -642,6 +639,4 @@ void ImageReaderWriterTest::testImageWriterExtension()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

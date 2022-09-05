@@ -54,7 +54,7 @@ public:
     DATA_API PlaneList(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~PlaneList();
+    DATA_API ~PlaneList() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

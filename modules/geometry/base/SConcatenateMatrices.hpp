@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,9 +74,8 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~SConcatenateMatrices() noexcept
-    {
-    }
+    ~SConcatenateMatrices() noexcept override =
+        default;
 
 protected:
 

@@ -33,10 +33,7 @@
 #include <QString>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace viz
+namespace sight::module::ui::qt::viz
 {
 
 // ------------------------------------------------------------------------------
@@ -48,9 +45,8 @@ SMatrixViewer::SMatrixViewer() noexcept :
 
 // ------------------------------------------------------------------------------
 
-SMatrixViewer::~SMatrixViewer() noexcept
-{
-}
+SMatrixViewer::~SMatrixViewer() noexcept =
+    default;
 
 // ------------------------------------------------------------------------------
 
@@ -68,20 +64,20 @@ void SMatrixViewer::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
+    auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     QPointer<QLabel> description = new QLabel(QString::fromStdString(m_title));
 
     mainLayout->addWidget(description);
 
-    QGridLayout* gridLayout = new QGridLayout();
+    auto* gridLayout = new QGridLayout();
 
     for(int i = 0 ; i < 4 ; ++i)
     {
         for(int j = 0 ; j < 4 ; ++j)
         {
-            QLabel* label = new QLabel("");
+            auto* label = new QLabel("");
             m_matrixLabels.push_back(label);
             gridLayout->addWidget(label, i, j);
         }
@@ -146,6 +142,4 @@ service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 
 // ------------------------------------------------------------------------------
 
-} // namespace viz
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::viz

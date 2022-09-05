@@ -40,13 +40,13 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 namespace sight::data
 {
 
 class Mesh;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -352,7 +352,7 @@ inline Ogre::Entity* SMesh::getEntity() const
 
 inline bool SMesh::getVisibility() const
 {
-    return m_entity ? m_entity->getVisible() : m_isVisible;
+    return m_entity != nullptr ? m_entity->getVisible() : m_isVisible;
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
 
     UI_QT_API FrameLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~FrameLayoutManager();
+    UI_QT_API ~FrameLayoutManager() override;
 
     /**
      * @brief Instantiate frame.
@@ -78,7 +78,7 @@ private:
 
     void setState(FrameState state);
     FrameState getState();
-    bool isOnScreen(const QPoint& pos);
+    static bool isOnScreen(const QPoint& pos);
 
     QPointer<QMainWindow> m_qtWindow;
 };

@@ -40,10 +40,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 // ----------------------------------------------------------------------------
@@ -69,7 +66,7 @@ std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& root)
         current = current.parent_path();
     }
 
-    return std::filesystem::path();
+    return {};
 }
 
 // ----------------------------------------------------------------------------
@@ -124,15 +121,12 @@ void processDirInformation(
     }
 
     // For each root elements
-    typedef std::set<gdcm::DataElement> DataElementSet;
-    typedef DataElementSet::const_iterator ConstIterator;
-
-    for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end() ; ++it)
+    for(const auto& it : dataset.GetDES())
     {
         // Directory Record Sequence
-        if(it->GetTag() == gdcm::Tag(0x0004, 0x1220))
+        if(it.GetTag() == gdcm::Tag(0x0004, 0x1220))
         {
-            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it.GetValueAsSQ();
             ptotal += static_cast<double>(sequence->GetNumberOfItems());
 
             for(unsigned int index = 1 ; index <= sequence->GetNumberOfItems() ; ++index)
@@ -197,7 +191,7 @@ void processDirInformation(
 
                     std::replace(refFileID.begin(), refFileID.end(), '\\', '/');
                     auto refFilePath = dicomdir.parent_path() / refFileID;
-                    if(refFileID != "" && std::filesystem::exists(refFilePath))
+                    if(!refFileID.empty() && std::filesystem::exists(refFilePath))
                     {
                         processDirInformation(
                             refFilePath,
@@ -275,21 +269,18 @@ void DicomDir::retrieveDicomSeries(
     }
 
     // For each root elements
-    typedef std::set<gdcm::DataElement> DataElementSet;
-    typedef DataElementSet::const_iterator ConstIterator;
-
     double p      = 0.;
     double ptotal = 0.;
 
     if(progress)
     {
         // Compute total progress
-        for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end() ; ++it)
+        for(const auto& it : dataset.GetDES())
         {
             // Directory Record Sequence
-            if(it->GetTag() == gdcm::Tag(0x0004, 0x1220))
+            if(it.GetTag() == gdcm::Tag(0x0004, 0x1220))
             {
-                gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
+                gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it.GetValueAsSQ();
 
                 ptotal += static_cast<double>(sequence->GetNumberOfItems());
             }
@@ -319,11 +310,11 @@ void DicomDir::retrieveDicomSeries(
         return;
     }
 
-    for(auto entry : dicomSeriesMap)
+    for(const auto& entry : dicomSeriesMap)
     {
         auto series            = entry.second;
         const std::size_t size = series->getDicomContainer().size();
-        if(size)
+        if(size != 0U)
         {
             series->setNumberOfInstances(size);
             seriesDB.push_back(series);
@@ -337,6 +328,4 @@ void DicomDir::retrieveDicomSeries(
 
 // ----------------------------------------------------------------------------
 
-} //helper
-
-} //fwGdcmIO
+} // namespace sight::io::dicom::helper

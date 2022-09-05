@@ -45,10 +45,7 @@
 
 #include <sstream>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 using core::tools::random::safeRand;
@@ -97,7 +94,7 @@ data::Patient::sptr SeriesDB::createPatient()
     const std::string PATIENT_BIRTHDATE = "19710418";
     const std::string PATIENT_SEX       = "O ";
 
-    patient->setName(PATIENT_NAME + "^" + PATIENT_FIRSTNAME);
+    patient->setName(std::string(PATIENT_NAME).append("^").append(PATIENT_FIRSTNAME));
     patient->setPatientId(PATIENT_ID);
     patient->setBirthdate(PATIENT_BIRTHDATE);
     patient->setSex(PATIENT_SEX);
@@ -263,14 +260,14 @@ void SeriesDB::generateReconstruction(data::Reconstruction::sptr rec, int index)
     rec->setImage(img);
 
     data::Material::sptr material = data::Material::New();
-    material->ambient()->red()   = 0.75f;
-    material->ambient()->green() = 0.10f;
-    material->ambient()->blue()  = 0.56f;
-    material->ambient()->alpha() = 0.8f;
-    material->diffuse()->red()   = 0.85f;
-    material->diffuse()->green() = 0.20f;
-    material->diffuse()->blue()  = 0.66f;
-    material->diffuse()->alpha() = 0.9f;
+    material->ambient()->red()   = 0.75F;
+    material->ambient()->green() = 0.10F;
+    material->ambient()->blue()  = 0.56F;
+    material->ambient()->alpha() = 0.8F;
+    material->diffuse()->red()   = 0.85F;
+    material->diffuse()->green() = 0.20F;
+    material->diffuse()->blue()  = 0.66F;
+    material->diffuse()->alpha() = 0.9F;
     rec->setMaterial(material);
 
     data::Mesh::sptr mesh = data::Mesh::New();
@@ -281,6 +278,4 @@ void SeriesDB::generateReconstruction(data::Reconstruction::sptr rec, int index)
 
 //------------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

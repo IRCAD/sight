@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE NOLINT
+
 #include "modules/viz/scene3d/adaptor/SNegato3D.hpp"
 
 #include <core/com/Signal.hxx>
@@ -87,9 +89,8 @@ SNegato3D::SNegato3D() noexcept
 
 //------------------------------------------------------------------------------
 
-SNegato3D::~SNegato3D() noexcept
-{
-}
+SNegato3D::~SNegato3D() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -102,9 +103,9 @@ void SNegato3D::configuring()
 
     m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
-    if(config.count(s_FILTERING_CONFIG))
+    if(config.count(s_FILTERING_CONFIG) != 0U)
     {
-        const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
+        const auto filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
         sight::viz::scene3d::Plane::FilteringEnumType filtering(sight::viz::scene3d::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -263,7 +264,7 @@ void SNegato3D::stopping()
     m_negatoSceneNode->removeAndDestroyAllChildren();
     this->getSceneManager()->destroySceneNode(m_negatoSceneNode);
 
-    if(m_pickingCross)
+    if(m_pickingCross != nullptr)
     {
         auto crossMtl = m_pickingCross->getSection(0)->getMaterial();
         Ogre::MaterialManager::getSingleton().remove(crossMtl);
@@ -338,7 +339,7 @@ void SNegato3D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::changeSliceType(int, int)
+void SNegato3D::changeSliceType(int /*unused*/, int /*unused*/)
 {
     this->getRenderService()->makeCurrent();
 
@@ -397,13 +398,13 @@ void SNegato3D::updateTF()
 void SNegato3D::setTransparency(double _transparency)
 {
     const auto notNull =
-        std::bind(std::not_equal_to<sight::viz::scene3d::Plane::sptr>(), std::placeholders::_1, nullptr);
+        [](auto&& PH1){return std::not_equal_to<>()(std::forward<decltype(PH1)>(PH1), nullptr);};
 
     if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
         const auto image = m_image.lock();
 
-        const float opacity = 1.f - static_cast<float>(_transparency);
+        const float opacity = 1.F - static_cast<float>(_transparency);
 
         for(const auto& plane : m_planes)
         {
@@ -464,7 +465,7 @@ void SNegato3D::setPlanesQueryFlags(std::uint32_t _flags)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int)
+void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
 {
     if(m_pickedPlane)
     {
@@ -474,8 +475,8 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, in
         }
         else if(_button == MouseButton::RIGHT)
         {
-            const double dx = static_cast<double>(_x - m_initialPos[0]);
-            const double dy = static_cast<double>(m_initialPos[1] - _y);
+            const auto dx = static_cast<double>(_x - m_initialPos[0]);
+            const auto dy = static_cast<double>(m_initialPos[1] - _y);
 
             this->updateWindowing(dx, dy);
         }
@@ -490,7 +491,7 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, in
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
+void SNegato3D::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     m_pickedPlane.reset();
     m_pickingCross->setVisible(false);
@@ -524,7 +525,7 @@ void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonReleaseEvent(MouseButton, Modifier, int, int)
+void SNegato3D::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_pickedPlane)
     {
@@ -617,7 +618,11 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
             const auto& imgSize = image->getSize();
             data::Image::Size pickedVoxel;
-            for(std::uint8_t i = 0 ; i < pickedVoxel.size() ; ++i)
+            static_assert(
+                std::numeric_limits<std::uint8_t>::max() >= pickedVoxel.size(),
+                "The loop variable is too narrow to iterate over the array"
+            );
+            for(std::uint8_t i = 0 ; i < pickedVoxel.size() ; ++i) // NOLINT(bugprone-too-small-loop-variable)
             {
                 pickedVoxel[i] = std::clamp(
                     static_cast<std::size_t>(pickedPosImageSpace[i]),
@@ -655,7 +660,8 @@ std::optional<Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
                                      && (_p->getMovableObject() == picker.getSelectedObject());
                           };
 
-    auto it = std::find_if(m_planes.cbegin(), m_planes.cend(), isPicked);
+    // NOLINTNEXTLINE(readability-qualified-auto,llvm-qualified-auto)
+    const auto it = std::find_if(m_planes.cbegin(), m_planes.cend(), isPicked);
 
     if(it != m_planes.cend())
     {

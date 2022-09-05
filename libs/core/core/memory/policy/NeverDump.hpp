@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,10 @@
 #include "core/memory/BufferInfo.hpp"
 #include "core/memory/IPolicy.hpp"
 #include "core/memory/policy/factory/new.hpp"
+
 #include <core/base.hpp>
 
-namespace sight::core::memory
-{
-
-namespace policy
+namespace sight::core::memory::policy
 {
 
 /**
@@ -47,43 +45,43 @@ public:
 
     SIGHT_DECLARE_CLASS(NeverDump, core::memory::IPolicy, core::memory::policy::factory::New<NeverDump>);
 
-    CORE_API virtual void allocationRequest(
+    CORE_API void allocationRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
 
-    CORE_API virtual void setRequest(
+    CORE_API void setRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
 
-    CORE_API virtual void reallocateRequest(
+    CORE_API void reallocateRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType newSize
     ) override;
 
-    CORE_API virtual void destroyRequest(
+    CORE_API void destroyRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    CORE_API virtual void lockRequest(
+    CORE_API void lockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    CORE_API virtual void unlockRequest(
+    CORE_API void unlockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    CORE_API virtual void dumpSuccess(
+    CORE_API void dumpSuccess(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    CORE_API virtual void restoreSuccess(
+    CORE_API void restoreSuccess(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
@@ -99,7 +97,7 @@ public:
         return false;
     }
 
-    CORE_API std::string getParam(const std::string& name, bool* ok = NULL) const override;
+    CORE_API std::string getParam(const std::string& name, bool* ok = nullptr) const override;
 
     //------------------------------------------------------------------------------
 
@@ -110,6 +108,4 @@ public:
     }
 };
 
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy

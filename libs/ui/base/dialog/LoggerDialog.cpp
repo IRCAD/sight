@@ -27,10 +27,7 @@
 
 #include <functional>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -56,8 +53,7 @@ LoggerDialog::LoggerDialog()
 //-----------------------------------------------------------------------------
 
 LoggerDialog::~LoggerDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -97,7 +93,7 @@ bool LoggerDialog::show()
 {
     if(m_implementation)
     {
-        std::function<bool()> func = std::bind(&ILoggerDialog::show, m_implementation);
+        std::function<bool()> func = [this](auto&& ...){return m_implementation->show();};
         std::shared_future<bool> f = core::thread::getDefaultWorker()->postTask<bool>(func);
         f.wait();
 
@@ -109,6 +105,4 @@ bool LoggerDialog::show()
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

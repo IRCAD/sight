@@ -28,20 +28,17 @@
 #include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::CameraSet
+namespace sight::io::session::detail::CameraSet
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto camera_set = Helper::safeCast<data::CameraSet>(object);
@@ -62,11 +59,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::CameraSet::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -117,6 +114,4 @@ inline static data::CameraSet::sptr deserialize(
     return camera_set;
 }
 
-} // namespace detail::CameraSet
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::CameraSet

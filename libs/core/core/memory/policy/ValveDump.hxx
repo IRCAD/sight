@@ -27,10 +27,9 @@
 #include "core/memory/policy/registry/macros.hpp"
 #include "core/memory/policy/ValveDump.hpp"
 
-namespace sight::core::memory
-{
+#include <cstddef>
 
-namespace policy
+namespace sight::core::memory::policy
 {
 
 fwMemoryPolicyRegisterMacro(core::memory::policy::ValveDump<core::memory::tools::MemoryMonitorTools>);
@@ -39,8 +38,7 @@ fwMemoryPolicyRegisterMacro(core::memory::policy::ValveDump<core::memory::tools:
 
 template<typename TOOL>
 ValveDump<TOOL>::ValveDump() :
-    m_minFreeMem(1024 * 1024 * 500LL),
-    m_hysteresisOffset(0)
+    m_minFreeMem(1024LL * 1024 * 500LL)
 {
 }
 
@@ -222,7 +220,8 @@ bool ValveDump<TOOL>::setParam(const std::string& name, const std::string& value
             m_minFreeMem = core::memory::ByteSize(value).getSize();
             return true;
         }
-        else if(name == "hysteresis_offset")
+
+        if(name == "hysteresis_offset")
         {
             m_hysteresisOffset = core::memory::ByteSize(value).getSize();
             return true;
@@ -264,7 +263,7 @@ std::string ValveDump<TOOL>::getParam(const std::string& name, bool* ok) const
         isOk  = true;
     }
 
-    if(ok)
+    if(ok != nullptr)
     {
         *ok = isOk;
     }
@@ -274,6 +273,4 @@ std::string ValveDump<TOOL>::getParam(const std::string& name, bool* ok) const
 
 //------------------------------------------------------------------------------
 
-} // namespace policy
-
-} //namespace sight::core::memory
+} // namespace sight::core::memory::policy

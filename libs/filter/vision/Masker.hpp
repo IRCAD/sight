@@ -71,19 +71,19 @@ public:
     FILTER_VISION_API void trainForegroundModel(
         const cv::Mat& rgbImg,
         const cv::Mat& selectionMask,
-        const unsigned int numClusters,
-        const double noise = 0.0
+        unsigned int numClusters,
+        double noise = 0.0
     );
 
     /// Train the background color model defined with a number of clusters inside a mask on a given image
     FILTER_VISION_API void trainBackgroundModel(
         const cv::Mat& rgbImg,
         const cv::Mat& selectionMask,
-        const unsigned int numClusters
+        unsigned int numClusters
     );
 
     /// Perform an image masking based on the learned model on a downscaled image inside a given mask
-    FILTER_VISION_API cv::Mat makeMask(
+    [[nodiscard]] FILTER_VISION_API cv::Mat makeMask(
         const cv::Mat& testImg,
         const cv::Size& downSize,
         cv::InputArray filterMask
@@ -93,22 +93,22 @@ public:
     FILTER_VISION_API void setThreshold(double t);
 
     /// Return if a model is learned
-    FILTER_VISION_API bool isModelLearned(void);
+    FILTER_VISION_API bool isModelLearned();
 
 private:
 
     /// Make a response mask from a model on a given image inside a mask
     static cv::Mat makeResponseImage(
         const cv::Mat& inImg,
-        const cv::Ptr<cv::ml::EM> model,
-        cv::Mat& filterMask
+        cv::Ptr<cv::ml::EM> model,
+        cv::Mat& inImgMask
     );
 
     /// Convert the colorspace of an image
     static cv::Mat convertColourSpace(const cv::Mat& src, const ColSpace& c);
 
     /// Train the model from samples
-    static cv::Ptr<cv::ml::EM> trainModelFromSamples(const cv::Mat& samples, const unsigned int numClusters);
+    static cv::Ptr<cv::ml::EM> trainModelFromSamples(const cv::Mat& samples, unsigned int numClusters);
 
     /// Get samples of an image inside a mask to train the model
     static cv::Mat makeTrainingSamples(const cv::Mat& trainImg, const cv::Mat& mask, const ColSpace& c);
@@ -125,19 +125,19 @@ private:
     const DetectionMode m_DETECTIONMODE;
 
     /// Threshold of image masking model to get binary mask
-    double m_threshold;
+    double m_threshold {0.0};
 
     /// Store if the threshold is set
-    bool m_hasSetThreshold;
+    bool m_hasSetThreshold {false};
 
     /// Morphological element type
-    static const int s_MORPHTYPE = cv::MORPH_ELLIPSE;
+    static constexpr int s_MORPHTYPE = cv::MORPH_ELLIPSE;
 
     /// Morphological element size
-    static const int s_MORPHSIZE = 1;
+    static constexpr int s_MORPHSIZE = 1;
 
     /// Morphological element
     static const cv::Mat s_MORPHELEMENT;
 };
 
-} // namespace sight::filter
+} // namespace sight::filter::vision

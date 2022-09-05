@@ -55,7 +55,7 @@ public:
     /**
      * @brief Destructor
      */
-    DATA_API virtual ~PointList();
+    DATA_API ~PointList() override;
     /**
      * @brief Defines shallow copy
      */

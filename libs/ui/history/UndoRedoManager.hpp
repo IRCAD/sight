@@ -73,22 +73,22 @@ public:
     UI_HISTORY_API bool undo();
 
     /// Return true if we can undo.
-    UI_HISTORY_API bool canUndo() const;
+    [[nodiscard]] UI_HISTORY_API bool canUndo() const;
 
     /// Return true if we can redo.
-    UI_HISTORY_API bool canRedo() const;
+    [[nodiscard]] UI_HISTORY_API bool canRedo() const;
 
     /// Remove all commands in history.
     UI_HISTORY_API void clear();
 
     /// Get the number of enqueued commands.
-    UI_HISTORY_API std::size_t getCommandCount() const;
+    [[nodiscard]] UI_HISTORY_API std::size_t getCommandCount() const;
 
     /// Set the maximum number of enqueued commands.
     UI_HISTORY_API void setCommandCount(std::size_t cmdCount);
 
     /// Returns the amount of memory used by the history.
-    UI_HISTORY_API std::size_t getHistorySize() const;
+    [[nodiscard]] UI_HISTORY_API std::size_t getHistorySize() const;
 
     /// Set the maximum amount of memory used by the history.
     UI_HISTORY_API void setHistorySize(std::size_t histSize);
@@ -104,13 +104,13 @@ private:
     std::size_t m_maxCommands;
 
     /// Amount of memory currently in use by the command history.
-    std::size_t m_usedMemory;
+    std::size_t m_usedMemory {0};
 
     /// Double-ended queue of commands.
     CommandHistoryType m_commandQueue;
 
     /// Pointer to the last command.
-    std::int64_t m_commandIndex;
+    std::int64_t m_commandIndex {-1};
 
     /// Removes the oldest command from the history.
     void popFront();

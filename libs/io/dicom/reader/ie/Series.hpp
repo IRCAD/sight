@@ -26,13 +26,7 @@
 
 #include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -63,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Series();
+    IO_DICOM_API ~Series() override;
 
     /**
      * @brief Read General Series Module tags
@@ -72,8 +66,4 @@ public:
     IO_DICOM_API virtual void readGeneralSeriesModule();
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

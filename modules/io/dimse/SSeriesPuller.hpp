@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ public:
     MODULE_IO_DIMSE_API SSeriesPuller() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API virtual ~SSeriesPuller() noexcept;
+    MODULE_IO_DIMSE_API ~SSeriesPuller() noexcept override;
 
 protected:
 
@@ -141,10 +141,10 @@ private:
     core::thread::Worker::sptr m_requestWorker;
 
     /// Defines the DICOM reader implementation.
-    std::string m_dicomReaderImplementation {""};
+    std::string m_dicomReaderImplementation;
 
     /// Contains the optional configuration to set to reader implementation.
-    std::string m_readerConfig {""};
+    std::string m_readerConfig;
 
     /// Contains the DICOM reader.
     sight::io::base::service::IReader::sptr m_dicomReader {nullptr};

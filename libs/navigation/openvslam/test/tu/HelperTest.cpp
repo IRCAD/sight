@@ -35,10 +35,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::navigation::openvslam::ut::HelperTest);
 
-namespace sight::navigation::openvslam
-{
-
-namespace ut
+namespace sight::navigation::openvslam::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -78,7 +75,7 @@ void HelperTest::toSight()
 
     const auto cam = navigation::openvslam::Helper::toSight(oVSlamCam);
 
-    compareCam(*cam.get(), oVSlamCam, true);
+    compareCam(*cam, oVSlamCam, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -123,7 +120,7 @@ void HelperTest::createConfig()
 
     navigation::openvslam::OrbParams orbParam;
     orbParam.maxNumKeyPts = 8000;
-    orbParam.scaleFactor  = 1.2f;
+    orbParam.scaleFactor  = 1.2F;
     orbParam.iniFastThr   = 2;
     orbParam.minFastThr   = 1;
     orbParam.numLevels    = 8;
@@ -131,7 +128,7 @@ void HelperTest::createConfig()
     const auto config = navigation::openvslam::Helper::createMonocularConfig(cam, orbParam);
 
     // We know that the camera is perspective.
-    ::openvslam::camera::perspective* camera = dynamic_cast< ::openvslam::camera::perspective*>(config->camera_);
+    auto* camera = dynamic_cast< ::openvslam::camera::perspective*>(config->camera_);
 
     ::openvslam::feature::orb_params orbParamFromConfig = config->orb_params_;
 
@@ -163,15 +160,15 @@ void HelperTest::writeReadConfig()
 
     navigation::openvslam::OrbParams orbParam;
     orbParam.maxNumKeyPts = 8000;
-    orbParam.scaleFactor  = 1.2f;
+    orbParam.scaleFactor  = 1.2F;
     orbParam.iniFastThr   = 2;
     orbParam.minFastThr   = 1;
     orbParam.numLevels    = 8;
 
     navigation::openvslam::InitParams initParams;
-    initParams.reprojectionErrThr    = 10.f;
-    initParams.scalingFactor         = 2.f;
-    initParams.parallaxDegThr        = 3.f;
+    initParams.reprojectionErrThr    = 10.F;
+    initParams.scalingFactor         = 2.F;
+    initParams.parallaxDegThr        = 3.F;
     initParams.numBAIterations       = 101;
     initParams.numRansacIterations   = 9;
     initParams.minNumTriangulatedPts = 45;
@@ -191,8 +188,8 @@ void HelperTest::writeReadConfig()
     const auto config2 = navigation::openvslam::Helper::readOpenvslamConfig(tmp.string() + "/test.yaml");
     CPPUNIT_ASSERT(config2 != nullptr);
 
-    const auto orb                           = config2->orb_params_;
-    ::openvslam::camera::perspective* camera = dynamic_cast< ::openvslam::camera::perspective*>(config2->camera_);
+    const auto orb = config2->orb_params_;
+    auto* camera   = dynamic_cast< ::openvslam::camera::perspective*>(config2->camera_);
 
     CPPUNIT_ASSERT_EQUAL(orbParam.maxNumKeyPts, orb.max_num_keypts_);
     CPPUNIT_ASSERT_EQUAL(orbParam.numLevels, orb.num_levels_);
@@ -277,6 +274,4 @@ void HelperTest::compareCam(
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::navigation
+} // namespace sight::navigation::openvslam::ut

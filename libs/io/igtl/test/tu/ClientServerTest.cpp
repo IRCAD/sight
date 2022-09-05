@@ -32,10 +32,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::igtl::ut::ClientServerTest);
 
-namespace sight::io::igtl
-{
-
-namespace ut
+namespace sight::io::igtl::ut
 {
 
 // Global variable for client.
@@ -57,7 +54,7 @@ void ClientServerTest::setUp()
     s_server->setReceiveTimeout(30);
 
     // Run server (waitForConnection on a thread).
-    s_serverFuture = std::async(std::launch::async, std::bind(&::sight::io::igtl::Server::runServer, s_server));
+    s_serverFuture = std::async(std::launch::async, [ObjectPtr = s_server](auto&& ...){ObjectPtr->runServer();});
 
     // Wait for server to be initialized properly.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -118,7 +115,7 @@ void ClientServerTest::clientToServer()
     std::vector< ::igtl::MessageHeader::Pointer> headers;
     CPPUNIT_ASSERT_NO_THROW(headers = s_server->receiveHeaders());
 
-    for(auto header : headers)
+    for(const auto& header : headers)
     {
         CPPUNIT_ASSERT_MESSAGE("Device Name", std::string(header->GetDeviceName()) == "Sight_Tests_Client");
         CPPUNIT_ASSERT_MESSAGE("Device Type", std::string(header->GetDeviceType()) == stringMsg->GetDeviceType());
@@ -300,7 +297,7 @@ void ClientServerTest::serverBodyExceptionTest()
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    for(auto header : headers)
+    for(const auto& header : headers)
     {
         CPPUNIT_ASSERT_MESSAGE("Device Name", std::string(header->GetDeviceName()) == "Sight_Tests_Client");
         CPPUNIT_ASSERT_MESSAGE("Device Type", std::string(header->GetDeviceType()) == stringMsg->GetDeviceType());
@@ -312,6 +309,4 @@ void ClientServerTest::serverBodyExceptionTest()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::ut

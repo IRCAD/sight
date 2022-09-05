@@ -28,13 +28,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 /**
@@ -48,21 +42,21 @@ public:
     IO_DICOM_API DicomSRNumNode(
         const DicomCodedAttribute& codedAttribute,
         const std::string& relationship,
-        const double numValue,
-        const DicomCodedAttribute& measurementUnits
+        double numValue,
+        DicomCodedAttribute measurementUnits
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomSRNumNode();
+    IO_DICOM_API ~DicomSRNumNode() override;
 
     /**
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
+    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
 
     /// Get Numeric value
-    const double& getNumValue() const
+    [[nodiscard]] const double& getNumValue() const
     {
         return m_numValue;
     }
@@ -74,7 +68,7 @@ public:
     }
 
     /// Get Measurement units
-    const DicomCodedAttribute& getMeasurementUnits() const
+    [[nodiscard]] const DicomCodedAttribute& getMeasurementUnits() const
     {
         return m_measurementUnits;
     }
@@ -88,7 +82,7 @@ public:
 protected:
 
     /// Dump function
-    virtual void print(std::ostream& os) const;
+    void print(std::ostream& os) const override;
 
     /**
      * @brief Write a Measured Value Sequence
@@ -104,8 +98,4 @@ protected:
     DicomCodedAttribute m_measurementUnits;
 };
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

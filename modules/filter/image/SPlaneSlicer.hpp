@@ -81,7 +81,7 @@ public:
     MODULE_FILTER_IMAGE_API SPlaneSlicer() noexcept;
 
     /// Destructor.
-    MODULE_FILTER_IMAGE_API virtual ~SPlaneSlicer() noexcept;
+    MODULE_FILTER_IMAGE_API ~SPlaneSlicer() noexcept override;
 
 protected:
 
@@ -120,7 +120,7 @@ private:
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::MedicalImage::orientation_t m_orientation;
+    data::helper::MedicalImage::orientation_t m_orientation {data::helper::MedicalImage::orientation_t::Z_AXIS};
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

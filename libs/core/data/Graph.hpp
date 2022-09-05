@@ -70,7 +70,7 @@ public:
     DATA_API Graph(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Graph();
+    DATA_API ~Graph() override;
 
     /**
      * @brief add a node

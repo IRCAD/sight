@@ -46,7 +46,7 @@ public:
     DATA_API Study(Object::Key _key);
 
     /// Destroys the study.
-    DATA_API virtual ~Study();
+    DATA_API ~Study() override;
 
     /**
      * @brief Defines shallow copy.
@@ -326,4 +326,4 @@ inline void Study::setPatientBodyMassIndex(const DicomValueType& _val)
     m_patientBodyMassIndex = _val;
 }
 
-} // Namespace fwMedData.
+} // namespace sight::data

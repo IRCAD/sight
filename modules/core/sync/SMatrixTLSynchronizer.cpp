@@ -80,11 +80,11 @@ void SMatrixTLSynchronizer::synchronize()
 
         for(std::size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
         {
-            const unsigned int index = static_cast<unsigned int>(matrixIndex);
+            const auto index = static_cast<unsigned int>(matrixIndex);
 
             if(buffer->isPresent(index))
             {
-                const float* values = buffer->getElement(index);
+                const std::array<float, 16> values = buffer->getElement(index);
 
                 auto matrix = m_matrices[matrixIndex].lock();
                 SIGHT_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::core::jobs
 
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -65,7 +65,7 @@ public:
     IO_VTK_API SeriesDBReader(io::base::reader::IObjectReader::Key key);
 
     /// @brief Destructor.
-    IO_VTK_API ~SeriesDBReader();
+    IO_VTK_API ~SeriesDBReader() override;
 
     /// @brief Reading operator.
     IO_VTK_API void read() override;
@@ -88,7 +88,7 @@ private:
     ///Internal job
     SPTR(core::jobs::Observer) m_job;
 
-    bool m_lazyMode;
+    bool m_lazyMode {true};
 };
 
 } // namespace sight::io::vtk

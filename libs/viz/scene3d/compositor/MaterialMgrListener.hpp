@@ -26,10 +26,7 @@
 
 #include <OgreMaterialManager.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 /**
@@ -40,16 +37,16 @@ class VIZ_SCENE3D_CLASS_API MaterialMgrListener : public Ogre::MaterialManager::
 public:
 
     /// Destructor
-    virtual ~MaterialMgrListener();
+    ~MaterialMgrListener() override;
 
     /// Callback called each time a scheme is not found
-    virtual Ogre::Technique* handleSchemeNotFound(
-        unsigned short _schemeIndex,
+    Ogre::Technique* handleSchemeNotFound(
+        std::uint16_t _schemeIndex,
         const Ogre::String& _schemeName,
         Ogre::Material* _originalMaterial,
-        unsigned short _lodIndex,
+        std::uint16_t _lodIndex,
         const Ogre::Renderable* _renderable
-    );
+    ) override;
 
 private:
 
@@ -70,6 +67,4 @@ private:
     );
 };
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

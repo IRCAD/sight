@@ -111,10 +111,10 @@ private:
     std::string m_compositorName;
 
     /// Contains the Ogre compositor listener, we need to keep a pointer to unregister it.
-    CompositorListener* m_listener;
+    CompositorListener* m_listener {};
 
     /// Contains the compositor we work on.
-    Ogre::CompositorInstance* m_compositor;
+    Ogre::CompositorInstance* m_compositor {};
 
     friend class CompositorListener;
 };

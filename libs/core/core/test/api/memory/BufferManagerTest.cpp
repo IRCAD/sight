@@ -32,13 +32,12 @@
 
 #include <utest/wait.hpp>
 
+#include <cstddef>
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::memory::ut::BufferManagerTest);
 
-namespace sight::core::memory
-{
-
-namespace ut
+namespace sight::core::memory::ut
 {
 
 //------------------------------------------------------------------------------
@@ -65,24 +64,24 @@ void BufferManagerTest::allocateTest()
     core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
 
     CPPUNIT_ASSERT(bo->isEmpty());
-    CPPUNIT_ASSERT(bo->lock().getBuffer() == NULL);
+    CPPUNIT_ASSERT(bo->lock().getBuffer() == nullptr);
 
     bo->allocate(SIZE);
 
     CPPUNIT_ASSERT(!bo->isEmpty());
     CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::BufferObject::SizeType>(SIZE), bo->getSize());
-    CPPUNIT_ASSERT(bo->lock().getBuffer() != NULL);
+    CPPUNIT_ASSERT(bo->lock().getBuffer() != nullptr);
 
     // We need to wait before checking that the buffer was unlocked because all buffer operations are done on a worker.
     // The actual buffer ref count might still be owned (as a std::promise) by the worker task when we reach this point.
     fwTestWaitMacro(bo->lockCount() == 0);
-    CPPUNIT_ASSERT_EQUAL(static_cast<long>(0), bo->lockCount());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(0), bo->lockCount());
 
     {
         core::memory::BufferObject::Lock lock(bo->lock());
 
         fwTestWaitMacro(bo->lockCount() == 1);
-        CPPUNIT_ASSERT_EQUAL(static_cast<long>(1), bo->lockCount());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(1), bo->lockCount());
         char* buf = static_cast<char*>(lock.getBuffer());
 
         for(int i = 0 ; i < SIZE ; ++i)
@@ -102,38 +101,38 @@ void BufferManagerTest::allocateTest()
     }
 
     fwTestWaitMacro(bo->lockCount() == 0);
-    CPPUNIT_ASSERT_EQUAL(static_cast<long>(0), bo->lockCount());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(0), bo->lockCount());
 
     {
         core::memory::BufferObject::Lock lock(bo->lock());
 
         fwTestWaitMacro(bo->lockCount() == 1);
-        CPPUNIT_ASSERT_EQUAL(static_cast<long>(1), bo->lockCount());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(1), bo->lockCount());
         core::memory::BufferObject::Lock lock2(bo->lock());
         fwTestWaitMacro(bo->lockCount() == 2);
-        CPPUNIT_ASSERT_EQUAL(static_cast<long>(2), bo->lockCount());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(2), bo->lockCount());
         core::memory::BufferObject::csptr cbo = bo;
         core::memory::BufferObject::ConstLock clock(cbo->lock());
         fwTestWaitMacro(bo->lockCount() == 3);
-        CPPUNIT_ASSERT_EQUAL(static_cast<long>(3), bo->lockCount());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(3), bo->lockCount());
     }
 
     fwTestWaitMacro(bo->lockCount() == 0);
-    CPPUNIT_ASSERT_EQUAL(static_cast<long>(0), bo->lockCount());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(0), bo->lockCount());
 
     bo->destroy();
 
     CPPUNIT_ASSERT(bo->isEmpty());
-    CPPUNIT_ASSERT(bo->lock().getBuffer() == NULL);
+    CPPUNIT_ASSERT(bo->lock().getBuffer() == nullptr);
 
     CPPUNIT_ASSERT(bo->isEmpty());
-    CPPUNIT_ASSERT(bo->lock().getBuffer() == NULL);
+    CPPUNIT_ASSERT(bo->lock().getBuffer() == nullptr);
 
     bo->allocate(SIZE, core::memory::BufferNewPolicy::New());
 
     CPPUNIT_ASSERT(!bo->isEmpty());
     CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::BufferObject::SizeType>(SIZE), bo->getSize());
-    CPPUNIT_ASSERT(bo->lock().getBuffer() != NULL);
+    CPPUNIT_ASSERT(bo->lock().getBuffer() != nullptr);
 
     {
         core::memory::BufferObject::Lock lock(bo->lock());
@@ -158,7 +157,7 @@ void BufferManagerTest::allocateTest()
     bo->destroy();
 
     CPPUNIT_ASSERT(bo->isEmpty());
-    CPPUNIT_ASSERT(bo->lock().getBuffer() == NULL);
+    CPPUNIT_ASSERT(bo->lock().getBuffer() == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +180,7 @@ void BufferManagerTest::memoryInfoTest()
         }
         core::memory::BufferObject::sptr bo2 = core::memory::BufferObject::New();
         SIGHT_INFO(manager->toString().get());
-        bo->reallocate(SIZE * 2);
+        bo->reallocate(SIZE * std::size_t(2));
         {
             core::memory::BufferObject::Lock lock(bo->lock());
             SIGHT_INFO(manager->toString().get());
@@ -221,18 +220,18 @@ void BufferManagerTest::swapTest()
     core::memory::BufferAllocationPolicy::sptr p1 = core::memory::BufferMallocPolicy::New();
     core::memory::BufferAllocationPolicy::sptr p2 = core::memory::BufferNewPolicy::New();
     bo1->allocate(sizeof(int), p1);
-    bo2->allocate(sizeof(long), p2);
+    bo2->allocate(sizeof(std::int64_t), p2);
     void* b1 = bo1->lock().getBuffer();
     void* b2 = bo2->lock().getBuffer();
-    *static_cast<int*>(b1)  = 1;
-    *static_cast<long*>(b2) = 2l;
+    *static_cast<int*>(b1)          = 1;
+    *static_cast<std::int64_t*>(b2) = 2L;
     bo1->swap(bo2);
     core::memory::BufferManager::BufferInfoMapType map = manager->getBufferInfos().get();
     b1 = bo1->lock().getBuffer();
     b2 = bo2->lock().getBuffer();
-    CPPUNIT_ASSERT_EQUAL(2l, *static_cast<long*>(b1));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(2), *static_cast<std::int64_t*>(b1));
     CPPUNIT_ASSERT_EQUAL(p2, map[bo1->getBufferPointer()].bufferPolicy);
-    CPPUNIT_ASSERT_EQUAL(sizeof(long), map[bo1->getBufferPointer()].size);
+    CPPUNIT_ASSERT_EQUAL(sizeof(std::int64_t), map[bo1->getBufferPointer()].size);
     CPPUNIT_ASSERT_EQUAL(1, *static_cast<int*>(b2));
     CPPUNIT_ASSERT_EQUAL(p1, map[bo2->getBufferPointer()].bufferPolicy);
     CPPUNIT_ASSERT_EQUAL(sizeof(int), map[bo2->getBufferPointer()].size);
@@ -264,7 +263,7 @@ void BufferManagerTest::dumpRestoreTest()
 
     core::memory::BufferManager::BufferInfoMapType map = manager->getBufferInfos().get();
     std::ifstream fs(map[bo->getBufferPointer()].fsFile.string());
-    char x;
+    char x = 0;
     fs >> x;
     CPPUNIT_ASSERT_EQUAL('!', x);
 
@@ -305,7 +304,7 @@ private:
     static std::uint64_t s_freeSystemMemory;
 };
 
-std::uint64_t DummyMemoryMonitorTools::s_freeSystemMemory = 1024 * 1024;
+std::uint64_t DummyMemoryMonitorTools::s_freeSystemMemory = 1024L * 1024;
 
 //------------------------------------------------------------------------------
 
@@ -318,7 +317,7 @@ void BufferManagerTest::dumpPolicyTest()
         core::memory::IPolicy::sptr always = core::memory::policy::AlwaysDump::New();
         CPPUNIT_ASSERT(always->getParamNames().empty());
         CPPUNIT_ASSERT(!always->setParam("", ""));
-        bool ok;
+        bool ok = false;
         CPPUNIT_ASSERT_EQUAL(std::string(""), always->getParam("", &ok));
         CPPUNIT_ASSERT(!ok);
 
@@ -390,7 +389,7 @@ void BufferManagerTest::dumpPolicyTest()
         core::memory::IPolicy::sptr never = core::memory::policy::NeverDump::New();
         CPPUNIT_ASSERT(never->getParamNames().empty());
         CPPUNIT_ASSERT(!never->setParam("", ""));
-        bool ok;
+        bool ok = false;
         CPPUNIT_ASSERT_EQUAL(std::string(""), never->getParam("", &ok));
         CPPUNIT_ASSERT(!ok);
 
@@ -501,7 +500,7 @@ void BufferManagerTest::dumpPolicyTest()
 
         // Scenario 3: Eviction because minimal free memory crossed for external reasons
         {
-            DummyMemoryMonitorTools::setFreeSystemMemory(1024 * 1024);
+            DummyMemoryMonitorTools::setFreeSystemMemory(1024L * 1024);
 
             // Allocation of a buffer: the free memory is still acceptable
             core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
@@ -525,6 +524,4 @@ void BufferManagerTest::dumpPolicyTest()
     }
 }
 
-} // namespace ut
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::ut

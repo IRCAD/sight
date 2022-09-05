@@ -48,7 +48,7 @@ struct LabelingFilter
     {
         data::Image::sptr m_inputImage;
         data::Image::sptr m_outputImage;
-        unsigned int m_numLabels;
+        unsigned int m_numLabels {};
     };
 
     //------------------------------------------------------------------------------
@@ -56,8 +56,8 @@ struct LabelingFilter
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef itk::Image<PIXELTYPE, 3> ImageType;
-        typedef itk::Image<std::uint8_t, 3> BinaryImageType;
+        using ImageType       = itk::Image<PIXELTYPE, 3>;
+        using BinaryImageType = itk::Image<std::uint8_t, 3>;
         typename ImageType::Pointer itkImage;
         itkImage = io::itk::moveToItk<ImageType>(params.m_inputImage);
 
@@ -109,16 +109,16 @@ struct LabelImageFilter
         data::Image::sptr image      = params.i_image;
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
-        typedef typename itk::Image<PIXELTYPE, dimension> InputImageType;
+        using InputImageType = typename itk::Image<PIXELTYPE, dimension>;
         typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(image);
 
-        typedef PIXELTYPE LabelType;
-        typedef itk::Image<LabelType, dimension> OutputImageType;
-        typedef itk::ShapeLabelObject<LabelType, dimension> ShapeLabelObjectType;
-        typedef itk::LabelMap<ShapeLabelObjectType> LabelMapType;
+        using LabelType            = PIXELTYPE;
+        using OutputImageType      = itk::Image<LabelType, dimension>;
+        using ShapeLabelObjectType = itk::ShapeLabelObject<LabelType, dimension>;
+        using LabelMapType         = itk::LabelMap<ShapeLabelObjectType>;
 
         // Extract shapes
-        typedef typename itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType> I2LType;
+        using I2LType = typename itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType>;
 
         typename I2LType::Pointer i2l = I2LType::New();
         i2l->SetInput(itkInputImage);
@@ -135,14 +135,14 @@ struct LabelImageFilter
             for(unsigned int n = 1 ; n <= labelMap->GetNumberOfLabelObjects() ; ++n)
             {
                 std::vector<std::size_t> findPlanes;
-                std::size_t plane;
+                std::size_t plane = 0;
                 for(plane = 0 ; plane < params.i_lPointListLabels.size() ; ++plane)
                 {
                     std::vector<std::size_t> currentPlane = params.i_lPointListLabels.at(plane);
 
-                    for(std::size_t labelInPlane = 0 ; labelInPlane < currentPlane.size() ; ++labelInPlane)
+                    for(std::size_t labelInPlane : currentPlane)
                     {
-                        if(currentPlane.at(labelInPlane) == n)
+                        if(labelInPlane == n)
                         {
                             findPlanes.push_back(plane);
                         }
@@ -160,10 +160,10 @@ struct LabelImageFilter
 
                     newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
 
-                    for(std::size_t idFindPlanes = 0 ; idFindPlanes < findPlanes.size() ; ++idFindPlanes)
+                    for(std::size_t findPlane : findPlanes)
                     {
                         data::PointList::sptr planePointList =
-                            params.i_lPointListCentroids.at(findPlanes.at(idFindPlanes));
+                            params.i_lPointListCentroids.at(findPlane);
 
                         // append to point the label
                         std::stringstream labelName;

@@ -29,10 +29,7 @@
 
 #include <boost/date_time.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
@@ -50,9 +47,8 @@ STimestampSignal::STimestampSignal() noexcept
 
 //-----------------------------------------------------------------------------
 
-STimestampSignal::~STimestampSignal() noexcept
-{
-}
+STimestampSignal::~STimestampSignal() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -107,7 +103,7 @@ void STimestampSignal::updating()
     m_sigTriggered->asyncEmit(ts);
 
     // Should we return the timestamp as a string or format it ?
-    const std::time_t tt                     = static_cast<long>(ts);
+    const auto tt                            = static_cast<std::int64_t>(ts);
     const boost::posix_time::ptime localTime =
         boost::posix_time::from_time_t(tt);
 
@@ -122,6 +118,4 @@ void STimestampSignal::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

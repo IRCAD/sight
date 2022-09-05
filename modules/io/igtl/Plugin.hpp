@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,13 @@ namespace sight::module::io::igtl
 struct MODULE_IO_IGTL_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor
-    MODULE_IO_IGTL_API ~Plugin() noexcept;
+    MODULE_IO_IGTL_API ~Plugin() noexcept override;
 
     /// Overrides
-    MODULE_IO_IGTL_API void start();
+    MODULE_IO_IGTL_API void start() override;
 
     /// Overrides
-    MODULE_IO_IGTL_API void stop() noexcept;
+    MODULE_IO_IGTL_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::igtl

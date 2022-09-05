@@ -54,9 +54,8 @@ SVector::SVector() noexcept
 
 //-----------------------------------------------------------------------------
 
-SVector::~SVector() noexcept
-{
-}
+SVector::~SVector() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -142,7 +141,7 @@ void SVector::stopping()
     this->deleteVector();
 
     Ogre::SceneNode* transformNode = this->getTransformNode();
-    if(transformNode)
+    if(transformNode != nullptr)
     {
         transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
     }
@@ -163,9 +162,9 @@ void SVector::createVector()
     const unsigned sample      = 64;
 
     // Color
-    std::uint8_t color[4];
+    std::array<std::uint8_t, 4> color {};
     data::tools::Color::hexaStringToRGBA(m_color, color);
-    Ogre::ColourValue ogreColor(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
+    Ogre::ColourValue ogreColor(float(color[0]) / 255.F, float(color[1]) / 255.F, float(color[2]) / 255.F);
 
     // Draw
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
@@ -198,7 +197,7 @@ void SVector::createVector()
     Ogre::SceneNode* coneNode = m_sceneNode->createChildSceneNode(this->getID() + "_coneNode");
 
     coneNode->attachObject(m_cone);
-    coneNode->translate(0.f, 0.f, cylinderLength);
+    coneNode->translate(0.F, 0.F, cylinderLength);
     coneNode->yaw(Ogre::Degree(-90));
 }
 
@@ -222,7 +221,7 @@ void SVector::deleteVector()
 
 void SVector::setVisible(bool _visible)
 {
-    if(m_sceneNode)
+    if(m_sceneNode != nullptr)
     {
         m_sceneNode->setVisible(_visible);
     }

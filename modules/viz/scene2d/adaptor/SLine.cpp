@@ -28,26 +28,18 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::module::viz::scene2d
+using sight::viz::scene2d::vec2d_t;
+
+namespace sight::module::viz::scene2d::adaptor
 {
 
-namespace adaptor
-{
-
-SLine::SLine() noexcept :
-    m_x1(0.f),
-    m_x2(0.f),
-    m_y1(0.f),
-    m_y2(0.f),
-    m_layer(nullptr)
-{
-}
+SLine::SLine() noexcept =
+    default;
 
 //---------------------------------------------------------------------------------------------------------------
 
-SLine::~SLine() noexcept
-{
-}
+SLine::~SLine() noexcept =
+    default;
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -69,7 +61,7 @@ void SLine::configuring()
     m_y2 = config.get<float>("y2");
 
     // If the corresponding attributes are present in the config, set the color of the line
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"));
     }
@@ -83,7 +75,7 @@ void SLine::draw()
     const vec2d_t pt2 = this->mapAdaptorToScene((vec2d_t(m_x2, m_y2)));
 
     // Draw the line
-    QGraphicsLineItem* line = new QGraphicsLineItem(pt1.x, pt1.y, pt2.x, pt2.y);
+    auto* line = new QGraphicsLineItem(pt1.x, pt1.y, pt2.x, pt2.y);
     // Set the line the pen
     line->setPen(m_pen);
 
@@ -123,6 +115,4 @@ void SLine::stopping()
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

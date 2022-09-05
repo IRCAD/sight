@@ -78,7 +78,7 @@ public:
     MODULE_FILTER_VISION_CLASS_API SDepthImageMasking() noexcept;
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API virtual ~SDepthImageMasking() noexcept;
+    MODULE_FILTER_VISION_CLASS_API ~SDepthImageMasking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the depth image (objectModified)
     service::IService::KeyConnectionsMap getAutoConnections() const override;

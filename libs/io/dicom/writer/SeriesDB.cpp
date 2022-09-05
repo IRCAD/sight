@@ -32,24 +32,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SeriesDB);
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(io::base::writer::IObjectWriter::Key /*key*/) :
-    m_fiducialsExportMode(io::dicom::writer::Series::SPATIAL_FIDUCIALS)
+SeriesDB::SeriesDB(io::base::writer::IObjectWriter::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDB::~SeriesDB()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -69,7 +64,7 @@ void SeriesDB::write()
     std::sort(seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
 
     // Write all patients
-    for(data::Series::sptr series : seriesContainer)
+    for(const data::Series::sptr& series : seriesContainer)
     {
         // Create a new directory
         const std::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();
@@ -79,7 +74,10 @@ void SeriesDB::write()
 
         // Forward event progress to its parents
         core::tools::ProgressAdviser::ProgessHandler handler =
-            std::bind(&Series::notifyProgress, this, std::placeholders::_1, std::placeholders::_2);
+            [this](auto&& PH1, auto&& PH2, auto&& ...)
+            {
+                notifyProgress(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2));
+            };
         writer->addHandler(handler);
 
         // Write a series
@@ -91,7 +89,7 @@ void SeriesDB::write()
 
 std::string SeriesDB::extension() const
 {
-    return std::string("");
+    return {""};
 }
 
 //------------------------------------------------------------------------------
@@ -108,6 +106,4 @@ bool SeriesDB::seriesComparator(
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

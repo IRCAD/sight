@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/FactoryRegistry.hpp>
 #include <core/macros.hpp>
 
@@ -33,10 +34,7 @@ namespace sight::core::memory
 
 class IPolicy;
 
-namespace policy
-{
-
-namespace registry
+namespace policy::registry
 {
 
 typedef std::string KeyType;
@@ -45,8 +43,6 @@ typedef core::FactoryRegistry<SPTR(core::memory::IPolicy)(), KeyType> Type;
 
 CORE_API SPTR(Type) get();
 
-} // namespace registry
-
-} // namespace policy
+} // namespace policy::registry
 
 } // namespace sight::core::memory

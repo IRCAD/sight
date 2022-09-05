@@ -31,13 +31,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -59,7 +53,7 @@ public:
     IO_DICOM_API Surface(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+        SPTR(io::dicom::container::DicomInstance)imageInstance,
         const data::ModelSeries::csptr& series,
         const core::log::Logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
@@ -67,7 +61,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Surface();
+    IO_DICOM_API ~Surface() override;
 
     /**
      * @brief Load Segmented Property Registry
@@ -102,7 +96,7 @@ protected:
         const CSPTR(data::Reconstruction)& reconstruction,
         gdcm::Item& segmentItem,
         const gdcm::SmartPointer<gdcm::Segment>& segment,
-        unsigned short segmentNumber
+        std::uint16_t segmentNumber
     );
     /**
      * @brief Write Surface Item into Surface Sequence
@@ -116,7 +110,7 @@ protected:
         const CSPTR(data::Reconstruction)& reconstruction,
         gdcm::Item& surfaceItem,
         const gdcm::SmartPointer<gdcm::Surface>& surface,
-        unsigned short segmentNumber
+        std::uint16_t segmentNumber
     );
 
     /// Structure Dictionary
@@ -126,8 +120,4 @@ protected:
     SPTR(io::dicom::container::DicomInstance) m_imageInstance;
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

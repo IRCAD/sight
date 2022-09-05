@@ -36,14 +36,14 @@ namespace sight::data
 
 class Image;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
 
 class Series;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::itk
 {
@@ -76,7 +76,7 @@ public:
 
     MODULE_IO_ITK_API SSeriesDBReader() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SSeriesDBReader() noexcept;
+    MODULE_IO_ITK_API ~SSeriesDBReader() noexcept override;
 
 protected:
 
@@ -109,7 +109,7 @@ protected:
 private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
-    void initSeries(SPTR(data::Series) series, const std::string& instanceUID);
+    static void initSeries(SPTR(data::Series) series, const std::string& instanceUID);
 };
 
 } // namespace sight::module::io::itk

@@ -140,10 +140,10 @@ private:
     std::unique_ptr<sight::filter::vision::Masker> m_masker;
 
     /// Current timestamp.
-    core::HiResClock::HiResClockType m_lastVideoTimestamp;
+    core::HiResClock::HiResClockType m_lastVideoTimestamp {0.};
 
     /// Reduction factor.
-    float m_scaleFactor;
+    float m_scaleFactor {1.};
 
     /// Opencv scale factor.
     cv::Size m_maskDownsize;
@@ -155,13 +155,13 @@ private:
     cv::Scalar m_upperColor;
 
     /// Noise level to add during the foreground learning step.
-    double m_noise;
+    double m_noise {0.};
 
     /// Number of background components.
-    int m_backgroundComponents;
+    int m_backgroundComponents {5};
 
     /// Number of foreground components.
-    int m_foregroundComponents;
+    int m_foregroundComponents {5};
 
     static constexpr std::string_view s_MASK_KEY          = "mask";
     static constexpr std::string_view s_VIDEO_TL_KEY      = "videoTL";

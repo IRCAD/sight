@@ -35,10 +35,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::SOPClassUIDSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string SOPClassUIDSplitter::s_FILTER_NAME        = "SOPClassUID splitter";
@@ -56,8 +53,7 @@ SOPClassUIDSplitter::SOPClassUIDSplitter(filter::dicom::IFilter::Key key) :
 //-----------------------------------------------------------------------------
 
 SOPClassUIDSplitter::~SOPClassUIDSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -87,13 +83,13 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
     const core::log::Logger::sptr& logger
 ) const
 {
-    const DicomSeriesContainerType result = filter::dicom::splitter::TagValueSplitter::apply(series, logger);
+    DicomSeriesContainerType result = filter::dicom::splitter::TagValueSplitter::apply(series, logger);
 
     for(const data::DicomSeries::sptr& dicomSeries : result)
     {
         DcmFileFormat fileFormat;
         OFCondition status;
-        DcmDataset* dataset;
+        DcmDataset* dataset = nullptr;
         OFString data;
 
         // Open first instance
@@ -120,8 +116,6 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
-
         // Read SOPClassUID
         dataset = fileFormat.getDataset();
         status  = dataset->findAndGetOFStringArray(DCM_SOPClassUID, data);
@@ -143,6 +137,4 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
     return result;
 }
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

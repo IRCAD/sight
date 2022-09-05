@@ -34,10 +34,7 @@
 
 #include <regex>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 static const service::IService::KeyType s_SLOT_KEY        = "slot";
@@ -56,9 +53,8 @@ SSlotCaller::SSlotCaller() noexcept
 
 //-----------------------------------------------------------------------------
 
-SSlotCaller::~SSlotCaller() noexcept
-{
-}
+SSlotCaller::~SSlotCaller() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -133,9 +129,11 @@ void SSlotCaller::configuring()
 
     std::regex re("(.*)/(.*)");
     std::smatch match;
-    std::string src, uid, key;
+    std::string src;
+    std::string uid;
+    std::string key;
 
-    for(ConfigurationType elem : slotCfgs.getElements())
+    for(const ConfigurationType& elem : slotCfgs.getElements())
     {
         src = elem->getValue();
         if(std::regex_match(src, match, re))
@@ -154,6 +152,4 @@ void SSlotCaller::configuring()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

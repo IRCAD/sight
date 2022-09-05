@@ -27,10 +27,7 @@
 
 #include <OGRE/OgreSceneNode.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 class Scene
@@ -49,6 +46,4 @@ public:
     );
 };
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

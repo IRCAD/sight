@@ -37,10 +37,7 @@
 
 #include <filesystem>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -56,59 +53,57 @@ const std::string IFrameLayoutManager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_U
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_key(const std::string& name)
+inline static std::string getFrameKey(const std::string& name)
 {
-    return IFrameLayoutManager::SOFTWARE_UI + "." + name;
+    return std::string(IFrameLayoutManager::SOFTWARE_UI).append(".").append(name);
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_state_key(const std::string& name)
+inline static std::string getFrameStateKey(const std::string& name)
 {
-    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_STATE_UI;
+    return getFrameKey(name) + "." + IFrameLayoutManager::FRAME_STATE_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_w_key(const std::string& name)
+inline static std::string getFrameWKey(const std::string& name)
 {
-    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_SIZE_W_UI;
+    return getFrameKey(name) + "." + IFrameLayoutManager::FRAME_SIZE_W_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_h_key(const std::string& name)
+inline static std::string getFrameHKey(const std::string& name)
 {
-    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_SIZE_H_UI;
+    return getFrameKey(name) + "." + IFrameLayoutManager::FRAME_SIZE_H_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_x_key(const std::string& name)
+inline static std::string getFrameXKey(const std::string& name)
 {
-    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_POSITION_X_UI;
+    return getFrameKey(name) + "." + IFrameLayoutManager::FRAME_POSITION_X_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_y_key(const std::string& name)
+inline static std::string getFrameYKey(const std::string& name)
 {
-    return get_frame_key(name) + "." + IFrameLayoutManager::FRAME_POSITION_Y_UI;
+    return getFrameKey(name) + "." + IFrameLayoutManager::FRAME_POSITION_Y_UI;
 }
 
 //-----------------------------------------------------------------------------
 
 IFrameLayoutManager::IFrameLayoutManager()
 {
-    CloseCallback fct = std::bind(&ui::base::layoutManager::IFrameLayoutManager::defaultCloseCallback, this);
-    this->setCloseCallback(fct);
+    this->IFrameLayoutManager::setCloseCallback(defaultCloseCallback);
 }
 
 //-----------------------------------------------------------------------------
 
 IFrameLayoutManager::~IFrameLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -213,17 +208,17 @@ void IFrameLayoutManager::readConfig()
 
         m_frameInfo.m_state =
             static_cast<FrameState>(preferences.get(
-                                        get_frame_state_key(m_frameInfo.m_name),
+                                        getFrameStateKey(m_frameInfo.m_name),
                                         static_cast<std::uint8_t>(m_frameInfo.m_state)
             ));
-        m_frameInfo.m_size.first     = preferences.get(get_frame_w_key(m_frameInfo.m_name), m_frameInfo.m_size.first);
-        m_frameInfo.m_size.second    = preferences.get(get_frame_h_key(m_frameInfo.m_name), m_frameInfo.m_size.second);
+        m_frameInfo.m_size.first     = preferences.get(getFrameWKey(m_frameInfo.m_name), m_frameInfo.m_size.first);
+        m_frameInfo.m_size.second    = preferences.get(getFrameHKey(m_frameInfo.m_name), m_frameInfo.m_size.second);
         m_frameInfo.m_position.first = preferences.get(
-            get_frame_x_key(m_frameInfo.m_name),
+            getFrameXKey(m_frameInfo.m_name),
             m_frameInfo.m_position.first
         );
         m_frameInfo.m_position.second = preferences.get(
-            get_frame_y_key(m_frameInfo.m_name),
+            getFrameYKey(m_frameInfo.m_name),
             m_frameInfo.m_position.second
         );
     }
@@ -235,7 +230,7 @@ void IFrameLayoutManager::readConfig()
 
 //-----------------------------------------------------------------------------
 
-void IFrameLayoutManager::writeConfig()
+void IFrameLayoutManager::writeConfig() const
 {
     try
     {
@@ -243,13 +238,13 @@ void IFrameLayoutManager::writeConfig()
 
         if(m_frameInfo.m_state != FrameState::ICONIZED)
         {
-            preferences.put(get_frame_state_key(m_frameInfo.m_name), static_cast<std::uint8_t>(m_frameInfo.m_state));
+            preferences.put(getFrameStateKey(m_frameInfo.m_name), static_cast<std::uint8_t>(m_frameInfo.m_state));
         }
 
-        preferences.put(get_frame_w_key(m_frameInfo.m_name), m_frameInfo.m_size.first);
-        preferences.put(get_frame_h_key(m_frameInfo.m_name), m_frameInfo.m_size.second);
-        preferences.put(get_frame_x_key(m_frameInfo.m_name), m_frameInfo.m_position.first);
-        preferences.put(get_frame_y_key(m_frameInfo.m_name), m_frameInfo.m_position.second);
+        preferences.put(getFrameWKey(m_frameInfo.m_name), m_frameInfo.m_size.first);
+        preferences.put(getFrameHKey(m_frameInfo.m_name), m_frameInfo.m_size.second);
+        preferences.put(getFrameXKey(m_frameInfo.m_name), m_frameInfo.m_position.first);
+        preferences.put(getFrameYKey(m_frameInfo.m_name), m_frameInfo.m_position.second);
     }
     catch(const ui::base::PreferencesDisabled&)
     {
@@ -259,6 +254,4 @@ void IFrameLayoutManager::writeConfig()
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

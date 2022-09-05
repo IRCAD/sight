@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,14 +25,15 @@
 #include <core/spyLog.hpp>
 
 #include <filesystem>
+#include <utility>
 
 namespace sight::core::memory
 {
 
 struct FileAutoDelete
 {
-    FileAutoDelete(const std::filesystem::path& file) :
-        m_path(file)
+    explicit FileAutoDelete(std::filesystem::path file) :
+        m_path(std::move(file))
     {
     }
 

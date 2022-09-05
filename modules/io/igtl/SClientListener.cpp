@@ -45,16 +45,13 @@ const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
-SClientListener::SClientListener() :
-    m_tlInitialized(false)
-{
-}
+SClientListener::SClientListener()
+= default;
 
 //-----------------------------------------------------------------------------
 
 SClientListener::~SClientListener()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -183,7 +180,7 @@ void SClientListener::runClient()
 
 void SClientListener::starting()
 {
-    m_clientFuture = std::async(std::launch::async, std::bind(&SClientListener::runClient, this));
+    m_clientFuture = std::async(std::launch::async, [this](auto&& ...){runClient();});
 }
 
 //-----------------------------------------------------------------------------
@@ -233,14 +230,9 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
         data::Matrix4::TMCoefArray values;
         data::Matrix4::sptr t = data::Matrix4::dynamicCast(obj);
         values = t->getCoefficients();
-        float matrixValues[16];
-
-        for(unsigned int i = 0 ; i < 16 ; ++i)
-        {
-            matrixValues[i] = static_cast<float>(values[i]);
-        }
-
-        matrixBuf->setElement(matrixValues, 0);
+        std::array<float, 16> floatValues {};
+        std::transform(values.begin(), values.end(), floatValues.begin(), [&](double d){return float(d);});
+        matrixBuf->setElement(floatValues, 0);
         matTL->pushObject(matrixBuf);
         data::TimeLine::ObjectPushedSignalType::sptr sig;
         sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(
@@ -287,7 +279,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 
         SPTR(data::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
 
-        std::uint8_t* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
+        auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
         const auto dumpLock = im->dump_lock();
         auto itr            = im->begin<std::uint8_t>();

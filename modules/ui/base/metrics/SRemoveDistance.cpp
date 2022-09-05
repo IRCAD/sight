@@ -49,9 +49,8 @@ SRemoveDistance::SRemoveDistance() noexcept
 
 //------------------------------------------------------------------------------
 
-SRemoveDistance::~SRemoveDistance() noexcept
-{
-}
+SRemoveDistance::~SRemoveDistance() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -78,7 +77,7 @@ void SRemoveDistance::updating()
     if(data::helper::MedicalImage::checkImageValidity(image.get_shared())
        && vectDist)
     {
-        bool requestAll;
+        bool requestAll                    = false;
         data::PointList::sptr distToRemove = getDistanceToRemove(image.get_shared(), requestAll);
 
         if(distToRemove)
@@ -91,7 +90,7 @@ void SRemoveDistance::updating()
             );
             vectDist->erase(newEnd, vectDist->end());
 
-            this->notifyDeleteDistance(image.get_shared(), distToRemove);
+            sight::module::ui::base::metrics::SRemoveDistance::notifyDeleteDistance(image.get_shared(), distToRemove);
         }
 
         if(requestAll)
@@ -135,7 +134,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
     if(vectDist)
     {
         std::vector<std::string> selections;
-        selections.push_back("ALL");
+        selections.emplace_back("ALL");
         std::map<std::string, data::PointList::sptr> correspondence;
 
         for(const data::Object::sptr& obj : *vectDist)
@@ -190,7 +189,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
 void SRemoveDistance::notifyDeleteDistance(
     const data::Image::csptr& _image,
     const data::PointList::csptr& _distance
-) const
+)
 {
     const auto sig =
         _image->signal<data::Image::DistanceRemovedSignalType>(data::Image::s_DISTANCE_REMOVED_SIG);

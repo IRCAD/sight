@@ -35,10 +35,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MatrixRegressorTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -185,6 +182,4 @@ void MatrixRegressorTest::avgRotationTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut

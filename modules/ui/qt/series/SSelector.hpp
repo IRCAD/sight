@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,10 +38,7 @@
 #include <QPointer>
 #include <QVector>
 
-namespace sight::module::ui::qt
-{
-
-namespace series
+namespace sight::module::ui::qt::series
 {
 
 /**
@@ -92,7 +89,7 @@ public:
     MODULE_UI_QT_API SSelector();
 
     /// Destroys the service.
-    MODULE_UI_QT_API virtual ~SSelector() noexcept;
+    MODULE_UI_QT_API ~SSelector() noexcept override;
 
 protected:
 
@@ -188,6 +185,4 @@ private:
     data::ptr<data::Vector, data::Access::inout> m_selection {this, s_SELECTION};
 };
 
-} // namespace series.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::series

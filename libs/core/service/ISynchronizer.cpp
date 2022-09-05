@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,13 @@ namespace sight::service
 
 // ----------------------------------------------------------------------------
 
-ISynchronizer::ISynchronizer() noexcept
-{
-}
+ISynchronizer::ISynchronizer() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
-ISynchronizer::~ISynchronizer() noexcept
-{
-}
+ISynchronizer::~ISynchronizer() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 

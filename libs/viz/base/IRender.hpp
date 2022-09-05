@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ protected:
     /**
      * @brief   Destructor. Do nothing.
      */
-    VIZ_BASE_API virtual ~IRender() noexcept;
+    VIZ_BASE_API ~IRender() noexcept override;
 };
 
-} // namespace sight::viz::baseVTK
+} // namespace sight::viz::base

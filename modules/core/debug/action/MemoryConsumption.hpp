@@ -26,10 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::debug
-{
-
-namespace action
+namespace sight::module::debug::action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
@@ -43,7 +40,7 @@ public:
     MODULE_DEBUG_API MemoryConsumption() noexcept;
 
     /// Does nothing
-    MODULE_DEBUG_API virtual ~MemoryConsumption() noexcept;
+    MODULE_DEBUG_API ~MemoryConsumption() noexcept override;
 
 protected:
 
@@ -76,15 +73,13 @@ protected:
 private:
 
     /// Intern method to create a new array
-    void pushNewArray(std::size_t memorySizeInBytes);
+    static void pushNewArray(std::size_t memorySizeInBytes);
 
     /// To manage allocation or free memory ( data are saved in a static member )
-    bool m_isIncreaseMode;
+    bool m_isIncreaseMode {true};
 
     /// Memory allocated in "increase" mode
     std::size_t m_memorySizeInBytes;
 };
 
-} // namespace action
-
-} // namespace sight::module::debug
+} // namespace sight::module::debug::action

@@ -84,7 +84,7 @@ void Material::updateOptionsMode(int _optionsMode)
 
     if(_optionsMode != data::Material::STANDARD)
     {
-        for(const auto currentTechnique : techniques)
+        for(auto* const currentTechnique : techniques)
         {
             // We need the first pass of the current technique in order to copy its rendering states in the normals pass
             Ogre::Pass* firstPass = currentTechnique->getPass(0);
@@ -123,7 +123,7 @@ void Material::updateOptionsMode(int _optionsMode)
     }
     else
     {
-        for(const auto currentTechnique : techniques)
+        for(auto* const currentTechnique : techniques)
         {
             // We need the first pass of the current technique in order to copy its rendering states in the normals pass
             const Ogre::Pass* firstPass = currentTechnique->getPass(0);
@@ -133,7 +133,7 @@ void Material::updateOptionsMode(int _optionsMode)
             {
                 Ogre::GpuProgramParametersSharedPtr gp = firstPass->getGeometryProgramParameters();
 
-                if(gp && gp->_findNamedConstantDefinition("u_billboardSize"))
+                if(gp && (gp->_findNamedConstantDefinition("u_billboardSize") != nullptr))
                 {
                     gp->setNamedConstant("u_billboardSize", m_meshSize);
                 }
@@ -159,7 +159,7 @@ void Material::updatePolygonMode(int _polygonMode)
 
     if(_polygonMode == data::Material::EDGE)
     {
-        for(const auto tech : techniques)
+        for(auto* const tech : techniques)
         {
             SIGHT_ASSERT("Technique is not set", tech);
 
@@ -170,7 +170,7 @@ void Material::updatePolygonMode(int _polygonMode)
             firstPass->setPointSpritesEnabled(false);
 
             Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
-            if(!edgePass)
+            if(edgePass == nullptr)
             {
                 // We copy the first pass, thus keeping all rendering states
                 edgePass  = tech->createPass();
@@ -191,13 +191,13 @@ void Material::updatePolygonMode(int _polygonMode)
     }
     else
     {
-        for(const auto tech : techniques)
+        for(auto* const tech : techniques)
         {
             SIGHT_ASSERT("Technique is not set", tech);
 
             const Ogre::Technique::Passes& passes = tech->getPasses();
 
-            for(const auto ogrePass : passes)
+            for(auto* const ogrePass : passes)
             {
                 switch(_polygonMode)
                 {
@@ -213,7 +213,7 @@ void Material::updatePolygonMode(int _polygonMode)
                     case data::Material::POINT:
                         ogrePass->setPolygonMode(Ogre::PM_POINTS);
                         ogrePass->setPointSpritesEnabled(false);
-                        ogrePass->setPointSize(1.f);
+                        ogrePass->setPointSize(1.F);
                         break;
 
                     default:
@@ -237,7 +237,7 @@ void Material::updateShadingMode(int _shadingMode, int _numLights, bool _hasDiff
     // Otherwise we would have to update the whole R2VB pipeline each time a texture is set/unset
     const bool needDiffuseTexture = isR2VB ? m_hasUV : m_hasUV && _hasDiffuseTexture;
 
-    const data::Material::ShadingType mode = static_cast<data::Material::ShadingType>(_shadingMode);
+    const auto mode = static_cast<data::Material::ShadingType>(_shadingMode);
 
     const Ogre::String permutation = viz::scene3d::helper::Shading::getPermutation(
         mode,
@@ -255,13 +255,13 @@ void Material::updateShadingMode(int _shadingMode, int _numLights, bool _hasDiff
 
     // Iterate through each technique found in the material and switch the shading mode
     const Ogre::Material::Techniques& techniques = m_material->getTechniques();
-    for(const auto tech : techniques)
+    for(auto* const tech : techniques)
     {
         SIGHT_ASSERT("Technique is not set", tech);
 
         const Ogre::Technique::Passes& passes = tech->getPasses();
 
-        for(const auto ogrePass : passes)
+        for(auto* const ogrePass : passes)
         {
             // Nothing to do for edge and normal passes
             if(ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS)
@@ -341,7 +341,7 @@ void Material::updateShadingMode(int _shadingMode, int _numLights, bool _hasDiff
 
                     Ogre::GpuProgramParametersSharedPtr vp = ogrePass->getVertexProgramParameters();
 
-                    if(vp->_findNamedConstantDefinition("u_fNumLights"))
+                    if(vp->_findNamedConstantDefinition("u_fNumLights") != nullptr)
                     {
                         vp->setNamedConstant("u_fNumLights", static_cast<float>(_numLights));
                     }
@@ -350,7 +350,7 @@ void Material::updateShadingMode(int _shadingMode, int _numLights, bool _hasDiff
                     {
                         Ogre::GpuProgramParametersSharedPtr fp = ogrePass->getFragmentProgramParameters();
 
-                        if(fp->_findNamedConstantDefinition("u_fNumLights"))
+                        if(fp->_findNamedConstantDefinition("u_fNumLights") != nullptr)
                         {
                             fp->setNamedConstant("u_fNumLights", static_cast<float>(_numLights));
                         }
@@ -377,7 +377,7 @@ void Material::updateRGBAMode(data::Material::sptr _sightMaterial)
                                     sightDiffuse->blue(), sightDiffuse->alpha());
     m_material->setDiffuse(diffuse);
 
-    const Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
+    const Ogre::ColourValue specular(.2F, .2F, .2F, 1.F);
     m_material->setSpecular(specular);
     m_material->setShininess(25);
 }
@@ -390,7 +390,7 @@ void Material::setDiffuseTexture(const Ogre::TexturePtr& _texture)
 
     const Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-    for(const auto technique : techniques)
+    for(auto* const technique : techniques)
     {
         SIGHT_ASSERT("Technique is not set", technique);
 
@@ -399,7 +399,7 @@ void Material::setDiffuseTexture(const Ogre::TexturePtr& _texture)
             Ogre::Pass* pass                     = technique->getPass(0);
             Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
 
-            if(texUnitState)
+            if(texUnitState != nullptr)
             {
                 if(_texture)
                 {
@@ -445,7 +445,7 @@ void Material::removePass(const std::string& _name)
     SIGHT_ASSERT("Material is not set", m_material);
 
     const Ogre::Material::Techniques& techniques = m_material->getTechniques();
-    for(const auto technique : techniques)
+    for(auto* const technique : techniques)
     {
         SIGHT_ASSERT("Technique is not set", technique);
 
@@ -453,7 +453,7 @@ void Material::removePass(const std::string& _name)
         std::vector<Ogre::Pass*> removePassVector;
 
         // Collect the passes to remove
-        for(const auto ogrePass : passes)
+        for(auto* const ogrePass : passes)
         {
             if(ogrePass->getName() == _name)
             {
@@ -463,7 +463,7 @@ void Material::removePass(const std::string& _name)
         }
 
         // Perform the removal
-        for(auto edgePass : removePassVector)
+        for(auto* edgePass : removePassVector)
         {
             technique->removePass(edgePass->getIndex());
         }
@@ -478,11 +478,11 @@ void Material::cleanTransparencyTechniques()
 
     const Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-    std::vector<unsigned short> removeTechniqueVector;
+    std::vector<std::uint16_t> removeTechniqueVector;
 
-    unsigned short index = 0;
+    std::uint16_t index = 0;
 
-    for(const auto technique : techniques)
+    for(auto* const technique : techniques)
     {
         SIGHT_ASSERT("Technique is not set", technique);
 

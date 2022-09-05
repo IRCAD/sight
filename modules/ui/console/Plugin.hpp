@@ -31,7 +31,7 @@ namespace sight::core::thread
 
 class Worker;
 
-} //namespace thread
+} // namespace sight::core::thread
 
 namespace sight::module::ui::console
 {
@@ -44,16 +44,16 @@ class MODULE_UI_CONSOLE_CLASS_API Plugin : public core::runtime::Plugin
 public:
 
     /// Destructor
-    MODULE_UI_CONSOLE_API ~Plugin() noexcept;
+    MODULE_UI_CONSOLE_API ~Plugin() noexcept override;
 
     /// @override
-    MODULE_UI_CONSOLE_API void start();
+    MODULE_UI_CONSOLE_API void start() override;
 
     /// @override
-    MODULE_UI_CONSOLE_API void stop() noexcept;
+    MODULE_UI_CONSOLE_API void stop() noexcept override;
 
     /// Run callback
-    MODULE_UI_CONSOLE_API int run() noexcept;
+    static MODULE_UI_CONSOLE_API int run() noexcept;
 };
 
 } // namespace sight::module::ui::console

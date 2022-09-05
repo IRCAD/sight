@@ -31,9 +31,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3dQt::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

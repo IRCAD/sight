@@ -29,13 +29,9 @@
 
 #include <gdcmWriter.h>
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace writer
-{
-
-namespace tid
+namespace sight::io::dicom::writer::tid
 {
 
 /**
@@ -53,9 +49,9 @@ public:
      * @param[in] object Sight data object
      */
     IO_DICOM_API TemplateID(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const CSPTR(DATATYPE)& object
+        SPTR(gdcm::Writer)writer,
+        SPTR(io::dicom::container::DicomInstance)instance,
+        CSPTR(DATATYPE)object
     );
 
     /// Destructor
@@ -77,13 +73,13 @@ protected:
 
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const CSPTR(DATATYPE)& object
+    SPTR(gdcm::Writer)writer,
+    SPTR(io::dicom::container::DicomInstance)instance,
+    CSPTR(DATATYPE)object
 ) :
-    m_writer(writer),
-    m_instance(instance),
-    m_object(object)
+    m_writer(std::move(writer)),
+    m_instance(std::move(instance)),
+    m_object(std::move(object))
 {
     SIGHT_ASSERT("Writer should not be null.", writer);
     SIGHT_ASSERT("Instance should not be null.", instance);
@@ -92,15 +88,9 @@ TemplateID<DATATYPE>::TemplateID(
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE>
-TemplateID<DATATYPE>::~TemplateID()
-{
-}
+template<class DATATYPE> TemplateID<DATATYPE>::~TemplateID()
+= default;
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::tid

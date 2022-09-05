@@ -32,23 +32,22 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Matrix4::Matrix4()
+Matrix4::Matrix4() :
+    m_vCoefficients(s_IDENTITY)
 {
-    m_vCoefficients = s_IDENTITY;
 }
 
 //------------------------------------------------------------------------------
 
-Matrix4::Matrix4(data::Object::Key)
+Matrix4::Matrix4(data::Object::Key /*unused*/) :
+    m_vCoefficients(s_IDENTITY)
 {
-    m_vCoefficients = s_IDENTITY;
 }
 
 //------------------------------------------------------------------------------
 
 Matrix4::~Matrix4()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

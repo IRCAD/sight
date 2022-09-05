@@ -32,7 +32,11 @@
 
 #include <QQuickItem>
 
-using namespace sight;
+#include <memory>
+
+namespace core    = sight::core;
+namespace service = sight::service;
+namespace ui      = sight::ui;
 
 namespace Tuto07SceneQt3DQml
 {
@@ -41,15 +45,13 @@ SIGHT_REGISTER_PLUGIN("Tuto07SceneQt3DQml::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -59,9 +61,7 @@ void Plugin::start()
     qmlRegisterType<AppManager>("tutosceneqt3d", 1, 0, "AppManager");
 
     // Declares an app manager used only to allow fwRenderQt3D features as QML types.
-    auto appManager = std::unique_ptr<service::AppManager>(
-        new service::AppManager
-    );
+    auto appManager = std::make_unique<service::AppManager>();
     appManager->create();
 
     // Adds services to the app manager. Those services are only used to register QML types.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ public:
     MODULE_UI_QT_API SImagesSelector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_QT_API virtual ~SImagesSelector() noexcept;
+    MODULE_UI_QT_API ~SImagesSelector() noexcept override;
 
     /**
      * @name Slots API
@@ -119,7 +119,7 @@ protected:
 private:
 
     /// Index of the last acquisition.
-    int m_captureIdx;
+    int m_captureIdx {0};
 
     /// Label displaying the number of point acquisitions.
     QPointer<QLabel> m_nbCapturesLabel;
@@ -131,4 +131,4 @@ private:
     data::ptr<data::Vector, data::Access::inout> m_selected_image {this, "selection"};
 };
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

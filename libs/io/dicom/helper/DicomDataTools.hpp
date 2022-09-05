@@ -33,10 +33,7 @@
 #include <gdcmImage.h>
 #include <gdcmSurface.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -53,14 +50,14 @@ public:
      * @param[in] type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static const gdcm::PixelFormat getPixelType(const core::Type& type);
+    IO_DICOM_API static gdcm::PixelFormat getPixelType(const core::Type& type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.
      * @param[in] image Image
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
-    IO_DICOM_API static const gdcm::PhotometricInterpretation getPhotometricInterpretation(
+    IO_DICOM_API static gdcm::PhotometricInterpretation getPhotometricInterpretation(
         const data::Image::csptr& image
     );
 
@@ -102,10 +99,8 @@ public:
      */
     IO_DICOM_API static double convertFrameNumberToZCoordinate(
         const data::Image::csptr& image,
-        const std::size_t frameNumber
+        std::size_t frameNumber
     );
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

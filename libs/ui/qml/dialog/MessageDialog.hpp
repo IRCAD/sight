@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <string>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 /**
@@ -87,7 +84,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(int button);
+    void resultDialog(int clicked);
 
 private:
 
@@ -109,10 +106,8 @@ private:
     ui::base::dialog::IMessageDialog::Buttons m_clicked {ui::base::dialog::IMessageDialog::NOBUTTON};
 
     /// Setter to QProperty and emit signal
-    UI_QML_API void emitButtons(StandardButton*);
+    UI_QML_API void emitButtons(StandardButton* /*standardButton*/);
     UI_QML_API void emitIcon(const QUrl& iconPath);
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

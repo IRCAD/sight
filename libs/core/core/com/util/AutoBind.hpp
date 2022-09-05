@@ -29,13 +29,7 @@
 /**
  * @brief fwCom
  */
-namespace sight::core::com
-{
-
-/**
- * @brief util
- */
-namespace util
+namespace sight::core::com::util
 {
 
 /**
@@ -159,6 +153,4 @@ struct AutoBind<F, 9>
 template<typename F, typename ... A>
 std::function<typename convert_function_type<F>::type> autobind(F f, A ... a);
 
-} //namespace util
-
-} //namespace sight::core::com
+} // namespace sight::core::com::util

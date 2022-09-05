@@ -28,25 +28,21 @@
 #include <data/CameraSeries.hpp>
 #include <data/Matrix4.hpp>
 
-namespace sight::module::activity::validator
-{
-
-namespace CameraSeries
+namespace sight::module::activity::validator::CameraSeries
 {
 
 fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::CameraSeries::StereoCamera);
 
 //-----------------------------------------------------------------------------
 
-StereoCamera::StereoCamera(sight::activity::IValidator::Key)
+StereoCamera::StereoCamera(sight::activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 StereoCamera::~StereoCamera()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -101,6 +97,4 @@ sight::activity::IValidator::ValidationType StereoCamera::validate(const data::O
 
 //-----------------------------------------------------------------------------
 
-} // namespace CameraSeries
-
-} // namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::CameraSeries

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,13 +26,7 @@
 #include "io/dicom/container/DicomInstance.hpp"
 #include "io/dicom/writer/iod/InformationObjectDefinition.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 /**
@@ -59,14 +53,10 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~CTMRImageIOD();
+    IO_DICOM_API ~CTMRImageIOD() override;
 
     /// Write DICOM file
     IO_DICOM_API void write(const data::Series::csptr& series) override;
 };
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

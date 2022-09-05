@@ -116,7 +116,7 @@ struct InteractionMouse
 /// A keyboard interaction (key press, key sequence...)
 struct InteractionKeyboard
 {
-    InteractionKeyboard(Qt::Key key, const QString& sequence);
+    InteractionKeyboard(Qt::Key key, QString sequence);
 
     bool isPrintable();
 
@@ -127,7 +127,7 @@ struct InteractionKeyboard
 /// An interaction when clicking on a list widget (it's a special case because it's a model-based widget)
 struct InteractionListWidgetClick
 {
-    InteractionListWidgetClick(const QString& name);
+    InteractionListWidgetClick(QString name);
 
     const QString name;
 };
@@ -235,7 +235,7 @@ public:
      * @param e The event which was sent to the target
      * @returns Should the event handling stop?
      */
-    bool eventFilter(QObject* target, QEvent* e);
+    bool eventFilter(QObject* target, QEvent* e) override;
 
     /**
      * @brief Infects a widget and its children recursively, so that the events they will receive will be filtered with

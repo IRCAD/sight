@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ public:
     MODULE_FILTER_IMAGE_API SImageExtruder();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_API ~SImageExtruder();
+    MODULE_FILTER_IMAGE_API ~SImageExtruder() override;
 
 private:
 

@@ -43,14 +43,14 @@ namespace core::thread
 
 class Timer;
 
-}
+} // namespace core::thread
 
 namespace io::base::service
 {
 
 class IReader;
 
-}
+} // namespace io::base::service
 
 namespace data
 {
@@ -58,16 +58,16 @@ namespace data
 class Integer;
 class SeriesDB;
 
-}
+} // namespace data
 
 namespace core::runtime
 {
 
 struct ConfigurationElement;
 
-}
+} // namespace core::runtime
 
-}
+} // namespace sight
 
 namespace sight::module::io::dicomweb
 {
@@ -89,7 +89,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API virtual ~SSliceIndexDicomPullerEditor() noexcept;
+    MODULE_IO_DICOMWEB_API ~SSliceIndexDicomPullerEditor() noexcept override;
 
 private Q_SLOTS:
 
@@ -130,7 +130,7 @@ private:
     /**
      * @brief Displays a dialog box with the error message
      */
-    void displayErrorMessage(const std::string& message) const;
+    static void displayErrorMessage(const std::string& message);
 
     /// Slice index slider
     QPointer<QSlider> m_sliceIndexSlider;
@@ -139,7 +139,7 @@ private:
     QPointer<QLineEdit> m_sliceIndexLineEdit;
 
     /// Number of instances
-    std::size_t m_numberOfSlices;
+    std::size_t m_numberOfSlices {};
 
     /// IODICOMWEB Reader
     std::string m_dicomReaderType;
@@ -167,7 +167,7 @@ private:
     SPTR(core::thread::Timer) m_delayTimer;
 
     /// Delay
-    unsigned int m_delay;
+    unsigned int m_delay {500};
 
     /// Optional configuration to set to reader implementation
     SPTR(core::runtime::ConfigurationElement) m_readerConfig;

@@ -44,15 +44,13 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SSlicedImageSeriesWriter::SSlicedImageSeriesWriter() noexcept
-{
-}
+SSlicedImageSeriesWriter::SSlicedImageSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSlicedImageSeriesWriter::~SSlicedImageSeriesWriter() noexcept
-{
-}
+SSlicedImageSeriesWriter::~SSlicedImageSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

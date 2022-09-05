@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::SGetImageTest);
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -117,6 +114,4 @@ void SGetImageTest::invalidOutputImage()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

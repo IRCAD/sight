@@ -68,9 +68,8 @@ SNegato2D::SNegato2D() noexcept
 
 //------------------------------------------------------------------------------
 
-SNegato2D::~SNegato2D() noexcept
-{
-}
+SNegato2D::~SNegato2D() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -95,9 +94,9 @@ void SNegato2D::configuring()
         m_orientation = OrientationMode::X_AXIS;
     }
 
-    if(config.count(s_FILTERING_CONFIG))
+    if(config.count(s_FILTERING_CONFIG) != 0U)
     {
-        const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
+        const auto filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
         sight::viz::scene3d::Plane::FilteringEnumType filtering(sight::viz::scene3d::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -326,7 +325,7 @@ void SNegato2D::updateTF()
     m_gpuTF->update();
 
     // Sends the TF texture to the negato-related passes
-    m_plane->setTFData(*m_gpuTF.get());
+    m_plane->setTFData(*m_gpuTF);
 
     this->requestRender();
 }
@@ -362,7 +361,7 @@ void SNegato2D::createPlane(const Ogre::Vector3& _spacing)
 //------------------------------------------------------------------------------
 void SNegato2D::setVisible(bool _visible)
 {
-    if(m_negatoSceneNode)
+    if(m_negatoSceneNode != nullptr)
     {
         m_negatoSceneNode->setVisible(_visible);
 

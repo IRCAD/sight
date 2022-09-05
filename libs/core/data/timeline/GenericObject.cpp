@@ -22,10 +22,7 @@
 
 #include "data/timeline/GenericObject.hpp"
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 //-----------------------------------------------------------------------------
@@ -38,8 +35,6 @@ GenericObjectBase::GenericObjectBase(
     DeleterType d
 ) :
     Buffer(timestamp, buffer, size, d),
-    m_numPresent(0),
-    m_presenceMask(0),
     m_maxElementNum(maxElementNum)
 {
     SIGHT_ASSERT(
@@ -51,8 +46,7 @@ GenericObjectBase::GenericObjectBase(
 //-----------------------------------------------------------------------------
 
 GenericObjectBase::~GenericObjectBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -65,7 +59,7 @@ unsigned int GenericObjectBase::getPresentElementNum() const
 
 bool GenericObjectBase::isPresent(unsigned int index) const
 {
-    return m_presenceMask & (uint64_t(1) << index);
+    return (m_presenceMask & (uint64_t(1) << index)) != 0U;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +89,7 @@ void GenericObjectBase::deepCopy(const data::timeline::Object& other)
 {
     Buffer::deepCopy(other);
 
-    const GenericObjectBase& otherObject = static_cast<const GenericObjectBase&>(other);
+    const auto& otherObject = static_cast<const GenericObjectBase&>(other);
     m_numPresent    = otherObject.m_numPresent;
     m_presenceMask  = otherObject.m_presenceMask;
     m_maxElementNum = otherObject.m_maxElementNum;
@@ -103,6 +97,4 @@ void GenericObjectBase::deepCopy(const data::timeline::Object& other)
 
 //-----------------------------------------------------------------------------
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

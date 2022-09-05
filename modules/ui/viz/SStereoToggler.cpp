@@ -40,8 +40,7 @@ SStereoToggler::SStereoToggler()
 //------------------------------------------------------------------------------
 
 SStereoToggler::~SStereoToggler()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -93,7 +92,7 @@ void SStereoToggler::updating()
         const bool enableStereo = this->checked() && this->enabled();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
 
-        for(auto srv : renderers)
+        for(const auto& srv : renderers)
         {
             auto renderSrv = sight::viz::scene3d::SRender::dynamicCast(srv);
             auto layerMap  = renderSrv->getLayers();
@@ -125,4 +124,4 @@ void SStereoToggler::stopping()
 
 //------------------------------------------------------------------------------
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

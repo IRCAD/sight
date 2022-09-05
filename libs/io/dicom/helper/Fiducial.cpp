@@ -31,10 +31,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -42,49 +39,48 @@ namespace helper
 bool Fiducial::containsLandmarks(const SPTR(data::SeriesDB)& seriesDB)
 {
     // Let's find if a series contains distances
-    for(const data::Series::sptr& series : seriesDB->getContainer())
-    {
-        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
-        if(imageSeries)
+    return std::any_of(
+        seriesDB->getContainer().begin(),
+        seriesDB->getContainer().end(),
+        [](const data::Series::sptr& series)
         {
-            data::Image::sptr image = imageSeries->getImage();
-            if(image)
+            if(data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series))
             {
-                data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image);
-                if(pointList && !pointList->getPoints().empty())
+                if(data::Image::sptr image = imageSeries->getImage())
                 {
-                    return true;
+                    if(data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image))
+                    {
+                        return !pointList->getPoints().empty();
+                    }
                 }
             }
-        }
-    }
 
-    return false;
+            return false;
+        });
 }
 
 //------------------------------------------------------------------------------
 
 bool Fiducial::containsDistances(const SPTR(data::SeriesDB)& seriesDB)
 {
-    // Let's find if a series contains distances
-    for(const data::Series::sptr& series : seriesDB->getContainer())
-    {
-        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
-        if(imageSeries)
+    return std::any_of(
+        seriesDB->getContainer().begin(),
+        seriesDB->getContainer().end(),
+        [](const data::Series::sptr& series)
         {
-            data::Image::sptr image = imageSeries->getImage();
-            if(image)
+            if(data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series))
             {
-                data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
-                if(distanceVector && !distanceVector->empty())
+                if(data::Image::sptr image = imageSeries->getImage())
                 {
-                    return true;
+                    if(data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image))
+                    {
+                        return !distanceVector->empty();
+                    }
                 }
             }
-        }
-    }
 
-    return false;
+            return false;
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -130,6 +126,4 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

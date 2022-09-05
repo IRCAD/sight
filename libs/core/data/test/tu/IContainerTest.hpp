@@ -37,12 +37,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void array_test();
-    void generic_test();
-    void map_test();
+    static void array_test();
+    static void generic_test();
+    static void map_test();
 };
 
 } // namespace sight::data::ut

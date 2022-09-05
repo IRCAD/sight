@@ -24,24 +24,20 @@
 
 #include <QAction>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
 
 QtMenuItemContainer::QtMenuItemContainer(ui::base::GuiBaseObject::Key /*key*/) noexcept :
-    m_menuItem(0)
+    m_menuItem(nullptr)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtMenuItemContainer::~QtMenuItemContainer() noexcept
-{
-}
+QtMenuItemContainer::~QtMenuItemContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -73,6 +69,4 @@ QAction* QtMenuItemContainer::getQtMenuItem()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

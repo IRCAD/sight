@@ -44,10 +44,7 @@
 
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace series
+namespace sight::module::ui::qt::series
 {
 
 //------------------------------------------------------------------------------
@@ -79,9 +76,8 @@ SSelector::SSelector()
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector() noexcept
-{
-}
+SSelector::~SSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -169,7 +165,7 @@ void SSelector::configuring()
 
         std::vector<core::runtime::ConfigurationElement::sptr> cfg = iconsCfg.front()->find(s_ICON_CONFIG);
 
-        for(core::runtime::ConfigurationElement::sptr elt : cfg)
+        for(const core::runtime::ConfigurationElement::sptr& elt : cfg)
         {
             const std::string series = elt->getAttributeValue("series");
             SIGHT_ASSERT("'series' attribute is missing", !series.empty());
@@ -212,7 +208,10 @@ void SSelector::configuring()
         }
         else
         {
-            SIGHT_WARN("value " + selectionMode + " is not managed for '" + s_SELECTION_MODE_CONFIG + "'");
+            SIGHT_WARN(
+                std::string("value ").append(selectionMode).append(" is not managed for '")
+                .append(s_SELECTION_MODE_CONFIG).append("'")
+            );
         }
 
         m_allowedRemove = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_allowedRemove);
@@ -238,7 +237,7 @@ void SSelector::starting()
     m_selectorWidget->setRemoveStudyIcon(m_removeStudyIcon);
     m_selectorWidget->setRemoveSerieIcon(m_removeSerieIcon);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_selectorWidget);
     qtContainer->setLayout(layout);
@@ -302,7 +301,7 @@ void SSelector::updating()
 
     m_selectorWidget->clear();
 
-    for(data::Series::sptr series : seriesDB->getContainer())
+    for(const data::Series::sptr& series : seriesDB->getContainer())
     {
         m_selectorWidget->addSeries(series);
     }
@@ -325,12 +324,12 @@ void SSelector::onSelectedSeries(
     const auto selectionVector = m_selection.lock();
     const auto notifier        = selectionVector->scoped_emit();
 
-    for(data::Series::sptr series : _deselection)
+    for(const data::Series::sptr& series : _deselection)
     {
         selectionVector->remove_all(series);
     }
 
-    for(data::Series::sptr series : _selection)
+    for(const data::Series::sptr& series : _selection)
     {
         selectionVector->push_back(series);
     }
@@ -367,7 +366,7 @@ void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
     std::set<data::Series::sptr> seriesSet;
     std::copy(_selection.begin(),_selection.end(),std::inserter(seriesSet,seriesSet.begin()));
 
-    for(data::Series::sptr series : seriesSet)
+    for(const data::Series::sptr& series : seriesSet)
     {
         seriesDBHelper.remove(series);
     }
@@ -385,7 +384,7 @@ void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
 
 void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
 {
-    for(data::Series::sptr series : _addedSeries)
+    for(const data::Series::sptr& series : _addedSeries)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -395,7 +394,7 @@ void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
 
 void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 {
-    for(data::Series::sptr series : _removedSeries)
+    for(const data::Series::sptr& series : _removedSeries)
     {
         m_selectorWidget->removeSeries(series);
     }
@@ -403,6 +402,4 @@ void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 
 //------------------------------------------------------------------------------
 
-} // namespace series.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::series

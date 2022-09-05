@@ -26,13 +26,7 @@
 
 #include <data/Equipment.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -63,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Equipment();
+    IO_DICOM_API ~Equipment() override;
 
     /**
      * @brief Read General Equipment Module tags
@@ -72,8 +66,4 @@ public:
     IO_DICOM_API virtual void readGeneralEquipmentModule();
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

@@ -29,21 +29,20 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::module::viz::scene2d
+#include <cmath>
+
+using sight::viz::scene2d::vec2d_t;
+
+namespace sight::module::viz::scene2d::adaptor
 {
 
-namespace adaptor
-{
-
-SAxis::SAxis() noexcept
-{
-}
+SAxis::SAxis() noexcept =
+    default;
 
 //--------------------------------------------------------------------------------------------------
 
-SAxis::~SAxis() noexcept
-{
-}
+SAxis::~SAxis() noexcept =
+    default;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -81,7 +80,7 @@ void SAxis::configuring()
     const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
 
     // 'color'
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_line.color, config.get<std::string>("color"));
     }
@@ -124,7 +123,7 @@ void SAxis::configuring()
         m_labels.displayedUnit = labelConfig->get<std::string>("unit", "");
 
         // Color configuration
-        if(labelConfig->count("color"))
+        if(labelConfig->count("color") != 0U)
         {
             sight::viz::scene2d::data::InitQtPen::setPenColor(
                 m_labels.pen,
@@ -148,7 +147,7 @@ void SAxis::buildAxis()
 
     for(int i = 0 ; i < nbValues ; ++i)
     {
-        QGraphicsLineItem* tick = new QGraphicsLineItem(0, 0, 0, 0);
+        auto* tick = new QGraphicsLineItem(0, 0, 0, 0);
         tick->setPen(m_line.color);
 
         m_line.ticks.push_back(tick);
@@ -203,14 +202,16 @@ void SAxis::buildLabels()
     }
 
     // Build the values as graphic items
-    for(int i = 0 ; i < nbValues ; ++i, val += m_interval)
+    for(int i = 0 ; i < nbValues ; ++i)
     {
-        QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem();
+        auto* text = new QGraphicsSimpleTextItem();
         text->setText(QString::fromStdString(format).arg(val));
         text->setFont(m_labels.font);
         text->setBrush(m_labels.brush);
 
         m_labels.values.push_back(text);
+
+        val += m_interval;
     }
 
     // Add the values to the item group
@@ -266,7 +267,7 @@ void SAxis::updateAxis()
     const double min = this->getStartVal();
     const double max = this->getEndVal();
 
-    double pos;
+    double pos = NAN;
     vec2d_t tickSize;
     vec2d_t tickPos {0., 0.};
 
@@ -355,9 +356,9 @@ void SAxis::updateLabels()
 
     if(m_align == "left" || m_align == "right")
     {
-        double coeff = 0.f;
+        double coeff = 0.F;
 
-        double textPosX;
+        double textPosX = NAN;
 
         if(m_align == "left")
         {
@@ -365,11 +366,11 @@ void SAxis::updateLabels()
         }
         else
         {
-            coeff    = -1.f;
+            coeff    = -1.F;
             textPosX = viewportX + viewportWidth;
         }
 
-        for(std::size_t i = 0 ; i < valuesSize ; ++i, val += m_interval)
+        for(std::size_t i = 0 ; i < valuesSize ; ++i)
         {
             const vec2d_t coord = this->mapAdaptorToScene((vec2d_t(textPosX, val)));
 
@@ -383,6 +384,8 @@ void SAxis::updateLabels()
 
             m_labels.values[i]->setTransform(transform);
             m_labels.values[i]->setPos(coord.x + coeff * size.x * sizeVP.x, coord.y);
+
+            val += m_interval;
         }
 
         // Always displays the maximum value but we may hide other values depending on available size
@@ -413,7 +416,7 @@ void SAxis::updateLabels()
 
         m_labels.unit->setTransform(transform);
 
-        val = viewportHeight * 0.8f;
+        val = viewportHeight * 0.8F;
 
         const vec2d_t size =
             this->mapAdaptorToScene(
@@ -429,11 +432,11 @@ void SAxis::updateLabels()
     }
     else // axis centered on top or bottom
     {
-        float coeff = 0.5f;
+        float coeff = 0.5F;
 
         const double textPosY = (m_align == "bottom") ? 0 : 1.1;
 
-        for(std::size_t i = 0 ; i < valuesSize ; ++i, val += m_interval)
+        for(std::size_t i = 0 ; i < valuesSize ; ++i)
         {
             const vec2d_t coord = this->mapAdaptorToScene(vec2d_t(val, textPosY));
 
@@ -447,6 +450,8 @@ void SAxis::updateLabels()
 
             m_labels.values[i]->setTransform(transform);
             m_labels.values[i]->setPos(coord.x - size.x / 2 * sizeVP.x, coord.y - coeff * size.y / 2 * sizeVP.y);
+
+            val += m_interval;
         }
 
         // Always displays the maximum value but we may hide other values depending on available size
@@ -474,8 +479,6 @@ void SAxis::updateLabels()
         }
 
         m_labels.unit->setTransform(transform);
-
-        val = viewportHeight * 0.8;
 
         const vec2d_t size =
             this->mapAdaptorToScene(
@@ -512,6 +515,4 @@ service::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

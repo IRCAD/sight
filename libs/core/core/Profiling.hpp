@@ -64,9 +64,7 @@ class fwProfileFrameTimer
 public:
 
     fwProfileFrameTimer(double interval) :
-        m_interval(interval),
-        m_average(0),
-        m_count(0)
+        m_interval(interval)
     {
         m_timer.start();
     }
@@ -102,9 +100,9 @@ public:
     /// Timer label
     double m_interval;
     /// Actual elapsed time average
-    double m_average;
+    double m_average {0};
     /// Number of calls, used to compute the average
-    unsigned int m_count;
+    unsigned int m_count {0};
 };
 
 /**
@@ -159,8 +157,7 @@ public:
     }
 
     ~fwProfileFrame()
-    {
-    }
+    = default;
 
     /// Timer label
     const char* m_label;
@@ -190,8 +187,7 @@ public:
     }
 
     ~fwProfileFrameAvg()
-    {
-    }
+    = default;
 
     /// Timer label
     const char* m_label;

@@ -58,10 +58,7 @@ const core::com::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 //-----------------------------------------------------------------------------
 
 IService::IService() :
-    m_configuration(new core::runtime::EConfigurationElement("EmptyConfigurationElement")),
-    m_globalState(STOPPED),
-    m_updatingState(NOTUPDATING),
-    m_configurationState(UNCONFIGURED)
+    m_configuration(new core::runtime::EConfigurationElement("EmptyConfigurationElement"))
 {
     newSignal<StartedSignalType>(s_STARTED_SIG);
     newSignal<UpdatedSignalType>(s_UPDATED_SIG);
@@ -110,7 +107,7 @@ IService::~IService()
 
 //-----------------------------------------------------------------------------
 
-void IService::info(std::ostream&)
+void IService::info(std::ostream& /*unused*/)
 {
 }
 
@@ -491,16 +488,14 @@ IService::ConfigType IService::getConfigTree() const
     {
         return srvConfig.get();
     }
-    else
-    {
-        srvConfig = configTree.get_child_optional("service");
-        if(srvConfig.is_initialized())
-        {
-            return srvConfig.get();
-        }
 
-        return IService::ConfigType();
+    srvConfig = configTree.get_child_optional("service");
+    if(srvConfig.is_initialized())
+    {
+        return srvConfig.get();
     }
+
+    return {};
 }
 
 //-----------------------------------------------------------------------------
@@ -565,10 +560,8 @@ IService::SharedFutureType IService::start()
     {
         return this->_start(false);
     }
-    else
-    {
-        return m_slotStart->asyncRun();
-    }
+
+    return m_slotStart->asyncRun();
 }
 
 //-----------------------------------------------------------------------------
@@ -579,10 +572,8 @@ IService::SharedFutureType IService::stop()
     {
         return this->_stop(false);
     }
-    else
-    {
-        return m_slotStop->asyncRun();
-    }
+
+    return m_slotStop->asyncRun();
 }
 
 //-----------------------------------------------------------------------------
@@ -593,10 +584,8 @@ IService::SharedFutureType IService::update()
     {
         return this->_update(false);
     }
-    else
-    {
-        return m_slotUpdate->asyncRun();
-    }
+
+    return m_slotUpdate->asyncRun();
 }
 
 //-----------------------------------------------------------------------------
@@ -607,10 +596,8 @@ IService::SharedFutureType IService::swapKey(std::string_view _key, data::Object
     {
         return this->_swapKey(_key, _obj, false);
     }
-    else
-    {
-        return m_slotSwapKey->asyncRun(_key, _obj);
-    }
+
+    return m_slotSwapKey->asyncRun(_key, _obj);
 }
 
 //-----------------------------------------------------------------------------
@@ -688,7 +675,7 @@ IService::SharedFutureType IService::_start(bool _async)
 
     m_globalState = STARTING;
 
-    PackagedTaskType task(std::bind(&IService::starting, this));
+    PackagedTaskType task([this](auto&& ...){starting();});
     SharedFutureType future = task.get_future();
     task();
 
@@ -709,11 +696,9 @@ IService::SharedFutureType IService::_start(bool _async)
             // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
+
+        // Rethrow the same exception
+        throw;
     }
     m_globalState = STARTED;
 
@@ -740,7 +725,7 @@ IService::SharedFutureType IService::_stop(bool _async)
 
     this->_autoDisconnect();
 
-    PackagedTaskType task(std::bind(&IService::stopping, this));
+    PackagedTaskType task([this](auto&& ...){stopping();});
     SharedFutureType future = task.get_future();
 
     m_globalState = STOPPING;
@@ -763,11 +748,9 @@ IService::SharedFutureType IService::_stop(bool _async)
             // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
+
+        // Rethrow the same exception
+        throw;
     }
     m_globalState = STOPPED;
 
@@ -796,7 +779,7 @@ IService::SharedFutureType IService::_swapKey(std::string_view _key, data::Objec
         m_globalState != STARTED
     );
 
-    auto fn = std::bind(static_cast<void (IService::*)(std::string_view)>(&IService::swapping), this, _key);
+    auto fn = [this, _key]{swapping(_key);};
     PackagedTaskType task(fn);
     SharedFutureType future = task.get_future();
 
@@ -820,11 +803,9 @@ IService::SharedFutureType IService::_swapKey(std::string_view _key, data::Objec
             // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
+
+        // Rethrow the same exception
+        throw;
     }
 
     this->_autoConnect();
@@ -852,7 +833,7 @@ IService::SharedFutureType IService::_update(bool _async)
             "INVOKING update WHILE STOPPED (" << m_globalState << ") on service '" << this->getID()
             << "' of type '" << this->getClassname() << "': update is discarded."
         );
-        return SharedFutureType();
+        return {};
     }
 
     SIGHT_ASSERT(
@@ -861,7 +842,7 @@ IService::SharedFutureType IService::_update(bool _async)
         m_updatingState == NOTUPDATING
     );
 
-    PackagedTaskType task(std::bind(&IService::updating, this));
+    PackagedTaskType task([this](auto&& ...){updating();});
     SharedFutureType future = task.get_future();
     m_updatingState = UPDATING;
     task();
@@ -881,11 +862,9 @@ IService::SharedFutureType IService::_update(bool _async)
             // The future is shared, thus the caller can still catch the exception if needed with future.get()
             return future;
         }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
+
+        // Rethrow the same exception
+        throw;
     }
     m_updatingState = NOTUPDATING;
 
@@ -1128,7 +1107,7 @@ bool IService::hasAllRequiredObjects() const
 
     for(const auto& [key, objectCfg] : m_serviceConfig.m_objects)
     {
-        if(objectCfg.m_optional == false)
+        if(!objectCfg.m_optional)
         {
             if(objectCfg.m_access == data::Access::in)
             {
@@ -1159,7 +1138,7 @@ bool IService::hasAllRequiredObjects() const
 
     for(const auto& [key, objectCfg] : m_serviceConfig.m_groups)
     {
-        if(objectCfg.m_optional == false)
+        if(!objectCfg.m_optional)
         {
             if(objectCfg.m_access == data::Access::in)
             {

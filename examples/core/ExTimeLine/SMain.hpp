@@ -48,7 +48,7 @@ public:
     EXTIMELINE_API SMain() noexcept;
 
     /// Destroys the service.
-    EXTIMELINE_API virtual ~SMain() noexcept;
+    EXTIMELINE_API ~SMain() noexcept override;
 
 protected:
 

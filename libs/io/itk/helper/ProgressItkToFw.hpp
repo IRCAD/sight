@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,8 +54,8 @@ protected:
 
     OBSERVEE m_observee;
     // observertag used by itk
-    unsigned long m_obsTag;
-    bool m_initialized;
+    std::uint64_t m_obsTag;
+    bool m_initialized {false};
 };
 
 //------------------------------------------------------------------------------
@@ -78,6 +78,6 @@ public:
     ProgressorBase::sptr m_progressor;
 };
 
-}
+} // namespace sight::io::itk
 
 #include "io/itk/helper/ProgressItkToFw.hxx"

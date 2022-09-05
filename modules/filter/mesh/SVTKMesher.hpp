@@ -63,7 +63,7 @@ public:
     SIGHT_DECLARE_SERVICE(SVTKMesher, sight::service::IFilter);
 
     MODULE_FILTER_MESH_API SVTKMesher() noexcept;
-    MODULE_FILTER_MESH_API virtual ~SVTKMesher() noexcept;
+    MODULE_FILTER_MESH_API ~SVTKMesher() noexcept override;
 
 protected:
 
@@ -77,8 +77,8 @@ protected:
 
 private:
 
-    unsigned int m_reduction;
-    unsigned int m_threshold;
+    unsigned int m_reduction {0};
+    unsigned int m_threshold {0};
     void updateThreshold(int);
 
     static constexpr std::string_view s_MODELSERIES_OUT = "modelSeries";

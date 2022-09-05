@@ -43,10 +43,7 @@ class QListWidgetItem;
 class QComboBox;
 class QCheckBox;
 
-namespace sight::module::ui::qt
-{
-
-namespace model
+namespace sight::module::ui::qt::model
 {
 
 /**
@@ -74,7 +71,7 @@ public:
     /// constructor
     MODULE_UI_QT_API SOrganTransformation() noexcept;
     /// destructor
-    MODULE_UI_QT_API virtual ~SOrganTransformation() noexcept;
+    MODULE_UI_QT_API ~SOrganTransformation() noexcept override;
 
 protected:
 
@@ -111,7 +108,7 @@ private Q_SLOTS:
 private:
 
     void refresh();
-    void notifyTransformationMatrix(data::Matrix4::sptr aTransMat);
+    static void notifyTransformationMatrix(data::Matrix4::sptr aTransMat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
     void addMeshTransform();
@@ -131,7 +128,7 @@ private:
 
     //variables for the functionalities of saving & loading
     SaveMappingType m_saveListing;
-    unsigned int m_saveCount;
+    unsigned int m_saveCount {0};
 
     static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
     static constexpr std::string_view s_COMPOSITE    = "composite";
@@ -139,6 +136,4 @@ private:
     data::ptr<data::Composite, data::Access::inout> m_composite {this, "composite", true};
 };
 
-} // namespace model
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::model

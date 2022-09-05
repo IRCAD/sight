@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "Image.hpp"
 
 #include "io/opencv/Type.hpp"
@@ -61,11 +63,13 @@ static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
     cv::Mat cvImage;
     if(_copy)
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
         cvImage = mat.clone();
     }
     else
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
     }
 
@@ -81,7 +85,7 @@ cv::Mat Image::moveToCv(data::Image::sptr& _image)
 
 //------------------------------------------------------------------------------
 
-const cv::Mat Image::moveToCv(const data::Image::csptr& _image)
+cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, false);
 }

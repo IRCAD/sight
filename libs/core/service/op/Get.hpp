@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,4 +44,4 @@ SERVICE_API service::IService::sptr get(std::string uid);
 
 //@}
 
-}
+} // namespace sight::service

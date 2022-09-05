@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "PasswordKeeper.hpp"
 
 #include <core/crypto/AES256.hpp>
@@ -38,8 +40,9 @@ static std::mutex s_password_mutex;
 static secure_string s_password;
 
 // This generate the hash used to encrypt the global password
-inline static secure_string get_global_password_key()
+inline static secure_string getGlobalPasswordKey()
 {
+    // NOLINTNEXTLINE(readability-redundant-string-cstr)
     return PasswordKeeper::get_pseudo_password_hash(std::to_string(tools::System::getPID()).c_str());
 }
 
@@ -47,9 +50,10 @@ inline static secure_string get_global_password_key()
 
 secure_string PasswordKeeper::get_pseudo_password_hash(const secure_string& salt) noexcept
 {
-    return SIGHT_PSEUDO_RANDOM_HASH(salt.c_str());
+    return SIGHT_PSEUDO_RANDOM_HASH(salt);
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): the class is final
 class PasswordKeeper::PasswordKeeperImpl final
 {
 public:
@@ -70,35 +74,35 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline core::crypto::secure_string get_password_hash() const
+    [[nodiscard]] inline core::crypto::secure_string getPasswordHash() const
     {
-        return core::crypto::hash(this->get_password());
+        return core::crypto::hash(this->getPassword());
     }
 
     //------------------------------------------------------------------------------
 
-    inline core::crypto::secure_string get_password() const
+    [[nodiscard]] inline core::crypto::secure_string getPassword() const
     {
-        return core::crypto::decrypt(m_password, compute_password_key());
+        return core::crypto::decrypt(m_password, computePasswordKey());
     }
 
     //------------------------------------------------------------------------------
 
-    inline void set_password(const core::crypto::secure_string& password)
+    inline void setPassword(const core::crypto::secure_string& password)
     {
-        m_password = core::crypto::encrypt(password, compute_password_key());
+        m_password = core::crypto::encrypt(password, computePasswordKey());
     }
 
     //------------------------------------------------------------------------------
 
-    inline bool check_password(const core::crypto::secure_string& password) const
+    [[nodiscard]] inline bool checkPassword(const core::crypto::secure_string& password) const
     {
-        return core::crypto::decrypt(m_password, compute_password_key()) == password;
+        return core::crypto::decrypt(m_password, computePasswordKey()) == password;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void reset_password()
+    inline void resetPassword()
     {
         m_password.clear();
     }
@@ -106,7 +110,7 @@ public:
 private:
 
     /// Generate a pseudo random password key to store the password obfuscated
-    inline core::crypto::secure_string compute_password_key() const
+    [[nodiscard]] inline core::crypto::secure_string computePasswordKey() const
     {
         return SIGHT_PSEUDO_RANDOM_HASH(std::to_string(reinterpret_cast<std::intptr_t>(this)));
     }
@@ -127,35 +131,35 @@ PasswordKeeper::~PasswordKeeper() noexcept = default;
 
 core::crypto::secure_string PasswordKeeper::get_password_hash() const
 {
-    return m_pimpl->get_password_hash();
+    return m_pimpl->getPasswordHash();
 }
 
 //------------------------------------------------------------------------------
 
 core::crypto::secure_string PasswordKeeper::get_password() const
 {
-    return m_pimpl->get_password();
+    return m_pimpl->getPassword();
 }
 
 //------------------------------------------------------------------------------
 
 void PasswordKeeper::set_password(const core::crypto::secure_string& password)
 {
-    m_pimpl->set_password(password);
+    m_pimpl->setPassword(password);
 }
 
 //------------------------------------------------------------------------------
 
 bool PasswordKeeper::check_password(const core::crypto::secure_string& password) const
 {
-    return m_pimpl->check_password(password);
+    return m_pimpl->checkPassword(password);
 }
 
 //------------------------------------------------------------------------------
 
 void PasswordKeeper::reset_password()
 {
-    return m_pimpl->reset_password();
+    return m_pimpl->resetPassword();
 }
 
 //------------------------------------------------------------------------------
@@ -171,7 +175,7 @@ core::crypto::secure_string PasswordKeeper::get_global_password()
 {
     std::lock_guard guard(s_password_mutex);
 
-    return core::crypto::decrypt(s_password, get_global_password_key());
+    return core::crypto::decrypt(s_password, getGlobalPasswordKey());
 }
 
 //------------------------------------------------------------------------------
@@ -208,7 +212,7 @@ void PasswordKeeper::set_global_password(
 #endif
 
     // Store the new password
-    s_password = core::crypto::encrypt(password, get_global_password_key());
+    s_password = core::crypto::encrypt(password, getGlobalPasswordKey());
 }
 
 //------------------------------------------------------------------------------
@@ -217,7 +221,7 @@ bool PasswordKeeper::check_global_password(const core::crypto::secure_string& pa
 {
     std::lock_guard guard(s_password_mutex);
 
-    return core::crypto::decrypt(s_password, get_global_password_key()) == password;
+    return core::crypto::decrypt(s_password, getGlobalPasswordKey()) == password;
 }
 
 //------------------------------------------------------------------------------

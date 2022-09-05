@@ -48,8 +48,7 @@ const core::com::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeSt
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
-SDistortion::SDistortion() noexcept :
-    m_isEnabled(false)
+SDistortion::SDistortion() noexcept
 {
     newSlot(s_CHANGE_STATE_SLOT, &SDistortion::changeState, this);
     newSlot(s_CALIBRATE_SLOT, &SDistortion::calibrate, this);
@@ -57,9 +56,8 @@ SDistortion::SDistortion() noexcept :
 
 //------------------------------------------------------------------------------
 
-SDistortion::~SDistortion() noexcept
-{
-}
+SDistortion::~SDistortion() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
@@ -370,10 +368,10 @@ void SDistortion::calibrate()
         cv::Mat pixelLocations = cv::Mat(size, CV_32FC2);
 
         // Output from undistortPoints is normalized point coordinates
-        const float fx = static_cast<float>(intrinsics.at<double>(0, 0));
-        const float fy = static_cast<float>(intrinsics.at<double>(1, 1));
-        const float cx = static_cast<float>(intrinsics.at<double>(0, 2));
-        const float cy = static_cast<float>(intrinsics.at<double>(1, 2));
+        const auto fx = static_cast<float>(intrinsics.at<double>(0, 0));
+        const auto fy = static_cast<float>(intrinsics.at<double>(1, 1));
+        const auto cx = static_cast<float>(intrinsics.at<double>(0, 2));
+        const auto cy = static_cast<float>(intrinsics.at<double>(1, 2));
 
         for(int i = 0 ; i < size.height ; i++)
         {

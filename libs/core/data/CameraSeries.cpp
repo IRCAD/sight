@@ -58,8 +58,7 @@ CameraSeries::CameraSeries(data::Object::Key key) :
 //------------------------------------------------------------------------------
 
 CameraSeries::~CameraSeries()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -98,14 +97,14 @@ void CameraSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
     m_cameras.clear();
     m_extrinsicMatrices.clear();
 
-    for(CameraContainerType::value_type elt : other->m_cameras)
+    for(const CameraContainerType::value_type& elt : other->m_cameras)
     {
         data::Camera::sptr newCamera;
         newCamera = data::Object::copy(elt, cache);
         m_cameras.push_back(newCamera);
     }
 
-    for(MatricesContainer::value_type elt : other->m_extrinsicMatrices)
+    for(const MatricesContainer::value_type& elt : other->m_extrinsicMatrices)
     {
         data::Matrix4::sptr matrix;
         matrix = data::Object::copy(elt, cache);
@@ -153,11 +152,11 @@ data::Camera::sptr CameraSeries::getCamera(std::size_t index)
 
 void CameraSeries::removeCamera(const data::Camera::sptr& camera)
 {
-    CameraContainerType::iterator iter = std::find(m_cameras.begin(), m_cameras.end(), camera);
+    auto iter = std::find(m_cameras.begin(), m_cameras.end(), camera);
     SIGHT_THROW_IF("Camera not found in CameraSeries.", iter == m_cameras.end());
 
-    const auto index                    = std::distance(m_cameras.begin(), iter);
-    MatricesContainer::iterator matIter = m_extrinsicMatrices.begin() + index;
+    const auto index = std::distance(m_cameras.begin(), iter);
+    auto matIter     = m_extrinsicMatrices.begin() + index;
     m_extrinsicMatrices.erase(matIter);
     m_cameras.erase(iter);
 }

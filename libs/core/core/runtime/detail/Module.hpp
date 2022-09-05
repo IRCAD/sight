@@ -33,10 +33,7 @@
 #include <set>
 #include <string>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 class ExtensionPoint;
@@ -82,10 +79,17 @@ public:
      */
     Module(
         const std::filesystem::path& location,
-        const std::string& id,
-        const std::string& pluginClass = "",
-        int priority                   = 0
+        std::string id,
+        std::string c = "",
+        int priority  = 0
     );
+
+    /**
+     * @brief   Assignement operator.
+     *
+     * @remark  Assignement is forbidden for this class.
+     */
+    void operator=(const Module&) = delete;
 
     /**
      * @name    Public API implementation
@@ -111,7 +115,7 @@ public:
      *
      * @return  a path representing the module location, can be empty if no library is set
      */
-    const std::string getLibraryName() const final;
+    std::string getLibraryName() const final;
 
     /**
      * @brief   Retrieves the module location.
@@ -132,7 +136,7 @@ public:
      *
      * @return  a string containing the module's plugin class
      */
-    const std::string getClass() const final;
+    std::string getClass() const final;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.
@@ -142,13 +146,13 @@ public:
     SPTR(IPlugin) getPlugin() const final;
 
     /** @copydoc core::runtime::Module */
-    const std::string getParameterValue(const std::string& identifier) const final;
+    std::string getParameterValue(const std::string& identifier) const final;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    bool hasParameter(const std::string& name) const final;
+    bool hasParameter(const std::string& identifier) const final;
 
     /// @copydoc core::runtime::Module::getExtensions
     ExtensionContainer getExtensions() const final;
@@ -251,7 +255,7 @@ public:
      * @param[in]   identifier  the extension identifier
      * @param[in]   enable      enable or disable this extension
      */
-    void setEnableExtension(const std::string& identifier, const bool enable);
+    void setEnableExtension(const std::string& identifier, bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -308,7 +312,7 @@ public:
      * @param[in]   identifier  the extension point identifier
      * @param[in]   enable      enable or disable this extension point
      */
-    void setEnableExtensionPoint(const std::string& identifier, const bool enable);
+    void setEnableExtensionPoint(const std::string& identifier, bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -349,7 +353,7 @@ public:
      * @remark  It is possible to disable a started module but this
      *          will have no effect.
      */
-    void setEnable(const bool state);
+    void setEnable(bool state);
     //@}
 
     /**
@@ -375,7 +379,7 @@ public:
     void addParameter(const std::string& identifier, const std::string& value);
     //@}
 
-    bool isStarted() const
+    bool isStarted() const override
     {
         return m_started;
     }
@@ -415,13 +419,6 @@ private:
     int m_priority; ///< start order, lower is more favorable
 
     /**
-     * @brief   Assignement operator.
-     *
-     * @remark  Assignement is forbidden for this class.
-     */
-    void operator=(const Module&);
-
-    /**
      * @brief   Load module's library in the current process.
      */
     void loadLibraries();
@@ -437,6 +434,4 @@ private:
     void startPlugin();
 };
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

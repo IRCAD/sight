@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,29 +24,26 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/dialog/IMessageDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <boost/lambda/lambda.hpp>
 
 #include <QCloseEvent>
 #include <QMainWindow>
-
-#include <ui/base/dialog/IMessageDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace sight::ui::qt
 {
 
 //------------------------------------------------------------------------------
 
-QtMainFrame::QtMainFrame() noexcept :
-    QMainWindow()
-{
-}
+QtMainFrame::QtMainFrame() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-QtMainFrame::~QtMainFrame() noexcept
-{
-}
+QtMainFrame::~QtMainFrame() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -65,4 +62,4 @@ void QtMainFrame::closeEvent(QCloseEvent* event)
 
 //------------------------------------------------------------------------------
 
-} // fwGuiQt
+} // namespace sight::ui::qt

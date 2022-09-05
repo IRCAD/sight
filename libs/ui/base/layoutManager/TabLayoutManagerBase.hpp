@@ -30,10 +30,7 @@
 #include <list>
 #include <map>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -69,7 +66,7 @@ public:
     UI_BASE_API TabLayoutManagerBase();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~TabLayoutManagerBase();
+    UI_BASE_API ~TabLayoutManagerBase() override;
 
     /**
      * @brief Initialize tab layout manager before the creation of layout.
@@ -120,6 +117,4 @@ private:
     std::list<ViewInfo> m_views;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

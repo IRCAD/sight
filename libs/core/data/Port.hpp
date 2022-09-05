@@ -45,7 +45,7 @@ public:
     DATA_API Port(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Port();
+    DATA_API ~Port() override;
 
     /**
      * @{

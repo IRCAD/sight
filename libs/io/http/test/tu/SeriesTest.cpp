@@ -33,10 +33,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::SeriesTest);
 
-namespace sight::io::http
-{
-
-namespace ut
+namespace sight::io::http::ut
 {
 
 const QString seriesInstanceUID("1.2.250.317.4553866982239972067453446023029080307");
@@ -147,6 +144,4 @@ void SeriesTest::testSeries()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::http
+} // namespace sight::io::http::ut

@@ -74,7 +74,7 @@ public:
   igtlNewMacro(igtl::Socket);
 
   /// Check is the socket is alive.
-   int GetConnected() { return (this->m_SocketDescriptor >=0); }
+   int GetConnected() const { return (this->m_SocketDescriptor >=0); }
   
   /// Close the socket.
   void CloseSocket() {
@@ -130,9 +130,9 @@ public:
 
 protected:
   Socket();
-  ~Socket();
+  ~Socket() override;
 
-  void PrintSelf(std::ostream& os) const;
+  void PrintSelf(std::ostream& os) const override;
 
   //BTX
   friend class vtkSocketCollection;

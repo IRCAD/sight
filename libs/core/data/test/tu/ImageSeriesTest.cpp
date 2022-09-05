@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ImageSeriesTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -279,6 +276,4 @@ void ImageSeriesTest::equalityTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

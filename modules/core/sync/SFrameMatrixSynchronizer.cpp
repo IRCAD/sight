@@ -25,6 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <cmath>
+
 namespace sight::module::sync
 {
 
@@ -45,9 +47,7 @@ const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
-    m_tolerance(500.),
-    m_imagesInitialized(false),
-    m_timeStep(33),
+
     m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
     m_sigSynchronizationDone    = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
@@ -63,9 +63,8 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
-{
-}
+SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -146,11 +145,11 @@ void SFrameMatrixSynchronizer::starting()
     }
 
     SIGHT_ASSERT("No valid worker for timer.", m_associatedWorker);
-    if(m_timeStep)
+    if(m_timeStep != 0U)
     {
         m_timer = m_associatedWorker->createTimer();
         const auto duration = std::chrono::milliseconds(m_timeStep);
-        m_timer->setFunction(std::bind(&SFrameMatrixSynchronizer::synchronize, this));
+        m_timer->setFunction([this](auto&& ...){synchronize();});
         m_timer->setDuration(duration);
         m_timer->start();
     }
@@ -160,7 +159,7 @@ void SFrameMatrixSynchronizer::starting()
 
 void SFrameMatrixSynchronizer::stopping()
 {
-    if(m_timeStep)
+    if(m_timeStep != 0U)
     {
         m_timer->stop();
     }
@@ -172,7 +171,7 @@ void SFrameMatrixSynchronizer::synchronize()
 {
     m_updateMask |= SYNC_REQUESTED;
 
-    if(!(m_updateMask & OBJECT_RECEIVED))
+    if((m_updateMask & OBJECT_RECEIVED) == 0)
     {
         return;
     }
@@ -189,7 +188,7 @@ void SFrameMatrixSynchronizer::synchronize()
     // Then we get the one with the newest timestamp and the other ones are not considered.
     for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
-        core::HiResClock::HiResClockType tlTimestamp;
+        core::HiResClock::HiResClockType tlTimestamp = NAN;
         {
             const auto tl = m_frameTLs[i].lock();
             SIGHT_ASSERT("Frame TL does not exist", tl);
@@ -292,7 +291,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
             if(!m_imagesInitialized)
             {
-                data::Image::PixelFormat format;
+                data::Image::PixelFormat format {data::Image::UNDEFINED};
                 switch(frameTL->getPixelFormat())
                 {
                     case data::FrameTL::PixelFormat::GRAY_SCALE:
@@ -316,7 +315,6 @@ void SFrameMatrixSynchronizer::synchronize()
                         break;
 
                     default:
-                        format = data::Image::UNDEFINED;
                         FW_DEPRECATED_MSG(
                             "FrameTL pixel format should be defined, we temporary assume that the format "
                             "is GrayScale, RGB or RGBA according to the number of components.",
@@ -451,7 +449,7 @@ void SFrameMatrixSynchronizer::updating()
 {
     m_updateMask |= OBJECT_RECEIVED;
 
-    if(m_updateMask & SYNC_REQUESTED)
+    if((m_updateMask & SYNC_REQUESTED) != 0)
     {
         this->synchronize();
     }

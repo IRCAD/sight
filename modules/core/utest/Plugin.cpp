@@ -29,9 +29,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::utest::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -47,4 +46,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module::service
+} // namespace sight::module::utest

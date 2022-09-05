@@ -40,14 +40,10 @@ const core::com::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "remov
 
 //------------------------------------------------------------------------------
 
-Material::Material(data::Object::Key) :
-    m_shadingMode(PHONG),
-    m_representationMode(SURFACE),
-    m_optionsMode(STANDARD),
-    m_ambient(Color::New(0.05f, 0.05f, 0.05f, 1.f)),
-    m_diffuse(Color::New()),
-    m_diffuseTextureFiltering(NEAREST),
-    m_diffuseTextureWrapping(REPEAT)
+Material::Material(data::Object::Key /*unused*/) :
+
+    m_ambient(Color::New(0.05F, 0.05F, 0.05F, 1.F)),
+    m_diffuse(Color::New())
 {
     newSignal<AddedTextureSignalType>(s_ADDED_TEXTURE_SIG);
     newSignal<RemovedTextureSignalType>(s_REMOVED_TEXTURE_SIG);
@@ -56,8 +52,7 @@ Material::Material(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 Material::~Material()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

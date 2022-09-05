@@ -34,15 +34,13 @@ static const std::string s_IMAGE_INPUT = "image";
 
 //------------------------------------------------------------------------------
 
-SImage::SImage() noexcept
-{
-}
+SImage::SImage() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SImage::~SImage() noexcept
-{
-}
+SImage::~SImage() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

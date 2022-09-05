@@ -30,10 +30,7 @@
 #include <list>
 #include <map>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -82,7 +79,7 @@ public:
     UI_BASE_API CardinalLayoutManagerBase();
 
     /// Destructor. Does nothing.
-    UI_BASE_API virtual ~CardinalLayoutManagerBase();
+    UI_BASE_API ~CardinalLayoutManagerBase() override;
 
     /**
      * @brief Initializes cardinal layout manager. Must be called before the layout creation.
@@ -142,6 +139,4 @@ private:
     std::list<ViewInfo> m_views;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

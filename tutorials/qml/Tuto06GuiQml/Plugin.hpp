@@ -40,13 +40,13 @@ public:
     TUTO06GUIQML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO06GUIQML_API ~Plugin() noexcept;
+    TUTO06GUIQML_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO06GUIQML_API void start();
+    TUTO06GUIQML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO06GUIQML_API void stop() noexcept;
+    TUTO06GUIQML_API void stop() noexcept override;
 };
 
 } // namespace Tuto06GuiQml

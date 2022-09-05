@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 #include <cstdint>
 #include <filesystem>
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 /**
@@ -53,7 +50,7 @@ class IO_BASE_CLASS_API IObjectWriter : public core::BaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IObjectWriter);
+    SIGHT_DECLARE_CLASS(IObjectWriter, core::BaseObject);
 
     typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
     typedef std::function<void ()> CancelCallback;
@@ -125,7 +122,7 @@ protected:
     IO_BASE_API IObjectWriter();
 
     /// Destructor. Do nothing.
-    IO_BASE_API virtual ~IObjectWriter();
+    IO_BASE_API ~IObjectWriter() override;
 
     /**
      * @brief Object to write on filesystem by the process.
@@ -138,6 +135,4 @@ protected:
     std::string m_extension;
 };
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

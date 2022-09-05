@@ -43,17 +43,12 @@ class QMenu;
 class QSlider;
 class QToolButton;
 
-namespace sight::ui::qt
-{
-
-namespace widget
+namespace sight::ui::qt::widget
 {
 
 class QRangeSlider;
 
-}
-
-}
+} // namespace sight::ui::qt::widget
 
 namespace sight::module::ui::qt::image
 {
@@ -98,7 +93,7 @@ public:
     MODULE_UI_QT_API WindowLevel() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API virtual ~WindowLevel() noexcept;
+    MODULE_UI_QT_API ~WindowLevel() noexcept override;
 
 protected:
 
@@ -148,7 +143,7 @@ protected:
 
     typedef data::TransferFunction::min_max_t WindowLevelMinMaxType;
 
-    double toWindowLevel(double _val);
+    double toWindowLevel(double _val) const;
 
     double fromWindowLevel(double _val);
 
@@ -162,7 +157,7 @@ protected:
 
     WindowLevelMinMaxType getImageWindowMinMax();
 
-    bool getWidgetDoubleValue(QLineEdit* widget, double& val);
+    static bool getWidgetDoubleValue(QLineEdit* widget, double& val);
 
     void setWidgetDynamicRange(double min, double max);
 
@@ -177,10 +172,10 @@ private:
 
     QPointer<sight::ui::qt::widget::QRangeSlider> m_rangeSlider;
 
-    double m_widgetDynamicRangeMin;
-    double m_widgetDynamicRangeWidth;
-    bool m_autoWindowing;
-    bool m_enableSquareTF;
+    double m_widgetDynamicRangeMin {-1024};
+    double m_widgetDynamicRangeWidth {4000};
+    bool m_autoWindowing {false};
+    bool m_enableSquareTF {true};
 
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     data::TransferFunction::sptr m_previousTF;
@@ -192,4 +187,4 @@ private:
     data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF, true};
 };
 
-} // uiImageQt
+} // namespace sight::module::ui::qt::image

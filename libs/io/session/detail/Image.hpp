@@ -33,10 +33,7 @@
 #include <vtkXMLImageDataReader.h>
 #include <vtkXMLImageDataWriter.h>
 
-namespace sight::io::session
-{
-
-namespace detail::Image
+namespace sight::io::session::detail::Image
 {
 
 constexpr static auto s_uuid {"uuid"};
@@ -48,7 +45,7 @@ inline static void serialize(
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
+    std::map<std::string, data::Object::csptr>& /*unused*/,
     const core::crypto::secure_string& password = ""
 )
 {
@@ -86,7 +83,7 @@ inline static void serialize(
 inline static data::Image::sptr deserialize(
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
     const core::crypto::secure_string& password = ""
 )
@@ -119,6 +116,4 @@ inline static data::Image::sptr deserialize(
     return image;
 }
 
-} // namespace detail::Image
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Image

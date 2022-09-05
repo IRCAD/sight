@@ -26,10 +26,7 @@
 
 #include <Qt>
 
-namespace sight::viz::scene2d
-{
-
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 //-----------------------------------------------------------------------------
@@ -79,49 +76,43 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    Event() :
-        m_type(NoType),
-        m_button(NoButton),
-        m_modifier(NoModifier),
-        m_accepted(false),
-        m_key(Qt::Key_unknown)
-    {
-    }
+    Event()
+    = default;
 
-    bool isAccepted() const;
+    [[nodiscard]] bool isAccepted() const;
     void setAccepted(bool accepted);
 
-    Button getButton() const;
+    [[nodiscard]] Button getButton() const;
     void setButton(Button button);
 
-    const vec2d_t& getCoord() const;
+    [[nodiscard]] const vec2d_t& getCoord() const;
     void setCoord(const vec2d_t& coord);
 
-    int getKey() const;
+    [[nodiscard]] int getKey() const;
     void setKey(int key);
 
-    Modifier getModifier() const;
+    [[nodiscard]] Modifier getModifier() const;
     void setModifier(Modifier modifier);
 
-    const vec2d_t& getOldSize() const;
+    [[nodiscard]] const vec2d_t& getOldSize() const;
     void setOldSize(const vec2d_t& oldSize);
 
-    const vec2d_t& getSize() const;
+    [[nodiscard]] const vec2d_t& getSize() const;
     void setSize(const vec2d_t& size);
 
-    Type getType() const;
+    [[nodiscard]] Type getType() const;
     void setType(Type type);
 
 private:
 
-    vec2d_t m_coord;
-    Type m_type;
-    Button m_button;
-    Modifier m_modifier;
-    vec2d_t m_size;
-    vec2d_t m_oldSize;
-    bool m_accepted;
-    int m_key;
+    vec2d_t m_coord {};
+    Type m_type {NoType};
+    Button m_button {NoButton};
+    Modifier m_modifier {NoModifier};
+    vec2d_t m_size {};
+    vec2d_t m_oldSize {};
+    bool m_accepted {false};
+    int m_key {Qt::Key_unknown};
 };
 
 //------------------------------------------------------------------------------
@@ -236,6 +227,4 @@ inline void Event::setType(Type type)
     m_type = type;
 }
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

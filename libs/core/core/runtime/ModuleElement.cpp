@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,7 @@ namespace sight::core::runtime
 {
 
 ModuleElement::ModuleElement() :
-    m_module(detail::Module::getLoadingModule()),
-    m_enable(true)
+    m_module(detail::Module::getLoadingModule())
 {
     // Post-condition
     SIGHT_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr);
@@ -38,8 +37,7 @@ ModuleElement::ModuleElement() :
 //------------------------------------------------------------------------------
 
 ModuleElement::ModuleElement(std::shared_ptr<Module> module) :
-    m_module(module),
-    m_enable(true)
+    m_module(module)
 {
     // Post-condition
     SIGHT_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr);

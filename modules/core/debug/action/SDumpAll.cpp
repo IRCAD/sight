@@ -30,23 +30,18 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::module::debug
-{
-
-namespace action
+namespace sight::module::debug::action
 {
 
 //------------------------------------------------------------------------------
 
-SDumpAll::SDumpAll() noexcept
-{
-}
+SDumpAll::SDumpAll() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SDumpAll::~SDumpAll() noexcept
-{
-}
+SDumpAll::~SDumpAll() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -60,7 +55,7 @@ void SDumpAll::updating()
         buffInfoMap = buffManager->getBufferInfos().get();
     }
 
-    for(core::memory::BufferManager::BufferInfoMapType::value_type elt : buffInfoMap)
+    for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt : buffInfoMap)
     {
         core::memory::BufferInfo dumpBuffInfo = elt.second;
         bool loaded                           = dumpBuffInfo.loaded;
@@ -106,6 +101,4 @@ void SDumpAll::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-
-} // namespace sight::module::debug
+} // namespace sight::module::debug::action

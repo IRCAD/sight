@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <QPointer>
 #include <QTreeWidget>
 
-namespace sight::module::ui::debug
-{
-
-namespace action
+namespace sight::module::ui::debug::action
 {
 
 /**
@@ -50,7 +47,7 @@ public:
     MODULE_UI_DEBUG_API ComponentsTree() noexcept;
 
     /// Does nothing
-    MODULE_UI_DEBUG_API virtual ~ComponentsTree() noexcept;
+    MODULE_UI_DEBUG_API ~ComponentsTree() noexcept override;
 
 protected:
 
@@ -75,6 +72,4 @@ private:
     QPointer<QTreeWidget> m_treeContainer;
 };
 
-} // namespace action
-
-} // namespace sight::module::ui::debug
+} // namespace sight::module::ui::debug::action

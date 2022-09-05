@@ -156,7 +156,7 @@ private:
      * @param _dx the cursor's width displacement since the last event.
      * @param _dy the cursor's height displacement since the last event.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) override;
+    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy) override;
 
     /**
      * @brief Attempts to pick the negato and starts interactions if picking was successful.
@@ -164,10 +164,10 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
 
     /// Ends all interactions, regardless of the input.
-    void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
+    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
 
     /**
      * @brief Sets the slice intersection at the (_x, _y) screen position if possible.
@@ -202,7 +202,7 @@ private:
     void newImage();
 
     /// SLOT: updates the image slice type.
-    void changeSliceType(int, int);
+    void changeSliceType(int /*unused*/, int /*unused*/);
 
     /**
      * @brief SLOT: updates the image slice index.
@@ -265,10 +265,10 @@ private:
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
 
     /// Defines the transfer function window value at the time the interaction started.
-    double m_initialWindow {0.f};
+    double m_initialWindow {0.F};
 
     /// Defines the transfer function level value at the time the interaction started.
-    double m_initialLevel {0.f};
+    double m_initialLevel {0.F};
 
     /// Defines the mouse position at the time the windowing interaction started.
     Ogre::Vector2i m_initialPos {-1, -1};

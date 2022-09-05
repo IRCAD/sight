@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::memory
-{
-
-namespace ut
+namespace sight::core::memory::ut
 {
 
 class BufferManagerTest : public CPPUNIT_NS::TestFixture
@@ -43,16 +40,14 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void allocateTest();
-    void memoryInfoTest();
-    void swapTest();
-    void dumpRestoreTest();
-    void dumpPolicyTest();
+    static void allocateTest();
+    static void memoryInfoTest();
+    static void swapTest();
+    static void dumpRestoreTest();
+    static void dumpPolicyTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::ut

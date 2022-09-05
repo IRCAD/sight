@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,10 +36,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::custom::DefaultDicomFilter);
 
-namespace sight::filter::dicom
-{
-
-namespace custom
+namespace sight::filter::dicom::custom
 {
 
 const std::string DefaultDicomFilter::s_FILTER_NAME        = "Default DICOM filter";
@@ -47,16 +44,14 @@ const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filt
 
 //-----------------------------------------------------------------------------
 
-DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key) :
-    ICustom()
+DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::~DefaultDicomFilter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -94,7 +89,7 @@ const
 
         // Create filter depending on SOPClassUID
         data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
-        std::string sopClassUID                                          = sopClassUIDContainer.begin()->c_str();
+        std::string sopClassUID                                          = *sopClassUIDContainer.begin();
         if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Remove hard coded string
         {
             sopClassUID = "Comprehensive3DSR";
@@ -124,7 +119,7 @@ const
             tempo.push_back(s);
         }
 
-        for(data::DicomSeries::sptr filteredSeries : tempo)
+        for(const data::DicomSeries::sptr& filteredSeries : tempo)
         {
             result.push_back(filteredSeries);
         }
@@ -133,6 +128,4 @@ const
     return result;
 }
 
-} // namespace custom
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::custom

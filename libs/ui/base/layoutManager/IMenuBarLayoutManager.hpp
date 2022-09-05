@@ -33,10 +33,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -57,7 +54,7 @@ public:
     UI_BASE_API IMenuBarLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IMenuBarLayoutManager();
+    UI_BASE_API ~IMenuBarLayoutManager() override;
 
     /**
      * @brief Returns the vector of fwMenu managed by this layout.
@@ -129,6 +126,4 @@ protected:
     std::vector<std::string> m_menuNames;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

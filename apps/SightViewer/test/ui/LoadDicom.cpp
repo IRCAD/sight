@@ -75,4 +75,4 @@ void LoadDicom::test()
     );
 }
 
-} // namespace sight::sightviewer:test::ui
+} // namespace sight::sightviewer::test::ui

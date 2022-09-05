@@ -35,10 +35,7 @@
 #include <functional>
 #include <vector>
 
-namespace sight::service
-{
-
-namespace extension
+namespace sight::service::extension
 {
 
 //-----------------------------------------------------------------------------
@@ -54,12 +51,12 @@ void Factory::parseBundleInformation()
 {
     SrvRegContainer moduleInfoMap;
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::shared_ptr<core::runtime::Extension> ExtensionType;
+    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
+    using ExtensionType     = std::shared_ptr<core::runtime::Extension>;
 
     std::vector<ExtensionType> extElements;
     extElements = core::runtime::getAllExtensionsForPoint("sight::service::extension::Factory");
-    for(ExtensionType extElt : extElements)
+    for(const ExtensionType& extElt : extElements)
     {
         std::vector<ConfigurationType> cfgEltVec = extElt->getElements();
         std::string type;
@@ -68,7 +65,7 @@ void Factory::parseBundleInformation()
         std::string desc;
         std::string tags;
 
-        for(ConfigurationType cfgElt : cfgEltVec)
+        for(const ConfigurationType& cfgElt : cfgEltVec)
         {
             std::string elt = cfgElt->getName();
             if(elt == "type")
@@ -112,13 +109,13 @@ void Factory::parseBundleInformation()
         moduleInfoMap.emplace(std::make_pair(service, info));
     }
 
-    this->printInfoMap(moduleInfoMap);
+    sight::service::extension::Factory::printInfoMap(moduleInfoMap);
 
     core::mt::ReadToWriteLock lock(m_srvImplToSrvInfoMutex);
     // Merge data info
-    for(SrvRegContainer::value_type module : moduleInfoMap)
+    for(const SrvRegContainer::value_type& module : moduleInfoMap)
     {
-        SrvRegContainer::iterator iter = m_srvImplToSrvInfo.find(module.first);
+        auto iter = m_srvImplToSrvInfo.find(module.first);
 
         if(iter != m_srvImplToSrvInfo.end())
         {
@@ -127,8 +124,8 @@ void Factory::parseBundleInformation()
                 << " )."
             );
 
-            ServiceInfo& info       = iter->second;
-            ServiceInfo& infoModule = module.second;
+            ServiceInfo& info             = iter->second;
+            const ServiceInfo& infoModule = module.second;
 
             SIGHT_ASSERT("Try to add a module, but this module already exists.", !info.module);
             SIGHT_ASSERT(
@@ -152,7 +149,7 @@ void Factory::parseBundleInformation()
         }
     }
 
-    this->printInfoMap(m_srvImplToSrvInfo);
+    sight::service::extension::Factory::printInfoMap(m_srvImplToSrvInfo);
     this->checkServicesNotDeclaredInPluginXml();
 }
 
@@ -164,7 +161,7 @@ IService::sptr Factory::create(const std::string& _srvImpl) const
     IService::sptr service;
 
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::const_iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
 
     SIGHT_ASSERT(
         "The service called '" << srvImpl << "' does not exist in the Factory ",
@@ -229,10 +226,10 @@ void Factory::addServiceFactory(
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     const std::string srvType = core::runtime::filterID(_srvType);
 
-    SIGHT_DEBUG("New service registering : srvImpl =" + srvImpl + " srvType=" + srvType);
+    SIGHT_DEBUG(std::string("New service registering : srvImpl =").append(srvImpl).append(" srvType=").append(srvType));
 
     core::mt::ReadToWriteLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
 
     if(iter != m_srvImplToSrvInfo.end())
     {
@@ -270,11 +267,13 @@ void Factory::addObjectFactory(const std::string& _srvImpl, const std::string& _
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     const std::string oImpl   = core::runtime::filterID(_oimpl);
 
-    SIGHT_DEBUG("New object oImpl=" + oImpl + "registering to service: srvImpl =" + srvImpl);
+    SIGHT_DEBUG(
+        std::string("New object oImpl=").append(oImpl).append("registering to service: srvImpl =").append(srvImpl)
+    );
     SIGHT_ASSERT("Empty oImpl", !oImpl.empty());
 
     core::mt::ReadToWriteLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
 
     SIGHT_ASSERT(
         "Try to associate an object to a service factory, but this srv is not yet registered.",
@@ -307,12 +306,12 @@ void Factory::addObjectFactory(const std::string& _srvImpl, const std::string& _
 
 //-----------------------------------------------------------------------------
 
-void Factory::printInfoMap(const SrvRegContainer& src) const
+void Factory::printInfoMap(const SrvRegContainer& src)
 {
     // not thread-safe
 
     //Print information
-    for(SrvRegContainer::value_type srvReg : src)
+    for(const SrvRegContainer::value_type& srvReg : src)
     {
         SIGHT_DEBUG(" Service name = " << srvReg.first);
         SIGHT_DEBUG("  - type   = " << srvReg.second.serviceType);
@@ -343,7 +342,7 @@ void Factory::checkServicesNotDeclaredInPluginXml() const
 {
     // not thread-safe
     //Print information
-    for(SrvRegContainer::value_type srvReg : m_srvImplToSrvInfo)
+    for(const SrvRegContainer::value_type& srvReg : m_srvImplToSrvInfo)
     {
         if(!srvReg.second.module)
         {
@@ -373,7 +372,7 @@ std::vector<std::string> Factory::getImplementationIdFromObjectAndType(
     std::vector<std::string> serviceImpl;
 
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    for(SrvRegContainer::value_type srv : m_srvImplToSrvInfo)
+    for(const SrvRegContainer::value_type& srv : m_srvImplToSrvInfo)
     {
         const ServiceInfo& srvInfo = srv.second;
         for(const auto& oimpl : srvInfo.objectImpl)
@@ -401,14 +400,14 @@ std::string Factory::getDefaultImplementationIdFromObjectAndType(
     const std::string type   = core::runtime::filterID(_type);
     SIGHT_ASSERT("This case is not managed ", object != "sight::data::Object");
 
-    std::string serviceImpl = "";
+    std::string serviceImpl;
 #ifdef _DEBUG
     bool genericImplIsFound = false;
 #endif
     bool specificImplIsFound = false;
 
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    for(SrvRegContainer::value_type srv : m_srvImplToSrvInfo)
+    for(const SrvRegContainer::value_type& srv : m_srvImplToSrvInfo)
     {
         const ServiceInfo& srvInfo = srv.second;
         if(srvInfo.serviceType == type)
@@ -428,7 +427,8 @@ std::string Factory::getDefaultImplementationIdFromObjectAndType(
                     serviceImpl         = srv.first;
                     break;
                 }
-                else if(oimpl == "sight::data::Object")
+
+                if(oimpl == "sight::data::Object")
                 {
                     SIGHT_ASSERT(
                         "Method has already found a generic service for the object ("
@@ -460,7 +460,7 @@ const std::vector<std::string>& Factory::getServiceObjects(const std::string& _s
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     std::string objImpl;
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::const_iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
     SIGHT_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplToSrvInfo.end());
     return iter->second.objectImpl;
 }
@@ -471,7 +471,7 @@ std::string Factory::getServiceDescription(const std::string& _srvImpl) const
 {
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::const_iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
     SIGHT_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplToSrvInfo.end());
     return iter->second.desc;
 }
@@ -482,7 +482,7 @@ std::string Factory::getServiceTags(const std::string& _srvImpl) const
 {
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::const_iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
     SIGHT_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplToSrvInfo.end());
     return iter->second.tags;
 }
@@ -495,7 +495,7 @@ bool Factory::checkServiceValidity(const std::string& _object, const std::string
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     bool isValid              = true;
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::const_iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
     isValid &= (iter != m_srvImplToSrvInfo.end());
     if(isValid)
     {
@@ -525,7 +525,7 @@ bool Factory::support(const std::string& _object, const std::string& _srvType, c
 
     bool isSupported = true;
     core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-    SrvRegContainer::const_iterator iter = m_srvImplToSrvInfo.find(srvImpl);
+    auto iter = m_srvImplToSrvInfo.find(srvImpl);
     isSupported &= (iter != m_srvImplToSrvInfo.end());
     if(isSupported)
     {
@@ -566,7 +566,7 @@ bool Factory::support(const std::string& _object, const std::string& _srvType)
     else
     {
         core::mt::ReadLock lock(m_srvImplToSrvInfoMutex);
-        for(SrvRegContainer::value_type srv : m_srvImplToSrvInfo)
+        for(const SrvRegContainer::value_type& srv : m_srvImplToSrvInfo)
         {
             const ServiceInfo& srvInfo = srv.second;
 
@@ -600,13 +600,10 @@ Factory::KeyVectorType Factory::getFactoryKeys() const
         m_srvImplToSrvInfo.begin(),
         m_srvImplToSrvInfo.end(),
         std::back_inserter(vectKeys),
-        std::bind(&SrvRegContainer::value_type::first, std::placeholders::_1)
-    );
+        [](const auto& e){return e.first;});
     return vectKeys;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace extension
-
-} // namespace sight::service
+} // namespace sight::service::extension

@@ -76,15 +76,14 @@ data::StructureTraits::sptr ReconstructionTraits::getStructureTraits()
 
 //------------------------------------------------------------------------------
 
-ReconstructionTraits::ReconstructionTraits(data::Object::Key)
+ReconstructionTraits::ReconstructionTraits(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 ReconstructionTraits::~ReconstructionTraits()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

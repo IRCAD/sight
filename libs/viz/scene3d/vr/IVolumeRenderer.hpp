@@ -42,10 +42,7 @@
 
 #include <optional>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -130,9 +127,9 @@ public:
      * @param preintegration (optional) Enable preintegration. Default is false.
      */
     VIZ_SCENE3D_API IVolumeRenderer(
-        const std::string& parentId,
-        Ogre::SceneManager* const sceneManager,
-        Ogre::SceneNode* const volumeNode,
+        std::string parentId,
+        Ogre::SceneManager* sceneManager,
+        Ogre::SceneNode* volumeNode,
         sight::data::Image::csptr image,
         sight::data::TransferFunction::csptr tf,
         bool with_buffer    = false,
@@ -162,16 +159,16 @@ public:
     VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) = 0;
 
     ///@brief Returns 'true' if preintegration is used, 'false' otherwise.
-    VIZ_SCENE3D_API bool preintegration() const;
+    [[nodiscard]] VIZ_SCENE3D_API bool preintegration() const;
 
     /// Computes image positions.
     VIZ_SCENE3D_API virtual void clipImage(const Ogre::AxisAlignedBox& clippingBox);
 
     /// Returns the sampling rate.
-    VIZ_SCENE3D_API float samplingDistance() const;
+    [[nodiscard]] VIZ_SCENE3D_API float samplingDistance() const;
 
     ///@brief Returns the current camera information in use.
-    VIZ_SCENE3D_API const camera_info_t& cameraInfo() const;
+    [[nodiscard]] VIZ_SCENE3D_API const camera_info_t& cameraInfo() const;
 
     /// Called when the size of the viewport changes.
     VIZ_SCENE3D_API virtual void resizeViewport(int w, int h);
@@ -228,7 +225,7 @@ protected:
     std::uint16_t m_nbSlices = 512;
 
     /// Distance between samples in local space.
-    float m_sampleDistance;
+    float m_sampleDistance {};
 
     /// Intersection between the image and the clipping box.
     std::array<Ogre::Vector3, 8> m_clippedImagePositions;
@@ -257,6 +254,4 @@ inline auto IVolumeRenderer::cameraInfo() const -> const camera_info_t&
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(io::base::reader::IObjectReader::Key) :
+ImageReader::ImageReader(io::base::reader::IObjectReader::Key /*unused*/) :
     m_job(core::jobs::Observer::New("VTK Image reader"))
 {
 }
@@ -50,14 +50,13 @@ ImageReader::ImageReader(io::base::reader::IObjectReader::Key) :
 //------------------------------------------------------------------------------
 
 ImageReader::~ImageReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void ImageReader::read()
 {
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
 
     assert(!m_object.expired());
     assert(m_object.lock());
@@ -70,9 +69,9 @@ void ImageReader::read()
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [this](vtkObject* caller, long unsigned int, void*)
+        [this](vtkObject* caller, std::uint64_t, void*)
         {
-            auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
+            auto* filter = static_cast<vtkGenericDataObjectReader*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);

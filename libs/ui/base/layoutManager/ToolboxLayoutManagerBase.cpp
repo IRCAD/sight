@@ -30,10 +30,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -44,14 +41,12 @@ const ToolboxLayoutManagerBase::RegistryKeyType ToolboxLayoutManagerBase::REGIST
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManagerBase::ToolboxLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManagerBase::~ToolboxLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +57,7 @@ void ToolboxLayoutManagerBase::initialize(ConfigurationType configuration)
         configuration->getName() == "layout"
     );
     m_views.clear();
-    for(ConfigurationType view : configuration->getElements())
+    for(const ConfigurationType& view : configuration->getElements())
     {
         if(view->getName() == "view")
         {
@@ -180,6 +175,4 @@ void ToolboxLayoutManagerBase::initialize(ConfigurationType configuration)
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

@@ -35,7 +35,7 @@ void SGetSeries::configuring()
     for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
         const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>.index");
-        const size_t index                        = attr.get_value<size_t>();
+        const auto index                          = attr.get_value<size_t>();
         m_indexNumbers.push_back(index);
     }
 }

@@ -154,8 +154,8 @@ private:
     std::string m_sVersion;           ///< profile app version
 
     ParamsContainer m_params;
-    int m_argc;
-    char** m_argv;
+    int m_argc {0};
+    char** m_argv {nullptr};
 };
 
 /**

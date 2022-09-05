@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,6 @@ namespace sight::core::runtime
 
 class Module;
 
-namespace io
-{
-
-class ModuleDescriptorReader;
-
-} // namespace io
-
 /**
  * @brief   Defines the extension class.
  */
@@ -61,21 +54,21 @@ struct CORE_CLASS_API Extension : public ModuleElement,
     /**
      * @brief   Destructor
      */
-    ~Extension();
+    ~Extension() override;
 
     /**
      * @brief   Retrieves the extension identifier.
      *
      * @return  a string containing the extension identifier (may be empty)
      */
-    CORE_API const std::string& getIdentifier() const;
+    [[nodiscard]] CORE_API const std::string& getIdentifier() const;
 
     /**
      * @brief   Retrieves the extension point identifier.
      *
      * @return  a string containing the extension point identifier
      */
-    CORE_API const std::string& getPoint() const;
+    [[nodiscard]] CORE_API const std::string& getPoint() const;
 
     /**
      * @brief   Retrieves the validity of the extension.
@@ -86,14 +79,14 @@ struct CORE_CLASS_API Extension : public ModuleElement,
      *
      * @return  the validity
      */
-    CORE_API Validity getValidity() const;
+    [[nodiscard]] CORE_API Validity getValidity() const;
 
     /**
      * @brief   Retrieves the xml node that represents the extension
      *
      * @return  a pointer to an xml node
      */
-    CORE_API xmlNodePtr getXmlNode() const;
+    [[nodiscard]] CORE_API xmlNodePtr getXmlNode() const;
 
     /**
      * @brief   Validates the extension.
@@ -122,7 +115,7 @@ struct CORE_CLASS_API Extension : public ModuleElement,
         std::shared_ptr<Module> module,
         const std::string& id,
         const std::string& point,
-        const xmlNodePtr xmlNode
+        xmlNodePtr xmlNode
     );
 
     private:
@@ -132,15 +125,15 @@ struct CORE_CLASS_API Extension : public ModuleElement,
         // connected to.
         xmlDocPtr m_xmlDoc; ///< A pointer to the xml document that contains the xml node representing the
         // extension
-        xmlNodePtr m_xmlNode; ///< A pointer to the xml node that represents the extension
-        Validity m_validity;  ///< The validity state of the extension
+        xmlNodePtr m_xmlNode;                  ///< A pointer to the xml node that represents the extension
+        Validity m_validity {UnknownValidity}; ///< The validity state of the extension
 
         /**
          * @brief   Assignment operator.
          *
          * @remark  Assignment is forbidden.
          */
-        void operator=(const Extension&) noexcept;
+        void operator=(const Extension&) noexcept = delete;
 };
 
 } // namespace sight::core::runtime

@@ -26,13 +26,7 @@
 
 #include <data/Equipment.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -61,7 +55,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Equipment();
+    IO_DICOM_API ~Equipment() override;
 
     /**
      * @brief Write General Equipment Module tags
@@ -76,8 +70,4 @@ public:
     IO_DICOM_API virtual void writeEnhancedGeneralEquipmentModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

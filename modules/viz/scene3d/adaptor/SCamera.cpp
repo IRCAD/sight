@@ -48,14 +48,14 @@ struct SCamera::CameraNodeListener : public Ogre::MovableObject::Listener
 
     //------------------------------------------------------------------------------
 
-    CameraNodeListener(SCamera* _renderer) :
+    explicit CameraNodeListener(SCamera* _renderer) :
         m_layer(_renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void objectMoved(Ogre::MovableObject*) override
+    void objectMoved(Ogre::MovableObject* /*unused*/) override
     {
         m_layer->updateTF3D();
     }
@@ -71,9 +71,8 @@ SCamera::SCamera() noexcept
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() noexcept
-{
-}
+SCamera::~SCamera() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -175,7 +174,7 @@ void SCamera::stopping()
 {
     m_layerConnection.disconnect();
 
-    if(m_cameraNodeListener)
+    if(m_cameraNodeListener != nullptr)
     {
         m_camera->setListener(nullptr);
         delete m_cameraNodeListener;
@@ -303,8 +302,8 @@ void SCamera::calibrate()
     }
     else
     {
-        const float width  = static_cast<float>(m_camera->getViewport()->getActualWidth());
-        const float height = static_cast<float>(m_camera->getViewport()->getActualHeight());
+        const auto width  = static_cast<float>(m_camera->getViewport()->getActualWidth());
+        const auto height = static_cast<float>(m_camera->getViewport()->getActualHeight());
 
         const float aspectRatio = width / height;
         m_camera->setAspectRatio(aspectRatio);
@@ -315,10 +314,10 @@ void SCamera::calibrate()
 
 void SCamera::calibrateMonoCamera(const data::Camera& _cam)
 {
-    const float width    = static_cast<float>(m_camera->getViewport()->getActualWidth());
-    const float height   = static_cast<float>(m_camera->getViewport()->getActualHeight());
-    const float nearClip = static_cast<float>(m_camera->getNearClipDistance());
-    const float farClip  = static_cast<float>(m_camera->getFarClipDistance());
+    const auto width    = static_cast<float>(m_camera->getViewport()->getActualWidth());
+    const auto height   = static_cast<float>(m_camera->getViewport()->getActualHeight());
+    const auto nearClip = static_cast<float>(m_camera->getNearClipDistance());
+    const auto farClip  = static_cast<float>(m_camera->getFarClipDistance());
 
     if(_cam.getIsCalibrated())
     {
@@ -340,10 +339,10 @@ void SCamera::calibrateMonoCamera(const data::Camera& _cam)
 
 void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
 {
-    const float width        = static_cast<float>(m_camera->getViewport()->getActualWidth());
-    const float height       = static_cast<float>(m_camera->getViewport()->getActualHeight());
-    const float nearClip     = static_cast<float>(m_camera->getNearClipDistance());
-    const float farClip      = static_cast<float>(m_camera->getFarClipDistance());
+    const auto width         = static_cast<float>(m_camera->getViewport()->getActualWidth());
+    const auto height        = static_cast<float>(m_camera->getViewport()->getActualHeight());
+    const auto nearClip      = static_cast<float>(m_camera->getNearClipDistance());
+    const auto farClip       = static_cast<float>(m_camera->getFarClipDistance());
     const std::size_t nbCams = _cs.numCameras();
 
     SIGHT_WARN_IF(
@@ -395,7 +394,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
             }
         }
 
-        if(calibrations.size() > 0)
+        if(!calibrations.empty())
         {
             layer->setCameraCalibrations(calibrations);
             this->updating();

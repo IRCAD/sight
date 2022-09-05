@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class PatientTest : public CPPUNIT_NS::TestFixture
@@ -45,20 +42,18 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void nameTest();
     void idTest();
     void birthdateTest();
     void sexTest();
-    void equalityTest();
+    static void equalityTest();
 
 private:
 
     Patient::sptr m_patient;
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

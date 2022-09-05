@@ -33,7 +33,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Float::Float(data::Object::Key) noexcept
+Float::Float(data::Object::Key /*unused*/) noexcept
 {
 }
 

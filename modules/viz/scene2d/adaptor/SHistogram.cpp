@@ -32,10 +32,9 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-namespace sight::module::viz::scene2d
-{
+using sight::viz::scene2d::vec2d_t;
 
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 const core::com::Slots::SlotKeyType s_IMAGE_CHANGE_SLOT = "imageChange";
@@ -49,9 +48,8 @@ SHistogram::SHistogram() noexcept
 
 //---------------------------------------------------------------------------------------------------------
 
-SHistogram::~SHistogram() noexcept
-{
-}
+SHistogram::~SHistogram() noexcept =
+    default;
 
 //---------------------------------------------------------------------------------------------------------
 
@@ -64,7 +62,7 @@ void SHistogram::configuring()
 
     m_scale = m_yAxis->getScale();
 
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
@@ -132,7 +130,7 @@ void SHistogram::starting()
 
 void SHistogram::updating()
 {
-    if(m_layer)
+    if(m_layer != nullptr)
     {
         this->getScene2DRender()->getScene()->removeItem(m_layer);
         delete m_layer;
@@ -153,8 +151,8 @@ void SHistogram::updating()
             color.setAlphaF(m_opacity);
             m_color.setColor(color);
 
-            const double min       = m_histogram->min();
-            const double binsWidth = static_cast<double>(m_histogramBinsWidth);
+            const double min     = m_histogram->min();
+            const auto binsWidth = static_cast<double>(m_histogramBinsWidth);
 
             QBrush brush = QBrush(m_color.color());
 
@@ -169,7 +167,7 @@ void SHistogram::updating()
                 painter.lineTo(pt2.x, pt1.y);
                 painter.lineTo(pt2.x, 0);
 
-                QGraphicsPathItem* item = new QGraphicsPathItem(painter);
+                auto* item = new QGraphicsPathItem(painter);
                 item->setPath(painter);
                 item->setBrush(brush);
                 item->setPen(Qt::NoPen);
@@ -193,14 +191,14 @@ void SHistogram::stopping()
 {
     m_histogram.reset();
 
-    if(m_layer)
+    if(m_layer != nullptr)
     {
         this->getScene2DRender()->getScene()->removeItem(m_layer);
         delete m_layer;
         m_layer = nullptr;
     }
 
-    if(m_cursorLayer)
+    if(m_cursorLayer != nullptr)
     {
         this->getScene2DRender()->getScene()->removeItem(m_cursorLayer);
         delete m_cursorLayer;
@@ -328,9 +326,9 @@ void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
 {
     if(m_cursorEnabled)
     {
-        const auto values               = m_histogram->sample(m_histogramBinsWidth);
-        const double histogramMinValue  = m_histogram->min();
-        const double histogramBinsWidth = static_cast<double>(m_histogramBinsWidth);
+        const auto values              = m_histogram->sample(m_histogramBinsWidth);
+        const double histogramMinValue = m_histogram->min();
+        const auto histogramBinsWidth  = static_cast<double>(m_histogramBinsWidth);
 
         // Event coordinates in scene
         sight::viz::scene2d::vec2d_t sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
@@ -341,7 +339,7 @@ void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
         const auto viewport       = m_viewport.lock();
         const auto viewToViewport = this->viewToViewport(*viewport);
 
-        if(index >= 0.f && index < static_cast<double>(nbValues) && m_entered)
+        if(index >= 0.F && index < static_cast<double>(nbValues) && m_entered)
         {
             sight::viz::scene2d::vec2d_t coord;
             coord.x = sceneCoord.x;
@@ -393,6 +391,4 @@ void SHistogram::onImageChange()
     this->updating();
 }
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

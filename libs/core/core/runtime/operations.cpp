@@ -34,6 +34,7 @@
 
 #include <algorithm>
 #include <regex>
+#include <utility>
 #include <vector>
 
 namespace sight::core::runtime
@@ -52,8 +53,8 @@ namespace
  */
 struct ConfigurationElementIdentifierPredicate
 {
-    ConfigurationElementIdentifierPredicate(const std::string& identifier) :
-        m_identifier(identifier)
+    explicit ConfigurationElementIdentifierPredicate(std::string identifier) :
+        m_identifier(std::move(identifier))
     {
     }
 
@@ -69,7 +70,7 @@ struct ConfigurationElementIdentifierPredicate
         std::string m_identifier;
 };
 
-}
+} // namespace
 
 //------------------------------------------------------------------------- -----
 
@@ -139,7 +140,7 @@ std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier)
     if(module == nullptr)
     {
         SIGHT_ERROR("Could not find module " + moduleIdentifier + "'");
-        return std::filesystem::path();
+        return {};
     }
 
     return module->getResourcesLocation();
@@ -158,7 +159,7 @@ std::filesystem::path getModuleResourceFilePath(
     if(module == nullptr)
     {
         SIGHT_ERROR("Could not find module '" + moduleIdentifier + "'");
-        return std::filesystem::path();
+        return {};
     }
 
     return getModuleResourcePath(module, path);
@@ -188,7 +189,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
         if(module == nullptr)
         {
             SIGHT_DEBUG("Could not find module '" + moduleFolder + "'");
-            return std::filesystem::path();
+            return {};
         }
 
         return getModuleResourcePath(module, pathWithoutModule);
@@ -196,7 +197,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     catch(...)
     {
         SIGHT_ERROR("Error looking for module '" + moduleFolder + "'");
-        return std::filesystem::path();
+        return {};
     }
 }
 
@@ -227,7 +228,7 @@ std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& pa
     // The library resources are at the same location than modules
     // Find a repo that matches the library namespace
     const auto repositories = runtime.getRepositoriesPath();
-    for(auto repo : repositories)
+    for(const auto& repo : repositories)
     {
         std::filesystem::path lastPath = *(--repo.second.end());
         if(lastPath.string() == libNamespace)
@@ -339,7 +340,7 @@ bool loadLibrary(const std::string& identifier)
 
     // Try to load from all known paths
     const auto repositories = runtime.getRepositoriesPath();
-    for(auto repo : repositories)
+    for(const auto& repo : repositories)
     {
         library->setSearchPath(repo.first);
         try

@@ -40,13 +40,13 @@ public:
     TUTO01BASICQML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO01BASICQML_API ~Plugin() noexcept;
+    TUTO01BASICQML_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO01BASICQML_API void start();
+    TUTO01BASICQML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO01BASICQML_API void stop() noexcept;
+    TUTO01BASICQML_API void stop() noexcept override;
 };
 
 } // namespace Tuto01BasicQml

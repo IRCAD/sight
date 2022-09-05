@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::io::vtk
-{
-
-namespace ut
+namespace sight::module::io::vtk::ut
 {
 
 /**
@@ -51,21 +48,19 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void testVtkImageReader();
-    void testVtiImageReader();
-    void testMhdImageReader();
-    void testImageReaderExtension();
-    void testBitmapImageWriter();
-    void testVtkImageWriter();
-    void testVtkImageSeriesWriter();
-    void testVtiImageWriter();
-    void testMhdImageWriter();
-    void testImageWriterExtension();
+    static void testVtkImageReader();
+    static void testVtiImageReader();
+    static void testMhdImageReader();
+    static void testImageReaderExtension();
+    static void testBitmapImageWriter();
+    static void testVtkImageWriter();
+    static void testVtkImageSeriesWriter();
+    static void testVtiImageWriter();
+    static void testMhdImageWriter();
+    static void testImageWriterExtension();
 };
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

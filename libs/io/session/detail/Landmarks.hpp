@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,10 +27,7 @@
 #include <data/Landmarks.hpp>
 #include <data/Point.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Landmarks
+namespace sight::io::session::detail::Landmarks
 {
 
 constexpr static auto s_Size {"Size"};
@@ -51,11 +48,11 @@ constexpr static auto s_Groups {"Groups"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto landmarks = Helper::safeCast<data::Landmarks>(object);
@@ -116,11 +113,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Landmarks::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -145,20 +142,20 @@ inline static data::Landmarks::sptr deserialize(
             color,
             groupTree.second.get<float>(s_Size),
             [&]
+            {
+                const int shape = groupTree.second.get<int>(s_Shape);
+                switch(shape)
                 {
-                    const int shape = groupTree.second.get<int>(s_Shape);
-                    switch(shape)
-                    {
-                        case 0:
-                            return data::Landmarks::Shape::CUBE;
+                    case 0:
+                        return data::Landmarks::Shape::CUBE;
 
-                        case 1:
-                            return data::Landmarks::Shape::SPHERE;
+                    case 1:
+                        return data::Landmarks::Shape::SPHERE;
 
-                        default:
-                            SIGHT_THROW("Unknown landmark shape: " << shape);
-                    }
-                }(),
+                    default:
+                        SIGHT_THROW("Unknown landmark shape: " << shape);
+                }
+            }(),
             groupTree.second.get<bool>(s_Visibility)
         );
 
@@ -178,6 +175,4 @@ inline static data::Landmarks::sptr deserialize(
     return landmarks;
 }
 
-} // namespace detail::Landmarks
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Landmarks

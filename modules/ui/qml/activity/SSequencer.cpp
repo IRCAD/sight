@@ -57,8 +57,7 @@ SSequencer::SSequencer()
 //------------------------------------------------------------------------------
 
 SSequencer::~SSequencer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -128,14 +127,14 @@ void SSequencer::goTo(int index)
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const std::size_t newIdx = static_cast<std::size_t>(index);
+    const auto newIdx = static_cast<std::size_t>(index);
 
     data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
 
-    std::tie(ok, errorMsg) = this->validateActivity(activity);
+    std::tie(ok, errorMsg) = sight::module::ui::qml::activity::SSequencer::validateActivity(activity);
     if(ok)
     {
         m_sigActivityCreated->asyncEmit(activity);
@@ -164,7 +163,7 @@ void SSequencer::checkNext()
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const std::size_t nextIdx = static_cast<std::size_t>(m_currentActivity + 1);
+    const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
         data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
@@ -172,7 +171,7 @@ void SSequencer::checkNext()
         bool ok = true;
         std::string errorMsg;
 
-        std::tie(ok, errorMsg) = this->validateActivity(nextActivity);
+        std::tie(ok, errorMsg) = sight::module::ui::qml::activity::SSequencer::validateActivity(nextActivity);
 
         if(ok)
         {

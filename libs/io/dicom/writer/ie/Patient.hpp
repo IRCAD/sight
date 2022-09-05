@@ -26,13 +26,7 @@
 
 #include <data/Patient.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -61,7 +55,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Patient();
+    IO_DICOM_API ~Patient() override;
 
     /**
      * @brief Write Patient Module tags
@@ -70,8 +64,4 @@ public:
     IO_DICOM_API virtual void writePatientModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

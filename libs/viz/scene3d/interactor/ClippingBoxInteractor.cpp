@@ -50,9 +50,8 @@ ClippingBoxInteractor::ClippingBoxInteractor(
 
 //------------------------------------------------------------------------------
 
-ClippingBoxInteractor::~ClippingBoxInteractor() noexcept
-{
-}
+ClippingBoxInteractor::~ClippingBoxInteractor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -70,7 +69,7 @@ Ogre::MovableObject* ClippingBoxInteractor::pickObject(int x, int y)
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, Modifier, int x, int y, int dx, int dy)
+void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, Modifier /*_mods*/, int x, int y, int dx, int dy)
 {
     if(m_widget.getVisibility()) // If a widget is present in the scene.
     {
@@ -98,7 +97,7 @@ void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, Modifier, int x, 
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::buttonReleaseEvent(MouseButton, Modifier, int, int)
+void ClippingBoxInteractor::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_widget.getVisibility())
     {
@@ -109,7 +108,7 @@ void ClippingBoxInteractor::buttonReleaseEvent(MouseButton, Modifier, int, int)
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::buttonPressEvent(MouseButton button, Modifier, int x, int y)
+void ClippingBoxInteractor::buttonPressEvent(MouseButton button, Modifier /*_mods*/, int x, int y)
 {
     if(m_widget.getVisibility())
     {

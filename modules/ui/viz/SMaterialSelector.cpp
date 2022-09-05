@@ -62,9 +62,8 @@ SMaterialSelector::SMaterialSelector() noexcept
 
 //------------------------------------------------------------------------------
 
-SMaterialSelector::~SMaterialSelector() noexcept
-{
-}
+SMaterialSelector::~SMaterialSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -78,7 +77,7 @@ void SMaterialSelector::starting()
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
     // Selection
-    QLabel* currentMaterial = new QLabel();
+    auto* currentMaterial = new QLabel();
     currentMaterial->setText("Current material : ");
 
     m_materialBox = new QComboBox();
@@ -97,7 +96,7 @@ void SMaterialSelector::starting()
 
     m_materialBox->setCurrentIndex(0);
 
-    QHBoxLayout* labelLayout = new QHBoxLayout();
+    auto* labelLayout = new QHBoxLayout();
     labelLayout->addWidget(currentMaterial);
     labelLayout->addWidget(m_materialBox);
 
@@ -105,7 +104,7 @@ void SMaterialSelector::starting()
     m_reloadButton = new QPushButton("Reload");
     m_reloadButton->setObjectName(serviceID + "/" + m_reloadButton->text());
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addLayout(labelLayout);
     layout->addWidget(m_reloadButton);
 
@@ -193,13 +192,13 @@ void SMaterialSelector::onReloadMaterial()
 
     const Ogre::Material::Techniques& techniques = material->getTechniques();
 
-    for(const auto tech : techniques)
+    for(auto* const tech : techniques)
     {
         SIGHT_ASSERT("Technique is not set", tech);
 
         const Ogre::Technique::Passes& passes = tech->getPasses();
 
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             SIGHT_ASSERT("No pass found", pass);
 

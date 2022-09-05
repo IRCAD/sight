@@ -32,10 +32,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -52,17 +49,15 @@ public:
     static const std::string s_NOT_DEFINED;
 
     SIGHT_DECLARE_SERVICE(TestService, service::IService);
-    TestService() noexcept
-    {
-    }
+    TestService() noexcept =
+        default;
 
-    virtual ~TestService() noexcept
-    {
-    }
+    ~TestService() noexcept override =
+        default;
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() final
+    void configuring() final
     {
         const ConfigType cfg = this->getConfigTree();
 
@@ -72,7 +67,7 @@ public:
     void starting() override;
     //------------------------------------------------------------------------------
 
-    virtual void stopping() final;
+    void stopping() final;
     void updating() override;
     //------------------------------------------------------------------------------
 
@@ -177,8 +172,7 @@ public:
 
     //-------------------------------------------------------------------------
 
-    ISTest() noexcept :
-        m_received(false)
+    ISTest() noexcept
     {
         newSignal<IntSentSignalType>(s_SIG_1);
         newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
@@ -187,9 +181,8 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    ~ISTest() noexcept override
-    {
-    }
+    ~ISTest() noexcept override =
+        default;
 
     //-------------------------------------------------------------------------
     void starting() final
@@ -273,7 +266,7 @@ public:
 
 private:
 
-    int m_received;
+    bool m_received {false};
     std::string m_swappedObjectKey;
     data::Object::csptr m_swappedObject;
 };
@@ -463,7 +456,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(STest1Input1InputGroup, service::ut::ISTest);
 
-    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true, 1};
+    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true, true};
     data::ptr_vector<data::Object, data::Access::in> m_inputGroup {this, "dataGroup", true};
 };
 
@@ -529,6 +522,4 @@ public:
     data::ptr<data::Object, data::Access::out> m_output {this, "output", false, true};
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

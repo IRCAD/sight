@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ColorTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -58,10 +55,10 @@ void ColorTest::tearDown()
 void ColorTest::methode1()
 {
     //-----------test values
-    const float R = 0.2f;
-    const float G = 0.8f;
-    const float B = 0.5f;
-    const float A = 0.6f;
+    const float R = 0.2F;
+    const float G = 0.8F;
+    const float B = 0.5F;
+    const float A = 0.6F;
 
     auto color = data::Color::New(R, G, B, A);
 
@@ -79,10 +76,10 @@ void ColorTest::methode1()
 void ColorTest::methode2()
 {
     //-----------test values
-    const float R = 0.2f;
-    const float G = 0.8f;
-    const float B = 0.5f;
-    const float A = 0.6f;
+    const float R = 0.2F;
+    const float G = 0.8F;
+    const float B = 0.5F;
+    const float A = 0.6F;
 
     auto color = data::Color::New();
 
@@ -113,10 +110,10 @@ void ColorTest::methode3()
     // fuchsia string value
     const std::string fuchsia = "#FF006E";
     // fuchsia float values
-    const float R = 1.f;
-    const float G = 0.f;
-    const float B = 110.f / 255.f;
-    const float A = 1.f;
+    const float R = 1.F;
+    const float G = 0.F;
+    const float B = 110.F / 255.F;
+    const float A = 1.F;
 
     data::Color::sptr color = data::Color::New();
 
@@ -134,6 +131,4 @@ void ColorTest::methode3()
     CPPUNIT_ASSERT(*color == *color2);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

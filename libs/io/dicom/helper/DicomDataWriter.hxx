@@ -30,10 +30,7 @@
 #include <gdcmElement.h>
 #include <gdcmSequenceOfItems.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -67,7 +64,7 @@ public:
     template<typename T, std::uint16_t GROUP, std::uint16_t ELEMENT>
     static void setTagValue(const T& value, gdcm::DataSet& dataset)
     {
-        gdcm::Attribute<GROUP, ELEMENT> attribute;
+        gdcm::Attribute<GROUP, ELEMENT> attribute {};
         attribute.SetValue(typename gdcm::Attribute<GROUP, ELEMENT>::ArrayType(value));
         dataset.Insert(attribute.GetAsDataElement());
     }
@@ -219,6 +216,4 @@ public:
     }
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

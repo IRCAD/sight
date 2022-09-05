@@ -49,7 +49,7 @@ public:
 
     IO_ITK_API InrImageWriter(io::base::writer::IObjectWriter::Key key);
 
-    IO_ITK_API ~InrImageWriter();
+    IO_ITK_API ~InrImageWriter() override;
 
     IO_ITK_API void write() override;
 

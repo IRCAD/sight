@@ -61,7 +61,7 @@ public:
     MODULE_DATA_API SGetImage() = default;
 
     /// Destructor
-    MODULE_DATA_API ~SGetImage() = default;
+    MODULE_DATA_API ~SGetImage() override = default;
 
 protected:
 

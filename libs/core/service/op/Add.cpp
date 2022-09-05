@@ -50,4 +50,4 @@ service::IService::sptr add(const std::string& _implType, const std::string& _ui
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::service

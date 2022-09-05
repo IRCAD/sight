@@ -32,10 +32,7 @@
 #include "io/dicom/container/sr/DicomSRUIDRefNode.hpp"
 #include "io/dicom/helper/DicomDataReader.hxx"
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -322,6 +319,4 @@ void StructuredReport::dumpSRNode(
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

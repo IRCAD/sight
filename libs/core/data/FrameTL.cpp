@@ -37,11 +37,7 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 FrameTL::FrameTL(data::Object::Key key) :
-    GenericTL<uint8_t>(key),
-    m_width(0),
-    m_height(0),
-    m_numberOfComponents(3),
-    m_type()
+    GenericTL<uint8_t>(key)
 {
     // Default to 100 frames since images used to eat a lot of memory...
     this->setMaximumSize(100);
@@ -50,12 +46,11 @@ FrameTL::FrameTL(data::Object::Key key) :
 //------------------------------------------------------------------------------
 
 FrameTL::~FrameTL()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
+void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*unused*/)
 {
     FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
@@ -71,7 +66,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 
     this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
 
-    for(TimelineType::value_type elt : other->m_timeline)
+    for(const TimelineType::value_type& elt : other->m_timeline)
     {
         SPTR(data::timeline::Buffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
@@ -123,7 +118,7 @@ void FrameTL::initPoolSize(
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(unsigned int)
+void FrameTL::initPoolSize(unsigned int /*maxElementNum*/)
 {
     SIGHT_ERROR("This function should not be called");
 }

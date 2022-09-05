@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,23 +29,18 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::GenericSceneTest);
 
-namespace sight::viz::qt3dTest
-{
-
-namespace ut
+namespace sight::viz::qt3dTest::ut
 {
 
 //------------------------------------------------------------------------------
 
 GenericSceneTest::GenericSceneTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 GenericSceneTest::~GenericSceneTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -65,8 +60,8 @@ void GenericSceneTest::initializeEmptyScene()
 {
     TestApplication app;
 
-    auto scene    = new sight::viz::qt3d::core::GenericScene(false);
-    auto sceneQml = new sight::viz::qt3d::core::GenericScene(true);
+    auto* scene    = new sight::viz::qt3d::core::GenericScene(false);
+    auto* sceneQml = new sight::viz::qt3d::core::GenericScene(true);
 
     CPPUNIT_ASSERT(scene != nullptr);
     CPPUNIT_ASSERT(scene->getCamera() != nullptr);
@@ -91,6 +86,4 @@ void GenericSceneTest::initializeEmptyScene()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut.
-
-} // namespace sight::viz::qt3dTest.
+} // namespace sight::viz::qt3dTest::ut

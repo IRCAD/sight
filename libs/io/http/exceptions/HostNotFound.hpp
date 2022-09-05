@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/http/config.hpp"
 #include "io/http/exceptions/Base.hpp"
 
-namespace sight::io::http
-{
-
-namespace exceptions
+namespace sight::io::http::exceptions
 {
 
 /**
@@ -42,10 +39,8 @@ public:
      * @name Constructor/Destructor.
      * @{ */
     IO_HTTP_API HostNotFound(const std::string& message);
-    virtual ~HostNotFound() noexcept;
+    ~HostNotFound() noexcept override;
     /**  @} */
 };
 
-} /* namespace exceptions */
-
-} /* namespace sight::io::http */
+} // namespace sight::io::http::exceptions

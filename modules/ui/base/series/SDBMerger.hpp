@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,12 +36,9 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 /**
@@ -91,7 +88,7 @@ public:
 
     MODULE_UI_BASE_API SDBMerger() noexcept;
 
-    MODULE_UI_BASE_API virtual ~SDBMerger() noexcept;
+    MODULE_UI_BASE_API ~SDBMerger() noexcept override;
 
 protected:
 
@@ -131,6 +128,4 @@ private:
     data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
 };
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

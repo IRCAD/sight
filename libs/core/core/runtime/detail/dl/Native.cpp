@@ -25,36 +25,29 @@
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/Runtime.hpp"
 
-#include <limits.h>
-
+#include <climits>
 #include <filesystem>
 #include <string>
+#include <utility>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace dl
+namespace sight::core::runtime::detail::dl
 {
 
 //------------------------------------------------------------------------------
 
-Native::Native(const std::string& name) noexcept :
-    m_name(name)
+Native::Native(std::string name) noexcept :
+    m_name(std::move(name))
 {
 }
 
 //------------------------------------------------------------------------------
 
-Native::~Native() noexcept
-{
-}
+Native::~Native() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path Native::getFullPath() const
+std::filesystem::path Native::getFullPath() const
 {
 #if defined(linux) || defined(__linux)
     // Cache the list of all libraries for each location to speed-up searches
@@ -99,9 +92,9 @@ const std::filesystem::path Native::getFullPath() const
         }
     }
 
-    const std::filesystem::path result = m_searchPath / s_cache[m_searchPath][m_name];
+    std::filesystem::path result = m_searchPath / s_cache[m_searchPath][m_name];
 #elif defined(WIN32)
-    const std::filesystem::path result = m_searchPath / (this->getName() + ".dll");
+    std::filesystem::path result = m_searchPath / (this->getName() + ".dll");
 #endif
 
     // Test that the result path exists.
@@ -125,7 +118,7 @@ const std::filesystem::path Native::getFullPath() const
 
 //------------------------------------------------------------------------------
 
-const std::string Native::getName() const
+std::string Native::getName() const
 {
     return m_name;
 }
@@ -139,14 +132,4 @@ void Native::setSearchPath(const std::filesystem::path& path) noexcept
 
 //------------------------------------------------------------------------------
 
-void Native::operator=(const Native&) noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace dl
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::dl

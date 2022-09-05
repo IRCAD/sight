@@ -40,10 +40,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vision::ut::helperTest);
 
-namespace sight::geometry::vision
-{
-
-namespace ut
+namespace sight::geometry::vision::ut
 {
 
 using core::tools::random::safeRand;
@@ -52,7 +49,7 @@ using ExpectedChessboardType = std::vector<sight::data::Point::PointCoordArrayTy
 
 //------------------------------------------------------------------------------
 
-static inline const cv::Mat readRGBImage(const std::string _fname)
+static inline cv::Mat readRGBImage(const std::string _fname)
 {
     cv::Mat img = cv::imread(_fname, cv::IMREAD_COLOR);
     cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
@@ -97,18 +94,19 @@ void helperTest::tearDown()
 void helperTest::reprojectionIdentity()
 {
     std::vector<cv::Point3f> objectPoints;
-    objectPoints.push_back(cv::Point3f(-30, 30, 0));
-    objectPoints.push_back(cv::Point3f(30, 30, 0));
-    objectPoints.push_back(cv::Point3f(30, -30, 0));
-    objectPoints.push_back(cv::Point3f(-30, -30, 0));
+    objectPoints.emplace_back(-30.F, 30.F, 0.F);
+    objectPoints.emplace_back(30.F, 30.F, 0.F);
+    objectPoints.emplace_back(30.F, -30.F, 0.F);
+    objectPoints.emplace_back(-30.F, -30.F, 0.F);
 
     std::vector<cv::Point2f> imagePoints;
-    imagePoints.push_back(cv::Point2f(-30, 30));
-    imagePoints.push_back(cv::Point2f(30, 30));
-    imagePoints.push_back(cv::Point2f(30, -30));
-    imagePoints.push_back(cv::Point2f(-30, -30));
+    imagePoints.emplace_back(-30.F, 30.F);
+    imagePoints.emplace_back(30.F, 30.F);
+    imagePoints.emplace_back(30.F, -30.F);
+    imagePoints.emplace_back(-30.F, -30.F);
 
-    cv::Mat rvec, tvec;
+    cv::Mat rvec;
+    cv::Mat tvec;
     cv::Mat cameraMatrix;
     cv::Mat distorsion;
 
@@ -153,14 +151,15 @@ void helperTest::reprojectionIdentity()
 void helperTest::reprojectionRealDatasetTest1()
 {
     std::vector<cv::Point3f> objectPoints;
-    objectPoints.push_back(cv::Point3f(-30, 30, 0));
-    objectPoints.push_back(cv::Point3f(30, 30, 0));
-    objectPoints.push_back(cv::Point3f(30, -30, 0));
-    objectPoints.push_back(cv::Point3f(-30, -30, 0));
+    objectPoints.emplace_back(-30.F, 30.F, 0.F);
+    objectPoints.emplace_back(30.F, 30.F, 0.F);
+    objectPoints.emplace_back(30.F, -30.F, 0.F);
+    objectPoints.emplace_back(-30.F, -30.F, 0.F);
 
     std::vector<cv::Point2f> imagePoints;
 
-    cv::Mat rvec, tvec;
+    cv::Mat rvec;
+    cv::Mat tvec;
     cv::Mat cameraMatrix;
     cv::Mat distorsion;
 
@@ -171,10 +170,10 @@ void helperTest::reprojectionRealDatasetTest1()
     distorsion   = cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
-    imagePoints.push_back(cv::Point2f(220.92876f, 224.95102f));
-    imagePoints.push_back(cv::Point2f(393.3707f, 216.15828f));
-    imagePoints.push_back(cv::Point2f(416.92828f, 365.78033f));
-    imagePoints.push_back(cv::Point2f(207.39848f, 375.8844f));
+    imagePoints.emplace_back(220.92876F, 224.95102F);
+    imagePoints.emplace_back(393.3707F, 216.15828F);
+    imagePoints.emplace_back(416.92828F, 365.78033F);
+    imagePoints.emplace_back(207.39848F, 375.8844F);
 
     rvec.at<double>(0) = 2.428872194668891;
     rvec.at<double>(1) = -0.04640821030480094;
@@ -197,10 +196,10 @@ void helperTest::reprojectionRealDatasetTest1()
     distorsion.at<double>(4) = 0.6075565814971924;    //k3
 
     std::vector<cv::Point2f> reprojectedPoints_expected;
-    reprojectedPoints_expected.push_back(cv::Point2f(220.89903f, 224.99107f));
-    reprojectedPoints_expected.push_back(cv::Point2f(393.38748f, 216.12437f));
-    reprojectedPoints_expected.push_back(cv::Point2f(416.922f, 365.82419f));
-    reprojectedPoints_expected.push_back(cv::Point2f(207.41541f, 375.83548f));
+    reprojectedPoints_expected.emplace_back(220.89903F, 224.99107F);
+    reprojectedPoints_expected.emplace_back(393.38748F, 216.12437F);
+    reprojectedPoints_expected.emplace_back(416.922F, 365.82419F);
+    reprojectedPoints_expected.emplace_back(207.41541F, 375.83548F);
 
     const double expectedErr = 0.0462637;
 
@@ -239,14 +238,15 @@ void helperTest::reprojectionRealDatasetTest1()
 void helperTest::reprojectionRealDatasetTest2()
 {
     std::vector<cv::Point3f> objectPoints;
-    objectPoints.push_back(cv::Point3f(-30, 30, 0));
-    objectPoints.push_back(cv::Point3f(30, 30, 0));
-    objectPoints.push_back(cv::Point3f(30, -30, 0));
-    objectPoints.push_back(cv::Point3f(-30, -30, 0));
+    objectPoints.emplace_back(-30.F, 30.F, 0.F);
+    objectPoints.emplace_back(30.F, 30.F, 0.F);
+    objectPoints.emplace_back(30.F, -30.F, 0.F);
+    objectPoints.emplace_back(-30.F, -30.F, 0.F);
 
     std::vector<cv::Point2f> imagePoints;
 
-    cv::Mat rvec, tvec;
+    cv::Mat rvec;
+    cv::Mat tvec;
     cv::Mat cameraMatrix;
     cv::Mat distorsion;
 
@@ -257,10 +257,10 @@ void helperTest::reprojectionRealDatasetTest2()
     distorsion   = cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
-    imagePoints.push_back(cv::Point2f(232.76308f, 227.31705f));
-    imagePoints.push_back(cv::Point2f(410.1149f, 220.90685f));
-    imagePoints.push_back(cv::Point2f(434.63507f, 372.6174f));
-    imagePoints.push_back(cv::Point2f(216.75545f, 379.34464f));
+    imagePoints.emplace_back(232.76308F, 227.31705F);
+    imagePoints.emplace_back(410.1149F, 220.90685F);
+    imagePoints.emplace_back(434.63507F, 372.6174F);
+    imagePoints.emplace_back(216.75545F, 379.34464F);
 
     rvec.at<double>(0) = 2.397315382812963;
     rvec.at<double>(1) = -0.02181686018178059;
@@ -283,10 +283,10 @@ void helperTest::reprojectionRealDatasetTest2()
     distorsion.at<double>(4) = 0.6075565814971924;    //k3
 
     std::vector<cv::Point2f> reprojectedPoints_expected;
-    reprojectedPoints_expected.push_back(cv::Point2f(232.92502f, 227.35114f));
-    reprojectedPoints_expected.push_back(cv::Point2f(409.92566f, 220.82785f));
-    reprojectedPoints_expected.push_back(cv::Point2f(434.73633f, 372.69672f));
-    reprojectedPoints_expected.push_back(cv::Point2f(216.67587f, 379.3006f));
+    reprojectedPoints_expected.emplace_back(232.92502F, 227.35114F);
+    reprojectedPoints_expected.emplace_back(409.92566F, 220.82785F);
+    reprojectedPoints_expected.emplace_back(434.73633F, 372.69672F);
+    reprojectedPoints_expected.emplace_back(216.67587F, 379.3006F);
 
     const double expectedErr = 0.153504;
 
@@ -483,7 +483,7 @@ void helperTest::chessboardDetectionTest()
             chessRgb0,
             9,
             6,
-            0.25f
+            0.25F
         );
 
         const ExpectedChessboardType expectedChessboard {
@@ -543,7 +543,7 @@ void helperTest::chessboardDetectionTest()
             chessRgb1,
             9,
             6,
-            0.25f
+            0.25F
         );
 
         const ExpectedChessboardType expectedChessboard {
@@ -606,7 +606,7 @@ void helperTest::chessboardDetectionTest()
             chessGray,
             9,
             6,
-            0.25f
+            0.25F
         );
 
         const ExpectedChessboardType expectedChessboard {
@@ -658,7 +658,7 @@ void helperTest::chessboardDetectionTest()
             chessGray,
             8,
             5,
-            0.25f
+            0.25F
         );
         CPPUNIT_ASSERT(!detectedChess2);
     }
@@ -673,10 +673,10 @@ void helperTest::chessboardDetectionScaleTest()
     const cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
     const sight::data::PointList::csptr detectedChessFullScale =
-        geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 1.f);
+        geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 1.F);
 
     const sight::data::PointList::csptr detectedChessQuarterScale =
-        geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 0.25f);
+        geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 0.25F);
 
     CPPUNIT_ASSERT_EQUAL(detectedChessFullScale->getPoints().size(), detectedChessQuarterScale->getPoints().size());
 
@@ -692,6 +692,4 @@ void helperTest::chessboardDetectionScaleTest()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::geometry::vision
+} // namespace sight::geometry::vision::ut

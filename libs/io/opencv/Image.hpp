@@ -58,7 +58,7 @@ public:
      * The resulting cv::Mat does not allocate a new buffer and points to the buffer of the data::Image.
      * This is the const-overload of the above function. As such it returns a non-modifiable cv::Mat.
      */
-    IO_OPENCV_API static const cv::Mat moveToCv(const data::Image::csptr& _image);
+    IO_OPENCV_API static cv::Mat moveToCv(const data::Image::csptr& _image);
 
     /**
      * @brief Copy an OpenCV image into our internal image data.

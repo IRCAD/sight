@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ public:
     MODULE_UI_BASE_API SPushSelection() noexcept;
 
     /// Destructor
-    MODULE_UI_BASE_API virtual ~SPushSelection() noexcept;
+    MODULE_UI_BASE_API ~SPushSelection() noexcept override;
 
 protected:
 

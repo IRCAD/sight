@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ public:
     MODULE_UI_DICOM_API SFilterSelectorDialog();
 
     /// Destructor. Do nothing.
-    MODULE_UI_DICOM_API virtual ~SFilterSelectorDialog() noexcept;
+    MODULE_UI_DICOM_API ~SFilterSelectorDialog() noexcept override;
 
 protected:
 
@@ -96,7 +96,7 @@ protected:
 private:
 
     /// Configure if selected filters are included or excluded.
-    bool m_filtersAreExcluded;
+    bool m_filtersAreExcluded {true};
 
     /**
      * @brief List of filters to be included or excluded.

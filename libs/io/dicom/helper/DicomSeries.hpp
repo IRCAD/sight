@@ -38,7 +38,7 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
@@ -47,19 +47,16 @@ class Patient;
 class Study;
 class Equipment;
 
-}
+} // namespace sight::data
 
 namespace sight::core::jobs
 {
 
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -118,7 +115,7 @@ protected:
      * @param[in] filenames List of files
      * @param[in] readerObserver reader observer
      */
-    DicomSeriesContainerType splitFiles(
+    static DicomSeriesContainerType splitFiles(
         FilenameContainerType& filenames,
         const SPTR(core::jobs::Observer)& readerObserver
     );
@@ -129,7 +126,7 @@ protected:
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
-    void createSeries(
+    static void createSeries(
         DicomSeriesContainerType& seriesDB,
         const gdcm::Scanner& scanner,
         const std::filesystem::path& filename
@@ -167,6 +164,4 @@ protected:
     EquipmentMapType m_equipmentMap;
 };
 
-} //helper
-
-} //fwGdcmIO
+} // namespace sight::io::dicom::helper

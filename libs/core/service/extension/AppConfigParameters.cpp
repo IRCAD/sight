@@ -31,10 +31,7 @@
 
 #include <regex>
 
-namespace sight::service
-{
-
-namespace extension
+namespace sight::service::extension
 {
 
 AppConfigParameters::sptr AppConfigParameters::s_appConfigParameters = AppConfigParameters::New();
@@ -49,15 +46,14 @@ AppConfigParameters::sptr AppConfigParameters::getDefault()
 //-----------------------------------------------------------------------------
 
 AppConfigParameters::~AppConfigParameters()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void AppConfigParameters::parseBundleInformation()
 {
     auto extensions = core::runtime::getAllExtensionsForPoint("sight::service::extension::AppConfigParameters");
-    for(std::shared_ptr<core::runtime::Extension> ext : extensions)
+    for(const std::shared_ptr<core::runtime::Extension>& ext : extensions)
     {
         // Get id
         const std::string extensionId = core::runtime::filterID(ext->findConfigurationElement("id")->getValue());
@@ -67,7 +63,7 @@ void AppConfigParameters::parseBundleInformation()
         // Get parmeters
         core::runtime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
         core::runtime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-        for(core::runtime::ConfigurationElement::sptr paramConfig : elements)
+        for(const core::runtime::ConfigurationElement::sptr& paramConfig : elements)
         {
             std::string name = paramConfig->getExistingAttributeValue("name");
             std::string val  = paramConfig->getExistingAttributeValue("value");
@@ -76,7 +72,7 @@ void AppConfigParameters::parseBundleInformation()
 
         core::mt::WriteLock lock(m_registryMutex);
 #ifdef _DEBUG
-        Registry::const_iterator iter = m_reg.find(extensionId);
+        auto iter = m_reg.find(extensionId);
 #endif
         SIGHT_ASSERT(
             "The id " << extensionId
@@ -90,8 +86,7 @@ void AppConfigParameters::parseBundleInformation()
 //-----------------------------------------------------------------------------
 
 AppConfigParameters::AppConfigParameters()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -106,7 +101,7 @@ void AppConfigParameters::clearRegistry()
 const FieldAdaptorType& AppConfigParameters::getParameters(const std::string& extensionId) const
 {
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find(core::runtime::filterID(extensionId));
+    auto iter = m_reg.find(core::runtime::filterID(extensionId));
     SIGHT_ASSERT(
         "The id " << extensionId << " is not found in the application configuration parameter registry",
         iter != m_reg.end()
@@ -116,6 +111,4 @@ const FieldAdaptorType& AppConfigParameters::getParameters(const std::string& ex
 
 //-----------------------------------------------------------------------------
 
-} // namespace extension
-
-} // namespace sight::service
+} // namespace sight::service::extension

@@ -40,13 +40,7 @@
 
 #include <gdcmWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
@@ -67,8 +61,7 @@ ComprehensiveSRIOD::ComprehensiveSRIOD(
 //------------------------------------------------------------------------------
 
 ComprehensiveSRIOD::~ComprehensiveSRIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -121,8 +114,4 @@ void ComprehensiveSRIOD::write(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

@@ -68,4 +68,4 @@ std::string toIsoExtendedString(boost::posix_time::ptime ptime)
     return boost::posix_time::to_iso_extended_string(ptime);
 }
 
-} //end namespace
+} // namespace sight::core::tools

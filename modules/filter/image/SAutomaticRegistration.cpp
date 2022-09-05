@@ -48,8 +48,7 @@ SAutomaticRegistration::SAutomaticRegistration() :
 //------------------------------------------------------------------------------
 
 SAutomaticRegistration::~SAutomaticRegistration()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +60,7 @@ void SAutomaticRegistration::configuring()
 
     SIGHT_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
 
-    m_maxIterations = config.get<unsigned long>("maxIterations", 0);
+    m_maxIterations = config.get<std::uint64_t>("maxIterations", 0);
 
     SIGHT_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
@@ -85,7 +84,7 @@ void SAutomaticRegistration::configuring()
 
         SIGHT_ASSERT("There must be two parameters: shrink and sigma.", parameters.size() == 2);
 
-        const unsigned long shrink = std::stoul(parameters[0]);
+        const std::uint64_t shrink = std::stoul(parameters[0]);
         const double sigma         = std::stod(parameters[1]);
 
         m_multiResolutionParameters.push_back(std::make_pair(shrink, sigma));
@@ -127,7 +126,7 @@ void SAutomaticRegistration::updating()
     AutomaticRegistration::MultiResolutionParametersType
         multiResolutionParameters(m_multiResolutionParameters.size());
 
-    typedef AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
+    using ParamPairType = AutomaticRegistration::MultiResolutionParametersType::value_type;
 
     auto lastElt = std::remove_copy_if(
         m_multiResolutionParameters.begin(),
@@ -303,7 +302,7 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     }
     else if(key.find("sigma_") != std::string::npos)
     {
-        const unsigned long level = this->extractLevelFromParameterName(key);
+        const std::uint64_t level = this->extractLevelFromParameterName(key);
         m_multiResolutionParameters[level].second = val;
     }
     else if(key == "samplingPercentage")
@@ -323,11 +322,11 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
     if(key == "maxIterations")
     {
         SIGHT_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
-        m_maxIterations = static_cast<unsigned long>(val);
+        m_maxIterations = static_cast<std::uint64_t>(val);
     }
     else if(key.find("shrink_") != std::string::npos)
     {
-        const unsigned long level = this->extractLevelFromParameterName(key);
+        const std::uint64_t level = this->extractLevelFromParameterName(key);
         m_multiResolutionParameters[level].first = itk::SizeValueType(val);
     }
     else
@@ -337,11 +336,11 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
 }
 
 //------------------------------------------------------------------------------
-unsigned long SAutomaticRegistration::extractLevelFromParameterName(const std::string& name)
+std::uint64_t SAutomaticRegistration::extractLevelFromParameterName(const std::string& name)
 {
     // find the level
-    const std::string levelSuffix = name.substr(name.find("_") + 1);
-    const unsigned long level     = std::stoul(levelSuffix);
+    const std::string levelSuffix = name.substr(name.find('_') + 1);
+    const std::uint64_t level     = std::stoul(levelSuffix);
 
     if(level >= m_multiResolutionParameters.size())
     {

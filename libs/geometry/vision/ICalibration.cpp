@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,16 +27,14 @@ namespace sight::geometry::vision
 
 // ----------------------------------------------------------------------------
 
-ICalibration::ICalibration() noexcept
-{
-}
+ICalibration::ICalibration() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
-ICalibration::~ICalibration() noexcept
-{
-}
+ICalibration::~ICalibration() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::module::geometry::vision
+} // namespace sight::geometry::vision

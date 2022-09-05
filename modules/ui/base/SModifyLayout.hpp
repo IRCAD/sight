@@ -53,7 +53,7 @@ public:
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_BASE_API virtual ~SModifyLayout() noexcept;
+    MODULE_UI_BASE_API ~SModifyLayout() noexcept override;
 
 protected:
 

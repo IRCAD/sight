@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+//cspell: ignore TABID
+
 #include "activity/ActivityMsg.hpp"
 
 #include <core/tools/UUID.hpp>
@@ -40,7 +42,14 @@ ActivityMsg::ActivityMsg(
     const data::ActivitySeries::sptr& series,
     const activity::extension::ActivityInfo& info,
     const ParametersType& parameters
-)
+) :
+    m_title(info.title),
+    m_tabID("TABID_" + core::tools::UUID::generateUUID()),
+    m_appConfigID(info.appConfig.id),
+    m_tabInfo(info.tabInfo.empty() ? info.title : info.tabInfo),
+    m_iconPath(info.icon),
+    m_tooltip(m_tabInfo),
+    m_series(series)
 {
     SIGHT_ASSERT("ActivitySeries instantiation failed", series);
 
@@ -49,16 +58,6 @@ ActivityMsg::ActivityMsg(
         info,
         parameters
     );
-
-    //cspell: ignore TABID
-    m_title       = info.title;
-    m_appConfigID = info.appConfig.id;
-    m_closable    = true;
-    m_tabID       = "TABID_" + core::tools::UUID::generateUUID();
-    m_tabInfo     = info.tabInfo.empty() ? info.title : info.tabInfo;
-    m_iconPath    = info.icon;
-    m_tooltip     = m_tabInfo;
-    m_series      = series;
 }
 
 //-----------------------------------------------------------------------------

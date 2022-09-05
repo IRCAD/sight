@@ -34,7 +34,7 @@ namespace sight::data
 
 class ActivitySeries;
 
-}
+} // namespace sight::data
 
 namespace sight::activity
 {
@@ -51,9 +51,10 @@ public:
     SIGHT_DECLARE_CLASS(IActivityValidator, activity::IValidator);
 
     /// Does nothing.
-    ACTIVITY_API virtual ValidationType validate(
-        const activity::extension::ActivityInfo&,
+    ACTIVITY_API ValidationType validate(
+        const activity::extension::ActivityInfo& /*activityInfo*/,
         const CSPTR(data::Vector)&
+        /*currentSelection*/
     ) const override
     {
         ValidationType validation;
@@ -73,7 +74,7 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::ActivitySeries)& activity) const;
+    static ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::ActivitySeries)& activity);
 
     /**
      * @brief Calls the object validator if it is defined.
@@ -82,10 +83,10 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::IObjectValidator
      */
-    ACTIVITY_API ValidationType checkObject(
+    static ACTIVITY_API ValidationType checkObject(
         const CSPTR(data::Object)& object,
         const std::string& validatorImpl
-    ) const;
+    );
 };
 
 } // namespace sight::activity

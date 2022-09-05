@@ -32,10 +32,7 @@
 #include <QImage>
 #include <QPointF>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -79,7 +76,7 @@ public:
 
     MODULE_VIZ_SCENE2D_API SNegato() noexcept;
 
-    MODULE_VIZ_SCENE2D_API virtual ~SNegato() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SNegato() noexcept override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -139,27 +136,27 @@ private:
         sight::viz::scene2d::vec2d_t& newCoord
     );
 
-    static QRgb getQImageVal(const short value, const data::TransferFunction& tf);
+    static QRgb getQImageVal(std::int16_t value, const data::TransferFunction& tf);
 
-    QImage* m_qImg;
+    QImage* m_qImg {nullptr};
 
-    QGraphicsPixmapItem* m_pixmapItem;
+    QGraphicsPixmapItem* m_pixmapItem {nullptr};
 
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer {nullptr};
 
     using orientation_t = data::helper::MedicalImage::orientation_t;
 
     /// The current orientation of the negato
-    orientation_t m_orientation;
+    orientation_t m_orientation {orientation_t::Z_AXIS};
 
     /// Used during negato interaction to manage window/level
-    bool m_pointIsCaptured;
+    bool m_pointIsCaptured {false};
 
     /// Ref. position when changing image window/level
-    sight::viz::scene2d::vec2d_t m_oldCoord;
+    sight::viz::scene2d::vec2d_t m_oldCoord {};
 
     /// Specify if the negato allow slice type events
-    bool m_changeSliceTypeAllowed;
+    bool m_changeSliceTypeAllowed {true};
 
     static constexpr std::string_view s_IMAGE_IN = "image";
     static constexpr std::string_view s_TF_INOUT = "tf";
@@ -174,6 +171,4 @@ private:
     std::int64_t m_sagittalIndex {-1};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

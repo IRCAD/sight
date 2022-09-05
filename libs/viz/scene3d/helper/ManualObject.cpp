@@ -26,10 +26,7 @@
 
 #include <OgreMath.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -44,12 +41,12 @@ void ManualObject::createCylinder(
 )
 {
     // Data to create cylinder in x axis
-    const Ogre::Radian delta(Ogre::Degree(360.f / static_cast<float>(_sample)));
+    const Ogre::Radian delta(Ogre::Degree(360.F / static_cast<float>(_sample)));
     const Ogre::Quaternion rot(delta, Ogre::Vector3::UNIT_X);
-    Ogre::Vector3 normal = Ogre::Quaternion(delta / 2.f, Ogre::Vector3::UNIT_X) * Ogre::Vector3::UNIT_Y;
+    Ogre::Vector3 normal = Ogre::Quaternion(delta / 2.F, Ogre::Vector3::UNIT_X) * Ogre::Vector3::UNIT_Y;
 
-    Ogre::Vector3 p0(0.f, _radius, 0.f);
-    Ogre::Vector3 p1(_length, _radius, 0.f);
+    Ogre::Vector3 p0(0.F, _radius, 0.F);
+    Ogre::Vector3 p1(_length, _radius, 0.F);
     Ogre::Vector3 p2 = rot * p0;
     Ogre::Vector3 p3 = rot * p1;
 
@@ -59,7 +56,7 @@ void ManualObject::createCylinder(
     // Initial points of the basis
     _object->position(Ogre::Vector3::ZERO);
     _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
-    _object->position(Ogre::Vector3(_length, 0.f, 0.f));
+    _object->position(Ogre::Vector3(_length, 0.F, 0.F));
     _object->normal(Ogre::Vector3::UNIT_X);
     for(unsigned int i = 0 ; i < _sample ; ++i)
     {
@@ -84,10 +81,10 @@ void ManualObject::createCylinder(
         _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
 
         _object->position(p1);
-        _object->normal(Ogre::Vector3(_length, 0.f, 0.f));
+        _object->normal(Ogre::Vector3(_length, 0.F, 0.F));
 
         _object->position(p3);
-        _object->normal(Ogre::Vector3(_length, 0.f, 0.f));
+        _object->normal(Ogre::Vector3(_length, 0.F, 0.F));
 
         const unsigned int offset = 2 + (i * 8);
         // Cylinder
@@ -109,7 +106,7 @@ void ManualObject::createCylinder(
 
     _object->setBoundingBox(
         Ogre::AxisAlignedBox(
-            Ogre::Vector3(0.f, -_radius, -_radius),
+            Ogre::Vector3(0.F, -_radius, -_radius),
             Ogre::Vector3(_length, _radius, _radius)
         )
     );
@@ -127,12 +124,12 @@ void ManualObject::createCone(
 )
 {
     // Data to create cone in x axis
-    const Ogre::Radian delta(Ogre::Degree(360.f / static_cast<float>(_sample)));
+    const Ogre::Radian delta(Ogre::Degree(360.F / static_cast<float>(_sample)));
     const Ogre::Quaternion rot(delta, Ogre::Vector3::UNIT_X);
-    Ogre::Vector3 normal = Ogre::Quaternion(delta / 2.f, Ogre::Vector3::UNIT_X) * Ogre::Vector3::UNIT_Y;
+    Ogre::Vector3 normal = Ogre::Quaternion(delta / 2.F, Ogre::Vector3::UNIT_X) * Ogre::Vector3::UNIT_Y;
 
-    Ogre::Vector3 p0(0.f, _radius, 0.f);
-    Ogre::Vector3 p1(_length, 0, 0.f);
+    Ogre::Vector3 p0(0.F, _radius, 0.F);
+    Ogre::Vector3 p1(_length, 0, 0.F);
     Ogre::Vector3 p2 = rot * p0;
 
     // Compute real normal
@@ -180,7 +177,7 @@ void ManualObject::createCone(
 
     _object->setBoundingBox(
         Ogre::AxisAlignedBox(
-            Ogre::Vector3(0.f, -_radius, -_radius),
+            Ogre::Vector3(0.F, -_radius, -_radius),
             Ogre::Vector3(_length, _radius, _radius)
         )
     );
@@ -195,7 +192,7 @@ void ManualObject::createCube(
     float _length
 )
 {
-    float length = _length / 2.0f;
+    float length = _length / 2.0F;
 
     _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
@@ -335,6 +332,4 @@ void ManualObject::createSphere(
     );
 }
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

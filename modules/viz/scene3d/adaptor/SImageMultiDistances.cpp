@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "modules/viz/scene3d/adaptor/SImageMultiDistances.hpp"
 
 #include <core/com/Slots.hxx>
@@ -64,25 +66,25 @@ Ogre::ColourValue SImageMultiDistances::generateColor(core::tools::fwID::IDType 
     switch(std::hash<std::string>()(_id) % 7)
     {
         case 0:
-            return Ogre::ColourValue(63 / 255.0f, 105 / 255.0f, 170 / 255.0f);
+            return Ogre::ColourValue(63 / 255.0F, 105 / 255.0F, 170 / 255.0F);
 
         case 1:
-            return Ogre::ColourValue(249 / 255.0f, 103 / 255.0f, 20 / 255.0f);
+            return Ogre::ColourValue(249 / 255.0F, 103 / 255.0F, 20 / 255.0F);
 
         case 2:
-            return Ogre::ColourValue(236 / 255.0f, 219 / 255.0f, 84 / 255.0f);
+            return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
 
         case 3:
-            return Ogre::ColourValue(233 / 255.0f, 75 / 255.0f, 60 / 255.0f);
+            return Ogre::ColourValue(233 / 255.0F, 75 / 255.0F, 60 / 255.0F);
 
         case 4:
-            return Ogre::ColourValue(121 / 255.0f, 199 / 255.0f, 83 / 255.0f);
+            return Ogre::ColourValue(121 / 255.0F, 199 / 255.0F, 83 / 255.0F);
 
         case 5:
-            return Ogre::ColourValue(149 / 255.0f, 222 / 255.0f, 227 / 255.0f);
+            return Ogre::ColourValue(149 / 255.0F, 222 / 255.0F, 227 / 255.0F);
 
         default:
-            return Ogre::ColourValue(29 / 255.0f, 45 / 255.0f, 168 / 255.0f);
+            return Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F);
     }
 }
 
@@ -111,7 +113,7 @@ void SImageMultiDistances::generateDashedLine(
     dashedLineDirN.normalise();
 
     Ogre::Vector3 dashedLinePos = _begin;
-    for(float i = 0.f ; i + _thickness * 1.5 <= len ; i += _thickness * 2)
+    for(std::size_t i = 0 ; i <= static_cast<std::size_t>((len - _thickness * 1.5) / (_thickness * 2)) ; i++)
     {
         _object->position(dashedLinePos);
         dashedLinePos += dashedLineDirN * _thickness;
@@ -141,9 +143,8 @@ SImageMultiDistances::SImageMultiDistances() noexcept
 
 //------------------------------------------------------------------------------
 
-SImageMultiDistances::~SImageMultiDistances() noexcept
-{
-}
+SImageMultiDistances::~SImageMultiDistances() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -273,7 +274,7 @@ void SImageMultiDistances::updating()
     m_lineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
     m_dashedLineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
-    while(m_distances.size() != 0)
+    while(!m_distances.empty())
     {
         this->destroyDistance(m_distances.begin()->first);
     }
@@ -297,7 +298,7 @@ void SImageMultiDistances::stopping()
         this->getLayer()->removeInteractor(interactor);
     }
 
-    while(m_distances.size() != 0)
+    while(!m_distances.empty())
     {
         this->destroyDistance(m_distances.begin()->first);
     }
@@ -336,7 +337,7 @@ void SImageMultiDistances::addDistances()
     // When all distances are removed, the field is removed in the image.
     else
     {
-        while(m_distances.size() != 0)
+        while(!m_distances.empty())
         {
             this->destroyDistance(m_distances.begin()->first);
         }
@@ -432,7 +433,7 @@ std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int 
     picker.setSceneManager(sm);
     picker.executeRaySceneQuery(_x, _y, m_queryMask);
 
-    if(picker.getSelectedObject())
+    if(picker.getSelectedObject() != nullptr)
     {
         const auto* const camera = sm->getCamera(sight::viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
@@ -446,7 +447,7 @@ std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int 
         Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
 
-        return picker.getIntersectionInWorldSpace() + normal * 0.01f;
+        return picker.getIntersectionInWorldSpace() + normal * 0.01F;
     }
 
     return std::nullopt;
@@ -454,7 +455,7 @@ std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int 
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
+void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     if(_button == LEFT)
     {
@@ -473,9 +474,9 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _
         bool found                               = false;
         Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
         raySceneQuery->setSortByDistance(false);
-        if(raySceneQuery->execute().size() != 0)
+        if(!raySceneQuery->execute().empty())
         {
-            const Ogre::Real scale = 1.15f;
+            const Ogre::Real scale = 1.15F;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
             for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
@@ -493,7 +494,8 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _
                             found        = true;
                             break;
                         }
-                        else if(distanceData.m_sphere2 == object)
+
+                        if(distanceData.m_sphere2 == object)
                         {
                             distanceData.m_node2->setScale(scale, scale, scale);
                             m_pickedData = {&distanceData, false};
@@ -516,7 +518,14 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
+void SImageMultiDistances::mouseMoveEvent(
+    MouseButton /*_button*/,
+    Modifier /*_mods*/,
+    int _x,
+    int _y,
+    int /*_dx*/,
+    int /*_dy*/
+)
 {
     if(m_pickedData.m_data != nullptr)
     {
@@ -598,11 +607,11 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y,
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonReleaseEvent(MouseButton, Modifier, int, int)
+void SImageMultiDistances::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_pickedData.m_data != nullptr)
     {
-        const Ogre::Real scale = 1.f;
+        const Ogre::Real scale = 1.F;
         m_pickedData.m_data->m_node1->setScale(scale, scale, scale);
         m_pickedData.m_data->m_node2->setScale(scale, scale, scale);
         m_pickedData = {nullptr, true};
@@ -712,6 +721,7 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
         dpi,
         cam
     );
+    // NOLINTNEXTLINE(readability-suspicious-call-argument)
     const std::string length = SImageMultiDistances::getLength(end, begin);
     label->setText(length);
     label->setTextColor(colour);
@@ -755,6 +765,7 @@ void SImageMultiDistances::updateDistance(
     line->end();
 
     // Update the label.
+    // NOLINTNEXTLINE(readability-suspicious-call-argument)
     const std::string length = SImageMultiDistances::getLength(_end, _begin);
     _data->m_label->setText(length);
     _data->m_labelNode->setPosition(_end);
@@ -783,7 +794,7 @@ void SImageMultiDistances::updateDistance(
 
 void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
 {
-    const DistanceMap::const_iterator it = m_distances.find(_id);
+    const auto it = m_distances.find(_id);
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());
 
     // Destroy Ogre resource.

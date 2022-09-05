@@ -45,15 +45,13 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::SImageSeriesWriter() noexcept
-{
-}
+SImageSeriesWriter::SImageSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::~SImageSeriesWriter() noexcept
-{
-}
+SImageSeriesWriter::~SImageSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

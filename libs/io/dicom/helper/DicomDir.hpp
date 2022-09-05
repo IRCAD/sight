@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,26 +35,23 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::core::jobs
 {
 
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::core::log
 {
 
 class Logger;
 
-}
+} // namespace sight::core::log
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -85,6 +82,4 @@ public:
     );
 };
 
-} //helper
-
-} //fwGdcmIO
+} // namespace sight::io::dicom::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include "filter/dicom/composite/IComposite.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace helper
+namespace sight::filter::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -60,11 +57,9 @@ bool Filter::applyFilter(
                 {
                     throw e;
                 }
-                else
-                {
-                    ignoredError = true;
-                    tempo.push_back(dicomSeries);
-                }
+
+                ignoredError = true;
+                tempo.push_back(dicomSeries);
             }
         }
         // Forced filter application for composite
@@ -85,6 +80,4 @@ bool Filter::applyFilter(
     return ignoredError;
 }
 
-} // namespace helper
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::helper

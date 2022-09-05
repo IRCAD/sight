@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace sight::geometry::vtk
-{
-
-namespace ut
+namespace sight::geometry::vtk::ut
 {
 
 class vtkTest : public CPPUNIT_NS::TestFixture
@@ -46,20 +43,18 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void computeCenterOfMass();
+    static void computeCenterOfMass();
 
     //------------------------------------------------------------------------------
 
     template<class T>
-    static const T random(const T& a, const T& b)
+    static T random(const T& a, const T& b)
     {
         return static_cast<T>(core::tools::random::safeRand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
     }
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::vtk
+} // namespace sight::geometry::vtk::ut

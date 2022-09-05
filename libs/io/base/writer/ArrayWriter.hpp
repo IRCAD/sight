@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <data/Array.hpp>
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 /**
@@ -56,7 +53,7 @@ public:
     IO_BASE_API ArrayWriter(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor. Does nothing.
-    IO_BASE_API virtual ~ArrayWriter();
+    IO_BASE_API ~ArrayWriter() override;
 
     /// Writes the file using zlib API.
     IO_BASE_API void write() override;
@@ -65,6 +62,4 @@ public:
     IO_BASE_API std::string extension() const override;
 };
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

@@ -39,10 +39,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SignalTest);
 
-namespace sight::core::com
-{
-
-namespace ut
+namespace sight::core::com::ut
 {
 
 //------------------------------------------------------------------------------
@@ -64,25 +61,25 @@ void SignalTest::tearDown()
 void SignalTest::buildTest()
 {
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
         CPPUNIT_ASSERT(sig);
     }
 
     {
-        typedef void Signature(int);
+        using Signature = void (int);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
         CPPUNIT_ASSERT(sig);
     }
 
     {
-        typedef void Signature(char, float);
+        using Signature = void (char, float);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
         CPPUNIT_ASSERT(sig);
     }
 
     {
-        typedef void Signature(short, double, std::string);
+        using Signature = void (std::int16_t, double, std::string);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
         CPPUNIT_ASSERT(sig);
     }
@@ -92,14 +89,8 @@ void SignalTest::buildTest()
 
 struct SignalTestClass
 {
-    SignalTestClass() :
-        m_method00(false),
-        m_method0(false),
-        m_method1(false),
-        m_method2(false),
-        m_method3(false)
-    {
-    }
+    SignalTestClass()
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -125,7 +116,7 @@ struct SignalTestClass
 
     //------------------------------------------------------------------------------
 
-    float method2(float f, int)
+    float method2(float f, int /*unused*/)
     {
         m_method2 = true;
         return 2 * f;
@@ -133,17 +124,17 @@ struct SignalTestClass
 
     //------------------------------------------------------------------------------
 
-    float method3(float f, double, std::string)
+    float method3(float f, double /*unused*/, std::string /*unused*/)
     {
         m_method3 = true;
         return 2 * f;
     }
 
-    bool m_method00;
-    bool m_method0;
-    bool m_method1;
-    bool m_method2;
-    bool m_method3;
+    bool m_method00 {false};
+    bool m_method0 {false};
+    bool m_method1 {false};
+    bool m_method2 {false};
+    bool m_method3 {false};
 };
 
 //-----------------------------------------------------------------------------
@@ -164,7 +155,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         connection = sig->connect(slot0);
@@ -175,7 +166,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float);
+        using Signature = void (float);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         connection = sig->connect(slot1);
@@ -186,7 +177,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, int);
+        using Signature = void (float, int);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         connection = sig->connect(slot2);
@@ -197,7 +188,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, double, std::string);
+        using Signature = void (float, double, std::string);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         connection = sig->connect(slot3);
@@ -209,7 +200,7 @@ void SignalTest::connectTest()
 
     // Disconnect
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         connection = sig->connect(slot0);
@@ -221,7 +212,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         sig->connect(slot0);
@@ -237,7 +228,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         connection = sig->connect(slot0);
@@ -249,7 +240,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         core::com::Slot<void()>::sptr slot =
@@ -268,7 +259,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature(std::string);
+        using Signature = void (std::string);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         CPPUNIT_ASSERT_THROW(sig->connect(slot1), core::com::exception::BadSlot);
@@ -277,7 +268,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature(std::string);
+        using Signature = void (std::string);
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         CPPUNIT_ASSERT_THROW(sig->disconnect(slot1), core::com::exception::BadSlot);
@@ -294,7 +285,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        using Signature = void ();
         core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
 
         sig->connect(slot0);
@@ -311,7 +302,7 @@ void SignalTest::emitTest()
     core::com::Connection connection;
 
     {
-        typedef void Signature();
+        using Signature = void ();
         SignalTestClass testObject;
 
         core::com::Slot<Signature>::sptr slot =
@@ -330,7 +321,7 @@ void SignalTest::emitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float);
+        using Signature = void (float);
         SignalTestClass testObject;
 
         core::com::Slot<float(float)>::sptr slot =
@@ -343,14 +334,14 @@ void SignalTest::emitTest()
 
         CPPUNIT_ASSERT_EQUAL((std::size_t) 1, sig->numConnections());
 
-        sig->emit(21.0f);
+        sig->emit(21.0F);
         CPPUNIT_ASSERT(testObject.m_method1);
     }
 
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, int);
+        using Signature = void (float, int);
         SignalTestClass testObject;
 
         core::com::Slot<float(float, int)>::sptr slot =
@@ -363,14 +354,14 @@ void SignalTest::emitTest()
 
         CPPUNIT_ASSERT_EQUAL((std::size_t) 1, sig->numConnections());
 
-        sig->emit(21.0f, 42);
+        sig->emit(21.0F, 42);
         CPPUNIT_ASSERT(testObject.m_method2);
     }
 
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, double, std::string);
+        using Signature = void (float, double, std::string);
         SignalTestClass testObject;
 
         core::com::Slot<float(float, double, std::string)>::sptr slot =
@@ -383,7 +374,7 @@ void SignalTest::emitTest()
 
         CPPUNIT_ASSERT_EQUAL((std::size_t) 1, sig->numConnections());
 
-        sig->emit(21.0f, 42.0, "emit");
+        sig->emit(21.0F, 42.0, "emit");
         CPPUNIT_ASSERT(testObject.m_method3);
     }
 
@@ -394,7 +385,7 @@ void SignalTest::emitTest()
 
 void SignalTest::autoSlotDisconnectTest()
 {
-    typedef void Signature(float);
+    using Signature = void (float);
     SignalTestClass testObject;
 
     core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
@@ -434,7 +425,7 @@ void SignalTest::autoSlotDisconnectTest()
 
 void SignalTest::argumentLossTest()
 {
-    typedef void Signature(float, double, std::string);
+    using Signature = void (float, double, std::string);
     SignalTestClass testObject;
 
     core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
@@ -455,7 +446,7 @@ void SignalTest::argumentLossTest()
     sig->connect(slot3);
     CPPUNIT_ASSERT_EQUAL((std::size_t) 3, sig->numConnections());
 
-    sig->emit(21.0f, 42.0, "emit");
+    sig->emit(21.0F, 42.0, "emit");
 
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(testObject.m_method1);
@@ -469,7 +460,7 @@ void SignalTest::argumentLossTest()
 
 void SignalTest::asyncArgumentLossTest()
 {
-    typedef void Signature(float, double, std::string);
+    using Signature = void (float, double, std::string);
     SignalTestClass testObject;
 
     core::com::Signal<Signature>::sptr sig = core::com::Signal<Signature>::New();
@@ -495,7 +486,7 @@ void SignalTest::asyncArgumentLossTest()
     sig->connect(slot3);
     CPPUNIT_ASSERT_EQUAL((std::size_t) 3, sig->numConnections());
 
-    sig->asyncEmit(21.0f, 42.0, "asyncEmit");
+    sig->asyncEmit(21.0F, 42.0, "asyncEmit");
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -512,7 +503,7 @@ void SignalTest::asyncArgumentLossTest()
 
 void SignalTest::blockTest()
 {
-    typedef void Signature(float, double, std::string);
+    using Signature = void (float, double, std::string);
     SignalTestClass testObject;
 
     core::com::Connection connection;
@@ -532,7 +523,7 @@ void SignalTest::blockTest()
 
     CPPUNIT_ASSERT_EQUAL((std::size_t) 3, sig->numConnections());
 
-    sig->emit(21.0f, 42.0, "emit");
+    sig->emit(21.0F, 42.0, "emit");
 
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(testObject.m_method1);
@@ -544,7 +535,7 @@ void SignalTest::blockTest()
 
     {
         core::com::Connection::Blocker block(connection);
-        sig->emit(21.0f, 42.0, "emit");
+        sig->emit(21.0F, 42.0, "emit");
     }
 
     CPPUNIT_ASSERT(testObject.m_method0);
@@ -555,7 +546,7 @@ void SignalTest::blockTest()
     testObject.m_method1 = false;
     testObject.m_method3 = false;
 
-    sig->emit(21.0f, 42.0, "emit");
+    sig->emit(21.0F, 42.0, "emit");
 
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(testObject.m_method1);
@@ -568,7 +559,7 @@ void SignalTest::blockTest()
     {
         core::com::Connection::Blocker block(connection);
         block.reset();
-        sig->emit(21.0f, 42.0, "emit");
+        sig->emit(21.0F, 42.0, "emit");
     }
 
     CPPUNIT_ASSERT(testObject.m_method0);
@@ -584,7 +575,7 @@ void SignalTest::asyncEmitTest()
     core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     {
-        typedef void Signature();
+        using Signature = void ();
         SignalTestClass testObject;
 
         core::com::Slot<Signature>::sptr slot =
@@ -606,7 +597,7 @@ void SignalTest::asyncEmitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float);
+        using Signature = void (float);
         SignalTestClass testObject;
 
         core::com::Slot<float(float)>::sptr slot =
@@ -620,7 +611,7 @@ void SignalTest::asyncEmitTest()
 
         CPPUNIT_ASSERT_EQUAL((std::size_t) 1, sig->numConnections());
 
-        sig->asyncEmit(21.0f);
+        sig->asyncEmit(21.0F);
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method1);
@@ -629,7 +620,7 @@ void SignalTest::asyncEmitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, int);
+        using Signature = void (float, int);
         SignalTestClass testObject;
 
         core::com::Slot<float(float, int)>::sptr slot =
@@ -643,7 +634,7 @@ void SignalTest::asyncEmitTest()
 
         CPPUNIT_ASSERT_EQUAL((std::size_t) 1, sig->numConnections());
 
-        sig->asyncEmit(21.0f, 42);
+        sig->asyncEmit(21.0F, 42);
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method2);
@@ -652,7 +643,7 @@ void SignalTest::asyncEmitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, double, std::string);
+        using Signature = void (float, double, std::string);
         SignalTestClass testObject;
 
         core::com::Slot<float(float, double, std::string)>::sptr slot =
@@ -666,7 +657,7 @@ void SignalTest::asyncEmitTest()
 
         CPPUNIT_ASSERT_EQUAL((std::size_t) 1, sig->numConnections());
 
-        sig->asyncEmit(21.0f, 42.0, "emit");
+        sig->asyncEmit(21.0F, 42.0, "emit");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method3);
@@ -676,6 +667,4 @@ void SignalTest::asyncEmitTest()
     worker->stop();
 }
 
-} //namespace ut
-
-} //namespace sight::core::com
+} // namespace sight::core::com::ut

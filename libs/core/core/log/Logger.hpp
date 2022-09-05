@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/log/Log.hpp"
+
 #include <core/tools/Object.hpp>
 
 #include <string>
@@ -50,7 +51,7 @@ public:
     CORE_API Logger();
 
     /// Destructor
-    CORE_API ~Logger();
+    CORE_API ~Logger() override;
 
     /**
      * @brief Add information log into the logger

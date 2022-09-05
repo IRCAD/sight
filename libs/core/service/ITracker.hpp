@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,12 @@
 #pragma once
 
 #include "service/config.hpp"
-#include <service/IService.hpp>
 
 #include <core/HiResClock.hpp>
 
 #include <data/FrameTL.hpp>
+
+#include <service/IService.hpp>
 
 namespace sight::service
 {
@@ -92,7 +93,7 @@ protected:
     SERVICE_API ITracker();
 
     ///@brief ITracker destructor. Do nothing.
-    SERVICE_API virtual ~ITracker();
+    SERVICE_API ~ITracker() override;
 
     SERVICE_API void configuring() override;
 
@@ -117,15 +118,15 @@ protected:
     SERVICE_API virtual void tracking(core::HiResClock::HiResClockType& timestamp) = 0;
 
     /// timestamp of the last tracking
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     /// If true, only last object is retrived
-    bool m_dropObj;
+    bool m_dropObj {true};
 
     /// If false, the trackMethod does nothing
-    bool m_isTracking;
+    bool m_isTracking {false};
 
     sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
 };
 
-} // arServices
+} // namespace sight::service

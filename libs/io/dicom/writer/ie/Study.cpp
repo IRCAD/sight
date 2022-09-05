@@ -26,13 +26,10 @@
 
 #include <data/Study.hpp>
 
-namespace sight::io::dicom
-{
+#include <array>
+#include <utility>
 
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -53,8 +50,7 @@ Study::Study(
 //------------------------------------------------------------------------------
 
 Study::~Study()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -70,10 +66,10 @@ void Study::writeGeneralStudyModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0090>(m_object->getReferringPhysicianName(), dataset);
 
     //TODO: >getConsultingPhysicianName() contains only 1 value, gdcm wants a list (VM : 1-N).
-    gdcm::String<> consultingPhysicianName[] = {m_object->getConsultingPhysicianName()};
+    std::array<gdcm::String<>, 1> consultingPhysicianName {m_object->getConsultingPhysicianName()};
 
     io::dicom::helper::DicomDataWriter::setTagValues<gdcm::String<>, 0x0008, 0x009C>(
-        consultingPhysicianName,
+        consultingPhysicianName.data(),
         1,
         dataset
     );
@@ -109,8 +105,4 @@ void Study::writePatientStudyModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

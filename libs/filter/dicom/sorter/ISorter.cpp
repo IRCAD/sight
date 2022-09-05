@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,16 @@
 
 #include "filter/dicom/sorter/ISorter.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace sorter
+namespace sight::filter::dicom::sorter
 {
 
 ISorter::ISorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ISorter::~ISorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -45,6 +40,4 @@ IFilter::FilterType ISorter::getFilterType() const
     return IFilter::SORTER;
 }
 
-} // namespace sorter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::sorter

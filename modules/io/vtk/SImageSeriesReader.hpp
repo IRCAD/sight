@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -73,9 +73,8 @@ public:
      */
     MODULE_IO_VTK_API SImageSeriesReader() noexcept;
 
-    ~SImageSeriesReader() noexcept override
-    {
-    }
+    ~SImageSeriesReader() noexcept override =
+        default;
 
     SIGHT_DECLARE_SERVICE(SImageSeriesReader, sight::io::base::service::IReader);
 

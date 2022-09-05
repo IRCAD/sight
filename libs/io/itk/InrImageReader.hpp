@@ -49,7 +49,7 @@ public:
 
     IO_ITK_API InrImageReader(io::base::reader::IObjectReader::Key key);
 
-    IO_ITK_API ~InrImageReader();
+    IO_ITK_API ~InrImageReader() override;
 
     IO_ITK_API void read() override;
 };

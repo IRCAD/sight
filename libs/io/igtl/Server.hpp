@@ -59,7 +59,7 @@ public:
     /**
      * @brief destructor
      */
-    IO_IGTL_API ~Server();
+    IO_IGTL_API ~Server() override;
 
     /**
      * @brief method to start the server on a port
@@ -154,7 +154,7 @@ private:
     /// Patched version of igtlServer::CreateServer.
     int createServer(std::uint16_t port);
 
-    void removeClient(Client::sptr _client);
+    static void removeClient(Client::sptr _client);
 
     /// server socket
     ::igtl::ServerSocket::Pointer m_serverSocket;
@@ -163,13 +163,13 @@ private:
     mutable core::mt::Mutex m_mutex;
 
     /// state of server
-    bool m_isStarted;
+    bool m_isStarted {false};
 
     /// vector of clients
     std::vector<Client::sptr> m_clients;
 
     /// Server port
-    std::uint16_t m_port;
+    std::uint16_t m_port {0};
 
     /// integer constant for success
     static const int s_SUCCESS = 0;
@@ -195,4 +195,4 @@ inline std::optional<int> Server::getReceiveTimeout() const
     return m_receiveTimeout;
 }
 
-} // namespace sight::io
+} // namespace sight::io::igtl

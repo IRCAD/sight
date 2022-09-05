@@ -28,10 +28,7 @@
 
 #include <OGRE/OgreManualObject.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace factory
+namespace sight::viz::scene3d::factory
 {
 
 /**
@@ -42,16 +39,14 @@ class VIZ_SCENE3D_CLASS_API R2VBRenderable : public Ogre::MovableObjectFactory
 public:
 
     VIZ_SCENE3D_API R2VBRenderable()
-    {
-    }
+    = default;
 
-    VIZ_SCENE3D_API ~R2VBRenderable()
-    {
-    }
+    VIZ_SCENE3D_API ~R2VBRenderable() override
+    = default;
 
     VIZ_SCENE3D_API static Ogre::String FACTORY_TYPE_NAME;
 
-    VIZ_SCENE3D_API const Ogre::String& getType(void) const override;
+    [[nodiscard]] VIZ_SCENE3D_API const Ogre::String& getType() const override;
 #if OGRE_VERSION_PATCH < 9
     VIZ_SCENE3D_API void destroyInstance(Ogre::MovableObject* obj) override;
 #endif
@@ -64,6 +59,4 @@ protected:
     ) override;
 };
 
-} // namespace factory
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::factory

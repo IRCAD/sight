@@ -26,10 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -67,7 +64,7 @@ public:
     SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SAxis() noexcept;
-    MODULE_VIZ_SCENE2D_API virtual ~SAxis() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SAxis() noexcept override;
 
 protected:
 
@@ -176,6 +173,4 @@ private:
     data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

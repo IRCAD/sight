@@ -77,10 +77,7 @@
 #include <atomic>
 #include <shared_mutex>
 
-namespace sight::io::session
-{
-
-namespace detail
+namespace sight::io::session::detail
 {
 
 using core::crypto::PasswordKeeper;
@@ -153,16 +150,14 @@ serializer_t SessionSerializer::findSerializer(const std::string& classname) con
         // Return the found serializer
         return customIt->second;
     }
-    else
-    {
-        // Protect serializers map
-        std::shared_lock guard(s_serializers_mutex);
 
-        if(const auto& it = s_serializers.find(classname); it != s_serializers.cend())
-        {
-            // Return the found serializer
-            return it->second;
-        }
+    // Protect serializers map
+    std::shared_lock guard(s_serializers_mutex);
+
+    if(const auto& it = s_serializers.find(classname); it != s_serializers.cend())
+    {
+        // Return the found serializer
+        return it->second;
     }
 
     SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
@@ -323,7 +318,7 @@ void SessionSerializer::setDefaultSerializer(const std::string& className, seria
 //------------------------------------------------------------------------------
 
 void SessionSerializer::serialize(
-    const std::filesystem::path& archive_path,
+    const std::filesystem::path& archivePath,
     data::Object::csptr object,
     const Archive::ArchiveFormat archiveFormat,
     const secure_string& password,
@@ -347,12 +342,12 @@ void SessionSerializer::serialize(
         }
 
         // Create the archive that will hold all binary files
-        archive = zip::ArchiveWriter::get(archive_path.parent_path(), archiveFormat);
+        archive = zip::ArchiveWriter::get(archivePath.parent_path(), archiveFormat);
     }
     else
     {
         // Create the archive that will hold the property tree and all binary files
-        archive = zip::ArchiveWriter::get(archive_path, archiveFormat);
+        archive = zip::ArchiveWriter::get(archivePath, archiveFormat);
     }
 
     // Initialize the ptree cache
@@ -367,7 +362,7 @@ void SessionSerializer::serialize(
     if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
     {
         // Write the final property tree to the filesystem
-        boost::property_tree::write_json(archive_path.string(), tree);
+        boost::property_tree::write_json(archivePath.string(), tree);
     }
     else
     {
@@ -379,6 +374,4 @@ void SessionSerializer::serialize(
     }
 }
 
-} // namespace detail
-
-} // namespace sight::io::session
+} // namespace sight::io::session::detail

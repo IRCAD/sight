@@ -33,14 +33,12 @@ namespace sight::module::filter::vision
 //------------------------------------------------------------------------------
 
 STransformDepthMap2mm::STransformDepthMap2mm()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 STransformDepthMap2mm::~STransformDepthMap2mm()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

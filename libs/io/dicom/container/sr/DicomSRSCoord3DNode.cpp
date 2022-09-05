@@ -26,13 +26,9 @@
 
 #include <service/macros.hpp>
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 //------------------------------------------------------------------------------
@@ -40,18 +36,18 @@ namespace sr
 DicomSRSCoord3DNode::DicomSRSCoord3DNode(
     const DicomCodedAttribute& codedAttribute,
     const std::string& relationship,
-    const std::string& graphicType,
-    const GraphicDataContainerType graphicDataContainer,
-    const std::string& frameOfReferenceUID
+    std::string graphicType,
+    GraphicDataContainerType graphicDataContainer,
+    std::string frameOfReferenceUID
 ) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "SCOORD3D", relationship),
-    m_frameOfReferenceUID(frameOfReferenceUID),
-    m_graphicType(graphicType),
-    m_graphicDataContainer(graphicDataContainer)
+    m_frameOfReferenceUID(std::move(frameOfReferenceUID)),
+    m_graphicType(std::move(graphicType)),
+    m_graphicDataContainer(std::move(graphicDataContainer))
 {
     SIGHT_ASSERT(
         "Only POINT and POLYLINE are supported by SCoord3D node for now.",
-        graphicType == "POINT" || graphicType == "POLYLINE"
+        m_graphicType == "POINT" || m_graphicType == "POLYLINE"
     );
 
     SIGHT_ASSERT(
@@ -68,8 +64,7 @@ DicomSRSCoord3DNode::DicomSRSCoord3DNode(
 //------------------------------------------------------------------------------
 
 DicomSRSCoord3DNode::~DicomSRSCoord3DNode()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +77,7 @@ void DicomSRSCoord3DNode::write(gdcm::DataSet& dataset) const
 
     // Graphic Data - Type 1
     io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
-        &m_graphicDataContainer[0],
+        (m_graphicDataContainer).data(),
         static_cast<unsigned int>(m_graphicDataContainer.size()),
         dataset
     );
@@ -102,8 +97,4 @@ void DicomSRSCoord3DNode::print(std::ostream& os) const
 
 //------------------------------------------------------------------------------
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

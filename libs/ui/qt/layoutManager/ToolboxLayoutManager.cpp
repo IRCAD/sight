@@ -47,15 +47,14 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-ToolboxLayoutManager::ToolboxLayoutManager(ui::base::GuiBaseObject::Key)
+ToolboxLayoutManager::ToolboxLayoutManager(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManager::~ToolboxLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -66,24 +65,24 @@ void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
         ui::qt::container::QtContainer::dynamicCast(parent);
     parentContainer->getQtContainer()->setObjectName(qId);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     parentContainer->setLayout(layout);
 
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QScrollArea* sv                     = new QScrollArea();
-    ui::qt::widget::QfwToolBox* toolbox = new ui::qt::widget::QfwToolBox(sv);
+    auto* sv      = new QScrollArea();
+    auto* toolbox = new ui::qt::widget::QfwToolBox(sv);
     sv->setWidget(toolbox);
     sv->setWidgetResizable(true);
     layout->addWidget(sv);
 
     const std::list<ViewInfo>& views = this->getViewsInfo();
-    for(ViewInfo viewInfo : views)
+    for(const ViewInfo& viewInfo : views)
     {
-        int leftBorder;
-        int topBorder;
-        int rightBorder;
-        int bottomBorder;
+        int leftBorder   = 0;
+        int topBorder    = 0;
+        int rightBorder  = 0;
+        int bottomBorder = 0;
         if(viewInfo.m_border != 0)
         {
             leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
@@ -96,7 +95,7 @@ void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
             bottomBorder = viewInfo.m_bottomBorder;
         }
 
-        QWidget* panel = new QWidget();
+        auto* panel = new QWidget();
         panel->setObjectName(qId + '/' + viewInfo.m_caption.c_str());
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         panel->setMaximumSize(
@@ -106,13 +105,13 @@ void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
         panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
         if(!viewInfo.m_backgroundColor.empty())
         {
-            std::uint8_t rgba[4];
+            std::array<std::uint8_t, 4> rgba {};
             data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
             std::stringstream ss;
-            ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-            << static_cast<short>(rgba[1]) << ','
-            << static_cast<short>(rgba[2]) << ','
-            << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+            ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+            << static_cast<std::int16_t>(rgba[1]) << ','
+            << static_cast<std::int16_t>(rgba[2]) << ','
+            << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
             const QString style = QString::fromStdString(ss.str());
             panel->setStyleSheet(style + qApp->styleSheet());
         }
@@ -124,18 +123,18 @@ void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
         int index = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea* scrollArea = new QScrollArea(toolbox);
+            auto* scrollArea = new QScrollArea(toolbox);
             scrollArea->setWidget(panel);
             scrollArea->setWidgetResizable(true);
             if(!viewInfo.m_backgroundColor.empty())
             {
-                std::uint8_t rgba[4];
+                std::array<std::uint8_t, 4> rgba {};
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-                << static_cast<short>(rgba[1]) << ','
-                << static_cast<short>(rgba[2]) << ','
-                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+                << static_cast<std::int16_t>(rgba[1]) << ','
+                << static_cast<std::int16_t>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 scrollArea->setStyleSheet(style + qApp->styleSheet());
             }
@@ -152,7 +151,7 @@ void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
             toolbox->expandItem(index);
         }
 
-        if(false == viewInfo.m_visible)
+        if(!viewInfo.m_visible)
         {
             subContainer->setVisible(false);
         }

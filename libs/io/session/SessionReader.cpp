@@ -48,7 +48,7 @@ public:
     SessionReaderImpl& operator=(SessionReaderImpl&&)      = delete;
 
     /// Constructor
-    inline SessionReaderImpl(SessionReader* const sessionReader) :
+    inline explicit SessionReaderImpl(SessionReader* const sessionReader) :
         m_sessionReader(sessionReader),
         m_password(std::make_unique<PasswordKeeper>()),
         m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
@@ -90,7 +90,7 @@ public:
     Archive::ArchiveFormat m_archiveFormat;
 };
 
-SessionReader::SessionReader(base::reader::IObjectReader::Key) :
+SessionReader::SessionReader(base::reader::IObjectReader::Key /*unused*/) :
     m_pimpl(std::make_unique<SessionReaderImpl>(this))
 {
 }

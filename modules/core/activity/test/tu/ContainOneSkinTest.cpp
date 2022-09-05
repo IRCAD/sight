@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::ContainOneSkinTest);
 
-namespace sight::module::activity::validator
-{
-
-namespace ut
+namespace sight::module::activity::validator::ut
 {
 
 namespace factory = sight::activity::validator::factory;
@@ -414,6 +411,4 @@ void ContainOneSkinTest::testValidatorWithComposite()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ut

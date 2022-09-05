@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ const std::string Data::s_TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
 std::filesystem::path Data::dir()
 {
     char* val = std::getenv(s_TEST_DATA_DIR_ENV_VAR.c_str());
-    if(val == 0)
+    if(val == nullptr)
     {
         std::stringstream msg;
         msg << "The '" << s_TEST_DATA_DIR_ENV_VAR

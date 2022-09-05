@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ struct MODULE_IO_REALSENSE_CLASS_API Plugin : public core::runtime::Plugin
     /**
      * @brief   destructor
      */
-    MODULE_IO_REALSENSE_API ~Plugin() noexcept;
+    MODULE_IO_REALSENSE_API ~Plugin() noexcept override;
 
     // Overrides
-    MODULE_IO_REALSENSE_API void start();
+    MODULE_IO_REALSENSE_API void start() override;
 
     // Overrides
-    MODULE_IO_REALSENSE_API void stop() noexcept;
+    MODULE_IO_REALSENSE_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::realsense

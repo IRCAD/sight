@@ -43,13 +43,13 @@ public:
     TUTO03MESHERWITHGENERICSCENECPP_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO03MESHERWITHGENERICSCENECPP_API ~Plugin() noexcept;
+    TUTO03MESHERWITHGENERICSCENECPP_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO03MESHERWITHGENERICSCENECPP_API void start();
+    TUTO03MESHERWITHGENERICSCENECPP_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO03MESHERWITHGENERICSCENECPP_API void stop() noexcept;
+    TUTO03MESHERWITHGENERICSCENECPP_API void stop() noexcept override;
 
 private:
 

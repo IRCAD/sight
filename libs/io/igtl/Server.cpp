@@ -37,9 +37,7 @@ namespace sight::io::igtl
 //------------------------------------------------------------------------------
 
 Server::Server() :
-    m_serverSocket(::igtl::ServerSocket::New()),
-    m_isStarted(false),
-    m_port(0)
+    m_serverSocket(::igtl::ServerSocket::New())
 {
     m_socket = m_serverSocket;
 }
@@ -156,7 +154,7 @@ void Server::start(std::uint16_t port)
 
     if(result != Server::s_SUCCESS)
     {
-        throw Exception("Cannot create server on port : " + boost::lexical_cast<std::string>(port));
+        throw Exception("Cannot create server on port : " + std::to_string(port));
     }
 
     m_isStarted = true;
@@ -169,7 +167,7 @@ Client::sptr Server::waitForConnection(int msec)
     ::igtl::ClientSocket::Pointer clientSocket;
     Client::sptr client;
 
-    clientSocket = m_serverSocket->WaitForConnection(static_cast<unsigned long>(msec));
+    clientSocket = m_serverSocket->WaitForConnection(static_cast<std::uint64_t>(msec));
     if(clientSocket.IsNotNull())
     {
         client = std::make_shared<Client>(clientSocket);
@@ -245,7 +243,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 
         ::igtl::Socket::Pointer socket = client->getSocket();
 
-        if(socket->GetConnected())
+        if(socket->GetConnected() != 0)
         {
             const int sizeReceive = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
@@ -253,14 +251,16 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
             {
                 throw sight::io::igtl::Exception("Network timeout");
             }
-            else if(sizeReceive == 0)
+
+            if(sizeReceive == 0)
             {
                 // Disconnect this client.
-                this->removeClient(client);
+                sight::io::igtl::Server::removeClient(client);
                 m_clients.erase(m_clients.begin() + std::ptrdiff_t(i));
                 throw sight::io::igtl::Exception("Network error");
             }
-            else if(sizeReceive != headerMsg->GetPackSize())
+
+            if(sizeReceive != headerMsg->GetPackSize())
             {
                 throw sight::io::igtl::Exception("Mismatch in received message size");
             }
@@ -277,7 +277,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
                     }
                     else
                     {
-                        headerMsgs.push_back(::igtl::MessageHeader::Pointer());
+                        headerMsgs.emplace_back();
                     }
                 }
                 else
@@ -297,7 +297,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 {
     ::igtl::MessageBase::Pointer msg;
 
-    if(!headerMsg)
+    if(headerMsg == nullptr)
     {
         throw sight::io::igtl::Exception("Invalid header message");
     }
@@ -314,26 +314,25 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
     {
         throw sight::io::igtl::Exception("Network timeout");
     }
-    else if(result == 0) // Error
+
+    if(result == 0) // Error
     {
         // Disconnect this client.
-        this->removeClient(m_clients[client]);
+        sight::io::igtl::Server::removeClient(m_clients[client]);
         m_clients.erase(m_clients.begin() + client);
         throw sight::io::igtl::Exception("Network error");
     }
-    else
+
+    const auto unpackResult = msg->Unpack();
+
+    if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
     {
-        const auto unpackResult = msg->Unpack();
+        throw sight::io::igtl::Exception("Network error");
+    }
 
-        if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
-        {
-            throw sight::io::igtl::Exception("Network error");
-        }
-
-        if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
-        {
-            return msg;
-        }
+    if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
+    {
+        return msg;
     }
 
     throw Exception("Body pack is not valid");
@@ -355,7 +354,7 @@ std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>&
             {
                 detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
                 objVect.push_back(converter->fromIgtlMessage(msg));
-                deviceNames.push_back(headerMsg->GetDeviceName());
+                deviceNames.emplace_back(headerMsg->GetDeviceName());
             }
         }
 

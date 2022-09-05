@@ -26,10 +26,7 @@
 
 #include <service/IXMLParser.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 /**
@@ -53,6 +50,4 @@ public:
     SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
 };
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

@@ -55,7 +55,7 @@ public:
     DATA_API Reconstruction(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Reconstruction();
+    DATA_API ~Reconstruction() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -68,7 +68,7 @@ public:
      * @brief Get/Set value of the bIsVisible.
      */
     bool getIsVisible() const;
-    void setIsVisible(const bool _bIsVisible);
+    void setIsVisible(bool _bIsVisible);
     /// @}
 
     /**
@@ -149,7 +149,7 @@ protected:
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! true if this reconstruction is visible
-    bool m_bIsVisible;
+    bool m_bIsVisible {false};
 
     //! Organ name
     std::string m_sOrganName;

@@ -36,19 +36,16 @@ namespace sight::data
 
 class SeriesDB;
 
-}
+} // namespace sight::data
 
 namespace sight::core::jobs
 {
 
 class Aggregator;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 class DicomAnonymizer;
@@ -71,7 +68,7 @@ public:
      * @brief Constructor/Destructor
      * @{ */
     IO_DICOM_API DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key);
-    IO_DICOM_API virtual ~DicomSeriesDBWriter();
+    IO_DICOM_API ~DicomSeriesDBWriter() override;
     /**  @} */
 
     /// Return an empty string
@@ -101,6 +98,4 @@ private:
     std::string m_producer;
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

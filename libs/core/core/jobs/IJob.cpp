@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "core/jobs/IJob.hpp"
 
 #include "core/jobs/exception/Waiting.hpp"
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
@@ -30,23 +31,19 @@
 #include <core/thread/Worker.hxx>
 
 #include <algorithm>
+#include <utility>
 
 namespace sight::core::jobs
 {
 
-IJob::IJob(const std::string& name) :
+IJob::IJob(std::string name) :
     m_sigCancelRequested(CancelRequestedSignal::New()),
     m_sigCanceled(StateSignal::New()),
     m_sigStarted(StateSignal::New()),
     m_sigFinished(StateSignal::New()),
     m_sigDoneWork(DoneWorkSignal::New()),
     m_sigLogged(LogSignal::New()),
-    m_name(name),
-    m_doneWorkUnits(0),
-    m_totalWorkUnits(0),
-    m_cancelRequested(false),
-    m_cancelable(true),
-    m_state(WAITING)
+    m_name(std::move(name))
 {
 }
 
@@ -117,7 +114,7 @@ IJob::SharedFuture IJob::cancel()
         lock.unlock();
         // m_cancelHooks can not be changed when m_state != WAITING or
         // RUNNING, no need to lock m_mutex
-        for(auto cancel : m_cancelHooks)
+        for(const auto& cancel : m_cancelHooks)
         {
             (cancel) (*this);
         }

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "filter/dicom/splitter/TagValueInstanceRemoveSplitter.hpp"
 
 #include "filter/dicom/exceptions/FilterFailure.hpp"
@@ -34,10 +36,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string TagValueInstanceRemoveSplitter::s_FILTER_NAME        = "Tag value instance remove splitter";
@@ -46,18 +45,15 @@ const std::string TagValueInstanceRemoveSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key) :
-    ISplitter()
+TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key /*unused*/)
 {
-    m_tag      = DCM_UndefinedTagKey;
-    m_tagValue = "";
+    m_tag = DCM_UndefinedTagKey;
 }
 
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveSplitter::~TagValueInstanceRemoveSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -96,13 +92,13 @@ const
 
     DicomSeriesContainerType result;
 
-    typedef std::vector<core::memory::BufferObject::sptr> InstanceContainerType;
+    using InstanceContainerType = std::vector<core::memory::BufferObject::sptr>;
 
     // Create a container to store the instances
     InstanceContainerType instances;
 
     OFCondition status;
-    DcmDataset* dataset;
+    DcmDataset* dataset = nullptr;
     OFString data;
 
     for(const auto& item : series->getDicomContainer())
@@ -133,7 +129,7 @@ const
 
         // Get the value of the instance
         dataset->findAndGetOFStringArray(m_tag, data);
-        const std::string value = data.c_str();
+        const std::string value = data.c_str(); // NOLINT(readability-redundant-string-cstr)
 
         if(value != m_tagValue)
         {
@@ -159,6 +155,4 @@ const
     return result;
 }
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

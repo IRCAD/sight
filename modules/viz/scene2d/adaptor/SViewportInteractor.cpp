@@ -26,22 +26,18 @@
 
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-namespace sight::module::viz::scene2d
+#include <cmath>
+
+namespace sight::module::viz::scene2d::adaptor
 {
 
-namespace adaptor
-{
-
-SViewportInteractor::SViewportInteractor() noexcept :
-    m_viewportIsTranslated(false)
-{
-}
+SViewportInteractor::SViewportInteractor() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SViewportInteractor::~SViewportInteractor() noexcept
-{
-}
+SViewportInteractor::~SViewportInteractor() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -129,12 +125,12 @@ void SViewportInteractor::zoom(bool zoomIn)
     double width  = sceneViewport->width();
     double height = sceneViewport->height();
 
-    const double zoomPercent = 10.f / 100.0f;
-    const double centerX     = x + width / 2.0f;
-    const double centerY     = y + height / 2.0f;
+    const double zoomPercent = 10.F / 100.0F;
+    const double centerX     = x + width / 2.0F;
+    const double centerY     = y + height / 2.0F;
 
-    double newWidth;
-    double newHeight;
+    double newWidth  = NAN;
+    double newHeight = NAN;
     if(zoomIn)
     {
         newWidth  = width * zoomPercent;
@@ -166,6 +162,4 @@ void SViewportInteractor::zoom(bool zoomIn)
 
 //-----------------------------------------------------------------------------
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

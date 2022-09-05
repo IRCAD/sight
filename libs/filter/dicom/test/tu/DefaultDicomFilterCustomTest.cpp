@@ -40,10 +40,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::DefaultDicomFilterCustomTest);
 
-namespace sight::filter::dicom
-{
-
-namespace ut
+namespace sight::filter::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -104,6 +101,4 @@ void DefaultDicomFilterCustomTest::simpleApplication()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::ut

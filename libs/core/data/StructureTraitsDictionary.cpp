@@ -36,15 +36,14 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-StructureTraitsDictionary::StructureTraitsDictionary(data::Object::Key)
+StructureTraitsDictionary::StructureTraitsDictionary(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 StructureTraitsDictionary::~StructureTraitsDictionary()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTrai
 
     SIGHT_THROW_IF(
         "Wrong structure type '" << type << "', a type cannot contain space",
-        structureTraits->getType().find(" ") != std::string::npos
+        structureTraits->getType().find(' ') != std::string::npos
     );
 
     m_structureTraitsMap[type] = structureTraits;
@@ -119,8 +118,7 @@ StructureTraitsDictionary::StructureTypeNameContainer StructureTraitsDictionary:
         m_structureTraitsMap.begin(),
         m_structureTraitsMap.end(),
         std::back_inserter(vectNames),
-        std::bind(&StructureTraitsMapType::value_type::first, std::placeholders::_1)
-    );
+        [](const auto& e){return e.first;});
     return vectNames;
 }
 

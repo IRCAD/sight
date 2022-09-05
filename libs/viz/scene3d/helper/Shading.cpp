@@ -41,10 +41,7 @@
  * cspell:ignore SAMPLER1DSHADOW SAMPLER2DSHADOW
  */
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 static const std::string s_EDGE_PASS    = "EdgePass";
@@ -71,7 +68,7 @@ bool Shading::isColorTechnique(const Ogre::Technique& _tech)
     const bool weightPass   = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
     const bool peelInitPass = std::regex_match(name, regexDualPeelInit);
 
-    return name == "" || (peelTech && !peelInitPass) || weightPass;
+    return name.empty() || (peelTech && !peelInitPass) || weightPass;
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +91,7 @@ bool Shading::isGeometricTechnique(const Ogre::Technique& _tech)
     const bool weightBlend        = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
     const bool transmittanceBlend = std::regex_match(name, s_TRANSMITTANCE_BLEND_REGEX);
 
-    return name == "" || peelPass || weightBlend || transmittanceBlend;
+    return name.empty() || peelPass || weightBlend || transmittanceBlend;
 }
 
 //-----------------------------------------------------------------------------
@@ -179,7 +176,7 @@ std::string Shading::getR2VBGeometryProgramName(
         suffix += "+PPColor";
     }
 
-    const std::string name = "R2VB/" + suffix + "_GP";
+    std::string name = "R2VB/" + suffix + "_GP";
 
     return name;
 }
@@ -195,7 +192,8 @@ std::string Shading::setPermutationInProgramName(const std::string& _name, const
     prgName = std::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
-    static const std::regex regexShading("(" + s_AMBIENT + ")|(" + s_FLAT + ")|(" + s_PIXELLIGHTING + ")");
+    static const std::regex regexShading(std::string("(").append(s_AMBIENT).append(")|(").append(s_FLAT).append(")|(").
+                                         append(s_PIXELLIGHTING).append(")"));
     prgName = std::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;
@@ -290,9 +288,12 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
             }
         }
 
-        if(!Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
+        if(!Ogre::StringUtil::endsWith(
+               cstDef.first,
+               "[0]"
+           ) && (_params->findAutoConstantEntry(cstDef.first) == nullptr))
         {
-            ConstantValueType constantValue;
+            ConstantValueType constantValue {};
             bool found = false;
             if(cstDef.second.isDouble())
             {
@@ -515,7 +516,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
             break;
 
         default:
-            std::string GpuConstantTypeNames[] =
+            [[maybe_unused]] static const std::array GpuConstantTypeNames
             {
                 "GCT_FLOAT1",
                 "GCT_FLOAT2",
@@ -558,9 +559,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            SIGHT_WARN("Object type " + GpuConstantTypeNames[_type - 1] + " not supported yet");
-
-            (void) GpuConstantTypeNames; // Only there to avoid the 'unused' warning.
+            SIGHT_WARN("Object type " + std::string(GpuConstantTypeNames[_type - 1]) + " not supported yet");
     }
 
     return object;
@@ -614,11 +613,9 @@ Ogre::GpuProgramPtr Shading::createProgramFrom(
     params->copyMatchingNamedConstantsFrom(*baseParams);
 
     newProgram->load();
-    return Ogre::GpuProgramPtr(newProgram);
+    return {newProgram};
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

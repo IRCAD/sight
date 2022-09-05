@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,22 +27,22 @@
 #include <core/exceptionmacros.hpp>
 
 #include <filesystem>
+#include <utility>
 
 namespace sight::io::zip
 {
 
 //-----------------------------------------------------------------------------
 
-ReadDirArchive::ReadDirArchive(const std::filesystem::path& archive) :
-    m_archive(archive)
+ReadDirArchive::ReadDirArchive(std::filesystem::path archive) :
+    m_archive(std::move(archive))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ReadDirArchive::~ReadDirArchive()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -63,9 +63,9 @@ SPTR(std::istream) ReadDirArchive::getFile(const std::filesystem::path& path)
 
 //-----------------------------------------------------------------------------
 
-const std::filesystem::path ReadDirArchive::getArchivePath() const
+std::filesystem::path ReadDirArchive::getArchivePath() const
 {
     return m_archive;
 }
 
-}
+} // namespace sight::io::zip

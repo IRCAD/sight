@@ -21,10 +21,7 @@
 
 #include <core/runtime/operations.hpp>
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 struct Initializer
@@ -38,6 +35,4 @@ struct Initializer
 
 static const Initializer init;
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

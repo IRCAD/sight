@@ -112,7 +112,7 @@ private:
      * @param _image The image where the distance has been added.
      * @param _distance The distance value.
      */
-    void notifyDeleteDistance(const data::Image::csptr& _image, const data::PointList::csptr& _distance) const;
+    static void notifyDeleteDistance(const data::Image::csptr& _image, const data::PointList::csptr& _distance);
 
     /// Removes the last added distance.
     void removeLastDistance();

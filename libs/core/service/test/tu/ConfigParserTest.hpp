@@ -29,10 +29,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -48,20 +45,18 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// test object with services creation from a configuration
-    void testObjectCreationWithConfig();
-    void testImageParser();
-    void testTransferFunctionParser();
+    static void testObjectCreationWithConfig();
+    static void testImageParser();
+    static void testTransferFunctionParser();
 
 private:
 
     /// Create a configurationElement to build an object
-    core::runtime::ConfigurationElement::sptr buildObjectConfig();
+    static core::runtime::ConfigurationElement::sptr buildObjectConfig();
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

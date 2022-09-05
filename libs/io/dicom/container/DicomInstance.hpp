@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,19 +36,16 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
 
 class Series;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace container
+namespace sight::io::dicom::container
 {
 
 /**
@@ -75,8 +72,8 @@ public:
      */
     IO_DICOM_API DicomInstance(
         const CSPTR(data::Series)& series,
-        const SPTR(core::log::Logger)& logger = nullptr,
-        bool isMultiFiles                     = true
+        SPTR(core::log::Logger)logger = nullptr,
+        bool isMultiFiles             = true
     );
 
     /**
@@ -86,7 +83,7 @@ public:
      */
     IO_DICOM_API DicomInstance(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(core::log::Logger)& logger = nullptr
+        SPTR(core::log::Logger)logger = nullptr
     );
 
     /// Copy constructor
@@ -96,7 +93,7 @@ public:
     IO_DICOM_API virtual ~DicomInstance();
 
     /// Get the flag on multi-files state of an image series
-    bool getIsMultiFiles() const
+    [[nodiscard]] bool getIsMultiFiles() const
     {
         return m_isMultiFiles;
     }
@@ -108,7 +105,7 @@ public:
     }
 
     /// Get SOP Class UID
-    const std::string& getSOPClassUID() const
+    [[nodiscard]] const std::string& getSOPClassUID() const
     {
         return m_SOPClassUID;
     }
@@ -120,7 +117,7 @@ public:
     }
 
     /// Get Series Instance UID
-    const std::string& getSeriesInstanceUID() const
+    [[nodiscard]] const std::string& getSeriesInstanceUID() const
     {
         return m_seriesInstanceUID;
     }
@@ -132,7 +129,7 @@ public:
     }
 
     /// Get Study Instance UID
-    const std::string& getStudyInstanceUID() const
+    [[nodiscard]] const std::string& getStudyInstanceUID() const
     {
         return m_studyInstanceUID;
     }
@@ -144,7 +141,7 @@ public:
     }
 
     /// Get Study Instance UID
-    const std::string& getFrameOfReferenceUID() const
+    [[nodiscard]] const std::string& getFrameOfReferenceUID() const
     {
         return m_frameOfReferenceUID;
     }
@@ -156,7 +153,7 @@ public:
     }
 
     /// Get SOP Instance UID container
-    const SOPInstanceUIDContainerType& getSOPInstanceUIDContainer() const
+    [[nodiscard]] const SOPInstanceUIDContainerType& getSOPInstanceUIDContainer() const
     {
         return m_SOPInstanceUIDContainer;
     }
@@ -196,7 +193,7 @@ protected:
 private:
 
     /// Define if the instance must be split in several files
-    bool m_isMultiFiles;
+    bool m_isMultiFiles {true};
 
     /// SOP Class UID
     std::string m_SOPClassUID;
@@ -217,6 +214,4 @@ private:
     SPTR(core::log::Logger) m_logger;
 };
 
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container

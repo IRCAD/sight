@@ -50,15 +50,13 @@ static const std::string s_AXIS_NAME           = "name";
 
 //-----------------------------------------------------------------------------
 
-SAxis::SAxis() noexcept
-{
-}
+SAxis::SAxis() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SAxis::~SAxis() noexcept
-{
-}
+SAxis::~SAxis() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -140,11 +138,11 @@ void SAxis::starting()
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     // Sizes
-    const float originRadius   = m_length * 0.1f;
-    const float cylinderLength = m_length * 0.85f;
-    const float cylinderRadius = m_length * 0.025f;
+    const float originRadius   = m_length * 0.1F;
+    const float cylinderLength = m_length * 0.85F;
+    const float cylinderRadius = m_length * 0.025F;
     const float coneLength     = m_length - cylinderLength;
-    const float coneRadius     = cylinderRadius * 2.f;
+    const float coneRadius     = cylinderRadius * 2.F;
     const unsigned sample      = 64;
 
     // Draw
@@ -240,7 +238,7 @@ void SAxis::starting()
     }
 
     xConeNode->attachObject(m_xCone);
-    xConeNode->translate(cylinderLength, 0.f, 0.f);
+    xConeNode->translate(cylinderLength, 0.F, 0.F);
 
     // Y cone
     sight::viz::scene3d::helper::ManualObject::createCone(
@@ -269,7 +267,7 @@ void SAxis::starting()
         yConeNode->attachObject(m_axisLabels[1]);
     }
 
-    yConeNode->translate(0.f, cylinderLength, 0.f);
+    yConeNode->translate(0.F, cylinderLength, 0.F);
     yConeNode->roll(Ogre::Degree(90));
 
     // Z cone
@@ -299,7 +297,7 @@ void SAxis::starting()
         zConeNode->attachObject(m_axisLabels[2]);
     }
 
-    zConeNode->translate(0.f, 0.f, cylinderLength);
+    zConeNode->translate(0.F, 0.F, cylinderLength);
     zConeNode->yaw(Ogre::Degree(-90));
 
     // Display Name if provided.
@@ -359,7 +357,7 @@ void SAxis::stopping()
         }
     }
 
-    if(m_axisNameTxt)
+    if(m_axisNameTxt != nullptr)
     {
         m_axisNameTxt->detachFromParent();
         sceneMgr->destroyMovableObject(m_axisNameTxt);
@@ -380,7 +378,7 @@ void SAxis::stopping()
     sceneMgr->destroyManualObject(m_zCone);
 
     Ogre::SceneNode* const transformNode = this->getTransformNode();
-    if(transformNode)
+    if(transformNode != nullptr)
     {
         transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
     }
@@ -393,7 +391,7 @@ void SAxis::stopping()
 
 void SAxis::setVisible(bool _visible)
 {
-    if(m_sceneNode)
+    if(m_sceneNode != nullptr)
     {
         m_sceneNode->setVisible(_visible);
         if(m_enableLabel)
@@ -405,7 +403,7 @@ void SAxis::setVisible(bool _visible)
             }
         }
 
-        if(m_axisNameTxt)
+        if(m_axisNameTxt != nullptr)
         {
             m_axisNameTxt->setVisible(_visible);
         }

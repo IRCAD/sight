@@ -34,7 +34,7 @@ namespace sight::data
 
 class Vector;
 
-}
+} // namespace sight::data
 
 namespace sight::activity
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 #include <string>
 #include <utility>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -196,6 +193,4 @@ bool SOPClass::isHazardousSOPClass(const std::string& SOPClassUID)
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

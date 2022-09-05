@@ -38,10 +38,7 @@
 #include <QQuickItem>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 //------------------------------------------------------------------------------
@@ -83,9 +80,8 @@ SSequencer::SSequencer() noexcept
 
 //------------------------------------------------------------------------------
 
-SSequencer::~SSequencer() noexcept
-{
-}
+SSequencer::~SSequencer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +118,7 @@ void SSequencer::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     m_widget = new QQuickWidget();
@@ -131,7 +127,7 @@ void SSequencer::starting()
     const auto path =
         core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ActivitySequencer.qml");
     QWidget* parent = qtContainer->getQtContainer();
-    auto engine     = m_widget->engine();
+    auto* engine    = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
     QColor clear;
@@ -300,7 +296,7 @@ void SSequencer::goTo(int index)
         }
 
         // Disable all next activities (including current)
-        for(std::size_t i = std::size_t(index + 1) ; i < seriesDB->size() ; ++i)
+        for(auto i = std::size_t(index) + 1 ; i < seriesDB->size() ; ++i)
         {
             this->disableActivity(int(i));
         }
@@ -314,14 +310,14 @@ void SSequencer::goTo(int index)
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const std::size_t newIdx = static_cast<std::size_t>(index);
+    const auto newIdx = static_cast<std::size_t>(index);
 
     data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
 
-    std::tie(ok, errorMsg) = this->validateActivity(activity);
+    std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(activity);
     if(ok)
     {
         m_sigActivityCreated->asyncEmit(activity);
@@ -352,7 +348,7 @@ void SSequencer::checkNext()
         this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
-    const std::size_t nextIdx = static_cast<std::size_t>(m_currentActivity + 1);
+    const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
         data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
@@ -360,7 +356,7 @@ void SSequencer::checkNext()
         bool ok = true;
         std::string errorMsg;
 
-        std::tie(ok, errorMsg) = this->validateActivity(nextActivity);
+        std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(nextActivity);
         if(ok)
         {
             this->enableActivity(m_currentActivity + 1);
@@ -422,6 +418,4 @@ service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace activity
+} // namespace sight::module::ui::qt::activity

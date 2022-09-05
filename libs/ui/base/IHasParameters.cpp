@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,60 +58,64 @@ IHasParameters::IHasParameters(sight::core::com::Slots& _slots)
 //-----------------------------------------------------------------------------
 
 IHasParameters::~IHasParameters()
+= default;
+
+//-----------------------------------------------------------------------------
+
+void IHasParameters::setBoolParameter(bool /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setBoolParameter(bool, std::string)
+void IHasParameters::setColorParameter(std::array<std::uint8_t, 4> /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setColorParameter(std::array<std::uint8_t, 4>, std::string)
+void IHasParameters::setDoubleParameter(double /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setDoubleParameter(double, std::string)
+void IHasParameters::setDouble2Parameter(double /*unused*/, double /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setDouble2Parameter(double, double, std::string)
+void IHasParameters::setDouble3Parameter(
+    double /*unused*/,
+    double /*unused*/,
+    double /*unused*/,
+    std::string /*unused*/
+)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setDouble3Parameter(double, double, double, std::string)
+void IHasParameters::setIntParameter(int /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setIntParameter(int, std::string)
+void IHasParameters::setInt2Parameter(int /*unused*/, int /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setInt2Parameter(int, int, std::string)
+void IHasParameters::setInt3Parameter(int /*unused*/, int /*unused*/, int /*unused*/, std::string /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IHasParameters::setInt3Parameter(int, int, int, std::string)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void IHasParameters::setEnumParameter(std::string, std::string)
+void IHasParameters::setEnumParameter(std::string /*unused*/, std::string /*unused*/)
 {
 }
 

@@ -27,10 +27,7 @@
 
 #include <vector>
 
-namespace sight::data
-{
-
-namespace helper
+namespace sight::data::helper
 {
 
 /**
@@ -52,10 +49,10 @@ public:
     DATA_API void compute();
 
     /// Samples the histogram given a bin width
-    DATA_API histogram_t sample(size_t _binWidth) const;
+    [[nodiscard]] DATA_API histogram_t sample(size_t _binWidth) const;
 
-    double max() const;
-    double min() const;
+    [[nodiscard]] double max() const;
+    [[nodiscard]] double min() const;
 
 private:
 
@@ -79,6 +76,4 @@ inline double Histogram::min() const
     return m_min;
 }
 
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper

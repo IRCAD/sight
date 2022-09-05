@@ -43,7 +43,7 @@ public:
     typedef BresenhamLine::CoordinatesType CoordinatesType;
 
     /// Constructor, instantiates a drawer with an image and a region of interest.
-    FILTER_IMAGE_API LineDrawer(const data::Image::sptr& img, const data::Image::csptr& roi);
+    FILTER_IMAGE_API LineDrawer(data::Image::sptr img, data::Image::csptr roi);
 
     /**
      * @brief Draws a line in an image slice.
@@ -56,12 +56,12 @@ public:
      * @return The differences in the image before and after drawing.
      */
     FILTER_IMAGE_API ImageDiff draw(
-        const BresenhamLine::Orientation orientation,
+        BresenhamLine::Orientation orientation,
         const CoordinatesType& startCoord,
         const CoordinatesType& endCoord,
         data::Image::BufferType* value,
-        const double thickness,
-        const bool overwrite = true
+        double thickness,
+        bool overwrite = true
     );
 
 private:
@@ -83,10 +83,10 @@ private:
     bool drawEllipse(
         const LineDrawer::CoordinatesType& c,
         data::Image::BufferType* value,
-        const double radius,
-        const std::size_t firstDim,
-        const std::size_t secondDim,
-        const bool overwrite,
+        double radius,
+        std::size_t firstDim,
+        std::size_t secondDim,
+        bool overwrite,
         ImageDiff& diff
     );
 
@@ -105,9 +105,9 @@ private:
      * @return true if at least one pixel has been drawn, false otherwise.
      */
     bool drawPixel(
-        const data::Image::IndexType index,
+        data::Image::IndexType index,
         data::Image::BufferType* value,
-        const bool overwrite,
+        bool overwrite,
         ImageDiff& diff
     );
 

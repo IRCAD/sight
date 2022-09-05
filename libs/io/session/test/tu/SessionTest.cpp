@@ -98,10 +98,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::session::ut::SessionTest);
 
-namespace sight::io::session
-{
-
-namespace ut
+namespace sight::io::session::ut
 {
 
 // For UUID::generateUUID();
@@ -123,7 +120,7 @@ inline T random()
                                  >::type;
 
     static uniform_distribution distributor(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
-    static std::mt19937 generator;
+    static std::mt19937 generator {std::random_device {}()};
 
     return distributor(generator);
 }
@@ -143,7 +140,7 @@ void SessionTest::tearDown()
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline typename T::sptr _generate(const std::size_t)
+inline typename T::sptr generate(const std::size_t /*unused*/)
 {
     return T::New(static_cast<typename T::ValueType>(random<typename T::ValueType>()));
 }
@@ -151,44 +148,42 @@ inline typename T::sptr _generate(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline const typename T::csptr& _expected(const std::size_t variant)
+inline const typename T::csptr& expected(const std::size_t variant)
 {
     static std::map<std::size_t, typename T::csptr> MAP;
     const auto& it = MAP.find(variant);
 
     if(it == MAP.cend())
     {
-        return MAP.insert_or_assign(variant, _generate<T>(variant)).first->second;
+        return MAP.insert_or_assign(variant, generate<T>(variant)).first->second;
     }
-    else
-    {
-        return it->second;
-    }
+
+    return it->second;
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline typename T::sptr _new(const std::size_t variant)
+inline typename T::sptr create(const std::size_t variant)
 {
     const auto& object = T::New();
-    object->deepCopy(_expected<T>(variant));
+    object->deepCopy(expected<T>(variant));
     return object;
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void _compare(const typename T::csptr& actual, const std::size_t variant)
+inline void compare(const typename T::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
-    CPPUNIT_ASSERT_EQUAL(_expected<T>(variant)->getValue(), actual->getValue());
+    CPPUNIT_ASSERT_EQUAL(expected<T>(variant)->getValue(), actual->getValue());
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void _test(const bool encrypt, const bool raw)
+inline void test(const bool encrypt, const bool raw)
 {
     static constexpr auto password = "password";
 
@@ -205,10 +200,10 @@ inline void _test(const bool encrypt, const bool raw)
     // Test serialization
     {
         // Create the data object
-        auto object = _new<T>(0);
+        auto object = create<T>(0);
 
         // Add a field
-        object->setField(fieldName, _new<T>(1));
+        object->setField(fieldName, create<T>(1));
 
         // Create the session writer
         auto sessionWriter = io::session::SessionWriter::New();
@@ -255,11 +250,11 @@ inline void _test(const bool encrypt, const bool raw)
 
         // Test value
         auto object = std::dynamic_pointer_cast<T>(sessionReader->getObject());
-        _compare<T>(object, 0);
+        compare<T>(object, 0);
 
         // Test field
         auto fieldObject = std::dynamic_pointer_cast<T>(object->getField(fieldName));
-        _compare<T>(fieldObject, 1);
+        compare<T>(fieldObject, 1);
     }
 
     std::filesystem::remove_all(tmpfolder);
@@ -268,17 +263,17 @@ inline void _test(const bool encrypt, const bool raw)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void _test_combine()
+inline void testCombine()
 {
-    _test<T>(false, false);
-    _test<T>(false, true);
-    _test<T>(true, false);
+    test<T>(false, false);
+    test<T>(false, true);
+    test<T>(true, false);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Boolean::sptr _generate<data::Boolean>(const std::size_t variant)
+inline data::Boolean::sptr generate<data::Boolean>(const std::size_t variant)
 {
     return data::Boolean::New(variant % 2 == 0);
 }
@@ -287,36 +282,36 @@ inline data::Boolean::sptr _generate<data::Boolean>(const std::size_t variant)
 
 void SessionTest::booleanTest()
 {
-    _test_combine<data::Boolean>();
+    testCombine<data::Boolean>();
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::integerTest()
 {
-    _test_combine<data::Integer>();
+    testCombine<data::Integer>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Float>(const data::Float::csptr& actual, const std::size_t variant)
+inline void compare<data::Float>(const data::Float::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_expected<data::Float>(variant)->getValue(), actual->getValue(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected<data::Float>(variant)->getValue(), actual->getValue(), FLOAT_EPSILON);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::floatTest()
 {
-    _test_combine<data::Float>();
+    testCombine<data::Float>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::String::sptr _generate<data::String>(const std::size_t)
+inline data::String::sptr generate<data::String>(const std::size_t /*unused*/)
 {
     return data::String::New(UUID::generateUUID());
 }
@@ -325,19 +320,19 @@ inline data::String::sptr _generate<data::String>(const std::size_t)
 
 void SessionTest::stringTest()
 {
-    _test_combine<data::String>();
+    testCombine<data::String>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Composite::sptr _generate<data::Composite>(const std::size_t variant)
+inline data::Composite::sptr generate<data::Composite>(const std::size_t variant)
 {
     auto object = data::Composite::New();
-    (*object)[data::Boolean::classname()] = _new<data::Boolean>(variant);
-    (*object)[data::Integer::classname()] = _new<data::Integer>(variant);
-    (*object)[data::Float::classname()]   = _new<data::Float>(variant);
-    (*object)[data::String::classname()]  = _new<data::String>(variant);
+    (*object)[data::Boolean::classname()] = create<data::Boolean>(variant);
+    (*object)[data::Integer::classname()] = create<data::Integer>(variant);
+    (*object)[data::Float::classname()]   = create<data::Float>(variant);
+    (*object)[data::String::classname()]  = create<data::String>(variant);
 
     return object;
 }
@@ -345,36 +340,36 @@ inline data::Composite::sptr _generate<data::Composite>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Composite>(const data::Composite::csptr& actual, const std::size_t variant)
+inline void compare<data::Composite>(const data::Composite::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
-    _compare<data::Boolean>(
+    compare<data::Boolean>(
         std::dynamic_pointer_cast<data::Boolean>(actual->at(data::Boolean::classname())),
         variant
     );
-    _compare<data::Integer>(
+    compare<data::Integer>(
         std::dynamic_pointer_cast<data::Integer>(actual->at(data::Integer::classname())),
         variant
     );
-    _compare<data::Float>(std::dynamic_pointer_cast<data::Float>(actual->at(data::Float::classname())), variant);
-    _compare<data::String>(std::dynamic_pointer_cast<data::String>(actual->at(data::String::classname())), variant);
+    compare<data::Float>(std::dynamic_pointer_cast<data::Float>(actual->at(data::Float::classname())), variant);
+    compare<data::String>(std::dynamic_pointer_cast<data::String>(actual->at(data::String::classname())), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::compositeTest()
 {
-    _test_combine<data::Composite>();
+    testCombine<data::Composite>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Mesh::sptr _new<data::Mesh>(const std::size_t variant)
+inline data::Mesh::sptr create<data::Mesh>(const std::size_t variant)
 {
     const auto& object = data::Mesh::New();
-    object->deepCopy(_expected<data::Mesh>(variant));
+    object->deepCopy(expected<data::Mesh>(variant));
     object->shrinkToFit();
     return object;
 }
@@ -382,7 +377,7 @@ inline data::Mesh::sptr _new<data::Mesh>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Mesh::sptr _generate<data::Mesh>(const std::size_t)
+inline data::Mesh::sptr generate<data::Mesh>(const std::size_t /*unused*/)
 {
     auto object = data::Mesh::New();
 
@@ -400,24 +395,24 @@ inline data::Mesh::sptr _generate<data::Mesh>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::size_t variant)
+inline void compare<data::Mesh>(const data::Mesh::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Mesh>(variant);
+    const auto& exp = expected<data::Mesh>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->numCells(), actual->numCells());
-    CPPUNIT_ASSERT_EQUAL(expected->numPoints(), actual->numPoints());
-    CPPUNIT_ASSERT_EQUAL(expected->getCellSize(), actual->getCellSize());
-    CPPUNIT_ASSERT_EQUAL(expected->getDataSizeInBytes(), actual->getDataSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(exp->numCells(), actual->numCells());
+    CPPUNIT_ASSERT_EQUAL(exp->numPoints(), actual->numPoints());
+    CPPUNIT_ASSERT_EQUAL(exp->getCellSize(), actual->getCellSize());
+    CPPUNIT_ASSERT_EQUAL(exp->getDataSizeInBytes(), actual->getDataSizeInBytes());
 
     // This is needed to use iterators
-    data::mt::locked_ptr<const data::Mesh> expectedGuard(expected);
+    data::mt::locked_ptr<const data::Mesh> expectedGuard(exp);
     data::mt::locked_ptr<const data::Mesh> actualGuard(actual);
 
-    using namespace data::iterator;
-    const auto expectedRange = expected->czip_range<point::xyz, point::nxyz>();
+    namespace point = data::iterator::point;
+    const auto expectedRange = exp->czip_range<point::xyz, point::nxyz>();
     const auto actualRange   = actual->czip_range<point::xyz, point::nxyz>();
 
     for(const auto& [orig, cur] : boost::combine(expectedRange, actualRange))
@@ -439,13 +434,13 @@ inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::siz
 
 void SessionTest::meshTest()
 {
-    _test_combine<data::Mesh>();
+    testCombine<data::Mesh>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Equipment::sptr _generate<data::Equipment>(const std::size_t)
+inline data::Equipment::sptr generate<data::Equipment>(const std::size_t /*unused*/)
 {
     auto object = data::Equipment::New();
     object->setInstitutionName(UUID::generateUUID());
@@ -456,27 +451,27 @@ inline data::Equipment::sptr _generate<data::Equipment>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Equipment>(const data::Equipment::csptr& actual, const std::size_t variant)
+inline void compare<data::Equipment>(const data::Equipment::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Equipment>(variant);
+    const auto& exp = expected<data::Equipment>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getInstitutionName(), actual->getInstitutionName());
+    CPPUNIT_ASSERT_EQUAL(exp->getInstitutionName(), actual->getInstitutionName());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::equipmentTest()
 {
-    _test_combine<data::Equipment>();
+    testCombine<data::Equipment>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Patient::sptr _generate<data::Patient>(const std::size_t)
+inline data::Patient::sptr generate<data::Patient>(const std::size_t /*unused*/)
 {
     auto object = data::Patient::New();
     object->setName(UUID::generateUUID());
@@ -490,30 +485,30 @@ inline data::Patient::sptr _generate<data::Patient>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Patient>(const data::Patient::csptr& actual, const std::size_t variant)
+inline void compare<data::Patient>(const data::Patient::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Patient>(variant);
+    const auto& exp = expected<data::Patient>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getName(), actual->getName());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientId(), actual->getPatientId());
-    CPPUNIT_ASSERT_EQUAL(expected->getBirthdate(), actual->getBirthdate());
-    CPPUNIT_ASSERT_EQUAL(expected->getSex(), actual->getSex());
+    CPPUNIT_ASSERT_EQUAL(exp->getName(), actual->getName());
+    CPPUNIT_ASSERT_EQUAL(exp->getPatientId(), actual->getPatientId());
+    CPPUNIT_ASSERT_EQUAL(exp->getBirthdate(), actual->getBirthdate());
+    CPPUNIT_ASSERT_EQUAL(exp->getSex(), actual->getSex());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::patientTest()
 {
-    _test_combine<data::Patient>();
+    testCombine<data::Patient>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Study::sptr _generate<data::Study>(const std::size_t)
+inline data::Study::sptr generate<data::Study>(const std::size_t /*unused*/)
 {
     auto object = data::Study::New();
 
@@ -534,43 +529,43 @@ inline data::Study::sptr _generate<data::Study>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Study>(const data::Study::csptr& actual, const std::size_t variant)
+inline void compare<data::Study>(const data::Study::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Study>(variant);
+    const auto& exp = expected<data::Study>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getInstanceUID(), actual->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(expected->getStudyID(), actual->getStudyID());
-    CPPUNIT_ASSERT_EQUAL(expected->getDate(), actual->getDate());
-    CPPUNIT_ASSERT_EQUAL(expected->getTime(), actual->getTime());
-    CPPUNIT_ASSERT_EQUAL(expected->getReferringPhysicianName(), actual->getReferringPhysicianName());
-    CPPUNIT_ASSERT_EQUAL(expected->getConsultingPhysicianName(), actual->getConsultingPhysicianName());
-    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientAge(), actual->getPatientAge());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientSize(), actual->getPatientSize());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientWeight(), actual->getPatientWeight());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientBodyMassIndex(), actual->getPatientBodyMassIndex());
+    CPPUNIT_ASSERT_EQUAL(exp->getInstanceUID(), actual->getInstanceUID());
+    CPPUNIT_ASSERT_EQUAL(exp->getStudyID(), actual->getStudyID());
+    CPPUNIT_ASSERT_EQUAL(exp->getDate(), actual->getDate());
+    CPPUNIT_ASSERT_EQUAL(exp->getTime(), actual->getTime());
+    CPPUNIT_ASSERT_EQUAL(exp->getReferringPhysicianName(), actual->getReferringPhysicianName());
+    CPPUNIT_ASSERT_EQUAL(exp->getConsultingPhysicianName(), actual->getConsultingPhysicianName());
+    CPPUNIT_ASSERT_EQUAL(exp->getDescription(), actual->getDescription());
+    CPPUNIT_ASSERT_EQUAL(exp->getPatientAge(), actual->getPatientAge());
+    CPPUNIT_ASSERT_EQUAL(exp->getPatientSize(), actual->getPatientSize());
+    CPPUNIT_ASSERT_EQUAL(exp->getPatientWeight(), actual->getPatientWeight());
+    CPPUNIT_ASSERT_EQUAL(exp->getPatientBodyMassIndex(), actual->getPatientBodyMassIndex());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::studyTest()
 {
-    _test_combine<data::Study>();
+    testCombine<data::Study>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Series::sptr _generate<data::Series>(const std::size_t variant)
+inline data::Series::sptr generate<data::Series>(const std::size_t variant)
 {
     auto object = data::Series::New();
 
-    object->setPatient(_new<data::Patient>(variant));
-    object->setStudy(_new<data::Study>(variant));
-    object->setEquipment(_new<data::Equipment>(variant));
+    object->setPatient(create<data::Patient>(variant));
+    object->setStudy(create<data::Study>(variant));
+    object->setEquipment(create<data::Equipment>(variant));
 
     // Fill trivial attributes
     object->setModality(UUID::generateUUID());
@@ -580,11 +575,11 @@ inline data::Series::sptr _generate<data::Series>(const std::size_t variant)
     object->setDate(UUID::generateUUID());
     object->setTime(UUID::generateUUID());
     object->setPerformingPhysiciansName(
-            {
-                UUID::generateUUID(),
-                UUID::generateUUID(),
-                UUID::generateUUID()
-            });
+        {
+            UUID::generateUUID(),
+            UUID::generateUUID(),
+            UUID::generateUUID()
+        });
     object->setProtocolName(UUID::generateUUID());
     object->setDescription(UUID::generateUUID());
     object->setBodyPartExamined(UUID::generateUUID());
@@ -604,31 +599,31 @@ inline data::Series::sptr _generate<data::Series>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Series>(const data::Series::csptr& actual, const std::size_t variant)
+inline void compare<data::Series>(const data::Series::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Series>(variant);
+    const auto& exp = expected<data::Series>(variant);
 
     // Equipment
-    _compare<data::Equipment>(actual->getEquipment(), variant);
+    compare<data::Equipment>(actual->getEquipment(), variant);
 
     // Study
-    _compare<data::Study>(actual->getStudy(), variant);
+    compare<data::Study>(actual->getStudy(), variant);
 
     // Patient
-    _compare<data::Patient>(actual->getPatient(), variant);
+    compare<data::Patient>(actual->getPatient(), variant);
 
     // Trivial attributes
-    CPPUNIT_ASSERT_EQUAL(expected->getModality(), actual->getModality());
-    CPPUNIT_ASSERT_EQUAL(expected->getInstanceUID(), actual->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(expected->getNumber(), actual->getNumber());
-    CPPUNIT_ASSERT_EQUAL(expected->getLaterality(), actual->getLaterality());
-    CPPUNIT_ASSERT_EQUAL(expected->getDate(), actual->getDate());
-    CPPUNIT_ASSERT_EQUAL(expected->getTime(), actual->getTime());
+    CPPUNIT_ASSERT_EQUAL(exp->getModality(), actual->getModality());
+    CPPUNIT_ASSERT_EQUAL(exp->getInstanceUID(), actual->getInstanceUID());
+    CPPUNIT_ASSERT_EQUAL(exp->getNumber(), actual->getNumber());
+    CPPUNIT_ASSERT_EQUAL(exp->getLaterality(), actual->getLaterality());
+    CPPUNIT_ASSERT_EQUAL(exp->getDate(), actual->getDate());
+    CPPUNIT_ASSERT_EQUAL(exp->getTime(), actual->getTime());
 
-    const auto& expectedNames = expected->getPerformingPhysiciansName();
+    const auto& expectedNames = exp->getPerformingPhysiciansName();
     const auto& actualNames   = actual->getPerformingPhysiciansName();
     CPPUNIT_ASSERT_EQUAL(expectedNames.size(), actualNames.size());
 
@@ -637,47 +632,47 @@ inline void _compare<data::Series>(const data::Series::csptr& actual, const std:
         CPPUNIT_ASSERT_EQUAL(expectedNames[i], actualNames[i]);
     }
 
-    CPPUNIT_ASSERT_EQUAL(expected->getProtocolName(), actual->getProtocolName());
-    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(expected->getBodyPartExamined(), actual->getBodyPartExamined());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientPosition(), actual->getPatientPosition());
-    CPPUNIT_ASSERT_EQUAL(expected->getAnatomicalOrientationType(), actual->getAnatomicalOrientationType());
-    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepID(), actual->getPerformedProcedureStepID());
+    CPPUNIT_ASSERT_EQUAL(exp->getProtocolName(), actual->getProtocolName());
+    CPPUNIT_ASSERT_EQUAL(exp->getDescription(), actual->getDescription());
+    CPPUNIT_ASSERT_EQUAL(exp->getBodyPartExamined(), actual->getBodyPartExamined());
+    CPPUNIT_ASSERT_EQUAL(exp->getPatientPosition(), actual->getPatientPosition());
+    CPPUNIT_ASSERT_EQUAL(exp->getAnatomicalOrientationType(), actual->getAnatomicalOrientationType());
+    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureStepID(), actual->getPerformedProcedureStepID());
     CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepStartDate(),
+        exp->getPerformedProcedureStepStartDate(),
         actual->getPerformedProcedureStepStartDate()
     );
     CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepStartTime(),
+        exp->getPerformedProcedureStepStartTime(),
         actual->getPerformedProcedureStepStartTime()
     );
-    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepEndDate(), actual->getPerformedProcedureStepEndDate());
-    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepEndTime(), actual->getPerformedProcedureStepEndTime());
+    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureStepEndDate(), actual->getPerformedProcedureStepEndDate());
+    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureStepEndTime(), actual->getPerformedProcedureStepEndTime());
     CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepDescription(),
+        exp->getPerformedProcedureStepDescription(),
         actual->getPerformedProcedureStepDescription()
     );
-    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureComments(), actual->getPerformedProcedureComments());
+    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureComments(), actual->getPerformedProcedureComments());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::seriesTest()
 {
-    _test_combine<data::Series>();
+    testCombine<data::Series>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ActivitySeries::sptr _generate<data::ActivitySeries>(const std::size_t variant)
+inline data::ActivitySeries::sptr generate<data::ActivitySeries>(const std::size_t variant)
 {
     auto object = data::ActivitySeries::New();
 
-    object->setData(_new<data::Composite>(variant));
+    object->setData(create<data::Composite>(variant));
 
     // Inherited attributes
-    object->data::Series::shallowCopy(_expected<data::Series>(variant));
+    object->data::Series::shallowCopy(expected<data::Series>(variant));
 
     return object;
 }
@@ -685,33 +680,33 @@ inline data::ActivitySeries::sptr _generate<data::ActivitySeries>(const std::siz
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ActivitySeries>(const data::ActivitySeries::csptr& actual, const std::size_t variant)
+inline void compare<data::ActivitySeries>(const data::ActivitySeries::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::ActivitySeries>(variant);
+    const auto& exp = expected<data::ActivitySeries>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getActivityConfigId(), actual->getActivityConfigId());
+    CPPUNIT_ASSERT_EQUAL(exp->getActivityConfigId(), actual->getActivityConfigId());
 
     // Test inherited attributes
-    _compare<data::Series>(actual, variant);
+    compare<data::Series>(actual, variant);
 
     // test Data
-    _compare<data::Composite>(actual->getData(), variant);
+    compare<data::Composite>(actual->getData(), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::activitySeriesTest()
 {
-    _test_combine<data::ActivitySeries>();
+    testCombine<data::ActivitySeries>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Array::sptr _generate<data::Array>(const std::size_t variant)
+inline data::Array::sptr generate<data::Array>(const std::size_t variant)
 {
     auto object = data::Array::New();
 
@@ -791,14 +786,14 @@ inline data::Array::sptr _generate<data::Array>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Array>(const data::Array::csptr& actual, const std::size_t variant)
+inline void compare<data::Array>(const data::Array::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Array>(variant);
+    const auto& exp = expected<data::Array>(variant);
 
-    const auto& expectedSize = expected->getSize();
+    const auto& expectedSize = exp->getSize();
     const auto& actualSize   = actual->getSize();
 
     for(std::size_t i = 0, end = expectedSize.size() ; i < end ; ++i)
@@ -811,11 +806,11 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
         {
             using T = decltype(type);
 
-            const auto dumpLockExpected = expected->dump_lock();
+            const auto dumpLockExpected = exp->dump_lock();
             const auto dumpLockActual   = actual->dump_lock();
 
-            for(auto expectedIt = expected->begin<T>(),
-                expectedEnd = expected->end<T>(),
+            for(auto expectedIt = exp->begin<T>(),
+                expectedEnd = exp->end<T>(),
                 actualIt = actual->begin<T>(),
                 actualEnd = actual->end<T>() ;
                 expectedIt != expectedEnd && actualIt != actualEnd ;
@@ -876,13 +871,13 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
 
 void SessionTest::arrayTest()
 {
-    _test_combine<data::Array>();
+    testCombine<data::Array>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
+inline data::Image::sptr generate<data::Image>(const std::size_t variant)
 {
     auto object = data::Image::New();
 
@@ -898,16 +893,16 @@ inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
             utestData::generator::Image::generateImage(
                 object,
                 {variant + 5, variant + 5, variant + 5},
-                {
-                    0.1 + static_cast<double>(variant),
-                    0.2 + static_cast<double>(variant),
-                    0.3 + static_cast<double>(variant)
-                },
-                {
-                    0.4 + static_cast<double>(variant),
-                    0.5 + static_cast<double>(variant),
-                    0.6 + static_cast<double>(variant)
-                },
+            {
+                0.1 + static_cast<double>(variant),
+                0.2 + static_cast<double>(variant),
+                0.3 + static_cast<double>(variant)
+            },
+            {
+                0.4 + static_cast<double>(variant),
+                0.5 + static_cast<double>(variant),
+                0.6 + static_cast<double>(variant)
+            },
                 std::is_same<T, double>::value
                 ? core::Type::DOUBLE
                 : std::is_same<T, float>::value
@@ -989,14 +984,14 @@ inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Image>(const data::Image::csptr& actual, const std::size_t variant)
+inline void compare<data::Image>(const data::Image::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Image>(variant);
+    const auto& exp = expected<data::Image>(variant);
 
-    const auto& expectedSize = expected->getSize();
+    const auto& expectedSize = exp->getSize();
     const auto& actualSize   = actual->getSize();
 
     for(std::size_t i = 0, end = expectedSize.size() ; i < end ; ++i)
@@ -1004,7 +999,7 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
         CPPUNIT_ASSERT_EQUAL(expectedSize[i], actualSize[i]);
     }
 
-    const auto& expectedSpacing = expected->getSpacing();
+    const auto& expectedSpacing = exp->getSpacing();
     const auto& actualSpacing   = actual->getSpacing();
 
     for(std::size_t i = 0, end = expectedSpacing.size() ; i < end ; ++i)
@@ -1012,7 +1007,7 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedSpacing[i], actualSpacing[i], DOUBLE_EPSILON);
     }
 
-    const auto& expectedOrigin = expected->getOrigin();
+    const auto& expectedOrigin = exp->getOrigin();
     const auto& actualOrigin   = actual->getOrigin();
 
     for(std::size_t i = 0, end = expectedOrigin.size() ; i < end ; ++i)
@@ -1020,18 +1015,18 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedOrigin[i], actualOrigin[i], DOUBLE_EPSILON);
     }
 
-    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
+    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
 
     auto compare =
         [&](auto type)
         {
             using T = decltype(type);
 
-            const auto dumpLockExpected = expected->dump_lock();
+            const auto dumpLockExpected = exp->dump_lock();
             const auto dumpLockActual   = actual->dump_lock();
 
-            for(auto expectedIt = expected->begin<T>(),
-                expectedEnd = expected->end<T>(),
+            for(auto expectedIt = exp->begin<T>(),
+                expectedEnd = exp->end<T>(),
                 actualIt = actual->begin<T>(),
                 actualEnd = actual->end<T>() ;
                 expectedIt != expectedEnd && actualIt != actualEnd ;
@@ -1092,21 +1087,21 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
 
 void SessionTest::imageTest()
 {
-    _test_combine<data::Image>();
+    testCombine<data::Image>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Vector::sptr _generate<data::Vector>(const std::size_t variant)
+inline data::Vector::sptr generate<data::Vector>(const std::size_t variant)
 {
     auto object = data::Vector::New();
 
-    object->push_back(_new<data::Boolean>(variant));
-    object->push_back(_new<data::Integer>(variant));
-    object->push_back(_new<data::Float>(variant));
-    object->push_back(_new<data::String>(variant));
-    object->push_back(_new<data::ActivitySeries>(variant));
+    object->push_back(create<data::Boolean>(variant));
+    object->push_back(create<data::Integer>(variant));
+    object->push_back(create<data::Float>(variant));
+    object->push_back(create<data::String>(variant));
+    object->push_back(create<data::ActivitySeries>(variant));
 
     return object;
 }
@@ -1114,30 +1109,30 @@ inline data::Vector::sptr _generate<data::Vector>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Vector>(const data::Vector::csptr& actual, const std::size_t variant)
+inline void compare<data::Vector>(const data::Vector::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     auto it = actual->cbegin();
 
-    _compare<data::Boolean>(std::dynamic_pointer_cast<data::Boolean>(*it++), variant);
-    _compare<data::Integer>(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
-    _compare<data::Float>(std::dynamic_pointer_cast<data::Float>(*it++), variant);
-    _compare<data::String>(std::dynamic_pointer_cast<data::String>(*it++), variant);
-    _compare<data::ActivitySeries>(std::dynamic_pointer_cast<data::ActivitySeries>(*it++), variant);
+    compare<data::Boolean>(std::dynamic_pointer_cast<data::Boolean>(*it++), variant);
+    compare<data::Integer>(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
+    compare<data::Float>(std::dynamic_pointer_cast<data::Float>(*it++), variant);
+    compare<data::String>(std::dynamic_pointer_cast<data::String>(*it++), variant);
+    compare<data::ActivitySeries>(std::dynamic_pointer_cast<data::ActivitySeries>(*it++), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::vectorTest()
 {
-    _test_combine<data::Vector>();
+    testCombine<data::Vector>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Point::sptr _generate<data::Point>(const std::size_t)
+inline data::Point::sptr generate<data::Point>(const std::size_t /*unused*/)
 {
     auto object = data::Point::New();
 
@@ -1149,14 +1144,14 @@ inline data::Point::sptr _generate<data::Point>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Point>(const data::Point::csptr& actual, const std::size_t variant)
+inline void compare<data::Point>(const data::Point::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Point>(variant);
+    const auto& exp = expected<data::Point>(variant);
 
-    const auto& expectedCoord = expected->getCoord();
+    const auto& expectedCoord = exp->getCoord();
     const auto& actualCoord   = actual->getCoord();
     CPPUNIT_ASSERT_EQUAL(expectedCoord.size(), actualCoord.size());
 
@@ -1175,20 +1170,20 @@ inline void _compare<data::Point>(const data::Point::csptr& actual, const std::s
 
 void SessionTest::pointTest()
 {
-    _test_combine<data::Point>();
+    testCombine<data::Point>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::PointList::sptr _generate<data::PointList>(const std::size_t variant)
+inline data::PointList::sptr generate<data::PointList>(const std::size_t variant)
 {
     auto object = data::PointList::New();
 
     auto& points = object->getPoints();
     for(std::size_t i = 0, end = variant + 3 ; i < end ; ++i)
     {
-        points.push_back(_new<data::Point>(i));
+        points.push_back(create<data::Point>(i));
     }
 
     return object;
@@ -1197,20 +1192,20 @@ inline data::PointList::sptr _generate<data::PointList>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::PointList>(const data::PointList::csptr& actual, const std::size_t variant)
+inline void compare<data::PointList>(const data::PointList::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::PointList>(variant);
+    const auto& exp = expected<data::PointList>(variant);
 
-    const auto& expectedPoints = expected->getPoints();
+    const auto& expectedPoints = exp->getPoints();
     const auto& actualPoints   = actual->getPoints();
     CPPUNIT_ASSERT_EQUAL(expectedPoints.size(), actualPoints.size());
 
     for(std::size_t i = 0, end = expectedPoints.size() ; i < end ; ++i)
     {
-        _compare<data::Point>(actualPoints.at(i), i);
+        compare<data::Point>(actualPoints.at(i), i);
     }
 }
 
@@ -1218,23 +1213,23 @@ inline void _compare<data::PointList>(const data::PointList::csptr& actual, cons
 
 void SessionTest::pointListTest()
 {
-    _test_combine<data::PointList>();
+    testCombine<data::PointList>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::CalibrationInfo::sptr _generate<data::CalibrationInfo>(const std::size_t variant)
+inline data::CalibrationInfo::sptr generate<data::CalibrationInfo>(const std::size_t variant)
 {
     auto object = data::CalibrationInfo::New();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
         // Create the Image
-        auto image = _new<data::Image>(variant + i);
+        auto image = create<data::Image>(variant + i);
 
         // Create the PointList
-        auto pointList = _new<data::PointList>(variant + i);
+        auto pointList = create<data::PointList>(variant + i);
 
         object->addRecord(image, pointList);
     }
@@ -1245,17 +1240,17 @@ inline data::CalibrationInfo::sptr _generate<data::CalibrationInfo>(const std::s
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::CalibrationInfo>(const data::CalibrationInfo::csptr& actual, const std::size_t variant)
+inline void compare<data::CalibrationInfo>(const data::CalibrationInfo::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
         const auto& image = actual->getImage(i);
-        _compare<data::Image>(image, variant + i);
+        compare<data::Image>(image, variant + i);
 
         const auto& pointList = actual->getPointList(image);
-        _compare<data::PointList>(pointList, variant + i);
+        compare<data::PointList>(pointList, variant + i);
     }
 }
 
@@ -1263,13 +1258,13 @@ inline void _compare<data::CalibrationInfo>(const data::CalibrationInfo::csptr& 
 
 void SessionTest::calibrationInfoTest()
 {
-    _test_combine<data::CalibrationInfo>();
+    testCombine<data::CalibrationInfo>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Camera::sptr _generate<data::Camera>(const std::size_t variant)
+inline data::Camera::sptr generate<data::Camera>(const std::size_t variant)
 {
     auto object = data::Camera::New();
 
@@ -1383,22 +1378,22 @@ inline data::Camera::sptr _generate<data::Camera>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Camera>(const data::Camera::csptr& actual, const std::size_t variant)
+inline void compare<data::Camera>(const data::Camera::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Camera>(variant);
+    const auto& exp = expected<data::Camera>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getWidth(), actual->getWidth());
-    CPPUNIT_ASSERT_EQUAL(expected->getHeight(), actual->getHeight());
+    CPPUNIT_ASSERT_EQUAL(exp->getWidth(), actual->getWidth());
+    CPPUNIT_ASSERT_EQUAL(exp->getHeight(), actual->getHeight());
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getFx(), actual->getFx(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getFy(), actual->getFy(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getCx(), actual->getCx(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getCy(), actual->getCy(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getFx(), actual->getFx(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getFy(), actual->getFy(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getCx(), actual->getCx(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getCy(), actual->getCy(), DOUBLE_EPSILON);
 
-    const auto& expectedCoefficient = expected->getDistortionCoefficient();
+    const auto& expectedCoefficient = exp->getDistortionCoefficient();
     const auto& actualCoefficient   = actual->getDistortionCoefficient();
     CPPUNIT_ASSERT_EQUAL(expectedCoefficient.size(), actualCoefficient.size());
     for(std::size_t i = 0, end = expectedCoefficient.size() ; i < end ; ++i)
@@ -1406,39 +1401,39 @@ inline void _compare<data::Camera>(const data::Camera::csptr& actual, const std:
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoefficient[i], actualCoefficient[i], DOUBLE_EPSILON);
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getSkew(), actual->getSkew(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_EQUAL(expected->getIsCalibrated(), actual->getIsCalibrated());
-    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(expected->getCameraID(), actual->getCameraID());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getMaximumFrameRate(), actual->getMaximumFrameRate(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_EQUAL(expected->getPixelFormat(), actual->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(expected->getVideoFile(), actual->getVideoFile());
-    CPPUNIT_ASSERT_EQUAL(expected->getStreamUrl(), actual->getStreamUrl());
-    CPPUNIT_ASSERT_EQUAL(expected->getCameraSource(), actual->getCameraSource());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getScale(), actual->getScale(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getSkew(), actual->getSkew(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(exp->getIsCalibrated(), actual->getIsCalibrated());
+    CPPUNIT_ASSERT_EQUAL(exp->getDescription(), actual->getDescription());
+    CPPUNIT_ASSERT_EQUAL(exp->getCameraID(), actual->getCameraID());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getMaximumFrameRate(), actual->getMaximumFrameRate(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(exp->getPixelFormat(), actual->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(exp->getVideoFile(), actual->getVideoFile());
+    CPPUNIT_ASSERT_EQUAL(exp->getStreamUrl(), actual->getStreamUrl());
+    CPPUNIT_ASSERT_EQUAL(exp->getCameraSource(), actual->getCameraSource());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getScale(), actual->getScale(), DOUBLE_EPSILON);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::cameraTest()
 {
-    _test_combine<data::Camera>();
+    testCombine<data::Camera>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::CameraSeries::sptr _generate<data::CameraSeries>(const std::size_t variant)
+inline data::CameraSeries::sptr generate<data::CameraSeries>(const std::size_t variant)
 {
     auto object = data::CameraSeries::New();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        object->addCamera(_new<data::Camera>(variant + i));
+        object->addCamera(create<data::Camera>(variant + i));
     }
 
     // Inherited attributes
-    object->data::Series::shallowCopy(_expected<data::Series>(variant));
+    object->data::Series::shallowCopy(expected<data::Series>(variant));
 
     return object;
 }
@@ -1446,29 +1441,29 @@ inline data::CameraSeries::sptr _generate<data::CameraSeries>(const std::size_t 
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::CameraSeries>(const data::CameraSeries::csptr& actual, const std::size_t variant)
+inline void compare<data::CameraSeries>(const data::CameraSeries::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     for(std::size_t i = 0, end = actual->numCameras() ; i < end ; ++i)
     {
-        _compare<data::Camera>(actual->getCamera(i), variant + i);
+        compare<data::Camera>(actual->getCamera(i), variant + i);
     }
 
-    _compare<data::Series>(actual, variant);
+    compare<data::Series>(actual, variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::cameraSeriesTest()
 {
-    _test_combine<data::CameraSeries>();
+    testCombine<data::CameraSeries>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Color::sptr _generate<data::Color>(const std::size_t)
+inline data::Color::sptr generate<data::Color>(const std::size_t /*unused*/)
 {
     auto object = data::Color::New();
 
@@ -1480,30 +1475,30 @@ inline data::Color::sptr _generate<data::Color>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Color>(const data::Color::csptr& actual, const std::size_t variant)
+inline void compare<data::Color>(const data::Color::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Color>(variant);
+    const auto& exp = expected<data::Color>(variant);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->red(), actual->red(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->green(), actual->green(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->blue(), actual->blue(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->alpha(), actual->alpha(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->red(), actual->red(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->green(), actual->green(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->blue(), actual->blue(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->alpha(), actual->alpha(), FLOAT_EPSILON);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::colorTest()
 {
-    _test_combine<data::Color>();
+    testCombine<data::Color>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Edge::sptr _generate<data::Edge>(const std::size_t)
+inline data::Edge::sptr generate<data::Edge>(const std::size_t /*unused*/)
 {
     auto object = data::Edge::New();
 
@@ -1516,29 +1511,29 @@ inline data::Edge::sptr _generate<data::Edge>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Edge>(const data::Edge::csptr& actual, const std::size_t variant)
+inline void compare<data::Edge>(const data::Edge::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Edge>(variant);
+    const auto& exp = expected<data::Edge>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getFromPortID(), actual->getFromPortID());
-    CPPUNIT_ASSERT_EQUAL(expected->getToPortID(), actual->getToPortID());
-    CPPUNIT_ASSERT_EQUAL(expected->getNature(), actual->getNature());
+    CPPUNIT_ASSERT_EQUAL(exp->getFromPortID(), actual->getFromPortID());
+    CPPUNIT_ASSERT_EQUAL(exp->getToPortID(), actual->getToPortID());
+    CPPUNIT_ASSERT_EQUAL(exp->getNature(), actual->getNature());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::edgeTest()
 {
-    _test_combine<data::Edge>();
+    testCombine<data::Edge>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Port::sptr _generate<data::Port>(const std::size_t)
+inline data::Port::sptr generate<data::Port>(const std::size_t /*unused*/)
 {
     auto object = data::Port::New();
 
@@ -1551,42 +1546,42 @@ inline data::Port::sptr _generate<data::Port>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Port>(const data::Port::csptr& actual, const std::size_t variant)
+inline void compare<data::Port>(const data::Port::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Port>(variant);
+    const auto& exp = expected<data::Port>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
+    CPPUNIT_ASSERT_EQUAL(exp->getIdentifier(), actual->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::portTest()
 {
-    _test_combine<data::Port>();
+    testCombine<data::Port>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Node::sptr _generate<data::Node>(const std::size_t variant)
+inline data::Node::sptr generate<data::Node>(const std::size_t variant)
 {
     auto object = data::Node::New();
 
-    object->setObject(_new<data::String>(variant));
+    object->setObject(create<data::String>(variant));
 
     const std::size_t portCount = variant + 2;
     for(std::size_t i = 0, end = portCount ; i < end ; ++i)
     {
-        object->addInputPort(_new<data::Port>(variant + i));
+        object->addInputPort(create<data::Port>(variant + i));
     }
 
     for(std::size_t i = portCount, end = 2 * (portCount) ; i < end ; ++i)
     {
-        object->addOutputPort(_new<data::Port>(variant + i));
+        object->addOutputPort(create<data::Port>(variant + i));
     }
 
     return object;
@@ -1595,22 +1590,22 @@ inline data::Node::sptr _generate<data::Node>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Node>(const data::Node::csptr& actual, const std::size_t variant)
+inline void compare<data::Node>(const data::Node::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
-    _compare<data::String>(std::dynamic_pointer_cast<data::String>(actual->getObject()), variant);
+    compare<data::String>(std::dynamic_pointer_cast<data::String>(actual->getObject()), variant);
 
     const auto& inputs = actual->getInputPorts();
     for(std::size_t i = 0, end = inputs.size() ; i < end ; ++i)
     {
-        _compare<data::Port>(inputs.at(i), variant + i);
+        compare<data::Port>(inputs.at(i), variant + i);
     }
 
     const auto& outputs = actual->getOutputPorts();
     for(std::size_t i = 0, end = outputs.size() ; i < end ; ++i)
     {
-        _compare<data::Port>(outputs.at(i), inputs.size() + variant + i);
+        compare<data::Port>(outputs.at(i), inputs.size() + variant + i);
     }
 }
 
@@ -1618,24 +1613,24 @@ inline void _compare<data::Node>(const data::Node::csptr& actual, const std::siz
 
 void SessionTest::nodeTest()
 {
-    _test_combine<data::Node>();
+    testCombine<data::Node>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Graph::sptr _generate<data::Graph>(const std::size_t variant)
+inline data::Graph::sptr generate<data::Graph>(const std::size_t variant)
 {
     auto object = data::Graph::New();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        auto upNode   = _new<data::Node>(variant + i);
-        auto downNode = _new<data::Node>(variant + i + 1);
+        auto upNode   = create<data::Node>(variant + i);
+        auto downNode = create<data::Node>(variant + i + 1);
 
         object->addNode(upNode);
         object->addNode(downNode);
-        object->addEdge(_new<data::Edge>(variant + i), upNode, downNode);
+        object->addEdge(create<data::Edge>(variant + i), upNode, downNode);
     }
 
     return object;
@@ -1644,16 +1639,16 @@ inline data::Graph::sptr _generate<data::Graph>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Graph>(const data::Graph::csptr& actual, const std::size_t variant)
+inline void compare<data::Graph>(const data::Graph::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     std::size_t i = 0;
     for(const auto& connection : actual->getConnections())
     {
-        _compare<data::Edge>(connection.first, i + variant);
-        _compare<data::Node>(connection.second.first, i + variant);
-        _compare<data::Node>(connection.second.second, ++i + variant);
+        compare<data::Edge>(connection.first, i + variant);
+        compare<data::Node>(connection.second.first, i + variant);
+        compare<data::Node>(connection.second.second, ++i + variant);
     }
 }
 
@@ -1661,13 +1656,13 @@ inline void _compare<data::Graph>(const data::Graph::csptr& actual, const std::s
 
 void SessionTest::graphTest()
 {
-    _test_combine<data::Graph>();
+    testCombine<data::Graph>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Landmarks::sptr _generate<data::Landmarks>(const std::size_t variant)
+inline data::Landmarks::sptr generate<data::Landmarks>(const std::size_t variant)
 {
     auto object = data::Landmarks::New();
 
@@ -1697,14 +1692,14 @@ inline data::Landmarks::sptr _generate<data::Landmarks>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, const std::size_t variant)
+inline void compare<data::Landmarks>(const data::Landmarks::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Landmarks>(variant);
+    const auto& exp = expected<data::Landmarks>(variant);
 
-    const auto& expectedGroupNames = expected->getGroupNames();
+    const auto& expectedGroupNames = exp->getGroupNames();
     const auto& actualGroupNames   = actual->getGroupNames();
 
     CPPUNIT_ASSERT_EQUAL(expectedGroupNames.size(), actualGroupNames.size());
@@ -1712,8 +1707,8 @@ inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, cons
     for(const auto& name : expectedGroupNames)
     {
         // Test name
-        CPPUNIT_ASSERT_NO_THROW(expected->getGroup(name));
-        const auto& expectedGroup = expected->getGroup(name);
+        CPPUNIT_ASSERT_NO_THROW(exp->getGroup(name));
+        const auto& expectedGroup = exp->getGroup(name);
 
         CPPUNIT_ASSERT_NO_THROW(actual->getGroup(name));
         const auto& actualGroup = actual->getGroup(name);
@@ -1752,18 +1747,18 @@ inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, cons
 
 void SessionTest::landmarksTest()
 {
-    _test_combine<data::Landmarks>();
+    testCombine<data::Landmarks>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Line::sptr _generate<data::Line>(const std::size_t variant)
+inline data::Line::sptr generate<data::Line>(const std::size_t variant)
 {
     auto object = data::Line::New();
 
-    object->setPosition(_new<data::Point>(variant));
-    object->setDirection(_new<data::Point>(variant + 1));
+    object->setPosition(create<data::Point>(variant));
+    object->setDirection(create<data::Point>(variant + 1));
 
     return object;
 }
@@ -1771,55 +1766,55 @@ inline data::Line::sptr _generate<data::Line>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Line>(const data::Line::csptr& actual, const std::size_t variant)
+inline void compare<data::Line>(const data::Line::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
-    _compare<data::Point>(actual->getPosition(), variant);
-    _compare<data::Point>(actual->getDirection(), variant + 1);
+    compare<data::Point>(actual->getPosition(), variant);
+    compare<data::Point>(actual->getDirection(), variant + 1);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::lineTest()
 {
-    _test_combine<data::Line>();
+    testCombine<data::Line>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Material::sptr _generate<data::Material>(const std::size_t variant)
+inline data::Material::sptr generate<data::Material>(const std::size_t variant)
 {
     auto object = data::Material::New();
 
-    data::Material::ShadingType shading[] = {
+    std::array shading {
         data::Material::ShadingType::AMBIENT,
         data::Material::ShadingType::FLAT,
         data::Material::ShadingType::PHONG
     };
 
-    data::Material::RepresentationType representation[] = {
+    std::array representation {
         data::Material::RepresentationType::EDGE,
         data::Material::RepresentationType::POINT,
         data::Material::RepresentationType::SURFACE,
         data::Material::RepresentationType::WIREFRAME
     };
 
-    data::Material::OptionsType options[] = {
+    std::array options {
         data::Material::OptionsType::CELLS_NORMALS,
         data::Material::OptionsType::NORMALS,
         data::Material::OptionsType::STANDARD
     };
 
     // Set ambient color
-    object->setAmbient(_new<data::Color>(variant));
+    object->setAmbient(create<data::Color>(variant));
 
     // Set diffuse color
-    object->setDiffuse(_new<data::Color>(variant + 1));
+    object->setDiffuse(create<data::Color>(variant + 1));
 
     // Set diffuse texture
-    object->setDiffuseTexture(_new<data::Image>(variant));
+    object->setDiffuseTexture(create<data::Image>(variant));
 
     // Others
     object->setShadingMode(shading[variant % std::size(shading)]);
@@ -1842,48 +1837,48 @@ inline data::Material::sptr _generate<data::Material>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Material>(const data::Material::csptr& actual, const std::size_t variant)
+inline void compare<data::Material>(const data::Material::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Material>(variant);
+    const auto& exp = expected<data::Material>(variant);
 
     // Test ambient
-    _compare<data::Color>(actual->ambient(), variant);
+    compare<data::Color>(actual->ambient(), variant);
 
     // Test diffuse
-    _compare<data::Color>(actual->diffuse(), variant + 1);
+    compare<data::Color>(actual->diffuse(), variant + 1);
 
     // Test diffuse texture
-    _compare<data::Image>(actual->getDiffuseTexture(), variant);
+    compare<data::Image>(actual->getDiffuseTexture(), variant);
 
     // Test other attributes
-    CPPUNIT_ASSERT_EQUAL(expected->getShadingMode(), actual->getShadingMode());
-    CPPUNIT_ASSERT_EQUAL(expected->getRepresentationMode(), actual->getRepresentationMode());
-    CPPUNIT_ASSERT_EQUAL(expected->getOptionsMode(), actual->getOptionsMode());
-    CPPUNIT_ASSERT_EQUAL(expected->getDiffuseTextureFiltering(), actual->getDiffuseTextureFiltering());
-    CPPUNIT_ASSERT_EQUAL(expected->getDiffuseTextureWrapping(), actual->getDiffuseTextureWrapping());
+    CPPUNIT_ASSERT_EQUAL(exp->getShadingMode(), actual->getShadingMode());
+    CPPUNIT_ASSERT_EQUAL(exp->getRepresentationMode(), actual->getRepresentationMode());
+    CPPUNIT_ASSERT_EQUAL(exp->getOptionsMode(), actual->getOptionsMode());
+    CPPUNIT_ASSERT_EQUAL(exp->getDiffuseTextureFiltering(), actual->getDiffuseTextureFiltering());
+    CPPUNIT_ASSERT_EQUAL(exp->getDiffuseTextureWrapping(), actual->getDiffuseTextureWrapping());
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::materialTest()
 {
-    _test_combine<data::Material>();
+    testCombine<data::Material>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Matrix4::sptr _generate<data::Matrix4>(const std::size_t)
+inline data::Matrix4::sptr generate<data::Matrix4>(const std::size_t /*unused*/)
 {
     auto object = data::Matrix4::New();
 
     auto& coefficients = object->getCoefficients();
-    for(auto it = coefficients.begin(), end = coefficients.end() ; it != end ; ++it)
+    for(double& coefficient : coefficients)
     {
-        *it = random<double>();
+        coefficient = random<double>();
     }
 
     return object;
@@ -1892,14 +1887,14 @@ inline data::Matrix4::sptr _generate<data::Matrix4>(const std::size_t)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Matrix4>(const data::Matrix4::csptr& actual, const std::size_t variant)
+inline void compare<data::Matrix4>(const data::Matrix4::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Matrix4>(variant);
+    const auto& exp = expected<data::Matrix4>(variant);
 
-    const auto& expectedCoefficients = expected->getCoefficients();
+    const auto& expectedCoefficients = exp->getCoefficients();
     const auto& actualCoefficients   = actual->getCoefficients();
 
     CPPUNIT_ASSERT_EQUAL(expectedCoefficients.size(), actualCoefficients.size());
@@ -1914,20 +1909,20 @@ inline void _compare<data::Matrix4>(const data::Matrix4::csptr& actual, const st
 
 void SessionTest::matrix4Test()
 {
-    _test_combine<data::Matrix4>();
+    testCombine<data::Matrix4>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Plane::sptr _generate<data::Plane>(const std::size_t variant)
+inline data::Plane::sptr generate<data::Plane>(const std::size_t variant)
 {
     auto object = data::Plane::New();
 
     auto& points = object->getPoints();
     for(std::size_t i = 0, end = points.size() ; i < end ; ++i)
     {
-        points[i] = _new<data::Point>(i + variant);
+        points[i] = create<data::Point>(i + variant);
     }
 
     return object;
@@ -1936,14 +1931,14 @@ inline data::Plane::sptr _generate<data::Plane>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Plane>(const data::Plane::csptr& actual, const std::size_t variant)
+inline void compare<data::Plane>(const data::Plane::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     const auto& points = actual->getPoints();
     for(std::size_t i = 0, end = points.size() ; i < end ; ++i)
     {
-        _compare<data::Point>(points.at(i), i + variant);
+        compare<data::Point>(points.at(i), i + variant);
     }
 }
 
@@ -1951,13 +1946,13 @@ inline void _compare<data::Plane>(const data::Plane::csptr& actual, const std::s
 
 void SessionTest::planeTest()
 {
-    _test_combine<data::Plane>();
+    testCombine<data::Plane>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::PlaneList::sptr _generate<data::PlaneList>(const std::size_t variant)
+inline data::PlaneList::sptr generate<data::PlaneList>(const std::size_t variant)
 {
     auto object = data::PlaneList::New();
 
@@ -1965,7 +1960,7 @@ inline data::PlaneList::sptr _generate<data::PlaneList>(const std::size_t varian
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        planes.push_back(_new<data::Plane>(variant + i));
+        planes.push_back(create<data::Plane>(variant + i));
     }
 
     return object;
@@ -1974,14 +1969,14 @@ inline data::PlaneList::sptr _generate<data::PlaneList>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::PlaneList>(const data::PlaneList::csptr& actual, const std::size_t variant)
+inline void compare<data::PlaneList>(const data::PlaneList::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     const auto& planes = actual->getPlanes();
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Plane>(planes.at(i), variant + i);
+        compare<data::Plane>(planes.at(i), variant + i);
     }
 }
 
@@ -1989,21 +1984,21 @@ inline void _compare<data::PlaneList>(const data::PlaneList::csptr& actual, cons
 
 void SessionTest::planeListTest()
 {
-    _test_combine<data::PlaneList>();
+    testCombine<data::PlaneList>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ProcessObject::sptr _generate<data::ProcessObject>(const std::size_t variant)
+inline data::ProcessObject::sptr generate<data::ProcessObject>(const std::size_t variant)
 {
     auto object = data::ProcessObject::New();
 
-    object->setInputValue(data::Boolean::classname(), _new<data::Boolean>(variant));
-    object->setInputValue(data::Integer::classname(), _new<data::Integer>(variant));
+    object->setInputValue(data::Boolean::classname(), create<data::Boolean>(variant));
+    object->setInputValue(data::Integer::classname(), create<data::Integer>(variant));
 
-    object->setOutputValue(data::Float::classname(), _new<data::Float>(variant));
-    object->setOutputValue(data::String::classname(), _new<data::String>(variant));
+    object->setOutputValue(data::Float::classname(), create<data::Float>(variant));
+    object->setOutputValue(data::String::classname(), create<data::String>(variant));
 
     return object;
 }
@@ -2011,28 +2006,28 @@ inline data::ProcessObject::sptr _generate<data::ProcessObject>(const std::size_
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ProcessObject>(const data::ProcessObject::csptr& actual, const std::size_t variant)
+inline void compare<data::ProcessObject>(const data::ProcessObject::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
-    _compare<data::Boolean>(actual->getInput<data::Boolean>(data::Boolean::classname()), variant);
-    _compare<data::Integer>(actual->getInput<data::Integer>(data::Integer::classname()), variant);
+    compare<data::Boolean>(actual->getInput<data::Boolean>(data::Boolean::classname()), variant);
+    compare<data::Integer>(actual->getInput<data::Integer>(data::Integer::classname()), variant);
 
-    _compare<data::Float>(actual->getOutput<data::Float>(data::Float::classname()), variant);
-    _compare<data::String>(actual->getOutput<data::String>(data::String::classname()), variant);
+    compare<data::Float>(actual->getOutput<data::Float>(data::Float::classname()), variant);
+    compare<data::String>(actual->getOutput<data::String>(data::String::classname()), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::processObjectTest()
 {
-    _test_combine<data::ProcessObject>();
+    testCombine<data::ProcessObject>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Reconstruction::sptr _generate<data::Reconstruction>(const std::size_t variant)
+inline data::Reconstruction::sptr generate<data::Reconstruction>(const std::size_t variant)
 {
     auto object = data::Reconstruction::New();
 
@@ -2042,13 +2037,13 @@ inline data::Reconstruction::sptr _generate<data::Reconstruction>(const std::siz
     object->setComputedMaskVolume(random<double>());
 
     // Material
-    object->setMaterial(_new<data::Material>(variant));
+    object->setMaterial(create<data::Material>(variant));
 
     // Image
-    object->setImage(_new<data::Image>(variant));
+    object->setImage(create<data::Image>(variant));
 
     // Mesh
-    object->setMesh(_new<data::Mesh>(variant));
+    object->setMesh(create<data::Mesh>(variant));
 
     return object;
 }
@@ -2056,47 +2051,47 @@ inline data::Reconstruction::sptr _generate<data::Reconstruction>(const std::siz
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Reconstruction>(const data::Reconstruction::csptr& actual, const std::size_t variant)
+inline void compare<data::Reconstruction>(const data::Reconstruction::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Reconstruction>(variant);
+    const auto& exp = expected<data::Reconstruction>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getIsVisible(), actual->getIsVisible());
-    CPPUNIT_ASSERT_EQUAL(expected->getOrganName(), actual->getOrganName());
-    CPPUNIT_ASSERT_EQUAL(expected->getStructureType(), actual->getStructureType());
+    CPPUNIT_ASSERT_EQUAL(exp->getIsVisible(), actual->getIsVisible());
+    CPPUNIT_ASSERT_EQUAL(exp->getOrganName(), actual->getOrganName());
+    CPPUNIT_ASSERT_EQUAL(exp->getStructureType(), actual->getStructureType());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        expected->getComputedMaskVolume(),
+        exp->getComputedMaskVolume(),
         actual->getComputedMaskVolume(),
         DOUBLE_EPSILON
     );
 
     // Material
-    _compare<data::Material>(actual->getMaterial(), variant);
+    compare<data::Material>(actual->getMaterial(), variant);
 
     // Image
-    _compare<data::Image>(actual->getImage(), variant);
+    compare<data::Image>(actual->getImage(), variant);
 
     // Mesh
-    _compare<data::Mesh>(actual->getMesh(), variant);
+    compare<data::Mesh>(actual->getMesh(), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::reconstructionTest()
 {
-    _test_combine<data::Reconstruction>();
+    testCombine<data::Reconstruction>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::StructureTraits::sptr _generate<data::StructureTraits>(const std::size_t variant)
+inline data::StructureTraits::sptr generate<data::StructureTraits>(const std::size_t variant)
 {
     auto object = data::StructureTraits::New();
 
-    const data::StructureTraits::StructureClass CLASSES[] = {
+    const std::array CLASSES {
         data::StructureTraits::StructureClass::ENVIRONMENT,
         data::StructureTraits::StructureClass::FUNCTIONAL,
         data::StructureTraits::StructureClass::LESION,
@@ -2106,7 +2101,7 @@ inline data::StructureTraits::sptr _generate<data::StructureTraits>(const std::s
         data::StructureTraits::StructureClass::VESSEL
     };
 
-    const data::StructureTraits::Category CATEGORIES[] = {
+    const std::array CATEGORIES {
         data::StructureTraits::Category::ABDOMEN,
         data::StructureTraits::Category::ARM,
         data::StructureTraits::Category::BODY,
@@ -2141,7 +2136,7 @@ inline data::StructureTraits::sptr _generate<data::StructureTraits>(const std::s
     object->setCategories(categories);
 
     // Color
-    object->setColor(_new<data::Color>(variant));
+    object->setColor(create<data::Color>(variant));
 
     return object;
 }
@@ -2149,24 +2144,24 @@ inline data::StructureTraits::sptr _generate<data::StructureTraits>(const std::s
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::StructureTraits>(const data::StructureTraits::csptr& actual, const std::size_t variant)
+inline void compare<data::StructureTraits>(const data::StructureTraits::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::StructureTraits>(variant);
+    const auto& exp = expected<data::StructureTraits>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
-    CPPUNIT_ASSERT_EQUAL(expected->getClass(), actual->getClass());
-    CPPUNIT_ASSERT_EQUAL(expected->getNativeExp(), actual->getNativeExp());
-    CPPUNIT_ASSERT_EQUAL(expected->getNativeGeometricExp(), actual->getNativeGeometricExp());
-    CPPUNIT_ASSERT_EQUAL(expected->getAttachmentType(), actual->getAttachmentType());
-    CPPUNIT_ASSERT_EQUAL(expected->getAnatomicRegion(), actual->getAnatomicRegion());
-    CPPUNIT_ASSERT_EQUAL(expected->getPropertyCategory(), actual->getPropertyCategory());
-    CPPUNIT_ASSERT_EQUAL(expected->getPropertyType(), actual->getPropertyType());
+    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
+    CPPUNIT_ASSERT_EQUAL(exp->getClass(), actual->getClass());
+    CPPUNIT_ASSERT_EQUAL(exp->getNativeExp(), actual->getNativeExp());
+    CPPUNIT_ASSERT_EQUAL(exp->getNativeGeometricExp(), actual->getNativeGeometricExp());
+    CPPUNIT_ASSERT_EQUAL(exp->getAttachmentType(), actual->getAttachmentType());
+    CPPUNIT_ASSERT_EQUAL(exp->getAnatomicRegion(), actual->getAnatomicRegion());
+    CPPUNIT_ASSERT_EQUAL(exp->getPropertyCategory(), actual->getPropertyCategory());
+    CPPUNIT_ASSERT_EQUAL(exp->getPropertyType(), actual->getPropertyType());
 
     // Categories
-    const auto& expectedCategories = expected->getCategories();
+    const auto& expectedCategories = exp->getCategories();
     const auto& actualCategories   = actual->getCategories();
     CPPUNIT_ASSERT_EQUAL(expectedCategories.size(), actualCategories.size());
 
@@ -2176,24 +2171,24 @@ inline void _compare<data::StructureTraits>(const data::StructureTraits::csptr& 
     }
 
     // Color
-    _compare<data::Color>(actual->getColor(), variant);
+    compare<data::Color>(actual->getColor(), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::structureTraitsTest()
 {
-    _test_combine<data::StructureTraits>();
+    testCombine<data::StructureTraits>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::StructureTraitsDictionary::sptr _generate<data::StructureTraitsDictionary>(const std::size_t variant)
+inline data::StructureTraitsDictionary::sptr generate<data::StructureTraitsDictionary>(const std::size_t variant)
 {
     auto object = data::StructureTraitsDictionary::New();
 
-    auto organ = _new<data::StructureTraits>(variant);
+    auto organ = create<data::StructureTraits>(variant);
     organ->setClass(data::StructureTraits::ORGAN);
     organ->setAttachmentType("");
 
@@ -2201,7 +2196,7 @@ inline data::StructureTraitsDictionary::sptr _generate<data::StructureTraitsDict
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        auto structure            = _new<data::StructureTraits>(variant + i + 1);
+        auto structure            = create<data::StructureTraits>(variant + i + 1);
         const auto structureClass = structure->getClass();
 
         if(structureClass != data::StructureTraits::LESION
@@ -2223,7 +2218,7 @@ inline data::StructureTraitsDictionary::sptr _generate<data::StructureTraitsDict
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::StructureTraitsDictionary>(
+inline void compare<data::StructureTraitsDictionary>(
     const data::StructureTraitsDictionary::csptr& actual,
     const std::size_t variant
 )
@@ -2231,12 +2226,12 @@ inline void _compare<data::StructureTraitsDictionary>(
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::StructureTraitsDictionary>(variant);
+    const auto& exp = expected<data::StructureTraitsDictionary>(variant);
 
-    for(const auto& name : expected->getStructureTypeNames())
+    for(const auto& name : exp->getStructureTypeNames())
     {
         const auto& actualStructure   = actual->getStructure(name);
-        const auto& expectedStructure = expected->getStructure(name);
+        const auto& expectedStructure = exp->getStructure(name);
 
         CPPUNIT_ASSERT_EQUAL(expectedStructure->getType(), actualStructure->getType());
         CPPUNIT_ASSERT_EQUAL(expectedStructure->getClass(), actualStructure->getClass());
@@ -2272,26 +2267,26 @@ inline void _compare<data::StructureTraitsDictionary>(
 
 void SessionTest::structureTraitsDictionaryTest()
 {
-    _test_combine<data::StructureTraitsDictionary>();
+    testCombine<data::StructureTraitsDictionary>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ReconstructionTraits::sptr _generate<data::ReconstructionTraits>(const std::size_t variant)
+inline data::ReconstructionTraits::sptr generate<data::ReconstructionTraits>(const std::size_t variant)
 {
     auto object = data::ReconstructionTraits::New();
 
     object->setIdentifier(UUID::generateUUID());
 
     // Reconstruction mask operator node
-    object->setMaskOpNode(_new<data::Node>(variant));
+    object->setMaskOpNode(create<data::Node>(variant));
 
     // Reconstruction mesh operator node
-    object->setMeshOpNode(_new<data::Node>(variant + 1));
+    object->setMeshOpNode(create<data::Node>(variant + 1));
 
     // Associated structure traits
-    object->setStructureTraits(_new<data::StructureTraits>(variant));
+    object->setStructureTraits(create<data::StructureTraits>(variant));
 
     return object;
 }
@@ -2299,7 +2294,7 @@ inline data::ReconstructionTraits::sptr _generate<data::ReconstructionTraits>(co
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ReconstructionTraits>(
+inline void compare<data::ReconstructionTraits>(
     const data::ReconstructionTraits::csptr& actual,
     const std::size_t variant
 )
@@ -2307,31 +2302,31 @@ inline void _compare<data::ReconstructionTraits>(
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::ReconstructionTraits>(variant);
+    const auto& exp = expected<data::ReconstructionTraits>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(exp->getIdentifier(), actual->getIdentifier());
 
     // Reconstruction mask operator node
-    _compare<data::Node>(actual->getMaskOpNode(), variant);
+    compare<data::Node>(actual->getMaskOpNode(), variant);
 
     // Reconstruction mesh operator node
-    _compare<data::Node>(actual->getMeshOpNode(), variant + 1);
+    compare<data::Node>(actual->getMeshOpNode(), variant + 1);
 
     // Associated structure traits
-    _compare<data::StructureTraits>(actual->getStructureTraits(), variant);
+    compare<data::StructureTraits>(actual->getStructureTraits(), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::reconstructionTraitsTest()
 {
-    _test_combine<data::ReconstructionTraits>();
+    testCombine<data::ReconstructionTraits>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Resection::sptr _generate<data::Resection>(const std::size_t variant)
+inline data::Resection::sptr generate<data::Resection>(const std::size_t variant)
 {
     auto object = data::Resection::New();
 
@@ -2344,8 +2339,8 @@ inline data::Resection::sptr _generate<data::Resection>(const std::size_t varian
     auto& outputs = object->getOutputs();
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        inputs.push_back(_new<data::Reconstruction>(variant + i));
-        outputs.push_back(_new<data::Reconstruction>(variant + i + 1));
+        inputs.push_back(create<data::Reconstruction>(variant + i));
+        outputs.push_back(create<data::Reconstruction>(variant + i + 1));
     }
 
     return object;
@@ -2354,25 +2349,25 @@ inline data::Resection::sptr _generate<data::Resection>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Resection>(const data::Resection::csptr& actual, const std::size_t variant)
+inline void compare<data::Resection>(const data::Resection::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Resection>(variant);
+    const auto& exp = expected<data::Resection>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getName(), actual->getName());
-    CPPUNIT_ASSERT_EQUAL(expected->getIsSafePart(), actual->getIsSafePart());
-    CPPUNIT_ASSERT_EQUAL(expected->getIsValid(), actual->getIsValid());
-    CPPUNIT_ASSERT_EQUAL(expected->getIsVisible(), actual->getIsVisible());
+    CPPUNIT_ASSERT_EQUAL(exp->getName(), actual->getName());
+    CPPUNIT_ASSERT_EQUAL(exp->getIsSafePart(), actual->getIsSafePart());
+    CPPUNIT_ASSERT_EQUAL(exp->getIsValid(), actual->getIsValid());
+    CPPUNIT_ASSERT_EQUAL(exp->getIsVisible(), actual->getIsVisible());
 
     const auto& inputs  = actual->getInputs();
     const auto& outputs = actual->getOutputs();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Reconstruction>(inputs.at(i), variant + i);
-        _compare<data::Reconstruction>(outputs.at(i), variant + i + 1);
+        compare<data::Reconstruction>(inputs.at(i), variant + i);
+        compare<data::Reconstruction>(outputs.at(i), variant + i + 1);
     }
 }
 
@@ -2380,21 +2375,21 @@ inline void _compare<data::Resection>(const data::Resection::csptr& actual, cons
 
 void SessionTest::resectionTest()
 {
-    _test_combine<data::Resection>();
+    testCombine<data::Resection>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ResectionDB::sptr _generate<data::ResectionDB>(const std::size_t variant)
+inline data::ResectionDB::sptr generate<data::ResectionDB>(const std::size_t variant)
 {
     auto object = data::ResectionDB::New();
 
-    object->setSafeResection(_new<data::Resection>(variant));
+    object->setSafeResection(create<data::Resection>(variant));
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        object->addResection(_new<data::Resection>(variant + i + 1));
+        object->addResection(create<data::Resection>(variant + i + 1));
     }
 
     return object;
@@ -2403,16 +2398,16 @@ inline data::ResectionDB::sptr _generate<data::ResectionDB>(const std::size_t va
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ResectionDB>(const data::ResectionDB::csptr& actual, const std::size_t variant)
+inline void compare<data::ResectionDB>(const data::ResectionDB::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
-    _compare<data::Resection>(actual->getSafeResection(), variant);
+    compare<data::Resection>(actual->getSafeResection(), variant);
 
     const auto& resections = actual->getResections();
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Resection>(resections.at(i), variant + i + 1);
+        compare<data::Resection>(resections.at(i), variant + i + 1);
     }
 }
 
@@ -2420,20 +2415,20 @@ inline void _compare<data::ResectionDB>(const data::ResectionDB::csptr& actual, 
 
 void SessionTest::resectionDBTest()
 {
-    _test_combine<data::ResectionDB>();
+    testCombine<data::ResectionDB>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ROITraits::sptr _generate<data::ROITraits>(const std::size_t variant)
+inline data::ROITraits::sptr generate<data::ROITraits>(const std::size_t variant)
 {
     auto object = data::ROITraits::New();
 
     object->setIdentifier(UUID::generateUUID());
     object->setEvaluatedExp(UUID::generateUUID());
-    object->setMaskOpNode(_new<data::Node>(variant));
-    object->setStructureTraits(_new<data::StructureTraits>(variant));
+    object->setMaskOpNode(create<data::Node>(variant));
+    object->setStructureTraits(create<data::StructureTraits>(variant));
 
     return object;
 }
@@ -2441,41 +2436,41 @@ inline data::ROITraits::sptr _generate<data::ROITraits>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ROITraits>(const data::ROITraits::csptr& actual, const std::size_t variant)
+inline void compare<data::ROITraits>(const data::ROITraits::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::ROITraits>(variant);
+    const auto& exp = expected<data::ROITraits>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(expected->getEvaluatedExp(), actual->getEvaluatedExp());
+    CPPUNIT_ASSERT_EQUAL(exp->getIdentifier(), actual->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(exp->getEvaluatedExp(), actual->getEvaluatedExp());
 
     // Node
-    _compare<data::Node>(actual->getMaskOpNode(), variant);
+    compare<data::Node>(actual->getMaskOpNode(), variant);
 
     // Structure
-    _compare<data::StructureTraits>(actual->getStructureTraits(), variant);
+    compare<data::StructureTraits>(actual->getStructureTraits(), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::roiTraitsTest()
 {
-    _test_combine<data::ROITraits>();
+    testCombine<data::ROITraits>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::SeriesDB::sptr _generate<data::SeriesDB>(const std::size_t variant)
+inline data::SeriesDB::sptr generate<data::SeriesDB>(const std::size_t variant)
 {
     auto object = data::SeriesDB::New();
 
     auto& container = object->getContainer();
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        container.push_back(_new<data::Series>(variant + i));
+        container.push_back(create<data::Series>(variant + i));
     }
 
     return object;
@@ -2484,14 +2479,14 @@ inline data::SeriesDB::sptr _generate<data::SeriesDB>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::SeriesDB>(const data::SeriesDB::csptr& actual, const std::size_t variant)
+inline void compare<data::SeriesDB>(const data::SeriesDB::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     const auto& container = actual->getContainer();
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Series>(container.at(i), variant + i);
+        compare<data::Series>(container.at(i), variant + i);
     }
 }
 
@@ -2499,19 +2494,19 @@ inline void _compare<data::SeriesDB>(const data::SeriesDB::csptr& actual, const 
 
 void SessionTest::seriesDBTest()
 {
-    _test_combine<data::SeriesDB>();
+    testCombine<data::SeriesDB>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Tag::sptr _generate<data::Tag>(const std::size_t variant)
+inline data::Tag::sptr generate<data::Tag>(const std::size_t variant)
 {
     auto object = data::Tag::New();
 
     object->setType(UUID::generateUUID());
     object->setSize(random<double>());
-    object->setPointList(_new<data::PointList>(variant));
+    object->setPointList(create<data::PointList>(variant));
 
     return object;
 }
@@ -2519,30 +2514,30 @@ inline data::Tag::sptr _generate<data::Tag>(const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::Tag>(const data::Tag::csptr& actual, const std::size_t variant)
+inline void compare<data::Tag>(const data::Tag::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::Tag>(variant);
+    const auto& exp = expected<data::Tag>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getSize(), actual->getSize(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getSize(), actual->getSize(), DOUBLE_EPSILON);
 
-    _compare<data::PointList>(actual->getPointList(), variant);
+    compare<data::PointList>(actual->getPointList(), variant);
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::tagTest()
 {
-    _test_combine<data::Tag>();
+    testCombine<data::Tag>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::TransferFunction::sptr _generate<data::TransferFunction>(const std::size_t variant)
+inline data::TransferFunction::sptr generate<data::TransferFunction>(const std::size_t variant)
 {
     auto object = data::TransferFunction::New();
 
@@ -2569,15 +2564,15 @@ inline data::TransferFunction::sptr _generate<data::TransferFunction>(const std:
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
         tfData->insert(
-                {
+            {
+                random<double>(),
+                data::TransferFunction::color_t(
                     random<double>(),
-                    data::TransferFunction::color_t(
-                        random<double>(),
-                        random<double>(),
-                        random<double>(),
-                        random<double>()
-                    )
-                });
+                    random<double>(),
+                    random<double>(),
+                    random<double>()
+                )
+            });
     }
 
     return object;
@@ -2586,25 +2581,25 @@ inline data::TransferFunction::sptr _generate<data::TransferFunction>(const std:
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr& actual, const std::size_t variant)
+inline void compare<data::TransferFunction>(const data::TransferFunction::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::TransferFunction>(variant);
+    const auto& exp = expected<data::TransferFunction>(variant);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->level(), actual->level(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->window(), actual->window(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_EQUAL(expected->name(), actual->name());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->level(), actual->level(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->window(), actual->window(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(exp->name(), actual->name());
 
-    const auto& expectedBackgroundColor = expected->backgroundColor();
+    const auto& expectedBackgroundColor = exp->backgroundColor();
     const auto& actualBackgroundColor   = actual->backgroundColor();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.r, actualBackgroundColor.r, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.g, actualBackgroundColor.g, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.b, actualBackgroundColor.b, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.a, actualBackgroundColor.a, DOUBLE_EPSILON);
 
-    auto expectedPiece = expected->pieces().front();
+    auto expectedPiece = exp->pieces().front();
     auto actualPiece   = actual->pieces().front();
 
     CPPUNIT_ASSERT_EQUAL(expectedPiece->interpolationMode(), actualPiece->interpolationMode());
@@ -2626,13 +2621,13 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
 
 void SessionTest::transferFunctionTest()
 {
-    _test_combine<data::TransferFunction>();
+    testCombine<data::TransferFunction>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::DicomSeries::sptr _generate<data::DicomSeries>(const std::size_t variant)
+inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t variant)
 {
     data::DicomSeries::sptr dicomSeries;
 
@@ -2663,7 +2658,7 @@ inline data::DicomSeries::sptr _generate<data::DicomSeries>(const std::size_t va
     {
         // Take the first variant as basis
         dicomSeries = data::DicomSeries::New();
-        dicomSeries->shallowCopy(_expected<data::DicomSeries>(0));
+        dicomSeries->shallowCopy(expected<data::DicomSeries>(0));
     }
 
     // Randomize a bit the dicomSeries
@@ -2674,7 +2669,7 @@ inline data::DicomSeries::sptr _generate<data::DicomSeries>(const std::size_t va
     }
 
     // Inherited attributes
-    dicomSeries->data::Series::shallowCopy(_expected<data::Series>(variant));
+    dicomSeries->data::Series::shallowCopy(expected<data::Series>(variant));
 
     return dicomSeries;
 }
@@ -2682,17 +2677,17 @@ inline data::DicomSeries::sptr _generate<data::DicomSeries>(const std::size_t va
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::DicomSeries>(const data::DicomSeries::csptr& actual, const std::size_t variant)
+inline void compare<data::DicomSeries>(const data::DicomSeries::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::DicomSeries>(variant);
+    const auto& exp = expected<data::DicomSeries>(variant);
 
     // Test inherited attributes
-    _compare<data::Series>(actual, variant);
+    compare<data::Series>(actual, variant);
 
-    const auto& expectedSOPClassUIDs = expected->getSOPClassUIDs();
+    const auto& expectedSOPClassUIDs = exp->getSOPClassUIDs();
     const auto& actualSOPClassUIDs   = actual->getSOPClassUIDs();
     CPPUNIT_ASSERT_EQUAL(expectedSOPClassUIDs.size(), actualSOPClassUIDs.size());
 
@@ -2711,13 +2706,13 @@ void SessionTest::dicomSeriesTest()
         return;
     }
 
-    _test_combine<data::DicomSeries>();
+    testCombine<data::DicomSeries>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ImageSeries::sptr _generate<data::ImageSeries>(const std::size_t variant)
+inline data::ImageSeries::sptr generate<data::ImageSeries>(const std::size_t variant)
 {
     auto object = data::ImageSeries::New();
 
@@ -2734,11 +2729,11 @@ inline data::ImageSeries::sptr _generate<data::ImageSeries>(const std::size_t va
     object->setAcquisitionDate(UUID::generateUUID());
     object->setAcquisitionTime(UUID::generateUUID());
 
-    object->setImage(_new<data::Image>(variant));
-    object->setDicomReference(_new<data::DicomSeries>(variant));
+    object->setImage(create<data::Image>(variant));
+    object->setDicomReference(create<data::DicomSeries>(variant));
 
     // Inherited attributes
-    object->data::Series::shallowCopy(_expected<data::Series>(variant));
+    object->data::Series::shallowCopy(expected<data::Series>(variant));
 
     return object;
 }
@@ -2746,34 +2741,34 @@ inline data::ImageSeries::sptr _generate<data::ImageSeries>(const std::size_t va
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ImageSeries>(const data::ImageSeries::csptr& actual, const std::size_t variant)
+inline void compare<data::ImageSeries>(const data::ImageSeries::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& expected = _expected<data::ImageSeries>(variant);
+    const auto& exp = expected<data::ImageSeries>(variant);
 
     // Test inherited attributes
-    _compare<data::Series>(actual, variant);
+    compare<data::Series>(actual, variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastAgent(), actual->getContrastAgent());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastRoute(), actual->getContrastRoute());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastVolume(), actual->getContrastVolume());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastStartTime(), actual->getContrastStartTime());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastStopTime(), actual->getContrastStopTime());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastTotalDose(), actual->getContrastTotalDose());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastFlowRate(), actual->getContrastFlowRate());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastFlowDuration(), actual->getContrastFlowDuration());
-    CPPUNIT_ASSERT_EQUAL(expected->getContrastIngredient(), actual->getContrastIngredient());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastAgent(), actual->getContrastAgent());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastRoute(), actual->getContrastRoute());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastVolume(), actual->getContrastVolume());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastStartTime(), actual->getContrastStartTime());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastStopTime(), actual->getContrastStopTime());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastTotalDose(), actual->getContrastTotalDose());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastFlowRate(), actual->getContrastFlowRate());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastFlowDuration(), actual->getContrastFlowDuration());
+    CPPUNIT_ASSERT_EQUAL(exp->getContrastIngredient(), actual->getContrastIngredient());
     CPPUNIT_ASSERT_EQUAL(
-        expected->getContrastIngredientConcentration(),
+        exp->getContrastIngredientConcentration(),
         actual->getContrastIngredientConcentration()
     );
-    CPPUNIT_ASSERT_EQUAL(expected->getAcquisitionDate(), actual->getAcquisitionDate());
-    CPPUNIT_ASSERT_EQUAL(expected->getAcquisitionTime(), actual->getAcquisitionTime());
+    CPPUNIT_ASSERT_EQUAL(exp->getAcquisitionDate(), actual->getAcquisitionDate());
+    CPPUNIT_ASSERT_EQUAL(exp->getAcquisitionTime(), actual->getAcquisitionTime());
 
-    _compare<data::Image>(actual->getImage(), variant);
-    _compare<data::DicomSeries>(actual->getDicomReference(), variant);
+    compare<data::Image>(actual->getImage(), variant);
+    compare<data::DicomSeries>(actual->getDicomReference(), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -2785,28 +2780,28 @@ void SessionTest::imageSeriesTest()
         return;
     }
 
-    _test_combine<data::ImageSeries>();
+    testCombine<data::ImageSeries>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ModelSeries::sptr _generate<data::ModelSeries>(const std::size_t variant)
+inline data::ModelSeries::sptr generate<data::ModelSeries>(const std::size_t variant)
 {
     auto object = data::ModelSeries::New();
 
-    object->setDicomReference(_new<data::DicomSeries>(variant));
+    object->setDicomReference(create<data::DicomSeries>(variant));
 
     std::vector<data::Reconstruction::sptr> reconstructionDB;
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        reconstructionDB.push_back(_new<data::Reconstruction>(variant + i));
+        reconstructionDB.push_back(create<data::Reconstruction>(variant + i));
     }
 
     object->setReconstructionDB(reconstructionDB);
 
     // Inherited attributes
-    object->data::Series::shallowCopy(_expected<data::Series>(variant));
+    object->data::Series::shallowCopy(expected<data::Series>(variant));
 
     return object;
 }
@@ -2814,20 +2809,20 @@ inline data::ModelSeries::sptr _generate<data::ModelSeries>(const std::size_t va
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ModelSeries>(const data::ModelSeries::csptr& actual, const std::size_t variant)
+inline void compare<data::ModelSeries>(const data::ModelSeries::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Test inherited attributes
-    _compare<data::Series>(actual, variant);
+    compare<data::Series>(actual, variant);
 
     // Test other attributes
-    _compare<data::DicomSeries>(actual->getDicomReference(), variant);
+    compare<data::DicomSeries>(actual->getDicomReference(), variant);
 
     const auto& reconstructionDB = actual->getReconstructionDB();
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Reconstruction>(reconstructionDB.at(i), variant + i);
+        compare<data::Reconstruction>(reconstructionDB.at(i), variant + i);
     }
 }
 
@@ -2840,19 +2835,19 @@ void SessionTest::modelSeriesTest()
         return;
     }
 
-    _test_combine<data::ModelSeries>();
+    testCombine<data::ModelSeries>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ActivitySet::sptr _generate<data::ActivitySet>(const std::size_t variant)
+inline data::ActivitySet::sptr generate<data::ActivitySet>(const std::size_t variant)
 {
     auto object = data::ActivitySet::New();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        object->push_back(_new<data::ActivitySeries>(variant + i));
+        object->push_back(create<data::ActivitySeries>(variant + i));
     }
 
     return object;
@@ -2861,13 +2856,13 @@ inline data::ActivitySet::sptr _generate<data::ActivitySet>(const std::size_t va
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::ActivitySet>(const data::ActivitySet::csptr& actual, const std::size_t variant)
+inline void compare<data::ActivitySet>(const data::ActivitySet::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::ActivitySeries>(actual->at(i), variant + i);
+        compare<data::ActivitySeries>(actual->at(i), variant + i);
     }
 }
 
@@ -2875,20 +2870,20 @@ inline void _compare<data::ActivitySet>(const data::ActivitySet::csptr& actual, 
 
 void SessionTest::activitySetTest()
 {
-    _test_combine<data::ActivitySet>();
+    testCombine<data::ActivitySet>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::CameraSet::sptr _generate<data::CameraSet>(const std::size_t variant)
+inline data::CameraSet::sptr generate<data::CameraSet>(const std::size_t variant)
 {
     auto object = data::CameraSet::New();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        auto camera = _new<data::Camera>(variant + i);
-        auto matrix = _new<data::Matrix4>(variant + i);
+        auto camera = create<data::Camera>(variant + i);
+        auto matrix = create<data::Matrix4>(variant + i);
         object->push_back(std::make_pair(camera, matrix));
     }
 
@@ -2898,14 +2893,14 @@ inline data::CameraSet::sptr _generate<data::CameraSet>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::CameraSet>(const data::CameraSet::csptr& actual, const std::size_t variant)
+inline void compare<data::CameraSet>(const data::CameraSet::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Camera>(actual->at(i).first, variant + i);
-        _compare<data::Matrix4>(actual->at(i).second, variant + i);
+        compare<data::Camera>(actual->at(i).first, variant + i);
+        compare<data::Matrix4>(actual->at(i).second, variant + i);
     }
 }
 
@@ -2913,19 +2908,19 @@ inline void _compare<data::CameraSet>(const data::CameraSet::csptr& actual, cons
 
 void SessionTest::cameraSetTest()
 {
-    _test_combine<data::CameraSet>();
+    testCombine<data::CameraSet>();
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::SeriesSet::sptr _generate<data::SeriesSet>(const std::size_t variant)
+inline data::SeriesSet::sptr generate<data::SeriesSet>(const std::size_t variant)
 {
     auto object = data::SeriesSet::New();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        object->push_back(_new<data::Series>(variant + i));
+        object->push_back(create<data::Series>(variant + i));
     }
 
     return object;
@@ -2934,13 +2929,13 @@ inline data::SeriesSet::sptr _generate<data::SeriesSet>(const std::size_t varian
 //------------------------------------------------------------------------------
 
 template<>
-inline void _compare<data::SeriesSet>(const data::SeriesSet::csptr& actual, const std::size_t variant)
+inline void compare<data::SeriesSet>(const data::SeriesSet::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        _compare<data::Series>(actual->at(i), variant + i);
+        compare<data::Series>(actual->at(i), variant + i);
     }
 }
 
@@ -2948,17 +2943,17 @@ inline void _compare<data::SeriesSet>(const data::SeriesSet::csptr& actual, cons
 
 void SessionTest::seriesSetTest()
 {
-    _test_combine<data::SeriesSet>();
+    testCombine<data::SeriesSet>();
 }
 
 //------------------------------------------------------------------------------
 
 inline static void customSerialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Cast to the right type
@@ -2973,11 +2968,11 @@ inline static void customSerialize(
 //------------------------------------------------------------------------------
 
 inline static data::String::sptr customDeserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -3009,7 +3004,7 @@ void SessionTest::customSerializerTest()
     // Test serialization
     {
         // Create the data object
-        auto object = _new<data::String>(0);
+        auto object = create<data::String>(0);
 
         // Create the session writer
         auto sessionWriter = io::session::SessionWriter::New();
@@ -3038,7 +3033,7 @@ void SessionTest::customSerializerTest()
 
         // Test value
         auto object = std::dynamic_pointer_cast<data::String>(sessionReader->getObject());
-        _compare<data::String>(object, 0);
+        compare<data::String>(object, 0);
     }
 
     // Restore default serializers
@@ -3074,6 +3069,4 @@ void SessionTest::customSerializerTest()
     }
 }
 
-} // namespace ut
-
-} // namespace sight::io::session
+} // namespace sight::io::session::ut

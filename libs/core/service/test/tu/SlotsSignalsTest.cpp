@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::SlotsSignalsTest);
 //
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 static utest::Exception fwTestException(""); // force link with fwTest
@@ -261,6 +258,4 @@ void SlotsSignalsTest::blockConnectionTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

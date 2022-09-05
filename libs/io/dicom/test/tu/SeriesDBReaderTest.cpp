@@ -61,10 +61,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::SeriesDBReaderTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -81,10 +78,10 @@ std::string getValue(
         value = node.get<std::string>(name);
 
         // Remove leading and trailing spaces
-        std::size_t first = value.find_first_not_of(" ");
+        std::size_t first = value.find_first_not_of(' ');
         if(first != std::string::npos)
         {
-            std::size_t last = value.find_last_not_of(" ");
+            std::size_t last = value.find_last_not_of(' ');
             value = value.substr(first, last - first + 1);
         }
     }
@@ -110,9 +107,9 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
     const std::filesystem::path dicomPath = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB";
     const std::filesystem::path metaPath  = dicomPath / "META";
 
-    for(data::SeriesDB::iterator sIt = seriesDB->begin() ; sIt != seriesDB->end() ; ++sIt)
+    for(auto& sIt : *seriesDB)
     {
-        data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(*sIt);
+        data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(sIt);
 
         // Parse META File
         const std::string metaName           = filename + "/" + series->getInstanceUID() + ".json";
@@ -129,8 +126,8 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
         CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesDescription", mf), series->getDescription());
 
         data::DicomValuesType performingPhysiciansName = series->getPerformingPhysiciansName();
-        std::string performingPhysiciansNameStr        = "";
-        for(data::DicomValuesType::iterator i = performingPhysiciansName.begin() ;
+        std::string performingPhysiciansNameStr;
+        for(auto i = performingPhysiciansName.begin() ;
             i != performingPhysiciansName.end() ; ++i)
         {
             performingPhysiciansNameStr += *i;
@@ -261,7 +258,7 @@ void SeriesDBReaderTest::readJMSSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readJMSSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readJMSSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -274,7 +271,7 @@ void SeriesDBReaderTest::readCTSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readCTSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readCTSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -287,7 +284,7 @@ void SeriesDBReaderTest::readMRSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readMRSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readMRSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -300,7 +297,7 @@ void SeriesDBReaderTest::readOTSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readOTSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readOTSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -313,7 +310,7 @@ void SeriesDBReaderTest::readSEGSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readSEGSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readSEGSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -326,7 +323,7 @@ void SeriesDBReaderTest::readSFSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readSFSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readSFSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -339,7 +336,7 @@ void SeriesDBReaderTest::readSRSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readSRSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readSRSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -352,7 +349,7 @@ void SeriesDBReaderTest::read3DSRSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->read3DSRSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::read3DSRSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -365,7 +362,7 @@ void SeriesDBReaderTest::readDisabledSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readDisabledSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readDisabledSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -378,7 +375,7 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readMRSeriesWithDicomDir();
+    sight::io::dicom::ut::SeriesDBReaderTest::readMRSeriesWithDicomDir();
 }
 
 //------------------------------------------------------------------------------
@@ -391,7 +388,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readMultipleRescaleSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readMultipleRescaleSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -404,7 +401,7 @@ void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readCTWithSurviewSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readCTWithSurviewSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -417,7 +414,7 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readMRWithTemporalPositionSeries();
+    sight::io::dicom::ut::SeriesDBReaderTest::readMRWithTemporalPositionSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -430,7 +427,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
     }
 
     core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
-    this->readCTSeriesDBIssue01();
+    sight::io::dicom::ut::SeriesDBReaderTest::readCTSeriesDBIssue01();
 }
 
 //------------------------------------------------------------------------------
@@ -911,7 +908,7 @@ void SeriesDBReaderTest::readDisabledSeries()
     );
 
     std::vector<std::string> supportedSOPClassContainer;
-    supportedSOPClassContainer.push_back("1.2.840.10008.5.1.4.1.1.2"); // CT Image Storage
+    supportedSOPClassContainer.emplace_back("1.2.840.10008.5.1.4.1.1.2"); // CT Image Storage
 
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
@@ -984,7 +981,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     const auto dumpLock            = image->dump_lock();
 
     // Get internal buffer
-    auto buffer = image->getBuffer();
+    auto* buffer = image->getBuffer();
     CPPUNIT_ASSERT(buffer);
 
     // Compute sha1 digest
@@ -994,11 +991,11 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     sha1.get_digest(digest);
 
     // Check digests
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 808070165u, digest[0]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 1419762457u, digest[1]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 664759744u, digest[2]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 4220766428u, digest[3]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 2226307254u, digest[4]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 808070165U, digest[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 1419762457U, digest[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 664759744U, digest[2]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 4220766428U, digest[3]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 2226307254U, digest[4]);
 }
 
 //------------------------------------------------------------------------------
@@ -1082,6 +1079,4 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,7 @@
 
 #include <data/Color.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Color
+namespace sight::io::session::detail::Color
 {
 
 constexpr static auto s_Red {"Red"};
@@ -40,11 +37,11 @@ constexpr static auto s_Alpha {"Alpha"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto color = Helper::safeCast<data::Color>(object);
@@ -61,11 +58,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Color::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -84,6 +81,4 @@ inline static data::Color::sptr deserialize(
     return color;
 }
 
-} // namespace detail::Color
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Color

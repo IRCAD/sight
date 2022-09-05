@@ -42,13 +42,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -70,8 +64,7 @@ Surface::Surface(
 //------------------------------------------------------------------------------
 
 Surface::~Surface()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -106,7 +99,9 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
                         {
                             std::string segmentLabel = segment->GetSegmentLabel();
                             segmentLabel = gdcm::LOComp::Trim(segmentLabel.c_str());
-                            const std::string msg = "Error while reading the '" + segmentLabel + "' segment: " + error;
+                            const std::string msg =
+                                std::string("Error while reading the '").append(segmentLabel).append("' segment: ").
+                                append(error);
 
                             SIGHT_WARN_IF(msg, !m_logger);
                             if(m_logger)
@@ -254,7 +249,7 @@ void Surface::readSurfaceSegmentationModule(
     privateCreator = gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
     if(segmentDataset.FindDataElement(computedMaskVolumeTag))
     {
-        gdcm::Attribute<0x5649, 0x1001, gdcm::VR::OD, gdcm::VM::VM1> attribute;
+        gdcm::Attribute<0x5649, 0x1001, gdcm::VR::OD, gdcm::VM::VM1> attribute {};
         attribute.SetFromDataSet(segmentDataset);
         const double volume = attribute.GetValue();
         reconstruction->setComputedMaskVolume(volume);
@@ -276,7 +271,7 @@ void Surface::readSurfaceMeshModule(
     data::Material::sptr material = data::Material::New();
 
     // Convert CIE Lab to RGBA
-    const unsigned short* lab = surface->GetRecommendedDisplayCIELabValue();
+    const std::uint16_t* lab = surface->GetRecommendedDisplayCIELabValue();
     gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + 3);
     std::vector<float> colorVector = gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1);
 
@@ -285,7 +280,7 @@ void Surface::readSurfaceMeshModule(
 
     // Adapt color to material
     data::Color::ColorArray rgba;
-    boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.f, 1.f);
+    boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.F, 1.F);
 
     // Set reconstruction's visibility
     const double epsilon = 1e-3;
@@ -316,7 +311,7 @@ void Surface::readSurfaceMeshModule(
 
     // Point Coordinates Data
     const gdcm::ByteValue* pointCoordinates = surface->GetPointCoordinatesData().GetByteValue();
-    if(!pointCoordinates || !pointCoordinates->GetPointer())
+    if((pointCoordinates == nullptr) || (pointCoordinates->GetPointer() == nullptr))
     {
         throw io::dicom::exception::Failed("No point coordinates data found.");
     }
@@ -334,7 +329,7 @@ void Surface::readSurfaceMeshModule(
     if(!surface->GetVectorCoordinateData().IsEmpty())
     {
         // Check that the surface contains normals
-        if(!normalCoordinates || !normalCoordinates->GetPointer())
+        if((normalCoordinates == nullptr) || (normalCoordinates->GetPointer() == nullptr))
         {
             throw io::dicom::exception::Failed("No normal coordinates data found.");
         }
@@ -342,7 +337,7 @@ void Surface::readSurfaceMeshModule(
         normalCoordinatesPointer = normalCoordinates->GetPointer();
 
         // Compute number of normal coordinates
-        const unsigned long normalCoordinateSize = normalCoordinates->GetLength() / sizeof(float);
+        const std::uint64_t normalCoordinateSize = normalCoordinates->GetLength() / sizeof(float);
         if((normalCoordinateSize / 3) != surface->GetNumberOfVectors() || normalCoordinateSize != pointCoordinatesSize)
         {
             throw io::dicom::exception::Failed("Normal coordinates data are corrupted.");
@@ -351,13 +346,13 @@ void Surface::readSurfaceMeshModule(
 
     // Triangle Point Index List
     const gdcm::ByteValue* pointIndices = meshPrimitive->GetPrimitiveData().GetByteValue();
-    if(!pointIndices || !pointIndices->GetPointer())
+    if((pointIndices == nullptr) || (pointIndices->GetPointer() == nullptr))
     {
         throw io::dicom::exception::Failed("No triangle point index list found.");
     }
 
     // Get number of primitives
-    const unsigned long indexSize = pointIndices->GetLength() / sizeof(uint32_t);
+    const std::uint64_t indexSize = pointIndices->GetLength() / sizeof(uint32_t);
 
     // Create a new Mesh
     io::dicom::container::DicomSurface surfaceContainer(reinterpret_cast<const float*>(pointCoordinates->GetPointer()),
@@ -373,8 +368,4 @@ void Surface::readSurfaceMeshModule(
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

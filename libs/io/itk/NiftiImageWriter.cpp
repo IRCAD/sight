@@ -42,15 +42,14 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-NiftiImageWriter::NiftiImageWriter(io::base::writer::IObjectWriter::Key)
+NiftiImageWriter::NiftiImageWriter(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 NiftiImageWriter::~NiftiImageWriter()
-{
-}
+= default;
 
 struct NiftiSaverFunctor
 {
@@ -72,8 +71,8 @@ struct NiftiSaverFunctor
         typename ::itk::NiftiImageIO::Pointer imageIOWrite = ::itk::NiftiImageIO::New();
 
         // create writer
-        typedef ::itk::Image<PIXELTYPE, 3> itkImageType;
-        typedef typename ::itk::ImageFileWriter<itkImageType> WriterType;
+        using itkImageType = ::itk::Image<PIXELTYPE, 3>;
+        using WriterType   = typename ::itk::ImageFileWriter<itkImageType>;
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
@@ -120,10 +119,8 @@ std::string NiftiImageWriter::extension() const
     {
         return ".nii";
     }
-    else
-    {
-        return getFile().filename().extension().string();
-    }
+
+    return getFile().filename().extension().string();
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/macros.hpp>
 
 #include <filesystem>
@@ -37,8 +38,7 @@ class CORE_CLASS_API FileHolder
 public:
 
     FileHolder()
-    {
-    }
+    = default;
 
     CORE_API FileHolder(const std::filesystem::path& file, bool autodelete = false);
 
@@ -49,7 +49,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool empty() const
+    [[nodiscard]] bool empty() const
     {
         return m_path.empty();
     }
@@ -64,7 +64,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::string string() const
+    [[nodiscard]] std::string string() const
     {
         return m_path.string();
     }

@@ -34,7 +34,6 @@ namespace sight::activity
 //------------------------------------------------------------------------------
 
 IValidator::ValidationType IActivityValidator::checkRequirements(const data::ActivitySeries::csptr& activity)
-const
 {
     IValidator::ValidationType validation;
     validation.first  = true;
@@ -45,7 +44,7 @@ const
 
     data::Composite::csptr composite = activity->getData();
 
-    for(activity::extension::ActivityRequirement req : info.requirements)
+    for(const activity::extension::ActivityRequirement& req : info.requirements)
     {
         if((req.minOccurs == 1 && req.maxOccurs == 1)
            || (req.minOccurs == 0 && req.maxOccurs == 0)
@@ -64,7 +63,7 @@ const
             }
             else
             {
-                IValidator::ValidationType val = this->checkObject(obj, req.validator);
+                IValidator::ValidationType val = sight::activity::IActivityValidator::checkObject(obj, req.validator);
                 if(!val.first)
                 {
                     validation.first   = false;
@@ -82,7 +81,7 @@ const
             }
             else
             {
-                unsigned int nbObj = static_cast<unsigned int>(vector->size());
+                auto nbObj = static_cast<unsigned int>(vector->size());
                 if(nbObj < req.minOccurs)
                 {
                     validation.first   = false;
@@ -119,7 +118,10 @@ const
 
                     if(isValid)
                     {
-                        IValidator::ValidationType val = this->checkObject(vector, req.validator);
+                        IValidator::ValidationType val = sight::activity::IActivityValidator::checkObject(
+                            vector,
+                            req.validator
+                        );
                         if(!val.first)
                         {
                             validation.first   = false;
@@ -140,7 +142,7 @@ const
             }
             else
             {
-                unsigned int nbObj = static_cast<unsigned int>(currentComposite->size());
+                auto nbObj = static_cast<unsigned int>(currentComposite->size());
                 if(nbObj < req.minOccurs)
                 {
                     validation.first   = false;
@@ -157,13 +159,13 @@ const
                 {
                     bool isValid = true;
 
-                    for(auto elt : *currentComposite)
+                    for(const auto& elt : *currentComposite)
                     {
                         std::string key        = elt.first;
                         data::Object::sptr obj = elt.second;
                         activity::extension::ActivityRequirementKey reqKey;
                         bool keyIsFound = false;
-                        for(activity::extension::ActivityRequirementKey keyElt : req.keys)
+                        for(const activity::extension::ActivityRequirementKey& keyElt : req.keys)
                         {
                             if(key == keyElt.key)
                             {
@@ -197,7 +199,10 @@ const
 
                     if(isValid)
                     {
-                        IValidator::ValidationType val = this->checkObject(currentComposite, req.validator);
+                        IValidator::ValidationType val = sight::activity::IActivityValidator::checkObject(
+                            currentComposite,
+                            req.validator
+                        );
                         if(!val.first)
                         {
                             validation.first   = false;
@@ -217,7 +222,7 @@ const
 IValidator::ValidationType IActivityValidator::checkObject(
     const data::Object::csptr& object,
     const std::string& validatorImpl
-) const
+)
 {
     activity::IValidator::ValidationType validation;
     validation.first  = true;

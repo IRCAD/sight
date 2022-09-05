@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include <functional>
 #include <type_traits>
 
-namespace sight::core::com
-{
-
-namespace util
+namespace sight::core::com::util
 {
 
 template<typename F>
@@ -62,6 +59,4 @@ struct convert_function_type
     typedef typename std::remove_pointer<F>::type type;
 };
 
-} //namespace util
-
-} //namespace sight::core::com
+} // namespace sight::core::com::util

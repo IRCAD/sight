@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core
-{
-
-namespace ut
+namespace sight::core::ut
 {
 
 class HisResClockTest : public CPPUNIT_NS::TestFixture
@@ -42,9 +39,7 @@ public:
 
     void tearDown() override;
 
-    void getTimeTest();
+    static void getTimeTest();
 };
 
-} //namespace ut
-
-} //namespace sight::core
+} // namespace sight::core::ut

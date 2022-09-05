@@ -43,19 +43,16 @@ namespace data
 class ActivitySeries;
 class Vector;
 
-}
+} // namespace data
 
 namespace core::runtime
 {
 
 struct Extension;
 
-}
+} // namespace core::runtime
 
-namespace activity
-{
-
-namespace extension
+namespace activity::extension
 {
 
 typedef boost::property_tree::ptree ConfigType;
@@ -63,14 +60,13 @@ typedef boost::property_tree::ptree ConfigType;
 struct ACTIVITY_CLASS_API ActivityAppConfigParam
 {
     ActivityAppConfigParam()
-    {
-    }
+    = default;
 
     ACTIVITY_API ActivityAppConfigParam(const ConfigType& config);
 
     //------------------------------------------------------------------------------
 
-    bool isObjectPath() const
+    [[nodiscard]] bool isObjectPath() const
     {
         return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
     }
@@ -84,8 +80,7 @@ using ActivityAppConfigParamsType = std::vector<ActivityAppConfigParam>;
 struct ACTIVITY_CLASS_API ActivityAppConfig
 {
     ActivityAppConfig()
-    {
-    }
+    = default;
 
     ACTIVITY_API ActivityAppConfig(const ConfigType& config);
 
@@ -96,8 +91,7 @@ struct ACTIVITY_CLASS_API ActivityAppConfig
 struct ACTIVITY_CLASS_API ActivityRequirementKey
 {
     ActivityRequirementKey()
-    {
-    }
+    = default;
 
     ACTIVITY_API ActivityRequirementKey(const ConfigType& config);
 
@@ -107,23 +101,22 @@ struct ACTIVITY_CLASS_API ActivityRequirementKey
 struct ACTIVITY_CLASS_API ActivityRequirement
 {
     ActivityRequirement()
-    {
-    }
+    = default;
 
     ACTIVITY_API ActivityRequirement(const ConfigType& config);
 
     typedef std::vector<ActivityRequirementKey> KeyType;
 
-    std::string name;        /// parameter name
-    std::string type;        /// parameter type (ie. data::ImageSeries)
-    std::string container;   /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
-    std::string description; /// parameter description
-    std::string validator;   /// Implementation of data validator
-    unsigned int minOccurs;  /// minimum number of data required
-    unsigned int maxOccurs;  /// maximum number of data required
-    bool create;             /// True if the data must be created if it is not present (only if minOccurs = 0 and
-                             /// maxOccurs = 1)
-    KeyType keys;            /// Parameter key if the container == "composite"
+    std::string name;          /// parameter name
+    std::string type;          /// parameter type (ie. data::ImageSeries)
+    std::string container;     /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
+    std::string description;   /// parameter description
+    std::string validator;     /// Implementation of data validator
+    unsigned int minOccurs {}; /// minimum number of data required
+    unsigned int maxOccurs {}; /// maximum number of data required
+    bool create {};            /// True if the data must be created if it is not present (only if minOccurs = 0 and
+                               /// maxOccurs = 1)
+    KeyType keys;              /// Parameter key if the container == "composite"
 };
 
 /**
@@ -206,12 +199,11 @@ struct ACTIVITY_CLASS_API ActivityInfo
     typedef std::map<std::string, unsigned int> DataCountType;
 
     ActivityInfo()
-    {
-    }
+    = default;
 
     ACTIVITY_API ActivityInfo(const SPTR(core::runtime::Extension)& ext);
 
-    ACTIVITY_API bool usableWith(DataCountType dataCount) const;
+    [[nodiscard]] ACTIVITY_API bool usableWith(DataCountType dataCount) const;
 
     std::string id;
     std::string title;
@@ -250,7 +242,7 @@ public:
     ACTIVITY_API static Activity::sptr getDefault();
 
     /// Destructor
-    ACTIVITY_API virtual ~Activity();
+    ACTIVITY_API ~Activity() override;
 
     /**
      * @brief Parse module information to retrieve config parameters declaration
@@ -264,7 +256,7 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    ACTIVITY_API const ActivityInfo getInfo(const std::string& extensionId) const;
+    ACTIVITY_API ActivityInfo getInfo(const std::string& extensionId) const;
 
     /**
      * @brief Tests if we have information about operator
@@ -275,7 +267,7 @@ public:
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    ACTIVITY_API ActivityInfo::DataCountType getDataCount(const CSPTR(data::Vector)& data) const;
+    static ACTIVITY_API ActivityInfo::DataCountType getDataCount(const CSPTR(data::Vector)& data);
 
     /**
      * @brief Get all infos
@@ -306,11 +298,11 @@ public:
         const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
     ) const;
 
-    ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
+    static ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
         const data::ActivitySeries& activitySeries,
         const ActivityInfo& info,
         const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
-    ) const;
+    );
 
 protected:
 
@@ -329,8 +321,6 @@ protected:
     static Activity::sptr s_activity;
 };
 
-} // namespace extension
-
-} // namespace activity
+} // namespace activity::extension
 
 } // namespace sight

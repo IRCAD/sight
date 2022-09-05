@@ -38,12 +38,9 @@ namespace sight::core::log
 
 class Logger;
 
-}
+} // namespace sight::core::log
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -118,6 +115,4 @@ private:
     /**  @} */
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

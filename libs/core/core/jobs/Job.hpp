@@ -29,12 +29,12 @@
 #include <functional>
 #include <string>
 
-namespace thread
+namespace sight::core::thread
 {
 
 class Worker;
 
-} //namespace thread
+} //namespace sight::core::thread
 
 namespace sight::core::jobs
 {
@@ -79,7 +79,7 @@ public:
      * @param task The task managed by the job
      * @param core::thread::Worker An optional worker to run the task on
      */
-    CORE_API Job(const std::string& name, Task task, const SPTR(core::thread::Worker)& worker = nullptr);
+    CORE_API Job(const std::string& name, Task task, SPTR(core::thread::Worker)worker = nullptr);
 
     /**
      * @brief Return a job callback with the done work number as parameter
@@ -100,7 +100,7 @@ public:
     CORE_API SPTR(core::thread::Worker) getWorker();
 
     /// Reimplements IJob's cancel
-    CORE_API virtual SharedFuture cancel();
+    CORE_API SharedFuture cancel() override;
 
 protected:
 
@@ -109,7 +109,7 @@ protected:
      *
      * @return future of the task
      */
-    CORE_API SharedFuture runImpl();
+    CORE_API SharedFuture runImpl() override;
 
 private:
 

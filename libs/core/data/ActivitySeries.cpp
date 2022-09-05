@@ -31,7 +31,7 @@ namespace sight::data
 {
 
 ActivitySeries::ActivitySeries() :
-    Series(),
+
     m_data(data::Composite::New())
 {
 }
@@ -45,8 +45,7 @@ ActivitySeries::ActivitySeries(data::Object::Key _key) :
 //------------------------------------------------------------------------------
 
 ActivitySeries::~ActivitySeries()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

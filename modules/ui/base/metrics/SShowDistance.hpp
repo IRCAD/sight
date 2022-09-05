@@ -83,7 +83,7 @@ protected:
 private:
 
     /// SLOT: shows or hides distance from the image field.
-    void showDistance(bool);
+    void showDistance(bool /*unused*/);
 
     static constexpr std::string_view s_IMAGE = "image";
 

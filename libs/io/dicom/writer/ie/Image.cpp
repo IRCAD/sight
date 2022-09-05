@@ -29,13 +29,7 @@
 
 #include <gdcmImageWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -55,8 +49,7 @@ Image::Image(
 //------------------------------------------------------------------------------
 
 Image::~Image()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -138,7 +131,7 @@ void Image::writeImagePixelModule()
     gdcmImage.SetPixelFormat(pixelFormat);
 
     //Image's number of dimension
-    unsigned int dimension =
+    auto dimension =
         static_cast<unsigned int>((m_instance->getIsMultiFiles()) ? 2 : m_object->numDimensions());
     gdcmImage.SetNumberOfDimensions(dimension);
 
@@ -297,8 +290,4 @@ void Image::writeMRImageModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

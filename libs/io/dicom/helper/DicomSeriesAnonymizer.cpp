@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 
 #include <boost/foreach.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
@@ -49,8 +46,7 @@ DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
 //------------------------------------------------------------------------------
 
 DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -72,10 +68,10 @@ void DicomSeriesAnonymizer::anonymize(
     // Set up observer cancel callback
     m_job->addSimpleCancelHook(
         [&]
-            {
-                writerObserver->cancel();
-                anonymizerObserver->cancel();
-            });
+        {
+            writerObserver->cancel();
+            anonymizerObserver->cancel();
+        });
 
     m_job->add(writerObserver);
     m_job->add(anonymizerObserver, 10);
@@ -131,6 +127,4 @@ core::jobs::Aggregator::sptr DicomSeriesAnonymizer::getJob() const
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

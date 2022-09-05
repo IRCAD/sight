@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,7 +100,7 @@ public:
     MODULE_UI_QML_API SRepresentationEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_API virtual ~SRepresentationEditor() noexcept;
+    MODULE_UI_QML_API ~SRepresentationEditor() noexcept override;
 
 Q_SIGNALS:
 
@@ -150,4 +150,4 @@ private:
     data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
 };
 
-} // uiReconstructionQml
+} // namespace sight::module::ui::qml::reconstruction

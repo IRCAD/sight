@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,7 @@
 
 #include "io/dicom/reader/iod/InformationObjectDefinition.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 /**
@@ -57,16 +51,12 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~ComprehensiveSRIOD();
+    IO_DICOM_API ~ComprehensiveSRIOD() override;
 
     /** Read DICOM file
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API void read(data::Series::sptr series);
+    IO_DICOM_API void read(data::Series::sptr series) override;
 };
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

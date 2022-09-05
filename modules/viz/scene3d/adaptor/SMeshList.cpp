@@ -44,9 +44,8 @@ SMeshList::SMeshList() noexcept
 
 //-----------------------------------------------------------------------------
 
-SMeshList::~SMeshList() noexcept
-{
-}
+SMeshList::~SMeshList() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "data/config.hpp"
 
+#include <array>
 #include <cstdint>
 #include <string>
 
@@ -42,7 +43,7 @@ public:
      * @param _hexaColor[in] Color string that start with '#' and followed by 6 ou 8 hexadecimal digits (ex: #FF81EC)
      * @param _rgba[out] RGBA values
      */
-    DATA_API static void hexaStringToRGBA(const std::string& _hexaColor, std::uint8_t _rgba[4]);
+    DATA_API static void hexaStringToRGBA(const std::string& _hexaColor, std::array<std::uint8_t, 4>& _rgba);
 };
 
 } // end namespace sight::data::tools

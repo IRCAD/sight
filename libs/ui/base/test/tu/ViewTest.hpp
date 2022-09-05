@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 /**
@@ -42,13 +39,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void configuringTest();
+    static void configuringTest();
     void cleanup();
 };
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

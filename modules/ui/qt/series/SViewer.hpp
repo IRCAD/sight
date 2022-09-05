@@ -75,7 +75,7 @@ public:
     MODULE_UI_QT_API SViewer();
 
     /// Destructor
-    MODULE_UI_QT_API virtual ~SViewer() noexcept;
+    MODULE_UI_QT_API ~SViewer() noexcept override;
 
 protected:
 

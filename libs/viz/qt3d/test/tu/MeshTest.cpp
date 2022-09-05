@@ -36,23 +36,18 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::MeshTest);
 
-namespace sight::viz::qt3dTest
-{
-
-namespace ut
+namespace sight::viz::qt3dTest::ut
 {
 
 //------------------------------------------------------------------------------
 
 MeshTest::MeshTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 MeshTest::~MeshTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +68,7 @@ void MeshTest::setCubeMesh()
     TestApplication app;
 
     // Arranges a cube data::Mesh and a generic scene.
-    auto scene = new sight::viz::qt3d::core::GenericScene(false);
+    auto* scene = new sight::viz::qt3d::core::GenericScene(false);
     scene->setCamera(scene->getCamera());
 
     const data::Mesh::sptr mesh = data::Mesh::New();
@@ -104,14 +99,14 @@ void MeshTest::setCubeMesh()
     mesh->pushCell(6, 5, 0);
 
     // Sets Qt3D mesh.
-    auto qt3dMesh = new viz::qt3d::data::Mesh(scene);
+    auto* qt3dMesh = new viz::qt3d::data::Mesh(scene);
     qt3dMesh->setMesh(mesh);
 
     // Asserts.
-    auto geomRenderer    = qobject_cast<Qt3DRender::QGeometryRenderer*>(qt3dMesh->components()[0]);
-    auto posAttribute    = geomRenderer->geometry()->attributes()[0];
-    auto normalAttribute = geomRenderer->geometry()->attributes()[1];
-    auto indexAttribute  = geomRenderer->geometry()->attributes()[2];
+    auto* geomRenderer    = qobject_cast<Qt3DRender::QGeometryRenderer*>(qt3dMesh->components()[0]);
+    auto* posAttribute    = geomRenderer->geometry()->attributes()[0];
+    auto* normalAttribute = geomRenderer->geometry()->attributes()[1];
+    auto* indexAttribute  = geomRenderer->geometry()->attributes()[2];
 
     // Asserts primitive type.
     CPPUNIT_ASSERT_EQUAL(Qt3DRender::QGeometryRenderer::Triangles, geomRenderer->primitiveType());
@@ -123,19 +118,19 @@ void MeshTest::setCubeMesh()
 
     // Asserts each point is at the right position.
     const QByteArray posBufferDataByte = posAttribute->buffer()->data();
-    const float* const posBufferData   = reinterpret_cast<const float*>(posBufferDataByte.data());
+    const auto* const posBufferData    = reinterpret_cast<const float*>(posBufferDataByte.data());
     unsigned int count                 = 0;
     for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
-        CPPUNIT_ASSERT(static_cast<float>(p.x) - posBufferData[count] < 0.01f);
-        CPPUNIT_ASSERT(static_cast<float>(p.y) - posBufferData[count + 1] < 0.01f);
-        CPPUNIT_ASSERT(static_cast<float>(p.z) - posBufferData[count + 2] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.x) - posBufferData[count] < 0.01F);
+        CPPUNIT_ASSERT(static_cast<float>(p.y) - posBufferData[count + 1] < 0.01F);
+        CPPUNIT_ASSERT(static_cast<float>(p.z) - posBufferData[count + 2] < 0.01F);
         count += 3;
     }
 
     // Asserts indexes are in the right order.
-    const QByteArray indexBufferDataByte      = indexAttribute->buffer()->data();
-    const unsigned int* const indexBufferData = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
+    const QByteArray indexBufferDataByte = indexAttribute->buffer()->data();
+    const auto* const indexBufferData    = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
     count = 0;
     for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
     {
@@ -157,8 +152,8 @@ void MeshTest::centerCameraOnCube()
     TestApplication app;
 
     // Arranges a cube data::Mesh and a generic scene.
-    const auto scene  = new sight::viz::qt3d::core::GenericScene(false);
-    const auto camera = scene->getCamera();
+    auto* const scene  = new sight::viz::qt3d::core::GenericScene(false);
+    auto* const camera = scene->getCamera();
 
     const data::Mesh::sptr mesh = data::Mesh::New();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
@@ -188,7 +183,7 @@ void MeshTest::centerCameraOnCube()
     mesh->pushCell(6, 5, 0);
 
     // Sets expected camera after beeing centered on the cube.
-    auto expectedCamera = new Qt3DRender::QCamera();
+    auto* expectedCamera = new Qt3DRender::QCamera();
     expectedCamera->lens()->setPerspectiveProjection(
         camera->lens()->fieldOfView(),
         camera->lens()->aspectRatio(),
@@ -198,22 +193,22 @@ void MeshTest::centerCameraOnCube()
     expectedCamera->setUpVector(camera->upVector());
     expectedCamera->setPosition(camera->position());
     expectedCamera->setViewCenter(camera->viewCenter());
-    expectedCamera->viewSphere(QVector3D(0.5f, 0.5f, 0.5f), 1);
+    expectedCamera->viewSphere(QVector3D(0.5F, 0.5F, 0.5F), 1);
 
     // Sets Qt3D mesh and center camera on it.
-    auto qt3dMesh = new viz::qt3d::data::Mesh(scene);
+    auto* qt3dMesh = new viz::qt3d::data::Mesh(scene);
     qt3dMesh->setMesh(mesh);
     qt3dMesh->centerCameraOnMesh();
 
     // Asserts actual camera's view center is equal to expected camera's one.
-    CPPUNIT_ASSERT(expectedCamera->viewCenter().x() - qt3dMesh->getScene()->getCamera()->viewCenter().x() < 0.01f);
-    CPPUNIT_ASSERT(expectedCamera->viewCenter().y() - qt3dMesh->getScene()->getCamera()->viewCenter().y() < 0.01f);
-    CPPUNIT_ASSERT(expectedCamera->viewCenter().z() - qt3dMesh->getScene()->getCamera()->viewCenter().z() < 0.01f);
+    CPPUNIT_ASSERT(expectedCamera->viewCenter().x() - qt3dMesh->getScene()->getCamera()->viewCenter().x() < 0.01F);
+    CPPUNIT_ASSERT(expectedCamera->viewCenter().y() - qt3dMesh->getScene()->getCamera()->viewCenter().y() < 0.01F);
+    CPPUNIT_ASSERT(expectedCamera->viewCenter().z() - qt3dMesh->getScene()->getCamera()->viewCenter().z() < 0.01F);
 
     // Asserts actual camera's position is equal to expected camera's one.
-    CPPUNIT_ASSERT(expectedCamera->position().x() - qt3dMesh->getScene()->getCamera()->position().x() < 0.01f);
-    CPPUNIT_ASSERT(expectedCamera->position().y() - qt3dMesh->getScene()->getCamera()->position().y() < 0.01f);
-    CPPUNIT_ASSERT(expectedCamera->position().z() - qt3dMesh->getScene()->getCamera()->position().z() < 0.01f);
+    CPPUNIT_ASSERT(expectedCamera->position().x() - qt3dMesh->getScene()->getCamera()->position().x() < 0.01F);
+    CPPUNIT_ASSERT(expectedCamera->position().y() - qt3dMesh->getScene()->getCamera()->position().y() < 0.01F);
+    CPPUNIT_ASSERT(expectedCamera->position().z() - qt3dMesh->getScene()->getCamera()->position().z() < 0.01F);
 
     delete expectedCamera;
     delete qt3dMesh;
@@ -222,6 +217,4 @@ void MeshTest::centerCameraOnCube()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut.
-
-} // namespace sight::viz::qt3dTest.
+} // namespace sight::viz::qt3dTest::ut

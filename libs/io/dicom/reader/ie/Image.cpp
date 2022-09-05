@@ -47,13 +47,7 @@
 #include <gdcmRescaler.h>
 #include <gdcmUIDGenerator.h>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -68,16 +62,14 @@ Image::Image(
     CancelRequestedCallback cancel
 ) :
     io::dicom::reader::ie::InformationEntity<data::Image>(dicomSeries, reader, instance, image,
-                                                          logger, progress, cancel),
-    m_enableBufferRotation(true)
+                                                          logger, progress, cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Image::~Image()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -142,7 +134,7 @@ void Image::readImagePlaneModule()
     const double* gdcmOrigin   = gdcmImage.GetOrigin();
     data::Image::Origin origin = {0., 0., 0.
     };
-    if(gdcmOrigin != 0)
+    if(gdcmOrigin != nullptr)
     {
         std::copy(gdcmOrigin, gdcmOrigin + 3, origin.begin());
     }
@@ -157,7 +149,7 @@ void Image::readImagePlaneModule()
     const double* gdcmSpacing    = gdcmImage.GetSpacing();
     data::Image::Spacing spacing = {1., 1., 1.
     };
-    if(gdcmSpacing != 0)
+    if(gdcmSpacing != nullptr)
     {
         std::copy(gdcmSpacing, gdcmSpacing + dimension, spacing.begin());
     }
@@ -272,11 +264,11 @@ void Image::readImagePixelModule()
     double rescaleIntercept     = rescale[0];
     double rescaleSlope         = rescale[1];
 
-    const unsigned short samplesPerPixel     = pixelFormat.GetSamplesPerPixel();
-    const unsigned short bitsAllocated       = pixelFormat.GetBitsAllocated();
-    const unsigned short bitsStored          = pixelFormat.GetBitsStored();
-    const unsigned short highBit             = pixelFormat.GetHighBit();
-    const unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
+    const std::uint16_t samplesPerPixel     = pixelFormat.GetSamplesPerPixel();
+    const std::uint16_t bitsAllocated       = pixelFormat.GetBitsAllocated();
+    const std::uint16_t bitsStored          = pixelFormat.GetBitsStored();
+    const std::uint16_t highBit             = pixelFormat.GetHighBit();
+    const std::uint16_t pixelRepresentation = pixelFormat.GetPixelRepresentation();
 
     // Compute final image type
     data::dicom::Image imageHelper(
@@ -300,14 +292,15 @@ void Image::readImagePixelModule()
 
     // Compute real image size (we assume every instance has the same number of
     // slices (1 for CT and MR, may be more for enhanced CT and MR)
-    const unsigned long frameBufferSize = gdcmImage.GetBufferLength();
-    const unsigned long depth           = frameBufferSize / (dimensions[0] * dimensions[1] * (bitsAllocated / 8));
+    const std::uint64_t frameBufferSize = gdcmImage.GetBufferLength();
+    const std::uint64_t depth           = frameBufferSize
+                                          / (std::uint64_t(dimensions[0]) * dimensions[1] * (bitsAllocated / 8));
     dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
 
-    const unsigned long imageBufferSize =
-        dimensions[0] * dimensions[1] * dimensions[2] * (bitsAllocated / 8);
-    const unsigned long newImageBufferSize =
-        dimensions[0] * dimensions[1] * dimensions[2] * (targetPixelFormat.GetBitsAllocated() / 8);
+    const std::uint64_t imageBufferSize =
+        std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (bitsAllocated / 8);
+    const std::uint64_t newImageBufferSize =
+        std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (targetPixelFormat.GetBitsAllocated() / 8);
 
     // Let's read the image buffer
     bool performRescale = (photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR");
@@ -336,7 +329,7 @@ void Image::readImagePixelModule()
         try
         {
             // Create new buffer
-            char* coloredBuffer = 0;
+            char* coloredBuffer = nullptr;
             coloredBuffer = new char [newImageBufferSize * 3];
 
             // Apply lookup
@@ -353,22 +346,19 @@ void Image::readImagePixelModule()
     }
 
     // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
-    sight::data::Image::PixelFormat format;
+    sight::data::Image::PixelFormat format {sight::data::Image::PixelFormat::UNDEFINED};
     if(photometricInterpretation == "MONOCHROME2")
     {
         format = data::Image::PixelFormat::GRAY_SCALE;
     }
-    else if(photometricInterpretation == "RGB" || photometricInterpretation == "YBR")
+    else if(photometricInterpretation == "RGB" || photometricInterpretation == "YBR"
+            || photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR")
     {
         format = data::Image::PixelFormat::RGB;
     }
     else if(photometricInterpretation == "ARGB" || photometricInterpretation == "CMYK")
     {
         format = data::Image::PixelFormat::RGBA;
-    }
-    else if(photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR")
-    {
-        format = data::Image::PixelFormat::RGB;
     }
     else
     {
@@ -392,8 +382,8 @@ void Image::readImagePixelModule()
 char* Image::readImageBuffer(
     const std::vector<unsigned int>& dimensions,
     const core::Type imageType,
-    const unsigned short bitsAllocated,
-    const unsigned short newBitsAllocated,
+    const std::uint16_t bitsAllocated,
+    const std::uint16_t newBitsAllocated,
     const bool performRescale
 )
 {
@@ -405,11 +395,11 @@ char* Image::readImageBuffer(
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
     // Raw buffer for all frames
-    char* frameBuffer;
-    char* imageBuffer;
-    const unsigned long frameBufferSize    = gdcmFirstImage.GetBufferLength();
-    const unsigned long newFrameBufferSize = frameBufferSize * (newBitsAllocated / bitsAllocated);
-    const unsigned long imageBufferSize    = dimensions.at(0) * dimensions.at(1) * dimensions.at(2)
+    char* frameBuffer                      = nullptr;
+    char* imageBuffer                      = nullptr;
+    const std::uint64_t frameBufferSize    = gdcmFirstImage.GetBufferLength();
+    const std::uint64_t newFrameBufferSize = frameBufferSize * (newBitsAllocated / bitsAllocated);
+    const std::uint64_t imageBufferSize    = std::uint64_t(dimensions.at(0)) * dimensions.at(1) * dimensions.at(2)
                                              * ((performRescale ? newBitsAllocated : bitsAllocated) / 8);
 
     // Allocate raw buffer
@@ -511,7 +501,7 @@ char* Image::readImageBuffer(
         // Next frame
         ++frameNumber;
 
-        unsigned int progress =
+        auto progress =
             static_cast<unsigned int>(18 + (frameNumber * 100 / static_cast<double>(dicomContainer.size())) * 0.6);
         m_progressCallback(progress);
 
@@ -532,7 +522,7 @@ char* Image::readImageBuffer(
 char* Image::correctImageOrientation(
     char* buffer,
     std::vector<unsigned int>& dimensions,
-    unsigned short bitsAllocated
+    std::uint16_t bitsAllocated
 )
 {
     char* result = buffer;
@@ -635,7 +625,7 @@ char* Image::correctImageOrientation(
     matrix(3, 3) = 1;
 
     // Compute inverse matrix in order to rotate the buffer
-    Image::MatrixType inverseMatrix  = this->computeInverseMatrix(matrix);
+    Image::MatrixType inverseMatrix  = sight::io::dicom::reader::ie::Image::computeInverseMatrix(matrix);
     Image::MatrixType identityMatrix = boost::numeric::ublas::identity_matrix<double>(inverseMatrix.size1());
 
     // Check whether the image must be rotated or not
@@ -646,10 +636,10 @@ char* Image::correctImageOrientation(
         sizeVector(0) = dimensions.at(0);
         sizeVector(1) = dimensions.at(1);
         sizeVector(2) = dimensions.at(2);
-        VectorType newSizeVector      = boost::numeric::ublas::prod(sizeVector, inverseMatrix);
-        const unsigned short newSizeX = static_cast<unsigned short>(std::fabs(newSizeVector[0]));
-        const unsigned short newSizeY = static_cast<unsigned short>(std::fabs(newSizeVector[1]));
-        const unsigned short newSizeZ = static_cast<unsigned short>(std::fabs(newSizeVector[2]));
+        VectorType newSizeVector = boost::numeric::ublas::prod(sizeVector, inverseMatrix);
+        const auto newSizeX      = static_cast<std::uint16_t>(std::fabs(newSizeVector[0]));
+        const auto newSizeY      = static_cast<std::uint16_t>(std::fabs(newSizeVector[1]));
+        const auto newSizeZ      = static_cast<std::uint16_t>(std::fabs(newSizeVector[2]));
         newSizeVector(0) = newSizeX;
         newSizeVector(1) = newSizeY;
         newSizeVector(2) = newSizeZ;
@@ -658,11 +648,17 @@ char* Image::correctImageOrientation(
         VectorType oldSizeVector = boost::numeric::ublas::prod(newSizeVector, matrix);
 
         // Create new buffer to store rotated image
-        const unsigned long size = dimensions.at(0) * dimensions.at(1) * dimensions.at(2) * (bitsAllocated / 8);
-        char* newBuffer          = new char [size];
+        const std::uint64_t size = std::uint64_t(dimensions.at(0)) * dimensions.at(1) * dimensions.at(2)
+                                   * (bitsAllocated / 8);
+        char* newBuffer = new char [size];
 
         // Rotate image
-        unsigned short x, y, z, old_x, old_y, old_z;
+        std::uint16_t x     = 0;
+        std::uint16_t y     = 0;
+        std::uint16_t z     = 0;
+        std::uint16_t old_x = 0;
+        std::uint16_t old_y = 0;
+        std::uint16_t old_z = 0;
         for(z = 0 ; z < newSizeZ && !(m_cancelRequestedCallback && m_cancelRequestedCallback()) ; ++z)
         {
             for(y = 0 ; y < newSizeY ; ++y)
@@ -677,15 +673,15 @@ char* Image::correctImageOrientation(
 
                     // Compute old position
                     VectorType oldPosition = boost::numeric::ublas::prod(newPosition, matrix);
-                    old_x = (oldSizeVector[0] > 0) ? static_cast<unsigned short>(oldPosition[0])
-                                                   : static_cast<unsigned short>((dimensions.at(0) - 1)
-                                                                                 + oldPosition[0]);
-                    old_y = (oldSizeVector[1] > 0) ? static_cast<unsigned short>(oldPosition[1])
-                                                   : static_cast<unsigned short>((dimensions.at(1) - 1)
-                                                                                 + oldPosition[1]);
-                    old_z = (oldSizeVector[2] > 0) ? static_cast<unsigned short>(oldPosition[2])
-                                                   : static_cast<unsigned short>((dimensions.at(2) - 1)
-                                                                                 + oldPosition[2]);
+                    old_x = (oldSizeVector[0] > 0) ? static_cast<std::uint16_t>(oldPosition[0])
+                                                   : static_cast<std::uint16_t>((dimensions.at(0) - 1)
+                                                                                + oldPosition[0]);
+                    old_y = (oldSizeVector[1] > 0) ? static_cast<std::uint16_t>(oldPosition[1])
+                                                   : static_cast<std::uint16_t>((dimensions.at(1) - 1)
+                                                                                + oldPosition[1]);
+                    old_z = (oldSizeVector[2] > 0) ? static_cast<std::uint16_t>(oldPosition[2])
+                                                   : static_cast<std::uint16_t>((dimensions.at(2) - 1)
+                                                                                + oldPosition[2]);
 
                     // Compute indices
                     unsigned int positionIndex = (x + (y * newSizeX) + z * (newSizeX * newSizeY))
@@ -699,7 +695,7 @@ char* Image::correctImageOrientation(
                 }
             }
 
-            unsigned int progress = static_cast<unsigned int>(78 + (z * 100. / newSizeZ) * 0.2);
+            auto progress = static_cast<unsigned int>(78 + (z * 100. / newSizeZ) * 0.2);
             m_progressCallback(progress);
         }
 
@@ -772,8 +768,4 @@ Image::MatrixType Image::computeInverseMatrix(MatrixType matrix)
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

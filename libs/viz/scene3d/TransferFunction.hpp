@@ -57,7 +57,7 @@ public:
     /// Bind the texture and the uniforms in a given pass
     template<class GPU_PARAMETERS>
     void bind(
-        const Ogre::Pass* const _ogrePass,
+        const Ogre::Pass* _pass,
         const std::string& _texUnitName,
         Ogre::SharedPtr<GPU_PARAMETERS> _params,
         const std::string& _uniform = "u_f3TFWindow"
@@ -82,7 +82,7 @@ inline void TransferFunction::bind(
     SIGHT_ASSERT("Pass is null", _pass);
     SIGHT_ASSERT("Parameters pointer is null", _params);
 
-    auto texUnitState = _pass->getTextureUnitState(_texUnitName);
+    auto* texUnitState = _pass->getTextureUnitState(_texUnitName);
     SIGHT_ASSERT("'" + _texUnitName + "' texture unit is not found", texUnitState);
 
     if(m_resource && texUnitState->getTextureName() != m_resource->getName())

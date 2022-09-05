@@ -36,9 +36,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::service::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

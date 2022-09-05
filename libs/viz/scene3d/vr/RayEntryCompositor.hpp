@@ -27,10 +27,7 @@
 
 #include <OgreCompositor.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -44,7 +41,7 @@ public:
 
     /// Construstor. Creates the ogre compositor.
     VIZ_SCENE3D_API RayEntryCompositor(
-        const std::string& _compositorName,
+        std::string _compositorName,
         std::uint8_t _rqGroup,
         compositor::Core::StereoModeType _stereoMode,
         bool _enableMixedRendering = false
@@ -54,7 +51,7 @@ public:
     VIZ_SCENE3D_API virtual ~RayEntryCompositor();
 
     /// Returns the created compositor's name.
-    VIZ_SCENE3D_API const std::string& getName() const;
+    [[nodiscard]] VIZ_SCENE3D_API const std::string& getName() const;
 
 private:
 
@@ -65,6 +62,4 @@ private:
     const std::string m_compositorName;
 };
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

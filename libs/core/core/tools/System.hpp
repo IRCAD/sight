@@ -61,7 +61,7 @@ public:
 
         //------------------------------------------------------------------------------
 
-        inline std::filesystem::path getTemporaryFilePath() const
+        [[nodiscard]] inline std::filesystem::path getTemporaryFilePath() const
         {
             return m_filePath;
         }
@@ -82,7 +82,7 @@ public:
      * @brief   Generate a random filename.
      * @param   length: the length of the generated filename.
      */
-    CORE_API static const std::string genTempFileName(std::size_t _length = 64);
+    CORE_API static std::string genTempFileName(std::size_t _length = 64);
 
     /**
      * @brief   Returns a unique per-process temporary folder.
@@ -92,7 +92,7 @@ public:
      * by a dash.
      * @return  created folder
      */
-    CORE_API static const std::filesystem::path getTemporaryFolder(
+    CORE_API static std::filesystem::path getTemporaryFolder(
         const std::string& subFolderPrefix = ""
     ) noexcept;
 

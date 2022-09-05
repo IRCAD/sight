@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-VtpMeshWriter::VtpMeshWriter(io::base::writer::IObjectWriter::Key) :
+VtpMeshWriter::VtpMeshWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
     m_job(core::jobs::Observer::New("VTP Mesh writer"))
 {
 }
@@ -50,14 +50,13 @@ VtpMeshWriter::VtpMeshWriter(io::base::writer::IObjectWriter::Key) :
 //------------------------------------------------------------------------------
 
 VtpMeshWriter::~VtpMeshWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void VtpMeshWriter::write()
 {
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
 
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -78,9 +77,9 @@ void VtpMeshWriter::write()
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, std::uint64_t, void*)
         {
-            const auto filter = static_cast<vtkXMLPolyDataWriter*>(caller);
+            auto* const filter = static_cast<vtkXMLPolyDataWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);

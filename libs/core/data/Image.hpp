@@ -506,10 +506,10 @@ public:
      * @param pixBuf pixel value represented as a void* buffer
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void setPixel(IndexType index, BufferType* pixBuf);
+    DATA_API void setPixel(IndexType index, const BufferType* pixBuf);
 
     /// Return the pixel value in a std::string
-    DATA_API const std::string getPixelAsString(
+    DATA_API std::string getPixelAsString(
         IndexType x,
         IndexType y,
         IndexType z

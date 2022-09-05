@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-using namespace sight;
+namespace service = sight::service;
 
 namespace Tuto04MeshGeneratorCpp
 {
@@ -39,15 +39,13 @@ static const std::string s_FUNCTOR_CONFIG = "functor";
 
 //-----------------------------------------------------------------------------
 
-SMeshModifier::SMeshModifier() noexcept
-{
-}
+SMeshModifier::SMeshModifier() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SMeshModifier::~SMeshModifier() noexcept
-{
-}
+SMeshModifier::~SMeshModifier() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -83,6 +81,10 @@ void SMeshModifier::starting()
 
 void SMeshModifier::updating()
 {
+    namespace data     = sight::data;
+    namespace geometry = sight::geometry;
+    namespace ui       = sight::ui;
+
     const auto mesh = m_mesh.lock();
 
     try
@@ -154,7 +156,7 @@ void SMeshModifier::updating()
             m_animator.computeDeformation(mesh.get_shared(), 100, 50);
             const auto sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sight::core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }

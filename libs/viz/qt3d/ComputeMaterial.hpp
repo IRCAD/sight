@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ class QRenderPass;
 class QShaderProgram;
 class QTechnique;
 
-}
+} // namespace Qt3DRender
 
 namespace sight::viz::qt3d
 {
@@ -46,7 +46,7 @@ namespace core
 
 class FrameGraph;
 
-}
+} // namespace core
 
 /**
  * @brief This class creates a compute shader that changes a quad mesh to a triangle mesh.
@@ -64,7 +64,7 @@ public:
     VIZ_QT3D_API ComputeMaterial(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroy the material.
-    VIZ_QT3D_API virtual ~ComputeMaterial();
+    VIZ_QT3D_API ~ComputeMaterial() override;
 
     /// Sets the index buffer of the mesh.
     VIZ_QT3D_API void setIndexBuffer(Qt3DRender::QBuffer* _buffer);

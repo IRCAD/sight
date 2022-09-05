@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 #include <core/base.hpp>
 #include <core/log/Logger.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -62,7 +59,7 @@ public:
     UI_BASE_API LoggerDialog();
 
     /// Destructor
-    UI_BASE_API virtual ~LoggerDialog();
+    UI_BASE_API ~LoggerDialog() override;
 
     /**
      * Constructor. Create a selector with the specified title, message and logs.
@@ -104,6 +101,4 @@ protected:
     ui::base::dialog::ILoggerDialog::sptr m_implementation;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

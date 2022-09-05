@@ -92,11 +92,11 @@ public:
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
-    IO_SESSION_API void setEncryptionPolicy(const core::crypto::PasswordKeeper::EncryptionPolicy policy);
+    IO_SESSION_API void setEncryptionPolicy(core::crypto::PasswordKeeper::EncryptionPolicy policy);
 
     /// Set archive format
     /// @param archiveFormat how files are stored in the archive: @see sight::io::zip::Archive::ArchiveFormat
-    IO_SESSION_API void setArchiveFormat(const zip::Archive::ArchiveFormat archiveFormat);
+    IO_SESSION_API void setArchiveFormat(zip::Archive::ArchiveFormat archiveFormat);
 
     /// Set a serialization function for an object
     /// @param className the name of the object to serialize

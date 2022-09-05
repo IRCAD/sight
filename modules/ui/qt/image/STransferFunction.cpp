@@ -74,9 +74,8 @@ STransferFunction::STransferFunction()
 
 //------------------------------------------------------------------------------
 
-STransferFunction::~STransferFunction() noexcept
-{
-}
+STransferFunction::~STransferFunction() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -204,7 +203,7 @@ void STransferFunction::starting()
     }
 
     // Layout management
-    QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    auto* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
 
     layout->addWidget(m_presetComboBox);
     layout->addWidget(m_deleteButton);
@@ -292,7 +291,7 @@ void STransferFunction::initializePresets()
             tfReader->setInOut(tf, io::base::service::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
-            for(std::filesystem::path dirPath : m_paths)
+            for(const std::filesystem::path& dirPath : m_paths)
             {
                 SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
                 for(std::filesystem::directory_iterator it(dirPath) ;
@@ -474,7 +473,7 @@ void STransferFunction::createPreset()
         }
 
         // Set the current composite.
-        this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName.c_str())));
+        this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName)));
     }
     else
     {
@@ -521,7 +520,7 @@ void STransferFunction::copyPreset()
             }
 
             // Set the current composite.
-            this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName.c_str())));
+            this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName)));
         }
         else
         {
@@ -603,7 +602,7 @@ void STransferFunction::renamePreset()
         }
 
         // Set the current composite.
-        this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName.c_str())));
+        this->presetChoice(m_presetComboBox->findText(QString::fromStdString(newName)));
     }
 }
 
@@ -676,4 +675,4 @@ void STransferFunction::exportPreset()
 
 //------------------------------------------------------------------------------
 
-} // end namespace
+} // namespace sight::module::ui::qt::image

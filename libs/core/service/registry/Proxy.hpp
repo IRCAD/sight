@@ -32,10 +32,7 @@
 #include <map>
 #include <vector>
 
-namespace sight::service
-{
-
-namespace registry
+namespace sight::service::registry
 {
 
 /**
@@ -72,7 +69,7 @@ public:
     SERVICE_API Proxy();
 
     /// Destructor, does nothing
-    SERVICE_API virtual ~Proxy();
+    SERVICE_API ~Proxy() override;
 
     /// Returns an instance of Proxy.
     SERVICE_API static Proxy::sptr getDefault();
@@ -101,6 +98,4 @@ protected:
     static Proxy::sptr s_currentProxy;
 };
 
-} // namespace registry
-
-} // namespace sight::service
+} // namespace sight::service::registry

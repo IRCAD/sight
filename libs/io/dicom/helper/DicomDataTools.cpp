@@ -30,15 +30,12 @@
 #include <gdcmPhotometricInterpretation.h>
 #include <gdcmPixelFormat.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
 
-typedef std::map<core::Type, gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
+using PixelTypeConversionMapType = std::map<core::Type, gdcm::PixelFormat::ScalarType>;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
     {core::Type::UINT8, gdcm::PixelFormat::UINT8},
@@ -56,7 +53,7 @@ static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
 
 //------------------------------------------------------------------------------
 
-const gdcm::PixelFormat DicomDataTools::getPixelType(const core::Type& type)
+gdcm::PixelFormat DicomDataTools::getPixelType(const core::Type& type)
 {
     auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
@@ -69,7 +66,7 @@ const gdcm::PixelFormat DicomDataTools::getPixelType(const core::Type& type)
 
 //------------------------------------------------------------------------------
 
-const gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
+gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 {
     gdcm::PhotometricInterpretation pi;
     const std::size_t components = image->numComponents();
@@ -158,7 +155,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
     const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
-    const double zCoordinate = static_cast<double>(point->getCoord()[2]);
+    const auto zCoordinate = static_cast<double>(point->getCoord()[2]);
 
     // Compute frame number
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
@@ -196,6 +193,4 @@ double DicomDataTools::convertFrameNumberToZCoordinate(
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

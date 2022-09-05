@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::ut::IActionTest);
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 class TestAction : public ui::base::IAction
@@ -236,6 +233,4 @@ void IActionTest::propertiesTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

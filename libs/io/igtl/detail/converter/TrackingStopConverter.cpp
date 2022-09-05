@@ -29,10 +29,7 @@
 
 #include <igtlTrackingDataMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string TrackingStopConverter::s_IGTL_TYPE          = "STP_TDATA";
@@ -42,21 +39,19 @@ const std::string s_statusKey                                 = "Status";
 converterRegisterMacro(io::igtl::detail::converter::TrackingStopConverter);
 
 TrackingStopConverter::TrackingStopConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 TrackingStopConverter::~TrackingStopConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::Object::csptr /*src*/) const
 {
     ::igtl::StopTrackingDataMessage::Pointer trackingMsg = ::igtl::StopTrackingDataMessage::New();
-    return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
+    return {trackingMsg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -93,6 +88,4 @@ std::string const& TrackingStopConverter::getFwDataObjectType() const
     return TrackingStopConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

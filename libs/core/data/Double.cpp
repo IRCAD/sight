@@ -32,7 +32,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Double::Double(data::Object::Key) noexcept
+Double::Double(data::Object::Key /*unused*/) noexcept
 {
 }
 

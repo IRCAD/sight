@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 #include <core/base.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::activity
-{
-
-namespace builder
+namespace sight::activity::builder
 {
 
 /**
@@ -49,7 +46,7 @@ public:
     ACTIVITY_API ActivitySeries(activity::IBuilder::Key key);
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~ActivitySeries();
+    ACTIVITY_API ~ActivitySeries() override;
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
@@ -59,12 +56,10 @@ public:
      * @param[in] currentSelection a vector which contains current selected data.
      * @return ActivitySeries or null
      */
-    ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
+    ACTIVITY_API data::ActivitySeries::sptr buildData(
         const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection
     ) const override;
 };
 
-} // namespace builder
-
-} // namespace sight::activity
+} // namespace sight::activity::builder

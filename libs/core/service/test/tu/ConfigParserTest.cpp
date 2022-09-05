@@ -51,10 +51,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ConfigParserTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -279,6 +276,4 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

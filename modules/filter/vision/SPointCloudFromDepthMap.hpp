@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 
-#include <glm/mat4x4.hpp>
-
 #include <service/IFilter.hpp>
+
+#include <glm/mat4x4.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -82,7 +82,7 @@ public:
     /**
      * @brief SPointCloudFromDepthMap destructor.
      */
-    MODULE_FILTER_VISION_API virtual ~SPointCloudFromDepthMap() noexcept;
+    MODULE_FILTER_VISION_API ~SPointCloudFromDepthMap() noexcept override;
 
 protected:
 
@@ -124,7 +124,7 @@ private:
     /** @} */
 
     /// SLOT: update the depth range
-    void setDepthRange(int depth, std::string key);
+    void setDepthRange(int _val, std::string key);
 
     /**
      * @brief Computes a point cloud from a depth map.
@@ -133,7 +133,7 @@ private:
         const data::Camera::csptr& depthCamera,
         const data::Image::csptr& depthMap,
         const data::Mesh::sptr& pointCloud
-    );
+    ) const;
 
     /**
      * @brief Computes a point cloud with colors from a depth map and a color
@@ -146,7 +146,7 @@ private:
         const data::Image::csptr& colorMap,
         const data::Matrix4::csptr& extrinsic,
         const data::Mesh::sptr& pointCloud
-    );
+    ) const;
 
     /// Min value of depth used to build pointcloud.
     std::uint16_t m_minDepth = 0;

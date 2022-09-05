@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,18 @@
 
 #include "core/HiResTimer.hpp"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace sight::core
 {
 
 HiResTimer::HiResTimer()
 {
-    m_stopped = true;
     this->reset();
 }
 
 HiResTimer::~HiResTimer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

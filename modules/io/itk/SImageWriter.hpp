@@ -33,7 +33,7 @@ namespace sight::data
 
 class Image;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::itk
 {
@@ -63,7 +63,7 @@ public:
 
     MODULE_IO_ITK_API SImageWriter() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SImageWriter() noexcept;
+    MODULE_IO_ITK_API ~SImageWriter() noexcept override;
 
     MODULE_IO_ITK_API static bool saveImage(const std::filesystem::path& imgFile, const CSPTR(data::Image)& image);
 

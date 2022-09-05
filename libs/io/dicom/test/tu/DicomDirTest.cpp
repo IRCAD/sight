@@ -37,10 +37,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomDirTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -98,6 +95,4 @@ void DicomDirTest::readDicomDir()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

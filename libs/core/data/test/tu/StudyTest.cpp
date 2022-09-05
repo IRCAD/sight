@@ -25,10 +25,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::StudyTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -184,6 +181,4 @@ void StudyTest::equalityTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

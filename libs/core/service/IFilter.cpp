@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,9 +41,8 @@ IFilter::IFilter()
 //-----------------------------------------------------------------------------
 
 IFilter::~IFilter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::service

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,9 +49,8 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_SYNC_API virtual ~SMatrixSynchronizer() noexcept
-    {
-    }
+    MODULE_SYNC_API ~SMatrixSynchronizer() noexcept override =
+        default;
 
     /// Slot definition
     MODULE_SYNC_API static const core::com::Slots::SlotKeyType s_UPDATE_MATRIX_SLOT;
@@ -94,7 +93,7 @@ private:
     /// slot to update the Matrix4 with the timeline buffer
     UpdateMatrixSlotType::sptr m_slotUpdateMatrix;
     /// Last timestamp
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     /// This function fills the Matrix4 with the current buffer content of the MatrixTL
     void updateMatrix(core::HiResClock::HiResClockType timestamp);

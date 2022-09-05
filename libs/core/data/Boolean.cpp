@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,16 +33,15 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Boolean::Boolean(data::Object::Key) noexcept :
+Boolean::Boolean(data::Object::Key /*unused*/) noexcept :
     GenericField<bool>(false)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Boolean::~Boolean() noexcept
-{
-}
+Boolean::~Boolean() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 void Boolean::shallowCopy(const Object::csptr& _source)

@@ -28,10 +28,7 @@
 #include <data/ReconstructionTraits.hpp>
 #include <data/StructureTraits.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ReconstructionTraits
+namespace sight::io::session::detail::ReconstructionTraits
 {
 
 constexpr static auto s_Identifier {"Identifier"};
@@ -42,11 +39,11 @@ constexpr static auto s_StructureTraits {"StructureTraits"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto reconstructionTraits = Helper::safeCast<data::ReconstructionTraits>(object);
@@ -64,11 +61,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::ReconstructionTraits::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -92,6 +89,4 @@ inline static data::ReconstructionTraits::sptr deserialize(
     return reconstructionTraits;
 }
 
-} // namespace detail::ReconstructionTraits
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ReconstructionTraits

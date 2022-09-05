@@ -28,10 +28,7 @@
 #include <filesystem>
 #include <regex>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 class Module;
@@ -52,7 +49,14 @@ struct Native
      *
      * @param[in]   name    libray name
      */
-    Native(const std::string& name) noexcept;
+    Native(std::string name) noexcept;
+
+    /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment is forbidden for this class.
+     */
+    void operator=(const Native&) noexcept = delete;
 
     /**
      * @brief   Destructor : does nothing.
@@ -64,7 +68,7 @@ struct Native
      *
      * @return  true or false
      */
-    virtual bool isLoaded() const noexcept = 0;
+    [[nodiscard]] virtual bool isLoaded() const noexcept = 0;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -73,7 +77,7 @@ struct Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    virtual void* getSymbol(const std::string& name) const = 0;
+    [[nodiscard]] virtual void* getSymbol(const std::string& name) const = 0;
 
     /**
      * @brief   Loads the module.
@@ -94,14 +98,14 @@ struct Native
      *
      * @see         getPath
      */
-    const std::filesystem::path getFullPath() const;
+    [[nodiscard]] std::filesystem::path getFullPath() const;
 
     /**
      * @brief   Retrieves the file name of the native library.
      *
      * @return  a string containing the native module file path
      */
-    const std::string getName() const;
+    [[nodiscard]] std::string getName() const;
 
     /**
      * @brief       Set the initial path from which the library will be loaded.
@@ -121,17 +125,8 @@ struct Native
          * @brief   A pointer to the module the library is attached to.
          */
         std::filesystem::path m_searchPath;
-
-        /**
-         * @brief   Assignment operator.
-         *
-         * @remark  Assignment is forbidden for this class.
-         */
-        void operator=(const Native&) noexcept;
 };
 
 } // namespace dl
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

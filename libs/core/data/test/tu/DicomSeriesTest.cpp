@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::DicomSeriesTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -112,8 +109,8 @@ void DicomSeriesTest::equalityTest()
 
     auto bufferObject = core::memory::BufferObject::New();
     bufferObject->allocate(2);
-    auto lock   = bufferObject->lock();
-    auto buffer = reinterpret_cast<char*>(lock.getBuffer());
+    auto lock    = bufferObject->lock();
+    auto* buffer = reinterpret_cast<char*>(lock.getBuffer());
     buffer[0] = 'a';
     buffer[1] = '\0';
 
@@ -130,6 +127,4 @@ void DicomSeriesTest::equalityTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

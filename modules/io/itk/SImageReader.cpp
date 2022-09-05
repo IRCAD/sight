@@ -48,15 +48,13 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SImageReader::SImageReader() noexcept
-{
-}
+SImageReader::SImageReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SImageReader::~SImageReader() noexcept
-{
-}
+SImageReader::~SImageReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -131,7 +129,7 @@ void SImageReader::updating()
 
         try
         {
-            if(this->loadImage(this->getFile(), image))
+            if(sight::module::io::itk::SImageReader::loadImage(this->getFile(), image))
             {
                 m_readFailed = false;
                 auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);

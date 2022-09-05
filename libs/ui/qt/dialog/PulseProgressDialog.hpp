@@ -35,10 +35,7 @@ QT_BEGIN_NAMESPACE
 class QProgressDialog;
 QT_END_NAMESPACE
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 /**
@@ -56,7 +53,7 @@ public:
 
     UI_QT_API PulseProgressDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~PulseProgressDialog();
+    UI_QT_API ~PulseProgressDialog() override;
 
     /// override
     UI_QT_API void setTitle(const std::string& title) override;
@@ -71,6 +68,4 @@ protected:
     QPointer<QProgressDialog> m_dialog;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

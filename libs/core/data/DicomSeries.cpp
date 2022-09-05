@@ -35,17 +35,14 @@ namespace sight::data
 {
 
 DicomSeries::DicomSeries(data::Object::Key _key) :
-    Series(_key),
-    m_numberOfInstances(0),
-    m_firstInstanceNumber(0)
+    Series(_key)
 {
 }
 
 //------------------------------------------------------------------------------
 
 DicomSeries::~DicomSeries()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

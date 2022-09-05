@@ -80,9 +80,8 @@ SVideo::SVideo() noexcept
 
 //------------------------------------------------------------------------------
 
-SVideo::~SVideo() noexcept
-{
-}
+SVideo::~SVideo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -386,7 +385,7 @@ void SVideo::stopping()
 
 void SVideo::setVisible(bool _visible)
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         m_entity->setVisible(_visible);
 
@@ -421,9 +420,9 @@ void SVideo::updatePL()
     data::PointList::PointListContainer& outPoints = m_pointList->getPoints();
     outPoints.clear();
 
-    for(std::size_t i = 0 ; i < inPoints.size() ; ++i)
+    for(const auto& inPoint : inPoints)
     {
-        const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
+        const data::Point::PointCoordArrayType& point = inPoint->getCoord();
         outPoints.push_back(
             data::Point::New(
                 point[0] - static_cast<double>(image->getSize()[0]) * 0.5,
@@ -444,14 +443,14 @@ void SVideo::updatePL()
 
 void SVideo::clearEntity()
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         m_entity->detachFromParent();
         this->getSceneManager()->destroyEntity(m_entity);
         m_entity = nullptr;
     }
 
-    if(m_sceneNode)
+    if(m_sceneNode != nullptr)
     {
         m_sceneNode->removeAndDestroyAllChildren();
         this->getSceneManager()->destroySceneNode(m_sceneNode);

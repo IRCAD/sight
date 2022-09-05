@@ -30,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vtk::ut::vtkTest);
 
-namespace sight::geometry::vtk
-{
-
-namespace ut
+namespace sight::geometry::vtk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -56,14 +53,14 @@ void vtkTest::computeCenterOfMass()
     const auto dumpLock                      = mesh->dump_lock();
     const std::array<double, 3> centerOfMass = {0.5, 1.5, 2.5};
 
-    mesh->pushPoint(0.f, 0.f, 0.f);
-    mesh->pushPoint(1.f, 0.f, 0.f);
-    mesh->pushPoint(1.f, 3.f, 0.f);
-    mesh->pushPoint(0.f, 3.f, 0.f);
-    mesh->pushPoint(0.f, 0.f, 5.f);
-    mesh->pushPoint(1.f, 0.f, 5.f);
-    mesh->pushPoint(1.f, 3.f, 5.f);
-    mesh->pushPoint(0.f, 3.f, 5.f);
+    mesh->pushPoint(0.F, 0.F, 0.F);
+    mesh->pushPoint(1.F, 0.F, 0.F);
+    mesh->pushPoint(1.F, 3.F, 0.F);
+    mesh->pushPoint(0.F, 3.F, 0.F);
+    mesh->pushPoint(0.F, 0.F, 5.F);
+    mesh->pushPoint(1.F, 0.F, 5.F);
+    mesh->pushPoint(1.F, 3.F, 5.F);
+    mesh->pushPoint(0.F, 3.F, 5.F);
 
     mesh->pushCell(0, 1, 2, 3);
     mesh->pushCell(0, 4, 5, 1);
@@ -80,6 +77,4 @@ void vtkTest::computeCenterOfMass()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::geometry::vtk
+} // namespace sight::geometry::vtk::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,20 +31,19 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-ActionCallback::ActionCallback(ui::base::GuiBaseObject::Key)
+ActionCallback::ActionCallback(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ActionCallback::~ActionCallback()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 // if action is checkable, executeQt is executed after checkQt
-void ActionCallback::executeQt(bool)
+void ActionCallback::executeQt(bool /*unused*/)
 {
     this->execute();
 }

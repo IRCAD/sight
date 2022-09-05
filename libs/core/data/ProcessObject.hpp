@@ -33,7 +33,7 @@ namespace sight::data
 
 class Field;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
@@ -60,7 +60,7 @@ public:
     /**
      * @brief   Destructor
      */
-    DATA_API virtual ~ProcessObject();
+    DATA_API ~ProcessObject() override;
 
     /**
      * @brief Retrieves the input data associated with specified name (null if non exist).
@@ -171,7 +171,7 @@ protected:
     /**
      * @brief Returns vector of parameters names from params map.
      */
-    DATA_API ParamNameVectorType getParamNames(const ProcessObjectMapType& params) const;
+    static DATA_API ParamNameVectorType getParamNames(const ProcessObjectMapType& params);
 
     /**
      * @brief Register value with specified name in params map.
@@ -180,7 +180,7 @@ protected:
      * @param[in] object  Param
      * @param params parameters map to insert object
      */
-    DATA_API void setValue(const ParamNameType& name, Object::sptr object, ProcessObjectMapType& params);
+    static DATA_API void setValue(const ParamNameType& name, Object::sptr object, ProcessObjectMapType& params);
 
     /**
      * @brief Retrieves data associated with specified name in params map (null if non exist).
@@ -188,13 +188,12 @@ protected:
      * @param params parameters map containing the data
      * @return null sptr if param is not found
      */
-    DATA_API Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);
-    DATA_API Object::csptr getValue(const ParamNameType& name, const ProcessObjectMapType& params) const;
+    static DATA_API Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);
 
     /**
      * @brief Unregister all parameters in params map.
      */
-    DATA_API void clearParams(ProcessObjectMapType& params);
+    static DATA_API void clearParams(ProcessObjectMapType& params);
 
     /// Inputs values map
     ProcessObjectMapType m_inputs;

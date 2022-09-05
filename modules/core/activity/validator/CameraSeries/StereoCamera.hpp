@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <activity/IObjectValidator.hpp>
 
-namespace sight::module::activity::validator
-{
-
-namespace CameraSeries
+namespace sight::module::activity::validator::CameraSeries
 {
 
 /**
@@ -50,7 +47,7 @@ public:
     MODULE_ACTIVITY_API StereoCamera(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
-    MODULE_ACTIVITY_API virtual ~StereoCamera();
+    MODULE_ACTIVITY_API ~StereoCamera() override;
 
     /**
      * @brief Checks if the current CameraSeries contains two calibrated Cameras and an extrinsic matrix.
@@ -59,6 +56,4 @@ public:
     MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const override;
 };
 
-} // namespace CameraSeries
-
-} // namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::CameraSeries

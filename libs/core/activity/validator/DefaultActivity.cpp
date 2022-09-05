@@ -28,25 +28,21 @@
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::activity
-{
-
-namespace validator
+namespace sight::activity::validator
 {
 
 fwActivitiesValidatorRegisterMacro(sight::activity::validator::DefaultActivity);
 
 //-----------------------------------------------------------------------------
 
-DefaultActivity::DefaultActivity(activity::IValidator::Key)
+DefaultActivity::DefaultActivity(activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 DefaultActivity::~DefaultActivity()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -57,6 +53,4 @@ IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries:
 
 //-----------------------------------------------------------------------------
 
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

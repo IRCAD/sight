@@ -46,7 +46,7 @@ const core::com::Signals::SignalKeyType Landmarks::s_POINT_DESELECTED_SIG = "poi
 
 //------------------------------------------------------------------------------
 
-Landmarks::Landmarks(data::Object::Key)
+Landmarks::Landmarks(data::Object::Key /*unused*/)
 {
     newSignal<GroupAddedSignalType>(s_GROUP_ADDED_SIG);
     newSignal<GroupRemovedSignalType>(s_GROUP_REMOVED_SIG);
@@ -63,8 +63,7 @@ Landmarks::Landmarks(data::Object::Key)
 //------------------------------------------------------------------------------
 
 Landmarks::~Landmarks()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -118,7 +117,7 @@ void Landmarks::addGroup(
 
 //------------------------------------------------------------------------------
 
-const Landmarks::GroupNameContainer Landmarks::getGroupNames() const
+Landmarks::GroupNameContainer Landmarks::getGroupNames() const
 {
     Landmarks::GroupNameContainer names;
 
@@ -298,16 +297,11 @@ std::size_t Landmarks::numPoints(const std::string& name) const
 
 bool Landmarks::LandmarksGroup::operator==(const LandmarksGroup& other) const noexcept
 {
-    if(!core::tools::is_equal(m_color, other.m_color)
-       || !core::tools::is_equal(m_size, other.m_size)
-       || m_shape != other.m_shape
-       || m_visibility != other.m_visibility
-       || !core::tools::is_equal(m_points, other.m_points))
-    {
-        return false;
-    }
-
-    return true;
+    return !(!core::tools::is_equal(m_color, other.m_color)
+             || !core::tools::is_equal(m_size, other.m_size)
+             || m_shape != other.m_shape
+             || m_visibility != other.m_visibility
+             || !core::tools::is_equal(m_points, other.m_points));
 }
 
 //------------------------------------------------------------------------------

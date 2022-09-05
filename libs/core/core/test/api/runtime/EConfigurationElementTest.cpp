@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::runtime::ut::EConfigurationElementTest);
 
-namespace sight::core::runtime
-{
-
-namespace ut
+namespace sight::core::runtime::ut
 {
 
 //------------------------------------------------------------------------------
@@ -76,9 +73,7 @@ void EConfigurationElementTest::testConfiguration()
     std::shared_ptr<core::runtime::ConfigurationElement> config3 =
         std::dynamic_pointer_cast<core::runtime::ConfigurationElement>(config2);
     CPPUNIT_ASSERT_EQUAL(config3, config1->findConfigurationElement(NAME2));
-    CPPUNIT_ASSERT(config2->findConfigurationElement(NAME3) != NULL);
+    CPPUNIT_ASSERT(config2->findConfigurationElement(NAME3) != nullptr);
 }
 
-} // namespace ut
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::ut

@@ -27,10 +27,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-namespace sight::data
-{
-
-namespace helper
+namespace sight::data::helper
 {
 
 /**
@@ -87,6 +84,4 @@ private:
     data::SeriesDB& m_seriesDB;
 };
 
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper

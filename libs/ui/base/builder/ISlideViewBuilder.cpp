@@ -22,10 +22,7 @@
 
 #include "ui/base/builder/ISlideViewBuilder.hpp"
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 const std::string ISlideViewBuilder::REGISTRY_KEY = "::ui::base::SlideViewBuilder";
@@ -44,14 +41,12 @@ static const std::string s_STYLE_SHEET_CONFIG      = "styleSheet";
 //-----------------------------------------------------------------------------
 
 ISlideViewBuilder::ISlideViewBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ISlideViewBuilder::~ISlideViewBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -76,8 +71,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + hAlign + "' for '" + s_H_ALIGN_CONFIG
-                + "' attribute (require 'left' or 'right')"
+                std::string("Wrong value '").append(hAlign).append("' for '").append(s_H_ALIGN_CONFIG)
+                .append("' attribute (require 'left' or 'right')")
             );
         }
     }
@@ -96,8 +91,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + vAlign + "' for '" + s_V_ALIGN_CONFIG
-                + "' attribute (require 'top' or 'bottom')"
+                std::string("Wrong value '").append(vAlign).append("' for '").append(s_V_ALIGN_CONFIG)
+                .append("' attribute (require 'top' or 'bottom')")
             );
         }
     }
@@ -183,8 +178,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + animatable + "' for '" + s_ANIMATABLE_CONFIG
-                + "' attribute (require 'true' or 'false')"
+                std::string("Wrong value '").append(animatable).append("' for '").append(s_ANIMATABLE_CONFIG)
+                .append("' attribute (require 'true' or 'false')")
             );
         }
     }
@@ -211,8 +206,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
-                + "' attribute (require 'left', 'right', 'top' or 'bottom')"
+                std::string("Wrong value '").append(align).append("' for '").append(s_ANIMATABLE_ALIGN_CONFIG)
+                .append("' attribute (require 'left', 'right', 'top' or 'bottom')")
             );
         }
     }
@@ -233,6 +228,4 @@ ui::base::container::fwContainer::sptr ISlideViewBuilder::getContainer() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder.
-
-} // namespace sight::ui::base.
+} // namespace sight::ui::base::builder

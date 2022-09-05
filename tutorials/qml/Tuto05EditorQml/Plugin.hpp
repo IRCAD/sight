@@ -40,13 +40,13 @@ public:
     TUTO05EDITORQML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO05EDITORQML_API ~Plugin() noexcept;
+    TUTO05EDITORQML_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO05EDITORQML_API void start();
+    TUTO05EDITORQML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO05EDITORQML_API void stop() noexcept;
+    TUTO05EDITORQML_API void stop() noexcept override;
 };
 
 } // namespace Tuto05EditorQml

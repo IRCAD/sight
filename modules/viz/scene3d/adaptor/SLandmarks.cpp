@@ -89,9 +89,8 @@ SLandmarks::SLandmarks() noexcept
 
 //-----------------------------------------------------------------------------
 
-SLandmarks::~SLandmarks() noexcept
-{
-}
+SLandmarks::~SLandmarks() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -137,8 +136,9 @@ void SLandmarks::configuring()
     if(!hexaMask.empty())
     {
         SIGHT_ASSERT(
-            "Hexadecimal values (" + s_QUERY_MASK_CONFIG + ") should start with '0x'"
-                                                           "Given value : " + hexaMask,
+            std::string("Hexadecimal values (").append(s_QUERY_MASK_CONFIG).append(
+                ") should start with '0x'Given value : "
+            ).append(hexaMask),
             hexaMask.length() > 2
             && hexaMask.substr(0, 2) == "0x"
         );
@@ -149,8 +149,9 @@ void SLandmarks::configuring()
     if(!hexaMask.empty())
     {
         SIGHT_ASSERT(
-            "Hexadecimal values (" + s_LANDMARKS_FLAGS_CONFIG + ") should start with '0x'"
-                                                                "Given value : " + hexaMask,
+            std::string("Hexadecimal values (").append(s_LANDMARKS_FLAGS_CONFIG).append(
+                ") should start with '0x'Given value : "
+            ).append(hexaMask),
             hexaMask.length() > 2
             && hexaMask.substr(0, 2) == "0x"
         );
@@ -255,9 +256,9 @@ void SLandmarks::stopping()
     }
 
     // Stop all threads.
-    for(auto landmarkIt = m_selectedLandmarks.begin() ; landmarkIt != m_selectedLandmarks.end() ; ++landmarkIt)
+    for(auto& m_selectedLandmark : m_selectedLandmarks)
     {
-        (*landmarkIt)->m_timer->stop();
+        m_selectedLandmark->m_timer->stop();
     }
 
     data::Landmarks::GroupNameContainer groupNames;
@@ -362,15 +363,15 @@ void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
     const auto landmarks                    = m_landmarks.lock();
     const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
 
-    for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; ++objectIt)
+    for(auto& m_manualObject : m_manualObjects)
     {
-        const std::string& name = (*objectIt)->m_groupName;
-        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index == _index)
+        const std::string& name = m_manualObject->m_groupName;
+        if(name.find(_groupName) != std::string::npos && m_manualObject->m_index == _index)
         {
             const Ogre::Vector3 position(static_cast<float>(point[0]),
                                          static_cast<float>(point[1]),
                                          static_cast<float>(point[2]));
-            (*objectIt)->m_node->setPosition(position);
+            m_manualObject->m_node->setPosition(position);
             break;
         }
     }
@@ -390,7 +391,7 @@ void SLandmarks::addPoint(std::string _groupName)
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
     SIGHT_ASSERT(
         "They must have at least one point in the group `" << _groupName << "`",
-        group.m_points.size() > 0
+        !group.m_points.empty()
     );
 
     // Get the last index.
@@ -431,15 +432,15 @@ void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
     }
 
     // Re-compute index of landmarks in the same group.
-    for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; ++objectIt)
+    for(auto& m_manualObject : m_manualObjects)
     {
-        const std::string& name = (*objectIt)->m_groupName;
-        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index > _index)
+        const std::string& name = m_manualObject->m_groupName;
+        if(name.find(_groupName) != std::string::npos && m_manualObject->m_index > _index)
         {
-            (*objectIt)->m_index -= 1;
+            m_manualObject->m_index -= 1;
             if(m_enableLabels)
             {
-                (*objectIt)->m_label->setText(_groupName + "_" + std::to_string((*objectIt)->m_index));
+                m_manualObject->m_label->setText(_groupName + "_" + std::to_string(m_manualObject->m_index));
             }
         }
     }
@@ -482,7 +483,7 @@ void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const
                 object,
                 m_materialAdaptor->getMaterialName(),
                 color,
-                group.m_size * 0.5f
+                group.m_size * 0.5F
             );
             break;
 
@@ -545,10 +546,10 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; ++objectIt)
+    for(auto& m_manualObject : m_manualObjects)
     {
-        const std::string& name = (*objectIt)->m_groupName;
-        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index == _index)
+        const std::string& name = m_manualObject->m_groupName;
+        if(name.find(_groupName) != std::string::npos && m_manualObject->m_index == _index)
         {
             const auto it = std::find_if(
                 m_selectedLandmarks.begin(),
@@ -565,12 +566,16 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
                 // Create thread data.
                 std::shared_ptr<SelectedLandmark> selectedLandmark =
-                    std::make_shared<SelectedLandmark>(m_associatedWorker->createTimer(), *objectIt);
+                    std::make_shared<SelectedLandmark>(m_associatedWorker->createTimer(), m_manualObject);
                 m_selectedLandmarks.push_back(selectedLandmark);
 
                 // Run a thread that change the selected point.
                 core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
-                selectedLandmark->m_timer->setFunction(std::bind(&SLandmarks::hightlight, this, selectedLandmark));
+                selectedLandmark->m_timer->setFunction(
+                    [this, selectedLandmark](auto&& ...)
+                    {
+                        hightlight(selectedLandmark);
+                    });
                 selectedLandmark->m_timer->setDuration(duration);
                 selectedLandmark->m_timer->start();
             }
@@ -713,7 +718,7 @@ void SLandmarks::hideLandmarks()
     // Hide landmarks only if there is an image.
     if(imageLock)
     {
-        for(std::shared_ptr<Landmark> landmark : m_manualObjects)
+        for(const std::shared_ptr<Landmark>& landmark : m_manualObjects)
         {
             this->hideLandmark(landmark);
         }
@@ -782,7 +787,7 @@ void SLandmarks::hideMyLandmark(
 void SLandmarks::setVisible(bool _visible)
 {
     const auto landmarks = m_landmarks.lock();
-    for(std::shared_ptr<Landmark> landmark : m_manualObjects)
+    for(const std::shared_ptr<Landmark>& landmark : m_manualObjects)
     {
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(landmark->m_groupName);
         landmark->m_object->setVisible(_visible && group.m_visibility);
@@ -804,7 +809,7 @@ std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y
     picker.setSceneManager(sm);
     picker.executeRaySceneQuery(_x, _y, m_queryMask);
 
-    if(picker.getSelectedObject())
+    if(picker.getSelectedObject() != nullptr)
     {
         const auto* const camera = sm->getCamera(sight::viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
@@ -818,7 +823,7 @@ std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y
         Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
 
-        return picker.getIntersectionInWorldSpace() + normal * 0.01f;
+        return picker.getIntersectionInWorldSpace() + normal * 0.01F;
     }
 
     return std::nullopt;
@@ -826,7 +831,7 @@ std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
+void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     if(_button == LEFT)
     {
@@ -845,9 +850,9 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
         bool found                               = false;
         Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
         raySceneQuery->setSortByDistance(false);
-        if(raySceneQuery->execute().size() != 0)
+        if(!raySceneQuery->execute().empty())
         {
-            const Ogre::Real scale = 1.15f;
+            const Ogre::Real scale = 1.15F;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
             for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
@@ -875,7 +880,7 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
+void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
 {
     if(m_pickedData != nullptr)
     {
@@ -948,11 +953,11 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::buttonReleaseEvent(MouseButton, Modifier, int, int)
+void SLandmarks::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_pickedData != nullptr)
     {
-        const Ogre::Real scale = 1.f;
+        const Ogre::Real scale = 1.F;
         m_pickedData->m_node->setScale(scale, scale, scale);
         m_pickedData = nullptr;
 
@@ -962,7 +967,7 @@ void SLandmarks::buttonReleaseEvent(MouseButton, Modifier, int, int)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::buttonDoublePressEvent(MouseButton, Modifier, int _x, int _y)
+void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mods*/, int _x, int _y)
 {
     const auto layer = this->getLayer();
 
@@ -979,9 +984,9 @@ void SLandmarks::buttonDoublePressEvent(MouseButton, Modifier, int _x, int _y)
     bool found                               = false;
     Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
     raySceneQuery->setSortByDistance(false);
-    if(raySceneQuery->execute().size() != 0)
+    if(!raySceneQuery->execute().empty())
     {
-        const Ogre::Real scale = 1.15f;
+        const Ogre::Real scale = 1.15F;
 
         const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
         for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 /**
@@ -67,7 +64,7 @@ public:
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_BASE_API virtual ~SSignal() noexcept;
+    MODULE_UI_BASE_API ~SSignal() noexcept override;
 
 protected:
 
@@ -92,6 +89,4 @@ protected:
     SPTR(TriggeredSignalType) m_sigCancelled;
 };
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

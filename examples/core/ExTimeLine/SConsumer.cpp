@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,17 +38,15 @@ const sight::core::com::Slots::SlotKeyType SConsumer::s_CONSUME_SLOT = "consume"
 
 //------------------------------------------------------------------------------
 
-SConsumer::SConsumer() noexcept :
-    m_period(0)
+SConsumer::SConsumer() noexcept
 {
     newSlot(s_CONSUME_SLOT, &SConsumer::consume, this);
 }
 
 //------------------------------------------------------------------------------
 
-SConsumer::~SConsumer() noexcept
-{
-}
+SConsumer::~SConsumer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -64,10 +62,10 @@ void SConsumer::configuring()
 
 void SConsumer::starting()
 {
-    if(m_period)
+    if(m_period != 0U)
     {
         m_timer = m_associatedWorker->createTimer();
-        m_timer->setFunction(std::bind(&SConsumer::updating, this));
+        m_timer->setFunction([this](auto&& ...){updating();});
         m_timer->setDuration(std::chrono::milliseconds(m_period));
         m_timer->start();
     }
@@ -94,7 +92,7 @@ void SConsumer::updating()
         const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender
-        << " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+        << " MESSAGE: \"" << element.szMsg.data() << "\"" << std::endl;
     }
 }
 
@@ -111,7 +109,7 @@ void SConsumer::consume(sight::core::HiResClock::HiResClockType timestamp)
         const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender
-        << " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+        << " MESSAGE: \"" << element.szMsg.data() << "\"" << std::endl;
     }
 }
 

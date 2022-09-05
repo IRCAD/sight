@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "filter/image/PowellOptimizer.hpp"
 
 #include <core/spyLog.hpp>
@@ -27,25 +29,26 @@
 namespace sight::filter::image
 {
 
+// NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): used via pointers
 class PowellMetric : public PowellOptimizer::PowellOptimizerType::MetricType
 {
 public:
 
-    typedef PowellMetric Self;
-    typedef PowellOptimizer::PowellOptimizerType::MetricType Superclass;
-    typedef itk::SmartPointer<Self> Pointer;
-    typedef itk::SmartPointer<const Self> ConstPointer;
+    using Self         = PowellMetric;
+    using Superclass   = PowellOptimizer::PowellOptimizerType::MetricType;
+    using Pointer      = itk::SmartPointer<Self>;
+    using ConstPointer = itk::SmartPointer<const Self>;
     itkNewMacro(Self);
 
     //-----------------------------------------------------------------------------
 
-    void Initialize(void) override
+    void Initialize() override
     {
     }
 
     //-----------------------------------------------------------------------------
 
-    void SetFunction(PowellOptimizer::OptimizedFunctionType _f)
+    void setFunction(PowellOptimizer::OptimizedFunctionType _f)
     {
         m_function = _f;
     }
@@ -74,14 +77,14 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    void GetDerivative(DerivativeType&) const override
+    void GetDerivative(DerivativeType& /*unused*/) const override
     {
         // Unused in Powell's method.
     }
 
     //-----------------------------------------------------------------------------
 
-    void GetValueAndDerivative(MeasureType&, DerivativeType&) const override
+    void GetValueAndDerivative(MeasureType& /*value*/, DerivativeType& /*derivative*/) const override
     {
     }
 
@@ -108,7 +111,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    void UpdateTransformParameters(const DerivativeType&, ParametersValueType) override
+    void UpdateTransformParameters(const DerivativeType& /*derivative*/, ParametersValueType /*factor*/) override
     {
     }
 
@@ -117,12 +120,10 @@ public:
 private:
 
     PowellMetric()
-    {
-    }
+    = default;
 
-    virtual ~PowellMetric()
-    {
-    }
+    ~PowellMetric() override
+    = default;
 
     ParametersType m_parameters;
 
@@ -154,7 +155,7 @@ PowellOptimizer::FunctionParametersType PowellOptimizer::optimize(
 )
 {
     PowellMetric::Pointer metric = PowellMetric::New();
-    metric->SetFunction(m_function);
+    metric->setFunction(m_function);
     FunctionParametersType initParams(_initParameters);
     metric->SetParameters(initParams);
 

@@ -76,7 +76,7 @@ public:
     MODULE_DATA_API SGetMesh() = default;
 
     /// Destructor
-    MODULE_DATA_API ~SGetMesh() = default;
+    MODULE_DATA_API ~SGetMesh() override = default;
 
 protected:
 

@@ -31,10 +31,7 @@
 #include <array>
 #include <string>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -166,6 +163,4 @@ protected:
     std::function<void()> m_closedCallBack;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

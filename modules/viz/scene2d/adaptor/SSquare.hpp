@@ -30,10 +30,7 @@
 
 #include <QGraphicsItem>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -68,7 +65,7 @@ public:
     SIGHT_DECLARE_SERVICE(SSquare, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SSquare() noexcept;
-    MODULE_VIZ_SCENE2D_API virtual ~SSquare() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SSquare() noexcept override;
 
 protected:
 
@@ -88,20 +85,18 @@ protected:
 
 private:
 
-    sight::viz::scene2d::vec2d_t m_coord;
+    sight::viz::scene2d::vec2d_t m_coord {};
     std::uint32_t m_size {0};
     QColor m_color;
     QGraphicsItemGroup* m_layer {nullptr};
     QGraphicsRectItem* m_rec {nullptr};
-    sight::viz::scene2d::vec2d_t m_oldCoord;
+    sight::viz::scene2d::vec2d_t m_oldCoord {};
 
     bool m_pointIsCaptured {false};
     bool m_autoRefresh {true};
     bool m_interaction {true};
     static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    void setDoubleParameter(const double val, std::string key);
+    void setDoubleParameter(double val, std::string key);
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

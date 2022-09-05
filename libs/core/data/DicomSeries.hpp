@@ -199,7 +199,7 @@ public:
 protected:
 
     /// Defines the number of instances in the series.
-    std::size_t m_numberOfInstances;
+    std::size_t m_numberOfInstances {0};
 
     /// Stores DICOM.
     DicomContainerType m_dicomContainer;
@@ -211,7 +211,7 @@ protected:
     ComputedTagValueContainerType m_computedTagValues;
 
     /// Defines the first instance number (0 or 1) - Used for PACS preview.
-    std::size_t m_firstInstanceNumber;
+    std::size_t m_firstInstanceNumber {0};
 };
 
 } // Namespace sight::data

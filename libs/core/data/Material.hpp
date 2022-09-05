@@ -47,7 +47,7 @@ public:
     DATA_API Material(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Material();
+    DATA_API ~Material() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -207,13 +207,13 @@ protected:
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Shading mode (flat, Phong)
-    ShadingType m_shadingMode;
+    ShadingType m_shadingMode {PHONG};
 
     /// Fill mode (flat, wireframe, point)
-    RepresentationType m_representationMode;
+    RepresentationType m_representationMode {SURFACE};
 
     /// Options mode (display normals or not)
-    OptionsType m_optionsMode;
+    OptionsType m_optionsMode {STANDARD};
 
     /// Ambient color
     Color::sptr m_ambient;
@@ -225,10 +225,10 @@ protected:
     Image::sptr m_diffuseTexture;
 
     /// Filtering for diffuse texture
-    FilteringType m_diffuseTextureFiltering;
+    FilteringType m_diffuseTextureFiltering {NEAREST};
 
     /// Wrapping for diffuse texture
-    WrappingType m_diffuseTextureWrapping;
+    WrappingType m_diffuseTextureWrapping {REPEAT};
 };
 
 //-----------------------------------------------------------------------------

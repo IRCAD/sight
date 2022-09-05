@@ -33,7 +33,7 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
@@ -41,12 +41,9 @@ namespace sight::data
 class ImageSeries;
 class ModelSeries;
 
-}
+} // namespace sight::data
 
-namespace sight::io::http
-{
-
-namespace helper
+namespace sight::io::http::helper
 {
 
 /**
@@ -73,6 +70,4 @@ public:
     IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);
 };
 
-} //helper
-
-} //fwNetworkIO
+} // namespace sight::io::http::helper

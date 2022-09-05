@@ -60,9 +60,7 @@ const core::com::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "
 
 //------------------------------------------------------------------------------
 
-IParameter::IParameter() noexcept :
-    m_shaderType(Ogre::GPT_FRAGMENT_PROGRAM),
-    m_dirty(true)
+IParameter::IParameter() noexcept
 {
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &IParameter::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &IParameter::setColorParameter, this);
@@ -76,9 +74,8 @@ IParameter::IParameter() noexcept :
 
 //------------------------------------------------------------------------------
 
-IParameter::~IParameter() noexcept
-{
-}
+IParameter::~IParameter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -121,9 +118,9 @@ void IParameter::configuring()
 
     m_techniqueName = config.get<std::string>("technique", "");
 
-    if(config.count("shaderType"))
+    if(config.count("shaderType") != 0U)
     {
-        const std::string shaderType = config.get<std::string>("shaderType");
+        const auto shaderType = config.get<std::string>("shaderType");
         if(shaderType == "vertex")
         {
             m_shaderType = Ogre::GPT_VERTEX_PROGRAM;
@@ -158,7 +155,7 @@ void IParameter::updating()
         bool bSet                                    = false;
         const Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-        for(const auto tech : techniques)
+        for(auto* const tech : techniques)
         {
             SIGHT_ASSERT("Technique is not set", tech);
 
@@ -220,7 +217,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
     Ogre::GpuProgramParametersSharedPtr params;
 
     // Get the parameters
-    auto pass = technique.getPass(0);
+    auto* pass = technique.getPass(0);
     if(m_shaderType == Ogre::GPT_VERTEX_PROGRAM)
     {
         params = pass->getVertexProgramParameters();
@@ -238,7 +235,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         return false;
     }
 
-    if(!params->_findNamedConstantDefinition(m_paramName))
+    if(params->_findNamedConstantDefinition(m_paramName) == nullptr)
     {
         return false;
     }
@@ -273,7 +270,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         data::Color::sptr colorValue = data::Color::dynamicCast(obj.get_shared());
         SIGHT_ASSERT("The given color object is null", colorValue);
 
-        float paramValues[4];
+        std::array<float, 4> paramValues {};
 
         paramValues[0] = colorValue->red();
         paramValues[1] = colorValue->green();
@@ -292,7 +289,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         std::vector<data::Point::sptr> points = pointListValue->getPoints();
         int nbPoints                          = static_cast<int>(points.size());
 
-        float* paramValues = new float [static_cast<unsigned long long>(nbPoints * 3)];
+        auto* paramValues = new float [static_cast<std::uint64_t>(nbPoints * 3)];
 
         for(int i = 0 ; i < nbPoints * 3 ; )
         {
@@ -315,14 +312,19 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj.get_shared());
         SIGHT_ASSERT("The given Matrix4 object is null", transValue);
 
-        float paramValues[16];
+        std::array<float, 16> paramValues {};
 
-        for(int i = 0 ; i < 16 ; i++)
+        for(std::size_t i = 0 ; i < 16 ; i++)
         {
-            paramValues[i] = static_cast<float>(transValue->getCoefficients()[static_cast<std::size_t>(i)]);
+            paramValues[i] = static_cast<float>(transValue->getCoefficients()[i]);
         }
 
-        params->setNamedConstant(m_paramName, paramValues, static_cast<std::size_t>(16), static_cast<std::size_t>(1));
+        params->setNamedConstant(
+            m_paramName,
+            paramValues.data(),
+            static_cast<std::size_t>(16),
+            static_cast<std::size_t>(1)
+        );
     }
     else if(objClass == "sight::data::Array")
     {
@@ -336,12 +338,12 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
             if(arrayObject->getType() == core::Type::FLOAT)
             {
-                const float* floatValue = static_cast<const float*>(arrayObject->getBuffer());
+                const auto* floatValue = static_cast<const float*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
             }
             else if(arrayObject->getType() == core::Type::DOUBLE)
             {
-                const double* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
+                const auto* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
             }
             else if(arrayObject->getType() == core::Type::INT32)
@@ -375,7 +377,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
         // We can reach this code for an another reason than an image modification, for instance when the compositor
         // is resized. However I don't know how to discriminate the two cases so for now we always copy the image. :/
-        if(image->getSizeInBytes())
+        if(image->getSizeInBytes() != 0U)
         {
             viz::scene3d::Utils::loadOgreTexture(image, m_texture, Ogre::TEX_TYPE_2D, true);
 
@@ -431,7 +433,12 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
             auto paramObject = m_parameter.lock();
             auto colorObject = std::dynamic_pointer_cast<data::Color>(paramObject.get_shared());
             SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Color", colorObject);
-            colorObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
+            colorObject->setRGBA(
+                float(color[0]) / 255.F,
+                float(color[1]) / 255.F,
+                float(color[2]) / 255.F,
+                float(color[3]) / 255.F
+            );
         }
         this->updating();
     }

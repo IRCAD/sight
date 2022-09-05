@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::MonoCameraTest);
 
-namespace sight::module::activity::validator
-{
-
-namespace ut
+namespace sight::module::activity::validator::ut
 {
 
 namespace factory = sight::activity::validator::factory;
@@ -115,6 +112,4 @@ void MonoCameraTest::testValidator()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ut

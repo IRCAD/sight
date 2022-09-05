@@ -42,9 +42,8 @@ MeshPickerInteractor::MeshPickerInteractor(Layer::sptr _layer, bool _layerOrderD
 
 //------------------------------------------------------------------------------
 
-MeshPickerInteractor::~MeshPickerInteractor() noexcept
-{
-}
+MeshPickerInteractor::~MeshPickerInteractor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

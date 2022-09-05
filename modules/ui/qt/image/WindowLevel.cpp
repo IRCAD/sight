@@ -47,6 +47,7 @@
 #include <QToolButton>
 #include <QWidget>
 
+#include <cmath>
 #include <functional>
 
 namespace sight::module::ui::qt::image
@@ -59,20 +60,15 @@ static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
 
 //------------------------------------------------------------------------------
 
-WindowLevel::WindowLevel() noexcept :
-    m_widgetDynamicRangeMin(-1024),
-    m_widgetDynamicRangeWidth(4000),
-    m_autoWindowing(false),
-    m_enableSquareTF(true)
+WindowLevel::WindowLevel() noexcept
 {
     newSlot(s_UPDATE_TF_SLOT, &WindowLevel::updateTF, this);
 }
 
 //------------------------------------------------------------------------------
 
-WindowLevel::~WindowLevel() noexcept
-{
-}
+WindowLevel::~WindowLevel() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +78,7 @@ void WindowLevel::configuring()
 
     const ConfigType srvConfig = this->getConfigTree();
 
-    if(srvConfig.count("config.<xmlattr>"))
+    if(srvConfig.count("config.<xmlattr>") != 0U)
     {
         const ConfigType config = srvConfig.get_child("config.<xmlattr>");
 
@@ -115,14 +111,14 @@ void WindowLevel::starting()
             this->getContainer()
         );
 
-        QGridLayout* const layout = new QGridLayout();
+        auto* const layout = new QGridLayout();
 
         m_valueTextMin = new QLineEdit();
-        QDoubleValidator* const minValidator = new QDoubleValidator(m_valueTextMin);
+        auto* const minValidator = new QDoubleValidator(m_valueTextMin);
         m_valueTextMin->setValidator(minValidator);
 
         m_valueTextMax = new QLineEdit();
-        QDoubleValidator* const maxValidator = new QDoubleValidator(m_valueTextMax);
+        auto* const maxValidator = new QDoubleValidator(m_valueTextMax);
         m_valueTextMax->setValidator(maxValidator);
 
         m_rangeSlider = new sight::ui::qt::widget::QRangeSlider();
@@ -217,7 +213,8 @@ void WindowLevel::updating()
     {
         if(m_autoWindowing)
         {
-            double min, max;
+            double min = NAN;
+            double max = NAN;
             data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
             this->updateImageWindowLevel(min, max);
         }
@@ -302,7 +299,7 @@ double WindowLevel::fromWindowLevel(double val)
 
 //------------------------------------------------------------------------------
 
-double WindowLevel::toWindowLevel(double _val)
+double WindowLevel::toWindowLevel(double _val) const
 {
     return m_widgetDynamicRangeMin + m_widgetDynamicRangeWidth * _val;
 }
@@ -458,7 +455,8 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
     {
         const auto image = m_image.lock();
         SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
-        double min, max;
+        double min = NAN;
+        double max = NAN;
         data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
         this->updateImageWindowLevel(min, max);
         this->onImageWindowLevelChanged(min, max);
@@ -469,8 +467,12 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
 
 void WindowLevel::onTextEditingFinished()
 {
-    double min, max;
-    if(this->getWidgetDoubleValue(m_valueTextMin, min) && this->getWidgetDoubleValue(m_valueTextMax, max))
+    double min = NAN;
+    double max = NAN;
+    if(sight::module::ui::qt::image::WindowLevel::getWidgetDoubleValue(
+           m_valueTextMin,
+           min
+       ) && sight::module::ui::qt::image::WindowLevel::getWidgetDoubleValue(m_valueTextMax, max))
     {
         this->updateWidgetMinMax(min, max);
         this->updateImageWindowLevel(min, max);
@@ -528,4 +530,4 @@ service::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt::image

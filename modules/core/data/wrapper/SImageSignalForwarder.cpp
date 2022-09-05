@@ -37,10 +37,7 @@
 
 #include <regex>
 
-namespace sight::module::data
-{
-
-namespace wrapper
+namespace sight::module::data::wrapper
 {
 
 static const core::com::Slots::SlotKeyType s_FORWARD_MODIFIED_SLOT              = "forwardModified";
@@ -102,9 +99,8 @@ SImageSignalForwarder::SImageSignalForwarder() noexcept
 
 //-----------------------------------------------------------------------------
 
-SImageSignalForwarder::~SImageSignalForwarder() noexcept
-{
-}
+SImageSignalForwarder::~SImageSignalForwarder() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -112,7 +108,7 @@ void SImageSignalForwarder::configuring()
 {
     std::vector<core::runtime::ConfigurationElement::sptr> configs = m_configuration->find("forward");
 
-    for(auto cfg : configs)
+    for(const auto& cfg : configs)
     {
         std::string signal = cfg->getValue();
         SIGHT_ASSERT(
@@ -129,7 +125,7 @@ void SImageSignalForwarder::starting()
 {
     const auto src = m_source.lock();
 
-    for(auto signalKey : m_managedSignals)
+    for(const auto& signalKey : m_managedSignals)
     {
         m_connections.connect(src.get_shared(), signalKey, this->getSptr(), m_availableConnection[signalKey]);
     }
@@ -150,7 +146,7 @@ void SImageSignalForwarder::updating()
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::info(std::ostream&)
+void SImageSignalForwarder::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -319,6 +315,4 @@ void SImageSignalForwarder::forwardRemovedFields(sight::data::Object::FieldsCont
 
 //-----------------------------------------------------------------------------
 
-} // wrapper
-
-} // sight::module::data
+} // namespace sight::module::data::wrapper

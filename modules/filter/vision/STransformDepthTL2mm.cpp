@@ -34,8 +34,7 @@ static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
 
 //------------------------------------------------------------------------------
 
-STransformDepthTL2mm::STransformDepthTL2mm() :
-    m_lastTimestamp(0)
+STransformDepthTL2mm::STransformDepthTL2mm()
 {
     newSlot(s_COMPUTE_SLOT, &STransformDepthTL2mm::compute, this);
 }
@@ -43,8 +42,7 @@ STransformDepthTL2mm::STransformDepthTL2mm() :
 //------------------------------------------------------------------------------
 
 STransformDepthTL2mm::~STransformDepthTL2mm()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -99,11 +97,11 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
                 );
             }
 
-            const std::uint16_t* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
+            const auto* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
 
             SPTR(data::FrameTL::BufferType) depthBufferOutObj = scaledFrameTL->createBuffer(timestamp);
 
-            std::uint16_t* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
+            auto* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
 
             for(std::size_t i = 0 ; i < size ; ++i)
             {

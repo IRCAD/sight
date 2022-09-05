@@ -48,18 +48,14 @@ namespace po = boost::program_options;
 
 using sight::core::crypto::PasswordKeeper;
 using sight::core::crypto::secure_string;
-namespace std
-{
 
 //------------------------------------------------------------------------------
 
 template<class A1, class A2>
-inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
+inline std::ostream& operator<<(std::ostream& s, std::vector<A1, A2> const& vec)
 {
-    copy(vec.begin(), vec.end(), ostream_iterator<A1>(s, " "));
+    copy(vec.begin(), vec.end(), std::ostream_iterator<A1>(s, " "));
     return s;
-}
-
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +72,7 @@ std::filesystem::path absolute(const std::filesystem::path& path)
 volatile sig_atomic_t gSignalStatus = 0;
 //------------------------------------------------------------------------------
 
-void signal_handler(int signal)
+void signalHandler(int signal)
 {
     gSignalStatus = signal;
 
@@ -135,7 +131,7 @@ int main(int argc, char* argv[])
 
     std::string log_file;
 
-    typedef sight::core::log::SpyLogger SpyLogger;
+    using SpyLogger = sight::core::log::SpyLogger;
     int log_level = SpyLogger::SL_WARN;
 
     po::options_description logOptions("Log options");
@@ -251,7 +247,7 @@ int main(int argc, char* argv[])
     }
 
     // If help
-    if(vm.count("help"))
+    if(vm.count("help") != 0U)
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
         std::cout << "  use '--' to stop processing args for sightrun" << std::endl << std::endl;
@@ -277,7 +273,7 @@ int main(int argc, char* argv[])
 
     if(console_log)
     {
-        logger.add_console_log(std::clog, static_cast<SpyLogger::LevelType>(log_level));
+        SpyLogger::add_console_log(std::clog, static_cast<SpyLogger::LevelType>(log_level));
     }
 
     if(file_log)
@@ -374,12 +370,26 @@ int main(int argc, char* argv[])
             profile = sight::core::runtime::io::ProfileReader::createProfile(profileFile);
 
             // Install a signal handler
-            std::signal(SIGINT, signal_handler);
-            std::signal(SIGTERM, signal_handler);
+            if(std::signal(SIGINT, signalHandler) == SIG_ERR)
+            {
+                perror("std::signal(SIGINT)");
+            }
+
+            if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
+            {
+                perror("std::signal(SIGTERM)");
+            }
 
 #ifndef WIN32
-            std::signal(SIGHUP, signal_handler);
-            std::signal(SIGQUIT, signal_handler);
+            if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
+            {
+                perror("std::signal(SIGHUP)");
+            }
+
+            if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
+            {
+                perror("std::signal(SIGQUIT)");
+            }
 #endif
             profile->setParams(profileArgs);
 

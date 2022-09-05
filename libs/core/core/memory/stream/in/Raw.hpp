@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,17 +25,13 @@
 #include "core/config.hpp"
 #include "core/memory/FileHolder.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
+
 #include <core/macros.hpp>
 
 #include <filesystem>
+#include <utility>
 
-namespace sight::core::memory
-{
-
-namespace stream
-{
-
-namespace in
+namespace sight::core::memory::stream::in
 {
 
 class CORE_CLASS_API Raw : public IFactory
@@ -47,20 +43,16 @@ public:
     {
     }
 
-    Raw(const core::memory::FileHolder& path) :
-        m_path(path)
+    Raw(core::memory::FileHolder path) :
+        m_path(std::move(path))
     {
     }
 
 protected:
 
-    CORE_API SPTR(std::istream) get();
+    CORE_API SPTR(std::istream) get() override;
 
     core::memory::FileHolder m_path;
 };
 
-} // namespace in
-
-} // namespace stream
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::stream::in

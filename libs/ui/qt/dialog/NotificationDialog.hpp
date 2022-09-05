@@ -59,15 +59,14 @@ public:
     }
 
     /// Destroys the Container.
-    virtual ~Container()
-    {
-    }
+    ~Container() override
+    = default;
 
     //------------------------------------------------------------------------------
 
     void setPosition(std::function<QPoint(QWidget*)> /*_position*/, QWidget* /*_parent*/)
     {
-        QPropertyAnimation* a = new QPropertyAnimation(this, "pos");
+        auto* a = new QPropertyAnimation(this, "pos");
         a->setDuration(500);
         a->setEndValue(m_position(this->parentWidget()));
         a->setEasingCurve(QEasingCurve::OutBack);
@@ -110,18 +109,17 @@ public:
     }
 
     /// Destroys the clickable QLabel.
-    virtual ~ClickableQLabel()
-    {
-    }
+    ~ClickableQLabel() override
+    = default;
 
 public Q_SLOTS:
 
     /// Creates a fade out effect then closes the parent widget (Must be the Container).
     void fadeout()
     {
-        QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
+        auto* const effect = new QGraphicsOpacityEffect();
         this->setGraphicsEffect(effect);
-        QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
+        auto* a = new QPropertyAnimation(effect, "opacity");
         a->setDuration(500);
         a->setStartValue(0.9);
         a->setEndValue(0);
@@ -146,7 +144,7 @@ private:
      *
      * Send the signal @ref clicked().
      */
-    void mousePressEvent(QMouseEvent*) override
+    void mousePressEvent(QMouseEvent* /*ev*/) override
     {
         Q_EMIT clicked();
     }
@@ -156,7 +154,7 @@ private:
      *
      * Send the signal @ref doubleClicked().
      */
-    void mouseDoubleClickEvent(QMouseEvent*) override
+    void mouseDoubleClickEvent(QMouseEvent* /*event*/) override
     {
         Q_EMIT doubleClicked();
     }

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #pragma once
 
 #include <core/spyLog.hpp>
@@ -29,10 +31,7 @@
 #include <random>
 #include <type_traits>
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //------------------------------------------------------------------------------
@@ -86,7 +85,8 @@ cv::Mat genCvImage(
     cvSize.push_back(static_cast<int>(_w));
 
     const auto cvType = getCvFormat<T>::type[_numChannels - 1];
-    cv::Mat cvImage   = cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+    cv::Mat cvImage = cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
 
     return cvImage;
 }
@@ -94,7 +94,7 @@ cv::Mat genCvImage(
 //------------------------------------------------------------------------------
 
 template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+static std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
@@ -118,7 +118,7 @@ static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::
 //------------------------------------------------------------------------------
 
 template<typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
-static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+static std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
@@ -141,6 +141,4 @@ static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

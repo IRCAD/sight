@@ -34,15 +34,13 @@ namespace sight::module::ui::base::series
 
 //------------------------------------------------------------------------------
 
-SPushSelection::SPushSelection() noexcept
-{
-}
+SPushSelection::SPushSelection() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SPushSelection::~SPushSelection() noexcept
-{
-}
+SPushSelection::~SPushSelection() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

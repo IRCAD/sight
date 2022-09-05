@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::module::data
-{
-
-namespace wrapper
+namespace sight::module::data::wrapper
 {
 
 /**
@@ -65,7 +62,7 @@ public:
 
     MODULE_DATA_API SImageSignalForwarder() noexcept;
 
-    MODULE_DATA_API virtual ~SImageSignalForwarder() noexcept;
+    MODULE_DATA_API ~SImageSignalForwarder() noexcept override;
 
 protected:
 
@@ -133,6 +130,4 @@ private:
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_target {this, "target"};
 };
 
-} // wrapper
-
-} // sight::module::data
+} // namespace sight::module::data::wrapper

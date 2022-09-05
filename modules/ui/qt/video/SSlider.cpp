@@ -38,10 +38,7 @@
 
 #include <chrono>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
@@ -68,8 +65,7 @@ QString convertMSecToHHMMSS(int64_t milliseconds)
 
 //------------------------------------------------------------------------------
 
-SSlider::SSlider() noexcept :
-    m_sliderPressed(false)
+SSlider::SSlider() noexcept
 {
     /// Slot to change the position of the slider
     newSlot(s_SET_POSITION_SLIDER_SLOT, &SSlider::setPosition, this);
@@ -81,9 +77,8 @@ SSlider::SSlider() noexcept :
 
 //------------------------------------------------------------------------------
 
-SSlider::~SSlider() noexcept
-{
-}
+SSlider::~SSlider() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -198,6 +193,4 @@ void SSlider::setDuration(int64_t duration)
 
 //------------------------------------------------------------------------------
 
-} //namespace video
-
-} //namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

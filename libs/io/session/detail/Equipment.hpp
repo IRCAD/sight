@@ -26,10 +26,7 @@
 
 #include <data/Equipment.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Equipment
+namespace sight::io::session::detail::Equipment
 {
 
 constexpr static auto s_InstitutionName {"InstitutionName"};
@@ -37,11 +34,11 @@ constexpr static auto s_InstitutionName {"InstitutionName"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto equipment = Helper::safeCast<data::Equipment>(object);
@@ -55,11 +52,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Equipment::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -73,6 +70,4 @@ inline static data::Equipment::sptr deserialize(
     return equipment;
 }
 
-} // namespace detail::Equipment
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Equipment

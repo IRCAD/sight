@@ -56,7 +56,7 @@ public:
     /// @}
 
     /// Returns a string representation of the interaction.
-    virtual std::string toString() const = 0;
+    [[nodiscard]] virtual std::string toString() const = 0;
 };
 
 /// Represents a mouse click.
@@ -73,7 +73,7 @@ public:
     void interactWith(QWidget* widget) const override;
     void interactWith(QWindow* window) const override;
 
-    std::string toString() const override;
+    [[nodiscard]] std::string toString() const override;
 
 private:
 
@@ -100,7 +100,7 @@ public:
     void interactWith(QWidget* widget) const override;
     void interactWith(QWindow* window) const override;
 
-    std::string toString() const override;
+    [[nodiscard]] std::string toString() const override;
 
 private:
 
@@ -118,11 +118,11 @@ class KeyboardSequence : public Interaction
 {
 public:
 
-    GUITEST_API KeyboardSequence(const std::string& text, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    GUITEST_API KeyboardSequence(std::string text, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
     void interactWith(QWidget* widget) const override;
     void interactWith(QWindow* window) const override;
-    std::string toString() const override;
+    [[nodiscard]] std::string toString() const override;
 
 private:
 
@@ -142,7 +142,7 @@ public:
 
     void interactWith(QWidget* widget) const override;
     void interactWith(QWindow* window) const override;
-    std::string toString() const override;
+    [[nodiscard]] std::string toString() const override;
 
 private:
 
@@ -173,7 +173,7 @@ Q_OBJECT
 
 protected:
 
-    bool eventFilter(QObject* obj, QEvent* event);
+    bool eventFilter(QObject* obj, QEvent* event) override;
 };
 
 /// The exception which is thrown when a GUI test fails.
@@ -185,7 +185,7 @@ public:
 };
 
 /// A function which always return true, ignoring its parameter.
-GUITEST_API bool alwaysTrue(QObject*);
+GUITEST_API bool alwaysTrue(QObject* /*unused*/);
 
 /// The main class of the GUI test library, which allows creating GUI tests.
 class GUITEST_CLASS_API Tester
@@ -193,7 +193,7 @@ class GUITEST_CLASS_API Tester
 public:
 
     /// Constructor. Initializes the test name.
-    GUITEST_API Tester(const std::string& testName, bool verboseMode = false);
+    GUITEST_API Tester(std::string testName, bool verboseMode = false);
 
     /**
      * @brief Stores a graphic component as the new current graphic component.
@@ -397,14 +397,14 @@ public:
      *
      * @pre failed() must return false.
      */
-    GUITEST_API std::string getFailureMessage() const;
+    [[nodiscard]] GUITEST_API std::string getFailureMessage() const;
 
     /**
      * @brief Returns true if the test failed and false otherwise.
      *
      * @returns Did the test fail?
      */
-    GUITEST_API bool failed() const;
+    [[nodiscard]] GUITEST_API bool failed() const;
 
     /**
      * @brief Properly initializes GuiTester.
@@ -538,7 +538,7 @@ public:
 
 private:
 
-    GUITEST_API void fail(const std::string& message);
+    static GUITEST_API void fail(const std::string& message);
     std::string generateFailureMessage();
 
     static QVector<QVector<QVector<double> > > computeHistogram(const QImage& img);

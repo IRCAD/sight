@@ -28,13 +28,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 /**
@@ -48,22 +42,22 @@ public:
     IO_DICOM_API DicomSRImageNode(
         const DicomCodedAttribute& codedAttribute,
         const std::string& relationship,
-        const std::string& sopClassUID,
-        const std::string& sopInstanceUID,
+        std::string sopClassUID,
+        std::string sopInstanceUID,
         int frameNumber
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomSRImageNode();
+    IO_DICOM_API ~DicomSRImageNode() override;
 
     /**
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
+    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
 
     /// Get SOP Class UID
-    const std::string& getSOPClassUID() const
+    [[nodiscard]] const std::string& getSOPClassUID() const
     {
         return m_sopClassUID;
     }
@@ -75,7 +69,7 @@ public:
     }
 
     /// Get SOP Instance UID
-    const std::string& getSOPInstanceUID() const
+    [[nodiscard]] const std::string& getSOPInstanceUID() const
     {
         return m_sopInstanceUID;
     }
@@ -87,7 +81,7 @@ public:
     }
 
     /// Get Frame number
-    const int& getFrameNumber() const
+    [[nodiscard]] const int& getFrameNumber() const
     {
         return m_frameNumber;
     }
@@ -101,7 +95,7 @@ public:
 protected:
 
     /// Dump function
-    virtual void print(std::ostream& os) const;
+    void print(std::ostream& os) const override;
 
     /**
      * @brief Write a referenced SOP sequence
@@ -120,8 +114,4 @@ protected:
     int m_frameNumber;
 };
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

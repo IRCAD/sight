@@ -47,20 +47,15 @@
 
 SIGHT_REGISTER_IO_READER(sight::io::dicom::reader::SeriesDB);
 
-namespace sight::io::dicom
-{
-
-namespace reader
+namespace sight::io::dicom::reader
 {
 
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(io::base::reader::IObjectReader::Key /*key*/) :
-    m_isDicomdirActivated(false),
-    m_dicomFilterType(""),
+
     m_logger(core::log::Logger::New()),
     m_job(core::jobs::Aggregator::New("DICOM reader")),
-    m_enableBufferRotation(true),
     m_dicomdirFileLookupJob(core::jobs::Observer::New("Extracting information from DICOMDIR")),
     m_regularFileLookupJob(core::jobs::Observer::New("Looking for DICOM files")),
     m_readerJob(core::jobs::Observer::New("Reading DICOM files")),
@@ -72,8 +67,7 @@ SeriesDB::SeriesDB(io::base::reader::IObjectReader::Key /*key*/) :
 //------------------------------------------------------------------------------
 
 SeriesDB::~SeriesDB()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -182,7 +176,7 @@ void SeriesDB::readDicomSeries()
     // Push Dicom Series
     if(!m_job->cancelRequested())
     {
-        for(data::DicomSeries::sptr series : m_dicomSeriesContainer)
+        for(const data::DicomSeries::sptr& series : m_dicomSeriesContainer)
         {
             seriesDBHelper.add(series);
         }
@@ -279,7 +273,7 @@ void SeriesDB::readFromDicomSeriesDB(
     m_job->add(m_converterJob);
 
     // Read series
-    for(data::Series::sptr series : dicomSeriesDB->getContainer())
+    for(const data::Series::sptr& series : dicomSeriesDB->getContainer())
     {
         data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series);
         SIGHT_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
@@ -369,10 +363,10 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
             "The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
             sopClassUIDContainer.size() != 1
         );
-        const std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
+        const std::string sopClassUID = *sopClassUIDContainer.begin();
 
-        const SupportedSOPClassContainerType::iterator bIt = m_supportedSOPClassContainer.begin();
-        const SupportedSOPClassContainerType::iterator eIt = m_supportedSOPClassContainer.end();
+        const auto bIt = m_supportedSOPClassContainer.begin();
+        const auto eIt = m_supportedSOPClassContainer.end();
 
         if(m_supportedSOPClassContainer.empty() || std::find(bIt, eIt, sopClassUID) != eIt)
         {
@@ -467,6 +461,4 @@ SPTR(core::jobs::IJob) SeriesDB::getJob() const
 
 //------------------------------------------------------------------------------
 
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader

@@ -33,15 +33,13 @@ SIGHT_REGISTER_PLUGIN("Tuto01BasicQml::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

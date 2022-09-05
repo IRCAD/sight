@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CalibrationInfoTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -164,11 +161,13 @@ void CalibrationInfoTest::deepCopyTest()
     CPPUNIT_ASSERT_EQUAL(calInfo->getImageContainer().size(), calInfo2->getImageContainer().size());
     CPPUNIT_ASSERT_EQUAL(calInfo->getPointListContainer().size(), calInfo2->getPointListContainer().size());
 
-    std::list<data::Image::sptr>::const_iterator iterImg1, iterImg2;
+    std::list<data::Image::sptr>::const_iterator iterImg1;
+    std::list<data::Image::sptr>::const_iterator iterImg2;
     iterImg1 = calInfo->getImageContainer().begin();
     iterImg2 = calInfo2->getImageContainer().begin();
 
-    std::list<data::PointList::sptr>::const_iterator iterPl1, iterPl2;
+    std::list<data::PointList::sptr>::const_iterator iterPl1;
+    std::list<data::PointList::sptr>::const_iterator iterPl2;
     iterPl1 = calInfo->getPointListContainer().begin();
     iterPl2 = calInfo2->getPointListContainer().begin();
 
@@ -193,6 +192,4 @@ void CalibrationInfoTest::deepCopyTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

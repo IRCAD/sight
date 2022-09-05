@@ -30,15 +30,14 @@ SIGHT_REGISTER_DATA(sight::data::Equipment);
 namespace sight::data
 {
 
-Equipment::Equipment(data::Object::Key)
+Equipment::Equipment(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Equipment::~Equipment()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

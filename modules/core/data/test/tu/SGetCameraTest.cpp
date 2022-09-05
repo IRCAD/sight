@@ -38,10 +38,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::SGetCameraTest);
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -334,6 +331,4 @@ void SGetCameraTest::extractsInvalidExtrinsic()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

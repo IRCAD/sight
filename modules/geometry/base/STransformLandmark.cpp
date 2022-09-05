@@ -52,9 +52,8 @@ STransformLandmark::STransformLandmark() noexcept
 
 // -----------------------------------------------------------------------------
 
-STransformLandmark::~STransformLandmark() noexcept
-{
-}
+STransformLandmark::~STransformLandmark() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -151,4 +150,4 @@ void STransformLandmark::removePoint()
 
 // -----------------------------------------------------------------------------
 
-} // maths
+} // namespace sight::module::geometry::base

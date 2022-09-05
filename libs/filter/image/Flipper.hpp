@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ public:
     static FILTER_IMAGE_API void flip(
         const data::Image::csptr& _inImage,
         const data::Image::sptr& _outImage,
-        const std::array<bool, 3>& _flipAxis
+        const std::array<bool, 3>& _inFlipAxes
     );
 };
 

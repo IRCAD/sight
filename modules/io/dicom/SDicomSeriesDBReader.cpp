@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,19 +45,15 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesDBReader::SDicomSeriesDBReader() noexcept :
-    m_cancelled(false),
-    m_showLogDialog(true),
-    m_dicomDirSupport(USER_SELECTION)
+SDicomSeriesDBReader::SDicomSeriesDBReader() noexcept
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
-{
-}
+SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -262,7 +258,7 @@ void SDicomSeriesDBReader::updating()
 
         data::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder());
 
-        if(seriesDB->size() > 0 && !m_cancelled)
+        if(!seriesDB->empty() && !m_cancelled)
         {
             // Retrieve dataStruct associated with this service
             const auto data               = m_data.lock();

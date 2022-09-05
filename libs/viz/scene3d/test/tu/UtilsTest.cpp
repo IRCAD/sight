@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::UtilsTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +56,7 @@ void UtilsTest::tearDown()
 void UtilsTest::convertOgreColorToFwColor()
 {
     data::Color::sptr refColor = data::Color::New();
-    refColor->setRGBA(1.f, 1.f, 1.f, 1.f);
+    refColor->setRGBA(1.F, 1.F, 1.F, 1.F);
 
     data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(Ogre::ColourValue());
     CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
@@ -72,8 +69,7 @@ void UtilsTest::convertOgreColorToFwColor()
 
 void UtilsTest::convertOgreMatrixToTM3D()
 {
-    std::mt19937 rng;
-    rng.seed(std::random_device()());
+    std::mt19937 rng {std::random_device {}()};
     std::uniform_real_distribution<float> dist(-10., 10.);
 
     // Convert from Sight to ogre and back to Sight.
@@ -179,6 +175,4 @@ void UtilsTest::worldToSliceTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

@@ -27,10 +27,7 @@
 #include <data/PointList.hpp>
 #include <data/Tag.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Tag
+namespace sight::io::session::detail::Tag
 {
 
 constexpr static auto s_PointList {"PointList"};
@@ -40,11 +37,11 @@ constexpr static auto s_Size {"Size"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto tag = Helper::safeCast<data::Tag>(object);
@@ -60,11 +57,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Tag::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -80,6 +77,4 @@ inline static data::Tag::sptr deserialize(
     return tag;
 }
 
-} // namespace detail::Tag
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Tag

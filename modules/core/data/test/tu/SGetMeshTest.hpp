@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 /**
@@ -47,18 +44,16 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void extractsMeshByIndex();
-    void extractsMeshByType();
-    void extractsMeshByTypeNotFound();
-    void extractsMeshByNameNotFound();
-    void extractsWithInvalidModelsSeries();
-    void extractsMeshWithIndexOutOfBound();
-    void extractsWithMeshTypeAndIndex();
+    static void extractsMeshByIndex();
+    static void extractsMeshByType();
+    static void extractsMeshByTypeNotFound();
+    static void extractsMeshByNameNotFound();
+    static void extractsWithInvalidModelsSeries();
+    static void extractsMeshWithIndexOutOfBound();
+    static void extractsWithMeshTypeAndIndex();
 };
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

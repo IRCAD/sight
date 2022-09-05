@@ -36,12 +36,9 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 /**
@@ -105,7 +102,7 @@ public:
 
     MODULE_UI_BASE_API SExportWithSeriesDB() noexcept;
 
-    MODULE_UI_BASE_API virtual ~SExportWithSeriesDB() noexcept;
+    MODULE_UI_BASE_API ~SExportWithSeriesDB() noexcept override;
 
 protected:
 
@@ -138,6 +135,4 @@ private:
     data::ptr<data::Series, data::Access::inout> m_series {this, "series"};
 };
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

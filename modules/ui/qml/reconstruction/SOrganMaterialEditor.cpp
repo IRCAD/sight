@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,15 +29,13 @@ namespace sight::module::ui::qml::reconstruction
 
 //------------------------------------------------------------------------------
 
-SOrganMaterialEditor::SOrganMaterialEditor() noexcept
-{
-}
+SOrganMaterialEditor::SOrganMaterialEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SOrganMaterialEditor::~SOrganMaterialEditor() noexcept
-{
-}
+SOrganMaterialEditor::~SOrganMaterialEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -97,7 +95,7 @@ void SOrganMaterialEditor::onOpacitySlider(int value)
     SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha() = static_cast<float>(value) / 100.0f;
+    material->diffuse()->alpha() = static_cast<float>(value) / 100.0F;
     this->materialNotification();
 }
 
@@ -126,4 +124,4 @@ service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() 
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qml::reconstruction

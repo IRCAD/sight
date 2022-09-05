@@ -33,6 +33,9 @@ if(MSVC)
     add_compile_definitions(WINVER=0x0601)
     add_compile_definitions(_WIN32_WINNT=0x0601)
     add_compile_definitions(BOOST_USE_WINAPI_VERSION=0x0601)
+
+    # Basically needed for DCMTK
+    add_compile_options("/Zc:__cplusplus")
 endif()
 
 # Add a global compile definition to help strip __FILE__ to show a relative file path
@@ -145,6 +148,7 @@ if(MSVC)
         # restore them later, modified or not, in restore_cxx_flags()
         set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
         set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
+
     else()
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "" FORCE)
     endif()

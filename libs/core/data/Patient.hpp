@@ -46,7 +46,7 @@ public:
     DATA_API Patient(Object::Key _key);
 
     /// Destroys the patient.
-    DATA_API virtual ~Patient();
+    DATA_API ~Patient() override;
 
     /**
      * @brief Defines shallow copy.
@@ -170,4 +170,4 @@ inline void Patient::setSex(const DicomValueType& _val)
     m_sex = _val;
 }
 
-} // Namespace fwMedData.
+} // namespace sight::data

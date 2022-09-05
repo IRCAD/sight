@@ -84,7 +84,7 @@ public:
     DATA_API StructureTraits(Object::Key key);
 
     /// Destructor. Does nothing.
-    DATA_API virtual ~StructureTraits();
+    DATA_API ~StructureTraits() override;
 
     /**
      * @{
@@ -210,7 +210,7 @@ private:
     Color::sptr m_color;
 
     /// structure class (TOOL, ENVIRONMENT, VESSEL, LESION, ORGAN, FUNCTIONAL, NO_CONSTRAINT)
-    StructureClass m_class;
+    StructureClass m_class {NO_CONSTRAINT};
 
     /// native ROI expression (can be empty)
     ROIExpression m_nativeExp;

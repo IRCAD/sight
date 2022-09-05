@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SFrameWriter.hpp"
 
 #include <core/com/Signal.hpp>
@@ -58,8 +60,7 @@ static const core::com::Slots::SlotKeyType s_SET_FORMAT_PARAMETER = "setFormatPa
 //------------------------------------------------------------------------------
 
 SFrameWriter::SFrameWriter() noexcept :
-    m_imageType(0),
-    m_isRecording(false),
+
     m_format(".tiff")
 {
     newSlot(s_SAVE_FRAME, &SFrameWriter::saveFrame, this);
@@ -73,9 +74,8 @@ SFrameWriter::SFrameWriter() noexcept :
 
 //------------------------------------------------------------------------------
 
-SFrameWriter::~SFrameWriter() noexcept
-{
-}
+SFrameWriter::~SFrameWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -180,7 +180,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 
             cv::Mat image(cv::Size(width, height), m_imageType, (void*) imageBuffer, cv::Mat::AUTO_STEP);
 
-            const std::size_t time = static_cast<std::size_t>(timestamp);
+            const auto time = static_cast<std::size_t>(timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
             const std::filesystem::path path = this->getFolder() / filename;
 

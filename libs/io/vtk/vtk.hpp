@@ -109,4 +109,4 @@ IO_VTK_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::Matrix4::csptr _trans
  */
 IO_VTK_API bool fromVTKMatrix(vtkMatrix4x4* _matrix, data::Matrix4::sptr _transfoMatrix);
 
-}
+} // namespace sight::io::vtk

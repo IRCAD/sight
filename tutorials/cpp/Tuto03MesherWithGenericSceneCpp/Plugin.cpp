@@ -30,7 +30,10 @@
 
 #include <service/registry/Proxy.hpp>
 
-using namespace sight;
+#include <memory>
+
+namespace core    = sight::core;
+namespace service = sight::service;
 
 namespace Tuto03MesherWithGenericSceneCpp
 {
@@ -47,21 +50,21 @@ static const std::string s_EMPTY_SELECTION_CHANNEL = "emptySelection";
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void Plugin::start()
 {
-    m_appManager = std::unique_ptr<service::AppManager>(new service::AppManager);
+    namespace data = sight::data;
+
+    m_appManager = std::make_unique<service::AppManager>();
     m_appManager->create();
     /* **************************************************************************************
     *              create and register the services in the OSR

@@ -71,7 +71,7 @@ public:
      *
      * @return      a container with all created modules
      */
-    static const ModuleContainer createModules(const std::filesystem::path& location);
+    static ModuleContainer createModules(const std::filesystem::path& location);
 
     /**
      * @brief       Look for a descriptor at the specified location,
@@ -155,7 +155,7 @@ public:
      *
      * @return  a string containing the requirement's value
      */
-    static const std::string processRequirement(xmlNodePtr node);
+    static std::string processRequirement(xmlNodePtr node);
 };
 
 } // namespace io

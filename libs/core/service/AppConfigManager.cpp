@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "service/AppConfigManager.hpp"
 
 #include "service/helper/Config.hpp"
@@ -57,9 +59,7 @@ static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObject
 
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() :
-    m_proxyID(0),
-    m_isUnitTest(false)
+AppConfigManager::AppConfigManager()
 {
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
@@ -141,7 +141,7 @@ void AppConfigManager::create()
     this->createObjects(m_cfgElem);
     this->createConnections();
     const auto configTree = core::runtime::Convert::toPropertyTree(m_cfgElem);
-    if(configTree.count("config"))
+    if(configTree.count("config") != 0U)
     {
         this->createServices(configTree.get_child("config"));
     }
@@ -294,7 +294,7 @@ data::Object::sptr AppConfigManager::findObject(const std::string& uid, std::str
 
 // ------------------------------------------------------------------------
 
-data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid) const
+data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid)
 {
     // Building object structure
     SPTR(core::runtime::Extension) ext = core::runtime::findExtension(type.first);
@@ -377,6 +377,7 @@ void AppConfigManager::stopStartedServices()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_startedSrv)
     {
         SIGHT_ASSERT("Service expired.", !w_srv.expired());
@@ -393,6 +394,7 @@ void AppConfigManager::stopStartedServices()
 
 void AppConfigManager::destroyCreatedServices()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_createdSrv)
     {
         const service::IService::sptr srv = w_srv.lock();
@@ -686,7 +688,7 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
 service::IService::sptr AppConfigManager::createService(const service::IService::Config& srvConfig)
 {
     // Create and bind service
-    const service::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
+    service::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
     service::OSR::registerService(srv);
     m_createdSrv.push_back(srv);
 
@@ -968,9 +970,9 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
 
     for(const auto& itService : servicesCfg)
     {
-        auto srvCfg = itService;
+        const auto* srvCfg = itService;
         SIGHT_ASSERT("Config is null", srvCfg);
-        auto& uid = srvCfg->m_uid;
+        const auto& uid = srvCfg->m_uid;
 
         bool createService = true;
 
@@ -1289,7 +1291,7 @@ std::string AppConfigManager::getUIDListAsString(const std::vector<std::string>&
         msg += "', '" + *it;
     }
 
-    msg = uidList.size() == 1 ? msg + "' is " : msg + "' are ";
+    msg.append(uidList.size() == 1 ? "' is " : "' are ");
 
     return msg;
 }

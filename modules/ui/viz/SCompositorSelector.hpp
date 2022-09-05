@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/compositor/ChainManager.hpp>
 #include <viz/scene3d/Layer.hpp>
-
-#include <ui/base/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -71,7 +71,7 @@ public:
     MODULE_UI_VIZ_API SCompositorSelector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API virtual ~SCompositorSelector() noexcept;
+    MODULE_UI_VIZ_API ~SCompositorSelector() noexcept override;
 
 protected:
 
@@ -141,4 +141,4 @@ private:
     core::com::helper::SigSlotConnection m_connections;
 };
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

@@ -83,7 +83,7 @@ public:
     MODULE_DATA_API SSeriesSignal() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API virtual ~SSeriesSignal() noexcept;
+    MODULE_DATA_API ~SSeriesSignal() noexcept override;
 
     MODULE_DATA_API static const core::com::Slots::SlotKeyType s_REPORT_SERIES_SLOT;
 
@@ -139,4 +139,4 @@ private:
     sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_seriesDB {this, s_SERIES_DB_INPUT};
 };
 
-} // gui
+} // namespace sight::module::data

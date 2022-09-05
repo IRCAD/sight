@@ -34,10 +34,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-StructureTraits::StructureTraits(data::Object::Key) :
-    m_anatomicRegion(""),
-    m_propertyCategory(""),
-    m_propertyType("")
+StructureTraits::StructureTraits(data::Object::Key /*unused*/)
 {
     m_color = data::Color::New();
 }
@@ -45,8 +42,7 @@ StructureTraits::StructureTraits(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 StructureTraits::~StructureTraits()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

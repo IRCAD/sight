@@ -37,7 +37,7 @@ namespace sight::core::thread
 
 class Worker;
 
-}
+} // namespace sight::core::thread
 
 namespace sight::core::com
 {
@@ -61,6 +61,9 @@ public:
     /// Constructor, does nothing
     CORE_API Slots();
 
+    /// Copy constructor forbidden
+    Slots& operator=(const Slots&) = delete;
+
     /// Constructor, check if all slots are disconnected
     CORE_API virtual ~Slots();
 
@@ -82,15 +85,12 @@ public:
     CORE_API void setWorker(const SPTR(core::thread::Worker)& worker);
 
     /// Returns all SlotKeyType registered in m_slots
-    CORE_API SlotKeyContainerType getSlotKeys() const;
+    [[nodiscard]] CORE_API SlotKeyContainerType getSlotKeys() const;
 
 protected:
 
     /// Copy constructor forbidden
-    Slots(const Slots&);
-
-    /// Copy constructor forbidden
-    Slots& operator=(const Slots&);
+    Slots(const Slots& /*unused*/);
 
     /// Association < key , SPTR( SlotBase ) >
     SlotMapType m_slots;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <filter/dicom/splitter/TagValueInstanceRemoveSplitter.hpp>
 
-namespace sight::ui::dicom
-{
-
-namespace splitter
+namespace sight::ui::dicom::splitter
 {
 
 /**
@@ -52,7 +49,7 @@ public:
     UI_DICOM_API TagValueInstanceRemoveConfigurableSplitter(filter::dicom::IFilter::Key key);
 
     /// Destructor
-    UI_DICOM_API virtual ~TagValueInstanceRemoveConfigurableSplitter();
+    UI_DICOM_API ~TagValueInstanceRemoveConfigurableSplitter() override;
 
     /// Return the name of the filter
     UI_DICOM_API std::string getName() const override;
@@ -78,6 +75,4 @@ protected:
     UI_DICOM_API static const std::string s_FILTER_DESCRIPTION;
 };
 
-} // namespace splitter
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::splitter

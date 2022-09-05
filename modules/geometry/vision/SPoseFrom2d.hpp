@@ -156,12 +156,12 @@ private:
      * @param : Marker points in each view
      *
      **/
-    const cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
+    cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
 
     /**
      * @brief :Compute the camera position from a marker detected in one view
      **/
-    const cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
+    cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
 
     /// Last timestamp
     core::HiResClock::HiResClockType m_lastTimestamp {0};

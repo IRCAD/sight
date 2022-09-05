@@ -29,10 +29,7 @@
 #include <data/Color.hpp>
 #include <data/TransferFunction.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 // ------------------------------------------------------------------------------
@@ -50,7 +47,7 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
     SIGHT_ASSERT("TransferFunction not instanced", tf);
 
     const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
-    if(config.count("colors"))
+    if(config.count("colors") != 0U)
     {
         const ConfigType colorCfg = config.get_child("colors");
 
@@ -73,8 +70,8 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
 
             for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
             {
-                const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
-                const std::string strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
+                const auto value    = itStepCfg->second.get<double>("<xmlattr>.value");
+                const auto strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
 
                 data::Color::sptr newColor = data::Color::New();
                 newColor->setRGBA(strColor);
@@ -99,6 +96,4 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
 
 // ------------------------------------------------------------------------------
 
-} // namespace parser
-
-} // namespace sight::service
+} // namespace sight::service::parser

@@ -24,10 +24,7 @@
 
 #include <core/thread/Worker.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -42,21 +39,21 @@ PulseProgressDialog::PulseProgressDialog(
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IPulseProgressDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::IPulseProgressDialog::dynamicCast(guiObj);
+            if(m_implementation)
             {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IPulseProgressDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::IPulseProgressDialog::dynamicCast(guiObj);
-                if(m_implementation)
-                {
-                    m_implementation->setStuff(stuff);
-                    m_implementation->setTitle(title);
-                    m_implementation->setMessage(msg);
-                    m_implementation->setFrequence(frequenceRefresh);
-                }
-                else
-                {
-                    this->setStuff(stuff);
-                }
-            })
+                m_implementation->setStuff(stuff);
+                m_implementation->setTitle(title);
+                m_implementation->setMessage(msg);
+                m_implementation->setFrequence(frequenceRefresh);
+            }
+            else
+            {
+                this->setStuff(stuff);
+            }
+        })
     ).wait();
 }
 
@@ -87,8 +84,7 @@ void PulseProgressDialog::show()
     if(m_implementation)
     {
         core::thread::getDefaultWorker()->postTask<void>(
-            std::bind(&IPulseProgressDialog::show, m_implementation)
-        ).wait();
+            [this](auto&& ...){m_implementation->show();}).wait();
     }
     else
     {
@@ -98,6 +94,4 @@ void PulseProgressDialog::show()
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

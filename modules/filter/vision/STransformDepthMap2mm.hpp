@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ public:
     /**
      * @brief STransformDepthMap2mm destructor.
      */
-    MODULE_FILTER_VISION_API virtual ~STransformDepthMap2mm();
+    MODULE_FILTER_VISION_API ~STransformDepthMap2mm() override;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 /**
@@ -47,15 +44,13 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void parabolaTest();
-    void ackleyTest();
-    void sphereFunctionTest();
-    void bealeFunctionTest();
+    static void parabolaTest();
+    static void ackleyTest();
+    static void sphereFunctionTest();
+    static void bealeFunctionTest();
 };
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut

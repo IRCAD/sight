@@ -41,12 +41,9 @@
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 
-#include <math.h>
+#include <cmath>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /// Listener dedicated to watching the initialisation.
@@ -54,14 +51,14 @@ class SummedAreaTable::SummedAreaTableInitCompositorListener : public Ogre::Comp
 {
 public:
 
-    SummedAreaTableInitCompositorListener(float& currentSliceIndex) :
+    explicit SummedAreaTableInitCompositorListener(float& currentSliceIndex) :
         m_currentSliceDepth(currentSliceIndex)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat) override
     {
         if(mat->getNumTechniques() > 0)
         {
@@ -96,7 +93,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat) override
     {
         if(mat->getNumTechniques() > 0)
         {
@@ -135,13 +132,12 @@ private:
 SummedAreaTable::SummedAreaTable(std::string _parentId, Ogre::SceneManager* _sceneManager, float _sizeRatio) :
     m_satSizeRatio(_sizeRatio),
     m_satSize(
-        {
-            0, 0, 0
-        }),
+    {
+        0, 0, 0
+    }),
     m_currentImageSize({0, 0, 0}),
-    m_parentId(_parentId),
-    m_sceneManager(_sceneManager),
-    m_dummyCamera(nullptr)
+    m_parentId(std::move(_parentId)),
+    m_sceneManager(_sceneManager)
 {
 }
 
@@ -338,9 +334,9 @@ void SummedAreaTable::updateSatFromTexture(const Texture::sptr& _imgTexture)
         static_cast<std::size_t>(_imgTexture->depth())
     };
 
-    const std::size_t width  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
-    const std::size_t height = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
-    const std::size_t depth  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
+    const auto width  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
+    const auto height = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
+    const auto depth  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
 
     m_satSize = {width, height, depth};
 
@@ -353,9 +349,9 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 {
     m_satSizeRatio = _sizeRatio;
 
-    const std::size_t width  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
-    const std::size_t height = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
-    const std::size_t depth  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
+    const auto width  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
+    const auto height = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
+    const auto depth  = static_cast<std::size_t>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
 
     m_satSize = {width, height, depth};
 
@@ -366,9 +362,9 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 
 void SummedAreaTable::updateBuffers()
 {
-    const Ogre::uint width  = static_cast<Ogre::uint>(m_satSize[0]);
-    const Ogre::uint height = static_cast<Ogre::uint>(m_satSize[1]);
-    const Ogre::uint depth  = static_cast<Ogre::uint>(m_satSize[2]);
+    const auto width  = static_cast<Ogre::uint>(m_satSize[0]);
+    const auto height = static_cast<Ogre::uint>(m_satSize[1]);
+    const auto depth  = static_cast<Ogre::uint>(m_satSize[2]);
 
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 
@@ -421,10 +417,10 @@ void SummedAreaTable::updateBuffers()
         Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
 
         //Listeners updated with the current parameters
-        SummedAreaTableInitCompositorListener* const new_initlistener =
+        auto* const new_initlistener =
             new SummedAreaTableInitCompositorListener(m_currentSliceDepth);
 
-        SummedAreaTableCompositorListener* const new_tablelistener =
+        auto* const new_tablelistener =
             new SummedAreaTableCompositorListener(
                 m_readOffset,
                 m_passOrientation,
@@ -533,7 +529,7 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
         {
             if(x < 0 || y < 0 || z < 0)
             {
-                return glm::vec4(0.f);
+                return glm::vec4(0.F);
             }
 
             const std::size_t index = static_cast<std::size_t>(x) + m_satSize[0]
@@ -591,7 +587,7 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
     pixBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
     Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
 
-    std::uint8_t* const pDest = static_cast<std::uint8_t*>(pixBox.data);
+    auto* const pDest = static_cast<std::uint8_t*>(pixBox.data);
 
     std::memcpy(pDest, buffer.data(), buffer.size() * sizeof(glm::vec4));
 
@@ -600,6 +596,4 @@ void SummedAreaTable::computeSequential(data::Image::sptr _image, data::Transfer
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 /**
@@ -47,19 +44,17 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// test deep and shallow copy
-    void copyTest();
+    static void copyTest();
 
     /// test to add/remove groups and change properties
-    void groupTest();
+    static void groupTest();
 
     /// test to add/ remove points in group
-    void pointsTest();
+    static void pointsTest();
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

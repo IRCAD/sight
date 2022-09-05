@@ -60,7 +60,7 @@ void SPoseFrom2d::configuring()
             auto keyCfg = itCfg->second.equal_range("key");
             for(auto itKeyCfg = keyCfg.first ; itKeyCfg != keyCfg.second ; ++itKeyCfg)
             {
-                const data::MarkerMap::KeyType key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
+                const auto key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
                 m_matricesTag.push_back(key);
             }
 
@@ -74,12 +74,12 @@ void SPoseFrom2d::configuring()
 void SPoseFrom2d::starting()
 {
     //3D Points
-    const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
+    const float halfWidth = static_cast<float>(m_patternWidth) * .5F;
 
-    m_3dModel.push_back(cv::Point3f(-halfWidth, halfWidth, 0));
-    m_3dModel.push_back(cv::Point3f(halfWidth, halfWidth, 0));
-    m_3dModel.push_back(cv::Point3f(halfWidth, -halfWidth, 0));
-    m_3dModel.push_back(cv::Point3f(-halfWidth, -halfWidth, 0));
+    m_3dModel.emplace_back(-halfWidth, halfWidth, 0.F);
+    m_3dModel.emplace_back(halfWidth, halfWidth, 0.F);
+    m_3dModel.emplace_back(halfWidth, -halfWidth, 0.F);
+    m_3dModel.emplace_back(-halfWidth, -halfWidth, 0.F);
 
     auto pl = m_pointList.lock();
     if(pl)
@@ -137,7 +137,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
     {
         // For each marker
         unsigned int markerIndex = 0;
-        for(auto markerKey : m_matricesTag)
+        for(const auto& markerKey : m_matricesTag)
         {
             std::vector<Marker> markers;
             std::size_t indexTL = 0;
@@ -148,12 +148,12 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
                 const auto marker_ptr = markerMap.second.lock();
                 const auto* marker    = marker_ptr->getMarker(markerKey);
 
-                if(marker)
+                if(marker != nullptr)
                 {
                     Marker currentMarker;
                     for(std::size_t i = 0 ; i < 4 ; ++i)
                     {
-                        currentMarker.corners2D.push_back(cv::Point2f((*marker)[i][0], (*marker)[i][1]));
+                        currentMarker.corners2D.emplace_back((*marker)[i][0], (*marker)[i][1]);
                     }
 
                     markers.push_back(currentMarker);
@@ -255,7 +255,7 @@ void SPoseFrom2d::initialize()
 
 //-----------------------------------------------------------------------------
 
-const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(
+cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(
     const SPoseFrom2d::Marker& _markerCam1,
     const SPoseFrom2d::Marker& _markerCam2
 ) const
@@ -277,7 +277,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(
 
 //-----------------------------------------------------------------------------
 
-const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCam1) const
+cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCam1) const
 {
     cv::Matx44f pose =
         sight::geometry::vision::helper::cameraPoseMonocular(

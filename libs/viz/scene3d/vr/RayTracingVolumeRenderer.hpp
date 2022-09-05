@@ -19,7 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
+// cspell:ignore NOLINT hicpp
 #pragma once
 
 #include "viz/scene3d/config.hpp"
@@ -38,10 +38,7 @@
 #include <optional>
 #include <vector>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -58,7 +55,7 @@ public:
         struct ambient_occlusion_info_t
         {
             bool enabled = false;
-            float factor = 1.f;
+            float factor = 1.F;
         };
 
         /// Colour-bleeding related information
@@ -71,7 +68,7 @@ public:
         };
 
         /// Constructor. Need for shadows_data_t.
-        inline shadows_parameters_t()
+        inline shadows_parameters_t() // NOLINT(hicpp-use-equals-default,modernize-use-equals-default)
         {
         }
 
@@ -85,7 +82,7 @@ public:
         colour_bleeding_info_t colour_bleeding {};
 
         /// Convenience function returning if one of the three parameters is enabled.
-        bool enabled() const
+        [[nodiscard]] bool enabled() const
         {
             return soft_shadows || ao.enabled || colour_bleeding.enabled;
         }
@@ -98,12 +95,12 @@ public:
         shadows_data_t(const shadows_parameters_t& parameters = {}) :
             parameters(parameters),
             factors(
-                {
-                    parameters.colour_bleeding.r,
-                    parameters.colour_bleeding.g,
-                    parameters.colour_bleeding.b,
-                    parameters.ao.factor
-                })
+            {
+                parameters.colour_bleeding.r,
+                parameters.colour_bleeding.g,
+                parameters.colour_bleeding.b,
+                parameters.ao.factor
+            })
         {
         }
 
@@ -130,14 +127,14 @@ public:
     VIZ_SCENE3D_API RayTracingVolumeRenderer(
         std::string parentId,
         Layer::sptr layer,
-        Ogre::SceneNode* const parentNode,
+        Ogre::SceneNode* parentNode,
         sight::data::Image::csptr image,
         sight::data::TransferFunction::csptr tf,
-        bool buffer                                                          = false,
-        bool preintegration                                                  = false,
-        const std::optional<shadows_parameters_t> shadows                    = {},
-        const std::optional<IllumAmbientOcclusionSAT::sat_parameters_t>& sat = {},
-        const std::optional<std::string>& shader                             = {});
+        bool buffer                                                   = false,
+        bool preintegration                                           = false,
+        std::optional<shadows_parameters_t> shadows                   = {},
+        std::optional<IllumAmbientOcclusionSAT::sat_parameters_t> sat = {},
+        std::optional<std::string> shader                             = {});
 
     /// Does nothing.
     VIZ_SCENE3D_API ~RayTracingVolumeRenderer() override;
@@ -147,8 +144,8 @@ public:
 
     /// Function called when a new image is being rendered.
     VIZ_SCENE3D_API void imageUpdate(
-        const data::Image::csptr image,
-        const data::TransferFunction::csptr tf
+        data::Image::csptr image,
+        data::TransferFunction::csptr tf
     ) override;
 
     /// Called when the transfer function is updated.
@@ -203,10 +200,10 @@ public:
     VIZ_SCENE3D_API void clipImage(const Ogre::AxisAlignedBox& clippingBox) override;
 
     /// Returns whether or not the volume is visible.
-    VIZ_SCENE3D_API bool isVisible() const;
+    [[nodiscard]] VIZ_SCENE3D_API bool isVisible() const;
 
     /// Returns the current shadows data used by the renderer.
-    VIZ_SCENE3D_API const shadows_data_t& shadows() const;
+    [[nodiscard]] VIZ_SCENE3D_API const shadows_data_t& shadows() const;
 
     /**
      * @brief Sets the SAT size ratio.
@@ -294,9 +291,9 @@ protected:
     struct material_light_t
     {
         material_light_t(
-            const Ogre::ColourValue& diffuse  = Ogre::ColourValue(1.2f, 1.2f, 1.2f, 1.f),
-            const Ogre::ColourValue& specular = Ogre::ColourValue(2.5f, 2.5f, 2.5f, 1.f),
-            float shininess                   = 20.f
+            const Ogre::ColourValue& diffuse  = Ogre::ColourValue(1.2F, 1.2F, 1.2F, 1.F),
+            const Ogre::ColourValue& specular = Ogre::ColourValue(2.5F, 2.5F, 2.5F, 1.F),
+            float shininess                   = 20.F
         ) :
 
             diffuse(diffuse),
@@ -306,19 +303,19 @@ protected:
         }
 
         /// Diffuse component default is {1.2f, 1.2f, 1.2f, 1.f} in RGBA.
-        Ogre::ColourValue diffuse = Ogre::ColourValue(1.2f, 1.2f, 1.2f, 1.f);
+        Ogre::ColourValue diffuse = Ogre::ColourValue(1.2F, 1.2F, 1.2F, 1.F);
 
         /// Specular component. Default is {2.5f, 2.5f, 2.5f, 1.f} in RGBA
-        Ogre::ColourValue specular = Ogre::ColourValue(2.5f, 2.5f, 2.5f, 1.f);
+        Ogre::ColourValue specular = Ogre::ColourValue(2.5F, 2.5F, 2.5F, 1.F);
 
         /// Shininess. Default is 20.f.
-        float shininess = 20.f;
+        float shininess = 20.F;
     };
 
     //-----------------------------------------------------------------------------
 
     /// Sets all texture units needed by the material during the ray casting pass.
-    VIZ_SCENE3D_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass) const;
+    VIZ_SCENE3D_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass) const;
 
     /**
      * @brief Generates the material used to render the volume.
@@ -351,10 +348,10 @@ protected:
     data::Image::Size m_imageSize = data::Image::Size({1, 1, 1});
 
     /// Inverse of the sampling rate accounted by the TF.
-    float m_opacityCorrectionFactor = 200.f;
+    float m_opacityCorrectionFactor = 200.F;
 
     /// Focal distance in object space : 0 = object front, 1 = object back.
-    float m_focalLength = 0.f;
+    float m_focalLength = 0.F;
 
     //------------------------------------------------------------
 
@@ -422,6 +419,4 @@ inline void RayTracingVolumeRenderer::setMaterialLightParams(
     mtl->setShininess(components.shininess);
 }
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

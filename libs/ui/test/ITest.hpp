@@ -39,7 +39,7 @@ class GUITEST_CLASS_API ITest : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    GUITEST_API void setUp();
+    GUITEST_API void setUp() override;
 
 protected:
 
@@ -54,4 +54,4 @@ private:
     sight::core::runtime::Profile::sptr m_profile;
 };
 
-}
+} // namespace sight::ui::test

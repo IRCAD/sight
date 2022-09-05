@@ -41,10 +41,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 ///@brief Internal listener used to update the material according to the parameters.
@@ -63,7 +60,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat) override
     {
         Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
@@ -73,7 +70,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialSetup(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
+    void notifyMaterialSetup(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat) override
     {
         Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
@@ -104,7 +101,7 @@ IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(
     m_ao(ao),
     m_shadows(shadows),
     m_parameters(parameters.value_or(sat_parameters_t {})),
-    m_parentId(parentId),
+    m_parentId(std::move(parentId)),
     m_sceneManager(sceneManager),
     m_sat(m_parentId, m_sceneManager, m_parameters.size_ratio)
 {
@@ -182,7 +179,7 @@ void IllumAmbientOcclusionSAT::updateVolumeIllumination()
                         for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
                         {
                             //The current render target index
-                            const std::size_t target = static_cast<size_t>(m_currentSliceIndex);
+                            const auto target = static_cast<size_t>(m_currentSliceIndex);
 
                             Ogre::RenderTarget* const rt =
                                 m_illuminationVolume->getBuffer()->getRenderTarget(target);
@@ -275,6 +272,4 @@ void IllumAmbientOcclusionSAT::updateTexture()
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

@@ -55,13 +55,11 @@ public:
 
     /// Constructor, do nothing.
     AppInfo()
-    {
-    }
+    = default;
 
     /// Destructor, do nothing.
     ~AppInfo() override
-    {
-    }
+    = default;
 
     std::string group;
     std::string desc;
@@ -86,7 +84,7 @@ public:
     SIGHT_DECLARE_CLASS(AppConfig, core::BaseObject, new AppConfig);
 
     /// Destructor
-    SERVICE_API virtual ~AppConfig();
+    SERVICE_API ~AppConfig() override;
 
     /**
      * @brief Parses module information to retrieve configuration declaration.
@@ -196,7 +194,7 @@ private:
     typedef std::unordered_set<std::string> UidParameterReplaceType;
 
     /// Convert the composite into map <pattern, value>.
-    FieldAdaptorType compositeToFieldAdaptor(data::Composite::csptr fieldAdaptors) const;
+    static FieldAdaptorType compositeToFieldAdaptor(data::Composite::csptr fieldAdaptors);
 
     static void collectUIDForParameterReplace(
         core::runtime::ConfigurationElement::csptr _cfgElem,

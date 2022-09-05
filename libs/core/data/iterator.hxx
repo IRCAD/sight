@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,6 +19,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINTNEXTLINE
 
 #pragma once
 
@@ -102,7 +104,8 @@ inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator++()
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator++(int)
+// NOLINTNEXTLINE(readability-const-return-type)
+inline FINLINE const array_iterator<FORMAT> array_iterator<FORMAT>::operator++(int)
 {
     array_iterator tmp(*this);
     ++m_current;
@@ -149,7 +152,8 @@ inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator--()
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator--(int)
+// NOLINTNEXTLINE(readability-const-return-type)
+inline FINLINE const array_iterator<FORMAT> array_iterator<FORMAT>::operator--(int)
 {
     array_iterator tmp(*this);
     --m_current;

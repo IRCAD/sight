@@ -22,10 +22,7 @@
 
 #pragma once
 
-namespace sight::core::com
-{
-
-namespace util
+namespace sight::core::com::util
 {
 
 /**
@@ -110,6 +107,4 @@ struct remove_last_arg<R()>
     typedef R type();
 };
 
-} //namespace util
-
-} //namespace sight::core::com
+} // namespace sight::core::com::util

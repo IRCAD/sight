@@ -65,7 +65,7 @@ public:
     MODULE_DATA_API SGetSeries() = default;
 
     /// Destructor
-    MODULE_DATA_API ~SGetSeries() = default;
+    MODULE_DATA_API ~SGetSeries() override = default;
 
 protected:
 

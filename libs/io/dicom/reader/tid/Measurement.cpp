@@ -34,13 +34,7 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 //------------------------------------------------------------------------------
@@ -59,8 +53,7 @@ Measurement::Measurement(
 //------------------------------------------------------------------------------
 
 Measurement::~Measurement()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -155,8 +148,4 @@ void Measurement::addDistance(
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

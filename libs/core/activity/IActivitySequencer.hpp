@@ -43,7 +43,7 @@ public:
     ACTIVITY_API IActivitySequencer();
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~IActivitySequencer();
+    ACTIVITY_API ~IActivitySequencer() override;
 
 protected:
 

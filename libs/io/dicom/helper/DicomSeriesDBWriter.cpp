@@ -35,10 +35,7 @@
 
 #include <io/zip/WriteDirArchive.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -51,8 +48,7 @@ DicomSeriesDBWriter::DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key /*
 //------------------------------------------------------------------------------
 
 DicomSeriesDBWriter::~DicomSeriesDBWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +99,7 @@ void DicomSeriesDBWriter::write()
     const auto nbSeries = seriesDB->getContainer().size();
     int processedSeries = 0;
 
-    for(data::Series::sptr series : seriesDB->getContainer())
+    for(const data::Series::sptr& series : seriesDB->getContainer())
     {
         const data::DicomSeries::sptr& dicomSeries = data::DicomSeries::dynamicCast(series);
 
@@ -111,50 +107,50 @@ void DicomSeriesDBWriter::write()
             core::jobs::Job::New(
                 "Write Dicom series",
                 [&, dicomSeries](core::jobs::Job& runningJob)
+            {
+                if(!runningJob.cancelRequested())
                 {
-                    if(!runningJob.cancelRequested())
+                    m_anonymizer->resetIndex();
+
+                    io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
+                    writer->setObject(dicomSeries);
+                    writer->setAnonymizer(m_anonymizer);
+                    writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
+
+                    runningJob.addCancelHook(
+                        [&](core::jobs::IJob& /*subJob*/)
                     {
-                        m_anonymizer->resetIndex();
+                        writer->getJob()->cancel();
+                    });
 
-                        io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
-                        writer->setObject(dicomSeries);
-                        writer->setAnonymizer(m_anonymizer);
-                        writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
+                    writer->getJob()->addDoneWorkHook(
+                        [&](core::jobs::IJob& subJob, std::uint64_t /*oldWork*/)
+                    {
+                        runningJob.doneWork(subJob.getDoneWorkUnits());
+                    });
 
-                        runningJob.addCancelHook(
-                            [&](core::jobs::IJob& /*subJob*/)
-                        {
-                            writer->getJob()->cancel();
-                        });
-
-                        writer->getJob()->addDoneWorkHook(
-                            [&](core::jobs::IJob& subJob, std::uint64_t /*oldWork*/)
-                        {
-                            runningJob.doneWork(subJob.getDoneWorkUnits());
-                        });
-
-                        try
-                        {
-                            writer->write();
-                        }
-                        catch(std::exception& e)
-                        {
-                            runningJob.log(std::string("Failed to write series :\n") + e.what());
-                        }
-                        catch(...)
-                        {
-                            runningJob.log("An unexpected error occurred while writing series");
-                        }
+                    try
+                    {
+                        writer->write();
                     }
-                },
+                    catch(std::exception& e)
+                    {
+                        runningJob.log(std::string("Failed to write series :\n") + e.what());
+                    }
+                    catch(...)
+                    {
+                        runningJob.log("An unexpected error occurred while writing series");
+                    }
+                }
+            },
                 core::thread::getDefaultWorker()
             );
 
         m_aggregator->addCancelHook(
             [&](core::jobs::IJob& /*subJob*/)
-                {
-                    job->cancel();
-                });
+            {
+                job->cancel();
+            });
         m_aggregator->add(job);
     }
 
@@ -165,6 +161,4 @@ void DicomSeriesDBWriter::write()
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

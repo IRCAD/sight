@@ -34,8 +34,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Tag::Tag(data::Object::Key) :
-    m_size(0.5)
+Tag::Tag(data::Object::Key /*unused*/)
 {
 }
 

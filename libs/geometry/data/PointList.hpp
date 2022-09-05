@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "geometry/data/config.hpp"
 
+#include <core/data/PointList.hpp>
+
 #include <data/Array.hpp>
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
-
-#include <core/data/PointList.hpp>
 
 namespace sight::geometry::data
 {
@@ -44,7 +44,7 @@ public:
     GEOMETRY_DATA_API PointList();
 
     /// Destructor. Does nothing.
-    GEOMETRY_DATA_API ~PointList();
+    GEOMETRY_DATA_API ~PointList() = default;
 
     /**
      * @brief Computes the point-to-point distance between 2 pointlists
@@ -86,7 +86,7 @@ public:
      * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
-    GEOMETRY_DATA_API static const sight::data::Point::sptr removeClosestPoint(
+    GEOMETRY_DATA_API static sight::data::Point::sptr removeClosestPoint(
         const sight::data::PointList::sptr& _pointList,
         const sight::data::Point::csptr& _point,
         float _delta

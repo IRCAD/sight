@@ -35,10 +35,7 @@
 
 #include <array>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -88,7 +85,7 @@ public:
     VIZ_SCENE3D_API void clipGrid(const Ogre::AxisAlignedBox& _clippingBox);
 
     /// Get the object's type as a string.
-    VIZ_SCENE3D_API const Ogre::String& getMovableType(void) const override;
+    VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
     VIZ_SCENE3D_API void set3DImageTexture(const Ogre::TexturePtr& _texture);
@@ -154,19 +151,17 @@ public:
 
     /// Constructor, does nothing.
     VIZ_SCENE3D_API GridProxyGeometryFactory()
-    {
-    }
+    = default;
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API ~GridProxyGeometryFactory() override
-    {
-    }
+    = default;
 
     /// Produced object type name. (i.e. "GridProxyGeometry")
     VIZ_SCENE3D_API static inline const Ogre::String FACTORY_TYPE_NAME = "GridProxyGeometry";
 
     /// Returns the object type name.
-    VIZ_SCENE3D_API const Ogre::String& getType() const override
+    [[nodiscard]] VIZ_SCENE3D_API const Ogre::String& getType() const override
     {
         return GridProxyGeometryFactory::FACTORY_TYPE_NAME;
     }
@@ -188,6 +183,7 @@ protected:
     VIZ_SCENE3D_API Ogre::MovableObject* createInstanceImpl(
         const Ogre::String& name,
         const Ogre::NameValuePairList*
+        /*params*/
     ) override
     {
         return new viz::scene3d::vr::GridProxyGeometry(name);
@@ -209,6 +205,4 @@ inline void GridProxyGeometry::set3DImageTexture(const Ogre::TexturePtr& _textur
     m_3DImageTexture = _texture;
 }
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

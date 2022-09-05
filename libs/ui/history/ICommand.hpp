@@ -43,13 +43,12 @@ public:
      * @brief Virtual destructor.
      */
     UI_HISTORY_API virtual ~ICommand()
-    {
-    }
+    = default;
 
     /**
      * @brief Retrieves the memory footprint of the command.
      */
-    UI_HISTORY_API virtual std::size_t getSize() const = 0;
+    [[nodiscard]] UI_HISTORY_API virtual std::size_t getSize() const = 0;
 
     /**
      * @brief Used to implement the redo operation.
@@ -64,7 +63,7 @@ public:
     /**
      * @brief Return an optional description of the command.
      */
-    UI_HISTORY_API virtual const std::string getDescription() const
+    [[nodiscard]] UI_HISTORY_API virtual std::string getDescription() const
     {
         return "";
     }

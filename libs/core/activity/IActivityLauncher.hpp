@@ -65,15 +65,15 @@ protected:
     );
 
     /// Create the activity series given in 'mainActivity' configuration
-    ACTIVITY_API virtual data::ActivitySeries::sptr createMainActivity() const;
+    [[nodiscard]] ACTIVITY_API virtual data::ActivitySeries::sptr createMainActivity() const;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    ACTIVITY_API std::pair<bool, std::string> validateActivity(
+    static ACTIVITY_API std::pair<bool, std::string> validateActivity(
         const data::ActivitySeries::csptr& activitySeries
-    ) const;
+    );
 
     std::string m_mainActivityId; ///< configuration id of the main activity
 

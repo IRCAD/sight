@@ -232,7 +232,7 @@ public:
 protected:
 
     UI_BASE_API IAction();
-    UI_BASE_API virtual ~IAction();
+    UI_BASE_API ~IAction() override;
 
     /// Initializes the action. This should be called in the configuring() method in derived classes.
     UI_BASE_API void initialize();

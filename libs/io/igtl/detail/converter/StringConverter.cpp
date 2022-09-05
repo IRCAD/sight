@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <igtlStringMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string StringConverter::s_IGTL_TYPE          = "STRING";
@@ -40,14 +37,12 @@ const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::String::classnam
 converterRegisterMacro(io::igtl::detail::converter::StringConverter);
 
 StringConverter::StringConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 StringConverter::~StringConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +52,7 @@ StringConverter::~StringConverter()
 
     ::igtl::StringMessage::Pointer dest = ::igtl::StringMessage::New();
     dest->SetString(srcStr->getValue().c_str());
-    return ::igtl::MessageBase::Pointer(dest.GetPointer());
+    return {dest.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +61,7 @@ data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::P
 {
     data::String::sptr dest = data::String::New();
 
-    ::igtl::StringMessage* msg            = dynamic_cast< ::igtl::StringMessage*>(src.GetPointer());
+    auto* msg                             = dynamic_cast< ::igtl::StringMessage*>(src.GetPointer());
     ::igtl::StringMessage::Pointer srcStr = ::igtl::StringMessage::Pointer(msg);
     dest->setValue(std::string(srcStr->GetString()));
 
@@ -94,6 +89,4 @@ std::string const& StringConverter::getFwDataObjectType() const
     return StringConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

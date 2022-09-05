@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,43 +24,32 @@
 
 #include <core/spyLog.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::InformationObjectDefinition(
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const std::filesystem::path& destinationPath,
-    const core::log::Logger::sptr& logger,
+    SPTR(io::dicom::container::DicomInstance)instance,
+    std::filesystem::path destinationPath,
+    core::log::Logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    m_instance(instance),
-    m_destinationPath(destinationPath),
-    m_logger(logger),
-    m_progressCallback(progress),
-    m_cancelRequestedCallback(cancel)
+    m_instance(std::move(instance)),
+    m_destinationPath(std::move(destinationPath)),
+    m_logger(std::move(logger)),
+    m_progressCallback(std::move(progress)),
+    m_cancelRequestedCallback(std::move(cancel))
 {
-    SIGHT_ASSERT("Instance should not be null.", instance);
+    SIGHT_ASSERT("Instance should not be null.", m_instance);
 }
 
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::~InformationObjectDefinition()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

@@ -42,10 +42,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::log::ut::SpyLogTest);
 
-namespace sight::core::log
-{
-
-namespace ut
+namespace sight::core::log::ut
 {
 
 static utest::Exception e("");
@@ -54,8 +51,7 @@ static utest::Exception e("");
 
 void SpyLogTest::setUp()
 {
-    core::log::SpyLogger& log = core::log::SpyLogger::get();
-    log.add_console_log(m_ostream);
+    core::log::SpyLogger::add_console_log(m_ostream);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,50 +66,47 @@ void SpyLogTest::tearDown()
 
 void SpyLogTest::logMessageTest()
 {
-    core::log::SpyLogger& log = core::log::SpyLogger::get();
     std::vector<std::string> logs;
 
-    logs.push_back("trace message");
-    log.trace(logs.back(), __FILE__, __LINE__);
-    this->checkLog(logs, this->logToVector(m_ostream));
+    logs.emplace_back("trace message");
+    core::log::SpyLogger::trace(logs.back(), __FILE__, __LINE__);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, sight::core::log::ut::SpyLogTest::logToVector(m_ostream));
 
-    logs.push_back("debug message");
-    log.debug(logs.back(), __FILE__, __LINE__);
-    this->checkLog(logs, this->logToVector(m_ostream));
+    logs.emplace_back("debug message");
+    core::log::SpyLogger::debug(logs.back(), __FILE__, __LINE__);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, sight::core::log::ut::SpyLogTest::logToVector(m_ostream));
 
-    logs.push_back("info message");
-    log.info(logs.back(), __FILE__, __LINE__);
-    this->checkLog(logs, this->logToVector(m_ostream));
+    logs.emplace_back("info message");
+    core::log::SpyLogger::info(logs.back(), __FILE__, __LINE__);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, sight::core::log::ut::SpyLogTest::logToVector(m_ostream));
 
-    logs.push_back("warn message");
-    log.warn(logs.back(), __FILE__, __LINE__);
-    this->checkLog(logs, this->logToVector(m_ostream));
+    logs.emplace_back("warn message");
+    core::log::SpyLogger::warn(logs.back(), __FILE__, __LINE__);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, sight::core::log::ut::SpyLogTest::logToVector(m_ostream));
 
-    logs.push_back("error message");
-    log.error(logs.back(), __FILE__, __LINE__);
-    this->checkLog(logs, this->logToVector(m_ostream));
+    logs.emplace_back("error message");
+    core::log::SpyLogger::error(logs.back(), __FILE__, __LINE__);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, sight::core::log::ut::SpyLogTest::logToVector(m_ostream));
 
-    logs.push_back("fatal message");
-    log.fatal(logs.back(), __FILE__, __LINE__);
-    this->checkLog(logs, this->logToVector(m_ostream));
+    logs.emplace_back("fatal message");
+    core::log::SpyLogger::fatal(logs.back(), __FILE__, __LINE__);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, sight::core::log::ut::SpyLogTest::logToVector(m_ostream));
 }
 
 //-----------------------------------------------------------------------------
 
 struct LogProducerThread
 {
-    typedef std::shared_ptr<LogProducerThread> sptr;
-    typedef std::vector<std::string> LogContainerType;
+    using sptr             = std::shared_ptr<LogProducerThread>;
+    using LogContainerType = std::vector<std::string>;
 
     LogProducerThread()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
-    void run(LogContainerType& logs, std::size_t nbLogs, std::size_t offset)
+    static void run(LogContainerType& logs, std::size_t nbLogs, std::size_t offset)
     {
-        core::log::SpyLogger& log = core::log::SpyLogger::get();
         for(std::size_t i = offset ; i < nbLogs + offset ; ++i)
         {
             std::stringstream ss;
@@ -122,7 +115,7 @@ struct LogProducerThread
             ss.fill('0');
             ss << i;
             logs[i] = ss.str();
-            log.fatal(logs[i], __FILE__, __LINE__);
+            core::log::SpyLogger::fatal(logs[i], __FILE__, __LINE__);
         }
     }
 };
@@ -162,7 +155,7 @@ void SpyLogTest::threadSafetyTest()
     {
         LogProducerThread::sptr ct = std::make_shared<LogProducerThread>();
         std::size_t offset         = i * NB_LOG;
-        tg.push_back(std::thread(std::bind(&LogProducerThread::run, ct, std::ref(logs), NB_LOG, offset)));
+        tg.emplace_back([&, offset](auto&& ...){return LogProducerThread::run(logs, NB_LOG, offset);});
     }
 
     for(auto& t : tg)
@@ -170,10 +163,10 @@ void SpyLogTest::threadSafetyTest()
         t.join();
     }
 
-    LogProducerThread::LogContainerType logMessages = this->logToVector(m_ostream);
+    LogProducerThread::LogContainerType logMessages = sight::core::log::ut::SpyLogTest::logToVector(m_ostream);
 
     std::sort(logMessages.begin(), logMessages.end(), regex_compare);
-    this->checkLog(logs, logMessages);
+    sight::core::log::ut::SpyLogTest::checkLog(logs, logMessages);
 }
 
 //-----------------------------------------------------------------------------
@@ -205,13 +198,8 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
     const std::string fileLinePattern("([0-9]+\\] )");
     const std::string messagePattern("(.*)$");
 
-    std::regex re(
-        linePattern
-        + timePattern
-        + levelPattern
-        + filePattern
-        + fileLinePattern
-        + messagePattern);
+    std::regex re(std::string(linePattern).append(timePattern).append(levelPattern).append(filePattern)
+                  .append(fileLinePattern).append(messagePattern));
 
     std::smatch match;
     std::string regexMessage;
@@ -230,6 +218,4 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core::log
+} // namespace sight::core::log::ut

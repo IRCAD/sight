@@ -27,10 +27,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -141,6 +138,4 @@ protected:
     ui::base::dialog::INotificationDialog::sptr m_implementation;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

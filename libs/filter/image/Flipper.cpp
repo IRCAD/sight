@@ -36,7 +36,7 @@ namespace sight::filter::image
 struct Parameters
 {
     data::Image::csptr i_image;
-    std::array<bool, 3> i_flipAxes;
+    std::array<bool, 3> i_flipAxes {};
     data::Image::sptr o_image;
 };
 
@@ -49,7 +49,7 @@ struct Flipping
 
     void operator()(Parameters& params)
     {
-        typedef typename itk::Image<PixelType, dimension> ImageType;
+        using ImageType = typename itk::Image<PixelType, dimension>;
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
         typename itk::FlipImageFilter<ImageType>::Pointer flipFilter =

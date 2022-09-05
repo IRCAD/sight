@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::thread
-{
-
-namespace ut
+namespace sight::core::thread::ut
 {
 
 class PoolTest : public CPPUNIT_NS::TestFixture
@@ -40,13 +37,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void basicTest();
-    void defaultPoolTest();
+    static void basicTest();
+    static void defaultPoolTest();
 };
 
-} //namespace ut
-
-} //namespace sight::core::thread
+} // namespace sight::core::thread::ut

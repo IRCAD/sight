@@ -39,10 +39,7 @@ const core::com::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = 
 
 //------------------------------------------------------------------------------
 
-Resection::Resection(data::Object::Key) :
-    m_isSafePart(true),
-    m_isValid(false),
-    m_isVisible(true)
+Resection::Resection(data::Object::Key /*unused*/)
 {
     m_planeList              = data::PlaneList::New();
     m_sigReconstructionAdded = ReconstructionAddedSignalType::New();
@@ -55,8 +52,7 @@ Resection::Resection(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 Resection::~Resection()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

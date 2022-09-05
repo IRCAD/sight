@@ -47,15 +47,14 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManager::LineLayoutManager(ui::base::GuiBaseObject::Key)
+LineLayoutManager::LineLayoutManager(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 LineLayoutManager::~LineLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +65,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
     const QString qId = QString::fromStdString(id);
     m_parentContainer->getQtContainer()->setObjectName(qId);
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_parentContainer->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -78,7 +77,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
     }
 
     const std::list<ViewInfo>& views = this->getViewsInfo();
-    for(ViewInfo viewInfo : views)
+    for(const ViewInfo& viewInfo : views)
     {
         if(viewInfo.m_isSpacer)
         {
@@ -86,11 +85,11 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
         }
         else
         {
-            QWidget* panel;
-            int leftBorder;
-            int topBorder;
-            int rightBorder;
-            int bottomBorder;
+            QWidget* panel   = nullptr;
+            int leftBorder   = 0;
+            int topBorder    = 0;
+            int rightBorder  = 0;
+            int bottomBorder = 0;
 
             if(viewInfo.m_spacing != -1)
             {
@@ -111,7 +110,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
 
             if(viewInfo.m_caption.first)
             {
-                QGroupBox* groupbox = new QGroupBox();
+                auto* groupbox = new QGroupBox();
                 groupbox->setObjectName(qId + '/' + viewInfo.m_caption.second.c_str());
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 panel         = groupbox;
@@ -142,31 +141,31 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
 
             if(!viewInfo.m_backgroundColor.empty())
             {
-                std::uint8_t rgba[4];
+                std::array<std::uint8_t, 4> rgba {};
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-                << static_cast<short>(rgba[1]) << ','
-                << static_cast<short>(rgba[2]) << ','
-                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+                << static_cast<std::int16_t>(rgba[1]) << ','
+                << static_cast<std::int16_t>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 panel->setStyleSheet(style + qApp->styleSheet());
             }
 
             if(viewInfo.m_useScrollBar)
             {
-                QScrollArea* scrollArea = new QScrollArea();
+                auto* scrollArea = new QScrollArea();
                 scrollArea->setWidget(panel);
                 scrollArea->setWidgetResizable(true);
                 if(!viewInfo.m_backgroundColor.empty())
                 {
-                    std::uint8_t rgba[4];
+                    std::array<std::uint8_t, 4> rgba {};
                     data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                     std::stringstream ss;
-                    ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-                    << static_cast<short>(rgba[1]) << ','
-                    << static_cast<short>(rgba[2]) << ','
-                    << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+                    ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+                    << static_cast<std::int16_t>(rgba[1]) << ','
+                    << static_cast<std::int16_t>(rgba[2]) << ','
+                    << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                     const QString style = QString::fromStdString(ss.str());
                     scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
@@ -180,7 +179,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
                 layout->setStretchFactor(panel, viewInfo.m_proportion);
             }
 
-            if(false == viewInfo.m_visible)
+            if(!viewInfo.m_visible)
             {
                 subContainer->setVisible(false);
             }

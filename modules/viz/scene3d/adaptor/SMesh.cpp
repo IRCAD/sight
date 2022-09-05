@@ -72,7 +72,7 @@ SMesh::SMesh() noexcept
 
 SMesh::~SMesh() noexcept
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
@@ -93,7 +93,7 @@ void SMesh::configuring()
     SIGHT_ASSERT("Material not found", m_material);
     m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
-    if(config.count(s_AUTORESET_CAMERA_CONFIG))
+    if(config.count(s_AUTORESET_CAMERA_CONFIG) != 0U)
     {
         m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
     }
@@ -101,7 +101,7 @@ void SMesh::configuring()
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if(config.count(s_MATERIAL_NAME_CONFIG))
+    if(config.count(s_MATERIAL_NAME_CONFIG) != 0U)
     {
         m_materialName = config.get<std::string>(s_MATERIAL_NAME_CONFIG);
     }
@@ -126,9 +126,9 @@ void SMesh::configuring()
     m_isDynamic         = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
     m_isDynamicVertices = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
 
-    if(config.count(s_QUERY_CONFIG))
+    if(config.count(s_QUERY_CONFIG) != 0U)
     {
-        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        const auto hexaMask = config.get<std::string>(s_QUERY_CONFIG);
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
@@ -235,7 +235,7 @@ void SMesh::stopping()
     m_meshGeometry->clearMesh(*sceneMgr);
     m_materialAdaptor.reset();
 
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         sceneMgr->destroyEntity(m_entity);
         m_entity = nullptr;
@@ -248,7 +248,7 @@ void SMesh::stopping()
 
 void module::viz::scene3d::adaptor::SMesh::setVisible(bool _visible)
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         m_entity->setVisible(_visible);
 
@@ -270,7 +270,7 @@ void SMesh::updateMesh(data::Mesh::csptr _mesh)
     {
         SIGHT_DEBUG("Empty mesh");
 
-        if(m_entity)
+        if(m_entity != nullptr)
         {
             sceneMgr->destroyEntity(m_entity);
             m_entity = nullptr;
@@ -296,7 +296,7 @@ void SMesh::updateMesh(data::Mesh::csptr _mesh)
     // Create entity and attach it in the scene graph
     //------------------------------------------
 
-    if(!m_entity)
+    if(m_entity == nullptr)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
@@ -330,7 +330,7 @@ void SMesh::updateMesh(data::Mesh::csptr _mesh)
         *sceneMgr,
         m_materialAdaptor->getMaterialName()
     );
-    for(auto renderable : r2vbRenderables.second)
+    for(auto* renderable : r2vbRenderables.second)
     {
         auto adaptor = renderable->m_materialAdaptor.lock();
 
@@ -402,8 +402,8 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
 
-    const std::string meshName = _mesh->getID();
-    const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
+    std::string meshName      = _mesh->getID();
+    const std::string mtlName = meshName.append("_").append(materialAdaptor->getID()).append(_materialSuffix);
 
     materialAdaptor->setMaterialName(mtlName);
     if(_materialSuffix.empty())
@@ -423,7 +423,7 @@ void SMesh::updateNewMaterialAdaptor(data::Mesh::csptr _mesh)
 {
     if(!m_materialAdaptor)
     {
-        if(m_entity)
+        if(m_entity != nullptr)
         {
             m_materialAdaptor = this->createMaterialService(_mesh);
             m_materialAdaptor->start();
@@ -459,7 +459,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
 
-        if(m_entity)
+        if(m_entity != nullptr)
         {
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
             m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);

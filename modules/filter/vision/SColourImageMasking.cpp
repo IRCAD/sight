@@ -45,14 +45,10 @@ const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMas
 // ------------------------------------------------------------------------------
 
 SColourImageMasking::SColourImageMasking() noexcept :
-    m_lastVideoTimestamp(0.),
-    m_scaleFactor(1.),
+
     m_maskDownsize(cv::Size(0, 0)),
     m_lowerColor(cv::Scalar(0, 0, 0)),
-    m_upperColor(cv::Scalar(255, 255, 255)),
-    m_noise(0.),
-    m_backgroundComponents(5),
-    m_foregroundComponents(5)
+    m_upperColor(cv::Scalar(255, 255, 255))
 {
     newSlot(s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this);
     newSlot(s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this);
@@ -65,9 +61,8 @@ SColourImageMasking::SColourImageMasking() noexcept :
 
 // ------------------------------------------------------------------------------
 
-SColourImageMasking::~SColourImageMasking() noexcept
-{
-}
+SColourImageMasking::~SColourImageMasking() noexcept =
+    default;
 
 // ------------------------------------------------------------------------------
 
@@ -130,8 +125,8 @@ void SColourImageMasking::configuring()
 
 void SColourImageMasking::starting()
 {
-    using namespace sight::filter::vision;
-    m_masker = std::make_unique<Masker>(HSv, LLRatio);
+    namespace vision = sight::filter::vision;
+    m_masker         = std::make_unique<vision::Masker>(vision::HSv, vision::LLRatio);
     m_masker->setThreshold(1.);
 
     m_lastVideoTimestamp = 0.;
@@ -325,7 +320,8 @@ void SColourImageMasking::setForeground()
     cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // Convert RGB to HSV
-    cv::Mat videoBGR, videoHSV;
+    cv::Mat videoBGR;
+    cv::Mat videoHSV;
     cv::cvtColor(videoCV, videoBGR, cv::COLOR_RGBA2BGR);
     cv::cvtColor(videoBGR, videoHSV, cv::COLOR_BGR2HSV);
 

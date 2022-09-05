@@ -42,10 +42,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ImagePropertiesTest);
 
-namespace sight::activity
-{
-
-namespace ut
+namespace sight::activity::ut
 {
 
 //------------------------------------------------------------------------------
@@ -131,6 +128,4 @@ void ImagePropertiesTest::propertiesTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::activity
+} // namespace sight::activity::ut

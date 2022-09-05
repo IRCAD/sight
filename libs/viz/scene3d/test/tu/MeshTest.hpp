@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
-{
-
-namespace ut
+namespace sight::viz::scene3d::helper::ut
 {
 
 class MeshTest : public CPPUNIT_NS::TestFixture
@@ -42,16 +36,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void copyColors();
+    static void copyColors();
 
 private:
 };
 
-} //namespace ut
-
-} //namespace helper
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper::ut

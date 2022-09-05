@@ -37,7 +37,7 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -120,7 +120,7 @@ private:
     data::Material::sptr m_material {nullptr};
 
     /// Defines the axis length (in mm).
-    float m_length {1.f};
+    float m_length {1.F};
 
     /// Defines the color of the vector.
     std::string m_color {"#FFFFFF"};

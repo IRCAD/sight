@@ -28,8 +28,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/helper/MedicalImage.hpp>
-
 #include <numeric>
 
 //------------------------------------------------------------------------------
@@ -46,7 +44,7 @@ auto pixelFormatToNumComponents =
     {
         static const std::array<std::size_t, Image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
         {
-            ~0ul,
+            ~0UL,
             3,
             4,
             3,
@@ -71,7 +69,7 @@ const core::com::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "tr
 
 //------------------------------------------------------------------------------
 
-Image::Image(data::Object::Key) :
+Image::Image(data::Object::Key /*unused*/) :
     m_dataArray(data::Array::New())
 {
     newSignal<BufferModifiedSignalType>(s_BUFFER_MODIFIED_SIG);
@@ -94,9 +92,8 @@ Image::Image(data::Object::Key) :
 
 //------------------------------------------------------------------------------
 
-Image::~Image() noexcept
-{
-}
+Image::~Image() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -234,7 +231,7 @@ std::size_t Image::getSizeInBytes() const
             m_size.begin(),
             m_size.begin() + dims,
             static_cast<std::size_t>(m_type.size()) * m_numComponents,
-            std::multiplies<std::size_t>()
+            std::multiplies<>()
         );
     }
 
@@ -281,7 +278,7 @@ const void* Image::getBuffer() const
 void* Image::getPixel(IndexType index)
 {
     const std::size_t imagePixelSize = m_type.size() * m_numComponents;
-    BufferType* buf                  = static_cast<BufferType*>(this->getBuffer());
+    auto* buf                        = static_cast<BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }
@@ -291,24 +288,24 @@ void* Image::getPixel(IndexType index)
 const void* Image::getPixel(IndexType index) const
 {
     const std::size_t imagePixelSize = m_type.size() * m_numComponents;
-    const BufferType* buf            = static_cast<const BufferType*>(this->getBuffer());
+    const auto* buf                  = static_cast<const BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setPixel(IndexType index, Image::BufferType* pixBuf)
+void Image::setPixel(IndexType index, const Image::BufferType* pixBuf)
 {
     const std::size_t imagePixelSize = m_type.size() * m_numComponents;
-    BufferType* buf                  = static_cast<BufferType*>(this->getPixel(index));
+    auto* buf                        = static_cast<BufferType*>(this->getPixel(index));
 
     std::copy(pixBuf, pixBuf + imagePixelSize, buf);
 }
 
 //------------------------------------------------------------------------------
 
-const std::string Image::getPixelAsString(
+std::string Image::getPixelAsString(
     IndexType x,
     IndexType y,
     IndexType z
@@ -322,7 +319,7 @@ const std::string Image::getPixelAsString(
 
 Image::iterator<char> Image::begin()
 {
-    return iterator<char>(static_cast<char*>(getBuffer()));
+    return {static_cast<char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -338,7 +335,7 @@ Image::iterator<char> Image::end()
 
 Image::const_iterator<char> Image::begin() const
 {
-    return const_iterator<char>(static_cast<const char*>(getBuffer()));
+    return {static_cast<const char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -407,7 +404,7 @@ void Image::setBuffer(void* buf, bool takeOwnership, core::memory::BufferAllocat
         oldBufferObject->swap(newBufferObject);
     }
 
-    m_dataArray->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_dataArray->getSizeInBytes(), policy);
+    m_dataArray->getBufferObject()->setBuffer(buf, (buf == nullptr) ? 0 : m_dataArray->getSizeInBytes(), policy);
     m_dataArray->setIsBufferOwner(takeOwnership);
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,23 +84,24 @@ public:
         {
             return ArchiveFormat::FILESYSTEM;
         }
-        else if(archiveFormat == archiveFormatToString(ArchiveFormat::COMPATIBLE))
+
+        if(archiveFormat == archiveFormatToString(ArchiveFormat::COMPATIBLE))
         {
             return ArchiveFormat::COMPATIBLE;
         }
-        else if(archiveFormat == archiveFormatToString(ArchiveFormat::OPTIMIZED))
+
+        if(archiveFormat == archiveFormatToString(ArchiveFormat::OPTIMIZED))
         {
             return ArchiveFormat::OPTIMIZED;
         }
-        else if(archiveFormat.empty() || archiveFormat == "default")
+
+        if(archiveFormat.empty() || archiveFormat == "default")
         {
             return ArchiveFormat::DEFAULT;
         }
-        else
-        {
-            // Error case
-            return ArchiveFormat::INVALID;
-        }
+
+        // Error case
+        return ArchiveFormat::INVALID;
     }
 
 protected:
@@ -113,4 +114,4 @@ private:
     const std::filesystem::path m_archive_path;
 };
 
-} // namespace sight::io::session
+} // namespace sight::io::zip

@@ -27,15 +27,13 @@
 namespace sight::module::ui::qml::model
 {
 
-OrganListModel::OrganListModel() noexcept
-{
-}
+OrganListModel::OrganListModel() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-OrganListModel::~OrganListModel() noexcept
-{
-}
+OrganListModel::~OrganListModel() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -59,7 +57,7 @@ void OrganListModel::updateModelSeries(const data::ModelSeries::sptr& modelSerie
 
 //------------------------------------------------------------------------------
 
-int OrganListModel::rowCount(const QModelIndex&) const
+int OrganListModel::rowCount(const QModelIndex& /*parent*/) const
 {
     int count = 0;
     if(m_modelSeries)
@@ -76,21 +74,21 @@ QVariant OrganListModel::data(const QModelIndex& index, int role) const
 {
     if(index.row() < 0)
     {
-        return QVariant();
+        return {};
     }
 
     if(!m_modelSeries)
     {
-        return QVariant();
+        return {};
     }
 
     const auto reconstructions = m_modelSeries->getReconstructionDB();
     const std::size_t nbRec    = reconstructions.size();
-    const std::size_t idx      = static_cast<size_t>(index.row());
+    const auto idx             = static_cast<size_t>(index.row());
 
     if(idx >= nbRec)
     {
-        return QVariant();
+        return {};
     }
 
     const auto& rec = reconstructions[idx];
@@ -115,7 +113,7 @@ QVariant OrganListModel::data(const QModelIndex& index, int role) const
             break;
     }
 
-    return QVariant();
+    return {};
 }
 
 //------------------------------------------------------------------------------

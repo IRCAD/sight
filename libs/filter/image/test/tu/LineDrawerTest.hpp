@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 class LineDrawerTest : public CPPUNIT_NS::TestFixture
@@ -42,15 +39,13 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void circleTest();
-    void ellipseTest();
-    void borderTest();
-    void roiTest();
+    static void circleTest();
+    static void ellipseTest();
+    static void borderTest();
+    static void roiTest();
 };
 
-} //namespace ut
-
-} //namespace sight::filter::image
+} // namespace sight::filter::image::ut

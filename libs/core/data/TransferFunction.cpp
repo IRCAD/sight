@@ -231,7 +231,7 @@ data::TransferFunction::sptr TransferFunction::createDefaultTF()
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction(data::Object::Key)
+TransferFunction::TransferFunction(data::Object::Key /*unused*/)
 {
     newSignal<PointsModifiedSignalType>(s_POINTS_MODIFIED_SIG);
     newSignal<WindowingModifiedSignalType>(s_WINDOWING_MODIFIED_SIG);
@@ -373,7 +373,7 @@ TransferFunctionPiece::min_max_t TransferFunction::minMax() const
 
     min_max_t minMax {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
 
-    for(auto& piece : this->pieces())
+    for(const auto& piece : this->pieces())
     {
         const auto pieceMinMax = piece->minMax();
         minMax.first  = std::min(piece->mapValueToWindow(pieceMinMax.first), minMax.first);

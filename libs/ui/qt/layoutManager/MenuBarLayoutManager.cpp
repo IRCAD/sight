@@ -35,10 +35,7 @@ fwGuiRegisterMacro(
     sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY
 );
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -50,8 +47,7 @@ MenuBarLayoutManager::MenuBarLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 //-----------------------------------------------------------------------------
 
 MenuBarLayoutManager::~MenuBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -65,7 +61,7 @@ void MenuBarLayoutManager::createLayout(ui::base::container::fwMenuBar::sptr par
     QMenuBar* menuBar = m_parent->getQtMenuBar();
     menuBar->setObjectName(qId);
 
-    for(std::string name : m_menuNames)
+    for(const std::string& name : m_menuNames)
     {
         ui::qt::container::QtMenuContainer::sptr menu = ui::qt::container::QtMenuContainer::New();
         QMenu* qtMenu                                 = menuBar->addMenu(QString::fromStdString(name));
@@ -108,6 +104,4 @@ void MenuBarLayoutManager::menuIsEnabled(ui::base::container::fwMenu::sptr fwMen
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

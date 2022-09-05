@@ -29,25 +29,21 @@
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::module::activity::validator
-{
-
-namespace ModelSeries
+namespace sight::module::activity::validator::ModelSeries
 {
 
 fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::ModelSeries::ContainOneTool);
 
 //-----------------------------------------------------------------------------
 
-ContainOneTool::ContainOneTool(sight::activity::IValidator::Key)
+ContainOneTool::ContainOneTool(sight::activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ContainOneTool::~ContainOneTool()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -65,7 +61,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
     if(modelSeries)
     {
         std::size_t skinCount = 0;
-        for(auto rec : modelSeries->getReconstructionDB())
+        for(const auto& rec : modelSeries->getReconstructionDB())
         {
             if(rec->getStructureType() == "Tool")
             {
@@ -85,7 +81,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
     }
     else if(vector)
     {
-        for(auto obj : *vector)
+        for(const auto& obj : *vector)
         {
             data::ModelSeries::sptr model = data::ModelSeries::dynamicCast(obj);
             if(!model)
@@ -96,7 +92,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
             else
             {
                 std::size_t skinCount = 0;
-                for(auto rec : model->getReconstructionDB())
+                for(const auto& rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Tool")
                     {
@@ -120,7 +116,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
     }
     else if(composite)
     {
-        for(auto elt : *composite)
+        for(const auto& elt : *composite)
         {
             data::ModelSeries::sptr model = data::ModelSeries::dynamicCast(elt.second);
             if(!model)
@@ -131,7 +127,7 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
             else
             {
                 std::size_t skinCount = 0;
-                for(auto rec : model->getReconstructionDB())
+                for(const auto& rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Tool")
                     {
@@ -164,6 +160,4 @@ sight::activity::IValidator::ValidationType ContainOneTool::validate(const data:
 
 //-----------------------------------------------------------------------------
 
-} // namespace ModelSeries
-
-} // namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ModelSeries

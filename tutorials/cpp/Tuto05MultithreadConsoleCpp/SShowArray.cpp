@@ -31,15 +31,13 @@ static const std::string s_ARRAY_INPUT = "array";
 
 //------------------------------------------------------------------------------
 
-SShowArray::SShowArray() noexcept
-{
-}
+SShowArray::SShowArray() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SShowArray::~SShowArray() noexcept
-{
-}
+SShowArray::~SShowArray() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

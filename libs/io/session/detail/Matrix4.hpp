@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,20 +28,17 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Matrix4
+namespace sight::io::session::detail::Matrix4
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto matrix = Helper::safeCast<data::Matrix4>(object);
@@ -59,11 +56,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Matrix4::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -72,7 +69,7 @@ inline static data::Matrix4::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Matrix4>(tree, 0, 1);
 
-    std::array<double, 16> coefficients;
+    std::array<double, 16> coefficients {};
     for(std::size_t index = 0, end = coefficients.size() ; index < end ; ++index)
     {
         coefficients[index] = tree.get<double>(std::to_string(index));
@@ -83,6 +80,4 @@ inline static data::Matrix4::sptr deserialize(
     return matrix;
 }
 
-} // namespace detail::Matrix4
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Matrix4

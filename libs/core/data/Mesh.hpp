@@ -437,7 +437,7 @@ public:
      *
      * @throw Exception if the allocation failed
      */
-    DATA_API point_t pushPoint(const position_t p[3]);
+    DATA_API point_t pushPoint(const std::array<position_t, 3>& p);
     DATA_API point_t pushPoint(position_t x, position_t y, position_t z);
     /// @}
     /**
@@ -467,7 +467,7 @@ public:
      * @param p point coordinates
      * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void setPoint(point_t id, const Mesh::position_t p[3]);
+    DATA_API void setPoint(point_t id, const std::array<position_t, 3>& p);
 
     /**
      * @brief Set a point coordinates.

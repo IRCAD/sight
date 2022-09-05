@@ -28,10 +28,7 @@
 
 #include <igtlTransformMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string MatrixConverter::s_IGTL_TYPE          = "TRANSFORM";
@@ -40,14 +37,12 @@ const std::string MatrixConverter::s_FWDATA_OBJECT_TYPE = data::Matrix4::classna
 converterRegisterMacro(io::igtl::detail::converter::MatrixConverter);
 
 MatrixConverter::MatrixConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 MatrixConverter::~MatrixConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -68,7 +63,7 @@ MatrixConverter::~MatrixConverter()
     }
 
     msg->SetMatrix(dest);
-    return ::igtl::MessageBase::Pointer(msg.GetPointer());
+    return {msg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +71,7 @@ MatrixConverter::~MatrixConverter()
 data::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::Matrix4x4 matrix;
-    ::igtl::TransformMessage* msg                  = dynamic_cast< ::igtl::TransformMessage*>(src.GetPointer());
+    auto* msg                                      = dynamic_cast< ::igtl::TransformMessage*>(src.GetPointer());
     ::igtl::TransformMessage::Pointer srcTransform = ::igtl::TransformMessage::Pointer(msg);
     data::Matrix4::sptr dest                       = data::Matrix4::New();
     srcTransform->GetMatrix(matrix);
@@ -112,6 +107,4 @@ std::string const& MatrixConverter::getFwDataObjectType() const
     return MatrixConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

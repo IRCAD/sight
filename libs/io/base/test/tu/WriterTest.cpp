@@ -40,10 +40,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::base::ut::WriterTest);
 
-namespace sight::io::base
-{
-
-namespace ut
+namespace sight::io::base::ut
 {
 
 //------------------------------------------------------------------------------
@@ -70,7 +67,7 @@ void WriterTest::tearDown()
     ui::base::Preferences preferences;
 
     // Clear the preferences
-    preferences.clear();
+    ui::base::Preferences::clear();
     // Disables the preferences
     sight::ui::base::Preferences::set_enabled(false);
 }
@@ -82,8 +79,7 @@ void WriterTest::test_typeOK()
     // Test using the wrong method for accessing a file
     {
         // Test adding service
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         sight::service::IService::ConfigType config;
         config.add("file", (m_rootPath / m_file).string());
@@ -98,8 +94,7 @@ void WriterTest::test_typeOK()
     // Test using the wrong method for accessing a folder
     {
         // Test adding service
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FOLDER);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FOLDER);
 
         sight::service::IService::ConfigType config;
         config.add("folder", m_rootPath);
@@ -118,8 +113,7 @@ void WriterTest::test_hasLocationDefined()
 {
     // No location defined
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         srv->configure();
         srv->start();
@@ -129,8 +123,7 @@ void WriterTest::test_hasLocationDefined()
 
     // No absolute location defined
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         sight::service::IService::ConfigType config;
         config.add("file", m_file);
@@ -143,8 +136,7 @@ void WriterTest::test_hasLocationDefined()
 
     // Absolute location defined
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
         sight::service::IService::ConfigType config;
         config.add("file", (m_rootPath / m_file).string());
         srv->setConfiguration(config);
@@ -161,8 +153,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
 {
     // Base location defined but no file in FILE mode
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         sight::service::IService::ConfigType config;
         config.add("baseFolder", m_rootPath.string());
@@ -175,8 +166,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
 
     // Base location defined and a file in FILE mode
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         sight::service::IService::ConfigType config;
         config.add("baseFolder", m_rootPath.string());
@@ -190,8 +180,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
 
     // Base location defined and in FOLDER mode
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FOLDER);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FOLDER);
 
         sight::service::IService::ConfigType config;
         config.add("baseFolder", m_rootPath.string());
@@ -204,8 +193,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
 
     // Base location defined and in FOLDER mode with an additional folder
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FOLDER);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FOLDER);
 
         sight::service::IService::ConfigType config;
         config.add("baseFolder", m_rootPath.string());
@@ -224,8 +212,7 @@ void WriterTest::test_outputPaths()
 {
     // Test folder access
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FOLDER);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FOLDER);
 
         sight::service::IService::ConfigType config;
         config.add("folder", (m_rootPath / m_folder).string());
@@ -238,8 +225,7 @@ void WriterTest::test_outputPaths()
 
     // Test file access
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         sight::service::IService::ConfigType config;
         config.add("file", (m_rootPath / m_file).string());
@@ -252,8 +238,7 @@ void WriterTest::test_outputPaths()
 
     // Test base folder with file
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FILE);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FILE);
 
         sight::service::IService::ConfigType config;
         config.add("baseFolder", m_rootPath.string());
@@ -267,8 +252,7 @@ void WriterTest::test_outputPaths()
 
     // Test base folder with folder
     {
-        auto srv = std::make_shared<sight::io::base::ut::STestWriter>();
-        srv->setPathType(sight::io::base::service::FOLDER);
+        auto srv = std::make_shared<sight::io::base::ut::STestWriter>(sight::io::base::service::FOLDER);
 
         sight::service::IService::ConfigType config;
         config.add("baseFolder", m_rootPath.string());
@@ -281,6 +265,4 @@ void WriterTest::test_outputPaths()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::io::base
+} // namespace sight::io::base::ut

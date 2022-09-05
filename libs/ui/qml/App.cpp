@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-#include <locale.h>
 #include <QCursor>
 
+#include <clocale>
 #include <filesystem>
 #include <iostream>
 #include <sstream>
@@ -42,7 +42,11 @@ namespace sight::ui::qml
 App::App(int& argc, char** argv) :
     QGuiApplication(argc, argv)
 {
-    setlocale(LC_ALL, "C");          // needed for mfo save process
+    if(setlocale(LC_ALL, "C") == nullptr) // needed for mfo save process
+    {
+        perror("setlocale");
+    }
+
     QLocale::setDefault(QLocale::C); // on Linux we need that as well...
 
     std::string appName = "No name";
@@ -54,7 +58,7 @@ App::App(int& argc, char** argv) :
         appName = profile->getName();
     }
 
-    this->setApplicationName(QString::fromStdString(appName));
+    sight::ui::qml::App::setApplicationName(QString::fromStdString(appName));
 
     QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 }

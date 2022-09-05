@@ -69,7 +69,7 @@ public:
 
     MODULE_UI_QT_API ImageInfo() noexcept;
 
-    MODULE_UI_QT_API virtual ~ImageInfo() noexcept;
+    MODULE_UI_QT_API ~ImageInfo() noexcept override;
 
 protected:
 
@@ -109,4 +109,4 @@ private:
     data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE, true};
 };
 
-} // uiImageQt
+} // namespace sight::module::ui::qt::image

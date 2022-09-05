@@ -81,10 +81,7 @@
 
 #include <filesystem>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -105,17 +102,9 @@ public:
     public:
 
         ActionInfo() :
-            m_name(""),
-            m_shortcut(""),
+
             m_icon(""),
-            m_icon2(""),
-            m_isCheckable(false),
-            m_isRadio(false),
-            m_isSeparator(false),
-            m_isSpacer(false),
-            m_isMenu(false),
-            m_isEditor(false),
-            m_size(0)
+            m_icon2("")
         {
         }
 
@@ -123,13 +112,13 @@ public:
         std::string m_shortcut;
         std::filesystem::path m_icon;
         std::filesystem::path m_icon2;
-        bool m_isCheckable;
-        bool m_isRadio;
-        bool m_isSeparator;
-        bool m_isSpacer;
-        bool m_isMenu;
-        bool m_isEditor;
-        int m_size;
+        bool m_isCheckable {false};
+        bool m_isRadio {false};
+        bool m_isSeparator {false};
+        bool m_isSpacer {false};
+        bool m_isMenu {false};
+        bool m_isEditor {false};
+        int m_size {0};
     };
 
     UI_BASE_API const static RegistryKeyType REGISTRY_KEY;
@@ -138,7 +127,7 @@ public:
     UI_BASE_API IToolBarLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IToolBarLayoutManager();
+    UI_BASE_API ~IToolBarLayoutManager() override;
 
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
@@ -223,6 +212,4 @@ protected:
     bool m_unifyButtonSize {false};
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

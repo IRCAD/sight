@@ -61,7 +61,7 @@ public:
     DATA_API CameraSeries(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~CameraSeries();
+    DATA_API ~CameraSeries() override;
 
     /**
      * @brief Defines shallow copy

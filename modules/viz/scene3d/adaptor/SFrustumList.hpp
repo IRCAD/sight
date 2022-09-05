@@ -122,10 +122,10 @@ private:
     void addFrustum();
 
     /// Defines the near clipping distance.
-    float m_near {1.f};
+    float m_near {1.F};
 
     /// Defines the far clipping distance.
-    float m_far {20.f};
+    float m_far {20.F};
 
     /// Defines the color of frustum.
     std::string m_color {"#0000FF"};

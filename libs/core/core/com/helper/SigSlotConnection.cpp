@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "core/com/helper/SigSlotConnection.hpp"
 
 #include <core/com/exception/AlreadyConnected.hpp>
@@ -30,17 +32,13 @@
 
 #include <boost/foreach.hpp>
 
-namespace sight::core::com
-{
-
-namespace helper
+namespace sight::core::com::helper
 {
 
 //-----------------------------------------------------------------------------
 
 SigSlotConnection::SigSlotConnection()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -65,7 +63,10 @@ void SigSlotConnection::connect(
     }
     catch(core::com::exception::BadSlot& e)
     {
-        SIGHT_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
+        SIGHT_ERROR(
+            std::string("Can't connect signal '").append(signalKey).append("' with slot '").append(slotKey)
+            .append("' : ") << e.what() << "."
+        );
     }
     catch(core::com::exception::AlreadyConnected& e)
     {
@@ -76,8 +77,8 @@ void SigSlotConnection::connect(
         auto targetID                           = target ? target->getID() : "";
 
         SIGHT_ERROR(
-            "Can't connect signal '" + sourceID + "/" + signalKey + "' with slot '"
-            + targetID + "/" + slotKey + "' : " << e.what() << "."
+            std::string("Can't connect signal '").append(sourceID).append("/").append(signalKey).append("' with slot '")
+            .append(targetID).append("/").append(slotKey).append("' : ") << e.what() << "."
         );
     }
 }
@@ -121,8 +122,10 @@ void SigSlotConnection::connect(
             auto targetID                           = target ? target->getID() : "";
 
             SIGHT_ERROR(
-                "Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"
-                + targetID + "/" + keys.second + "' : " << e.what() << "."
+                std::string("Can't connect signal '").append(sourceID).append("/").append(keys.first)
+                .append("' with slot '").append(targetID).append("/").append(keys.second).append(
+                    "' : "
+                ) << e.what() << "."
             );
         }
     }
@@ -139,6 +142,7 @@ void SigSlotConnection::addConnection(core::com::Connection connection)
 
 void SigSlotConnection::disconnect()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(core::com::Connection& connection, m_connections)
     {
         connection.disconnect();
@@ -148,6 +152,4 @@ void SigSlotConnection::disconnect()
 
 //-----------------------------------------------------------------------------
 
-} // end namespace helper
-
-} // end namespace sight::core::com
+} // namespace sight::core::com::helper

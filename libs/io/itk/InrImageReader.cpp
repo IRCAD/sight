@@ -46,15 +46,14 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-InrImageReader::InrImageReader(io::base::reader::IObjectReader::Key)
+InrImageReader::InrImageReader(io::base::reader::IObjectReader::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 InrImageReader::~InrImageReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -87,10 +86,10 @@ struct InrLoaderFunctor
         Progressor progress(imageIORead, param.m_fwReader, param.m_filename);
 
         // the reader
-        typedef ::itk::Image<PIXELTYPE, 3> ImageType;
-        typedef ::itk::ImageFileReader<ImageType> ReaderType;
+        using ImageType  = ::itk::Image<PIXELTYPE, 3>;
+        using ReaderType = ::itk::ImageFileReader<ImageType>;
         typename ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName(param.m_filename.c_str());
+        reader->SetFileName(param.m_filename);
 
         // attach its IO (*3*)
         reader->SetImageIO(imageIORead);
@@ -108,7 +107,7 @@ struct InrLoaderFunctor
             ::itk::ImageIOFactory::ReadMode
         );
 
-        if(!imageIO)
+        if(imageIO == nullptr)
         {
             std::string errMsg;
             errMsg = "no ImageIOFactory found to read header of file : ";

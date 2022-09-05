@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/dimse/config.hpp"
 #include "io/dimse/exceptions/Base.hpp"
 
-namespace sight::io::dimse
-{
-
-namespace exceptions
+namespace sight::io::dimse::exceptions
 {
 
 /**
@@ -45,9 +42,7 @@ public:
     IO_DIMSE_API NetworkInitializationFailure(const std::string& message);
 
     /// Destructor
-    IO_DIMSE_API virtual ~NetworkInitializationFailure() noexcept;
+    IO_DIMSE_API ~NetworkInitializationFailure() noexcept override;
 };
 
-} //exceptions
-
-} //fwPacsIO
+} // namespace sight::io::dimse::exceptions

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,8 @@ namespace sight::module::filter::vision
 
 SIGHT_REGISTER_PLUGIN("sight::module::filter::vision::Plugin");
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -45,4 +44,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace segmentation
+} // namespace sight::module::filter::vision

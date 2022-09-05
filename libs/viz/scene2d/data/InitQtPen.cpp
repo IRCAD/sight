@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::viz::scene2d
-{
-
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 //---------------------------------------------------------------------------------------
@@ -59,6 +56,4 @@ void InitQtPen::setPenColor(QPen& _pen, std::string _color, float _opacity)
     _pen.setColor(color);
 }
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,24 +24,20 @@
 
 #include <QMenuBar>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
 
-QtMenuBarContainer::QtMenuBarContainer(ui::base::GuiBaseObject::Key) noexcept :
-    m_menuBar(0)
+QtMenuBarContainer::QtMenuBarContainer(ui::base::GuiBaseObject::Key /*unused*/) noexcept :
+    m_menuBar(nullptr)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtMenuBarContainer::~QtMenuBarContainer() noexcept
-{
-}
+QtMenuBarContainer::~QtMenuBarContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -88,6 +84,4 @@ QMenuBar* QtMenuBarContainer::getQtMenuBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

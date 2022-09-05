@@ -26,10 +26,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ImageExtruderTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -244,6 +241,4 @@ void ImageExtruderTest::extrudeQuadMesh()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut.
-
-} // namespace sight::filter::image.
+} // namespace sight::filter::image::ut

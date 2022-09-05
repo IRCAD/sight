@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,10 +39,7 @@
 
 #include <map>
 
-namespace sight::module::ui::qt
-{
-
-namespace series
+namespace sight::module::ui::qt::series
 {
 
 /**
@@ -61,7 +58,7 @@ public:
     MODULE_UI_QT_API Selector(QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    MODULE_UI_QT_API ~Selector();
+    MODULE_UI_QT_API ~Selector() override;
 
     /// Clears all items in the tree.
     void clear();
@@ -83,7 +80,7 @@ public:
     MODULE_UI_QT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
 
     /// Catches the delete key event and remove the selected items.
-    MODULE_UI_QT_API void keyPressEvent(QKeyEvent* _event);
+    MODULE_UI_QT_API void keyPressEvent(QKeyEvent* _event) override;
 
     /**
      * @brief Sets the specific icons for series in selector.
@@ -133,7 +130,7 @@ protected Q_SLOTS:
      * @note selection and deselection contain only the change of selection. The items always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void selectionChanged(const QItemSelection& _selected, const QItemSelection& _deselected);
+    void selectionChanged(const QItemSelection& _selected, const QItemSelection& _deselected) override;
 
 private Q_SLOTS:
 
@@ -157,16 +154,16 @@ private:
      * @brief Returns all the Series associated to the selection.
      * @note If a study is selected, return an empty selection.
      */
-    SeriesVectorType getSeries(const QItemSelection& _selection);
+    static SeriesVectorType getSeries(const QItemSelection& _selection);
 
     /**
      * @brief Returns all the Series associated to the selection.
      * @note It ignores the studies.
      */
-    SeriesVectorType getSeries(const QModelIndexList& _indexList);
+    static SeriesVectorType getSeries(const QModelIndexList& _indexList);
 
     /// Returns all the study indexes contained in the given indexList
-    QModelIndexList getStudyIndexes(const QModelIndexList& _indexList);
+    static QModelIndexList getStudyIndexes(const QModelIndexList& _indexList);
 
     /// Returns all the series associated with the study index
     SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& _index);
@@ -211,6 +208,4 @@ inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
 
 //-----------------------------------------------------------------------------
 
-} // namespace series.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::series

@@ -64,22 +64,22 @@ void SCameraInformationEditor::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
-    QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
+    auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    QGridLayout* gridLayout = new QGridLayout();
-    QLabel* desc            = new QLabel("description: ");
+    auto* gridLayout = new QGridLayout();
+    auto* desc       = new QLabel("description: ");
     m_description = new QLabel();
     m_description->setObjectName(serviceID + "/description");
     gridLayout->addWidget(desc, 0, 0);
     gridLayout->addWidget(m_description, 0, 1);
 
-    QBoxLayout* titleLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    auto* titleLayout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_isCalibrated = new QLabel();
     m_isCalibrated->setObjectName(serviceID + "/isCalibrated");
     titleLayout->addWidget(m_isCalibrated);
 
-    QGridLayout* infoLayout = new QGridLayout;
+    auto* infoLayout = new QGridLayout;
     infoLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     mainLayout->addLayout(gridLayout);
@@ -261,4 +261,4 @@ service::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnection
     return connections;
 }
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

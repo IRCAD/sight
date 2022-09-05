@@ -34,13 +34,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -61,8 +55,7 @@ Series::Series(
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -103,9 +96,9 @@ void Series::writeGeneralSeriesModule()
     data::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
     if(!performingPhysicians.empty())
     {
-        gdcm::String<>* physicians = new gdcm::String<>[performingPhysicians.size()];
-        unsigned int count         = 0;
-        for(std::string physician : performingPhysicians)
+        auto* physicians   = new gdcm::String<>[performingPhysicians.size()];
+        unsigned int count = 0;
+        for(const std::string& physician : performingPhysicians)
         {
             physicians[count++] = gdcm::String<>(physician);
         }
@@ -258,8 +251,4 @@ void Series::writeSpatialFiducialsSeriesModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

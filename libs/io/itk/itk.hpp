@@ -91,6 +91,6 @@ static const std::map<::itk::ImageIOBase::IOComponentType, core::Type> ITK_TYPE_
     {::itk::ImageIOBase::DOUBLE, core::Type::DOUBLE}
 };
 
-}
+} // namespace sight::io::itk
 
 #include "io/itk/itk.hxx"

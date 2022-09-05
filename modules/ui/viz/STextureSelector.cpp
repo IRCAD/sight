@@ -47,15 +47,13 @@ namespace sight::module::ui::viz
 
 //------------------------------------------------------------------------------
 
-STextureSelector::STextureSelector() noexcept
-{
-}
+STextureSelector::STextureSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-STextureSelector::~STextureSelector() noexcept
-{
-}
+STextureSelector::~STextureSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -80,7 +78,7 @@ void STextureSelector::starting()
     m_deleteButton->setToolTip(QString("Remove organ's texture"));
     m_deleteButton->setMinimumSize(m_deleteButton->sizeHint());
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(m_loadButton, 0);
     layout->addWidget(m_deleteButton, 0);
 

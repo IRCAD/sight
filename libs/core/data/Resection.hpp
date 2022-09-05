@@ -54,7 +54,7 @@ public:
     DATA_API Resection(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Resection();
+    DATA_API ~Resection() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -91,7 +91,7 @@ public:
      * @brief Get/Set value of the IsSafePart.
      */
     bool getIsSafePart() const;
-    void setIsSafePart(const bool _isSafePart);
+    void setIsSafePart(bool _isSafePart);
     /// @}
 
     /**
@@ -108,7 +108,7 @@ public:
      * @brief Get/Set value of the IsVisible.
      */
     bool getIsVisible() const;
-    void setIsVisible(const bool _isVisible);
+    void setIsVisible(bool _isVisible);
     /// @}
 
     /**
@@ -116,7 +116,7 @@ public:
      * @brief Get/Set value of the IsValid.
      */
     bool getIsValid() const;
-    void setIsValid(const bool _isValid);
+    void setIsValid(bool _isValid);
     /// @}
 
     /***
@@ -163,13 +163,13 @@ protected:
     ResectionOutputs m_vOutputs;
 
     //! flag if the part is safe
-    bool m_isSafePart;
+    bool m_isSafePart {true};
 
     //! flag if the resection is valid
-    bool m_isValid;
+    bool m_isValid {false};
 
     //! flag if the resection is visible
-    bool m_isVisible;
+    bool m_isVisible {true};
 
 private:
 

@@ -29,7 +29,8 @@
 
 #include <ui/qml/QmlEngine.hpp>
 
-using namespace sight;
+namespace core = sight::core;
+namespace ui   = sight::ui;
 
 namespace Tuto05EditorQml
 {
@@ -38,15 +39,13 @@ SIGHT_REGISTER_PLUGIN("Tuto05EditorQml::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

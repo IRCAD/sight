@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::filter::mesh
-{
-
-namespace ut
+namespace sight::module::filter::mesh::ut
 {
 
 /**
@@ -47,12 +44,10 @@ public:
     void setUp();
     void tearDown();
 
-    void generateMesh();
-    void generateMeshWithMinReduction();
-    void noMeshGenerated();
-    void updateThresholdTest();
+    static void generateMesh();
+    static void generateMeshWithMinReduction();
+    static void noMeshGenerated();
+    static void updateThresholdTest();
 };
 
-} //namespace ut
-
-} //namespace sight::module::filter::mesh
+} // namespace sight::module::filter::mesh::ut

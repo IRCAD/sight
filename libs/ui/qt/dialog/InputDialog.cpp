@@ -28,24 +28,19 @@
 #include <QInputDialog>
 #include <QObject>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog(ui::base::GuiBaseObject::Key /*key*/) :
-    IInputDialog()
+InputDialog::InputDialog(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 InputDialog::~InputDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -128,6 +123,4 @@ std::string InputDialog::getInput()
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

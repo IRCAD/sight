@@ -96,7 +96,7 @@ public:
     MODULE_UI_QML_API SSliceIndexPositionEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_API virtual ~SSliceIndexPositionEditor() noexcept;
+    MODULE_UI_QML_API ~SSliceIndexPositionEditor() noexcept override;
 
     /// To handle orientation of slices.
     using orientation_t = data::helper::MedicalImage::orientation_t;
@@ -176,4 +176,4 @@ private:
     orientation_t m_orientation {orientation_t::Z_AXIS};
 };
 
-} // uiImageQml
+} // namespace sight::module::ui::qml::image

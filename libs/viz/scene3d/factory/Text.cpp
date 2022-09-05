@@ -23,10 +23,7 @@
 #include "viz/scene3d/factory/Text.hpp"
 #include "viz/scene3d/Text.hpp"
 
-namespace sight::viz::scene3d
-{
-
-namespace factory
+namespace sight::viz::scene3d::factory
 {
 
 //-----------------------------------------------------------------------------
@@ -35,14 +32,14 @@ const Ogre::String Text::FACTORY_TYPE_NAME = "Text";
 
 //-----------------------------------------------------------------------------
 
-const Ogre::String& Text::getType(void) const
+const Ogre::String& Text::getType() const
 {
     return FACTORY_TYPE_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
-Ogre::MovableObject* Text::createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList*)
+Ogre::MovableObject* Text::createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* /*params*/)
 {
     return new viz::scene3d::Text(name);
 }
@@ -56,6 +53,4 @@ void Text::destroyInstance(Ogre::MovableObject* obj)
 }
 #endif
 
-} // namespace factory
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::factory

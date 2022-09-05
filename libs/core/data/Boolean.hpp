@@ -57,7 +57,7 @@ public:
     /**
      * @brief Destructor.
      */
-    DATA_API virtual ~Boolean() noexcept;
+    DATA_API ~Boolean() noexcept override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

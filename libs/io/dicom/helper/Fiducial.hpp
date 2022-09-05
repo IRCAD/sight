@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,12 +33,9 @@ namespace sight::data
 
 class SeriesDB;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -67,6 +64,4 @@ public:
     IO_DICOM_API static bool contains3DDistances(const SPTR(data::SeriesDB)& seriesDB);
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

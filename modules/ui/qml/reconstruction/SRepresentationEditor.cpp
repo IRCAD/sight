@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,15 +32,13 @@ namespace sight::module::ui::qml::reconstruction
 
 //------------------------------------------------------------------------------
 
-SRepresentationEditor::SRepresentationEditor() noexcept
-{
-}
+SRepresentationEditor::SRepresentationEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SRepresentationEditor::~SRepresentationEditor() noexcept
-{
-}
+SRepresentationEditor::~SRepresentationEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -188,4 +186,4 @@ service::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qml::reconstruction

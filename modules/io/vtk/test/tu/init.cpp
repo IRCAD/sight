@@ -21,10 +21,7 @@
 
 #include <core/runtime/operations.hpp>
 
-namespace sight::module::io::vtk
-{
-
-namespace ut
+namespace sight::module::io::vtk::ut
 {
 
 struct Initializer
@@ -38,6 +35,4 @@ struct Initializer
 
 static const Initializer init;
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

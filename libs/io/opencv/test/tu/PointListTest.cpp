@@ -30,10 +30,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::PointListTest);
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //------------------------------------------------------------------------------
@@ -66,7 +63,7 @@ void PointListTest::copyFromCv()
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        cvPointList.push_back(cv::Point2d(double(i), double(i * 2 + 3)));
+        cvPointList.emplace_back(double(i), double(i * 2 + 3));
     }
 
     data::PointList::sptr pl = data::PointList::New();
@@ -107,6 +104,4 @@ void PointListTest::copyToCv()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

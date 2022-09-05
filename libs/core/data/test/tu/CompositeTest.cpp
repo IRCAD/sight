@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CompositeTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -58,12 +55,12 @@ void CompositeTest::tearDown()
 void CompositeTest::methode1()
 {
     const std::int64_t value = 404;
-    typedef data::Composite::value_type pair_type;
-    const pair_type PAIRS[] = {
+    using pair_type = data::Composite::value_type;
+    const std::array<pair_type, 5> PAIRS = {
         std::make_pair("Composite", data::Composite::New()),
         std::make_pair("boolean true", data::Boolean::New(true)),
         std::make_pair("boolean false", data::Boolean::New(false)),
-        std::make_pair("float", data::Float::New(3.14f)),
+        std::make_pair("float", data::Float::New(3.14F)),
         std::make_pair("integer", data::Integer::New(value))
     };
 
@@ -71,9 +68,9 @@ void CompositeTest::methode1()
 
     data::Composite::sptr composite = data::Composite::New();
 
-    CPPUNIT_ASSERT(composite->size() == 0);
+    CPPUNIT_ASSERT(composite->empty());
 
-    for(pair_type p : PAIRS)
+    for(const pair_type& p : PAIRS)
     {
         (*composite)[p.first] = p.second;
     }
@@ -82,14 +79,14 @@ void CompositeTest::methode1()
 
     CPPUNIT_ASSERT(composite->size() == stdmap.size());
 
-    for(pair_type p : *composite)
+    for(const pair_type& p : *composite)
     {
         CPPUNIT_ASSERT(stdmap[p.first] == (*composite)[p.first]);
     }
 
     CPPUNIT_ASSERT_EQUAL(true, data::Boolean::dynamicCast((*composite)["boolean true"])->value());
     CPPUNIT_ASSERT_EQUAL(false, data::Boolean::dynamicCast((*composite)["boolean false"])->value());
-    CPPUNIT_ASSERT_EQUAL(3.14f, data::Float::dynamicCast((*composite)["float"])->value());
+    CPPUNIT_ASSERT_EQUAL(3.14F, data::Float::dynamicCast((*composite)["float"])->value());
     CPPUNIT_ASSERT_EQUAL(value, data::Integer::dynamicCast((*composite)["integer"])->value());
 
     // test values
@@ -104,6 +101,4 @@ void CompositeTest::methode1()
     CPPUNIT_ASSERT_EQUAL((*composite)[STR], obj);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

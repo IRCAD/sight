@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -18,6 +18,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINTNEXTLINE
 
 #pragma once
 
@@ -51,7 +53,7 @@ struct allocator
     inline constexpr allocator() = default;
 
     template<class U>
-    inline constexpr allocator(const allocator<U>&) noexcept
+    inline constexpr allocator(const allocator<U>& /*unused*/) noexcept
     {
     }
 
@@ -74,7 +76,7 @@ struct allocator
 //------------------------------------------------------------------------------
 
 template<typename T, typename U>
-inline constexpr bool operator==(allocator<T>, allocator<U>) noexcept
+inline constexpr bool operator==(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
 {
     return true;
 }
@@ -82,14 +84,14 @@ inline constexpr bool operator==(allocator<T>, allocator<U>) noexcept
 //------------------------------------------------------------------------------
 
 template<typename T, typename U>
-inline constexpr bool operator!=(allocator<T>, allocator<U>) noexcept
+inline constexpr bool operator!=(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
 {
     return false;
 }
 
 using secure_string = std::basic_string<char, std::char_traits<char>, allocator<char> >;
 
-} // sight::core::crypto
+} // namespace sight::core::crypto
 
 // Zeroes the strings own memory on destruction
 template<>
@@ -97,5 +99,6 @@ inline sight::core::crypto::secure_string::~basic_string()
 {
     clear();
     shrink_to_fit();
+    // NOLINTNEXTLINE(bugprone-sizeof-container) the "metadata" of the container is cleansed here, not its content
     sight::core::crypto::cleanse(this, sizeof(*this));
 }

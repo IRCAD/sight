@@ -44,7 +44,7 @@ public:
 
     SIGHT_DECLARE_CLASS(Color, Object, factory::New<Color>);
 
-    DATA_API static sptr New(ColorType red, ColorType green = 1.f, ColorType blue = 1.f, ColorType alpha = 1.f);
+    DATA_API static sptr New(ColorType red, ColorType green = 1.F, ColorType blue = 1.F, ColorType alpha = 1.F);
 
     /**
      * @brief Constructor
@@ -53,7 +53,7 @@ public:
     DATA_API Color(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Color();
+    DATA_API ~Color() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -69,10 +69,10 @@ public:
     ///@{
     /// Set RGBA color
     DATA_API void setRGBA(
-        const ColorType red,
-        const ColorType green,
-        const ColorType blue,
-        const ColorType alpha = 1.0
+        ColorType red,
+        ColorType green,
+        ColorType blue,
+        ColorType alpha = 1.0
     );
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
@@ -111,7 +111,7 @@ protected:
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! RGBA of the image (in terms of points)
-    ColorArray m_vRGBA;
+    ColorArray m_vRGBA {};
 }; // end class Color
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,15 +35,15 @@ namespace sight::module::data
 struct MODULE_DATA_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    MODULE_DATA_API ~Plugin() noexcept;
+    MODULE_DATA_API ~Plugin() noexcept override;
 
     /**
      * @brief Overrides start method. Object declarations.
      */
-    MODULE_DATA_API void start();
+    MODULE_DATA_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_DATA_API void stop() noexcept;
+    MODULE_DATA_API void stop() noexcept override;
 };
 
 } // namespace sight::module::data

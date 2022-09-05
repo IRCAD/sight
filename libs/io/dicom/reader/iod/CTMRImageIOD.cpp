@@ -33,13 +33,10 @@
 
 #include <gdcmImageReader.h>
 
-namespace sight::io::dicom
-{
+#include <memory>
+#include <utility>
 
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
@@ -51,16 +48,14 @@ CTMRImageIOD::CTMRImageIOD(
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel),
-    m_enableBufferRotation(true)
+    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::~CTMRImageIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +66,7 @@ void CTMRImageIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(gdcm::ImageReader) reader = std::shared_ptr<gdcm::ImageReader>(new gdcm::ImageReader);
+    SPTR(gdcm::ImageReader) reader = std::make_shared<gdcm::ImageReader>();
 
     // Read the first file
     const core::memory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
@@ -157,8 +152,4 @@ void CTMRImageIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

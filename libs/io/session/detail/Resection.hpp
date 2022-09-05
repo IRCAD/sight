@@ -28,10 +28,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/Resection.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Resection
+namespace sight::io::session::detail::Resection
 {
 
 constexpr static auto s_Name {"Name"};
@@ -43,11 +40,11 @@ constexpr static auto s_IsVisible {"IsVisible"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto resection = Helper::safeCast<data::Resection>(object);
@@ -81,11 +78,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Resection::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -133,6 +130,4 @@ inline static data::Resection::sptr deserialize(
     return resection;
 }
 
-} // namespace detail::Resection
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Resection

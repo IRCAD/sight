@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,8 +51,7 @@ IAdaptor::IAdaptor()
 //------------------------------------------------------------------------------
 
 IAdaptor::~IAdaptor()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -120,7 +119,7 @@ void IAdaptor::hide()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setVisible(bool)
+void IAdaptor::setVisible(bool /*unused*/)
 {
     SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }

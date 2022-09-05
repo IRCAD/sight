@@ -32,10 +32,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::FrameTLTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -171,10 +168,10 @@ void FrameTLTest::pushTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     std::uint8_t* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (10 * 20 * 3), 1);
+    std::fill(bufferData1, bufferData1 + (10LL * 20 * 3), 1);
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     std::uint8_t* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (10 * 20 * 3), 2);
+    std::fill(bufferData2, bufferData2 + (10LL * 20 * 3), 2);
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -203,7 +200,7 @@ void FrameTLTest::pushTest()
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -224,10 +221,10 @@ void FrameTLTest::copyTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     std::uint8_t* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (11 * 22 * 4), 1);
+    std::fill(bufferData1, bufferData1 + (11LL * 22 * 4), 1);
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     std::uint8_t* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (11 * 22 * 4), 2);
+    std::fill(bufferData2, bufferData2 + (11LL * 22 * 4), 2);
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -250,7 +247,7 @@ void FrameTLTest::copyTest()
     const std::uint8_t* copiedBuffData = &copiedBuff->getElement(0);
     const std::uint8_t* buffData       = &buff->getElement(0);
 
-    for(std::size_t i = 0 ; i < 10 * 20 * 4 ; ++i)
+    for(std::size_t i = 0 ; i < 10LL * 20 * 4 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(buffData[i], copiedBuffData[i]);
     }
@@ -260,7 +257,7 @@ void FrameTLTest::copyTest()
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 
     CSPTR(data::timeline::Object) copiedData2 = copiedTimeline->getClosestBuffer(time2);
     CPPUNIT_ASSERT(copiedData2);
@@ -268,11 +265,9 @@ void FrameTLTest::copyTest()
 
     copiedTimeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj2 = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

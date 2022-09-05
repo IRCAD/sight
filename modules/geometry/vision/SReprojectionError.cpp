@@ -48,10 +48,8 @@ static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComp
 //-----------------------------------------------------------------------------
 
 SReprojectionError::SReprojectionError() :
-    m_lastTimestamp(0),
-    m_patternWidth(80),
-    m_cvColor(cv::Scalar(255, 255, 255, 255)),
-    m_display(true)
+
+    m_cvColor(cv::Scalar(255, 255, 255, 255))
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_COMPUTE_SLOT, &SReprojectionError::compute, this);
@@ -63,8 +61,7 @@ SReprojectionError::SReprojectionError() :
 //-----------------------------------------------------------------------------
 
 SReprojectionError::~SReprojectionError()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -83,7 +80,7 @@ void SReprojectionError::configuring()
             auto keyCfg = itCfg->second.equal_range("key");
             for(auto itKeyCfg = keyCfg.first ; itKeyCfg != keyCfg.second ; ++itKeyCfg)
             {
-                const data::MarkerMap::KeyType key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
+                const auto key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
                 m_matricesTag.push_back(key);
             }
 
@@ -97,12 +94,12 @@ void SReprojectionError::configuring()
 void SReprojectionError::starting()
 {
     //3D Points
-    const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
+    const float halfWidth = static_cast<float>(m_patternWidth) * .5F;
 
-    m_objectPoints.push_back(cv::Point3f(-halfWidth, halfWidth, 0));
-    m_objectPoints.push_back(cv::Point3f(halfWidth, halfWidth, 0));
-    m_objectPoints.push_back(cv::Point3f(halfWidth, -halfWidth, 0));
-    m_objectPoints.push_back(cv::Point3f(-halfWidth, -halfWidth, 0));
+    m_objectPoints.emplace_back(-halfWidth, halfWidth, 0.F);
+    m_objectPoints.emplace_back(halfWidth, halfWidth, 0.F);
+    m_objectPoints.emplace_back(halfWidth, -halfWidth, 0.F);
+    m_objectPoints.emplace_back(-halfWidth, -halfWidth, 0.F);
 
     //TODO: Add an option to use a chessboard instead of a marker
     // --> configure height, width and square size(in mm)
@@ -150,13 +147,13 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
         // For each matrix
         unsigned int i = 0;
-        for(auto markerKey : m_matricesTag)
+        for(const auto& markerKey : m_matricesTag)
         {
             auto matrix = m_matrix[i].lock();
 
             const auto* marker = markerMap->getMarker(markerKey);
 
-            if(marker)
+            if(marker != nullptr)
             {
                 std::vector<cv::Point2f> points2D;
 
@@ -186,7 +183,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                 for(const auto& p : *marker)
                 {
-                    points2D.push_back(cv::Point2f(p[0], p[1]));
+                    points2D.emplace_back(p[0], p[1]);
                 }
 
                 sight::geometry::vision::helper::ErrorAndPointsType errP =
@@ -212,9 +209,9 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                         std::vector<cv::Point2f> reprojectedP = errP.second;
 
-                        for(std::size_t j = 0 ; j < reprojectedP.size() ; ++j)
+                        for(auto& j : reprojectedP)
                         {
-                            cv::circle(cvImage, reprojectedP[j], 7, m_cvColor, 1, cv::LINE_8);
+                            cv::circle(cvImage, j, 7, m_cvColor, 1, cv::LINE_8);
                         }
                     }
                 }

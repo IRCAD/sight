@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,18 @@
 
 #include "io/base/reader/IObjectReader.hpp"
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 //------------------------------------------------------------------------------
 
 IObjectReader::IObjectReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 IObjectReader::~IObjectReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +53,7 @@ core::tools::Object::sptr IObjectReader::getObject() const
 
 //------------------------------------------------------------------------------
 
-void IObjectReader::cancel()
+void IObjectReader::cancel() const
 {
     auto job = this->getJob();
     if(job)
@@ -69,6 +64,4 @@ void IObjectReader::cancel()
 
 //------------------------------------------------------------------------------
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

@@ -44,7 +44,7 @@ namespace Ogre
 
 class SceneNode;
 
-}
+} // namespace Ogre
 
 namespace sight::viz::scene3d
 {
@@ -85,7 +85,7 @@ public:
         OrientationMode _orientation,
         Ogre::TexturePtr _tex,
         FilteringEnumType _filtering,
-        float _entityOpacity = 1.0f,
+        float _entityOpacity = 1.0F,
         bool _displayBorder  = true
     );
 
@@ -148,25 +148,25 @@ public:
     VIZ_SCENE3D_API void setTFData(const viz::scene3d::TransferFunction& _tfTexture);
 
     /// Gets the plane's width in model space.
-    VIZ_SCENE3D_API Ogre::Real getWidth() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Real getWidth() const;
 
     /// Gets the plane's height in model space.
-    VIZ_SCENE3D_API Ogre::Real getHeight() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Real getHeight() const;
 
     /// Moves the scene node to m_originPosition point
     VIZ_SCENE3D_API void moveToOriginPosition();
 
     /// Gets the x, y or z world position of the plane scene node according to the current orientation mode
-    VIZ_SCENE3D_API double getSliceWorldPosition() const;
+    [[nodiscard]] VIZ_SCENE3D_API double getSliceWorldPosition() const;
 
     /// Gets the image axis orthogonal to the plane.
-    VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
+    [[nodiscard]] VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
 
     /// Gets the material used to render the plane.
     VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();
 
     /// Gets the movable object created by this class.
-    VIZ_SCENE3D_API const Ogre::MovableObject* getMovableObject() const;
+    [[nodiscard]] VIZ_SCENE3D_API const Ogre::MovableObject* getMovableObject() const;
 
     /**
      * @brief Sets the picking flags.
@@ -237,22 +237,22 @@ private:
     Ogre::SceneNode* m_parentSceneNode {nullptr};
 
     /// Defines the entity's width.
-    Ogre::Real m_width {0.f};
+    Ogre::Real m_width {0.F};
 
     /// Defines the entity's height.
-    Ogre::Real m_height {0.f};
+    Ogre::Real m_height {0.F};
 
     /// Defines the entity's depth.
-    Ogre::Real m_depth {0.f};
+    Ogre::Real m_depth {0.F};
 
     /// Defines the spacing in the texture 3d image file.
     Ogre::Vector3 m_spacing {Ogre::Vector3::ZERO};
 
     /// Defines the depth range.
-    float m_relativePosition {0.8f};
+    float m_relativePosition {0.8F};
 
     /// Defines the opacity applied to the entity.
-    float m_entityOpacity {1.f};
+    float m_entityOpacity {1.F};
 
     /// Defines if the border is displayed.
     bool m_displayBorder {true};
@@ -295,4 +295,4 @@ inline Ogre::Real Plane::getHeight() const
 
 //------------------------------------------------------------------------------
 
-} // Namespace fwRenderOgre.
+} // namespace sight::viz::scene3d

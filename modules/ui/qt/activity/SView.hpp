@@ -34,10 +34,7 @@
 
 #include <ui/base/view/IActivityView.hpp>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -87,7 +84,7 @@ public:
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QT_API virtual ~SView();
+    MODULE_UI_QT_API ~SView() override;
 
     /**
      * @name Signal API
@@ -131,6 +128,4 @@ private:
     int m_border {-1};
 };
 
-} //namespace activity
-
-} // guiQt
+} // namespace sight::module::ui::qt::activity

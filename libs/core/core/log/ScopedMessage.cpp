@@ -26,10 +26,7 @@
 
 #include <sstream>
 
-namespace sight::core
-{
-
-namespace log
+namespace sight::core::log
 {
 
 // Msg Format :
@@ -49,7 +46,7 @@ ScopedMessage::ScopedMessage(const char* _file, int _line, std::string enterMess
 
     std::stringstream oslStr;
     oslStr << "[ENTERING SCOPE] " << m_baseMsg << "'entermessage':'" << enterMessage << "'}";
-    core::log::SpyLogger::get().trace(oslStr.str(), m_file, m_line);
+    core::log::SpyLogger::trace(oslStr.str(), m_file, m_line);
     m_timer.start();
 }
 
@@ -60,9 +57,7 @@ ScopedMessage::~ScopedMessage()
     std::stringstream oslStr;
     oslStr << "[LEAVING SCOPE] " << m_baseMsg << "'leavemessage':'" << m_leave << "','elapsed':"
     << m_timer.getElapsedTimeInMilliSec() << "}";
-    SpyLogger::get().trace(oslStr.str(), m_file, m_line);
+    SpyLogger::trace(oslStr.str(), m_file, m_line);
 }
 
-} // namespace log
-
-} // namespace sight::core
+} // namespace sight::core::log

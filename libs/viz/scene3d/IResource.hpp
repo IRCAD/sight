@@ -49,7 +49,7 @@ public:
     virtual void update() = 0;
 
     /// Return the Ogre resource.
-    Ogre::SharedPtr<RESOURCE> get() const;
+    [[nodiscard]] Ogre::SharedPtr<RESOURCE> get() const;
 
 protected:
 

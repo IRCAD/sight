@@ -208,9 +208,9 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fillHole2D(
 {
     typedef itk::Image<IMAGE_TYPE, DIM> Image3D;
     typedef itk::Image<IMAGE_TYPE, 2> Image2D;
-    unsigned long nbPlanes = _image->GetBufferedRegion().GetSize(_direction);
+    std::uint64_t nbPlanes = _image->GetBufferedRegion().GetSize(_direction);
 
-    for(unsigned long plane = 0 ; plane < nbPlanes ; ++plane)
+    for(std::uint64_t plane = 0 ; plane < nbPlanes ; ++plane)
     {
         itk::ImageRegion<3> regionToExtract = _image->GetBufferedRegion();
 
@@ -219,7 +219,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fillHole2D(
 
         // extracts plane along other "direction"
         regionToExtract.SetSize(_direction, 0);
-        regionToExtract.SetIndex(_direction, static_cast<long>(plane));
+        regionToExtract.SetIndex(_direction, static_cast<std::int64_t>(plane));
         extractor->InPlaceOff();
         extractor->SetInput(_image);
         extractor->SetExtractionRegion(regionToExtract);

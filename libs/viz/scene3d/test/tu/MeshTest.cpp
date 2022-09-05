@@ -31,13 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::MeshTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
-{
-
-namespace ut
+namespace sight::viz::scene3d::helper::ut
 {
 
 using core::tools::random::safeRand;
@@ -63,9 +57,9 @@ void MeshTest::copyColors()
     {
         const std::size_t numComponents = 3;
         const std::size_t numPoints     = 1024;
-        Ogre::RGBA* pDestAlloc          = new Ogre::RGBA[numPoints];
+        auto* pDestAlloc                = new Ogre::RGBA[numPoints];
         Ogre::RGBA* pDest               = pDestAlloc;
-        std::uint8_t* pSrcAlloc         = new std::uint8_t[numPoints * numComponents];
+        auto* pSrcAlloc                 = new std::uint8_t[numPoints * numComponents];
         std::uint8_t* pSrc              = pSrcAlloc;
 
         for(std::size_t i = 0 ; i < numPoints ; ++i)
@@ -98,9 +92,9 @@ void MeshTest::copyColors()
     {
         const std::size_t numComponents = 4;
         const std::size_t numPoints     = 2047;
-        Ogre::RGBA* pDestAlloc          = new Ogre::RGBA[numPoints];
+        auto* pDestAlloc                = new Ogre::RGBA[numPoints];
         Ogre::RGBA* pDest               = pDestAlloc;
-        std::uint8_t* pSrcAlloc         = new std::uint8_t[numPoints * numComponents];
+        auto* pSrcAlloc                 = new std::uint8_t[numPoints * numComponents];
         std::uint8_t* pSrc              = pSrcAlloc;
 
         for(std::size_t i = 0 ; i < numPoints ; ++i)
@@ -132,8 +126,4 @@ void MeshTest::copyColors()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace helper
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper::ut

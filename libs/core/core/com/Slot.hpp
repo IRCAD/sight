@@ -28,6 +28,7 @@
 #include "core/function.hpp"
 
 #include <functional>
+#include <utility>
 
 namespace sight::core::com
 {
@@ -69,24 +70,23 @@ public:
     template<typename FUNCTOR>
     Slot(FUNCTOR f) :
         Slot<R(A ...)>(),
-        m_func(f)
+        m_func(std::move(f))
     {
     }
 
-    virtual ~Slot()
-    {
-    }
+    ~Slot() override
+    = default;
 
     //------------------------------------------------------------------------------
 
-    virtual void run(A ... a) const
+    void run(A ... a) const override
     {
         m_func(a ...);
     }
 
     //------------------------------------------------------------------------------
 
-    virtual R call(A ... a) const
+    R call(A ... a) const override
     {
         return m_func(a ...);
     }

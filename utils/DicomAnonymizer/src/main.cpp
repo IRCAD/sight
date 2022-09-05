@@ -24,10 +24,10 @@
 
 #include <boost/program_options.hpp>
 
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <stdlib.h>
 #include <string>
 
 /** \file DicomAnonymizer/src/main
@@ -58,24 +58,27 @@ int main(int argc, char** argv)
     boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
     boost::program_options::notify(vm);
 
-    if(vm.count("help"))
+    if(vm.count("help") != 0U)
     {
         std::cout << desc << std::endl;
         return EXIT_SUCCESS;
     }
-    else if(!vm.count("input"))
+
+    if(vm.count("input") == 0U)
     {
         std::cout << "You must specify an input file." << std::endl << std::endl;
         std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
-    else if(!vm.count("output"))
+
+    if(vm.count("output") == 0U)
     {
         std::cout << "You must specify an output file." << std::endl << std::endl;
         std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
-    else if(vm["input"].as<std::string>() == vm["output"].as<std::string>())
+
+    if(vm["input"].as<std::string>() == vm["output"].as<std::string>())
     {
         std::cout << "The output folder can not be the input folder." << std::endl;
         return EXIT_FAILURE;
@@ -90,7 +93,8 @@ int main(int argc, char** argv)
         std::cout << "The specified input folder " << input << " is not a directory." << "\n";
         return EXIT_FAILURE;
     }
-    else if(std::filesystem::exists(output))
+
+    if(std::filesystem::exists(output))
     {
         std::cout << "The specified output folder " << output << " already exists." << "\n";
         return EXIT_FAILURE;

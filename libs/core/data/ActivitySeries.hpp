@@ -49,7 +49,7 @@ public:
     DATA_API ActivitySeries(Object::Key _key);
 
     /// Destroys the activity series.
-    DATA_API virtual ~ActivitySeries();
+    DATA_API ~ActivitySeries() override;
 
     /**
      * @brief Defines shallow copy.
@@ -131,4 +131,4 @@ inline void ActivitySeries::setActivityConfigId(const ActivitySeries::ConfigIdTy
 
 //-----------------------------------------------------------------------------
 
-} // Namespace fwMedData.
+} // namespace sight::data

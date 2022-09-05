@@ -54,7 +54,7 @@ struct Resampling
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
+        using ImageType = typename itk::Image<PIXELTYPE, 3>;
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
         typename itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
@@ -183,7 +183,7 @@ data::Image::sptr Resampler::resample(
     inputBB->SetMinimum(min);
     inputBB->SetMaximum(max);
 
-    const auto inputCorners = inputBB->GetCorners();
+    const auto* const inputCorners = inputBB->GetCorners();
     const itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
 
     // Apply transform matrix to all bounding box corners.

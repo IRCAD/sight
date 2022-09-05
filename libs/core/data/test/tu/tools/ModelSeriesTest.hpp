@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 class ModelSeriesTest : public CPPUNIT_NS::TestFixture
@@ -43,15 +40,13 @@ public:
     /**
      * @name Override
      * @{ */
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
     /**  @} */
 
-    void addReconstruction();
-    void createReconstructionFromMesh();
-    void addMesh();
+    static void addReconstruction();
+    static void createReconstructionFromMesh();
+    static void addMesh();
 };
 
-} // namespace ut
-
-} // namespace sight::data::tools
+} // namespace sight::data::tools::ut

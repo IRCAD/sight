@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 class TransformTest : public CPPUNIT_NS::TestFixture
@@ -38,11 +35,9 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
-    void testConversion();
+    void setUp() override;
+    void tearDown() override;
+    static void testConversion();
 };
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

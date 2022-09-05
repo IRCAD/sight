@@ -48,16 +48,13 @@ namespace sight::module::io::dicom
 
 //------------------------------------------------------------------------------
 
-SSeriesDBWriter::SSeriesDBWriter() noexcept :
-    m_fiducialsExportMode(sight::io::dicom::writer::Series::COMPREHENSIVE_3D_SR)
-{
-}
+SSeriesDBWriter::SSeriesDBWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSeriesDBWriter::~SSeriesDBWriter() noexcept
-{
-}
+SSeriesDBWriter::~SSeriesDBWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

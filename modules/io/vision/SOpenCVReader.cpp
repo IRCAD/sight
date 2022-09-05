@@ -34,6 +34,7 @@
 
 #include <opencv2/core.hpp>
 
+#include <cmath>
 #include <sstream>
 
 namespace sight::module::io::vision
@@ -42,14 +43,12 @@ namespace sight::module::io::vision
 // ----------------------------------------------------------------------------
 
 SOpenCVReader::SOpenCVReader()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 SOpenCVReader::~SOpenCVReader()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
@@ -127,7 +126,7 @@ void SOpenCVReader::updating()
         }
     }
 
-    cv::FileStorage fs(this->getFile().string().c_str(), cv::FileStorage::READ); // Read the settings
+    cv::FileStorage fs(this->getFile().string(), cv::FileStorage::READ); // Read the settings
     if(!fs.isOpened())
     {
         this->m_readFailed = true;
@@ -149,7 +148,7 @@ void SOpenCVReader::updating()
         sig->asyncEmit(std::const_pointer_cast<data::Camera>(cam));
     }
 
-    int nbCameras;
+    int nbCameras = 0;
     fs["nbCameras"] >> nbCameras;
 
     for(int c = 0 ; c < nbCameras ; ++c)
@@ -159,10 +158,13 @@ void SOpenCVReader::updating()
 
         cv::FileNode n = fs[camNum.str()];
 
-        std::string id, desc;
-        int width, height;
-        cv::Mat matrix, dist;
-        double scale;
+        std::string id;
+        std::string desc;
+        int width  = 0;
+        int height = 0;
+        cv::Mat matrix;
+        cv::Mat dist;
+        double scale = NAN;
         n["id"] >> id;
         n["description"] >> desc;
         n["imageWidth"] >> width;

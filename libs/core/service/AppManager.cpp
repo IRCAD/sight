@@ -61,8 +61,7 @@ AppManager::AppManager()
 //------------------------------------------------------------------------------
 
 AppManager::~AppManager()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -378,11 +377,9 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             SIGHT_WARN("Object '" + id + "' is already registered.");
             return;
         }
-        else
-        {
-            SIGHT_WARN("Object '" + id + "' has not been unregistered, we will do it.");
-            this->removeObject(it->second, id);
-        }
+
+        SIGHT_WARN("Object '" + id + "' has not been unregistered, we will do it.");
+        this->removeObject(it->second, id);
     }
 
     auto proxy = service::registry::Proxy::getDefault();
@@ -453,6 +450,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
     if(m_isStarted)
     {
         std::vector<service::IService::SharedFutureType> futures;
+        futures.reserve(serviceToStart.size());
         for(const auto& srvInfo : serviceToStart)
         {
             futures.push_back(this->start(srvInfo));

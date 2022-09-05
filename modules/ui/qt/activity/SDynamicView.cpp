@@ -50,10 +50,7 @@
 
 #include <regex>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
@@ -61,16 +58,10 @@ static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-using sight::activity::extension::Activity;
-using sight::activity::extension::ActivityInfo;
-
 //------------------------------------------------------------------------------
 
-SDynamicView::SDynamicView() noexcept :
-    m_mainActivityClosable(true)
+SDynamicView::SDynamicView() noexcept
 {
-    m_dynamicConfigStartStop = false;
-
     newSlot(s_CREATE_TAB_SLOT, &SDynamicView::createTab, this);
 
     m_sigActivitySelected = newSignal<ActivitySelectedSignalType>(s_ACTIVITY_SELECTED_SLOT);
@@ -79,9 +70,8 @@ SDynamicView::SDynamicView() noexcept :
 
 //------------------------------------------------------------------------------
 
-SDynamicView::~SDynamicView() noexcept
-{
-}
+SDynamicView::~SDynamicView() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +79,7 @@ void SDynamicView::configuring()
 {
     this->sight::ui::base::view::IActivityView::configuring();
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigElementType;
+    using ConfigElementType = core::runtime::ConfigurationElement::sptr;
 
     ConfigElementType config_ui_activity = m_configuration->findConfigurationElement("mainActivity");
     if(config_ui_activity)
@@ -135,12 +125,12 @@ void SDynamicView::starting()
     QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTabSignal(int)));
     QObject::connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(changedTab(int)));
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    auto* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->addWidget(m_tabWidget);
 
     parentContainer->setLayout(layout);
 
-    m_currentWidget = 0;
+    m_currentWidget = nullptr;
 
     if(!m_mainActivityId.empty())
     {
@@ -152,7 +142,7 @@ void SDynamicView::starting()
 
 void SDynamicView::stopping()
 {
-    while(m_tabWidget->count())
+    while(m_tabWidget->count() != 0)
     {
         this->closeTab(0, true);
     }
@@ -160,7 +150,7 @@ void SDynamicView::stopping()
     m_tabWidget->clear();
 
     this->destroy();
-    m_tabWidget = 0;
+    m_tabWidget = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -203,8 +193,8 @@ void SDynamicView::createTab(sight::activity::ActivityMsg info)
 
 void SDynamicView::launchTab(SDynamicViewInfo& info)
 {
-    static int count              = 0;
-    ActivityIdType::iterator iter = std::find(m_activityIds.begin(), m_activityIds.end(), info.activitySeries->getID());
+    static int count = 0;
+    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), info.activitySeries->getID());
 
     if(iter != m_activityIds.end())
     {
@@ -230,7 +220,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
     auto subContainer = sight::ui::qt::container::QtContainer::New();
-    QWidget* widget   = new QWidget(m_tabWidget);
+    auto* widget      = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
     sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
@@ -324,7 +314,7 @@ void SDynamicView::closeTab(int index, bool forceClose)
         info.helper.reset();
 
         //Remove tab first, to avoid tab beeing removed by container->destroy
-        m_currentWidget = 0;
+        m_currentWidget = nullptr;
         m_tabWidget->removeTab(index);
 
         sight::ui::base::GuiRegistry::unregisterWIDContainer(info.wid);
@@ -352,13 +342,13 @@ void SDynamicView::changedTab(int index)
 
     if(m_dynamicConfigStartStop && widget != m_currentWidget)
     {
-        if(m_currentWidget)
+        if(m_currentWidget != nullptr)
         {
             SDynamicViewInfo oldinfo = m_dynamicInfoMap[m_currentWidget];
             oldinfo.helper->stop();
         }
 
-        if(widget)
+        if(widget != nullptr)
         {
             SDynamicViewInfo newinfo = m_dynamicInfoMap[widget];
             if(!newinfo.helper->isStarted())
@@ -420,6 +410,4 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 class ResourceTest : public CPPUNIT_NS::TestFixture
@@ -43,10 +40,8 @@ public:
     void setUp();
     void tearDown();
 
-    void textureTest();
-    void tfTest();
+    static void textureTest();
+    static void tfTest();
 };
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

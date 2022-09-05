@@ -26,10 +26,7 @@
 
 #include <cstdint>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -66,6 +63,4 @@ void Mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, std::size_t _
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

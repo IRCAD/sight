@@ -45,15 +45,14 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-NiftiImageReader::NiftiImageReader(io::base::reader::IObjectReader::Key)
+NiftiImageReader::NiftiImageReader(io::base::reader::IObjectReader::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 NiftiImageReader::~NiftiImageReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -85,10 +84,10 @@ struct NiftiLoaderFunctor
         Progressor progress(imageIORead, param.reader, param.filename);
 
         // the reader
-        typedef ::itk::Image<PIXELTYPE, 3> ImageType;
-        typedef ::itk::ImageFileReader<ImageType> ReaderType;
+        using ImageType  = ::itk::Image<PIXELTYPE, 3>;
+        using ReaderType = ::itk::ImageFileReader<ImageType>;
         typename ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName(param.filename.c_str());
+        reader->SetFileName(param.filename);
 
         // attach its IO (*3*)
         reader->SetImageIO(imageIORead);

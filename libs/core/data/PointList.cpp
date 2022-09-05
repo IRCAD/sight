@@ -39,7 +39,7 @@ const core::com::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointR
 
 //------------------------------------------------------------------------------
 
-PointList::PointList(data::Object::Key)
+PointList::PointList(data::Object::Key /*unused*/)
 {
     newSignal<PointAddedSignalType>(s_POINT_ADDED_SIG);
     newSignal<PointRemovedSignalType>(s_POINT_REMOVED_SIG);
@@ -48,8 +48,7 @@ PointList::PointList(data::Object::Key)
 //------------------------------------------------------------------------------
 
 PointList::~PointList()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

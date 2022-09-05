@@ -90,7 +90,7 @@ public:
     VIZ_SCENE3D_API Text(const std::string& _id);
 
     /// Destructor, destroys the overlay text element.
-    VIZ_SCENE3D_API virtual ~Text();
+    VIZ_SCENE3D_API ~Text() override;
 
     /// Displayed text.
     VIZ_SCENE3D_API void setText(const std::string& _text);
@@ -118,8 +118,8 @@ public:
 
     /// Aligns the text by setting the x and y coordinates' origin.
     VIZ_SCENE3D_API void setTextAlignment(
-        const Ogre::TextAreaOverlayElement::Alignment _hAlignment,
-        const Ogre::GuiVerticalAlignment _vAlignment = Ogre::GVA_TOP
+        Ogre::TextAreaOverlayElement::Alignment _hAlignment,
+        Ogre::GuiVerticalAlignment _vAlignment = Ogre::GVA_TOP
     );
 
     /// Returns this MovableObject's type as a string.
@@ -139,7 +139,7 @@ public:
     VIZ_SCENE3D_API void _updateRenderQueue(Ogre::RenderQueue* _queue) override;
 
     /// MovableObject interface. Not used here.
-    VIZ_SCENE3D_API virtual void visitRenderables(
+    VIZ_SCENE3D_API void visitRenderables(
         Ogre::Renderable::Visitor* _visitor,
         bool _debugRenderables
     ) override;
@@ -171,16 +171,16 @@ private:
     Ogre::FontPtr m_font;
 
     /// The text's height in pixels. Computed using the font size and screen dpi.
-    float m_heightInPixels {0.f};
+    float m_heightInPixels {0.F};
 
     /// Current position not taking alignment into account.
-    Ogre::Vector2 m_position {0.f, 0.f};
+    Ogre::Vector2 m_position {0.F, 0.F};
 
     /// Listens to when the viewport dimension are changed. Resizes the text.
     ResizeListener* m_listener {nullptr};
 
     /// Color of the displayed text.
-    Ogre::ColourValue m_textColor {1.f, 1.f, 1.f, 1.f};
+    Ogre::ColourValue m_textColor {1.F, 1.F, 1.F, 1.F};
 };
 
 } // namespace sight::viz::scene3d

@@ -34,7 +34,7 @@ namespace sight::data
 
 class Image;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {

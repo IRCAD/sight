@@ -40,13 +40,10 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::SpheroidExtractionTest);
 
-namespace sight::filter::image
+namespace sight::filter::image::ut
 {
 
-namespace ut
-{
-
-typedef itk::Image<std::int16_t, 3> ImageType;
+using ImageType = itk::Image<std::int16_t, 3>;
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +58,7 @@ static void makeNoise(
     auto iter           = _image->begin<PIXELTYPE>();
     const auto end      = _image->end<PIXELTYPE>();
 
-    std::default_random_engine randGenerator;
+    std::default_random_engine randGenerator {std::random_device {}()};
     std::uniform_int_distribution<PIXELTYPE> distribution(rangeMin, rangeMax);
 
     for( ; iter != end ; ++iter)
@@ -72,24 +69,27 @@ static void makeNoise(
 
 //------------------------------------------------------------------------------
 
-static void plantSphere(ImageType::Pointer _image, const double radius[3], const double center[3])
+static void plantSphere(
+    ImageType::Pointer _image,
+    const std::array<double, 3> radius,
+    const std::array<double, 3> center
+)
 {
-    typedef itk::EllipseSpatialObject<3> EllipseType;
+    using EllipseType = itk::EllipseSpatialObject<3>;
 
-    typedef itk::SpatialObjectToImageFilter<EllipseType, ImageType> SpatialObjectToImageFilterType;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
 
     EllipseType::Pointer ellipse = EllipseType::New();
-    ellipse->SetRadius(radius);
+    ellipse->SetRadius(radius.data());
 
-    typedef EllipseType::TransformType TransformType;
+    using TransformType = EllipseType::TransformType;
     TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
-    transform->Translate(center, false);
+    transform->Translate(center.data(), false);
 
     ellipse->SetObjectToParentTransform(transform);
 
-    typedef itk::SpatialObjectToImageFilter<
-            EllipseType, ImageType> SpatialObjectToImageFilterType;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
 
     SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
 
@@ -104,7 +104,7 @@ static void plantSphere(ImageType::Pointer _image, const double radius[3], const
 
     imageFilter->Update();
 
-    typedef typename itk::OrImageFilter<ImageType, ImageType> OrFilterType;
+    using OrFilterType = typename itk::OrImageFilter<ImageType, ImageType>;
 
     typename OrFilterType::Pointer orFilter = OrFilterType::New();
     orFilter->SetInput1(_image);
@@ -156,7 +156,7 @@ void SpheroidExtractionTest::extractionTest()
         }
         }
     };
-    const double radius[3] = {5, 5, 5};
+    const std::array radius = {5., 5., 5.};
 
     const std::vector<std::array<double, 3> > ellipsoidCenters = {{{16., 100., 64.}},
         {{64., 64., 64.}},
@@ -165,16 +165,16 @@ void SpheroidExtractionTest::extractionTest()
         }
     };
 
-    const double ellipseRadius[3] = {8, 3, 5};
+    const std::array ellipseRadius = {8., 3., 5.};
 
     for(const auto& spheroid : spheroidCenters)
     {
-        plantSphere(itkImage, radius, spheroid.data());
+        plantSphere(itkImage, radius, spheroid);
     }
 
     for(const auto& ellipsoid : ellipsoidCenters)
     {
-        plantSphere(itkImage, ellipseRadius, ellipsoid.data());
+        plantSphere(itkImage, ellipseRadius, ellipsoid);
     }
 
     // Rewrite the itk image to the Sight image.
@@ -206,8 +206,6 @@ void SpheroidExtractionTest::extractionTest()
     }
 }
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut
 
 #endif // ITK_VERSION_MAJOR == 4 || (ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3)

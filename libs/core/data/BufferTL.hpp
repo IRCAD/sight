@@ -54,7 +54,7 @@ public:
     DATA_API BufferTL(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~BufferTL();
+    DATA_API ~BufferTL() override;
 
     /// Check if the type of an object is compatible with this timeline
     DATA_API virtual bool isObjectValid(const CSPTR(timeline::Object)& obj) const = 0;
@@ -64,13 +64,13 @@ public:
      * @param timestamp timestamp used to find the closest object
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API virtual CSPTR(timeline::Object) getClosestObject(
+    DATA_API CSPTR(timeline::Object) getClosestObject(
         core::HiResClock::HiResClockType timestamp,
         DirectionType direction = BOTH
     ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    DATA_API virtual CSPTR(timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
+    DATA_API CSPTR(timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
     const override;
 
     /// Clear the timeline

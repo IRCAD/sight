@@ -27,10 +27,7 @@
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
-namespace sight::core
-{
-
-namespace mt
+namespace sight::core::mt
 {
 
 typedef boost::mutex Mutex;
@@ -62,6 +59,4 @@ typedef boost::upgrade_lock<ReadWriteMutex> ReadToWriteLock;
  */
 typedef boost::upgrade_to_unique_lock<ReadWriteMutex> UpgradeToWriteLock;
 
-} //namespace mt
-
-} //namespace sight::core
+} // namespace sight::core::mt

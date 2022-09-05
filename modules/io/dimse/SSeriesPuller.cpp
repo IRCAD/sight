@@ -65,9 +65,8 @@ SSeriesPuller::SSeriesPuller() noexcept
 
 //------------------------------------------------------------------------------
 
-SSeriesPuller::~SSeriesPuller() noexcept
-{
-}
+SSeriesPuller::~SSeriesPuller() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -128,7 +127,7 @@ void SSeriesPuller::updating()
     }
     else
     {
-        m_requestWorker->post(std::bind(&SSeriesPuller::pullSeries, this));
+        m_requestWorker->post([this](auto&& ...){pullSeries();});
     }
 }
 
@@ -241,7 +240,7 @@ void SSeriesPuller::pullSeries()
                 );
 
                 // Start series retriever in a worker.
-                worker->post(std::bind(&sight::io::dimse::SeriesRetriever::start, seriesRetriever));
+                worker->post([seriesRetriever](auto&& ...){seriesRetriever->start();});
 
                 // Pull Selected Series.
                 seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(
@@ -339,7 +338,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             m_dicomReader->update();
 
             // Merge series.
-            if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
+            if(!m_dicomReader->hasFailed() && !m_seriesDB->getContainer().empty())
             {
                 this->notify(NotificationType::SUCCESS, "Series read");
 

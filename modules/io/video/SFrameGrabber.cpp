@@ -41,6 +41,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include <chrono>
+#include <cmath>
 #include <filesystem>
 #include <regex>
 
@@ -49,32 +50,17 @@ namespace sight::module::io::video
 
 static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
-using sight::io::base::service::IGrabber;
-
 // -----------------------------------------------------------------------------
 
-SFrameGrabber::SFrameGrabber() noexcept :
-    m_loopVideo(false),
-    m_isInitialized(false),
-    m_fps(30),
-    m_imageCount(0),
-    m_oneShot(false),
-    m_createNewTS(false),
-    m_useTimelapse(true),
-    m_isPaused(false),
-    m_defaultDuration(5000),
-    m_step(1),
-    m_stepChanged(1),
-    m_videoFramesNb(0)
+SFrameGrabber::SFrameGrabber() noexcept
 {
     newSlot(s_SET_STEP_SLOT, &SFrameGrabber::setStep, this);
 }
 
 // -----------------------------------------------------------------------------
 
-SFrameGrabber::~SFrameGrabber() noexcept
-{
-}
+SFrameGrabber::~SFrameGrabber() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -111,7 +97,7 @@ void SFrameGrabber::configuring()
 
     SIGHT_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 
-    m_step = config.get<unsigned long>("step", m_step);
+    m_step = config.get<std::uint64_t>("step", m_step);
     SIGHT_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
@@ -223,7 +209,7 @@ void SFrameGrabber::stopCamera()
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
         const auto frameTL = m_frame.lock();
-        this->clearTimeline(*frameTL);
+        sight::module::io::video::SFrameGrabber::clearTimeline(*frameTL);
 
         const auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
@@ -246,7 +232,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
     {
         m_timer = m_worker->createTimer();
 
-        const std::size_t fps = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FPS));
+        const auto fps = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FPS));
         m_videoFramesNb = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_COUNT));
 
         if(fps == 0)
@@ -267,7 +253,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
 
         core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / fps);
 
-        m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
+        m_timer->setFunction([this](auto&& ...){grabVideo();});
         m_timer->setDuration(duration);
         m_timer->start();
 
@@ -335,7 +321,7 @@ void SFrameGrabber::readDevice(const data::Camera& _camera)
     {
         m_timer = m_worker->createTimer();
         float fps = _camera.getMaximumFrameRate();
-        fps = fps <= 0.f ? 30.f : fps;
+        fps = fps <= 0.F ? 30.F : fps;
         const std::size_t height = _camera.getHeight();
         const std::size_t width  = _camera.getWidth();
 
@@ -346,7 +332,7 @@ void SFrameGrabber::readDevice(const data::Camera& _camera)
         core::thread::Timer::TimeDurationType duration =
             std::chrono::milliseconds(1000 / static_cast<std::size_t>(fps));
 
-        m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
+        m_timer->setFunction([this](auto&& ...){grabVideo();});
         m_timer->setDuration(duration);
         m_timer->start();
 
@@ -377,7 +363,7 @@ void SFrameGrabber::readStream(const data::Camera& _camera)
     {
         m_timer = m_worker->createTimer();
         float fps = _camera.getMaximumFrameRate();
-        fps = fps <= 0.f ? 30.f : fps;
+        fps = fps <= 0.F ? 30.F : fps;
         const std::size_t height = _camera.getHeight();
         const std::size_t width  = _camera.getWidth();
 
@@ -388,7 +374,7 @@ void SFrameGrabber::readStream(const data::Camera& _camera)
         const core::thread::Timer::TimeDurationType duration =
             std::chrono::milliseconds(1000 / static_cast<std::size_t>(fps));
 
-        m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
+        m_timer->setFunction([this](auto&& ...){grabVideo();});
         m_timer->setDuration(duration);
         m_timer->start();
 
@@ -463,8 +449,8 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if(width > 0 && height > 0)
         {
-            const std::size_t w = static_cast<std::size_t>(width);
-            const std::size_t h = static_cast<std::size_t>(height);
+            const auto w = static_cast<std::size_t>(width);
+            const auto h = static_cast<std::size_t>(height);
 
             auto frameTL = m_frame.lock();
 
@@ -520,7 +506,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         const auto sigDuration = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
 
-        std::int64_t videoDuration;
+        std::int64_t videoDuration = 0;
         if(!m_useTimelapse)
         {
             videoDuration = static_cast<std::int64_t>(m_imageToRead.size() * m_fps);
@@ -540,7 +526,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         {
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
-            m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
+            m_timer->setFunction([this](auto&& ...){grabImage();});
             m_timer->setDuration(std::chrono::milliseconds(0));
             m_timer->start();
         }
@@ -566,7 +552,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
                 return;
             }
 
-            m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
+            m_timer->setFunction([this](auto&& ...){grabImage();});
             m_timer->setDuration(duration);
             m_timer->start();
         }
@@ -598,8 +584,8 @@ void SFrameGrabber::grabVideo()
 
             if(!m_isInitialized)
             {
-                const std::size_t width  = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
-                const std::size_t height = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_HEIGHT));
+                const auto width  = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
+                const auto height = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_HEIGHT));
 
                 const std::size_t w = static_cast<std::size_t>(image.size().width);
                 const std::size_t h = static_cast<std::size_t>(image.size().height);
@@ -663,7 +649,7 @@ void SFrameGrabber::grabVideo()
             }
 
             // Get time slider position.
-            const std::size_t ms   = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
+            const auto ms          = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
             const auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
 
@@ -699,7 +685,7 @@ void SFrameGrabber::grabVideo()
         if(m_loopVideo)
         {
             // Loop the video.
-            const std::size_t currentF = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
+            const auto currentF = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
 
             if(currentF == m_videoFramesNb)
             {
@@ -725,8 +711,8 @@ void SFrameGrabber::grabImage()
 
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
-        const cv::Mat image = cv::imread(imagePath.string(), cv::IMREAD_UNCHANGED);
-        core::HiResClock::HiResClockType timestamp;
+        const cv::Mat image                        = cv::imread(imagePath.string(), cv::IMREAD_UNCHANGED);
+        core::HiResClock::HiResClockType timestamp = NAN;
 
         //create a new timestamp
         if(m_createNewTS)
@@ -850,7 +836,7 @@ void SFrameGrabber::setPosition(int64_t position)
     }
     else if(!m_imageToRead.empty())
     {
-        const std::size_t newPos = static_cast<std::size_t>(position / 30);
+        const auto newPos = static_cast<std::size_t>(position / 30);
         if(newPos < m_imageToRead.size())
         {
             m_imageCount = newPos;
@@ -865,10 +851,11 @@ void SFrameGrabber::nextImage()
     if(m_oneShot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const long shift             = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
-        const long shiftedImageCount = static_cast<long>(m_imageCount) + shift;
+        const std::int64_t shift = static_cast<std::int64_t>(m_stepChanged)
+                                   - static_cast<std::int64_t>(m_step);
+        const std::int64_t shiftedImageCount = static_cast<std::int64_t>(m_imageCount) + shift;
 
-        if(shiftedImageCount < static_cast<long>(m_imageToRead.size()))
+        if(shiftedImageCount < static_cast<std::int64_t>(m_imageToRead.size()))
         {
             // Update image position index
             m_imageCount = static_cast<std::size_t>(shiftedImageCount);
@@ -896,8 +883,9 @@ void SFrameGrabber::previousImage()
         if(m_imageCount - m_step >= m_stepChanged)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const long shift             = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
-            const long shiftedimageCount = static_cast<long>(m_imageCount) - shift;
+            const std::int64_t shift = static_cast<std::int64_t>(m_stepChanged)
+                                       - static_cast<std::int64_t>(m_step);
+            const std::int64_t shiftedimageCount = static_cast<std::int64_t>(m_imageCount) - shift;
 
             // Update image position index
             // m_imageCount is pointing to next image, so -1 = present image
@@ -925,7 +913,7 @@ void SFrameGrabber::setStep(int step, std::string key)
     {
         SIGHT_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
-        m_stepChanged = static_cast<unsigned long>(step);
+        m_stepChanged = static_cast<std::uint64_t>(step);
     }
     else
     {

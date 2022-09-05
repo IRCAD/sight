@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,10 +35,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::filter::dicom::composite::CTImageStorageDefaultComposite);
 
-namespace sight::filter::dicom
-{
-
-namespace composite
+namespace sight::filter::dicom::composite
 {
 
 const std::string CTImageStorageDefaultComposite::s_FILTER_NAME        = "CTImageStorage default composite";
@@ -47,8 +44,7 @@ const std::string CTImageStorageDefaultComposite::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-CTImageStorageDefaultComposite::CTImageStorageDefaultComposite(filter::dicom::IFilter::Key) :
-    IComposite()
+CTImageStorageDefaultComposite::CTImageStorageDefaultComposite(filter::dicom::IFilter::Key /*unused*/)
 {
     // Split according to image type
     this->addChild(filter::dicom::splitter::ImageTypeSplitter::New());
@@ -73,8 +69,7 @@ CTImageStorageDefaultComposite::CTImageStorageDefaultComposite(filter::dicom::IF
 //-----------------------------------------------------------------------------
 
 CTImageStorageDefaultComposite::~CTImageStorageDefaultComposite()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -90,6 +85,4 @@ std::string CTImageStorageDefaultComposite::getDescription() const
     return CTImageStorageDefaultComposite::s_FILTER_DESCRIPTION;
 }
 
-} // namespace composite
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::composite

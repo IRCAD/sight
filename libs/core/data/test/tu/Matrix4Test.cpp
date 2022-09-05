@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::Matrix4Test);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -51,7 +48,7 @@ void Matrix4Test::tearDown()
 
 void Matrix4Test::getterSetterByCoef()
 {
-    const double identity[] = {
+    const std::array identity {
         1., 0., 0., 0.,
         0., 1., 0., 0.,
         0., 0., 1., 0.,
@@ -70,9 +67,9 @@ void Matrix4Test::getterSetterByCoef()
     }
 
     // Call setter and check getter
-    const double coefs[] = {
-        2, -2, .3, .12,
-        4, 8.9, 4.2, 1.2,
+    const std::array coefs = {
+        2., -2., .3, .12,
+        4., 8.9, 4.2, 1.2,
         7.8, -12.1, 2.3, 1.2,
         .3, 1.21, -3.1, 1.2
     };
@@ -203,6 +200,4 @@ void Matrix4Test::getterSetterByMatrix()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

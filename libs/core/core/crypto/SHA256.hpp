@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #pragma once
 
 #include "core/config.hpp"
@@ -30,7 +32,7 @@
         sight::core::crypto::secure_string( \
             __FILE__ \
             + std::to_string(__LINE__) \
-            + salt \
+            + std::string(salt) \
         ) \
     )
 
@@ -42,7 +44,7 @@ static const int HASH_SIZE = 32;
 /// Compute a sha256 hash using openSSL
 /// @param message the message to hash
 /// @param hash the output hash
-void hash(const secure_string& message, unsigned char output[HASH_SIZE]);
+void hash(const secure_string& message, std::array<unsigned char, HASH_SIZE>& output);
 
 /// Compute a sha256 hash using openSSL and return the result as a secure_string
 /// @param message the message to hash

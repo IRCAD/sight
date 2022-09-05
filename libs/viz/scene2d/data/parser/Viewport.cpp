@@ -48,10 +48,10 @@ void Viewport::createConfig(core::tools::Object::sptr _obj)
     if(config.has_value())
     {
         const std::string id = config->get("id", "");
-        const float x        = config->get<float>("x", 0.f);
-        const float y        = config->get<float>("y", 0.f);
-        const float width    = config->get<float>("width", 1.f);
-        const float height   = config->get<float>("height", 1.f);
+        const float x        = config->get<float>("x", 0.F);
+        const float y        = config->get<float>("y", 0.F);
+        const float width    = config->get<float>("width", 1.F);
+        const float height   = config->get<float>("height", 1.F);
 
         viewport->setX(x);
         viewport->setY(y);

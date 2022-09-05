@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 
 #include <vector>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -50,7 +47,7 @@ public:
 
     UI_QT_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~SelectorDialog();
+    UI_QT_API ~SelectorDialog() override;
 
     /**
      * @brief The string list that can be chosen by the selector.
@@ -85,6 +82,4 @@ private:
     QVector<QPushButton*> m_customButtons;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

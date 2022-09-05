@@ -51,9 +51,8 @@ SSliceIndexPositionEditor::SSliceIndexPositionEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-SSliceIndexPositionEditor::~SSliceIndexPositionEditor() noexcept
-{
-}
+SSliceIndexPositionEditor::~SSliceIndexPositionEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -209,7 +208,7 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
 
 void SSliceIndexPositionEditor::onSliceType(int _type)
 {
-    orientation_t type = static_cast<orientation_t>(_type);
+    auto type = static_cast<orientation_t>(_type);
     SIGHT_ASSERT(
         "Bad slice type " << type,
         type == orientation_t::X_AXIS
@@ -249,4 +248,4 @@ service::IService::KeyConnectionsMap SSliceIndexPositionEditor::getAutoConnectio
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qml::image

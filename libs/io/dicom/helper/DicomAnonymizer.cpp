@@ -42,16 +42,13 @@
 #include <gdcmReader.h>
 #include <gdcmUIDGenerator.h>
 #include <gdcmWriter.h>
-#include <time.h>
 
 #include <cstdint>
+#include <ctime>
 #include <filesystem>
 #include <iomanip>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 const std::string c_MIN_DATE_STRING = "19000101";
@@ -61,8 +58,6 @@ gdcm::UIDGenerator GENERATOR;
 DicomAnonymizer::DicomAnonymizer() :
     m_publicDictionary(gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
     m_observer(core::jobs::Observer::New("Anonymization process")),
-    m_archiving(false),
-    m_fileIndex(0),
     m_referenceDate(boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
     const std::filesystem::path tagsPath = core::runtime::getLibraryResourceFilePath(
@@ -127,8 +122,7 @@ DicomAnonymizer::DicomAnonymizer() :
 //------------------------------------------------------------------------------
 
 DicomAnonymizer::~DicomAnonymizer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -289,8 +283,8 @@ void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
 
         this->anonymize(inStream, outStream);
 
-        std::uint64_t progress = static_cast<std::uint64_t>(
-            ((m_archiving) ? 50 : 100) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
+        auto progress = static_cast<std::uint64_t>(
+            ((m_archiving) ? 50.F : 100.F) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
         m_observer->doneWork(progress);
     }
 }
@@ -340,7 +334,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     m_anonymizer.RemoveGroupLength();
     m_anonymizer.RemoveRetired();
 
-    for(ExceptionTagMapType::value_type exception : m_exceptionTagMap)
+    for(const ExceptionTagMapType::value_type& exception : m_exceptionTagMap)
     {
         m_anonymizer.Replace(exception.first, exception.second.c_str());
     }
@@ -373,7 +367,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
     for(const auto& tag : m_actionCodeCTags)
     {
-        this->applyActionCodeC(tag);
+        sight::io::dicom::helper::DicomAnonymizer::applyActionCodeC(tag);
     }
 
     for(const auto& tag : m_actionCodeUTags)
@@ -606,21 +600,12 @@ void DicomAnonymizer::generateDummyValue(const gdcm::Tag& tag)
             break;
 
         case gdcm::VR::FD:
-            m_anonymizer.Replace(tag, "0");
-            break;
-
         case gdcm::VR::FL:
-            m_anonymizer.Replace(tag, "0");
-            break;
-
         case gdcm::VR::IS:
             m_anonymizer.Replace(tag, "0");
             break;
 
         case gdcm::VR::LO:
-            m_anonymizer.Replace(tag, "ANONYMIZED");
-            break;
-
         case gdcm::VR::LT:
             m_anonymizer.Replace(tag, "ANONYMIZED");
             break;
@@ -630,9 +615,6 @@ void DicomAnonymizer::generateDummyValue(const gdcm::Tag& tag)
             break;
 
         case gdcm::VR::OF:
-            m_anonymizer.Replace(tag, "0");
-            break;
-
         case gdcm::VR::OW:
             m_anonymizer.Replace(tag, "0");
             break;
@@ -751,6 +733,4 @@ SPTR(core::jobs::IJob) DicomAnonymizer::getJob() const
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

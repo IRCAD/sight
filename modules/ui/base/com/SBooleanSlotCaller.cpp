@@ -24,10 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
@@ -42,15 +39,14 @@ SBooleanSlotCaller::SBooleanSlotCaller() noexcept
 
 //-----------------------------------------------------------------------------
 
-SBooleanSlotCaller::~SBooleanSlotCaller() noexcept
-{
-}
+SBooleanSlotCaller::~SBooleanSlotCaller() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 void SBooleanSlotCaller::updating()
 {
-    for(SlotInfoType info : m_slotInfos)
+    for(const SlotInfoType& info : m_slotInfos)
     {
         HasSlotIDType HasSlotId               = info.first;
         core::com::Slots::SlotKeyType slotKey = info.second;
@@ -70,6 +66,4 @@ void SBooleanSlotCaller::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

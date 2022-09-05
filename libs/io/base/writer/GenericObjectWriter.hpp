@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/base/config.hpp"
 #include "io/base/writer/IObjectWriter.hpp"
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 /**
@@ -50,13 +47,11 @@ public:
 
     /// Constructor. Do nothing.
     GenericObjectWriter()
-    {
-    }
+    = default;
 
     /// Destructor. Do nothing.
-    virtual ~GenericObjectWriter()
-    {
-    }
+    ~GenericObjectWriter() override
+    = default;
 
     /**
      * @brief m_object setter.
@@ -86,6 +81,4 @@ public:
     }
 };
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

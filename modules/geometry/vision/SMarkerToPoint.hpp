@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ public:
     MODULE_GEOMETRY_VISION_API SMarkerToPoint() noexcept;
 
     /// Destructor
-    MODULE_GEOMETRY_VISION_API ~SMarkerToPoint() noexcept;
+    MODULE_GEOMETRY_VISION_API ~SMarkerToPoint() noexcept override;
 
 protected:
 

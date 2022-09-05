@@ -50,9 +50,8 @@ SReconstruction::SReconstruction() noexcept
 
 //------------------------------------------------------------------------------
 
-SReconstruction::~SReconstruction() noexcept
-{
-}
+SReconstruction::~SReconstruction() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -190,7 +189,7 @@ void SReconstruction::setVisible(bool _hide)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::changeMesh(data::Mesh::sptr)
+void SReconstruction::changeMesh(data::Mesh::sptr /*unused*/)
 {
     this->updating();
 }

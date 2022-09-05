@@ -33,10 +33,7 @@
 #include <data/ActivitySeries.hpp>
 #include <data/Series.hpp>
 
-namespace sight::ui::base
-{
-
-namespace view
+namespace sight::ui::base::view
 {
 
 /**
@@ -112,6 +109,4 @@ protected:
     UI_BASE_API data::ActivitySeries::sptr createMainActivity() const override;
 };
 
-} // namespace view
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::view

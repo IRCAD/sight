@@ -45,26 +45,22 @@
 
 Q_DECLARE_METATYPE(QCameraInfo)
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 //-----------------------------------------------------------------------------
 
 CameraDeviceDlg::CameraDeviceDlg(std::string xmlResolutionConfig) :
-    QDialog()
+    m_devicesComboBox(new QComboBox()),
+    m_camSettings(new QListWidget())
 {
-    QVBoxLayout* mainLayout     = new QVBoxLayout();
-    QHBoxLayout* buttonLayout   = new QHBoxLayout();
-    QHBoxLayout* selectorLayout = new QHBoxLayout();
-    QPushButton* validateButton = new QPushButton("Validate");
-    QPushButton* cancelButton   = new QPushButton("Cancel");
+    auto* mainLayout     = new QVBoxLayout();
+    auto* buttonLayout   = new QHBoxLayout();
+    auto* selectorLayout = new QHBoxLayout();
+    auto* validateButton = new QPushButton("Validate");
+    auto* cancelButton   = new QPushButton("Cancel");
 
-    QLabel* deviceLabel = new QLabel("Camera device: ");
-    m_devicesComboBox = new QComboBox();
-    m_camSettings     = new QListWidget();
+    auto* deviceLabel = new QLabel("Camera device: ");
 
     selectorLayout->addWidget(deviceLabel);
     selectorLayout->addWidget(m_devicesComboBox);
@@ -83,7 +79,7 @@ CameraDeviceDlg::CameraDeviceDlg(std::string xmlResolutionConfig) :
     {
         //MacOs appends random number when cameras has same names, remove it to do it ourself.
         const std::string qtCamName = camInfo.description().toStdString();
-        const std::string camName   = qtCamName.substr(0, qtCamName.rfind("#") - 1);
+        const std::string camName   = qtCamName.substr(0, qtCamName.rfind('#') - 1);
 
         // check if the name already exists
         const auto multipleName = std::count(nameList.begin(), nameList.end(), camName);
@@ -150,7 +146,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
     int index = m_devicesComboBox->currentIndex();
     if(index >= 0)
     {
-        QCameraInfo camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
+        auto camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
         QCamera cam(camInfo);
         cam.load();
 
@@ -174,10 +170,10 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
                 );
             };
 
-        if((item && resolutionXMLOption == "preferences")
-           || (item && resolutionXMLOption == "prompt"))
+        if(((item != nullptr) && resolutionXMLOption == "preferences")
+           || ((item != nullptr) && resolutionXMLOption == "prompt"))
         {
-            QCameraViewfinderSettings settings = qvariant_cast<QCameraViewfinderSettings>(item->data(Qt::UserRole));
+            auto settings = qvariant_cast<QCameraViewfinderSettings>(item->data(Qt::UserRole));
             camera->setMaximumFrameRate(static_cast<float>(settings.maximumFrameRate()));
 
             if((camera->getWidth() != 0 || camera->getHeight() != 0)
@@ -229,7 +225,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
                 return false;
             }
 
-            camera->setMaximumFrameRate(30.f);
+            camera->setMaximumFrameRate(30.F);
 
             if((camera->getWidth() != 0 || camera->getHeight() != 0)
                && !(camera->getWidth() == static_cast<size_t>(xmlResolutionValue.width())
@@ -251,7 +247,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
         else
         {
             SIGHT_ERROR("No camera setting selected, using default...");
-            camera->setMaximumFrameRate(30.f);
+            camera->setMaximumFrameRate(30.F);
             camera->setHeight(0);
             camera->setWidth(0);
             return false;
@@ -278,13 +274,13 @@ void CameraDeviceDlg::onSelectDevice(int index)
     m_camSettings->clear();
     if(index >= 0)
     {
-        QCameraInfo camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
-        QCamera* cam        = new QCamera(camInfo);
+        auto camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
+        auto* cam    = new QCamera(camInfo);
         cam->load();
 
 #ifdef __linux__
         //NOTE : Work around for the camera resolution settings on linux (maybe on OSX too)
-        QCameraImageCapture* imageCapture          = new QCameraImageCapture(cam);
+        auto* imageCapture                         = new QCameraImageCapture(cam);
         QList<QSize> res                           = imageCapture->supportedResolutions();
         QList<QVideoFrame::PixelFormat> pixFormats = imageCapture->supportedBufferFormats();
 
@@ -318,7 +314,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
                 stream << "\t" << settings.maximumFrameRate() << " fps";
                 stream << "\tFormat:" << data::Camera::getPixelFormatName(format);
-                QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
+                auto* item = new QListWidgetItem(QString::fromStdString(stream.str()));
                 item->setData(Qt::UserRole, QVariant::fromValue(settings));
                 m_camSettings->addItem(item);
             }
@@ -371,7 +367,8 @@ QSize CameraDeviceDlg::getResolution(const std::string& resolutionXMLOption, con
         const QSize min = *std::min_element(supportedResolutions.begin(), supportedResolutions.end(), criteria);
         return min;
     }
-    else if(resolutionXMLOption == "max")
+
+    if(resolutionXMLOption == "max")
     {
         const auto criteria = [&](const QSize& a, const QSize& b)
                               {
@@ -380,7 +377,8 @@ QSize CameraDeviceDlg::getResolution(const std::string& resolutionXMLOption, con
         const QSize max = *std::max_element(supportedResolutions.begin(), supportedResolutions.end(), criteria);
         return max;
     }
-    else if(resolutionXMLOption == "preferences")
+
+    if(resolutionXMLOption == "preferences")
     {
         try
         {
@@ -463,6 +461,4 @@ QSize CameraDeviceDlg::getResolution(const std::string& resolutionXMLOption, con
     return {0, 0};
 }
 
-} // video
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

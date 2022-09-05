@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "io/dimse/helper/Series.hpp"
 
 #include "io/dimse/exceptions/TagMissing.hpp"
@@ -35,10 +37,7 @@
 
 #include <boost/foreach.hpp>
 
-namespace sight::io::dimse
-{
-
-namespace helper
+namespace sight::io::dimse::helper
 {
 
 //------------------------------------------------------------------------------
@@ -62,10 +61,10 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
     OFCondition result;
 
     // Every while loop run will get all image for a specific study
-    for(it = _responses.begin() ; it != _responses.end() ; ++it)
+    for(auto* _response : _responses)
     {
         // Be sure we are not in the last response which does not have a dataset
-        if((*it)->m_dataset != NULL)
+        if(_response->m_dataset != nullptr)
         {
             OFString data;
 
@@ -76,119 +75,119 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
             sight::data::Equipment::sptr equipment = series->getEquipment();
 
             // Series
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Modality, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_Modality, data);
             series->setModality(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data);
             series->setInstanceUID(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesNumber, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_SeriesNumber, data);
             series->setNumber(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Laterality, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_Laterality, data);
             series->setLaterality(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, data);
             series->setDate(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesTime, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_SeriesTime, data);
             series->setTime(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data);
             sight::data::DicomValuesType performingPhysiciansName;
             performingPhysiciansName.push_back(data.c_str());
             series->setPerformingPhysiciansName(performingPhysiciansName);
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ProtocolName, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_ProtocolName, data);
             series->setProtocolName(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
             series->setDescription(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data);
             series->setBodyPartExamined(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientPosition, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientPosition, data);
             series->setPatientPosition(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
             series->setAnatomicalOrientationType(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepID, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepID, data);
             series->setPerformedProcedureStepID(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartDate, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartDate, data);
             series->setPerformedProcedureStepStartDate(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartTime, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartTime, data);
             series->setPerformedProcedureStepStartTime(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndDate, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndDate, data);
             series->setPerformedProcedureStepEndDate(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndTime, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndTime, data);
             series->setPerformedProcedureStepEndTime(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepDescription, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepDescription, data);
             series->setPerformedProcedureStepDescription(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_CommentsOnThePerformedProcedureStep, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_CommentsOnThePerformedProcedureStep, data);
             series->setPerformedProcedureComments(data.c_str());
 
             // Study
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data);
             study->setInstanceUID(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyID, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_StudyID, data);
             study->setStudyID(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data);
             study->setDate(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data);
             study->setTime(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data);
             study->setReferringPhysicianName(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ConsultingPhysicianName, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_ConsultingPhysicianName, data);
             study->setConsultingPhysicianName(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data);
             study->setDescription(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data);
             study->setPatientAge(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientSize, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientSize, data);
             study->setPatientSize(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientWeight, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientWeight, data);
             study->setPatientWeight(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientBodyMassIndex, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientBodyMassIndex, data);
             study->setPatientBodyMassIndex(data.c_str());
 
             // Patient
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientName, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientName, data);
             patient->setName(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientID, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientID, data);
             patient->setPatientId(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, data);
             patient->setBirthdate(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientSex, data);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_PatientSex, data);
             patient->setSex(data.c_str());
 
             // Equipment
-            (*it)->m_dataset->findAndGetOFStringArray(DCM_InstitutionName, data);
+            _response->m_dataset->findAndGetOFStringArray(DCM_InstitutionName, data);
             equipment->setInstitutionName(data.c_str());
 
             // Number of instances
-            long int nb_instances;
-            (*it)->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances);
+            long nb_instances = 0; // NOLINT(google-runtime-int)
+            _response->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances);
             series->setNumberOfInstances(std::size_t(nb_instances));
 
             // Add series to container
@@ -223,13 +222,13 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
     DcmDataset dataset;
     OFCondition result;
     // Every while loop run will get all image for a specific study
-    for(it = _responses.begin() ; it != _responses.end() ; ++it)
+    for(auto* _response : _responses)
     {
         // Be sure we are not in the last response which does not have a dataset
-        if((*it)->m_dataset != NULL)
+        if(_response->m_dataset != nullptr)
         {
             OFString seriesInstanceUID;
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID);
+            result = _response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID);
             // Only try to get study if we actually have study instance uid, otherwise skip it
             if(result.good())
             {
@@ -247,6 +246,4 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
     return instanceUIDContainer;
 }
 
-} //helper
-
-} //fwPacsIO
+} // namespace sight::io::dimse::helper

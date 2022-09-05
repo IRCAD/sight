@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::UtilTest);
 
-namespace sight::core::com
-{
-
-namespace ut
+namespace sight::core::com::ut
 {
 
 //------------------------------------------------------------------------------
@@ -64,7 +61,7 @@ int f(int a, int b)
 
 std::string g(const std::string& a, const std::string& b, const std::string& c)
 {
-    return a + b + c;
+    return std::string(a).append(b).append(c);
 }
 
 //------------------------------------------------------------------------------
@@ -84,12 +81,12 @@ class C;
 
 void UtilTest::convertFunctionTypeTest()
 {
-    typedef void (C::* CM2C)(int, float) const;
-    typedef void (C::* CM2)(int, float);
+    using CM2C = void (C::*)(int, float) const;
+    using CM2  = void (C::*)(int, float);
 
-    typedef std::function<void (int, float)> BF2;
+    using BF2 = std::function<void (int, float)>;
 
-    typedef void F2(int, float);
+    using F2 = void (int, float);
 
     CPPUNIT_ASSERT((std::is_same<F2, core::com::util::convert_function_type<CM2C>::type>::value));
     CPPUNIT_ASSERT((std::is_same<F2, core::com::util::convert_function_type<CM2>::type>::value));
@@ -101,16 +98,16 @@ void UtilTest::convertFunctionTypeTest()
 
 void UtilTest::removeLastArgTest()
 {
-    typedef long long F9(int*, double, float, char, double*, float*, char*, int, const char*);
-    typedef long long F8(int*, double, float, char, double*, float*, char*, int);
-    typedef long long F7(int*, double, float, char, double*, float*, char*);
-    typedef long long F6(int*, double, float, char, double*, float*);
-    typedef long long F5(int*, double, float, char, double*);
-    typedef long long F4(int*, double, float, char);
-    typedef long long F3(int*, double, float);
-    typedef long long F2(int*, double);
-    typedef long long F1(int*);
-    typedef long long F0();
+    using F9 = std::int64_t(int*, double, float, char, double*, float*, char*, int, const char*);
+    using F8 = std::int64_t(int*, double, float, char, double*, float*, char*, int);
+    using F7 = std::int64_t(int*, double, float, char, double*, float*, char*);
+    using F6 = std::int64_t(int*, double, float, char, double*, float*);
+    using F5 = std::int64_t(int*, double, float, char, double*);
+    using F4 = std::int64_t(int*, double, float, char);
+    using F3 = std::int64_t(int*, double, float);
+    using F2 = std::int64_t(int*, double);
+    using F1 = std::int64_t(int*);
+    using F0 = std::int64_t();
 
     CPPUNIT_ASSERT((std::is_same<F8, core::com::util::remove_last_arg<F9>::type>::value));
     CPPUNIT_ASSERT((std::is_same<F7, core::com::util::remove_last_arg<F8>::type>::value));
@@ -126,6 +123,4 @@ void UtilTest::removeLastArgTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core::com
+} // namespace sight::core::com::ut

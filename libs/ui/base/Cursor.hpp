@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
     /// Constructor. Create the implementation of the specific cursor
     UI_BASE_API Cursor();
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~Cursor();
+    UI_BASE_API ~Cursor() override;
 
     // TODO : update API to reflect the cursor stack
     /// Set the cursor
@@ -67,8 +67,7 @@ public:
     SIGHT_DECLARE_CLASS(BusyCursor, Cursor, new BusyCursor);
 
     /// Constructor. Sets cursor to "busy" state
-    UI_BASE_API BusyCursor() :
-        Cursor()
+    UI_BASE_API BusyCursor()
     {
         setCursor(CursorType::BUSY);
     }
@@ -87,8 +86,7 @@ public:
     SIGHT_DECLARE_CLASS(WaitCursor, Cursor, new WaitCursor);
 
     /// Constructor. Sets cursor to "wait" state
-    UI_BASE_API WaitCursor() :
-        Cursor()
+    UI_BASE_API WaitCursor()
     {
         setCursor(CursorType::WAIT);
     }
@@ -107,8 +105,7 @@ public:
     SIGHT_DECLARE_CLASS(CrossCursor, Cursor, new CrossCursor);
 
     /// Constructor. Sets cursor to "cross" state
-    UI_BASE_API CrossCursor() :
-        Cursor()
+    UI_BASE_API CrossCursor()
     {
         setCursor(CursorType::CROSS);
     }

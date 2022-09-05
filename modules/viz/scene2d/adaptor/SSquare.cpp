@@ -28,10 +28,7 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 const core::com::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
@@ -44,9 +41,8 @@ SSquare::SSquare() noexcept
 
 //-----------------------------------------------------------------------------
 
-SSquare::~SSquare() noexcept
-{
-}
+SSquare::~SSquare() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +62,7 @@ void SSquare::configuring()
     m_autoRefresh = config.get<bool>("autoRefresh", m_autoRefresh);
     m_interaction = config.get<bool>("interaction", m_interaction);
 
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
         this->setColor(config.get<std::string>("color"));
     }
@@ -166,6 +162,7 @@ bool SSquare::coordViewIsInItem(const sight::viz::scene2d::vec2d_t& coord, QGrap
 sight::viz::scene2d::vec2d_t SSquare::coordViewToCoordItem(
     const sight::viz::scene2d::vec2d_t& coord,
     QGraphicsItem*
+    /*unused*/
 )
 {
     sight::viz::scene2d::vec2d_t scenePoint = this->getScene2DRender()->mapToScene(coord);
@@ -199,6 +196,4 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     }
 }
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

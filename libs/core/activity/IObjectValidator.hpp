@@ -32,7 +32,7 @@ namespace sight::data
 
 class Object;
 
-}
+} // namespace sight::data
 
 namespace sight::activity
 {
@@ -50,9 +50,10 @@ public:
     SIGHT_DECLARE_CLASS(IObjectValidator, activity::IValidator);
 
     /// Does nothing.
-    ACTIVITY_API virtual ValidationType validate(
-        const activity::extension::ActivityInfo&,
+    ACTIVITY_API ValidationType validate(
+        const activity::extension::ActivityInfo& /*activityInfo*/,
         const CSPTR(data::Vector)&
+        /*currentSelection*/
     ) const override
     {
         ValidationType validation;

@@ -30,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraSeriesTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -175,6 +172,4 @@ void CameraSeriesTest::deepCopyTest()
     CPPUNIT_ASSERT(*series == *series2);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

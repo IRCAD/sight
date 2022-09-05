@@ -33,15 +33,13 @@ static const service::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-LockDumpSrv::LockDumpSrv() noexcept
-{
-}
+LockDumpSrv::LockDumpSrv() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-LockDumpSrv::~LockDumpSrv() noexcept
-{
-}
+LockDumpSrv::~LockDumpSrv() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -85,10 +83,10 @@ void LockDumpSrv::updating()
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::info(std::ostream&)
+void LockDumpSrv::info(std::ostream& /*_sstream*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-} // ctrlMemory
+} // namespace sight::module::memory

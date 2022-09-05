@@ -44,13 +44,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace tid
+namespace sight::io::dicom::writer::tid
 {
 
 //------------------------------------------------------------------------------
@@ -67,8 +61,7 @@ Fiducial::Fiducial(
 //------------------------------------------------------------------------------
 
 Fiducial::~Fiducial()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -143,12 +136,11 @@ void Fiducial::createFiducial(
     if(useSCoord3D)
     {
         // Create SCoord3D Node
-        const float scoord[] = {
+        std::vector<float> scoordVector {
             static_cast<float>(point->getCoord()[0]),
             static_cast<float>(point->getCoord()[1]),
             static_cast<float>(point->getCoord()[2])
         };
-        std::vector<float> scoordVector(scoord, scoord + 3);
         SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3DNode =
             std::make_shared<io::dicom::container::sr::DicomSRSCoord3DNode>(
                 io::dicom::container::DicomCodedAttribute(),
@@ -162,11 +154,10 @@ void Fiducial::createFiducial(
     else
     {
         // Create SCoord Node
-        const float scoord[] = {
+        std::vector<float> scoordVector {
             static_cast<float>(point->getCoord()[0]),
             static_cast<float>(point->getCoord()[1])
         };
-        std::vector<float> scoordVector(scoord, scoord + 2);
         SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoordNode =
             std::make_shared<io::dicom::container::sr::DicomSRSCoordNode>(
                 io::dicom::container::DicomCodedAttribute(),
@@ -192,8 +183,4 @@ void Fiducial::createFiducial(
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::tid

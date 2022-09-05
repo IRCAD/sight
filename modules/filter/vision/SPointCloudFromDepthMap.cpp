@@ -34,6 +34,8 @@
 
 #include <glm/glm.hpp>
 
+#include <cmath>
+
 namespace sight::module::filter::vision
 {
 
@@ -41,17 +43,15 @@ const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE =
 
 //------------------------------------------------------------------------------
 
-SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept :
-    service::IFilter()
+SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept
 {
     newSlot(s_SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
 }
 
 //------------------------------------------------------------------------------
 
-SPointCloudFromDepthMap::~SPointCloudFromDepthMap() noexcept
-{
-}
+SPointCloudFromDepthMap::~SPointCloudFromDepthMap() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -190,7 +190,9 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
     }
     else
     {
-        SIGHT_ERROR("unknown key '" + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'");
+        SIGHT_ERROR(
+            std::string("unknown key '").append(_key).append("' in slot '").append(s_SET_DEPTH_RANGE).append("'")
+        );
     }
 }
 
@@ -200,7 +202,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     const data::Camera::csptr& depthCamera,
     const data::Image::csptr& depthMap,
     const data::Mesh::sptr& pointCloud
-)
+) const
 {
     SIGHT_INFO("Input RGB map was empty, skipping colors");
 
@@ -219,10 +221,10 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     auto depthItr = depthMap->begin<std::uint16_t>();
 
-    const double cx = depthCamera->getCx(),
-                 cy = depthCamera->getCy(),
-                 fx = depthCamera->getFx(),
-                 fy = depthCamera->getFy();
+    const double cx = depthCamera->getCx();
+    const double cy = depthCamera->getCy();
+    const double fx = depthCamera->getFx();
+    const double fy = depthCamera->getFy();
 
     const auto meshDumpLock = pointCloud->dump_lock();
 
@@ -236,7 +238,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
-                double px, py, pz;
+                double px = NAN;
+                double py = NAN;
+                double pz = NAN;
                 sight::filter::vision::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
                 pointsItr->x = static_cast<float>(px);
                 pointsItr->y = static_cast<float>(py);
@@ -259,7 +263,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const data::Image::csptr& colorMap,
     const data::Matrix4::csptr& extrinsic,
     const data::Mesh::sptr& pointCloud
-)
+) const
 {
     SIGHT_INFO("Input RGB map was supplied, including colors");
 
@@ -304,15 +308,15 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const auto rgbDumpLock = colorMap->dump_lock();
     const auto rgbBegin    = colorMap->begin<data::iterator::rgba>();
 
-    const double cx = depthCamera->getCx(),
-                 cy = depthCamera->getCy(),
-                 fx = depthCamera->getFx(),
-                 fy = depthCamera->getFy();
+    const double cx = depthCamera->getCx();
+    const double cy = depthCamera->getCy();
+    const double fx = depthCamera->getFx();
+    const double fy = depthCamera->getFy();
 
-    const double rgbCx = colorCamera->getCx(),
-                 rgbCy = colorCamera->getCy(),
-                 rgbFx = colorCamera->getFx(),
-                 rgbFy = colorCamera->getFy();
+    const double rgbCx = colorCamera->getCx();
+    const double rgbCy = colorCamera->getCy();
+    const double rgbFx = colorCamera->getFx();
+    const double rgbFy = colorCamera->getFy();
 
     const auto meshDumpLock = pointCloud->dump_lock();
 
@@ -334,7 +338,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                 auto&& [p, c] = *pointsItr;
 
                 // get the 3D coordinates in the depth world
-                double px, py, pz;
+                double px = NAN;
+                double py = NAN;
+                double pz = NAN;
                 sight::filter::vision::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
                 p.x = static_cast<float>(px);
                 p.y = static_cast<float>(py);
@@ -345,7 +351,8 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                 const glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
 
                 // project point to the rgb image
-                std::size_t rgbPx, rgbPy;
+                std::size_t rgbPx      = 0;
+                std::size_t rgbPy      = 0;
                 const bool isProjected = sight::filter::vision::Projection::projectPoint(
                     rgbPoint.x,
                     rgbPoint.y,
@@ -365,7 +372,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                     const std::size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
                     if(rgbIdx < imageSize)
                     {
-                        const auto color = rgbBegin + long(rgbIdx);
+                        const auto color = rgbBegin + std::int64_t(rgbIdx);
                         c = *color;
                     }
                     else

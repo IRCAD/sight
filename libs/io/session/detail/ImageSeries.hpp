@@ -27,10 +27,7 @@
 
 #include <data/ImageSeries.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ImageSeries
+namespace sight::io::session::detail::ImageSeries
 {
 
 constexpr static auto s_ContrastAgent {"ContrastAgent"};
@@ -55,7 +52,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto imageSeries = Helper::safeCast<data::ImageSeries>(object);
@@ -91,7 +88,7 @@ inline static data::ImageSeries::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -123,6 +120,4 @@ inline static data::ImageSeries::sptr deserialize(
     return imageSeries;
 }
 
-} // namespace detail::ImageSeries
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ImageSeries

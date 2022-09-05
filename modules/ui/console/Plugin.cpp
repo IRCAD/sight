@@ -35,15 +35,14 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::console::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 void Plugin::start()
 {
-    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::getCurrentProfile()->setRunCallback(run);
 }
 
 //-----------------------------------------------------------------------------

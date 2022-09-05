@@ -67,7 +67,7 @@ public:
     MODULE_DATA_API SGetCamera() = default;
 
     /// Destructor
-    MODULE_DATA_API ~SGetCamera() = default;
+    MODULE_DATA_API ~SGetCamera() override = default;
 
 protected:
 

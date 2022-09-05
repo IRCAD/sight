@@ -38,7 +38,7 @@ public:
 
     void tearDown() override;
 
-    void getTimeTest();
+    static void getTimeTest();
 };
 
-}
+} // namespace sight::core::ut

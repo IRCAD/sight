@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,10 +44,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -115,7 +112,7 @@ public:
     MODULE_UI_QT_API SWizard() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SWizard() noexcept;
+    MODULE_UI_QT_API ~SWizard() noexcept override;
 
     /**
      * @name Slot API
@@ -207,10 +204,10 @@ private:
 
     DataView::ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
 
-    Mode m_mode; ///< editor mode (CREATE or UPDATE)
+    Mode m_mode {Mode::CREATE}; ///< editor mode (CREATE or UPDATE)
 
-    bool m_confirmUpdate; ///< if true, the editor proposes a confirmation dialog when the activity is updated.
-    bool m_isCancelable;  /// true if the cancel button is proposed
+    bool m_confirmUpdate {true}; ///< if true, the editor proposes a confirmation dialog when the activity is updated.
+    bool m_isCancelable {true};  /// true if the cancel button is proposed
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activitySeries is created
     ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activitySeries is updated
@@ -221,6 +218,4 @@ private:
     data::ptr<data::ActivitySeries, data::Access::inout> m_activitySeries {this, "activitySeries"};
 };
 
-} // editor
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

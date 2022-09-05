@@ -53,7 +53,7 @@ public:
 
     UI_QT_API CardinalLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~CardinalLayoutManager();
+    UI_QT_API ~CardinalLayoutManager() override;
 
     /**
      * @brief Instantiate layout with parent container.

@@ -38,7 +38,7 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -112,7 +112,7 @@ private:
     data::Material::sptr m_material {nullptr};
 
     /// Defines the axis length in scene units.
-    float m_length {50.f};
+    float m_length {50.F};
 
     /// Enables the visibility of axis labels.
     bool m_enableLabel {true};

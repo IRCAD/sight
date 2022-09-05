@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::log
-{
-
-namespace ut
+namespace sight::core::log::ut
 {
 
 class LoggerTest : public CPPUNIT_NS::TestFixture
@@ -39,12 +36,10 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void simpleLoggerTest();
+    static void simpleLoggerTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::log
+} // namespace sight::core::log::ut

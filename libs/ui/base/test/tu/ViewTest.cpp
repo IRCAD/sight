@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::ut::ViewTest);
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 class TestView : public ui::base::registry::View
@@ -42,12 +39,12 @@ class TestView : public ui::base::registry::View
 public:
 
     TestView() = delete;
-    TestView(const std::string& sid) :
+    explicit TestView(const std::string& sid) :
         ui::base::registry::View(sid)
     {
     }
 
-    ~TestView() = default;
+    ~TestView() override = default;
 
     friend ViewTest;
 };
@@ -135,6 +132,4 @@ void ViewTest::configuringTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

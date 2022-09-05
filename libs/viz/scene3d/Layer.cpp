@@ -59,6 +59,8 @@
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 
+#include <cmath>
+#include <memory>
 #include <stack>
 
 namespace sight::viz::scene3d
@@ -92,14 +94,14 @@ struct Layer::LayerCameraListener : public Ogre::Camera::Listener
 
     //------------------------------------------------------------------------------
 
-    LayerCameraListener(Layer* renderer) :
+    explicit LayerCameraListener(Layer* renderer) :
         m_layer(renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void cameraPreRenderScene(Ogre::Camera*) final
+    void cameraPreRenderScene(Ogre::Camera* /*cam*/) final
     {
         SIGHT_ASSERT("Layer is not set", m_layer);
 
@@ -160,8 +162,7 @@ Layer::Layer()
 //-----------------------------------------------------------------------------
 
 Layer::~Layer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -181,7 +182,7 @@ void Layer::setID(const std::string& id)
 
 //-----------------------------------------------------------------------------
 
-const std::string Layer::getName() const
+std::string Layer::getName() const
 {
     return m_sceneManager->getName();
 }
@@ -208,19 +209,19 @@ void Layer::createScene()
 
     auto renderService = m_renderService.lock();
 
-    auto root = viz::scene3d::Utils::getOgreRoot();
+    auto* root = viz::scene3d::Utils::getOgreRoot();
     m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->getID() + "_" + m_id);
     m_sceneManager->addRenderQueueListener(viz::scene3d::Utils::getOverlaySystem());
 
     SIGHT_ASSERT("Scene manager must be initialized", m_sceneManager);
     SIGHT_ASSERT("Render window must be initialized", m_renderTarget);
 
-    m_sceneManager->setAmbientLight(Ogre::ColourValue(0.8f, 0.8f, 0.8f));
+    m_sceneManager->setAmbientLight(Ogre::ColourValue(0.8F, 0.8F, 0.8F));
 
     for(const auto& overlayName : m_overlayScripts)
     {
         Ogre::Overlay* overlay = Ogre::OverlayManager::getSingleton().getByName(overlayName);
-        if(overlay)
+        if(overlay != nullptr)
         {
             overlay->hide(); // Hide the overlay for now and display it when rendering in this layer's viewport.
             m_enabledOverlays.push_back(overlay);
@@ -237,9 +238,9 @@ void Layer::createScene()
 
     const auto& [left, top, width, height] = m_viewportCfg;
     m_viewport                             = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
-    m_viewport->setOverlaysEnabled(m_enabledOverlays.size() > 0);
+    m_viewport->setOverlaysEnabled(!m_enabledOverlays.empty());
 
-    m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
+    m_compositorChainManager = std::make_unique<fwc::ChainManager>(m_viewport);
 
     if(m_order != 0)
     {
@@ -259,29 +260,29 @@ void Layer::createScene()
         );
         defaultMaterial.get()->copyDetailsTo(material);
 
-        std::uint8_t color[4];
+        std::array<std::uint8_t, 4> color {};
         Ogre::Pass* pass                           = material->getTechnique(0)->getPass(0);
         Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
 
         data::tools::Color::hexaStringToRGBA(m_topColor, color);
-        Ogre::ColourValue ogreTopColor(color[0] / 255.f,
-                                       color[1] / 255.f,
-                                       color[2] / 255.f,
-                                       1.f);
+        Ogre::ColourValue ogreTopColor(static_cast<float>(color[0]) / 255.F,
+                                       static_cast<float>(color[1]) / 255.F,
+                                       static_cast<float>(color[2]) / 255.F,
+                                       1.F);
         params->setNamedConstant("topColour", ogreTopColor);
 
         data::tools::Color::hexaStringToRGBA(m_bottomColor, color);
-        Ogre::ColourValue ogreBotColor(color[0] / 255.f,
-                                       color[1] / 255.f,
-                                       color[2] / 255.f,
-                                       1.f);
+        Ogre::ColourValue ogreBotColor(static_cast<float>(color[0]) / 255.F,
+                                       static_cast<float>(color[1]) / 255.F,
+                                       static_cast<float>(color[2]) / 255.F,
+                                       1.F);
         params->setNamedConstant("bottomColour", ogreBotColor);
 
         params->setNamedConstant("topScale", m_topScale);
         params->setNamedConstant("bottomScale", m_bottomScale);
 
         // Create background rectangle covering the whole screen
-        Ogre::Rectangle2D* rect = new Ogre::Rectangle2D();
+        auto* rect = new Ogre::Rectangle2D();
         rect->setCorners(-1.0, 1.0, 1.0, -1.0);
         rect->setMaterial(material);
 
@@ -384,21 +385,21 @@ void Layer::destroyScene()
         m_lightAdaptor.reset();
     }
 
-    if(m_camera && m_cameraListener)
+    if((m_camera != nullptr) && (m_cameraListener != nullptr))
     {
         m_camera->removeListener(m_cameraListener);
         delete m_cameraListener;
         m_cameraListener = nullptr;
     }
 
-    if(m_autostereoListener)
+    if(m_autostereoListener != nullptr)
     {
         Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
         m_autostereoListener = nullptr;
     }
 
-    if(m_sceneManager)
+    if(m_sceneManager != nullptr)
     {
         viz::scene3d::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
         m_sceneManager = nullptr;
@@ -487,8 +488,8 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
             if(m_dpi != newDpi)
             {
                 m_dpi = newDpi;
-                auto& movableTextObjects = m_sceneManager->getMovableObjects(factory::Text::FACTORY_TYPE_NAME);
-                for(auto& [name, movObj] : movableTextObjects)
+                const auto& movableTextObjects = m_sceneManager->getMovableObjects(factory::Text::FACTORY_TYPE_NAME);
+                for(const auto& [name, movObj] : movableTextObjects)
                 {
                     Text* const textObj = dynamic_cast<Text*>(movObj);
                     SIGHT_ASSERT("Movable object should be of type '::viz::scene3d::Text'", textObj);
@@ -640,11 +641,11 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
         const Ogre::SceneNode::ObjectMap& entities = tempSceneNode->getAttachedObjects();
-        for(const auto movable : entities)
+        for(auto* const movable : entities)
         {
             const Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(movable);
 
-            if(entity)
+            if(entity != nullptr)
             {
                 if(entity->isVisible())
                 {
@@ -656,7 +657,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
                 // Then try to cast into a ManualObject*
                 const Ogre::ManualObject* manualObject = dynamic_cast<Ogre::ManualObject*>(movable);
 
-                if(manualObject)
+                if(manualObject != nullptr)
                 {
                     if(manualObject->isVisible())
                     {
@@ -668,7 +669,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
                     // Last try to cast into a Camera*
                     const Ogre::Camera* cameraObject = dynamic_cast<Ogre::Camera*>(movable);
 
-                    if(cameraObject && cameraObject != this->getDefaultCamera())
+                    if((cameraObject != nullptr) && cameraObject != this->getDefaultCamera())
                     {
                         if(cameraObject->isDebugDisplayEnabled())
                         {
@@ -683,7 +684,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
         {
             // First, we must cast the Node* into a SceneNode*
             const Ogre::SceneNode* childSceneNode = dynamic_cast<Ogre::SceneNode*>(childNode);
-            if(childSceneNode)
+            if(childSceneNode != nullptr)
             {
                 // Push the current node into the stack in order to continue iteration
                 childrenStack.push(childSceneNode);
@@ -780,14 +781,14 @@ void Layer::resetCameraCoordinates()
 {
     const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
-    if(m_camera && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
            || worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
-            camNode->setPosition(0.f, 0.f, 0.f);
+            camNode->setPosition(0.F, 0.F, 0.F);
         }
         else
         {
@@ -795,7 +796,7 @@ void Layer::resetCameraCoordinates()
             const Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0
                                                  ? worldCoordBoundingBox.getSize().length() : 0;
 
-            float coeffZoom = static_cast<float>(boundingBoxLength);
+            auto coeffZoom = static_cast<float>(boundingBoxLength);
             SIGHT_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
@@ -826,7 +827,7 @@ void Layer::computeCameraParameters()
 {
     const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
-    if(m_camera && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if(worldCoordBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
@@ -863,7 +864,7 @@ void Layer::resetCameraClippingRange() const
 
 void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBoundingBox) const
 {
-    if(m_camera && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
@@ -883,7 +884,10 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
         Ogre::Vector3 minimum = worldCoordBoundingBox.getMinimum();
         Ogre::Vector3 maximum = worldCoordBoundingBox.getMaximum();
 
-        float a, b, c, d;
+        float a = NAN;
+        float b = NAN;
+        float c = NAN;
+        float d = NAN;
         a = -direction.x;
         b = -direction.y;
         c = -direction.z;
@@ -891,22 +895,23 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
 
         // Max near and min far
         float maxNear = a * minimum.x + b * minimum.y + c * minimum.z + d;
-        float minFar  = 1e-18f;
-        float dist;
+        float minFar  = 1e-18F;
+        float dist    = NAN;
 
-        float corners[6];
-        corners[0] = minimum.x;
-        corners[1] = maximum.x;
-        corners[2] = minimum.y;
-        corners[3] = maximum.y;
-        corners[4] = minimum.z;
-        corners[5] = maximum.z;
+        std::array corners {
+            minimum.x,
+            maximum.x,
+            minimum.y,
+            maximum.y,
+            minimum.z,
+            maximum.z
+        };
         // Find the closest / farthest bounding box vertex
-        for(int k = 0 ; k < 2 ; k++)
+        for(std::size_t k = 0 ; k < 2 ; k++)
         {
-            for(int j = 0 ; j < 2 ; j++)
+            for(std::size_t j = 0 ; j < 2 ; j++)
             {
-                for(int i = 0 ; i < 2 ; i++)
+                for(std::size_t i = 0 ; i < 2 ; i++)
                 {
                     dist    = a * corners[i] + b * corners[2 + j] + c * corners[4 + k] + d;
                     maxNear = (dist < maxNear) ? dist : maxNear;
@@ -916,17 +921,17 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
         }
 
         // Give ourselves a little breathing room
-        maxNear = 0.99f * maxNear - (minFar - maxNear) * 0.5f;
-        minFar  = 1.01f * minFar + (minFar - maxNear) * 0.5f;
+        maxNear = 0.99F * maxNear - (minFar - maxNear) * 0.5F;
+        minFar  = 1.01F * minFar + (minFar - maxNear) * 0.5F;
 
         // Do not let the range behind the camera throw off the calculation.
-        if(maxNear < 0.1f)
+        if(maxNear < 0.1F)
         {
-            maxNear = 0.1f;
+            maxNear = 0.1F;
         }
 
         // Make sure near is not bigger than far
-        maxNear = (maxNear >= minFar) ? (0.01f * minFar) : (maxNear);
+        maxNear = (maxNear >= minFar) ? (0.01F * minFar) : (maxNear);
 
         const auto& chain          = this->getCompositorChain();
         const auto saoCompositorIt = std::find_if(
@@ -1016,7 +1021,7 @@ void Layer::setCoreCompositorEnabled(
 {
     m_hasCoreCompositor = enabled;
     m_stereoMode        = stereoMode;
-    if(transparencyTechnique != "")
+    if(!transparencyTechnique.empty())
     {
         if(transparencyTechnique == "DepthPeeling")
         {
@@ -1071,14 +1076,14 @@ void Layer::setViewportConfig(const ViewportConfigType& _vpCfg)
 
 //-------------------------------------------------------------------------------------
 
-bool Layer::isCoreCompositorEnabled()
+bool Layer::isCoreCompositorEnabled() const
 {
     return m_hasCoreCompositor;
 }
 
 //-------------------------------------------------------------------------------------
 
-bool Layer::isCompositorChainEnabled()
+bool Layer::isCompositorChainEnabled() const
 {
     return m_hasCompositorChain;
 }
@@ -1131,7 +1136,7 @@ void Layer::restartAdaptors()
     }
 
     // Subadaptors should be started/stopped by their parent. Remove them from the list.
-    for(auto subSrv : subAdaptors)
+    for(const auto& subSrv : subAdaptors)
     {
         auto it = std::find(adaptors.begin(), adaptors.end(), subSrv.lock());
 
@@ -1168,7 +1173,7 @@ service::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
         return m_compositorChainManager->getRegisteredServices();
     }
 
-    return service::IHasServices::ServiceVector();
+    return {};
 }
 
 //-------------------------------------------------------------------------------------
@@ -1204,15 +1209,15 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 
     if(m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_5)
     {
-        const float eyeAngle = 0.02321f;
-        const float angle    = eyeAngle * (-2.f + float(cameraIdx));
+        const float eyeAngle = 0.02321F;
+        const float angle    = eyeAngle * (-2.F + float(cameraIdx));
 
         extrinsicTransform = viz::scene3d::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
     else if(m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_8)
     {
-        const float eyeAngle = 0.01625f;
-        const float angle    = eyeAngle * (-3.5f + float(cameraIdx));
+        const float eyeAngle = 0.01625F;
+        const float angle    = eyeAngle * (-3.5F + float(cameraIdx));
 
         extrinsicTransform = viz::scene3d::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
@@ -1326,7 +1331,7 @@ Ogre::OverlayContainer* Layer::getOverlayTextPanel()
 
         m_overlayTextPanel->setMetricsMode(Ogre::GMM_PIXELS);
         m_overlayTextPanel->setPosition(0, 0);
-        m_overlayTextPanel->setDimensions(1.0f, 1.0f);
+        m_overlayTextPanel->setDimensions(1.0F, 1.0F);
 
         Ogre::Overlay* uiOverlay = overlayManager.create(textPanelId + "_UIOverlay");
         uiOverlay->add2D(m_overlayTextPanel);

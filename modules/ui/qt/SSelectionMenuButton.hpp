@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ public:
     MODULE_UI_QT_API SSelectionMenuButton() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SSelectionMenuButton() noexcept;
+    MODULE_UI_QT_API ~SSelectionMenuButton() noexcept override;
 
 protected:
 
@@ -159,7 +159,7 @@ private:
     QPointer<QPushButton> m_dropDownButton;
     QPointer<QActionGroup> m_actionGroup;
 
-    int m_selection;
+    int m_selection {0};
 };
 
 } // namespace sight::module::ui::qt

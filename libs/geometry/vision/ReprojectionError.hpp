@@ -50,11 +50,11 @@ public:
      * @param _tvec: translation vector
      */
     GEOMETRY_VISION_API ReprojectionError(
-        const cv::Mat& _cameraMat,
-        const cv::Mat& _distCoef,
-        const cv::Point2f& _imagePoints,
-        const cv::Point3f& _objectPoints,
-        const cv::Mat& _extrinsic
+        cv::Mat _cameraMat,
+        cv::Mat _distCoef,
+        cv::Point2f _imagePoints,
+        cv::Point3f _objectPoints,
+        cv::Mat _extrinsic
     );
     /**
      * @brief operator() is a templated method, which assumes that all its inputs and outputs are of some type T.
@@ -65,7 +65,7 @@ public:
      * @param residuals: differences in x and y between a 2d point and it's reprojection.
      */
     template<typename T>
-    bool operator()(const T* const pose, T* residuals) const;
+    bool operator()(const T* pose, T* residuals) const;
 
     /**
      * @brief Factory to hide the construction of the CostFunction object from the client code.

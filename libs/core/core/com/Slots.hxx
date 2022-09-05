@@ -53,6 +53,20 @@ HasSlots::newSlot(const core::com::Slots::SlotKeyType& key, F f)
     this->m_slots(key, slot);
     return slot;
 }
+
+//------------------------------------------------------------------------------
+
+template<typename F>
+auto HasSlots::newSlot(
+    const core::com::Slots::SlotKeyType& key,
+    F f
+) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
+                      SPTR(Slot<typename core::com::util::convert_function_type<F>::type>)>
+{
+    auto slot = core::com::newSlot(f);
+    this->m_slots(key, slot);
+    return slot;
+}
 #endif
 
 } // namespace sight::core::com

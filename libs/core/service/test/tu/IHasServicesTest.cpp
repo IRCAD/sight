@@ -33,10 +33,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::IHasServicesTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -57,7 +54,7 @@ void IHasServicesTest::tearDown()
 
 struct TestIHasServices : public service::IHasServices
 {
-    virtual ~TestIHasServices() noexcept
+    ~TestIHasServices() noexcept override
     {
         // just in case a test does not pass, we unregister all the services to avoid a crash
         this->unregisterServices();
@@ -343,6 +340,4 @@ void IHasServicesTest::testOptionalInputs()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

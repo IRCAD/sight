@@ -42,10 +42,7 @@
 
 #include <regex>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 //-----------------------------------------------------------------------------
@@ -215,11 +212,11 @@ void ChainManager::updateCompositorAdaptors(
     std::vector<Ogre::CompositionTargetPass*> targetPasses = tech->getTargetPasses();
     targetPasses.push_back(tech->getOutputTargetPass());
 
-    for(const auto targetPass : targetPasses)
+    for(auto* const targetPass : targetPasses)
     {
         const auto& passes = targetPass->getPasses();
 
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             // We retrieve the parameters of the base material in a temporary material
             const Ogre::MaterialPtr material = pass->getMaterial();
@@ -247,9 +244,10 @@ void ChainManager::updateCompositorAdaptors(
                                                       "geometry";
 
                     // Naming convention for shader parameters
-                    const core::tools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr
-                                                         + "-"
-                                                         + constantName;
+                    const core::tools::fwID::IDType id = std::string(_renderService->getID()).append(_layerId)
+                                                         .append("_").append(shaderTypeStr).append("-").append(
+                        constantName
+                                                         );
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {
@@ -299,6 +297,4 @@ void ChainManager::updateCompositorAdaptors(
 
 //-----------------------------------------------------------------------------
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

@@ -35,7 +35,7 @@ namespace sight::core::thread
 
 //------------------------------------------------------------------------------
 
-std::size_t WorkerThread(SPTR(boost::asio::io_service)io_service)
+std::size_t workerThread(SPTR(boost::asio::io_service)io_service)
 {
     std::size_t res = io_service->run();
     return res;
@@ -48,26 +48,26 @@ class WorkerAsio : public core::thread::Worker
 {
 public:
 
-    typedef boost::asio::io_service IOServiceType;
-    typedef boost::asio::io_service::work WorkType;
-    typedef std::shared_ptr<WorkType> WorkPtrType;
-    typedef std::thread ThreadType;
+    using IOServiceType = boost::asio::io_service;
+    using WorkType      = boost::asio::io_service::work;
+    using WorkPtrType   = std::shared_ptr<WorkType>;
+    using ThreadType    = std::thread;
 
     WorkerAsio();
 
-    virtual ~WorkerAsio();
+    ~WorkerAsio() override;
 
-    void stop();
+    void stop() override;
 
-    void post(TaskType handler);
+    void post(TaskType handler) override;
 
-    ThreadIdType getThreadId() const;
+    ThreadIdType getThreadId() const override;
 
-    SPTR(core::thread::Timer) createTimer();
+    SPTR(core::thread::Timer) createTimer() override;
 
-    virtual void processTasks();
+    void processTasks() override;
 
-    virtual void processTasks(PeriodType maxtime);
+    void processTasks(PeriodType maxtime) override;
 
 protected:
 
@@ -76,6 +76,8 @@ protected:
 
     /// Copy operator forbidden
     WorkerAsio& operator=(const WorkerAsio&);
+
+private:
 
     /// Class provides functionality to manipulate asynchronous tasks.
     SPTR(IOServiceType) m_ioService;
@@ -102,35 +104,35 @@ public:
     /**
      * @brief Constructs a TimerAsio from given io_service.
      */
-    TimerAsio(boost::asio::io_service& ioSrv);
+    explicit TimerAsio(boost::asio::io_service& ioSrv);
 
-    ~TimerAsio();
+    ~TimerAsio() override;
 
     /// Starts or restarts the timer.
-    void start();
+    void start() override;
 
     /// Stops the timer and cancel all pending operations.
-    void stop();
+    void stop() override;
 
     /// Sets time duration.
-    void setDuration(TimeDurationType duration);
+    void setDuration(TimeDurationType duration) override;
 
     /// Returns if the timer mode is 'one shot'.
-    bool isOneShot() const
+    bool isOneShot() const override
     {
         core::mt::ScopedLock lock(m_mutex);
         return m_oneShot;
     }
 
     /// Sets timer mode.
-    void setOneShot(bool oneShot)
+    void setOneShot(bool oneShot) override
     {
         core::mt::ScopedLock lock(m_mutex);
         m_oneShot = oneShot;
     }
 
     /// Returns true if the timer is currently running.
-    bool isRunning() const
+    bool isRunning() const override
     {
         core::mt::ScopedLock lock(m_mutex);
         return m_running;
@@ -141,13 +143,15 @@ protected:
     void cancelNoLock();
     void rearmNoLock(TimeDurationType duration);
 
-    void call(const std::error_code& code);
+    void call(const std::error_code& error);
 
     /// Copy constructor forbidden.
     TimerAsio(const TimerAsio&);
 
     /// Copy operator forbidden.
     TimerAsio& operator=(const TimerAsio&);
+
+private:
 
     /// Timer object.
     boost::asio::deadline_timer m_timer;
@@ -156,10 +160,10 @@ protected:
     TimeDurationType m_duration;
 
     /// Timer's mode.
-    bool m_oneShot;
+    bool m_oneShot {false};
 
     /// Timer's state.
-    bool m_running;
+    bool m_running {false};
 };
 
 //------------------------------------------------------------------------------
@@ -170,7 +174,10 @@ WorkerAsio::WorkerAsio() :
     m_ioService(std::make_shared<IOServiceType>()),
     m_work(std::make_shared<WorkType>(*m_ioService))
 {
-    std::packaged_task<core::thread::Worker::ExitReturnType()> task(std::bind(&WorkerThread, m_ioService));
+    std::packaged_task<core::thread::Worker::ExitReturnType()> task([this](auto&& ...)
+            {
+                                                                    return workerThread(m_ioService);
+            });
     std::future<core::thread::Worker::ExitReturnType> future = task.get_future();
 
     m_thread = std::make_shared<ThreadType>(std::move(task));
@@ -258,15 +265,12 @@ SPTR(Worker) Worker::defaultFactory()
 
 TimerAsio::TimerAsio(boost::asio::io_service& ioSrv) :
     m_timer(ioSrv),
-    m_duration(std::chrono::seconds(1)),
-    m_oneShot(false),
-    m_running(false)
+    m_duration(std::chrono::seconds(1))
 {
 }
 
 TimerAsio::~TimerAsio()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -305,7 +309,7 @@ void TimerAsio::rearmNoLock(TimeDurationType duration)
     boost::posix_time::time_duration d =
         boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
     m_timer.expires_from_now(d);
-    m_timer.async_wait(std::bind(&TimerAsio::call, this, std::placeholders::_1));
+    m_timer.async_wait([this](auto&& PH1, auto&& ...){call(std::forward<decltype(PH1)>(PH1));});
 }
 
 //------------------------------------------------------------------------------
@@ -319,7 +323,7 @@ void TimerAsio::call(const std::error_code& error)
         TimerAsio::sptr deleteLater = std::dynamic_pointer_cast<TimerAsio>(shared_from_this());
 
         TimeDurationType duration;
-        bool oneShot;
+        bool oneShot = false;
         {
             core::mt::ScopedLock lock(m_mutex);
             oneShot  = m_oneShot;

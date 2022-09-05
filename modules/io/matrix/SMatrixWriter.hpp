@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
     MODULE_IO_MATRIX_API SMatrixWriter() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_IO_MATRIX_API virtual ~SMatrixWriter() noexcept;
+    MODULE_IO_MATRIX_API ~SMatrixWriter() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     MODULE_IO_MATRIX_API service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -109,9 +109,9 @@ private:
     /// SLOT: Stop recording
     void stopRecord();
 
-    bool m_isRecording; ///< flag if the service is recording.
+    bool m_isRecording {false}; ///< flag if the service is recording.
 
     std::ofstream m_filestream;
 };
 
-} // ioTimeline
+} // namespace sight::module::io::matrix

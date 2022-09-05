@@ -32,10 +32,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 /**
@@ -57,10 +54,10 @@ public:
     typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
     /// Constructor.
-    UI_BASE_API ToolBar(const std::string& sid);
+    UI_BASE_API ToolBar(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~ToolBar();
+    UI_BASE_API ~ToolBar() override;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwToolBar::sptr getParent();
@@ -217,6 +214,4 @@ protected:
     CallbacksType m_callbacks;
 };
 
-} // namespace registry
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::registry

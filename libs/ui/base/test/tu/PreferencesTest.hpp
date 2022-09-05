@@ -27,10 +27,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 /**
@@ -50,13 +47,13 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void runtimeTest();
     void simpleTest();
-    void delimeterTest();
-    void parsedGetTest();
+    static void delimeterTest();
+    static void parsedGetTest();
     void encryptedTest();
     void forcedEncryptionTest();
 
@@ -67,6 +64,4 @@ private:
     std::filesystem::path m_encryptedPath;
 };
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

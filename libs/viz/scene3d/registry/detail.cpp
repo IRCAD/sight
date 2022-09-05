@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,17 +24,14 @@
 
 #include <core/LazyInstantiator.hpp>
 
-namespace sight::viz::scene3d
-{
-
-namespace registry
+namespace sight::viz::scene3d::registry
 {
 
 struct FwRenderOgreRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator<Type, FwRenderOgreRegistryInstantiatorTag> InstantiatorType;
+    using InstantiatorType = core::LazyInstantiator<Type, FwRenderOgreRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
@@ -51,8 +48,7 @@ struct InteractorRegistryInstantiatorTag {};
 
 SPTR(InteractorFactoryType) getInteractorRegistry()
 {
-    typedef core::LazyInstantiator<InteractorFactoryType, InteractorRegistryInstantiatorTag>
-        InstantiatorType;
+    using InstantiatorType = core::LazyInstantiator<InteractorFactoryType, InteractorRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
@@ -60,8 +56,7 @@ struct CameraRegistryInstantiatorTag {};
 
 SPTR(CameraFactoryType) getCameraRegistry()
 {
-    typedef core::LazyInstantiator<CameraFactoryType, CameraRegistryInstantiatorTag>
-        InstantiatorType;
+    using InstantiatorType = core::LazyInstantiator<CameraFactoryType, CameraRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
@@ -69,11 +64,8 @@ struct LightRegistryInstantiatorTag {};
 
 SPTR(LightFactoryType) getLightRegistry()
 {
-    typedef core::LazyInstantiator<LightFactoryType, LightRegistryInstantiatorTag>
-        InstantiatorType;
+    using InstantiatorType = core::LazyInstantiator<LightFactoryType, LightRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
-} // namespace registry
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::registry

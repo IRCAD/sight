@@ -58,7 +58,7 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      */
     static sptr New(const std::shared_ptr<Module>& module, const std::string& name)
     {
-        return sptr(new ConfigurationElement(module, name));
+        return std::make_shared<ConfigurationElement>(module, name);
     }
 
     /**
@@ -79,7 +79,7 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      *
      * @return  a shared pointer to a module instance
      */
-    CORE_API const std::shared_ptr<Module> getModule() const noexcept;
+    CORE_API std::shared_ptr<Module> getModule() const noexcept;
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -96,7 +96,7 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      * @see     getExistingAttributeValue
      * @see     getSafeAttributeValue
      */
-    CORE_API const std::string getAttributeValue(const std::string& name) const noexcept;
+    CORE_API std::string getAttributeValue(const std::string& name) const noexcept;
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -114,7 +114,7 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      * @see         getAttributeValue
      * @see         getSafeAttributeValue
      */
-    CORE_API const std::string getExistingAttributeValue(const std::string& name) const;
+    CORE_API std::string getExistingAttributeValue(const std::string& name) const;
 
     /**
      * @brief       Retrieves the value of an existing attribute for the specified name.
@@ -130,21 +130,21 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      * @see         getAttributeValue
      * @see         getExistingAttributeValue
      */
-    CORE_API const AttributePair getSafeAttributeValue(const std::string& name) const noexcept;
+    CORE_API AttributePair getSafeAttributeValue(const std::string& name) const noexcept;
 
     /**
      * @brief   Retrieves the name of the configuration element.
      *
      * @return  a string containing the configuration element name
      */
-    CORE_API const std::string getName() const noexcept;
+    CORE_API std::string getName() const noexcept;
 
     /**
      * @brief   Retrieves the configuration element value.
      *
      * @return  a string containing the configuration element value
      */
-    CORE_API const std::string getValue() const noexcept;
+    CORE_API std::string getValue() const noexcept;
 
     /**
      * @brief       Tells if the specified attributes exists.
@@ -158,7 +158,7 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
     /**
      * @brief   Return the map with attributes
      */
-    CORE_API const std::map<std::string, std::string> getAttributes() const noexcept;
+    CORE_API std::map<std::string, std::string> getAttributes() const noexcept;
 
     /**
      * @brief   Print contents
@@ -190,6 +190,13 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      */
     CORE_API virtual ~ConfigurationElement();
 
+    /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment is forbidden for this class.
+     */
+    void operator=(const ConfigurationElement&) noexcept = delete;
+
     //TODO: Fix visibility
     //protected:
 
@@ -201,7 +208,7 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
      *
      * @todo        test parameters validity
      */
-    CORE_API ConfigurationElement(const std::shared_ptr<Module> module, const std::string& name);
+    CORE_API ConfigurationElement(const std::shared_ptr<Module> module, std::string name);
 
     /**
      * @brief       Sets an attribute with the specified name and value.
@@ -241,13 +248,6 @@ struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContaine
          * @brief   All attributes of the configuration element.
          */
         AttributeContainer m_attributes;
-
-        /**
-         * @brief   Assignment operator.
-         *
-         * @remark  Assignment is forbidden for this class.
-         */
-        void operator=(const ConfigurationElement&) noexcept;
 
         /**
          * @brief   A pointer to the module the configuration element is attached to.

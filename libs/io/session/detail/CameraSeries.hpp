@@ -28,10 +28,7 @@
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::CameraSeries
+namespace sight::io::session::detail::CameraSeries
 {
 
 //------------------------------------------------------------------------------
@@ -98,6 +95,4 @@ inline static data::CameraSeries::sptr deserialize(
     return cameraSeries;
 }
 
-} // namespace detail::CameraSeries
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::CameraSeries

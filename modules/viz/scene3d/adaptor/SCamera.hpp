@@ -38,7 +38,7 @@ namespace sight::data
 
 class Camera;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -141,7 +141,7 @@ private:
     Ogre::Camera* m_camera {nullptr};
 
     /// Defines the aspect ratio for the frustum viewport.
-    Ogre::Real m_aspectRatio {0.f};
+    Ogre::Real m_aspectRatio {0.F};
 
     /// Handles connection with the layer.
     core::com::helper::SigSlotConnection m_layerConnection;

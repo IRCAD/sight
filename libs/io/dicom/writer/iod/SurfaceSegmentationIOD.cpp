@@ -41,35 +41,32 @@
 
 #include <gdcmSurfaceWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+    SPTR(io::dicom::container::DicomInstance)imageInstance,
     const std::filesystem::path& destinationPath,
     const core::log::Logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),
-    m_imageInstance(imageInstance)
+    io::dicom::writer::iod::InformationObjectDefinition(instance,
+                                                        destinationPath,
+                                                        logger,
+                                                        std::move(progress),
+                                                        std::move(cancel)),
+    m_imageInstance(std::move(imageInstance))
 {
 }
 
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -137,7 +134,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
     // Write the file
     if((!m_cancelRequestedCallback || !m_cancelRequestedCallback())
-       && (!m_logger || !m_logger->count(core::log::Log::CRITICAL)))
+       && (!m_logger || (m_logger->count(core::log::Log::CRITICAL) == 0U)))
     {
         io::dicom::helper::FileWriter::write(m_destinationPath, writer);
     }
@@ -145,8 +142,4 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

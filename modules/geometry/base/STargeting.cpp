@@ -58,9 +58,8 @@ STargeting::STargeting() noexcept :
 
 // -----------------------------------------------------------------------------
 
-STargeting::~STargeting() noexcept
-{
-}
+STargeting::~STargeting() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -96,7 +95,7 @@ void STargeting::updating()
     {
         const auto landmark = m_landmark.lock();
         SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
-        if(landmark->getGroup(m_label).m_points.size() > 0)
+        if(!landmark->getGroup(m_label).m_points.empty())
         {
             const data::Landmarks::PointType point = landmark->getPoint(m_label, m_index);
             m_targetLandmark = glm::dvec3(point[0], point[1], point[2]);
@@ -184,7 +183,7 @@ void STargeting::updating()
 
         auto pointList = m_pointList.lock();
         SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
-        if(pointList->getPoints().size() > 0)
+        if(!pointList->getPoints().empty())
         {
             pointList->clear();
         }

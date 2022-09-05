@@ -44,4 +44,4 @@ void FileHolderTest::fileAutoDeleteTest()
     CPPUNIT_ASSERT(!std::filesystem::exists(path));
 }
 
-}
+} // namespace sight::core::memory::ut

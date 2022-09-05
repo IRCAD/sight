@@ -28,13 +28,7 @@
 
 #include <data/Equipment.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -55,8 +49,7 @@ Equipment::Equipment(
 //------------------------------------------------------------------------------
 
 Equipment::~Equipment()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -100,8 +93,4 @@ void Equipment::writeEnhancedGeneralEquipmentModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

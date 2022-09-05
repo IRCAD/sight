@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,10 @@ namespace sight::service
 {
 
 IXMLParser::IXMLParser()
-{
-}
+= default;
 
 IXMLParser::~IXMLParser()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -72,7 +70,7 @@ void IXMLParser::setObjectConfig(core::runtime::ConfigurationElement::csptr _cfg
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::createConfig(core::tools::Object::sptr)
+void IXMLParser::createConfig(core::tools::Object::sptr /*unused*/)
 {
 }
 

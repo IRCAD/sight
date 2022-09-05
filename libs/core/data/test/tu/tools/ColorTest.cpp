@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::ColorTest);
 
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -54,7 +51,7 @@ void ColorTest::tearDown()
 void ColorTest::hexaStringToRGBA()
 {
     const std::string strColor1 = "#ff0527";
-    std::uint8_t color1[4];
+    std::array<std::uint8_t, 4> color1 {};
     CPPUNIT_ASSERT_NO_THROW(data::tools::Color::hexaStringToRGBA(strColor1, color1));
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), color1[0]);
@@ -63,7 +60,7 @@ void ColorTest::hexaStringToRGBA()
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), color1[3]);
 
     const std::string strColor2 = "#45a5bc28";
-    std::uint8_t color2[4];
+    std::array<std::uint8_t, 4> color2 {};
     CPPUNIT_ASSERT_NO_THROW(data::tools::Color::hexaStringToRGBA(strColor2, color2));
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(69), color2[0]);
@@ -72,7 +69,7 @@ void ColorTest::hexaStringToRGBA()
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(40), color2[3]);
 
     const std::string strColor3 = "45a5bc28";
-    std::uint8_t color3[4];
+    std::array<std::uint8_t, 4> color3 {};
     CPPUNIT_ASSERT_THROW(data::tools::Color::hexaStringToRGBA(strColor3, color3), core::Exception);
 
     const std::string strColor4 = "45a58";
@@ -82,6 +79,4 @@ void ColorTest::hexaStringToRGBA()
     CPPUNIT_ASSERT_THROW(data::tools::Color::hexaStringToRGBA(strColor5, color3), core::Exception);
 }
 
-} //namespace ut
-
-} //namespace sight::data::tools
+} // namespace sight::data::tools::ut

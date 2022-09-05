@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,25 +94,25 @@ public:
     MODULE_GEOMETRY_VISION_API SChessboardReprojection();
 
     ///Destructor
-    MODULE_GEOMETRY_VISION_API virtual ~SChessboardReprojection() final;
+    MODULE_GEOMETRY_VISION_API ~SChessboardReprojection() final;
 
 protected:
 
     /// Configures the service.
-    MODULE_GEOMETRY_VISION_API virtual void configuring() final;
+    MODULE_GEOMETRY_VISION_API void configuring() final;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API virtual void starting() final;
+    MODULE_GEOMETRY_VISION_API void starting() final;
 
     /// Reprojects the detected using the camera's intrinsics and the tranform. Computes the reprojection's RMSE.
     /// Writes the detected and reprojected points on the video image if there is one.
-    MODULE_GEOMETRY_VISION_API virtual void updating() final;
+    MODULE_GEOMETRY_VISION_API void updating() final;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API virtual void stopping() final;
+    MODULE_GEOMETRY_VISION_API void stopping() final;
 
     /// Connects camera, transform and detected points modification to the update slot.
-    virtual service::IService::KeyConnectionsMap getAutoConnections() const final;
+    service::IService::KeyConnectionsMap getAutoConnections() const final;
 
 private:
 

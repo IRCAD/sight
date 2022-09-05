@@ -53,11 +53,10 @@ const core::com::Signals::SignalKeyType SSeriesPusher::s_STOPPED_PROGRESS_SIG = 
 //------------------------------------------------------------------------------
 
 SSeriesPusher::SSeriesPusher() noexcept :
-    m_progressbarId("pushDicomProgressBar"),
-    m_isPushing(false)
+    m_progressbarId("pushDicomProgressBar")
 {
     // Internal slots
-    m_slotDisplayMessage   = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage, this);
+    m_slotDisplayMessage   = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage);
     m_slotProgressCallback = newSlot(
         sight::io::dimse::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
         &SSeriesPusher::progressCallback,
@@ -72,9 +71,8 @@ SSeriesPusher::SSeriesPusher() noexcept :
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::~SSeriesPusher() noexcept
-{
-}
+SSeriesPusher::~SSeriesPusher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -159,7 +157,7 @@ void SSeriesPusher::updating()
         if(pushOK)
         {
             // Push series to the PACS
-            m_pushSeriesWorker->post(std::bind(&module::io::dimse::SSeriesPusher::pushSeries, this));
+            m_pushSeriesWorker->post([this](auto&& ...){pushSeries();});
         }
     }
 }
@@ -181,9 +179,9 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        for(auto it = seriesVector->cbegin() ; it != seriesVector->cend() ; ++it)
+        for(const auto& it : *seriesVector)
         {
-            data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(*it);
+            data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(it);
             SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", series);
 
             // Try to find series on PACS
@@ -296,7 +294,7 @@ void SSeriesPusher::pushSeries()
         }
 
         // Number of instances that must be uploaded
-        m_instanceCount = static_cast<unsigned long>(dicomContainer.size());
+        m_instanceCount = static_cast<std::uint64_t>(dicomContainer.size());
 
         // Connect from PACS
         m_seriesEnquirer->connect();
@@ -346,7 +344,7 @@ void SSeriesPusher::progressCallback(
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::displayMessage(const std::string& message, bool error) const
+void SSeriesPusher::displayMessage(const std::string& message, bool error)
 {
     SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;

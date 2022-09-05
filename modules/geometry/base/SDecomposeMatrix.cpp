@@ -34,9 +34,8 @@ namespace sight::module::geometry::base
 
 // ----------------------------------------------------------------------------
 
-SDecomposeMatrix::SDecomposeMatrix() noexcept
-{
-}
+SDecomposeMatrix::SDecomposeMatrix() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 

@@ -31,13 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::ITransformableTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
-{
-
-namespace ut
+namespace sight::viz::scene3d::helper::ut
 {
 
 // Create a object of type ITransformable to test it.
@@ -63,15 +57,19 @@ void ITransformableTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+#define ASSERT_NOT_NULL(expr) if((expr) == nullptr){throw std::runtime_error(#expr " is null.");}
+
+//------------------------------------------------------------------------------
+
 void ITransformableTest::transformNodeTest()
 {
-    auto ogreRoot                    = Utils::getOgreRoot();
+    auto* ogreRoot                   = Utils::getOgreRoot();
     Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
 
     Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
-    CPPUNIT_ASSERT(nullptr != rootNode);
+    ASSERT_NOT_NULL(rootNode);
 
-    auto myFakeTransformable = new TestITransformable();
+    auto* myFakeTransformable = new TestITransformable();
 
     myFakeTransformable->setTransformId("TransformTestId");
 
@@ -79,19 +77,19 @@ void ITransformableTest::transformNodeTest()
 
     CPPUNIT_ASSERT_EQUAL(std::string("TransformTestId"), id);
 
-    const auto nullTransformNode = myFakeTransformable->getTransformNode();
+    auto* const nullTransformNode = myFakeTransformable->getTransformNode();
     CPPUNIT_ASSERT(nullptr == nullTransformNode);
 
-    const auto transformNode = myFakeTransformable->getOrCreateTransformNode(rootNode);
-    CPPUNIT_ASSERT(nullptr != transformNode);
+    auto* const transformNode = myFakeTransformable->getOrCreateTransformNode(rootNode);
+    ASSERT_NOT_NULL(transformNode);
 
-    const auto transformNode2 = myFakeTransformable->getTransformNode();
+    auto* const transformNode2 = myFakeTransformable->getTransformNode();
 
-    CPPUNIT_ASSERT(nullptr != transformNode2);
+    ASSERT_NOT_NULL(transformNode2);
 
-    const auto childNode = transformNode2->createChildSceneNode("_childNode");
+    auto* const childNode = transformNode2->createChildSceneNode("_childNode");
 
-    CPPUNIT_ASSERT(nullptr != childNode);
+    ASSERT_NOT_NULL(childNode);
 
     CPPUNIT_ASSERT_NO_THROW(transformNode2->removeAndDestroyChild("_childNode"));
 
@@ -100,8 +98,4 @@ void ITransformableTest::transformNodeTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace helper
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper::ut

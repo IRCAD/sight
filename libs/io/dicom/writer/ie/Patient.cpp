@@ -26,13 +26,7 @@
 
 #include <data/Patient.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -53,8 +47,7 @@ Patient::Patient(
 //------------------------------------------------------------------------------
 
 Patient::~Patient()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -78,8 +71,4 @@ void Patient::writePatientModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

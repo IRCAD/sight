@@ -52,9 +52,8 @@ SStyleSelector::SStyleSelector() noexcept
 
 //-----------------------------------------------------------------------------
 
-SStyleSelector::~SStyleSelector() noexcept
-{
-}
+SStyleSelector::~SStyleSelector() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ void SStyleSelector::starting()
     const auto styleRc = core::runtime::getModuleResourcePath("sight::module::ui::qt");
 
     // Stores each rcc & qss
-    for(auto& p : std::filesystem::directory_iterator(styleRc))
+    for(const auto& p : std::filesystem::directory_iterator(styleRc))
     {
         std::filesystem::path f = p;
 
@@ -165,4 +164,4 @@ void SStyleSelector::updateFromPrefs()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt

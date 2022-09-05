@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,21 +35,21 @@ namespace sight::data
 
 class Reconstruction;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
 
 class ModelSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::core::jobs
 {
 
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -76,7 +76,7 @@ public:
     IO_VTK_API ModelSeriesObjWriter(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor.
-    IO_VTK_API ~ModelSeriesObjWriter();
+    IO_VTK_API ~ModelSeriesObjWriter() override;
 
     /// Writing operator.
     IO_VTK_API void write() override;

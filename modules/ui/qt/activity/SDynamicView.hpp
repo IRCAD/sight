@@ -52,11 +52,8 @@ namespace sight::data
 
 class Composite;
 
-}
-namespace sight::module::ui::qt
-{
-
-namespace activity
+} // namespace sight::data
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -118,7 +115,7 @@ public:
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QT_API virtual ~SDynamicView() noexcept;
+    MODULE_UI_QT_API ~SDynamicView() noexcept override;
 
     typedef core::com::Signal<void (data::Object::sptr)> ActivitySelectedSignalType;
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
@@ -161,7 +158,7 @@ private:
         service::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;
-        bool closable;
+        bool closable {};
         std::string icon;
         std::string tooltip;
         std::string tabID;
@@ -215,7 +212,7 @@ private:
     ActivityIdType m_activityIds;
 
     SDynamicViewInfoMapType m_dynamicInfoMap;
-    bool m_dynamicConfigStartStop;
+    bool m_dynamicConfigStartStop {false};
 
     QPointer<QTabWidget> m_tabWidget;
     QPointer<QWidget> m_currentWidget;
@@ -223,12 +220,10 @@ private:
     ActivitySelectedSignalType::sptr m_sigActivitySelected;
     NothingSelectedSignalType::sptr m_sigNothingSelected;
 
-    bool m_mainActivityClosable;
+    bool m_mainActivityClosable {true};
 
     /// Allows to set the document mode.
     bool m_documentMode {true};
 };
 
-} //namespace activity
-
-} // guiQt
+} // namespace sight::module::ui::qt::activity

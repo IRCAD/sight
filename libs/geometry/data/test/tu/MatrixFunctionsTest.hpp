@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 class MatrixFunctionsTest : public CPPUNIT_NS::TestFixture
@@ -42,14 +39,12 @@ private:
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void checkMultVecMatrix();
-    void checkRotationMatrix();
-    void checkInverse();
+    static void checkMultVecMatrix();
+    static void checkRotationMatrix();
+    static void checkInverse();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

@@ -42,14 +42,15 @@ public:
 
     /** Standard typedef's */
     typedef InrImageIO Self;
-    typedef ImageIOBase SuperClass;
+    typedef ImageIOBase Superclass;
     typedef SmartPointer<Self> Pointer;
 
     /** Method for creation through the object factory. */
     itkNewMacro(Self)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(InrImageIO, Superclass)
+    itkTypeMacro(InrImageIO, Superclass) InrImageIO(const Self&) = delete; //purposely not implemented
+    void operator=(const Self&)                                  = delete; //purposely not implemented
 
     /*-------- This part of the interfaces deals with reading data. ----- */
 
@@ -85,13 +86,10 @@ public:
 protected:
 
     IO_ITK_API InrImageIO();
-    IO_ITK_API ~InrImageIO();
+    IO_ITK_API ~InrImageIO() override;
     void PrintSelf(std::ostream& os, Indent indent) const override;
 
 private:
-
-    InrImageIO(const Self&);     //purposely not implemented
-    void operator=(const Self&); //purposely not implemented
 
     std::streampos m_headerSize;
     //bool m_swapBytes;

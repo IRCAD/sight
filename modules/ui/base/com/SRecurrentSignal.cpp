@@ -34,10 +34,7 @@
 
 #include <functional>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 const core::com::Signals::SignalKeyType SRecurrentSignal::s_REPEATED_SIGNAL       = "repeated";
@@ -46,7 +43,7 @@ const core::com::Signals::SignalKeyType SRecurrentSignal::s_REPEAT_STOPPED_SIGNA
 // ----------------------------------------------------------------------------
 
 SRecurrentSignal::SRecurrentSignal() noexcept :
-    m_timeStep(100),
+
     m_sigRepeated(RepeatedSignalType::New())
 {
     m_sigRepeated = newSignal<RepeatedSignalType>(s_REPEATED_SIGNAL);
@@ -72,7 +69,7 @@ void SRecurrentSignal::starting()
 {
     m_timer = m_associatedWorker->createTimer();
     core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
-    m_timer->setFunction(std::bind(&SRecurrentSignal::updating, this));
+    m_timer->setFunction([this](auto&& ...){updating();});
     m_timer->setDuration(duration);
     m_timer->start();
 }
@@ -96,6 +93,4 @@ void SRecurrentSignal::updating()
 
 // ----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

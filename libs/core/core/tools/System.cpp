@@ -35,14 +35,15 @@
 #include <windows.h>
 #include <process.h>
 #else
+#include <csignal>
 #include <sys/types.h>
 #include <unistd.h>
-#include <signal.h>
 #endif
 
 #include <random>
+#include <utility>
 
-#define SIGHT_TMP_EXT "sight-tmp"
+constexpr const char* SIGHT_TMP_EXT = "sight-tmp";
 
 namespace sight::core::tools
 {
@@ -51,10 +52,10 @@ std::string System::s_tempPrefix;
 
 struct RemoveTemporaryFolder
 {
-    typedef std::shared_ptr<RemoveTemporaryFolder> sptr;
+    using sptr = std::shared_ptr<RemoveTemporaryFolder>;
 
-    RemoveTemporaryFolder(const std::filesystem::path& path) :
-        m_path(path)
+    explicit RemoveTemporaryFolder(std::filesystem::path path) :
+        m_path(std::move(path))
     {
     }
 
@@ -122,21 +123,20 @@ const std::filesystem::path& System::getTempPath() noexcept
 
 //------------------------------------------------------------------------------
 
-const std::string System::genTempFileName(std::size_t _length)
+std::string System::genTempFileName(std::size_t _length)
 {
-    static const char chars[] = {"0123456789"
-                                 "abcdefghijklmnopqrstuvwxyz"
-                                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    };
+    static const std::string chars = "0123456789"
+                                     "abcdefghijklmnopqrstuvwxyz"
+                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     thread_local static std::mt19937 rg {std::random_device {}()};
-    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(chars) - 2);
+    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, chars.size() - 2);
 
     std::string s;
     s.reserve(_length);
     std::size_t length = _length;
 
-    while(length--)
+    while((length--) != 0U)
     {
         s += chars[pick(rg)];
     }
@@ -146,7 +146,7 @@ const std::string System::genTempFileName(std::size_t _length)
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path createUniqueFolder(const std::filesystem::path& folderUniquePath)
+std::filesystem::path createUniqueFolder(const std::filesystem::path& folderUniquePath)
 {
     namespace fs = std::filesystem;
     bool created = false;
@@ -170,7 +170,7 @@ const std::filesystem::path createUniqueFolder(const std::filesystem::path& fold
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) noexcept
+std::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) noexcept
 {
     namespace fs = std::filesystem;
     static fs::path tmpDirPath;
@@ -189,11 +189,11 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
 
     const fs::path& sysTmp = getTempPath();
 
-    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "." SIGHT_TMP_EXT;
+    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "." + SIGHT_TMP_EXT;
     fs::path tmpDir              = createUniqueFolder(sysTmp / tmpDirName);
     tmpDirPath = tmpDir; // tmpDirPath always set to root tmp dir
 
-    fs::path pidFile = tmpDir / (boost::lexical_cast<std::string>(getPID()) + ".pid");
+    fs::path pidFile = tmpDir / (std::to_string(getPID()) + ".pid");
     std::fstream(pidFile, std::ios::out).close();
 
     autoRemoveTempFolder = std::make_shared<RemoveTemporaryFolder>(tmpDirPath);
@@ -283,9 +283,11 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 
 void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 {
+    using namespace std::literals::string_literals;
+
     namespace fs = std::filesystem;
 
-    const std::regex tmpFolderFilter(".*\\." SIGHT_TMP_EXT);
+    const std::regex tmpFolderFilter(".*\\."s + SIGHT_TMP_EXT);
 
     std::vector<fs::path> allTempFolders;
 
@@ -316,7 +318,7 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
     {
         const int pid = tempFolderPID(foundTmpDir);
 
-        if(pid && !isProcessRunning(pid))
+        if((pid != 0) && !isProcessRunning(pid))
         {
             SIGHT_INFO("Removing old temp dir : " << foundTmpDir);
 

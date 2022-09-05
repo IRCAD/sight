@@ -46,15 +46,13 @@ namespace sight::module::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::SQueryEditor() noexcept
-{
-}
+SQueryEditor::SQueryEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::~SQueryEditor() noexcept
-{
-}
+SQueryEditor::~SQueryEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +60,7 @@ void SQueryEditor::configuring()
 {
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server"))
+    if(configuration.count("server") != 0U)
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
@@ -87,7 +85,7 @@ void SQueryEditor::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main Widget
-    QGridLayout* layout = new QGridLayout();
+    auto* layout = new QGridLayout();
 
     m_patientNameLineEdit    = new QLineEdit();
     m_patientNameQueryButton = new QPushButton("Send");
@@ -102,7 +100,7 @@ void SQueryEditor::starting()
     m_endStudyDateEdit->setDate(QDate::currentDate());
     m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
     m_studyDateQueryButton = new QPushButton("Send");
-    QHBoxLayout* dateLayout = new QHBoxLayout();
+    auto* dateLayout = new QHBoxLayout();
     layout->addWidget(new QLabel("Study date:"), 1, 0);
     layout->addLayout(dateLayout, 1, 1);
     layout->addWidget(m_studyDateQueryButton, 1, 2);
@@ -182,7 +180,7 @@ void SQueryEditor::queryPatientName()
         for(int i = 0 ; i < seriesArraySize ; ++i)
         {
             const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
-            const std::string instancesListUrl(pacsServer + "/series/" + seriesUID);
+            const std::string instancesListUrl(std::string(pacsServer).append("/series/").append(seriesUID));
             const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesListUrl));
             jsonResponse = QJsonDocument::fromJson(instancesAnswer);
             const QJsonObject& jsonObj      = jsonResponse.object();
@@ -190,7 +188,8 @@ void SQueryEditor::queryPatientName()
 
             // Retrieve the first instance for the needed information
             const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
-            const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
+            const std::string instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID)
+                                          .append("/simplified-tags"));
             const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instanceUrl));
 
             QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
@@ -205,7 +204,7 @@ void SQueryEditor::queryPatientName()
     }
     catch(sight::io::http::exceptions::Base& exception)
     {
-        this->displayErrorMessage(exception.what());
+        sight::module::io::dicomweb::SQueryEditor::displayErrorMessage(exception.what());
     }
 }
 
@@ -233,7 +232,7 @@ void SQueryEditor::queryStudyDate()
         QJsonObject query;
         const std::string& beginDate = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
         const std::string& endDate   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-        const std::string& dateRange = beginDate + "-" + endDate;
+        const std::string& dateRange = std::string(beginDate).append("-").append(endDate);
         query.insert("StudyDate", dateRange.c_str());
 
         QJsonObject body;
@@ -259,7 +258,7 @@ void SQueryEditor::queryStudyDate()
             << "Pacs host name: " << m_serverHostname << "\n"
             << "Pacs port: " << m_serverPort << "\n";
 
-            this->displayErrorMessage(ss.str());
+            sight::module::io::dicomweb::SQueryEditor::displayErrorMessage(ss.str());
             SIGHT_WARN(exception.what());
         }
         QJsonDocument jsonResponse         = QJsonDocument::fromJson(studiesListAnswer);
@@ -269,7 +268,7 @@ void SQueryEditor::queryStudyDate()
         for(int i = 0 ; i < studiesListArraySize ; ++i)
         {
             const std::string& studiesUID = studiesListArray.at(i).toString().toStdString();
-            const std::string studiesUrl(pacsServer + "/studies/" + studiesUID);
+            const std::string studiesUrl(std::string(pacsServer).append("/studies/").append(studiesUID));
             const QByteArray& studiesAnswer = m_clientQt.get(sight::io::http::Request::New(studiesUrl));
 
             jsonResponse = QJsonDocument::fromJson(studiesAnswer);
@@ -280,7 +279,7 @@ void SQueryEditor::queryStudyDate()
             for(int j = 0 ; j < seriesArraySize ; ++j)
             {
                 const std::string& seriesUID = seriesArray.at(j).toString().toStdString();
-                const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
+                const std::string instancesUrl(std::string(pacsServer).append("/series/").append(seriesUID));
                 const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesUrl));
                 jsonResponse = QJsonDocument::fromJson(instancesAnswer);
                 const QJsonObject& anotherJsonObj = jsonResponse.object();
@@ -288,7 +287,8 @@ void SQueryEditor::queryStudyDate()
 
                 // Retrieve the first instance for the needed information
                 const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
-                const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
+                const std::string instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID)
+                                              .append("/simplified-tags"));
                 const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instanceUrl));
 
                 QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
@@ -306,7 +306,7 @@ void SQueryEditor::queryStudyDate()
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        this->displayErrorMessage(ss.str());
+        sight::module::io::dicomweb::SQueryEditor::displayErrorMessage(ss.str());
         SIGHT_WARN(exception.what());
     }
 }
@@ -334,7 +334,7 @@ void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::displayErrorMessage(const std::string& message) const
+void SQueryEditor::displayErrorMessage(const std::string& message)
 {
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");

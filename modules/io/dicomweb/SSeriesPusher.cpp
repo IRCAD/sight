@@ -49,16 +49,13 @@ static const service::IService::KeyType s_SERIES_IN = "selectedSeries";
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::SSeriesPusher() noexcept :
-    m_isPushing(false)
-{
-}
+SSeriesPusher::SSeriesPusher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::~SSeriesPusher() noexcept
-{
-}
+SSeriesPusher::~SSeriesPusher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -66,7 +63,7 @@ void SSeriesPusher::configuring()
 {
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server"))
+    if(configuration.count("server") != 0U)
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
@@ -201,7 +198,7 @@ void SSeriesPusher::pushSeries()
 
                 if(dicomContainerSize == nbInstanceSuccess)
                 {
-                    this->displayMessage(
+                    sight::module::io::dicomweb::SSeriesPusher::displayMessage(
                         "Upload successful: " + std::to_string(nbSeriesSuccess) + "/"
                         + std::to_string(seriesVector->size()),
                         false
@@ -216,7 +213,7 @@ void SSeriesPusher::pushSeries()
             << "Please check your configuration: \n"
             << "Pacs host name: " << m_serverHostname << "\n"
             << "Pacs port: " << m_serverPort << "\n";
-            this->displayMessage(ss.str(), true);
+            sight::module::io::dicomweb::SSeriesPusher::displayMessage(ss.str(), true);
             SIGHT_WARN(exception.what());
         }
     }
@@ -227,7 +224,7 @@ void SSeriesPusher::pushSeries()
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::displayMessage(const std::string& message, bool error) const
+void SSeriesPusher::displayMessage(const std::string& message, bool error)
 {
     SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;

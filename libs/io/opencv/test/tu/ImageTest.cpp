@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::ImageTest);
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //------------------------------------------------------------------------------
@@ -101,8 +98,8 @@ static data::Image::sptr genImage(
 
     image->resize(imageSize, imageType, format);
 
-    auto dstBuffer                = image->begin<std::uint8_t>();
-    const std::uint8_t* srcBuffer = reinterpret_cast<const std::uint8_t*>(_imageBuffer.data());
+    auto dstBuffer        = image->begin<std::uint8_t>();
+    const auto* srcBuffer = reinterpret_cast<const std::uint8_t*>(_imageBuffer.data());
     std::copy(srcBuffer, srcBuffer + image->getSizeInBytes(), dstBuffer);
 
     return image;
@@ -140,12 +137,12 @@ static void compareImages(
                 {
                     for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
                     {
-                        const std::size_t index = static_cast<std::size_t>(c
-                                                                           + static_cast<std::size_t>(i) * _numChannels
-                                                                           + static_cast<std::size_t>(j)
-                                                                           * _numChannels * _w
-                                                                           + static_cast<std::size_t>(k)
-                                                                           * _numChannels * _w * _h);
+                        const auto index = static_cast<std::size_t>(c
+                                                                    + static_cast<std::size_t>(i) * _numChannels
+                                                                    + static_cast<std::size_t>(j)
+                                                                    * _numChannels * _w
+                                                                    + static_cast<std::size_t>(k)
+                                                                    * _numChannels * _w * _h);
                         CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(k, j, i));
                     }
                 }
@@ -178,12 +175,12 @@ static void compareImages(
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[1]));
         CPPUNIT_ASSERT_EQUAL(1, _cvImage.size[0]);
 
-        for(int i = 0 ; i < _cvImage.size[1] ; ++i)
+        for(std::size_t i = 0 ; i < static_cast<std::size_t>(_cvImage.size[1]) ; ++i)
         {
             for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
             {
-                const std::size_t index = static_cast<std::size_t>(c + i * _numChannels);
-                CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(i));
+                const auto index = c + i * _numChannels;
+                CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(static_cast<int>(i)));
             }
         }
     }
@@ -377,6 +374,4 @@ void ImageTest::copyToCv()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

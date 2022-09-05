@@ -27,10 +27,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class SeriesTest : public CPPUNIT_NS::TestFixture
@@ -53,8 +50,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void attrPatientTest();
     void attrStudyTest();
@@ -65,7 +62,7 @@ public:
     void attrTimeTest();
     void attrPerformingPhysiciansNameTest();
     void attrDescriptionTest();
-    void equalityTest();
+    static void equalityTest();
 
 protected:
 
@@ -74,6 +71,4 @@ protected:
     SeriesVectorType m_series;
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

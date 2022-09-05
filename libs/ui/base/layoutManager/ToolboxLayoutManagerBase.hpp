@@ -29,10 +29,7 @@
 
 #include <list>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -70,7 +67,7 @@ public:
     UI_BASE_API ToolboxLayoutManagerBase();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~ToolboxLayoutManagerBase();
+    UI_BASE_API ~ToolboxLayoutManagerBase() override;
 
     /**
      * @brief Initialize Line layout manager before the creation of layout.
@@ -127,6 +124,4 @@ private:
     std::list<ViewInfo> m_views;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

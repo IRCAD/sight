@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::io::session
-{
-
-namespace ut
+namespace sight::module::io::session::ut
 {
 
 /**
@@ -42,13 +39,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void basicArchiveTest();
-    void basicRawTest();
+    static void basicArchiveTest();
+    static void basicRawTest();
 };
 
-} // namespace ut
-
-} // namespace sight::module::io::session
+} // namespace sight::module::io::session::ut

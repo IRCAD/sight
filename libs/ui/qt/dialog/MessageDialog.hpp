@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 class QPushButton;
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 /**
@@ -81,18 +78,16 @@ protected:
     std::string m_message;
 
     /// List of the button
-    ui::base::dialog::IMessageDialog::Buttons m_buttons;
+    ui::base::dialog::IMessageDialog::Buttons m_buttons {ui::base::dialog::IMessageDialog::NOBUTTON};
 
     /// default buttons
-    ui::base::dialog::IMessageDialog::Buttons m_defaultButton;
+    ui::base::dialog::IMessageDialog::Buttons m_defaultButton {ui::base::dialog::IMessageDialog::NOBUTTON};
 
     /// Icon
-    ui::base::dialog::IMessageDialog::Icons m_icon;
+    ui::base::dialog::IMessageDialog::Icons m_icon {ui::base::dialog::IMessageDialog::NONE};
 
     /// Stores custom buttons
     QVector<QPushButton*> m_customButtons;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

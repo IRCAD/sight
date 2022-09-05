@@ -40,10 +40,10 @@ static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModi
 {
     using SightOgreModType = sight::viz::scene3d::interactor::IInteractor::Modifier;
     SightOgreModType mods = SightOgreModType::NONE;
-    mods |= (_modifiers& Qt::ShiftModifier) ? SightOgreModType::SHIFT : SightOgreModType::NONE;
-    mods |= (_modifiers& Qt::ControlModifier) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
-    mods |= (_modifiers& Qt::AltModifier) ? SightOgreModType::ALT : SightOgreModType::NONE;
-    mods |= (_modifiers& Qt::MetaModifier) ? SightOgreModType::META : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::ShiftModifier) != 0U ? SightOgreModType::SHIFT : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::ControlModifier) != 0U ? SightOgreModType::CONTROL : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::AltModifier) != 0U ? SightOgreModType::ALT : SightOgreModType::NONE;
+    mods |= (_modifiers& Qt::MetaModifier) != 0U ? SightOgreModType::META : SightOgreModType::NONE;
 
     return mods;
 }
@@ -60,7 +60,7 @@ static inline QPoint getCursorPosition(const QWindow* const _w)
         return widgetCursorPosition;
     }
 
-    return QPoint();
+    return {};
 }
 
 // ----------------------------------------------------------------------------
@@ -75,10 +75,11 @@ Window::Window(QWindow* _parent) :
 {
     connect(this, &Window::screenChanged, this, &Window::onScreenChanged);
 
-    auto nvPrime   = std::getenv("__NV_PRIME_RENDER_OFFLOAD");
-    auto glxVendor = std::getenv("__GLX_VENDOR_LIBRARY_NAME");
+    auto* nvPrime   = std::getenv("__NV_PRIME_RENDER_OFFLOAD");
+    auto* glxVendor = std::getenv("__GLX_VENDOR_LIBRARY_NAME");
 
-    if(nvPrime && glxVendor && !std::strcmp(nvPrime, "1") && !std::strcmp(glxVendor, "nvidia"))
+    if((nvPrime != nullptr) && (glxVendor != nullptr)
+       && (std::strcmp(nvPrime, "1") == 0) && (std::strcmp(glxVendor, "nvidia") == 0))
     {
         SIGHT_INFO("NVidia Prime detected, switching to internal GL control.");
         m_externalGLControl = false;
@@ -94,7 +95,7 @@ Window::~Window()
 
 // ----------------------------------------------------------------------------
 
-void Window::render(QPainter*)
+void Window::render(QPainter* /*unused*/)
 {
 }
 
@@ -133,7 +134,7 @@ void Window::initialize()
     }
 #else
     {
-        const unsigned long winId = static_cast<unsigned long>(this->winId());
+        const auto winId = static_cast<std::uint64_t>(this->winId());
         parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
     }
 #endif
@@ -158,7 +159,7 @@ void Window::initialize()
     sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
     mgr->add(m_ogreRenderWindow);
 
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
     info.x               = width;
     info.y               = height;
@@ -202,7 +203,7 @@ void Window::makeCurrent()
 
 void Window::destroyWindow()
 {
-    if(m_ogreRenderWindow)
+    if(m_ogreRenderWindow != nullptr)
     {
         m_ogreRenderWindow->removeListener(this);
         sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
@@ -309,7 +310,7 @@ bool Window::event(QEvent* _event)
 
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent*)
+void Window::exposeEvent(QExposeEvent* /*unused*/)
 {
     // Force rendering
     this->renderNow();
@@ -317,7 +318,7 @@ void Window::exposeEvent(QExposeEvent*)
 
 // ----------------------------------------------------------------------------
 
-void Window::moveEvent(QMoveEvent*)
+void Window::moveEvent(QMoveEvent* /*unused*/)
 {
     if(m_ogreRenderWindow != nullptr)
     {
@@ -348,7 +349,7 @@ void Window::renderNow()
 
 void Window::keyPressEvent(QKeyEvent* _e)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::KEYPRESS;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
@@ -364,7 +365,7 @@ void Window::keyPressEvent(QKeyEvent* _e)
 
 void Window::keyReleaseEvent(QKeyEvent* _e)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::KEYRELEASE;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
@@ -467,7 +468,7 @@ void Window::mouseMoveEvent(QMouseEvent* _e)
 
 void Window::wheelEvent(QWheelEvent* _e)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::WHEELMOVE;
 
     // Only manage vertical wheel scroll.
@@ -542,23 +543,23 @@ void Window::ogreResize(const QSize& _newSize)
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
     Ogre::Viewport* viewport = nullptr;
-    for(unsigned short i = 0 ; i < numViewports ; i++)
+    for(std::uint16_t i = 0 ; i < numViewports ; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
 
-        const float vpWidth  = static_cast<float>(viewport->getActualWidth());
-        const float vpHeight = static_cast<float>(viewport->getActualHeight());
+        const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
+        const auto vpHeight = static_cast<float>(viewport->getActualHeight());
 
         viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
     }
 
-    if(viewport && Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+    if((viewport != nullptr) && Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
     {
         Ogre::CompositorChain* chain = Ogre::CompositorManager::getSingleton().getCompositorChain(
             viewport
         );
 
-        for(auto instance : chain->getCompositorInstances())
+        for(auto* instance : chain->getCompositorInstances())
         {
             if(instance->getEnabled())
             {
@@ -568,7 +569,7 @@ void Window::ogreResize(const QSize& _newSize)
         }
     }
 
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
     info.x               = newWidth;
     info.y               = newHeight;
@@ -581,7 +582,7 @@ void Window::ogreResize(const QSize& _newSize)
 
 // ----------------------------------------------------------------------------
 
-void Window::onScreenChanged(QScreen*)
+void Window::onScreenChanged(QScreen* /*unused*/)
 {
     if(m_ogreRenderWindow != nullptr)
     {

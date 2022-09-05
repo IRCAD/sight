@@ -49,7 +49,7 @@ public:
     DATA_API Tag(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Tag();
+    DATA_API ~Tag() override;
 
     /**
      * @{
@@ -75,7 +75,7 @@ public:
      */
     double& getSize();
     double getSize() const;
-    void setSize(const double _size);
+    void setSize(double _size);
     /// @}
 
     /// Defines shallow copy
@@ -99,7 +99,7 @@ protected:
     std::string m_sType;
 
     /// size of tag
-    double m_size;
+    double m_size {0.5};
 }; // end class Tag
 
 //-----------------------------------------------------------------------------

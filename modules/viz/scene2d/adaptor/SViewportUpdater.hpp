@@ -29,10 +29,7 @@
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -90,6 +87,4 @@ private:
     };
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

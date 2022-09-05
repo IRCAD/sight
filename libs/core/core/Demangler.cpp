@@ -20,9 +20,11 @@
  *
  ***********************************************************************/
 
+#include <memory>
 #include <string>
-#include <vector>
 #include <typeinfo>
+#include <utility>
+#include <vector>
 
 #ifndef _WIN32
 #include <cxxabi.h>
@@ -34,8 +36,8 @@
 namespace sight::core
 {
 
-#define COLONS std::string("::")
-#define LT std::string("<")
+static const std::string COLONS = "::";
+static const std::string LT     = "<";
 
 //------------------------------------------------------------------------------
 
@@ -46,16 +48,15 @@ Demangler::Demangler(const std::type_info& t) :
 
 //------------------------------------------------------------------------------
 
-Demangler::Demangler(const std::string& s) :
-    m_name(s)
+Demangler::Demangler(std::string s) :
+    m_name(std::move(s))
 {
 }
 
 //------------------------------------------------------------------------------
 
 Demangler::~Demangler()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +75,7 @@ std::string Demangler::getLeafClassname() const
 
 std::string Demangler::getClassname() const
 {
-    const std::string demangled(this->demangle());
+    std::string demangled(this->demangle());
     return demangled;
 }
 
@@ -84,18 +85,15 @@ std::string Demangler::demangle() const
 {
     const char* mangled = m_name.c_str();
 #ifndef _WIN32
-    char* c_demangled = abi::__cxa_demangle(mangled, 0, 0, 0);
+    std::unique_ptr<char> c_demangled = std::unique_ptr<char>(abi::__cxa_demangle(mangled, nullptr, nullptr, nullptr));
     std::string res;
-    if(c_demangled)
+    if(c_demangled != nullptr)
     {
-        res = c_demangled;
-        free(c_demangled);
+        res = c_demangled.get();
         return res;
     }
-    else
-    {
-        res = mangled;
-    }
+
+    res = mangled;
 
     return res;
 #else

@@ -40,14 +40,12 @@ const ActionCallbackBase::RegistryKeyType ActionCallbackBase::REGISTRY_KEY = "::
 //-----------------------------------------------------------------------------
 
 ActionCallbackBase::ActionCallbackBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ActionCallbackBase::~ActionCallbackBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

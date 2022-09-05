@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::DemanglerTest);
 
-namespace sight::core
-{
-
-namespace ut
+namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
@@ -45,13 +42,12 @@ class IDemanglerTest : public core::BaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IDemanglerTest);
-    virtual ~IDemanglerTest();
+    SIGHT_DECLARE_CLASS(IDemanglerTest, core::BaseObject);
+    ~IDemanglerTest() override;
 };
 
 IDemanglerTest::~IDemanglerTest()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -60,12 +56,11 @@ class ODemanglerTest : public IDemanglerTest
 public:
 
     SIGHT_DECLARE_CLASS(ODemanglerTest, IDemanglerTest, new ODemanglerTest);
-    virtual ~ODemanglerTest();
+    ~ODemanglerTest() override;
 };
 
 ODemanglerTest::~ODemanglerTest()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -94,6 +89,4 @@ void DemanglerTest::classNameTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core
+} // namespace sight::core::ut

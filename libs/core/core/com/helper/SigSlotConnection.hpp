@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/com/Connection.hpp>
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
@@ -31,10 +32,7 @@
 #include <utility>
 #include <vector>
 
-namespace sight::core::com
-{
-
-namespace helper
+namespace sight::core::com::helper
 {
 
 /**
@@ -83,6 +81,4 @@ protected:
     ConnectionContainerType m_connections;
 };
 
-} // end namespace helper
-
-} // end namespace sight::core::com
+} // namespace sight::core::com::helper

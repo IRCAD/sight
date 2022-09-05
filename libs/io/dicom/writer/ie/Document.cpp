@@ -40,13 +40,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -68,8 +62,7 @@ Document::Document(
 //------------------------------------------------------------------------------
 
 Document::~Document()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -213,8 +206,4 @@ void Document::writeSOPCommonModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

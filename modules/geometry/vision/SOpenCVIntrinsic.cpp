@@ -41,10 +41,7 @@ static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComp
 
 // ----------------------------------------------------------------------------
 
-SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
-    m_width(11),
-    m_height(8),
-    m_squareSize(20.0)
+SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
@@ -52,9 +49,8 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
 
 // ----------------------------------------------------------------------------
 
-SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept
-{
-}
+SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -109,30 +105,28 @@ void SOpenCVIntrinsic::updating()
         {
             for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
-                points.push_back(
-                    cv::Point3f(
-                        static_cast<float>(x) * m_squareSize,
-                        static_cast<float>(y) * m_squareSize,
-                        0
-                    )
+                points.emplace_back(
+                    static_cast<float>(x) * m_squareSize,
+                    static_cast<float>(y) * m_squareSize,
+                    0.F
+
                 );
             }
         }
 
         std::vector<std::vector<cv::Point2f> > imagePoints;
 
-        for(data::PointList::csptr capture : calInfo->getPointListContainer())
+        for(const data::PointList::csptr& capture : calInfo->getPointListContainer())
         {
             std::vector<cv::Point2f> dst;
 
             for(data::Point::csptr point : capture->getPoints())
             {
                 SIGHT_ASSERT("point is null", point);
-                dst.push_back(
-                    cv::Point2f(
-                        static_cast<float>(point->getCoord()[0]),
-                        static_cast<float>(point->getCoord()[1])
-                    )
+                dst.emplace_back(
+                    static_cast<float>(point->getCoord()[0]),
+                    static_cast<float>(point->getCoord()[1])
+
                 );
             }
 

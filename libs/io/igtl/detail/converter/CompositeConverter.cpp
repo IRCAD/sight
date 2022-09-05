@@ -29,10 +29,7 @@
 
 #include <igtlTrackingDataMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string CompositeConverter::s_IGTL_TYPE          = "TDATA";
@@ -41,14 +38,12 @@ const std::string CompositeConverter::s_FWDATA_OBJECT_TYPE = data::Composite::cl
 converterRegisterMacro(io::igtl::detail::converter::CompositeConverter);
 
 CompositeConverter::CompositeConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 CompositeConverter::~CompositeConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -82,7 +77,7 @@ CompositeConverter::~CompositeConverter()
         }
     }
 
-    return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
+    return {trackingMsg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -140,6 +135,4 @@ std::string const& CompositeConverter::getFwDataObjectType() const
     return CompositeConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

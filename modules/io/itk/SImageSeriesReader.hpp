@@ -35,7 +35,7 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::module::io::itk
 {
@@ -69,9 +69,8 @@ public:
      */
     MODULE_IO_ITK_API SImageSeriesReader() noexcept;
 
-    ~SImageSeriesReader() noexcept override
-    {
-    }
+    ~SImageSeriesReader() noexcept override =
+        default;
 
     SIGHT_DECLARE_SERVICE(SImageSeriesReader, sight::io::base::service::IReader);
 

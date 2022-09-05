@@ -39,17 +39,12 @@
 #include <filesystem>
 #include <functional>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key /*key*/) :
-    m_style(ui::base::dialog::ILocationDialog::NONE),
-    m_type(ui::base::dialog::ILocationDialog::SINGLE_FILE)
+LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
@@ -68,7 +63,7 @@ core::location::ILocation::sptr LocationDialog::show()
     dialog.setWindowTitle(caption);
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, !qgetenv("GUI_TESTS_ARE_RUNNING").isEmpty());
 
-    if(m_style & ui::base::dialog::ILocationDialog::READ || m_type == ui::base::dialog::ILocationDialog::FOLDER)
+    if(((m_style& ui::base::dialog::ILocationDialog::READ) != 0) || m_type == ui::base::dialog::ILocationDialog::FOLDER)
     {
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     }
@@ -82,8 +77,8 @@ core::location::ILocation::sptr LocationDialog::show()
     {
         dialog.setFilter(QDir::Filter::Files);
 
-        if((m_style & ui::base::dialog::ILocationDialog::READ)
-           || (m_style & ui::base::dialog::ILocationDialog::FILE_MUST_EXIST))
+        if(((m_style& ui::base::dialog::ILocationDialog::READ) != 0)
+           || ((m_style& ui::base::dialog::ILocationDialog::FILE_MUST_EXIST) != 0))
         {
             if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
             {
@@ -126,7 +121,7 @@ core::location::ILocation::sptr LocationDialog::show()
                 paths.reserve(size_t(selectedFiles.size()));
                 for(const QString& file : selectedFiles)
                 {
-                    paths.push_back(file.toStdString());
+                    paths.emplace_back(file.toStdString());
                 }
 
                 auto multifiles = std::make_shared<core::location::MultipleFiles>();
@@ -181,7 +176,7 @@ ui::base::dialog::ILocationDialog& LocationDialog::setOption(ui::base::dialog::I
 // example ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList)
 {
-    m_filters.push_back(std::make_pair(filterName, wildcardList));
+    m_filters.emplace_back(filterName, wildcardList);
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +196,7 @@ QString LocationDialog::fileFilters()
             result += ";;";
         }
 
-        result += filterName + " (" + rawWildcards + ")";
+        result.append(filterName).append(" (").append(rawWildcards).append(")");
     }
 
     return QString::fromStdString(result);
@@ -217,8 +212,8 @@ std::string LocationDialog::getCurrentSelection() const
     {
         const std::string& filterName       = iter->first;
         const std::string& rawWildcards     = iter->second;
-        const std::string& availableFilters = filterName + " (" + rawWildcards + ")";
-        if(!m_wildcard.compare(availableFilters))
+        const std::string& availableFilters = std::string(filterName).append(" (").append(rawWildcards).append(")");
+        if(m_wildcard == availableFilters)
         {
             extension = &rawWildcards[1];
             break;
@@ -230,6 +225,4 @@ std::string LocationDialog::getCurrentSelection() const
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} //namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

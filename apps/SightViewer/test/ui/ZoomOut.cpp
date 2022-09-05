@@ -60,7 +60,7 @@ void ZoomOut::test()
                 "ogre scene",
                 [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");});
             // We need to a reference to it for later
-            QWidget* ogreScene = tester.get<QWidget*>();
+            auto* ogreScene = tester.get<QWidget*>();
             tester.interact(
                 // Drag the mouse...
                 std::make_unique<sight::ui::test::MouseDrag>(

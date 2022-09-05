@@ -40,10 +40,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ServiceFactoryTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -158,6 +155,4 @@ void ServiceFactoryTest::factoryTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

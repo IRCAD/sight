@@ -51,9 +51,8 @@ SManagePointList::SManagePointList() noexcept
 
 //------------------------------------------------------------------------------
 
-SManagePointList::~SManagePointList() noexcept
-{
-}
+SManagePointList::~SManagePointList() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -93,7 +92,7 @@ void SManagePointList::stopping()
 
 void SManagePointList::pick(data::tools::PickingInfo _info) const
 {
-    if(_info.m_modifierMask & data::tools::PickingInfo::CTRL)
+    if((_info.m_modifierMask & data::tools::PickingInfo::CTRL) != 0)
     {
         const data::Point::sptr point = data::Point::New();
 
@@ -101,9 +100,9 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
 
         if(matrix)
         {
-            const double* const pickedCoord = _info.m_worldPos;
-            const glm::dvec4 pickedPoint    = glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const glm::dmat4x4 mat          = sight::geometry::data::getMatrixFromTF3D(*matrix);
+            const std::array<double, 3>& pickedCoord = _info.m_worldPos;
+            const glm::dvec4 pickedPoint             = glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
+            const glm::dmat4x4 mat                   = sight::geometry::data::getMatrixFromTF3D(*matrix);
 
             const glm::dvec4 modifiedPickedPoint = mat * pickedPoint;
             point->setCoord({modifiedPickedPoint[0], modifiedPickedPoint[1], modifiedPickedPoint[2]});
@@ -183,10 +182,8 @@ void SManagePointList::clearPoints() const
     const PLContainer container = pointList->getPoints();
     pointList->clear();
 
-    for(PLContainer::size_type i = 0 ; i < container.size() ; ++i)
+    for(const auto& point : container)
     {
-        const data::Point::sptr point = container[i];
-
         const auto& sigRemoved = pointList->signal<data::PointList::PointRemovedSignalType>(
             data::PointList::s_POINT_REMOVED_SIG
         );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,13 +114,13 @@ private:
     typedef core::com::Signal<void (std::string)> SameSliceSignalType;
 
     /// landmarks group's label for the origin of the vector.
-    std::string m_originLabel {""};
+    std::string m_originLabel;
 
     /// landmarks group's label for the end of the vector.
-    std::string m_endLabel {""};
+    std::string m_endLabel;
 
     /// Computed landmark group name.
-    std::string m_groupLabel {""};
+    std::string m_groupLabel;
 
     /// Tolerance in mm when checking if the two landmarks are on the same axial slice.
     double m_tolerance {0.001};

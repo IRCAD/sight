@@ -38,10 +38,7 @@
 #include <cmath>
 #include <filesystem>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 using core::tools::random::safeRand;
@@ -55,7 +52,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     std::string skinType                             = "Skin";
     skin->setType(skinType);
     skin->setClass(data::StructureTraits::ENVIRONMENT);
-    data::Color::sptr skinColor = data::Color::New(255.0f / 255.0f, 179.0f / 255.0f, 140.0f / 255.0f, 1.0f);
+    data::Color::sptr skinColor = data::Color::New(255.0F / 255.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
     skin->setColor(skinColor);
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
@@ -65,7 +62,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr liver = data::StructureTraits::New();
     liver->setType("Liver");
     liver->setClass(data::StructureTraits::ORGAN);
-    liver->setColor(data::Color::New(204.0f / 255.0f, 51.0f / 255.0f, 51.0f / 255.0f, 1.0));
+    liver->setColor(data::Color::New(204.0F / 255.0F, 51.0F / 255.0F, 51.0F / 255.0F, 1.0));
     data::StructureTraits::CategoryContainer liverCat(1);
     liverCat[0] = data::StructureTraits::ABDOMEN;
     liver->setCategories(liverCat);
@@ -76,7 +73,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr liverTumor = data::StructureTraits::New();
     liverTumor->setType("Liver_Tumor");
     liverTumor->setClass(data::StructureTraits::LESION);
-    liverTumor->setColor(data::Color::New(0.0f, 179.0f / 255.0f, 0.0f, 1.0f));
+    liverTumor->setColor(data::Color::New(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
     data::StructureTraits::CategoryContainer liverTumorCat(1);
     liverTumorCat[0] = data::StructureTraits::ABDOMEN;
     liverTumor->setCategories(liverTumorCat);
@@ -86,7 +83,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr tumor = data::StructureTraits::New();
     tumor->setType("Tumor");
     tumor->setClass(data::StructureTraits::LESION);
-    tumor->setColor(data::Color::New(0.0f, 0.0f, 1.0f, 1.0f));
+    tumor->setColor(data::Color::New(0.0F, 0.0F, 1.0F, 1.0F));
     data::StructureTraits::CategoryContainer tumorCat(8);
     tumorCat[0] = data::StructureTraits::BODY;
     tumorCat[1] = data::StructureTraits::HEAD;
@@ -101,7 +98,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr colon = data::StructureTraits::New();
     colon->setType("Colon");
     colon->setClass(data::StructureTraits::ORGAN);
-    colon->setColor(data::Color::New(1.0f, 179.0f / 255.0f, 128.0f / 255.0f, 1.0f));
+    colon->setColor(data::Color::New(1.0F, 179.0F / 255.0F, 128.0F / 255.0F, 1.0F));
     data::StructureTraits::CategoryContainer colonCat(1);
     colonCat[0] = data::StructureTraits::ABDOMEN;
     colon->setCategories(colonCat);
@@ -110,7 +107,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr caecum = data::StructureTraits::New();
     caecum->setType("Caecum");
     caecum->setClass(data::StructureTraits::FUNCTIONAL);
-    caecum->setColor(data::Color::New(1.0f, 179.0f / 255.0f, 128.0f / 255.0f, 1.0f));
+    caecum->setColor(data::Color::New(1.0F, 179.0F / 255.0F, 128.0F / 255.0F, 1.0F));
     data::StructureTraits::CategoryContainer caecumCat(1);
     caecumCat[0] = data::StructureTraits::ABDOMEN;
     caecum->setCategories(caecumCat);
@@ -138,10 +135,10 @@ data::StructureTraits::sptr Object::createStructureTraits()
 
     data::Color::sptr color = data::Color::New();
     color->setRGBA(
-        static_cast<float>(safeRand() % 100) / 100.f,
-        static_cast<float>(safeRand() % 100) / 100.f,
-        static_cast<float>(safeRand() % 100) / 100.f,
-        static_cast<float>(safeRand() % 100) / 100.f
+        static_cast<float>(safeRand() % 100) / 100.F,
+        static_cast<float>(safeRand() % 100) / 100.F,
+        static_cast<float>(safeRand() % 100) / 100.F,
+        static_cast<float>(safeRand() % 100) / 100.F
     );
     pStructureTraits->setColor(color);
 
@@ -252,10 +249,10 @@ data::Color::sptr Object::randomizeColor()
 {
     data::Color::sptr col = data::Color::New();
     col->setRGBA(
-        static_cast<float>(safeRand() % 100) / 100.f,
-        static_cast<float>(safeRand() % 100) / 100.f,
-        static_cast<float>(safeRand() % 100) / 100.f,
-        static_cast<float>(safeRand() % 100) / 100.f
+        static_cast<float>(safeRand() % 100) / 100.F,
+        static_cast<float>(safeRand() % 100) / 100.F,
+        static_cast<float>(safeRand() % 100) / 100.F,
+        static_cast<float>(safeRand() % 100) / 100.F
     );
     return col;
 }
@@ -273,10 +270,10 @@ data::TransferFunction::sptr Object::createTFColor(
     tf->setName("color_t");
     tf->setBackgroundColor(
         data::TransferFunction::color_t(
-            static_cast<float>(safeRand() % 100) / 100.f,
-            static_cast<float>(safeRand() % 100) / 100.f,
-            static_cast<float>(safeRand() % 100) / 100.f,
-            static_cast<float>(safeRand() % 100) / 100.f
+            static_cast<float>(safeRand() % 100) / 100.F,
+            static_cast<float>(safeRand() % 100) / 100.F,
+            static_cast<float>(safeRand() % 100) / 100.F,
+            static_cast<float>(safeRand() % 100) / 100.F
         )
     );
 
@@ -294,10 +291,10 @@ data::TransferFunction::sptr Object::createTFColor(
     {
         double value = safeRand() % 100 - level;
         (*tfData)[value] = data::TransferFunction::color_t(
-            static_cast<float>(safeRand() % 100) / 100.f,
-            static_cast<float>(safeRand() % 100) / 100.f,
-            static_cast<float>(safeRand() % 100) / 100.f,
-            static_cast<float>(safeRand() % 100) / 100.f
+            static_cast<float>(safeRand() % 100) / 100.F,
+            static_cast<float>(safeRand() % 100) / 100.F,
+            static_cast<float>(safeRand() % 100) / 100.F,
+            static_cast<float>(safeRand() % 100) / 100.F
         );
     }
 
@@ -313,7 +310,7 @@ data::TransferFunction::sptr Object::createTFColor()
 {
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
-    tf->setBackgroundColor(data::TransferFunction::color_t(1.0f, 0.3f, 0.6f, 0.1f));
+    tf->setBackgroundColor(data::TransferFunction::color_t(1.0F, 0.3F, 0.6F, 0.1F));
     tf->setName("color_t");
 
     auto tfData = data::TransferFunctionPiece::New();
@@ -326,11 +323,11 @@ data::TransferFunction::sptr Object::createTFColor()
     tfData->setLevel(900.6);
     tfData->setWindow(-200.02);
 
-    tfData->insert({-40.33, data::TransferFunction::color_t(0.9f, 0.2f, 0.3f, 0.4f)});
-    tfData->insert({3, data::TransferFunction::color_t(0.1f, 0.2f, 0.9f, 0.4f)}); // Invert point 3 <=> -0.2,
+    tfData->insert({-40.33, data::TransferFunction::color_t(0.9F, 0.2F, 0.3F, 0.4F)});
+    tfData->insert({3, data::TransferFunction::color_t(0.1F, 0.2F, 0.9F, 0.4F)}); // Invert point 3 <=> -0.2,
     // for tests
-    tfData->insert({-0.2, data::TransferFunction::color_t(0.1f, 0.9f, 0.3f, 0.4f)});
-    tfData->insert({150, data::TransferFunction::color_t(0.1f, 0.2f, 0.3f, 0.9f)});
+    tfData->insert({-0.2, data::TransferFunction::color_t(0.1F, 0.9F, 0.3F, 0.4F)});
+    tfData->insert({150, data::TransferFunction::color_t(0.1F, 0.2F, 0.3F, 0.9F)});
 
     data::String::sptr myString = data::String::New("fieldStringValue");
     tf->setField("fieldStringKey", myString);
@@ -345,10 +342,10 @@ data::Material::sptr Object::createMaterial()
     // use the default value PHONG,SURFACE, STANDARD
 
     data::Color::sptr ambient = data::Color::New();
-    ambient->setRGBA(0.5f, 0.5f, 0.5f, 0.5f);
+    ambient->setRGBA(0.5F, 0.5F, 0.5F, 0.5F);
 
     data::Color::sptr diffuse = data::Color::New();
-    diffuse->setRGBA(0.8f, 0.2f, 0.5f, 0.4f);
+    diffuse->setRGBA(0.8F, 0.2F, 0.5F, 0.4F);
 
     data::Material::sptr material = data::Material::New();
 
@@ -399,7 +396,7 @@ data::Plane::sptr Object::generatePlane()
 {
     data::Plane::sptr plane = data::Plane::New();
     plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection(((safeRand() % 1) ? true : false));
+    plane->setIsIntersection(((safeRand() % 1) != 0));
     return plane;
 }
 
@@ -410,9 +407,9 @@ data::Resection::sptr Object::generateResection()
     data::Resection::sptr resection = data::Resection::New();
 
     resection->setName("Resection1");
-    resection->setIsSafePart(((safeRand() % 1) ? true : false));
-    resection->setIsValid(((safeRand() % 1) ? true : false));
-    resection->setIsVisible(((safeRand() % 1) ? true : false));
+    resection->setIsSafePart(((safeRand() % 1) != 0));
+    resection->setIsValid(((safeRand() % 1) != 0));
+    resection->setIsVisible(((safeRand() % 1) != 0));
     data::Reconstruction::sptr recInput = data::Reconstruction::New();
 
     utestData::generator::SeriesDB::generateReconstruction(recInput);
@@ -446,6 +443,4 @@ data::ResectionDB::sptr Object::generateResectionDB()
 
 //------------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

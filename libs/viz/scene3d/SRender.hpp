@@ -307,7 +307,7 @@ std::vector<SPTR(T)> SRender::getAdaptors() const
     auto servicesVector = service::OSR::getServices("sight::viz::scene3d::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
-    for(auto& sceneAdaptor : servicesVector)
+    for(const auto& sceneAdaptor : servicesVector)
     {
         SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
         if(adaptor)
@@ -331,4 +331,4 @@ inline SRender::RenderMode SRender::getRenderMode() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::viz
+} // namespace sight::viz::scene3d

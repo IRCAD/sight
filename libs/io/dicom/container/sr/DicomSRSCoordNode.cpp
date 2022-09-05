@@ -26,13 +26,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 //------------------------------------------------------------------------------
@@ -40,16 +34,16 @@ namespace sr
 DicomSRSCoordNode::DicomSRSCoordNode(
     const DicomCodedAttribute& codedAttribute,
     const std::string& relationship,
-    const std::string& graphicType,
+    std::string graphicType,
     GraphicDataContainerType graphicDataContainer
 ) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "SCOORD", relationship),
-    m_graphicType(graphicType),
-    m_graphicDataContainer(graphicDataContainer)
+    m_graphicType(std::move(graphicType)),
+    m_graphicDataContainer(std::move(graphicDataContainer))
 {
     SIGHT_ASSERT(
         "Only POINT and POLYLINE are supported by SCoord node for now.",
-        graphicType == "POINT" || graphicType == "POLYLINE"
+        m_graphicType == "POINT" || m_graphicType == "POLYLINE"
     );
 
     SIGHT_ASSERT(
@@ -66,8 +60,7 @@ DicomSRSCoordNode::DicomSRSCoordNode(
 //------------------------------------------------------------------------------
 
 DicomSRSCoordNode::~DicomSRSCoordNode()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +70,7 @@ void DicomSRSCoordNode::write(gdcm::DataSet& dataset) const
 
     // Graphic Data - Type 1
     io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
-        &m_graphicDataContainer[0],
+        (m_graphicDataContainer).data(),
         m_graphicDataContainer.size(),
         dataset
     );
@@ -96,8 +89,4 @@ void DicomSRSCoordNode::print(std::ostream& os) const
 
 //------------------------------------------------------------------------------
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

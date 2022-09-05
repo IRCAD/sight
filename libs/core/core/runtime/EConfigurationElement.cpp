@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,7 @@ EConfigurationElement::EConfigurationElement(const std::string& name) :
 }
 
 EConfigurationElement::~EConfigurationElement()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -66,4 +65,4 @@ void EConfigurationElement::setValue(const std::string& value) noexcept
     this->core::runtime::ConfigurationElement::setValue(value);
 }
 
-}
+} // namespace sight::core::runtime

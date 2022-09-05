@@ -63,25 +63,25 @@ public:
     );
 
     /// Gets the width of this texture
-    std::uint32_t width() const
+    [[nodiscard]] std::uint32_t width() const
     {
         return this->get()->getWidth();
     }
 
     /// Gets the height of this texture
-    std::uint32_t height() const
+    [[nodiscard]] std::uint32_t height() const
     {
         return this->get()->getHeight();
     }
 
     /// Gets the depth of this texture
-    std::uint32_t depth() const
+    [[nodiscard]] std::uint32_t depth() const
     {
         return this->get()->getDepth();
     }
 
     /// Gets the name of this texture
-    std::string name() const
+    [[nodiscard]] std::string name() const
     {
         return this->get()->getName();
     }

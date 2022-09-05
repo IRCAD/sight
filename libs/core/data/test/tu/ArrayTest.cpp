@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "ArrayTest.hpp"
 
 #include <data/Array.hpp>
@@ -28,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ArrayTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -83,7 +82,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT(array->getBuffer() == nullptr);
     CPPUNIT_ASSERT_EQUAL(core::Type::NONE, array->getType());
 
-    std::uint16_t* buffer = new std::uint16_t[1000];
+    auto* buffer = new std::uint16_t[1000];
 
     for(std::uint16_t i = 0 ; i < 1000 ; i++)
     {
@@ -597,6 +596,7 @@ void ArrayTest::equalityTest()
     auto lock = array1->dump_lock();
 
     std::uint32_t count = 0;
+    // NOLINTNEXTLINE(modernize-loop-convert)
     for(auto it = array1->begin<std::uint32_t>(), end = array1->end<std::uint32_t>() ; it != end ; ++it)
     {
         *it = count++;
@@ -609,6 +609,7 @@ void ArrayTest::equalityTest()
     auto lock2 = array2->dump_lock();
 
     count = 666;
+    // NOLINTNEXTLINE(modernize-loop-convert)
     for(auto it = array2->begin<std::uint32_t>(), end = array2->end<std::uint32_t>() ; it != end ; ++it)
     {
         *it = count++;
@@ -617,6 +618,7 @@ void ArrayTest::equalityTest()
     CPPUNIT_ASSERT(*array1 != *array2);
 
     count = 0;
+    // NOLINTNEXTLINE(modernize-loop-convert)
     for(auto it = array2->begin<std::uint32_t>(), end = array2->end<std::uint32_t>() ; it != end ; ++it)
     {
         *it = count++;
@@ -632,6 +634,4 @@ void ArrayTest::equalityTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

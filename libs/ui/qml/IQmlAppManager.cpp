@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,15 +29,13 @@ namespace sight::ui::qml
 
 //------------------------------------------------------------------------------
 
-IQmlAppManager::IQmlAppManager() noexcept
-{
-}
+IQmlAppManager::IQmlAppManager() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-IQmlAppManager::~IQmlAppManager() noexcept
-{
-}
+IQmlAppManager::~IQmlAppManager() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +65,7 @@ void IQmlAppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-void IQmlAppManager::onServiceCreated(const QVariant&)
+void IQmlAppManager::onServiceCreated(const QVariant& /*unused*/)
 {
     SIGHT_ASSERT(
         "The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
@@ -93,4 +91,4 @@ void IQmlAppManager::replaceInputs(const QVariant& variant)
 
 //------------------------------------------------------------------------------
 
-} // namespace fwiQml
+} // namespace sight::ui::qml

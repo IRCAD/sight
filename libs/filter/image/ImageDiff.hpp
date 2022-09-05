@@ -39,34 +39,34 @@ public:
     struct ElementType
     {
         data::Image::IndexType m_index;
-        data::Image::BufferType* m_oldValue;
-        data::Image::BufferType* m_newValue;
+        const data::Image::BufferType* m_oldValue;
+        const data::Image::BufferType* m_newValue;
     };
 
     /// Constructor.
-    FILTER_IMAGE_API ImageDiff(const std::size_t imageElementSize = 0, const std::size_t reservedElements = 0);
+    FILTER_IMAGE_API ImageDiff(std::size_t imageElementSize = 0, std::size_t reservedElements = 0);
 
     /// Destructor
-    FILTER_IMAGE_API ~ImageDiff();
+    FILTER_IMAGE_API ~ImageDiff() = default;
 
     /// Copy constructor
-    FILTER_IMAGE_API ImageDiff(const ImageDiff& other);
+    FILTER_IMAGE_API ImageDiff(const ImageDiff& other) = default;
 
     /// Move constructor
-    FILTER_IMAGE_API ImageDiff(ImageDiff&& other);
+    FILTER_IMAGE_API ImageDiff(ImageDiff&& other) noexcept = default;
 
     /// Copy assignement.
-    FILTER_IMAGE_API ImageDiff& operator=(const ImageDiff& other);
+    FILTER_IMAGE_API ImageDiff& operator=(const ImageDiff& other) = default;
 
     /// Move assignement.
-    FILTER_IMAGE_API ImageDiff& operator=(ImageDiff&& other);
+    FILTER_IMAGE_API ImageDiff& operator=(ImageDiff&& other) noexcept = default;
 
     /// Concatenate two diffs.
     FILTER_IMAGE_API void addDiff(const ImageDiff& diff);
 
     /// Append a new pixel diff.
     FILTER_IMAGE_API void addDiff(
-        const data::Image::IndexType index,
+        data::Image::IndexType index,
         const data::Image::BufferType* oldValue,
         const data::Image::BufferType* newValue
     );
@@ -78,10 +78,10 @@ public:
     FILTER_IMAGE_API void revertDiff(const data::Image::sptr& img) const;
 
     /// Return the amount of memory actually used by the elements.
-    FILTER_IMAGE_API std::size_t getSize() const;
+    [[nodiscard]] FILTER_IMAGE_API std::size_t getSize() const;
 
     /// Returns the number of stored pixel diffs.
-    FILTER_IMAGE_API std::size_t numElements() const;
+    [[nodiscard]] FILTER_IMAGE_API std::size_t numElements() const;
 
     /// Set the number of elements to 0.
     FILTER_IMAGE_API void clear();
@@ -90,10 +90,10 @@ public:
     FILTER_IMAGE_API void shrink();
 
     /// Returns the element at the given index
-    FILTER_IMAGE_API ElementType getElement(std::size_t index) const;
+    [[nodiscard]] FILTER_IMAGE_API ElementType getElement(std::size_t index) const;
 
     /// Returns the image index from the element at the given index
-    inline data::Image::IndexType getElementDiffIndex(std::size_t eltIndex) const;
+    [[nodiscard]] inline data::Image::IndexType getElementDiffIndex(std::size_t eltIndex) const;
 
 private:
 
@@ -109,22 +109,15 @@ private:
     /// Size of an element (image index + old value + new value)
     std::size_t m_eltSize;
 
-    /// Number of pixel diffs.
-    std::size_t m_nbElts;
-
-    /// The allocated buffer size.
-    std::size_t m_reservedSize;
-
     /// The buffer holding the diff.
-    std::uint8_t* m_buffer;
+    std::vector<std::uint8_t> m_buffer;
 };
 
 //------------------------------------------------------------------------------
 
 data::Image::IndexType ImageDiff::getElementDiffIndex(std::size_t eltIndex) const
 {
-    std::uint8_t* eltPtr = m_buffer + eltIndex * m_eltSize;
-    return *reinterpret_cast<data::Image::IndexType*>(eltPtr);
+    return *reinterpret_cast<const data::Image::IndexType*>(&m_buffer[eltIndex * m_eltSize]);
 }
 
 } // namespace sight::filter::image

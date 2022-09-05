@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
      * @name Constructor/Destructor
      * @{ */
     MODULE_UI_QT_API SShowAbout() noexcept;
-    MODULE_UI_QT_API virtual ~SShowAbout() noexcept;
+    MODULE_UI_QT_API ~SShowAbout() noexcept override;
 /**  @} */
 
 protected:
@@ -90,12 +90,12 @@ protected Q_SLOTS:
      *
      * @param url clicked URL
      */
-    void onUrlClicked(const QUrl& url);
+    static void onUrlClicked(const QUrl& url);
 
 private:
 
     /// Set to 'true' if the about file path is known.
-    bool m_bServiceIsConfigured;
+    bool m_bServiceIsConfigured {false};
 
     /**
      * @brief about file path.

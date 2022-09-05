@@ -35,7 +35,7 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -139,7 +139,7 @@ private:
     bool m_autoResetCamera {true};
 
     /// Defines the texture name.
-    std::string m_textureAdaptorUID {""};
+    std::string m_textureAdaptorUID;
 
     /// Defines the material name.
     std::string m_materialTemplateName {sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};

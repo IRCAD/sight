@@ -221,4 +221,4 @@ void SSeriesDBReader::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace ioVtk
+} // namespace sight::module::io::vtk

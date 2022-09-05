@@ -46,18 +46,18 @@ struct CORE_CLASS_API BufferInfo
     CORE_API void clear();
     //------------------------------------------------------------------------------
 
-    long lockCount() const
+    std::int64_t lockCount() const
     {
         return lockCounter.use_count();
     }
 
-    SizeType size;
+    SizeType size {0};
     /// true if 'buffer' is loaded
-    bool loaded;
-    bool userStreamFactory;
+    bool loaded {true};
+    bool userStreamFactory {false};
 
     FileHolder fsFile;
-    FileFormatType fileFormat;
+    FileFormatType fileFormat {core::memory::OTHER};
 
     CounterType lockCounter;
 

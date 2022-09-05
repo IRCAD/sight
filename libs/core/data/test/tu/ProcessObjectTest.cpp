@@ -28,10 +28,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ProcessObjectTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,6 +58,4 @@ void ProcessObjectTest::constructeur()
     CPPUNIT_ASSERT_EQUAL(image2, po->getOutput<data::Image>(IMAGEID2));
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

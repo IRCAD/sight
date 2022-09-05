@@ -88,10 +88,10 @@ public:
     CORE_API static void reset_global_password();
 
     /// Gets the password
-    CORE_API core::crypto::secure_string get_password_hash() const;
+    [[nodiscard]] CORE_API core::crypto::secure_string get_password_hash() const;
 
     /// Gets the password
-    CORE_API core::crypto::secure_string get_password() const;
+    [[nodiscard]] CORE_API core::crypto::secure_string get_password() const;
 
     /// Reset the password
     CORE_API void reset_password();
@@ -102,7 +102,7 @@ public:
 
     /// Returns true if the password matches
     /// @param password the password to verify against stored password
-    CORE_API bool check_password(const core::crypto::secure_string& password) const;
+    [[nodiscard]] CORE_API bool check_password(const core::crypto::secure_string& password) const;
 
     /// Convenience function to convert from PasswordPolicy enum value to string
     constexpr static std::string_view password_policy_to_string(PasswordPolicy policy) noexcept
@@ -130,23 +130,24 @@ public:
         {
             return PasswordPolicy::NEVER;
         }
-        else if(constexpr auto ONCE = password_policy_to_string(PasswordPolicy::ONCE); policy == ONCE)
+
+        if(constexpr auto ONCE = password_policy_to_string(PasswordPolicy::ONCE); policy == ONCE)
         {
             return PasswordPolicy::ONCE;
         }
-        else if(constexpr auto ALWAYS = password_policy_to_string(PasswordPolicy::ALWAYS); policy == ALWAYS)
+
+        if(constexpr auto ALWAYS = password_policy_to_string(PasswordPolicy::ALWAYS); policy == ALWAYS)
         {
             return PasswordPolicy::ALWAYS;
         }
-        else if(policy.empty() || policy == "default")
+
+        if(policy.empty() || policy == "default")
         {
             return PasswordPolicy::DEFAULT;
         }
-        else
-        {
-            // Error case
-            return PasswordPolicy::INVALID;
-        }
+
+        // Error case
+        return PasswordPolicy::INVALID;
     }
 
     /// Convenience function to convert from EncryptionPolicy enum value to string
@@ -175,23 +176,24 @@ public:
         {
             return EncryptionPolicy::PASSWORD;
         }
-        else if(constexpr auto SALTED = encryption_policy_to_string(EncryptionPolicy::SALTED); policy == SALTED)
+
+        if(constexpr auto SALTED = encryption_policy_to_string(EncryptionPolicy::SALTED); policy == SALTED)
         {
             return EncryptionPolicy::SALTED;
         }
-        else if(constexpr auto FORCED = encryption_policy_to_string(EncryptionPolicy::FORCED); policy == FORCED)
+
+        if(constexpr auto FORCED = encryption_policy_to_string(EncryptionPolicy::FORCED); policy == FORCED)
         {
             return EncryptionPolicy::FORCED;
         }
-        else if(policy.empty() || policy == "default")
+
+        if(policy.empty() || policy == "default")
         {
             return EncryptionPolicy::DEFAULT;
         }
-        else
-        {
-            // Error case
-            return EncryptionPolicy::INVALID;
-        }
+
+        // Error case
+        return EncryptionPolicy::INVALID;
     }
 
     //------------------------------------------------------------------------------

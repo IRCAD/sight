@@ -39,6 +39,7 @@
 
 #include <boost/tokenizer.hpp>
 
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 
@@ -55,16 +56,7 @@ static const core::com::Slots::SlotKeyType s_SET_STEP      = "setStep";
 
 //------------------------------------------------------------------------------
 
-SMatricesReader::SMatricesReader() noexcept :
-    m_isPlaying(false),
-    m_filestream(nullptr),
-    m_tsMatricesCount(0),
-    m_createNewTS(false),
-    m_fps(30),
-    m_oneShot(false),
-    m_useTimelapse(false),
-    m_step(1),
-    m_stepChanged(1)
+SMatricesReader::SMatricesReader() noexcept
 {
     newSlot(s_START_READING, &SMatricesReader::startReading, this);
     newSlot(s_STOP_READING, &SMatricesReader::stopReading, this);
@@ -110,7 +102,7 @@ void SMatricesReader::configuring()
 
     m_oneShot = config.get<bool>("oneShot", m_oneShot);
 
-    m_step = config.get<unsigned long>("step", m_step);
+    m_step = config.get<std::uint64_t>("step", m_step);
     SIGHT_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
@@ -177,8 +169,8 @@ void SMatricesReader::readPrevious()
         if(m_tsMatricesCount - m_step >= m_stepChanged)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const long shift   = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
-            const long shifted = static_cast<long>(m_tsMatricesCount) - shift;
+            const std::int64_t shift   = static_cast<std::int64_t>(m_stepChanged) - static_cast<std::int64_t>(m_step);
+            const std::int64_t shifted = static_cast<std::int64_t>(m_tsMatricesCount) - shift;
 
             // m_tsMatricesCount is pointing to previous matrix,so -1 = present matrix
             m_tsMatricesCount = static_cast<std::size_t>(shifted) - (2 * m_step);
@@ -204,10 +196,10 @@ void SMatricesReader::readNext()
     if(m_oneShot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const long shift   = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
-        const long shifted = static_cast<long>(m_tsMatricesCount) + shift;
+        const std::int64_t shift   = static_cast<std::int64_t>(m_stepChanged) - static_cast<std::int64_t>(m_step);
+        const std::int64_t shifted = static_cast<std::int64_t>(m_tsMatricesCount) + shift;
 
-        if(shifted < static_cast<long>(m_tsMatrices.size()))
+        if(shifted < static_cast<std::int64_t>(m_tsMatrices.size()))
         {
             // Update matrix position index
             m_tsMatricesCount = static_cast<std::size_t>(shifted);
@@ -235,7 +227,7 @@ void SMatricesReader::setStep(int _step, std::string _key)
         SIGHT_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
 
         // Save the changed step value
-        m_stepChanged = static_cast<unsigned long>(_step);
+        m_stepChanged = static_cast<std::uint64_t>(_step);
     }
     else
     {
@@ -283,7 +275,7 @@ void SMatricesReader::startReading()
                     continue;
                 }
 
-                const unsigned int nbOfMatrices = static_cast<unsigned int>((nbOfElements - 1) / 16);
+                const auto nbOfMatrices = static_cast<unsigned int>((nbOfElements - 1) / 16);
 
                 const auto matrixTL = m_matrixTL.lock();
                 matrixTL->initPoolSize(nbOfMatrices);
@@ -297,10 +289,10 @@ void SMatricesReader::startReading()
 
                 for(unsigned int m = 0 ; m < nbOfMatrices ; ++m)
                 {
-                    std::array<float, 16> mat;
-                    for(unsigned int i = 0 ; i < mat.size() ; ++i)
+                    std::array<float, 16> mat {};
+                    for(float& i : mat)
                     {
-                        mat[i] = std::stof(iter.current_token());
+                        i = std::stof(iter.current_token());
 
                         if(iter != tok.end())
                         {
@@ -325,7 +317,7 @@ void SMatricesReader::startReading()
         {
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
-            m_timer->setFunction(std::bind(&SMatricesReader::readMatrices, this));
+            m_timer->setFunction([this](auto&& ...){readMatrices();});
             m_timer->setDuration(std::chrono::milliseconds(0));
             m_timer->start();
         }
@@ -356,7 +348,7 @@ void SMatricesReader::startReading()
                 duration = std::chrono::milliseconds(1000 / m_fps);
             }
 
-            m_timer->setFunction(std::bind(&SMatricesReader::readMatrices, this));
+            m_timer->setFunction([this](auto&& ...){readMatrices();});
             m_timer->setDuration(duration);
             m_timer->start();
         }
@@ -424,7 +416,7 @@ void SMatricesReader::readMatrices()
 
         TimeStampedMatrices currentMatrices = m_tsMatrices[m_tsMatricesCount];
 
-        core::HiResClock::HiResClockType timestamp;
+        core::HiResClock::HiResClockType timestamp = NAN;
 
         if(m_createNewTS)
         {
@@ -443,9 +435,7 @@ void SMatricesReader::readMatrices()
         SIGHT_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
         for(unsigned int i = 0 ; i < currentMatrices.matrices.size() ; ++i)
         {
-            float mat[16];
-            std::copy(currentMatrices.matrices[i].begin(), currentMatrices.matrices[i].end(), &mat[0]);
-            matrixBuf->setElement(mat, i);
+            matrixBuf->setElement(currentMatrices.matrices[i], i);
         }
 
         if(m_useTimelapse && (m_tsMatricesCount + m_step) < m_tsMatrices.size())

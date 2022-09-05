@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ protected:
     /**
      * @brief Destructor. Does nothing.
      */
-    SERVICE_API virtual ~IXMLParser();
+    SERVICE_API ~IXMLParser() override;
 
     /**
      * @brief Does nothing
@@ -105,4 +105,4 @@ protected:
     SERVICE_API void updating() override;
 };
 
-}
+} // namespace sight::service

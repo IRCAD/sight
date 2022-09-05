@@ -93,4 +93,4 @@ CORE_API std::string getCurrentTime();
 
 ///@}
 
-}
+} // namespace sight::core::tools

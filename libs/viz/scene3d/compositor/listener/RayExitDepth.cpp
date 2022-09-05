@@ -30,34 +30,26 @@
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTechnique.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
-{
-
-namespace listener
+namespace sight::viz::scene3d::compositor::listener
 {
 
 //-----------------------------------------------------------------------------
 
 RayExitDepthListener::RayExitDepthListener()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 RayExitDepthListener::~RayExitDepthListener()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
-    unsigned short /*_schemeIndex*/,
+    std::uint16_t /*_schemeIndex*/,
     const Ogre::String& _schemeName,
     Ogre::Material* _originalMaterial,
-    unsigned short /*_lodIndex*/,
+    std::uint16_t /*_lodIndex*/,
     const Ogre::Renderable* /*_renderable*/
 )
 {
@@ -66,8 +58,8 @@ Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
 
     if(_schemeName == "VolumeEntries_FrontFacesMin" && !Ogre::StringUtil::startsWith(mtlName, "RTV_Mat"))
     {
-        auto entryPointsMtl   = Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
-        auto frontFaceMinTech = entryPointsMtl->getTechnique("FrontFacesMin");
+        auto entryPointsMtl    = Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
+        auto* frontFaceMinTech = entryPointsMtl->getTechnique("FrontFacesMin");
 
         newTechnique = viz::scene3d::helper::Technique::copyToMaterial(
             frontFaceMinTech,
@@ -81,8 +73,4 @@ Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
 
 //------------------------------------------------------------------------------
 
-} // namespace listener
-
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor::listener

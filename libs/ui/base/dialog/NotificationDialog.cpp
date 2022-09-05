@@ -26,10 +26,7 @@
 
 #include <functional>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -62,10 +59,10 @@ NotificationDialog::NotificationDialog()
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
-            })
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
+        })
     ).wait();
 }
 
@@ -80,25 +77,24 @@ NotificationDialog::NotificationDialog(
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
 
-                if(m_implementation)
-                {
-                    m_implementation->setMessage(_message);
-                    m_implementation->setType(_type);
-                    m_implementation->setPosition(_pos);
-                }
-            })
+            if(m_implementation)
+            {
+                m_implementation->setMessage(_message);
+                m_implementation->setType(_type);
+                m_implementation->setPosition(_pos);
+            }
+        })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 NotificationDialog::~NotificationDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -106,7 +102,7 @@ void NotificationDialog::show()
 {
     if(m_implementation)
     {
-        std::function<void()> func = std::bind(&INotificationDialog::show, m_implementation);
+        std::function<void()> func = [this](auto&& ...){m_implementation->show();};
         std::shared_future<void> f = core::thread::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
@@ -119,12 +115,12 @@ void NotificationDialog::setMessage(const std::string& _msg)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setMessage(_msg);
-                }
-            })
+                m_implementation->setMessage(_msg);
+            }
+        })
     ).wait();
 }
 
@@ -135,12 +131,12 @@ void NotificationDialog::setType(INotificationDialog::Type _type)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setType(_type);
-                }
-            })
+                m_implementation->setType(_type);
+            }
+        })
     ).wait();
 }
 
@@ -151,12 +147,12 @@ void NotificationDialog::setPosition(INotificationDialog::Position _position)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setPosition(_position);
-                }
-            })
+                m_implementation->setPosition(_position);
+            }
+        })
     ).wait();
 }
 
@@ -167,12 +163,12 @@ void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setSize(_width, _height);
-                }
-            })
+                m_implementation->setSize(_width, _height);
+            }
+        })
     ).wait();
 }
 
@@ -183,12 +179,12 @@ void NotificationDialog::setIndex(unsigned int _index)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setIndex(_index);
-                }
-            })
+                m_implementation->setIndex(_index);
+            }
+        })
     ).wait();
 }
 
@@ -199,12 +195,12 @@ void NotificationDialog::setDuration(int _durationInMs)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setDuration(_durationInMs);
-                }
-            })
+                m_implementation->setDuration(_durationInMs);
+            }
+        })
     ).wait();
 }
 
@@ -216,12 +212,12 @@ bool NotificationDialog::isVisible() const
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    visible = m_implementation->isVisible();
-                }
-            })
+                visible = m_implementation->isVisible();
+            }
+        })
     ).wait();
 
     return visible;
@@ -234,12 +230,12 @@ void NotificationDialog::close() const
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->close();
-                }
-            })
+                m_implementation->close();
+            }
+        })
     ).wait();
 }
 
@@ -249,7 +245,7 @@ void NotificationDialog::moveDown()
 {
     if(m_implementation)
     {
-        std::function<void()> func = std::bind(&INotificationDialog::moveDown, m_implementation);
+        std::function<void()> func = [this](auto&& ...){m_implementation->moveDown();};
         std::shared_future<void> f = core::thread::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
@@ -262,12 +258,12 @@ void NotificationDialog::setContainer(container::fwContainer::csptr _container)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setContainer(_container);
-                }
-            })
+                m_implementation->setContainer(_container);
+            }
+        })
     ).wait();
 }
 
@@ -278,17 +274,15 @@ void NotificationDialog::setClosedCallback(std::function<void()> f)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setClosedCallback(f);
-                }
-            })
+                m_implementation->setClosedCallback(f);
+            }
+        })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

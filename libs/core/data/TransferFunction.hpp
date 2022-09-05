@@ -89,7 +89,10 @@ public:
     /// Gets the interpolated color of the TF for a value, taking into account the window range
     /// @param _value input value in the curve
     /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
-    DATA_API virtual color_t sample(value_t _value, std::optional<InterpolationMode> _mode = std::nullopt) const = 0;
+    [[nodiscard]] DATA_API virtual color_t sample(
+        value_t _value,
+        std::optional<InterpolationMode> _mode = std::nullopt
+    ) const                                    = 0;
 
     /// Sets the current visualization level.
     double m_level {0.};
@@ -198,7 +201,7 @@ public:
 
     /// Constructors / Destructor / Assignment operators
     /// @{
-    DATA_API TransferFunction(Object::Key);
+    DATA_API TransferFunction(Object::Key /*unused*/);
     DATA_API ~TransferFunction() final = default;
     /// @}
 
@@ -302,14 +305,17 @@ inline TransferFunctionPiece::sptr TransferFunctionPiece::New()
 
 inline TransferFunctionPiece& TransferFunctionPiece::operator=(const TransferFunctionPiece& _other)
 {
-    this->clear();
+    if(&_other != this)
+    {
+        this->clear();
 
-    ContainerWrapper<data_t>::operator=(_other);
+        ContainerWrapper<data_t>::operator=(_other);
 
-    this->m_level             = _other.m_level;
-    this->m_window            = _other.m_window;
-    this->m_interpolationMode = _other.m_interpolationMode;
-    this->m_clamped           = _other.m_clamped;
+        this->m_level             = _other.m_level;
+        this->m_window            = _other.m_window;
+        this->m_interpolationMode = _other.m_interpolationMode;
+        this->m_clamped           = _other.m_clamped;
+    }
 
     return *this;
 }
@@ -328,8 +334,8 @@ inline bool TransferFunctionPiece::operator==(const TransferFunctionPiece& _othe
 
     // Super class last
     return !core::tools::is_equal(
-        static_cast<ContainerWrapper<data_t> >(*this),
-        static_cast<ContainerWrapper<data_t> >(_other)
+        *this,
+        _other
     );
 }
 

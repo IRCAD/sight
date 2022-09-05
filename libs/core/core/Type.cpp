@@ -29,20 +29,6 @@ namespace sight::core
 
 //------------------------------------------------------------------------------
 
-const Type Type::INT8   = Type_t::INT8;
-const Type Type::INT16  = Type_t::INT16;
-const Type Type::INT32  = Type_t::INT32;
-const Type Type::INT64  = Type_t::INT64;
-const Type Type::UINT8  = Type_t::UINT8;
-const Type Type::UINT16 = Type_t::UINT16;
-const Type Type::UINT32 = Type_t::UINT32;
-const Type Type::UINT64 = Type_t::UINT64;
-const Type Type::FLOAT  = Type_t::FLOAT;
-const Type Type::DOUBLE = Type_t::DOUBLE;
-const Type Type::NONE   = Type_t::NONE;
-
-//------------------------------------------------------------------------------
-
 const std::array<std::tuple<size_t, bool, std::string, Type::Type_t>,
                  size_t(Type::Type_t::NONE) + 1> Type::s_typeProperties =
 {{
@@ -64,8 +50,6 @@ const std::array<std::tuple<size_t, bool, std::string, Type::Type_t>,
 
 Type::Type(const std::string& str)
 {
-    m_type = Type_t::NONE;
-
     for(const auto& [size, isSigned, name, type] : s_typeProperties)
     {
         if(name == str)
@@ -170,11 +154,6 @@ std::string Type::toString(const void* value) const
     return "";
 }
 
-} // namespace sight::core
-
-namespace std
-{
-
 //------------------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const sight::core::Type& type)
@@ -183,4 +162,4 @@ std::ostream& operator<<(std::ostream& os, const sight::core::Type& type)
     return os;
 }
 
-} // namespace std
+} // namespace sight::core

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* const _shared
     format.setMinorVersion(1);
     glContext->setFormat(format);
 
-    if(_sharedContext)
+    if(_sharedContext != nullptr)
     {
         // For context sharing to be enabled, both contexts need to be on the same thread when calling 'create'.
         // (At least on Windows: see https://community.khronos.org/t/wglsharelists-failing/42656).
@@ -83,4 +83,4 @@ std::shared_ptr<QOpenGLContext> OpenGLContext::getGlobalOgreOpenGLContext()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::module::viz::scene3dQt

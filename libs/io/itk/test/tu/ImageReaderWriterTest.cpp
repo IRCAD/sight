@@ -41,10 +41,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageReaderWriterTest);
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 static const double epsilon = 0.00001;
@@ -68,7 +65,7 @@ void ImageReaderWriterTest::inrReadWriteTest()
     // create Image
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
-    this->inrReadWriteCheck(image);
+    sight::io::itk::ut::ImageReaderWriterTest::inrReadWriteCheck(image);
 }
 
 //------------------------------------------------------------------------------
@@ -76,22 +73,22 @@ void ImageReaderWriterTest::inrReadWriteTest()
 void ImageReaderWriterTest::inrStressTest()
 {
     core::Type type = core::Type::UINT8;
-    this->inrStressTestWithType(type, 5);
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
     type = core::Type::INT16;
-    this->inrStressTestWithType(type, 5);
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
     type = core::Type::UINT16;
-    this->inrStressTestWithType(type, 5);
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
     type = core::Type::INT32;
-    this->inrStressTestWithType(type, 5);
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
     type = core::Type::UINT32;
-    this->inrStressTestWithType(type, 5);
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
     type = core::Type::FLOAT;
-    this->inrStressTestWithType(type, 5);
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 }
 
 //------------------------------------------------------------------------------
@@ -201,8 +198,8 @@ void ImageReaderWriterTest::niftiWriteTest()
     // This leads to several errors.
     // To prevent this, the spacing and origin used for the test are set as float, converted to double, to be able to
     // test the direct equality.
-    const data::Image::Spacing spacingD = {0.5f, 0.001f, 1.25f};
-    const data::Image::Origin originD   = {0.5f, 0.25f, 0.25f};
+    const data::Image::Spacing spacingD = {0.5F, 0.001F, 1.25F};
+    const data::Image::Origin originD   = {0.5F, 0.25F, 0.25F};
     image->setSpacing(spacingD);
     image->setOrigin(originD);
 
@@ -287,7 +284,7 @@ void ImageReaderWriterTest::inrStressTestWithType(core::Type type, int nbTest)
     {
         data::Image::sptr image = data::Image::New();
         utestData::generator::Image::generateRandomImage(image, type);
-        this->inrReadWriteCheck(image);
+        sight::io::itk::ut::ImageReaderWriterTest::inrReadWriteCheck(image);
     }
 }
 
@@ -326,6 +323,4 @@ void ImageReaderWriterTest::inrReadWriteCheck(data::Image::sptr image)
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

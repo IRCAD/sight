@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,13 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 /**
@@ -55,7 +49,7 @@ public:
      */
     IO_DICOM_API SurfaceSegmentationIOD(
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+        SPTR(io::dicom::container::DicomInstance)imageInstance,
         const std::filesystem::path& destinationPath,
         const core::log::Logger::sptr& logger = core::log::Logger::New(),
         ProgressCallback progress             = nullptr,
@@ -63,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~SurfaceSegmentationIOD();
+    IO_DICOM_API ~SurfaceSegmentationIOD() override;
 
     /// Write DICOM file
     IO_DICOM_API void write(const data::Series::csptr& series) override;
@@ -74,8 +68,4 @@ protected:
     SPTR(io::dicom::container::DicomInstance) m_imageInstance;
 };
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

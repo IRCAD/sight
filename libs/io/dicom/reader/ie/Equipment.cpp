@@ -26,13 +26,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -54,8 +48,7 @@ Equipment::Equipment(
 //------------------------------------------------------------------------------
 
 Equipment::~Equipment()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -84,8 +77,4 @@ void Equipment::readGeneralEquipmentModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

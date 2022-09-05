@@ -36,7 +36,7 @@ namespace Ogre
 
 class Viewport;
 
-}
+} // namespace Ogre
 
 namespace sight::viz::scene3d
 {
@@ -61,7 +61,7 @@ public:
     typedef std::vector<CompositorType> CompositorChainType;
 
     VIZ_SCENE3D_API ChainManager(Ogre::Viewport* viewport);
-    VIZ_SCENE3D_API virtual ~ChainManager();
+    VIZ_SCENE3D_API ~ChainManager() override;
 
     /// Inserts the new compositor in the compositor chain vector
     VIZ_SCENE3D_API void addAvailableCompositor(CompositorIdType _compositorName);

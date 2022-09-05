@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,10 +43,7 @@
 #include <data/StructureTraitsDictionary.hpp>
 #include <data/TransferFunction.hpp>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 /**
@@ -108,6 +105,4 @@ public:
     UTESTDATA_API static data::Plane::sptr generatePlane();
 };
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

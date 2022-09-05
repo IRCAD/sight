@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,16 @@
 
 #include "filter/dicom/modifier/IModifier.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace modifier
+namespace sight::filter::dicom::modifier
 {
 
 IModifier::IModifier()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IModifier::~IModifier()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -45,6 +40,4 @@ IFilter::FilterType IModifier::getFilterType() const
     return IFilter::MODIFIER;
 }
 
-} // namespace modifier
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::modifier

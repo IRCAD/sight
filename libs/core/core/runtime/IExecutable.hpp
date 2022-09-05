@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace utils
 template<typename E>
 class GenericExecutableFactory;
 
-}
+} // namespace utils
 
 class Module;
 struct ConfigurationElement;
@@ -65,7 +65,7 @@ public:
      *
      * @return  a pointer to the originating module.
      */
-    virtual std::shared_ptr<Module> getModule() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<Module> getModule() const = 0;
 
     /**
      * @brief       Initializes the executable instance with the specified
@@ -74,7 +74,7 @@ public:
      * @param[in]   configuration   a shared pointer to the configuration element used to
      *              trigger this execution
      */
-    virtual void setInitializationData(const std::shared_ptr<ConfigurationElement> configuration) = 0;
+    virtual void setInitializationData(std::shared_ptr<ConfigurationElement> configuration) = 0;
 
 protected:
 

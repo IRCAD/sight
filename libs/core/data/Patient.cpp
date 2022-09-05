@@ -30,15 +30,14 @@ SIGHT_REGISTER_DATA(sight::data::Patient)
 namespace sight::data
 {
 
-Patient::Patient(data::Object::Key)
+Patient::Patient(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Patient::~Patient()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

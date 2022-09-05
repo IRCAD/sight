@@ -28,7 +28,6 @@ namespace sight::core::runtime
 {
 
 IPlugin::~IPlugin()
-{
-}
+= default;
 
 } // namespace sight::core::runtime

@@ -56,7 +56,7 @@ public:
     /**
      * @brief Destructor.
      */
-    DATA_API virtual ~Double() noexcept = default;
+    DATA_API ~Double() noexcept override = default;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;

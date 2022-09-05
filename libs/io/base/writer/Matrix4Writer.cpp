@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,23 +31,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::Matrix4Writer);
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 //------------------------------------------------------------------------------
 
-Matrix4Writer::Matrix4Writer(io::base::writer::IObjectWriter::Key)
+Matrix4Writer::Matrix4Writer(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Matrix4Writer::~Matrix4Writer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -90,6 +86,4 @@ std::string Matrix4Writer::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

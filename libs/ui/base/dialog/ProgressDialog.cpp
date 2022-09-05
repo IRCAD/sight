@@ -26,10 +26,7 @@
 
 #include <functional>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -38,15 +35,15 @@ ProgressDialog::ProgressDialog(const std::string& title, const std::string& mess
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IProgressDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::IProgressDialog::dynamicCast(guiObj);
+            if(m_implementation)
             {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IProgressDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::IProgressDialog::dynamicCast(guiObj);
-                if(m_implementation)
-                {
-                    m_implementation->setTitle(title);
-                    m_implementation->setMessage(message);
-                }
-            }).wait();
+                m_implementation->setTitle(title);
+                m_implementation->setMessage(message);
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -55,9 +52,9 @@ ProgressDialog::~ProgressDialog()
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
-            {
-                m_implementation.reset();
-            }).wait();
+        {
+            m_implementation.reset();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -66,12 +63,12 @@ void ProgressDialog::setTitle(const std::string& title)
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setTitle(title);
-                }
-            }).wait();
+                m_implementation->setTitle(title);
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -80,12 +77,12 @@ void ProgressDialog::setMessage(const std::string& msg)
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setMessage(msg);
-                }
-            }).wait();
+                m_implementation->setMessage(msg);
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -94,12 +91,12 @@ void ProgressDialog::operator()(float percent, std::string msg)
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    (*m_implementation)(percent, msg);
-                }
-            }).wait();
+                (*m_implementation)(percent, msg);
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,12 +105,12 @@ void ProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
+        {
+            if(m_implementation)
             {
-                if(m_implementation)
-                {
-                    m_implementation->setCancelCallback(callback);
-                }
-            }).wait();
+                m_implementation->setCancelCallback(callback);
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -129,11 +126,9 @@ void ProgressDialog::hideCancelButton()
 {
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
-            {
-                m_implementation->hideCancelButton();
-            }).wait();
+        {
+            m_implementation->hideCancelButton();
+        }).wait();
 }
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

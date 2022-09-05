@@ -33,13 +33,13 @@ namespace sight::module::service
 struct Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
-    void start();
+    void start() override;
 
     /// Overrides stop method. Do nothing
-    void stop() noexcept;
+    void stop() noexcept override;
 };
 
 } // namespace sight::module::service

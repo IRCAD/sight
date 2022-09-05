@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SArucoTracker.hpp"
 
 #include <core/com/Signal.hxx>
@@ -52,9 +54,7 @@ const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   =
 
 //-----------------------------------------------------------------------------
 
-SArucoTracker::SArucoTracker() noexcept :
-    m_isInitialized(false),
-    m_debugMarkers(false)
+SArucoTracker::SArucoTracker() noexcept
 {
     m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
 
@@ -86,9 +86,8 @@ SArucoTracker::SArucoTracker() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SArucoTracker::~SArucoTracker() noexcept
-{
-}
+SArucoTracker::~SArucoTracker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -112,10 +111,11 @@ void SArucoTracker::configuring()
 
     const auto& trackCfg = config.get_child("track");
 
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const auto& elt, trackCfg.equal_range("marker"))
     {
-        const auto& cfg                = elt.second;
-        const std::string markersIDStr = cfg.get<std::string>("<xmlattr>.id");
+        const auto& cfg         = elt.second;
+        const auto markersIDStr = cfg.get<std::string>("<xmlattr>.id");
         boost::tokenizer<> tok(markersIDStr);
         MarkerIDType markersID;
         for(const auto& it : tok)
@@ -189,7 +189,8 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         // Check number of components of image.
         const auto nbOfComponents = inImage.channels();
 
-        cv::Mat grey, bgr;
+        cv::Mat grey;
+        cv::Mat bgr;
 
         if(nbOfComponents == 4) // RGBA or BGRA.
         {

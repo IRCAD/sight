@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,15 +23,14 @@
 #pragma once
 
 #include "core/com/exception/WorkerChanged.hpp"
+
 #include <core/exceptionmacros.hpp>
 #include <core/mt/types.hpp>
 
 #include <functional>
+#include <utility>
 
-namespace sight::core::com
-{
-
-namespace util
+namespace sight::core::com::util
 {
 
 /**
@@ -50,7 +49,7 @@ struct WeakCall
 {
     WeakCall(const std::shared_ptr<T const>& ptr, std::function<R()> f) :
         m_weakPtr(ptr),
-        m_func(f)
+        m_func(std::move(f))
     {
     }
 
@@ -60,14 +59,13 @@ struct WeakCall
         const std::shared_ptr<core::thread::Worker>& m
     ) :
         m_weakPtr(ptr),
-        m_func(f),
+        m_func(std::move(f)),
         m_worker(m)
     {
     }
 
     ~WeakCall()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
@@ -123,6 +121,4 @@ WeakCall<T, R> weakcall(
     return WeakCall<T, R>(ptr, f, m);
 }
 
-} // namespace util
-
-} // namespace sight::core::com
+} // namespace sight::core::com::util

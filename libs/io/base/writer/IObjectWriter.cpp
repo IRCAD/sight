@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,23 +24,18 @@
 
 #include <core/jobs/IJob.hpp>
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 //------------------------------------------------------------------------------
 
 IObjectWriter::IObjectWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 IObjectWriter::~IObjectWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -53,7 +48,7 @@ void IObjectWriter::setObject(core::tools::Object::csptr object)
 
 core::tools::Object::csptr IObjectWriter::getObject() const
 {
-    const auto object = m_object.lock();
+    auto object = m_object.lock();
     SIGHT_ASSERT("Object expired.", object);
     return object;
 }
@@ -62,7 +57,7 @@ core::tools::Object::csptr IObjectWriter::getObject() const
 
 std::string IObjectWriter::extension() const
 {
-    return std::string();
+    return {};
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +73,4 @@ void IObjectWriter::cancel()
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

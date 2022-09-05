@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::filter::dicom
-{
-
-namespace ut
+namespace sight::filter::dicom::ut
 {
 
 /**
@@ -47,16 +44,14 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// Apply the patch and verify that the DicomSeries has been correctly modified
-    void simpleApplication();
+    static void simpleApplication();
 
     /// Apply the filter on an unsupported multiple volume image
-    void applyFilterOnMultipleVolumeImage();
+    static void applyFilterOnMultipleVolumeImage();
 };
 
-} // namespace ut
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::ut

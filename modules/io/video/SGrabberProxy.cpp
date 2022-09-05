@@ -71,9 +71,8 @@ SGrabberProxy::SGrabberProxy() noexcept
 
 //-----------------------------------------------------------------------------
 
-SGrabberProxy::~SGrabberProxy() noexcept
-{
-}
+SGrabberProxy::~SGrabberProxy() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -129,7 +128,7 @@ void SGrabberProxy::configuring()
         const auto selectionCfg = subConfig.equal_range("addSelection");
         for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
         {
-            const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
+            const auto service = itSelection->second.get<std::string>("<xmlattr>.service");
             m_selectedServices.insert(service);
             SIGHT_DEBUG("add selection => " + service);
 
@@ -137,17 +136,21 @@ void SGrabberProxy::configuring()
             // Check if service is not empty.
             SIGHT_ASSERT("add selection with config but service is missing", !service.empty());
             m_serviceToConfig[service].push_back(configId);
-            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG(
+                std::string("add config '").append(configId).append("' for service '").append(service).append("'")
+            );
         }
 
         const auto configCfg = subConfig.equal_range("config");
         for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
         {
-            const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
-            const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
+            const auto service  = itCfg->second.get<std::string>("<xmlattr>.service");
+            const auto configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
             m_serviceToConfig[service].push_back(configId);
-            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG(
+                std::string("add config '").append(configId).append("' for service '").append(service).append("'")
+            );
         }
 
         m_guiTitle = subConfig.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
@@ -238,7 +241,7 @@ void SGrabberProxy::startCamera()
                     {
                         service::IService::ConfigType parameterCfg;
 
-                        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+                        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
                         const auto obj = this->getInOut<data::Object>(key).lock();
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
@@ -334,7 +337,7 @@ void SGrabberProxy::startCamera()
                     {
                         // Find all configurations for the given grabber.
                         selectableConfigs = srvConfigFactory->getAllConfigForService(extension, true);
-                        selectableConfigs.push_back(""); // Add the empty config (default grabber).
+                        selectableConfigs.emplace_back(""); // Add the empty config (default grabber).
 
                         // Remove configs from the grabber's list.
                         if(configsIt != m_serviceToConfig.end())
@@ -372,7 +375,7 @@ void SGrabberProxy::startCamera()
                 }
 
                 std::string selectedDesc;
-                if(descriptions.size() == 0)
+                if(descriptions.empty())
                 {
                     const std::string msg = "No video grabber implementation found.\n";
                     sight::ui::base::dialog::MessageDialog::show(
@@ -382,7 +385,8 @@ void SGrabberProxy::startCamera()
                     );
                     return;
                 }
-                else if(descriptions.size() == 1)
+
+                if(descriptions.size() == 1)
                 {
                     /// Select the only remaining description.
                     selectedDesc = descriptions[0];
@@ -445,7 +449,7 @@ void SGrabberProxy::startCamera()
                 auto inoutsCfg           = proxyConfig.equal_range("inout");
                 for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {
-                    const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+                    const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
                     auto frameTL = this->getInOut<data::FrameTL>(key).lock();

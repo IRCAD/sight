@@ -95,23 +95,21 @@ void initSeries(data::Series::sptr series, const std::string& instanceUID)
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(io::base::reader::IObjectReader::Key) :
-    m_job(core::jobs::Observer::New("SeriesDB reader")),
-    m_lazyMode(true)
+SeriesDBReader::SeriesDBReader(io::base::reader::IObjectReader::Key /*unused*/) :
+    m_job(core::jobs::Observer::New("SeriesDB reader"))
 {
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDBReader::~SeriesDBReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 template<typename T, typename FILE>
 vtkSmartPointer<vtkDataObject> getObj(FILE& file, const core::jobs::Observer::sptr& job)
 {
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
 
     vtkSmartPointer<T> reader = vtkSmartPointer<T>::New();
     reader->SetFileName(file.string().c_str());
@@ -121,9 +119,9 @@ vtkSmartPointer<vtkDataObject> getObj(FILE& file, const core::jobs::Observer::sp
         vtkSmartPointer<vtkLambdaCommand> progressCallback;
         progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
         progressCallback->SetCallback(
-            [&](vtkObject* caller, long unsigned int, void*)
+            [&](vtkObject* caller, std::uint64_t, void*)
             {
-                auto filter = static_cast<T*>(caller);
+                auto* filter = static_cast<T*>(caller);
                 job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
             });
         reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
@@ -153,7 +151,7 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
     vtkSmartPointer<vtkUnstructuredGrid> grid = vtkUnstructuredGrid::SafeDownCast(obj);
     data::Object::sptr dataObj;
 
-    if(grid)
+    if(grid != nullptr)
     {
         data::Mesh::sptr meshObj = data::Mesh::New();
         io::vtk::helper::Mesh::fromVTKGrid(grid, meshObj);
@@ -165,7 +163,7 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
         dataObj = rec;
     }
 
-    if(mesh)
+    if(mesh != nullptr)
     {
         data::Mesh::sptr meshObj = data::Mesh::New();
         io::vtk::helper::Mesh::fromVTKMesh(mesh, meshObj);
@@ -175,7 +173,7 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
         rec->setIsVisible(true);
         dataObj = rec;
     }
-    else if(img)
+    else if(img != nullptr)
     {
         try
         {
@@ -194,7 +192,7 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
 
 //------------------------------------------------------------------------------
 
-bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkMetaImageReader>&)
+bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkMetaImageReader>& /*unused*/)
 {
     return true;
 }
@@ -203,14 +201,14 @@ bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkMetaImageReader>&)
 
 bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkGenericDataObjectReader>& reader)
 {
-    return reader->IsFileStructuredPoints();
+    return reader->IsFileStructuredPoints() != 0;
 }
 
 //------------------------------------------------------------------------------
 
 bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkXMLGenericDataObjectReader>& reader)
 {
-    return reader->GetImageDataOutput() != 0;
+    return reader->GetImageDataOutput() != nullptr;
 }
 
 //------------------------------------------------------------------------------

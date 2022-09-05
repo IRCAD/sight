@@ -128,7 +128,7 @@ public:
      *
      * @param name The name of the job.
      */
-    CORE_API IJob(const std::string& name = "");
+    CORE_API IJob(std::string name = "");
 
     /// Default destructor.
     CORE_API virtual ~IJob();
@@ -250,9 +250,9 @@ protected:
      * @name Not implemented
      * @{ */
     IJob(IJob&);
-    IJob& operator=(IJob&);
-    IJob(IJob&&);
-    IJob& operator=(IJob&&);
+    IJob& operator=(const IJob&);
+    IJob(IJob&&) noexcept;
+    IJob& operator=(IJob&&) noexcept;
     /**  @} */
 
     /// Run an instantiated job
@@ -384,16 +384,16 @@ protected:
     Logs m_logs;
 
     /// Number of work units already reached.
-    std::uint64_t m_doneWorkUnits;
+    std::uint64_t m_doneWorkUnits {0};
 
     /// Number of work units to reach to complete the job.
-    std::uint64_t m_totalWorkUnits;
+    std::uint64_t m_totalWorkUnits {0};
 
     /// Determines if cancellation has been requested. The job is/will be canceling if true.
-    bool m_cancelRequested;
+    bool m_cancelRequested {false};
 
     /// Determines if the job can be cancelled. The job is cancelable if true.
-    bool m_cancelable;
+    bool m_cancelable {true};
 
     /// Container of cancel callbacks. Cancel callbacks will be run when job is canceling.
     CancelHookSeq m_cancelHooks;
@@ -414,7 +414,7 @@ protected:
     SharedFuture m_runFuture;
 
     /// Job's state
-    State m_state;
+    State m_state {WAITING};
 };
 
 } //namespace sight::core::jobs

@@ -26,10 +26,7 @@
 
 #include <data/Node.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Node
+namespace sight::io::session::detail::Node
 {
 
 constexpr static auto s_Object {"Object"};
@@ -39,11 +36,11 @@ constexpr static auto s_Output {"Output"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto node = Helper::safeCast<data::Node>(object);
@@ -69,11 +66,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Node::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -113,6 +110,4 @@ inline static data::Node::sptr deserialize(
     return node;
 }
 
-} // namespace detail::Node
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Node

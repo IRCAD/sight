@@ -40,7 +40,7 @@ const core::com::Signals::SignalKeyType SeriesDB::s_REMOVED_SERIES_SIG = "remove
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(data::Object::Key)
+SeriesDB::SeriesDB(data::Object::Key /*unused*/)
 {
     newSignal<AddedSeriesSignalType>(s_ADDED_SERIES_SIG);
     newSignal<RemovedSeriesSignalType>(s_REMOVED_SERIES_SIG);
@@ -49,8 +49,7 @@ SeriesDB::SeriesDB(data::Object::Key)
 //------------------------------------------------------------------------------
 
 SeriesDB::~SeriesDB()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

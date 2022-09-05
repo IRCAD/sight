@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::debug
-{
-
-namespace action
+namespace sight::module::debug::action
 {
 
 /// Implements an action for show metrics about Sight factories (number of data, message and service in factories).
@@ -43,7 +40,7 @@ public:
     MODULE_DEBUG_API fwMetrics() noexcept;
 
     /// Does nothing
-    MODULE_DEBUG_API virtual ~fwMetrics() noexcept;
+    MODULE_DEBUG_API ~fwMetrics() noexcept override;
 
 protected:
 
@@ -60,6 +57,4 @@ protected:
     void stopping() override;
 };
 
-} // namespace action
-
-} // namespace sight::module::debug
+} // namespace sight::module::debug::action

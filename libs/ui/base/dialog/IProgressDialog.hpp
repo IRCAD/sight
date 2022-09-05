@@ -30,10 +30,7 @@
 #include <functional>
 #include <string>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -55,7 +52,7 @@ public:
     /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
-    UI_BASE_API virtual ~IProgressDialog();
+    UI_BASE_API ~IProgressDialog() override;
     UI_BASE_API IProgressDialog();
 
     ///set the title for the dialog
@@ -101,12 +98,12 @@ protected:
     UI_BASE_API virtual void cancelPressed();
 
     CancelCallbackType m_cancelCallback;
-    bool m_canceled;
-    bool m_raise;
+    bool m_canceled {false};
+    bool m_raise {true};
 
     ///progress bar's current value: [0-100]
-    int m_value;
-    bool m_processUserEvents;
+    int m_value {0};
+    bool m_processUserEvents {true};
 
 protected:
 
@@ -122,6 +119,4 @@ protected:
     }
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

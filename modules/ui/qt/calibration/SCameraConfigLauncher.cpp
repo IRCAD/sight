@@ -50,15 +50,13 @@
 namespace sight::module::ui::qt::calibration
 {
 
-SCameraConfigLauncher::SCameraConfigLauncher() noexcept
-{
-}
+SCameraConfigLauncher::SCameraConfigLauncher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SCameraConfigLauncher::~SCameraConfigLauncher() noexcept
-{
-}
+SCameraConfigLauncher::~SCameraConfigLauncher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +87,7 @@ void SCameraConfigLauncher::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
 
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
@@ -130,7 +128,7 @@ void SCameraConfigLauncher::starting()
 
     qtContainer->setLayout(layout);
 
-    std::size_t nbCam;
+    std::size_t nbCam = 0;
     {
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT("Missing cameraSeries.", cameraSeries);
@@ -268,7 +266,7 @@ void SCameraConfigLauncher::onImportClicked()
         }
     }
 
-    if(cameraSeriesVector.size() == 0)
+    if(cameraSeriesVector.empty())
     {
         sight::ui::base::dialog::MessageDialog::show(
             "No CameraSeries in SDB",
@@ -293,7 +291,7 @@ void SCameraConfigLauncher::onImportClicked()
             }
         }
 
-        if(cameras.size() == 0)
+        if(cameras.empty())
         {
             sight::ui::base::dialog::MessageDialog::show(
                 "No Cameras in SDB",
@@ -335,7 +333,7 @@ void SCameraConfigLauncher::onImportClicked()
 
 void SCameraConfigLauncher::onRemoveClicked()
 {
-    const std::size_t index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
+    const auto index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
     if(index > 0)
     {
         m_cameraComboBox->blockSignals(true);
@@ -386,7 +384,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
-    std::size_t index;
+    std::size_t index = 0;
     {
         const auto cameraSeries = m_cameraSeries.lock();
         index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
@@ -449,8 +447,8 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
 
         // cspell: ignore Extr
         // Add 2 calibration info in ActivitySeries if not exist
-        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + boost::lexical_cast<std::string>(cameraIdx);
-        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + boost::lexical_cast<std::string>(cameraIdx);
+        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + std::to_string(cameraIdx);
+        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + std::to_string(cameraIdx);
         const auto activitySeries       = m_activitySeries.lock();
         data::Composite::sptr data      = activitySeries->getData();
         data::CalibrationInfo::sptr calibInfo1;
@@ -486,7 +484,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
 
 void SCameraConfigLauncher::addCamera()
 {
-    std::size_t nbCam;
+    std::size_t nbCam = 0;
     {
         const auto cameraSeries = m_cameraSeries.lock();
         nbCam = cameraSeries->numCameras();

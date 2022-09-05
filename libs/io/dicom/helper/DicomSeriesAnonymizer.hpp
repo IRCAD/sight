@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,12 +35,9 @@ namespace sight::core::jobs
 class IJob;
 class Aggregator;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -75,7 +72,7 @@ public:
     );
 
     /// Get job observer
-    IO_DICOM_API SPTR(core::jobs::Aggregator) getJob() const;
+    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::Aggregator) getJob() const;
 
 protected:
 
@@ -92,6 +89,4 @@ protected:
     SPTR(core::jobs::Aggregator) m_job;
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

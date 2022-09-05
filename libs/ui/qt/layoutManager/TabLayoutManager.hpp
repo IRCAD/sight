@@ -53,7 +53,7 @@ public:
 
     UI_QT_API TabLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~TabLayoutManager();
+    UI_QT_API ~TabLayoutManager() override;
 
     /**
      * @brief Instantiate layout with parent container.

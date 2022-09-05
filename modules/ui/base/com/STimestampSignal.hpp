@@ -25,10 +25,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 /**
@@ -109,6 +106,4 @@ protected:
     SPTR(TriggeredAsStringSignalType) m_sigTriggeredAsString;
 };
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

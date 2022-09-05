@@ -36,10 +36,7 @@
 
 #include <ui/base/Cursor.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -56,9 +53,8 @@ SExportWithSeriesDB::SExportWithSeriesDB() noexcept :
 
 //------------------------------------------------------------------------------
 
-SExportWithSeriesDB::~SExportWithSeriesDB() noexcept
-{
-}
+SExportWithSeriesDB::~SExportWithSeriesDB() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -161,6 +157,4 @@ void SExportWithSeriesDB::forwardJob(core::jobs::IJob::sptr iJob)
 //------------------------------------------------------------------------------
 //
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

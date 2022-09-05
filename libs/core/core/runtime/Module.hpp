@@ -58,42 +58,42 @@ public:
      *
      * @return  a string containing the module identifier
      */
-    CORE_API virtual const std::string& getIdentifier() const = 0;
+    [[nodiscard]] CORE_API virtual const std::string& getIdentifier() const = 0;
 
     /**
      * @brief   Retrieves the library name if it exists.
      *
      * @return  a path representing the module location, can be empty if no library is set
      */
-    CORE_API virtual const std::string getLibraryName() const = 0;
+    [[nodiscard]] CORE_API virtual std::string getLibraryName() const = 0;
 
     /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location
      */
-    CORE_API virtual const std::filesystem::path& getLibraryLocation() const = 0;
+    [[nodiscard]] CORE_API virtual const std::filesystem::path& getLibraryLocation() const = 0;
 
     /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location
      */
-    CORE_API virtual const std::filesystem::path& getResourcesLocation() const = 0;
+    [[nodiscard]] CORE_API virtual const std::filesystem::path& getResourcesLocation() const = 0;
 
     /**
      * @brief   Retrieves the class representing the module executable part.
      *
      * @return  a string containing the module's plugin class
      */
-    CORE_API virtual const std::string getClass() const = 0;
+    [[nodiscard]] CORE_API virtual std::string getClass() const = 0;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    CORE_API virtual SPTR(IPlugin) getPlugin() const = 0;
+    [[nodiscard]] CORE_API virtual SPTR(IPlugin) getPlugin() const = 0;
 
     /**
      * @brief       Retrieves the value of the given parameter
@@ -101,17 +101,17 @@ public:
      * @param[in]   identifier  a string containing a parameter identifier
      * @return      a string containing the parameter value
      */
-    CORE_API virtual const std::string getParameterValue(const std::string& identifier) const = 0;
+    [[nodiscard]] CORE_API virtual std::string getParameterValue(const std::string& identifier) const = 0;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    CORE_API virtual bool hasParameter(const std::string& name) const = 0;
+    [[nodiscard]] CORE_API virtual bool hasParameter(const std::string& name) const = 0;
     /**
      * @brief   Returns the list of extensions contained in this module.
      */
-    CORE_API virtual ExtensionContainer getExtensions() const = 0;
+    [[nodiscard]] CORE_API virtual ExtensionContainer getExtensions() const = 0;
 
     /**
      * @name        State Management
@@ -122,13 +122,13 @@ public:
      *
      * @remark  The module must be enabled to be able to start.
      */
-    CORE_API virtual void start()           = 0;
-    CORE_API virtual void stop()            = 0;
-    CORE_API virtual bool isStarted() const = 0;
+    CORE_API virtual void start()                         = 0;
+    CORE_API virtual void stop()                          = 0;
+    [[nodiscard]] CORE_API virtual bool isStarted() const = 0;
     /**
      * @brief   Tells if the module is enabled.
      */
-    CORE_API virtual bool isEnabled() const = 0;
+    [[nodiscard]] CORE_API virtual bool isEnabled() const = 0;
     //@}
 };
 

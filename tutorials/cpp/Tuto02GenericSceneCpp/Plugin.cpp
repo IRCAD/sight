@@ -26,7 +26,8 @@
 #include <data/Mesh.hpp>
 #include <data/TransferFunction.hpp>
 
-using namespace sight;
+namespace data    = sight::data;
+namespace service = sight::service;
 
 namespace Tuto02GenericSceneCpp
 {
@@ -35,9 +36,8 @@ SIGHT_REGISTER_PLUGIN("Tuto02GenericSceneCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

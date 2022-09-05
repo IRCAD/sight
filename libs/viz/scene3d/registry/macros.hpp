@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
-namespace sight::viz::scene3d
-{
-
-namespace registry
+namespace sight::viz::scene3d::registry
 {
 
 #define fwRenderOgreRegisterMacro(OgreRenderInteractorMngClassname, FunctorKey) \
@@ -51,6 +48,4 @@ namespace registry
     static sight::viz::scene3d::ILight::Registry<OgreLightClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
-} // end namespace registry
-
-} // end namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::registry

@@ -47,8 +47,7 @@ namespace sight::module::io::document
 //-----------------------------------------------------------------------------
 
 SPdfWriter::SPdfWriter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +61,7 @@ void SPdfWriter::info(std::ostream& _sstream)
 
 SPdfWriter::~SPdfWriter() noexcept
 {
-    this->stopping();
+    this->SPdfWriter::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +71,7 @@ void SPdfWriter::configuring()
     static constexpr auto s_CONTAINER_INPUT = "container";
     this->IWriter::configuring();
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
     const ConfigurationType containersConfig = m_configuration->findConfigurationElement(s_CONTAINER_INPUT);
     if(containersConfig)
     {
@@ -273,10 +272,10 @@ QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
             qImageBuffer[idx + 0] = (imageItr->b & 0xFF);
         }
 
-        return qImage.mirrored(0, 1);
+        return qImage.mirrored(false, true);
     }
 
-    return QImage();
+    return {};
 }
 
 //------------------------------------------------------------------------------

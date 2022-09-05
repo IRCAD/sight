@@ -34,17 +34,12 @@
 #include <QObject>
 #include <QPointer>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 class QtContainer;
 
-}
-
-}
+} // namespace sight::ui::qt::container
 
 class EventDispatcher : public QObject
 {
@@ -54,7 +49,7 @@ public:
 
     EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch);
 
-    bool eventFilter(QObject* obj, QEvent* event);
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
 
@@ -162,7 +157,7 @@ private:
 inline Ogre::TexturePtr WindowInteractor::getRenderTexture()
 {
     SIGHT_ERROR("'WindowInteractor' doesn't render in a texture.");
-    return Ogre::TexturePtr();
+    return {};
 }
 
 } // namespace sight::module::viz::scene3dQt.

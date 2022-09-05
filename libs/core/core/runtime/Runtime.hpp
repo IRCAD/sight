@@ -41,7 +41,7 @@ class IExecutable;
 class ExecutableFactory;
 struct IPlugin;
 
-}
+} // namespace sight::core::runtime
 
 namespace sight::core::runtime
 {
@@ -88,14 +88,14 @@ public:
      * @brief       Get the path where Modules and share folder are located.
      * @return      a std path.
      */
-    CORE_API virtual std::filesystem::path getWorkingPath() const = 0;
+    [[nodiscard]] CORE_API virtual std::filesystem::path getWorkingPath() const = 0;
 
     /**
      * @brief       Get the path where Modules and share folder are located.
      * @return      a vector of std path.
      */
-    CORE_API virtual std::vector<std::pair<std::filesystem::path,
-                                           std::filesystem::path> > getRepositoriesPath() const = 0;
+    [[nodiscard]] CORE_API virtual std::vector<std::pair<std::filesystem::path,
+                                                         std::filesystem::path> > getRepositoriesPath() const = 0;
 
     /**
      * @name    Modules
@@ -118,7 +118,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    CORE_API virtual std::shared_ptr<Module> findModule(const std::string& identifier) const = 0;
+    [[nodiscard]] CORE_API virtual std::shared_ptr<Module> findModule(const std::string& identifier) const = 0;
 
     /**
      * @name    Extensions
@@ -139,7 +139,7 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    CORE_API virtual std::shared_ptr<Extension> findExtension(const std::string& identifier) const = 0;
+    [[nodiscard]] CORE_API virtual std::shared_ptr<Extension> findExtension(const std::string& identifier) const = 0;
 
     //@}
 

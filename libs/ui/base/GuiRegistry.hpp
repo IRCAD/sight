@@ -57,7 +57,7 @@ public:
     /**
      * @brief   Destructor. Do nothing.
      */
-    UI_BASE_API virtual ~GuiRegistry();
+    UI_BASE_API ~GuiRegistry() override;
 
     //-----------------------------------------------------------------------------
 

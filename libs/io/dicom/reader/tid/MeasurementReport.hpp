@@ -27,13 +27,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 /**
@@ -61,7 +55,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~MeasurementReport();
+    IO_DICOM_API ~MeasurementReport() override;
 
     /**
      * @brief Create Measurement Report template root node
@@ -70,8 +64,4 @@ public:
     IO_DICOM_API virtual void readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& root);
 };
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

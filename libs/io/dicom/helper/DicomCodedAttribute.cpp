@@ -24,10 +24,7 @@
 
 #include <regex>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -113,6 +110,4 @@ bool DicomCodedAttribute::checkAndFormatEntry(std::string& entry, bool multipleV
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

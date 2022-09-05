@@ -30,10 +30,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
@@ -50,30 +47,28 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void inrReadWriteTest();
-    void inrStressTest();
-    void niftiReadTest();
-    void niftiWriteTest();
-    void jpegWriteTest();
-    void inrReadJpegWriteTest();
+    static void inrReadWriteTest();
+    static void inrStressTest();
+    static void niftiReadTest();
+    static void niftiWriteTest();
+    static void jpegWriteTest();
+    static void inrReadJpegWriteTest();
 
 private:
 
-    void inrStressTestWithType(core::Type type, int nbTest);
-    void inrReadWriteCheck(data::Image::sptr image);
-    void niftiReadCheck(
+    static void inrStressTestWithType(core::Type type, int nbTest);
+    static void inrReadWriteCheck(data::Image::sptr image);
+    static void niftiReadCheck(
         const data::Image::sptr& imageToTest,
         const core::Type& expectedType,
-        const std::size_t expectedDim,
+        std::size_t expectedDim,
         const data::Image::Spacing& expectedSpacing,
         const data::Image::Origin& expectedOrigin,
         const data::Image::Size& expectedSize
     );
 };
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

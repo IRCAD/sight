@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #pragma once
 
 #include <future>
@@ -38,7 +40,7 @@ typedef std::thread::id ThreadIdType;
 /// Returns the current thread id
 CORE_API ThreadIdType getCurrentThreadId();
 
-class Timer;
+class Timer; // NOLINT(bugprone-forward-declaration-namespace)
 
 /**
  * @brief   This class creates and manages a task loop.
@@ -57,8 +59,7 @@ public:
     SIGHT_DECLARE_CLASS(Worker, core::BaseObject, defaultFactory);
 
     Worker()
-    {
-    }
+    = default;
 
     /// Waits for the last task to be processed and stops the loop
     CORE_API virtual void stop() = 0;

@@ -48,10 +48,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MIPMatchingRegistrationTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -142,8 +139,8 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
     sight::filter::image::Resampler::resample(moving, fixed, transform);
-    auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}},
-         movingOrigin = moving->getOrigin();
+    auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}};
+    auto movingOrigin = moving->getOrigin();
     fixed->setOrigin(fixedOrigin);
     std::array<float, 3> expected {
         {
@@ -169,7 +166,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     resample->SetOutputSpacing(newSpacing);
     resample->SetOutputOrigin(itkFixed->GetOrigin());
     resample->Update();
-    auto resampled         = resample->GetOutput();
+    auto* resampled        = resample->GetOutput();
     auto resampledF4sFixed = io::itk::moveFromItk<ImageType>(resampled, true);
 
     filter::image::RegistrationDispatch::Parameters params;
@@ -189,6 +186,4 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     }
 }
 
-} // ut
-
-} // itkRegistrationOp
+} // namespace sight::filter::image::ut

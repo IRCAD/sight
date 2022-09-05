@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::filter::vision
-{
-
-namespace ut
+namespace sight::filter::vision::ut
 {
 
 class ProjectionTest : public CPPUNIT_NS::TestFixture
@@ -39,12 +36,10 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void projectionTest();
+    static void projectionTest();
 };
 
-} //namespace ut
-
-} //namespace sight::filter::vision
+} // namespace sight::filter::vision::ut

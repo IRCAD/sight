@@ -39,10 +39,7 @@ fwGuiRegisterMacro(
     sight::ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY
 );
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -54,8 +51,7 @@ MenuLayoutManager::MenuLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 //-----------------------------------------------------------------------------
 
 MenuLayoutManager::~MenuLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -69,9 +65,9 @@ void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent, c
     QMenu* menu = m_parent->getQtMenu();
     menu->setObjectName(qId);
 
-    QActionGroup* actionGroup  = 0;
+    QActionGroup* actionGroup  = nullptr;
     unsigned int menuItemIndex = 0;
-    for(ui::base::layoutManager::IMenuLayoutManager::ActionInfo actionInfo : m_actionInfo)
+    for(const ui::base::layoutManager::IMenuLayoutManager::ActionInfo& actionInfo : m_actionInfo)
     {
         ui::qt::container::QtMenuItemContainer::sptr menuItem = ui::qt::container::QtMenuItemContainer::New();
 
@@ -103,7 +99,7 @@ void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent, c
 
         if(actionInfo.m_isRadio)
         {
-            if(!actionGroup)
+            if(actionGroup == nullptr)
             {
                 actionGroup = new QActionGroup(menu);
             }
@@ -120,7 +116,7 @@ void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent, c
         if(actionInfo.m_isMenu)
         {
             ui::qt::container::QtMenuContainer::sptr menuContainer = ui::qt::container::QtMenuContainer::New();
-            QMenu* qtMenu                                          = new QMenu();
+            auto* qtMenu                                           = new QMenu();
             menuContainer->setQtMenu(qtMenu);
             action->setMenu(qtMenu);
             m_menus.push_back(menuContainer);
@@ -143,7 +139,7 @@ void MenuLayoutManager::createLayout(ui::base::container::fwMenu::sptr parent, c
         }
         else
         {
-            actionGroup = 0;
+            actionGroup = nullptr;
         }
     }
 }
@@ -189,6 +185,4 @@ void MenuLayoutManager::menuItemSetChecked(ui::base::container::fwMenuItem::sptr
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

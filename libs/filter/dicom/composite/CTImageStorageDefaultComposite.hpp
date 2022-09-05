@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::filter::dicom
-{
-
-namespace composite
+namespace sight::filter::dicom::composite
 {
 
 /**
@@ -50,7 +47,7 @@ public:
     FILTER_DICOM_API CTImageStorageDefaultComposite(filter::dicom::IFilter::Key key);
 
     /// Destructor
-    FILTER_DICOM_API virtual ~CTImageStorageDefaultComposite();
+    FILTER_DICOM_API ~CTImageStorageDefaultComposite() override;
 
     /// Return the name of the filter
     FILTER_DICOM_API std::string getName() const override;
@@ -67,6 +64,4 @@ protected:
     static const std::string s_FILTER_DESCRIPTION;
 };
 
-} // namespace composite
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::composite

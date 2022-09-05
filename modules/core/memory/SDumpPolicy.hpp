@@ -57,7 +57,7 @@ public:
 
     MODULE_MEMORY_API SDumpPolicy();
 
-    MODULE_MEMORY_API virtual ~SDumpPolicy();
+    MODULE_MEMORY_API ~SDumpPolicy() override;
 
     MODULE_MEMORY_API void configuring() override;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 /**
@@ -60,7 +57,7 @@ public:
     UI_BASE_API IToolBarBuilder();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IToolBarBuilder();
+    UI_BASE_API ~IToolBarBuilder() override;
 
     /**
      * @brief Returns the builded tool bar.
@@ -103,12 +100,10 @@ protected:
 
     std::pair<int, int> m_toolBitmapSize;
 
-    Alignment m_alignment;
+    Alignment m_alignment {TOP};
 
     /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
     std::string m_backgroundColor;
 };
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

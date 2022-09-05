@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 #include <QSpinBox>
 #include <QWidget>
 
-namespace sight::ui::dicom
-{
-
-namespace widget
+namespace sight::ui::dicom::widget
 {
 
 /**
@@ -44,22 +41,20 @@ Q_OBJECT;
 public:
 
     /// Constructor
-    QHexSpinBox(QWidget* parent = 0);
+    QHexSpinBox(QWidget* parent = nullptr);
 
 protected:
 
     /// Override
-    QValidator::State validate(QString& text, int& pos) const;
+    QValidator::State validate(QString& text, int& pos) const override;
 
     /// Override
-    int valueFromText(const QString& text) const;
+    [[nodiscard]] int valueFromText(const QString& text) const override;
 
     /// Override
-    QString textFromValue(int value) const;
+    [[nodiscard]] QString textFromValue(int value) const override;
 
     QRegExpValidator* m_validator;
 };
 
-} // namespace widget
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::widget

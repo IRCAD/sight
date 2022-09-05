@@ -29,10 +29,7 @@
 #include <sstream>
 #include <string>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -41,17 +38,19 @@ std::string generatePatientId()
 {
     gdcm::UIDGenerator uid;
     const char* id = uid.Generate();
-    return std::string(id);
+    return {id};
 }
 
 //------------------------------------------------------------------------------
 
 std::string generateStudyInstanceUid()
 {
-    using namespace boost::posix_time;
+    using boost::posix_time::ptime;
+    using boost::posix_time::microsec_clock;
+    using boost::posix_time::time_facet;
 
-    ptime now         = microsec_clock::local_time();
-    time_facet* facet = new time_facet("%f%S%M%H%d%m");
+    ptime now   = microsec_clock::local_time();
+    auto* facet = new time_facet("%f%S%M%H%d%m");
 
     std::stringstream ss;
     // facet ownership is given to the std::locale
@@ -61,6 +60,4 @@ std::string generateStudyInstanceUid()
     return ss.str();
 }
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

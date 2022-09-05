@@ -105,7 +105,7 @@ bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _origin, const
 {
     fwLine line = std::pair<fwVec3d, fwVec3d>(_origin, _direction);
     fwVec3d pThis;
-    if(getClosestPoints(_ray, line, pThis, _point) == false)
+    if(!getClosestPoints(_ray, line, pThis, _point))
     {
         return false;
     }
@@ -145,25 +145,8 @@ bool intersect(
     const fwVec3d& normal = getNormal(plane);
     _front = ((dot(normal, v)) >= 0.0);
 
-    bool isIntersect = true;
-    if(intersect(plane, _line, _point) == false)
-    {
-        isIntersect = false;
-    }
-    else if((dot(normal, cross(v01, _point - _v1))) < 0.0)
-    {
-        isIntersect = false;
-    }
-    else if((dot(normal, cross(v12, _point - _v2))) < 0.0)
-    {
-        isIntersect = false;
-    }
-    else if((dot(normal, cross(v20, _point - _v3))) < 0.0)
-    {
-        isIntersect = false;
-    }
-
-    return isIntersect;
+    return !(!intersect(plane, _line, _point) || ((dot(normal, cross(v01, _point - _v1))) < 0.0)
+             || ((dot(normal, cross(v12, _point - _v2))) < 0.0) || ((dot(normal, cross(v20, _point - _v3))) < 0.0));
 }
 
 } //namespace sight::geometry::data

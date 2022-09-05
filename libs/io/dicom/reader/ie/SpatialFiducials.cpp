@@ -31,13 +31,7 @@
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -59,8 +53,7 @@ SpatialFiducials::SpatialFiducials(
 //------------------------------------------------------------------------------
 
 SpatialFiducials::~SpatialFiducials()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -117,8 +110,4 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

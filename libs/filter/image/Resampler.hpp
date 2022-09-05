@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ public:
      * @param[in] _targetImg image used to set the desired origin, spacing and size.
      */
     static FILTER_IMAGE_API void resample(
-        const data::Image::csptr& _inImg,
-        const data::Image::sptr& outImg,
+        const data::Image::csptr& _inImage,
+        const data::Image::sptr& _outImage,
         const data::Matrix4::csptr& _trf,
         std::optional<std::tuple<data::Image::Size,
                                  data::Image::Origin,

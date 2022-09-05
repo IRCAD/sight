@@ -48,8 +48,7 @@ static const core::com::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
-SMatrixWriter::SMatrixWriter() noexcept :
-    m_isRecording(false)
+SMatrixWriter::SMatrixWriter() noexcept
 {
     newSlot(s_SAVE_MATRIX, &SMatrixWriter::saveMatrix, this);
     newSlot(s_START_RECORD, &SMatrixWriter::startRecord, this);
@@ -166,11 +165,11 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
             if(buffer)
             {
                 timestamp = object->getTimestamp();
-                const std::size_t time = static_cast<std::size_t>(timestamp);
+                const auto time = static_cast<std::size_t>(timestamp);
                 m_filestream << time << ";";
                 for(unsigned int i = 0 ; i < numberOfMat ; ++i)
                 {
-                    const float* values = buffer->getElement(i);
+                    const std::array<float, 16> values = buffer->getElement(i);
 
                     for(unsigned int v = 0 ; v < 16 ; ++v)
                     {

@@ -35,8 +35,7 @@ namespace sight::module::ui::qml::model
 const core::com::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 const core::com::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 
-SModelSeriesList::SModelSeriesList() noexcept :
-    m_listModel(nullptr)
+SModelSeriesList::SModelSeriesList() noexcept
 {
     m_sigReconstructionSelected = newSignal<ReconstructionSelectedSignalType>(s_RECONSTRUCTION_SELECTED_SIG);
     m_sigEmptiedSelection       = newSignal<EmptiedSelectionSignalType>(s_EMPTIED_SELECTION_SIG);
@@ -44,9 +43,8 @@ SModelSeriesList::SModelSeriesList() noexcept :
 
 //------------------------------------------------------------------------------
 
-SModelSeriesList::~SModelSeriesList() noexcept
-{
-}
+SModelSeriesList::~SModelSeriesList() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

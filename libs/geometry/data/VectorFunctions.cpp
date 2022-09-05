@@ -193,7 +193,7 @@ fwVec3d operator-(const fwVec3d& vec1, const fwVec3d& vec2)
 
 //------------------------------------------------------------------------------
 
-int operator==(const fwVec3d& vec1, const fwVec3d& vec2)
+bool operator==(const fwVec3d& vec1, const fwVec3d& vec2)
 {
     const glm::dvec3 vecGlm1 = glm::make_vec3<double>(vec1.data());
     const glm::dvec3 vecGlm2 = glm::make_vec3<double>(vec2.data());
@@ -204,7 +204,7 @@ int operator==(const fwVec3d& vec1, const fwVec3d& vec2)
 
 //------------------------------------------------------------------------------
 
-int operator!=(const fwVec3d& vec1, const fwVec3d& vec2)
+bool operator!=(const fwVec3d& vec1, const fwVec3d& vec2)
 {
     return !(vec1 == vec2);
 }

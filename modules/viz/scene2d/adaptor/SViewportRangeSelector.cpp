@@ -33,10 +33,9 @@
 
 #include <QGraphicsRectItem>
 
-namespace sight::module::viz::scene2d
-{
+using sight::viz::scene2d::vec2d_t;
 
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
@@ -75,7 +74,7 @@ service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections(
 void SViewportRangeSelector::starting()
 {
     {
-        const auto scene         = this->getScene2DRender()->getScene();
+        auto* const scene        = this->getScene2DRender()->getScene();
         const auto sceneViewport = m_viewport.lock();
 
         const double viewportWidth = sceneViewport->width_or(scene->sceneRect().width());
@@ -96,8 +95,8 @@ void SViewportRangeSelector::starting()
     }
 
     {
-        const auto scene = this->getScene2DRender()->getScene();
-        auto viewport    = m_viewport.lock();
+        auto* const scene = this->getScene2DRender()->getScene();
+        auto viewport     = m_viewport.lock();
 
         // If the viewport Y and height are not set, scale the viewport to the height of the scene
         {
@@ -407,6 +406,4 @@ bool SViewportRangeSelector::mouseOnShutterRight(sight::viz::scene2d::vec2d_t _c
 
 //---------------------------------------------------------------------------------------------------------------
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

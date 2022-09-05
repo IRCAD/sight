@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
     MODULE_GEOMETRY_VISION_API SOpenCVIntrinsic() noexcept;
 
     /// Destructor.
-    MODULE_GEOMETRY_VISION_API virtual ~SOpenCVIntrinsic() noexcept;
+    MODULE_GEOMETRY_VISION_API ~SOpenCVIntrinsic() noexcept override;
 
 protected:
 
@@ -103,13 +103,13 @@ private:
     std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
-    unsigned int m_width;
+    unsigned int m_width {11};
 
     /// Height of the chessboard used for calibration
-    unsigned int m_height;
+    unsigned int m_height {8};
 
     /// Size of the chessboard'square used for calibration
-    float m_squareSize;
+    float m_squareSize {20.0};
 
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo {this, "calibrationInfo"};
     data::ptr<data::Camera, data::Access::inout> m_camera {this, "camera"};

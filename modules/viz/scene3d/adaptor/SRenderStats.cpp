@@ -41,7 +41,7 @@ class PostWindowRenderListener : public Ogre::RenderTargetListener
 {
 public:
 
-    PostWindowRenderListener(SRenderStats& _renderStatsAdaptor) :
+    explicit PostWindowRenderListener(SRenderStats& _renderStatsAdaptor) :
         m_renderStatsAdaptor(_renderStatsAdaptor)
     {
     }
@@ -78,15 +78,13 @@ static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 
 //------------------------------------------------------------------------------
 
-SRenderStats::SRenderStats() noexcept
-{
-}
+SRenderStats::SRenderStats() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SRenderStats::~SRenderStats() noexcept
-{
-}
+SRenderStats::~SRenderStats() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -130,7 +128,7 @@ void SRenderStats::starting()
         this->getLayer()->getDefaultCamera()
     );
 
-    m_statsText->setPosition(0.01f, 0.01f);
+    m_statsText->setPosition(0.01F, 0.01F);
     m_statsText->setTextColor(m_textColor);
 
     auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();

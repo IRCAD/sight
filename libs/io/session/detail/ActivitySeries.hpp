@@ -28,10 +28,7 @@
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ActivitySeries
+namespace sight::io::session::detail::ActivitySeries
 {
 
 constexpr static auto s_Data {"Data"};
@@ -92,6 +89,4 @@ inline static data::ActivitySeries::sptr deserialize(
     return activitySeries;
 }
 
-} // namespace detail::ActivitySeries
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ActivitySeries

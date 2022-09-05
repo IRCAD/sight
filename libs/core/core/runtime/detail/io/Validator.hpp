@@ -31,13 +31,7 @@
 #include <sstream>
 #include <string>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace io
+namespace sight::core::runtime::detail::io
 {
 
 /**
@@ -69,7 +63,7 @@ public:
      *
      * @param   schema  a string containing the XML schema
      */
-    Validator(const std::string& schema);
+    Validator(std::string buffer);
 
     /**
      * @brief   Constructor
@@ -95,7 +89,7 @@ public:
      *
      * @return  a string containing the error log
      */
-    const std::string getErrorLog() const;
+    std::string getErrorLog() const;
 
     /**
      * @brief   Validates the given file.
@@ -140,8 +134,4 @@ private:
     static void ErrorHandler(void* userData, xmlErrorPtr error);
 };
 
-} // namespace io
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::io

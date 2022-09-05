@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "viz/scene3d/Utils.hpp"
 
 #include "viz/scene3d/compositor/MaterialMgrListener.hpp"
@@ -48,9 +50,9 @@
 #include <filesystem>
 
 #if _WIN32
-#define PLUGIN_PATH "plugins_win32.cfg"
+constexpr const char* PLUGIN_PATH = "plugins_win32.cfg";
 #else
-#define PLUGIN_PATH "plugins.cfg"
+constexpr const char* PLUGIN_PATH = "plugins.cfg";
 #endif
 
 namespace sight::viz::scene3d
@@ -81,7 +83,9 @@ void Utils::addPlugins(const std::vector<std::string>& plugins)
 void Utils::loadResources()
 {
     Ogre::ConfigFile cf;
-    Ogre::String resourceGroupName, typeName, archName;
+    Ogre::String resourceGroupName;
+    Ogre::String typeName;
+    Ogre::String archName;
 
     // Ensure we always load the resources of this library first, since other may reuse our programs or shaders
     std::list<std::string> moduleWithResourcesNames;
@@ -171,11 +175,13 @@ Ogre::OverlaySystem* Utils::getOverlaySystem()
 
 Ogre::Root* Utils::getOgreRoot()
 {
+    using namespace std::literals::string_literals;
+
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
 
     if(root == nullptr)
     {
-        const auto& confPath = core::runtime::getLibraryResourceFilePath("viz_scene3d/" PLUGIN_PATH);
+        const auto& confPath = core::runtime::getLibraryResourceFilePath("viz_scene3d/"s + PLUGIN_PATH);
 
         // Check file existence
         if(!std::filesystem::exists(confPath))
@@ -273,7 +279,7 @@ Ogre::Root* Utils::getOgreRoot()
             newPlugin << ogreConfig << std::endl;
         }
 
-        root = new Ogre::Root(tmpPluginCfg.string().c_str());
+        root = new Ogre::Root(tmpPluginCfg.string());
 
         std::filesystem::remove(tmpPluginCfg);
 
@@ -295,13 +301,13 @@ Ogre::Root* Utils::getOgreRoot()
 
         renderOrder.push_back("OpenGL");
 
-        for(Ogre::StringVector::iterator iter = renderOrder.begin() ; iter != renderOrder.end() ; ++iter)
+        for(auto& iter : renderOrder)
         {
-            for(Ogre::RenderSystemList::const_iterator it = rsList.begin() ; it != rsList.end() ; ++it)
+            for(auto* it : rsList)
             {
-                if((*it)->getName().find(*iter) != Ogre::String::npos)
+                if(it->getName().find(iter) != Ogre::String::npos)
                 {
-                    rs = *it;
+                    rs = it;
                     break;
                 }
             }
@@ -385,8 +391,9 @@ Ogre::Image Utils::convertToOgreImage(const data::Image::csptr imageFw)
     // If image is flipped, try to switch image
     const data::Image::Size imageSize = imageFw->getSize();
 
-    const uint32_t width = static_cast<uint32_t>(imageSize[0]);
-    uint32_t height = 1, depth = 1;
+    const auto width      = static_cast<uint32_t>(imageSize[0]);
+    uint32_t height       = 1;
+    uint32_t depth        = 1;
     const auto dimensions = imageFw->numDimensions();
 
     if(dimensions >= 2)
@@ -404,7 +411,7 @@ Ogre::Image Utils::convertToOgreImage(const data::Image::csptr imageFw)
     const auto dumpLock = imageFw->dump_lock();
 
     imageOgre.loadDynamicImage(
-        static_cast<uint8_t*>(const_cast<void*>(imageFw->getBuffer())),
+        static_cast<uint8_t*>(const_cast<void*>(imageFw->getBuffer())), // NOLINT(cppcoreguidelines-pro-type-const-cast)
         width,
         height,
         depth,
@@ -448,7 +455,7 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
     {
         const auto dumpLock = _imageFw->dump_lock();
 
-        std::uint8_t* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_imageFw->getBuffer());
+        auto* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_imageFw->getBuffer());
 
         pixelBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY);
         const Ogre::PixelBox& pixelBox           = pixelBuffer->getCurrentLock();
@@ -496,22 +503,26 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
             // uint8
             return Ogre::PF_L8;
         }
-        else if(pixelType == core::Type::INT16)
+
+        if(pixelType == core::Type::INT16)
         {
             // int16
             return Ogre::PF_L16;
         }
-        else if(pixelType == core::Type::UINT16)
+
+        if(pixelType == core::Type::UINT16)
         {
             // uint16
             return Ogre::PF_R16_UINT;
         }
-        else if(pixelType == core::Type::FLOAT)
+
+        if(pixelType == core::Type::FLOAT)
         {
             // float
             return Ogre::PF_FLOAT32_R;
         }
-        else if(pixelType == core::Type::INT32)
+
+        if(pixelType == core::Type::INT32)
         {
             // int32
             return Ogre::PF_R32_SINT;
@@ -527,12 +538,14 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
             // uint8
             return Ogre::PF_RG8;
         }
-        else if(pixelType == core::Type::INT8)
+
+        if(pixelType == core::Type::INT8)
         {
             // int16
             return Ogre::PF_R8G8_SNORM;
         }
-        else if(pixelType == core::Type::FLOAT)
+
+        if(pixelType == core::Type::FLOAT)
         {
             // float
             return Ogre::PF_FLOAT32_GR;
@@ -547,36 +560,43 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
         // uint8
         return numberOfComponent == 3 ? Ogre::PF_BYTE_RGB : Ogre::PF_BYTE_RGBA;
     }
-    else if(pixelType == core::Type::UINT16)
+
+    if(pixelType == core::Type::UINT16)
     {
         // uint16
         return numberOfComponent == 3 ? Ogre::PF_R16G16B16_UINT : Ogre::PF_R16G16B16A16_UINT;
     }
-    else if(pixelType == core::Type::UINT32)
+
+    if(pixelType == core::Type::UINT32)
     {
         // uint32
         return numberOfComponent == 3 ? Ogre::PF_R32G32B32_UINT : Ogre::PF_R32G32B32A32_UINT;
     }
-    else if(pixelType == core::Type::INT8)
+
+    if(pixelType == core::Type::INT8)
     {
         // int8
         return numberOfComponent == 3 ? Ogre::PF_R8G8B8_SINT : Ogre::PF_R8G8B8A8_SINT;
     }
-    else if(pixelType == core::Type::INT16)
+
+    if(pixelType == core::Type::INT16)
     {
         // int16
         return numberOfComponent == 3 ? Ogre::PF_R16G16B16_SINT : Ogre::PF_R16G16B16A16_SINT;
     }
-    else if(pixelType == core::Type::INT32)
+
+    if(pixelType == core::Type::INT32)
     {
         // int32
         return numberOfComponent == 3 ? Ogre::PF_R32G32B32_SINT : Ogre::PF_R32G32B32A32_SINT;
     }
-    else if(pixelType == core::Type::FLOAT)
+
+    if(pixelType == core::Type::FLOAT)
     {
         return numberOfComponent == 3 ? Ogre::PF_FLOAT32_RGB : Ogre::PF_FLOAT32_RGBA;
     }
-    else if(pixelType == core::Type::DOUBLE)
+
+    if(pixelType == core::Type::DOUBLE)
     {
         SIGHT_FATAL("Pixel format not handled.");
     }
@@ -755,7 +775,7 @@ void copyGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image)
     {
         const auto dumpLock = _image.dump_lock();
 
-        typedef typename std::make_unsigned<DST_TYPE>::type unsignedType;
+        using unsignedType = typename std::make_unsigned<DST_TYPE>::type;
 
         auto srcBuffer = static_cast<const SRC_TYPE*>(_image.getBuffer());
 
@@ -765,7 +785,7 @@ void copyGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image)
 
         const DST_TYPE lowBound = std::numeric_limits<DST_TYPE>::min();
 
-        const Ogre::int32 size =
+        const auto size =
             static_cast<Ogre::int32>(_texture->getWidth() * _texture->getHeight() * _texture->getDepth());
 
 #pragma omp parallel for shared(pDest, srcBuffer)
@@ -871,7 +891,7 @@ Ogre::Matrix4 Utils::convertTM3DToOgreMx(const data::Matrix4::csptr& _tm3d)
 {
     const std::array<double, 16> tm3dData = _tm3d->getCoefficients();
 
-    std::array<Ogre::Real, 16> floatData;
+    std::array<Ogre::Real, 16> floatData {};
     std::transform(tm3dData.begin(), tm3dData.end(), floatData.begin(), boost::numeric_cast<float, double>);
 
     return Ogre::Matrix4(floatData.data());
@@ -924,7 +944,7 @@ Ogre::Vector3i Utils::worldToSlices(const data::Image& _image, const Ogre::Vecto
 
     SIGHT_THROW_EXCEPTION_IF(
         core::Exception("Image spacing cannot be '0'"),
-        spacing[0] == 0.f || spacing[1] == 0.f || spacing[2] == 0.f
+        spacing[0] == 0.F || spacing[1] == 0.F || spacing[2] == 0.F
     );
 
     const auto point = (_world - origin) / spacing;

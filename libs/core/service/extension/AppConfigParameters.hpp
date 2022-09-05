@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <map>
 
-namespace sight::service
-{
-
-namespace extension
+namespace sight::service::extension
 {
 
 /**
@@ -52,7 +49,7 @@ public:
     SERVICE_API static AppConfigParameters::sptr getDefault();
 
     /// Destructor
-    SERVICE_API virtual ~AppConfigParameters();
+    SERVICE_API ~AppConfigParameters() override;
 
     /**
      * @brief Parse module information to retrieve config parameters declaration
@@ -90,6 +87,4 @@ protected:
     static AppConfigParameters::sptr s_appConfigParameters;
 };
 
-} // namespace extension
-
-} // namespace sight::service
+} // namespace sight::service::extension

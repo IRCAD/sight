@@ -30,10 +30,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::CameraTest);
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -62,7 +59,8 @@ void CameraTest::copyToCv()
     sightCam->setHeight(8640);
     sightCam->setDistortionCoefficient(2., 3., 5., 8., 13.);
 
-    cv::Mat intrinsic, distCoeffs;
+    cv::Mat intrinsic;
+    cv::Mat distCoeffs;
     cv::Size imgSize;
 
     std::tie(intrinsic, imgSize, distCoeffs) = io::opencv::Camera::copyToCv(sightCam);
@@ -114,6 +112,4 @@ void CameraTest::copyToCv()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

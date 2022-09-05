@@ -30,10 +30,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 /**
@@ -55,10 +52,10 @@ public:
     typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
     /// Constructor.
-    UI_BASE_API Menu(const std::string& sid);
+    UI_BASE_API Menu(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~Menu();
+    UI_BASE_API ~Menu() override;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwMenu::sptr getParent();
@@ -183,6 +180,4 @@ protected:
     CallbacksType m_callbacks;
 };
 
-} // namespace registry
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::registry

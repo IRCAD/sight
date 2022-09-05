@@ -59,7 +59,7 @@ protected:
 
     UI_BASE_API IToolBar();
 
-    UI_BASE_API virtual ~IToolBar();
+    UI_BASE_API ~IToolBar() override;
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -131,7 +131,7 @@ private:
     ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the actions if the service is stopped
-    bool m_hideActions;
+    bool m_hideActions {false};
 };
 
 } // namespace sight::ui::base

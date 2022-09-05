@@ -57,7 +57,7 @@ public:
 
     MODULE_IO_ITK_API SImageSeriesWriter() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SImageSeriesWriter() noexcept;
+    MODULE_IO_ITK_API ~SImageSeriesWriter() noexcept override;
 
 protected:
 

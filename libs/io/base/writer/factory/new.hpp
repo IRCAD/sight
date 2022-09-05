@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <string>
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 class IObjectWriter;
@@ -51,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) io::base::writer::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 IO_BASE_API SPTR(io::base::writer::IObjectWriter) New(const io::base::writer::registry::KeyType& classname);
@@ -67,6 +63,4 @@ SPTR(CLASSNAME)  New()
 
 } // namespace factory
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

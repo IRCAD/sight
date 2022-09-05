@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,8 +65,7 @@ SRender::SRender()
 //-----------------------------------------------------------------------------
 
 SRender::~SRender()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -91,8 +90,8 @@ void SRender::configuring()
     const auto adaptorConfigs = sceneCfg->equal_range(s_ADAPTOR_CONFIG);
     for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
     {
-        const std::string uid = it->second.get<std::string>("<xmlattr>.uid");
-        auto& registry        = viz::qt3d::registry::getAdaptorRegistry();
+        const auto uid = it->second.get<std::string>("<xmlattr>.uid");
+        auto& registry = viz::qt3d::registry::getAdaptorRegistry();
         registry[uid] = this->getID();
     }
 }
@@ -116,9 +115,9 @@ void SRender::starting()
 
     // Configures m_3dView camera and sets it as the scene's camera.
     QPointer<Qt3DRender::QCamera> const camera = m_3dView->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
-    camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
-    camera->setPosition(QVector3D(0.0f, 10.0f, 40.0f));
+    camera->lens()->setPerspectiveProjection(45.0F, 16.0F / 9.0F, 0.1F, 10000.0F);
+    camera->setUpVector(QVector3D(0.0F, 1.0F, 0.0F));
+    camera->setPosition(QVector3D(0.0F, 10.0F, 40.0F));
     camera->setViewCenter(QVector3D(0, 0, 0));
 
     m_scene->setCamera(camera);

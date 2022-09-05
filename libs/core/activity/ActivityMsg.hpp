@@ -46,59 +46,58 @@ public:
     );
 
     ACTIVITY_API virtual ~ActivityMsg()
-    {
-    }
+    = default;
 
     /// Return if the activity can be closed
-    bool isClosable() const
+    [[nodiscard]] bool isClosable() const
     {
         return m_closable;
     }
 
     /// Return activity title
-    const std::string& getTitle() const
+    [[nodiscard]] const std::string& getTitle() const
     {
         return m_title;
     }
 
     /// Return tab identifier
-    const std::string& getTabID() const
+    [[nodiscard]] const std::string& getTabID() const
     {
         return m_tabID;
     }
 
     /// Return appConfig identifier
-    const std::string& getAppConfigID() const
+    [[nodiscard]] const std::string& getAppConfigID() const
     {
         return m_appConfigID;
     }
 
     /// Return tab information
-    const std::string& getTabInfo() const
+    [[nodiscard]] const std::string& getTabInfo() const
     {
         return m_tabInfo;
     }
 
     /// Return activity icon path
-    const std::string& getIconPath() const
+    [[nodiscard]] const std::string& getIconPath() const
     {
         return m_iconPath;
     }
 
     /// Return tooltip
-    const std::string& getToolTip() const
+    [[nodiscard]] const std::string& getToolTip() const
     {
         return m_tooltip;
     }
 
     /// Return activity series
-    const data::ActivitySeries::sptr& getActivitySeries() const
+    [[nodiscard]] const data::ActivitySeries::sptr& getActivitySeries() const
     {
         return m_series;
     }
 
     /// Return the map of the string association to replace in config
-    const std::map<std::string, std::string>& getReplacementMap() const
+    [[nodiscard]] const std::map<std::string, std::string>& getReplacementMap() const
     {
         return m_replacementMap;
     }
@@ -106,7 +105,7 @@ public:
 private:
 
     /// Flag if activity is closable.
-    bool m_closable;
+    bool m_closable {true};
 
     /// Activity title
     std::string m_title;

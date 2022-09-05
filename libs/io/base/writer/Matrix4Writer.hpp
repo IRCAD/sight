@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <data/Matrix4.hpp>
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 /**
@@ -58,7 +55,7 @@ public:
     IO_BASE_API Matrix4Writer(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor. Does nothing.
-    IO_BASE_API virtual ~Matrix4Writer();
+    IO_BASE_API ~Matrix4Writer() override;
 
     /// Writes the file using the standard iostream API.
     IO_BASE_API void write() override;
@@ -67,6 +64,4 @@ public:
     IO_BASE_API std::string extension() const override;
 };
 
-}
-
-}
+} // namespace sight::io::base::writer

@@ -35,10 +35,7 @@
 
 #include <memory>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 /**
@@ -80,7 +77,7 @@ public:
     VIZ_SCENE3D_API transparencyTechnique getTransparencyTechnique();
 
     /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
-    VIZ_SCENE3D_API int getTransparencyDepth();
+    [[nodiscard]] VIZ_SCENE3D_API int getTransparencyDepth() const;
 
     /// Set the OIT desired
     /// Deactivate OIT compositor
@@ -94,7 +91,7 @@ public:
     VIZ_SCENE3D_API void setStereoMode(StereoModeType stereoMode);
 
     /// Return the enabled stereo mode.
-    VIZ_SCENE3D_API StereoModeType getStereoMode() const;
+    [[nodiscard]] VIZ_SCENE3D_API StereoModeType getStereoMode() const;
 
     /// Re/Activate OIT compositor
     VIZ_SCENE3D_API void update();
@@ -128,13 +125,13 @@ private:
     //int m_transparencyTechniqueMaxDepth;
 
     /// OIT used
-    transparencyTechnique m_transparencyTechnique;
+    transparencyTechnique m_transparencyTechnique {DEFAULT};
 
     /// OIT used - string name
     Ogre::String m_coreCompositorName;
 
     /// OIT compositor instance used
-    Ogre::CompositorInstance* m_compositorInstance;
+    Ogre::CompositorInstance* m_compositorInstance {nullptr};
 
     /// Cel shading activated
     Ogre::String m_cellShadingName;
@@ -150,7 +147,7 @@ private:
     //Ogre::HardwareOcclusionQuery* m_activeQuery;
 
     /// Number of peels computed for Depth Peeling or 2x Dual Depth Peeling
-    int m_numPass;
+    int m_numPass {8};
 
     //int m_currNumPass;
 
@@ -166,6 +163,4 @@ private:
     static const std::string FINAL_CHAIN_COMPOSITOR;
 };
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

@@ -30,10 +30,7 @@
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgrePrerequisites.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace picker
+namespace sight::viz::scene3d::picker
 {
 
 class VIZ_SCENE3D_CLASS_API IPicker
@@ -59,25 +56,25 @@ public:
      * @brief Get the selected object if there is one.
      * @return The selected object.
      */
-    VIZ_SCENE3D_API Ogre::MovableObject* getSelectedObject() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::MovableObject* getSelectedObject() const;
 
     /**
      * @brief Get the intersection position in the world space.
      * @return The intersection position.
      */
-    VIZ_SCENE3D_API Ogre::Vector3 getIntersectionInWorldSpace() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Vector3 getIntersectionInWorldSpace() const;
 
     /**
      * @brief Get the intersection position in the view space.
      * @return The intersection position.
      */
-    VIZ_SCENE3D_API Ogre::Vector2 getIntersectionInViewSpace() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Vector2 getIntersectionInViewSpace() const;
 
     /**
      * @brief Get the intersection position in the screen space.
      * @return The intersection position.
      */
-    VIZ_SCENE3D_API Ogre::Vector2 getIntersectionInPixel() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Vector2 getIntersectionInPixel() const;
 
     /**
      * @brief Set the scene manager.
@@ -89,7 +86,7 @@ public:
      * @brief Check if there is a scene manager.
      * @return True if a scene manager is setted.
      */
-    VIZ_SCENE3D_API bool hasSceneManager();
+    [[nodiscard]] VIZ_SCENE3D_API bool hasSceneManager() const;
 
 protected:
 
@@ -106,7 +103,7 @@ protected:
     Ogre::Vector3 m_rayIntersect {};
 
     /// Returns the scene node containing the default camera.
-    Ogre::SceneNode* getCameraSceneNode() const;
+    [[nodiscard]] Ogre::SceneNode* getCameraSceneNode() const;
 };
 
 //-----------------------------------------------------------------------------
@@ -119,6 +116,4 @@ inline Ogre::MovableObject* IPicker::getSelectedObject() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace picker
-
-} // namespace sight::viz
+} // namespace sight::viz::scene3d::picker

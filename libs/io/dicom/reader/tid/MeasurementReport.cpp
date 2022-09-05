@@ -25,13 +25,7 @@
 #include "io/dicom/reader/tid/Fiducial.hpp"
 #include "io/dicom/reader/tid/Measurement.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 //------------------------------------------------------------------------------
@@ -50,8 +44,7 @@ MeasurementReport::MeasurementReport(
 //------------------------------------------------------------------------------
 
 MeasurementReport::~MeasurementReport()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -88,8 +81,4 @@ void MeasurementReport::readSR(const SPTR(io::dicom::container::sr::DicomSRNode)
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

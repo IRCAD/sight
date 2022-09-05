@@ -38,14 +38,14 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void vectorTest();
-    void compositeTest();
-    void seriesSetTest();
-    void activitySetTest();
-    void cameraSetTest();
+    static void vectorTest();
+    static void compositeTest();
+    static void seriesSetTest();
+    static void activitySetTest();
+    static void cameraSetTest();
 };
 
 } // namespace sight::data::tools::ut

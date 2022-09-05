@@ -36,15 +36,9 @@ namespace sight::data
 
 class Reconstruction;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -82,7 +76,7 @@ public:
     IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& filepath);
 
     /// Destructor
-    IO_DICOM_API virtual ~Surface();
+    IO_DICOM_API ~Surface() override;
 
     /**
      * @brief Read Surface Segmentation and Surface Mesh Modules
@@ -118,8 +112,4 @@ protected:
     io::dicom::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

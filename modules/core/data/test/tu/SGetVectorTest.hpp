@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 /**
@@ -42,13 +39,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void extractsElementFromVector();
-    void invalidVector();
+    static void extractsElementFromVector();
+    static void invalidVector();
 };
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

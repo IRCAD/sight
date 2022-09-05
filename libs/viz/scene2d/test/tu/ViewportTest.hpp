@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::viz::scene2d
-{
-
-namespace ut
+namespace sight::viz::scene2d::ut
 {
 
 class ViewportTest : public CPPUNIT_NS::TestFixture
@@ -38,13 +35,11 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// test object with services creation from a configuration
-    void testParser();
+    static void testParser();
 };
 
-} //namespace ut
-
-} //namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::ut

@@ -26,10 +26,7 @@
 
 #include <data/Edge.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Edge
+namespace sight::io::session::detail::Edge
 {
 
 constexpr static auto s_FromPortID {"FromPortID"};
@@ -39,11 +36,11 @@ constexpr static auto s_Nature {"Nature"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     const auto edge = Helper::safeCast<sight::data::Edge>(object);
@@ -59,11 +56,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Edge::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
@@ -82,6 +79,4 @@ inline static data::Edge::sptr deserialize(
     return edge;
 }
 
-} // namespace detail::Edge
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Edge

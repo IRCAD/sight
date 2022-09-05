@@ -36,9 +36,8 @@ SConfigController::SConfigController() noexcept
 
 //------------------------------------------------------------------------------
 
-SConfigController::~SConfigController() noexcept
-{
-}
+SConfigController::~SConfigController() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -69,10 +68,10 @@ void SConfigController::updating()
 
 //------------------------------------------------------------------------------
 
-void SConfigController::info(std::ostream&)
+void SConfigController::info(std::ostream& /*_sstream*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::service

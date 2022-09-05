@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 /**
@@ -46,11 +43,9 @@ public:
     void setUp();
     void tearDown();
 
-    void configuringTest();
-    void propertiesTest();
+    static void configuringTest();
+    static void propertiesTest();
     void cleanup();
 };
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

@@ -54,7 +54,7 @@ void ITest::openFile(
         [&tester]() -> QObject*
         {
             // We use the name of the component to get it
-            QAction* action = tester.getMainWindow()->findChild<QAction*>("toolBarView/Load series");
+            auto* action = tester.getMainWindow()->findChild<QAction*>("toolBarView/Load series");
             // It is actually an action, which is an "abstract" component we can't interact with, we must get an
             // interactable component
             return sight::ui::test::Tester::getWidgetFromAction(action);
@@ -69,7 +69,7 @@ void ITest::openFile(
         sight::ui::test::Tester::DEFAULT_TIMEOUT*4
     );
     // We'll need that modal window later, let's keep a reference to it
-    QWidget* formatSelectionWindow = tester.get<QWidget*>();
+    auto* formatSelectionWindow = tester.get<QWidget*>();
 
     /* Click on the FORMAT button of the file format selection window */
     // We must first get the list of format buttons, by searching in the modal window
@@ -195,7 +195,7 @@ void ITest::saveSnapshot(sight::ui::test::Tester& tester, const std::filesystem:
         [](QObject* obj) -> QObject*
         {
             // We get the component using its name
-            QAction* action = obj->findChild<QAction*>("topToolbarView/Snapshot");
+            auto* action = obj->findChild<QAction*>("topToolbarView/Snapshot");
             // This component is actually a QAction, we must get its associated button in order to interact with it.
             return sight::ui::test::Tester::getWidgetFromAction(action);
         });
@@ -242,7 +242,7 @@ void ITest::resetNegatos(sight::ui::test::Tester& tester)
             {
                 return tester.getMainWindow()->findChild<QObject*>(QString::fromStdString(negato + "NegatoSlicerSrv"));
             });
-        QWidget* slicer = tester.get<QWidget*>();
+        auto* slicer = tester.get<QWidget*>();
         tester.yields<QSlider*>(
             negato + " negato slider",
             [](QObject* old) -> QSlider* {return old->findChild<QSlider*>();},

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <vector>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 /**
@@ -68,7 +65,7 @@ public:
     MODULE_UI_BASE_API SSlotCaller() noexcept;
 
     /// Destructor. Does nothing.
-    MODULE_UI_BASE_API virtual ~SSlotCaller() noexcept;
+    MODULE_UI_BASE_API ~SSlotCaller() noexcept override;
 
 protected:
 
@@ -92,6 +89,4 @@ protected:
     bool m_synchronized {false};
 };
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

@@ -35,10 +35,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
 
-namespace sight::filter::dicom
-{
-
-namespace ut
+namespace sight::filter::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -161,6 +158,4 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::ut

@@ -35,20 +35,13 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::runtime::detail::ut::RuntimeTest);
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace ut
+namespace sight::core::runtime::detail::ut
 {
 
 //------------------------------------------------------------------------------
 
 RuntimeTest::RuntimeTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -115,7 +108,7 @@ void RuntimeTest::testRuntime()
     core::runtime::init();
 
     core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
-    const auto moduleStr                    = "sight::module::utest";
+    const auto* const moduleStr             = "sight::module::utest";
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
     auto bundle = std::dynamic_pointer_cast<core::runtime::detail::Module>(runtime.findModule(moduleStr));
@@ -131,8 +124,4 @@ void RuntimeTest::testRuntime()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace detail
-
-} // namespace fwRuntime
+} // namespace sight::core::runtime::detail::ut

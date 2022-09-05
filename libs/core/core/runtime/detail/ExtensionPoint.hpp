@@ -45,10 +45,9 @@ namespace detail
 namespace io
 {
 
-class ModuleDescriptorReader;
 class Validator;
 
-}
+} // namespace io
 
 /**
  * @brief   Defines the extension point class.
@@ -71,8 +70,15 @@ public:
     ExtensionPoint(
         const std::shared_ptr<Module> module,
         const std::string& id,
-        const std::filesystem::path& schema
+        std::filesystem::path schema
     );
+
+    /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment is forbidden for this class.
+     */
+    void operator=(const ExtensionPoint&) noexcept = delete;
 
     /**
      * @brief   Retrieves all configuration elements contributed by extensions
@@ -80,7 +86,7 @@ public:
      *
      * @return  a container with all found configuration elements
      */
-    const ConfigurationElementContainer getAllConfigurationElements() const
+    ConfigurationElementContainer getAllConfigurationElements() const
     {
         typedef std::back_insert_iterator<ConfigurationElementContainer> Inserter;
 
@@ -102,15 +108,12 @@ public:
     template<typename OutputIterator>
     void getAllConfigurationElements(OutputIterator& output) const
     {
-        typedef std::vector<std::shared_ptr<Extension> > ExtensionContainer;
-
         // Retrieves all connected extensions.
         auto extensions = getAllExtensions();
 
         // Walk through the collected extensions to extract configuration elements.
-        for(ExtensionContainer::const_iterator i = extensions.begin() ; i != extensions.end() ; ++i)
+        for(const auto& extension : extensions)
         {
-            std::shared_ptr<Extension> extension(*i);
             if(extension->isEnabled())
             {
                 std::copy(extension->begin(), extension->end(), output);
@@ -134,9 +137,9 @@ public:
         std::vector<std::shared_ptr<Extension> > container;
         Runtime& runtime = Runtime::get();
 
-        for(auto extension : runtime.getExtensions())
+        for(const auto& extension : runtime.getExtensions())
         {
-            if(extension->getPoint() == m_id && extension->isEnabled() == true
+            if(extension->getPoint() == m_id && extension->isEnabled()
                && extension->validate() == Extension::Valid)
             {
                 container.push_back(extension);
@@ -167,13 +170,6 @@ private:
     const std::filesystem::path m_schema; ///< a path to the XML schema used to validate
     // contributed extensions
     mutable std::shared_ptr<io::Validator> m_validator; ///< a shared pointer to the extension validator
-
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden for this class.
-     */
-    void operator=(const ExtensionPoint&) noexcept;
 };
 
 } // namespace detail

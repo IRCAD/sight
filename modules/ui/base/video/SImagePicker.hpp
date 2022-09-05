@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ public:
     MODULE_UI_BASE_API SImagePicker() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_BASE_API virtual ~SImagePicker() noexcept;
+    MODULE_UI_BASE_API ~SImagePicker() noexcept override;
 
 protected:
 

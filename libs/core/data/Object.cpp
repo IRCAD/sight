@@ -52,15 +52,14 @@ Object::Object()
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 data::Object::sptr Object::getField(const FieldNameType& name, data::Object::sptr defaultValue) const
 {
-    data::Object::sptr object         = defaultValue;
-    FieldMapType::const_iterator iter = m_fields.find(name);
+    data::Object::sptr object = defaultValue;
+    auto iter                 = m_fields.find(name);
     if(iter != m_fields.end())
     {
         object = iter->second;
@@ -92,8 +91,7 @@ Object::FieldNameVectorType Object::getFieldNames() const
         m_fields.begin(),
         m_fields.end(),
         std::back_inserter(names),
-        std::bind(&FieldMapType::value_type::first, std::placeholders::_1)
-    );
+        [](const auto& e){return e.first;});
     return names;
 }
 
@@ -119,7 +117,7 @@ void Object::setFields(const FieldMapType& fieldMap)
 
 void Object::removeField(const FieldNameType& name)
 {
-    FieldMapType::const_iterator iter = m_fields.find(name);
+    auto iter = m_fields.find(name);
     SIGHT_ASSERT("Field " << name << " not found.", iter != m_fields.end());
     if(iter != m_fields.end())
     {
@@ -186,7 +184,7 @@ data::Object::sptr Object::copy(const data::Object::csptr& source, Object::DeepC
 
     if(source)
     {
-        DeepCopyCacheType::const_iterator cacheItem = cache.find(source);
+        auto cacheItem = cache.find(source);
 
         if(cacheItem == cache.end())
         {
@@ -208,12 +206,7 @@ data::Object::sptr Object::copy(const data::Object::csptr& source, Object::DeepC
 
 bool Object::operator==(const Object& other) const noexcept
 {
-    if(!core::tools::is_equal(m_fields, other.m_fields))
-    {
-        return false;
-    }
-
-    return true;
+    return core::tools::is_equal(m_fields, other.m_fields);
 }
 
 //------------------------------------------------------------------------------

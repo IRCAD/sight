@@ -109,7 +109,7 @@ public:
     VIZ_SCENE2D_API SRender() noexcept;
 
     /// Basic destructor, do nothing.
-    VIZ_SCENE2D_API virtual ~SRender() noexcept;
+    VIZ_SCENE2D_API ~SRender() noexcept override;
 
     /// Get the scene.
     VIZ_SCENE2D_API QGraphicsScene* getScene() const;
@@ -191,19 +191,19 @@ private:
     scene2d::vec2d_t m_sceneWidth;
 
     /// The scene.
-    QGraphicsScene* m_scene;
+    QGraphicsScene* m_scene {nullptr};
 
     /// The view.
-    Scene2DGraphicsView* m_view;
+    Scene2DGraphicsView* m_view {nullptr};
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
-    bool m_antialiasing;
+    bool m_antialiasing {false};
 
     /// Background color of the scene.
     std::string m_background;
 
     /// How the scene should behave on view resize events
-    Qt::AspectRatioMode m_aspectRatioMode;
+    Qt::AspectRatioMode m_aspectRatioMode {Qt::IgnoreAspectRatio};
 };
 
 } // namespace sight::viz::scene2d

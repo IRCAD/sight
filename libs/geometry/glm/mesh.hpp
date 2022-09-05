@@ -124,7 +124,7 @@ GEOMETRY_GLM_API bool isInsideTetrahedron(
  * @param barycentricCoordPInsideABCD: P coordinates expressed as barycentric coordinates in (ABCD).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-GEOMETRY_GLM_API bool isInsideTetrahedron(const ::glm::dvec4 barycentricCoordPInsideABCD);
+GEOMETRY_GLM_API bool isInsideTetrahedron(::glm::dvec4 barycentricCoordPInsideABCD);
 //-----------------------------------------------------------------------------
 
 template<typename T, typename U>
@@ -134,10 +134,8 @@ std::pair<T, U> makeOrderedPair(const T first, const U second)
     {
         return std::pair<T, U>(first, second);
     }
-    else
-    {
-        return std::pair<T, U>(second, first);
-    }
+
+    return std::pair<T, U>(second, first);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,4 +194,4 @@ bool isBorderlessSurface(
     return isBorderless;
 }
 
-} // namespace sight::geometry
+} // namespace sight::geometry::glm

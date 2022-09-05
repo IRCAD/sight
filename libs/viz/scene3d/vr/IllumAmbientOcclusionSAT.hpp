@@ -28,10 +28,7 @@
 
 #include <optional>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -47,7 +44,7 @@ public:
     struct sat_parameters_t
     {
         /// Ratio used to determine the size of the SAT regarding of the associated image size.
-        float size_ratio = 0.25f;
+        float size_ratio = 0.25F;
 
         /// Number of shells used to compute the volume illumination from the SAT.
         unsigned shells = 4;
@@ -56,7 +53,7 @@ public:
         unsigned radius = 4;
 
         /// Angle used to define the soft shadows cones.
-        float angle = 0.1f;
+        float angle = 0.1F;
 
         /// Number of samples along the soft shadows cones.
         unsigned samples = 50;
@@ -105,10 +102,10 @@ public:
     VIZ_SCENE3D_API void setSamplesAlongCone(unsigned _samplesAlongCone);
 
     ///@brief Parameters
-    VIZ_SCENE3D_API const sat_parameters_t& parameters() const;
+    [[nodiscard]] VIZ_SCENE3D_API const sat_parameters_t& parameters() const;
 
     ///@brief Returns the texture used to store the illumination volume.
-    const Ogre::TexturePtr& getIlluminationVolume() const;
+    [[nodiscard]] const Ogre::TexturePtr& getIlluminationVolume() const;
 
 private:
 
@@ -125,7 +122,7 @@ private:
     bool m_shadows;
 
     /// The index of the slice to which we currently render.
-    int m_currentSliceIndex;
+    int m_currentSliceIndex {};
 
     ///@brief Parameters
     sat_parameters_t m_parameters;
@@ -205,6 +202,4 @@ inline auto IllumAmbientOcclusionSAT::parameters() const -> const sat_parameters
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

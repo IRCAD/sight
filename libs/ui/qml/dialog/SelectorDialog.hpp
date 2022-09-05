@@ -32,10 +32,7 @@
 
 #include <vector>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -55,7 +52,7 @@ public:
 
     UI_QML_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QML_API virtual ~SelectorDialog();
+    UI_QML_API ~SelectorDialog() override;
 
     /**
      * @brief The string list that can be chosen by the selector.
@@ -100,6 +97,4 @@ private:
     QString m_selection;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qml::dialog

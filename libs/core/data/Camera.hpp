@@ -111,7 +111,7 @@ public:
     DATA_API Camera(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Camera() noexcept;
+    DATA_API ~Camera() noexcept override;
 
     DATA_API static PixelFormat getPixelFormat(const std::string& name);
 
@@ -376,22 +376,22 @@ protected:
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! Width video resolution
-    std::size_t m_width;
+    std::size_t m_width {0};
 
     //! Height video resolution
-    std::size_t m_height;
+    std::size_t m_height {0};
 
     /// Intrinsic parameters [fx, fy, cx, cy]
-    IntrinsecType m_intrinsic;
+    IntrinsecType m_intrinsic {};
 
     /// Image distortion coefficients (radial and tangential distortions, [k1, k2, p1, p2, k3])
-    DistArrayType m_distortionCoefficient;
+    DistArrayType m_distortionCoefficient {};
 
     /// Skew coefficient (angle between the x and y pixel axes)
-    double m_skew;
+    double m_skew {0.};
 
     //! Flag if data is calibrated
-    bool m_isCalibrated;
+    bool m_isCalibrated {false};
 
     //! Human-readable description of the camera.
     std::string m_description;
@@ -400,10 +400,10 @@ protected:
     std::string m_cameraID;
 
     //! Maximum frame rate in frames per second.
-    float m_maxFrameRate;
+    float m_maxFrameRate {30.F};
 
     //! Color format of a video frame.
-    PixelFormat m_pixelFormat;
+    PixelFormat m_pixelFormat {INVALID};
 
     //! Video source file
     std::filesystem::path m_videoFile;
@@ -412,10 +412,10 @@ protected:
     std::string m_streamUrl;
 
     //! Camera source (file, stream or device)
-    SourceType m_cameraSource;
+    SourceType m_cameraSource {UNKNOWN};
 
     //! Used for depth sensor: scale of the depth values (default: 1.)
-    double m_scale;
+    double m_scale {1.};
 };
 
 //-----------------------------------------------------------------------------

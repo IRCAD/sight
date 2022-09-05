@@ -30,10 +30,7 @@
 
 #include <type_traits>
 
-namespace sight::data
-{
-
-namespace mt
+namespace sight::data::mt
 {
 
 template<class DATATYPE>
@@ -105,31 +102,33 @@ public:
     /// Assignment operator
     inline locked_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
     {
-        return this->operator=(data.lock());
+        this->operator=(data.lock());
+        return *this;
     }
 
     /// Assignment operator
     inline locked_ptr& operator=(const weak_ptr<DATATYPE>& data) noexcept
     {
-        return this->operator=(data.lock());
+        this->operator=(data.lock());
+        return *this;
     }
 
     /// Default constructors, destructor and assignment operators
-    locked_ptr()                             = default;
-    locked_ptr(const locked_ptr&)            = default;
-    locked_ptr(locked_ptr&&)                 = default;
+    locked_ptr()                  = default;
+    locked_ptr(const locked_ptr&) = default;
+    locked_ptr(locked_ptr&&) noexcept = default;
     locked_ptr& operator=(const locked_ptr&) = default;
-    locked_ptr& operator=(locked_ptr&&)      = default;
-    ~locked_ptr()                            = default;
+    locked_ptr& operator=(locked_ptr&&) noexcept = default;
+    ~locked_ptr() = default;
 
     /// Returns the internal shared pointer
-    inline std::shared_ptr<DATATYPE> get_shared() const noexcept
+    [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;
     }
 
     /// Returns a pointer to the hold data
-    inline DATATYPE* get() const noexcept
+    [[nodiscard]] inline DATATYPE* get() const noexcept
     {
         return m_data.get();
     }
@@ -222,7 +221,7 @@ private:
     {
     friend locked_ptr;
 
-    inline explicit dump_locks(const std::shared_ptr<C>&)
+    inline explicit dump_locks(const std::shared_ptr<C>& /*unused*/)
     {
     }
     };
@@ -230,6 +229,4 @@ private:
     dump_locks<DATATYPE> m_dump_locks;
 };
 
-} // namespace mt
-
-} // namespace sight::data
+} // namespace sight::data::mt

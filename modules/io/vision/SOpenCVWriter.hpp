@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,7 @@ public:
     MODULE_IO_VISION_API SOpenCVWriter();
 
     //Destructor
-    MODULE_IO_VISION_API ~SOpenCVWriter();
+    MODULE_IO_VISION_API ~SOpenCVWriter() override;
 
 protected:
 

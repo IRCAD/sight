@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 
 #include <boost/concept_check.hpp>
 
-namespace sight::core
-{
-
-namespace concepts
+namespace sight::core::concepts
 {
 
 template<class X>
@@ -46,8 +43,8 @@ struct SharedPtrTypedef
 
         BOOST_CONCEPT_USAGE(SharedPtrTypedef)
         {
-            typename X::sptr::element_type* a = 0;
-            X* b                              = 0;
+            typename X::sptr::element_type* a = nullptr;
+            X* b                              = nullptr;
             SIGHT_NOT_USED(a);
             SIGHT_NOT_USED(b);
             same_type(a, b);
@@ -60,6 +57,4 @@ struct SharedPtrTypedef
         void same_type(T*, T*);
 };
 
-} // namespace concepts
-
-} // namespace sight::core
+} // namespace sight::core::concepts

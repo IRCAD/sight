@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::core::jobs
 class Observer;
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -64,7 +64,7 @@ public:
     IO_VTK_API PlyMeshWriter(io::base::writer::IObjectWriter::Key key);
 
     /// @brief Destructor.
-    IO_VTK_API ~PlyMeshWriter();
+    IO_VTK_API ~PlyMeshWriter() override;
 
     /// @brief Reading operator.
     IO_VTK_API void write() override;

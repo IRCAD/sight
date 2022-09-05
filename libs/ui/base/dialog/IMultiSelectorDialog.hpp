@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <map>
 #include <vector>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -58,7 +55,7 @@ public:
     UI_BASE_API IMultiSelectorDialog();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IMultiSelectorDialog();
+    UI_BASE_API ~IMultiSelectorDialog() override;
 
     /**
      * @brief The string list that can be chosen by the selector.
@@ -79,6 +76,4 @@ public:
     UI_BASE_API virtual void setMessage(const std::string& msg) = 0;
 };
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

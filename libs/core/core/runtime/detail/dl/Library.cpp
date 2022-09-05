@@ -25,19 +25,13 @@
 #include "core/runtime/detail/dl/Posix.hpp"
 #include "core/runtime/detail/dl/Win32.hpp"
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace dl
+namespace sight::core::runtime::detail::dl
 {
 
 //------------------------------------------------------------------------------
 
 #if defined(__unix__)
-typedef Posix LibraryImplType;
+using LibraryImplType = Posix;
 #else
 typedef Win32 LibraryImplType;
 #endif
@@ -51,8 +45,4 @@ Library::Library(const std::filesystem::path& modulePath) noexcept :
 
 //------------------------------------------------------------------------------
 
-} // namespace dl
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::dl

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,12 +43,9 @@ class Aggregator;
 class IJob;
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace reader
+namespace sight::io::dicom::reader
 {
 
 /**
@@ -75,7 +72,7 @@ public:
     IO_DICOM_API SeriesDB(io::base::reader::IObjectReader::Key key);
 
     /// Destructor
-    IO_DICOM_API ~SeriesDB();
+    IO_DICOM_API ~SeriesDB() override;
 
     /// Reads DICOM data from configured path and fills SeriesDB object
     IO_DICOM_API void read() override;
@@ -186,7 +183,7 @@ private:
     DicomSeriesContainerType m_dicomSeriesContainer;
 
     /// True if the reader can use the dicomdir file.
-    bool m_isDicomdirActivated;
+    bool m_isDicomdirActivated {false};
 
     /// Dicom filter type that must be applied prior to the reading process
     std::string m_dicomFilterType;
@@ -201,7 +198,7 @@ private:
     SPTR(core::jobs::Aggregator) m_job;
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation;
+    bool m_enableBufferRotation {true};
 
     SPTR(core::jobs::Observer) m_dicomdirFileLookupJob;
     SPTR(core::jobs::Observer) m_regularFileLookupJob;
@@ -210,6 +207,4 @@ private:
     SPTR(core::jobs::Observer) m_converterJob;
 };
 
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader

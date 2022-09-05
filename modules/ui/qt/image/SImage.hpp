@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 
 #include <filesystem>
 
-namespace sight::module::ui::qt
-{
-
-namespace image
+namespace sight::module::ui::qt::image
 {
 
 /**
@@ -99,6 +96,4 @@ private:
     int m_height {-1};            /// Height of the image (pixels)
 };
 
-}
-
-}
+} // namespace sight::module::ui::qt::image

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,9 +46,8 @@ SMarkerToPoint::SMarkerToPoint() noexcept
 
 // ----------------------------------------------------------------------------
 
-SMarkerToPoint::~SMarkerToPoint() noexcept
-{
-}
+SMarkerToPoint::~SMarkerToPoint() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
@@ -86,13 +85,13 @@ void SMarkerToPoint::addPoint()
     CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
     SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
-    const float* values = buffer->getElement(0);
+    const std::array<float, 16> values = buffer->getElement(0);
 
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            matrix3D->setCoefficient(i, j, values[i * 4 + j]);
+            matrix3D->setCoefficient(i, j, values[i * std::size_t(4) + j]);
         }
     }
 

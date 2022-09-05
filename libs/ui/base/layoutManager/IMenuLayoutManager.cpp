@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "sight::ui::base::MenuLayoutManager";
@@ -35,14 +32,12 @@ const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "si
 //-----------------------------------------------------------------------------
 
 IMenuLayoutManager::IMenuLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IMenuLayoutManager::~IMenuLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -145,13 +140,13 @@ void IMenuLayoutManager::initialize(ConfigurationType configuration)
 
 void IMenuLayoutManager::destroyActions()
 {
-    for(ui::base::container::fwMenuItem::sptr menuItem : m_menuItems)
+    for(const ui::base::container::fwMenuItem::sptr& menuItem : m_menuItems)
     {
         menuItem->destroyContainer();
     }
 
     m_menuItems.clear();
-    for(ui::base::container::fwMenu::sptr menu : m_menus)
+    for(const ui::base::container::fwMenu::sptr& menu : m_menus)
     {
         menu->destroyContainer();
     }
@@ -175,6 +170,4 @@ std::vector<ui::base::container::fwMenu::sptr> IMenuLayoutManager::getMenus()
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

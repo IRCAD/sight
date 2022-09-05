@@ -51,7 +51,7 @@ public:
     DATA_API StructureTraitsDictionary(Object::Key key);
 
     /// Destructor. Does nothing.
-    DATA_API virtual ~StructureTraitsDictionary();
+    DATA_API ~StructureTraitsDictionary() override;
 
     /**
      * @brief Add a structure in dictionary

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SSelector.hpp"
 
 #include <activity/IBuilder.hpp>
@@ -55,10 +57,7 @@
 
 Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 //------------------------------------------------------------------------------
@@ -76,9 +75,8 @@ SSelector::SSelector() noexcept
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector() noexcept
-{
-}
+SSelector::~SSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -93,13 +91,14 @@ void SSelector::configuring()
         const service::IService::ConfigType& configFilter = cfg.get_child("filter");
         SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
-        const std::string mode = configFilter.get<std::string>("mode");
+        const auto mode = configFilter.get<std::string>("mode");
         SIGHT_ASSERT(
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
         );
         m_filterMode = mode;
 
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const ConfigType::value_type& v, configFilter.equal_range("id"))
         {
             m_keys.push_back(v.second.get<std::string>(""));
@@ -117,13 +116,13 @@ void SSelector::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QGroupBox* groupBox = new QGroupBox(tr("Activity"));
+    auto* groupBox = new QGroupBox(tr("Activity"));
 
-    QScrollArea* scrollArea = new QScrollArea();
+    auto* scrollArea = new QScrollArea();
     scrollArea->setWidget(groupBox);
     scrollArea->setWidgetResizable(true);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(scrollArea);
 
     m_buttonGroup = new QButtonGroup(groupBox);
@@ -155,7 +154,7 @@ void SSelector::starting()
                                 "}");
     container->setStyleSheet(QString::fromUtf8(styleGrid.c_str()));
 
-    QGridLayout* activitiesLayout = new QGridLayout();
+    auto* activitiesLayout = new QGridLayout();
     activitiesLayout->setRowMinimumHeight(0, 5);
     activitiesLayout->setRowStretch(0, 2);
     groupBox->setLayout(activitiesLayout);
@@ -174,7 +173,7 @@ void SSelector::starting()
 
     for(const auto& info : m_activitiesInfo)
     {
-        QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
+        auto* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));
         button->setIconSize(QSize(80, 80));
         button->setObjectName(serviceID + '/' + info.title.c_str());
@@ -183,7 +182,7 @@ void SSelector::starting()
         button->setStyleSheet(QString::fromUtf8(style.c_str()));
         m_buttonGroup->addButton(button, static_cast<int>(indexButton));
 
-        QLabel* label = new QLabel(QString::fromStdString(info.description));
+        auto* label = new QLabel(QString::fromStdString(info.description));
         label->setWordWrap(true);
 
         activitiesLayout->setColumnMinimumWidth(j, 10);
@@ -256,13 +255,9 @@ SSelector::ActivityInfoContainer SSelector::getEnabledActivities(const ActivityI
 
         for(const auto& info : infos)
         {
-            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
+            auto keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
 
-            if(keyIt != m_keys.end() && isIncludeMode)
-            {
-                configs.push_back(info);
-            }
-            else if(keyIt == m_keys.end() && !isIncludeMode)
+            if((keyIt != m_keys.end() && isIncludeMode) || (keyIt == m_keys.end() && !isIncludeMode))
             {
                 configs.push_back(info);
             }
@@ -278,6 +273,4 @@ SSelector::ActivityInfoContainer SSelector::getEnabledActivities(const ActivityI
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace activity
+} // namespace sight::module::ui::qt::activity

@@ -22,10 +22,7 @@
 
 #pragma once
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 /// OIT (Order Independent Transparency) techniques supported
@@ -39,6 +36,4 @@ enum transparencyTechnique
     CELLSHADING_DEPTHPEELING
 };
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

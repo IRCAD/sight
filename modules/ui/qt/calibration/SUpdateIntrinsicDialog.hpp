@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     SUpdateIntrinsicDialog();
 
     /// destructor
-    ~SUpdateIntrinsicDialog();
+    ~SUpdateIntrinsicDialog() override;
 
     /**
      * @brief setParameters
@@ -88,11 +88,11 @@ private:
     /**
      * @brief concatenation of resolution (0-1) , intrinsic parameters (2-5), distortions (6-10), and skew(11)
      */
-    std::array<double, 12> m_calibration;
+    std::array<double, 12> m_calibration {};
     /**
      * @brief store the original calibration (to reset)
      */
-    std::array<double, 12> m_originCalibration;
+    std::array<double, 12> m_originCalibration {};
 
     /**
      * @brief Width of the video.
@@ -155,7 +155,7 @@ private:
     QLabel* m_skew;
 
     /// ratio of the calibration resolution
-    double m_ratio;
+    double m_ratio {0.};
 };
 
 } //namespace sight::module::ui::qt::calibration

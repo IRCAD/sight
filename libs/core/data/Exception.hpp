@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     /**
      * @brief   Destructor : do nothing.
      */
-    DATA_API ~Exception() noexcept;
+    DATA_API ~Exception() noexcept override;
 };
 
 } // namespace sight::data

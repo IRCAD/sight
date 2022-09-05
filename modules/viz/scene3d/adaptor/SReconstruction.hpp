@@ -37,7 +37,7 @@ namespace sight::data
 
 class Mesh;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -143,7 +143,7 @@ protected:
 private:
 
     /// Changes the attached mesh.
-    void changeMesh(data::Mesh::sptr);
+    void changeMesh(data::Mesh::sptr /*unused*/);
 
     /// Modifies the visibility.
     void modifyVisibility();

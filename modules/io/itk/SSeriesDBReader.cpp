@@ -52,15 +52,13 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::SSeriesDBReader() noexcept
-{
-}
+SSeriesDBReader::SSeriesDBReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::~SSeriesDBReader() noexcept
-{
-}
+SSeriesDBReader::~SSeriesDBReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -130,7 +128,7 @@ void SSeriesDBReader::updating()
         for(const std::filesystem::path& path : this->getFiles())
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::New();
-            this->initSeries(imgSeries, instanceUID);
+            sight::module::io::itk::SSeriesDBReader::initSeries(imgSeries, instanceUID);
 
             data::Image::sptr image = data::Image::New();
             if(!SImageReader::loadImage(path, image))

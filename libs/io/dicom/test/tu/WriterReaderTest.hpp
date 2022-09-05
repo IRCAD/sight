@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 class WriterReaderTest : public CPPUNIT_NS::TestFixture
@@ -45,11 +42,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void writeReadImageSeriesTest();
-    void writeReadSeriesDBTest();
+    static void writeReadImageSeriesTest();
+    static void writeReadSeriesDBTest();
 
 private:
 
@@ -57,9 +54,7 @@ private:
      * Create a series DB containing an ImageSeries with landmarks and distance
      * and a ModelSeries with one reconstruction.
      */
-    data::SeriesDB::sptr createSeriesDB();
+    static data::SeriesDB::sptr createSeriesDB();
 };
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

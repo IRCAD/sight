@@ -24,10 +24,7 @@
 
 #include <core/memory/exception/Memory.hpp>
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 //-----------------------------------------------------------------------------
@@ -41,7 +38,7 @@ Buffer::Buffer(
     Object(timestamp),
     m_size(size),
     m_buffer(buffer),
-    m_deleter(d)
+    m_deleter(std::move(d))
 {
 }
 
@@ -61,7 +58,7 @@ void Buffer::deepCopy(const data::timeline::Object& other)
 {
     Object::deepCopy(other);
 
-    const Buffer& otherObject = static_cast<const Buffer&>(other);
+    const auto& otherObject = static_cast<const Buffer&>(other);
     memcpy(m_buffer, otherObject.m_buffer, m_size);
 }
 
@@ -90,6 +87,4 @@ bool Buffer::operator!=(const Buffer& other) const noexcept
     return !(*this == other);
 }
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

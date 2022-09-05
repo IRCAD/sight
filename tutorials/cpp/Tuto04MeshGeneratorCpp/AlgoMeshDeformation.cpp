@@ -26,24 +26,23 @@
 
 #include <geometry/data/Mesh.hpp>
 
-using namespace sight;
+#include <cmath>
+
+namespace data     = sight::data;
+namespace geometry = sight::geometry;
 
 namespace Tuto04MeshGeneratorCpp
 {
 
-using namespace data::iterator;
+//-----------------------------------------------------------------------------
+
+AlgoMeshDeformation::AlgoMeshDeformation() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-AlgoMeshDeformation::AlgoMeshDeformation() noexcept
-{
-}
-
-//-----------------------------------------------------------------------------
-
-AlgoMeshDeformation::~AlgoMeshDeformation() noexcept
-{
-}
+AlgoMeshDeformation::~AlgoMeshDeformation() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -102,7 +101,7 @@ void AlgoMeshDeformation::initSimu()
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    float coord;
+    float coord = NAN;
     for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
         coord = p.y;
@@ -124,6 +123,9 @@ void AlgoMeshDeformation::initSimu()
 
 void AlgoMeshDeformation::computeSimu()
 {
+    namespace core  = sight::core;
+    namespace point = data::iterator::point;
+
     m_step += m_direction;
     if(m_step == static_cast<int>(m_nbStep))
     {

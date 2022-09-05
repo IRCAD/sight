@@ -35,16 +35,13 @@
 namespace sight::ui::base
 {
 
-IMenu::IMenu() :
-    m_hideActions(false)
-{
-}
+IMenu::IMenu()
+= default;
 
 //-----------------------------------------------------------------------------
 
 IMenu::~IMenu()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -275,4 +272,4 @@ void IMenu::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

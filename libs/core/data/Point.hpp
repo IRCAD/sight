@@ -44,7 +44,7 @@ public:
     SIGHT_DECLARE_CLASS(Point, Object, factory::New<Point>);
 
     /// Point factory
-    DATA_API static Point::sptr New(float x, float y   = 0.f, float z = 0.f);
+    DATA_API static Point::sptr New(float x, float y   = 0.F, float z = 0.F);
     DATA_API static Point::sptr New(double x, double y = 0., double z = 0.);
     DATA_API static Point::sptr New(const PointCoordArrayType& coord);
     DATA_API static Point::sptr New(const Point::sptr& p);
@@ -56,7 +56,7 @@ public:
     DATA_API Point(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Point();
+    DATA_API ~Point() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -84,7 +84,7 @@ protected:
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// point coordinates
-    PointCoordArrayType m_vCoord;
+    PointCoordArrayType m_vCoord {};
 }; // end class Point
 
 //-----------------------------------------------------------------------------

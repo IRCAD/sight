@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <ui/base/builder/ISlideViewBuilder.hpp>
 #include <ui/base/container/fwContainer.hpp>
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 /// This builder creates a slide widget. The slide widget can be displayed over all others widgets.
@@ -52,7 +49,7 @@ public:
     UI_QT_API SlideViewBuilder(ui::base::GuiBaseObject::Key key);
 
     /// Destroyes the slide builder.
-    UI_QT_API virtual ~SlideViewBuilder();
+    UI_QT_API ~SlideViewBuilder() override;
 
     /// Create the Qt container @ref ui::qt::widget::SlideBar.
     UI_QT_API void createContainer(ui::base::container::fwContainer::sptr parent) override;
@@ -66,6 +63,4 @@ protected:
     ui::qt::container::QtContainer::sptr m_parent;
 };
 
-} // namespace builder.
-
-} // namespace sight::ui::base.
+} // namespace sight::ui::base::builder

@@ -119,7 +119,7 @@ void IntrinsicCalibration::test()
             {
                 return tester.getMainWindow()->findChild<QLabel*>("detectionStatusSrv/0");
             });
-            QLabel* calibrationStatusSquare = tester.get<QLabel*>();
+            auto* calibrationStatusSquare = tester.get<QLabel*>();
             tester.doubt<QLabel*>(
                 "the calibration status square says that points are not visible",
                 [](QLabel* obj) -> bool {return obj->toolTip() == "Points are NOT visible";});
@@ -146,7 +146,7 @@ void IntrinsicCalibration::test()
                     )
                 );
             });
-            QToolButton* addCaptureButton = tester.get<QToolButton*>();
+            auto* addCaptureButton = tester.get<QToolButton*>();
             tester.interact(std::make_unique<sight::ui::test::MouseClick>());
             tester.interact(std::make_unique<sight::ui::test::MouseClick>());
             tester.interact(std::make_unique<sight::ui::test::MouseClick>());
@@ -164,7 +164,7 @@ void IntrinsicCalibration::test()
             {
                 return tester.getMainWindow()->findChild<QListWidget*>("calibrationInfoEditorSrv/capturesListWidget");
             });
-            QListWidget* capturesListWidget = tester.get<QListWidget*>();
+            auto* capturesListWidget = tester.get<QListWidget*>();
             tester.doubt<QListWidget*>(
                 "nb captures list is empty",
                 [](QListWidget* obj) -> bool
@@ -207,7 +207,7 @@ void IntrinsicCalibration::test()
             {
                 return qApp->activeModalWidget();
             });
-            QWidget* videoGrabberImplementationDialog = tester.get<QWidget*>();
+            auto* videoGrabberImplementationDialog = tester.get<QWidget*>();
             if(videoGrabberImplementationDialog != nullptr)
             {
                 tester.yields(

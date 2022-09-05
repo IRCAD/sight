@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -162,10 +162,10 @@ private:
     UPTR(sight::filter::image::MinMaxPropagation) m_propagator;
 
     /// Memorizes the last cursor position.
-    CoordinatesType m_oldPoint;
+    CoordinatesType m_oldPoint {};
 
     /// Current slice orientation.
-    OrientationType m_orientation;
+    OrientationType m_orientation {};
 
     /// Memorizes the seeds while drawing.
     sight::filter::image::ImageDiff m_diff;
@@ -174,19 +174,19 @@ private:
     DrawnSignalType::sptr m_sigDrawn;
 
     /// Value to be written inside the image.
-    int m_value;
+    int m_value {1};
 
     /// Maximum propagation distance.
-    double m_radius;
+    double m_radius {};
 
     /// Propagation mode (min, max or minmax).
-    sight::filter::image::MinMaxPropagation::Mode m_mode;
+    sight::filter::image::MinMaxPropagation::Mode m_mode {sight::filter::image::MinMaxPropagation::Mode::MINMAX};
 
     /// Overwrite mode.
-    bool m_overwrite;
+    bool m_overwrite {true};
 
     /// Set to 'true' if we currently drawing in the image.
-    bool m_drawing;
+    bool m_drawing {false};
 
     static constexpr std::string_view s_IMAGE_IN    = "imageIn";
     static constexpr std::string_view s_IMAGE_INOUT = "imageOut";

@@ -74,7 +74,7 @@ public:
     MODULE_UI_QT_API SOpticalCenterEditor() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_QT_API virtual ~SOpticalCenterEditor() noexcept;
+    MODULE_UI_QT_API ~SOpticalCenterEditor() noexcept override;
 
 protected:
 
@@ -115,4 +115,4 @@ private:
     data::ptr<data::Matrix4, data::Access::inout> m_matrix {this, s_MATRIX, true};
 };
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

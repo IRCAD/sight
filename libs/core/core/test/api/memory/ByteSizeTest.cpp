@@ -30,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::memory::ut::ByteSizeTest);
 
-namespace sight::core::memory
-{
-
-namespace ut
+namespace sight::core::memory::ut
 {
 
 //------------------------------------------------------------------------------
@@ -200,6 +197,4 @@ void ByteSizeTest::invalidSizeTest()
     CPPUNIT_ASSERT_THROW(a = std::string("7A"), core::memory::exception::BadCast);
 }
 
-} // namespace ut
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::ut

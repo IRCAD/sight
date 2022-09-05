@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ public:
 
     MODULE_FILTER_POINT_API SPointListRegistration();
 
-    MODULE_FILTER_POINT_API virtual ~SPointListRegistration();
+    MODULE_FILTER_POINT_API ~SPointListRegistration() override;
 
 protected:
 
@@ -127,7 +127,7 @@ private:
     std::string m_matrixKey;
 
     ///Registration Mode
-    RegistrationModeType m_registrationMode;
+    RegistrationModeType m_registrationMode {RIGID};
 
     sight::data::ptr<sight::data::PointList, sight::data::Access::inout> m_registeredPL {this, "registeredPL"};
     sight::data::ptr<sight::data::PointList, sight::data::Access::inout> m_referencePL {this, "referencePL"};

@@ -41,10 +41,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::SeriesDBTest);
 
-namespace sight::io::vtk
-{
-
-namespace ut
+namespace sight::io::vtk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -116,7 +113,7 @@ bool isLoaded(core::memory::BufferObject::sptr bo)
     core::memory::BufferManager::csptr manager                    = core::memory::BufferManager::getDefault();
     const core::memory::BufferManager::BufferInfoMapType mapInfos = manager->getBufferInfos().get();
 
-    core::memory::BufferManager::BufferInfoMapType::const_iterator iter = mapInfos.find(bo->getBufferPointer());
+    auto iter = mapInfos.find(bo->getBufferPointer());
     CPPUNIT_ASSERT_MESSAGE("BufferInfo not found.", iter != mapInfos.end());
     const core::memory::BufferInfo& info = iter->second;
 
@@ -125,6 +122,4 @@ bool isLoaded(core::memory::BufferObject::sptr bo)
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::ut

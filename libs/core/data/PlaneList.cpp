@@ -40,7 +40,7 @@ const core::com::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList(data::Object::Key)
+PlaneList::PlaneList(data::Object::Key /*unused*/)
 {
     newSignal<PlaneAddedSignalType>(s_PLANE_ADDED_SIG);
     newSignal<PlaneRemovedSignalType>(s_PLANE_REMOVED_SIG);
@@ -50,8 +50,7 @@ PlaneList::PlaneList(data::Object::Key)
 //------------------------------------------------------------------------------
 
 PlaneList::~PlaneList()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

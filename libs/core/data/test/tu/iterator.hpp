@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -18,6 +18,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINT
 
 #pragma once
 #include <core/macros.hpp>
@@ -78,7 +80,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    constexpr FINLINE zip_iterator operator++(int) noexcept
+    constexpr FINLINE const zip_iterator operator++(int) noexcept // NOLINT(readability-const-return-type)
     {
         auto tmp = *this;
         ++(*this);
@@ -104,7 +106,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<std::size_t ... Is>
-    constexpr FINLINE auto make(std::index_sequence<Is ...>) noexcept
+    constexpr FINLINE auto make(std::index_sequence<Is ...> /*unused*/) noexcept
     {
         return std::make_tuple(
             (
@@ -118,7 +120,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<std::size_t ... Is>
-    constexpr FINLINE void next(std::index_sequence<Is ...>) noexcept
+    constexpr FINLINE void next(std::index_sequence<Is ...> /*unused*/) noexcept
     {
         ((
              std::get<Is>(iterator_tuple_) == std::get<Is>(end_iterator_tuple_)
@@ -182,14 +184,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    constexpr FINLINE std::size_t size() const noexcept
+    [[nodiscard]] constexpr FINLINE std::size_t size() const noexcept
     {
         return size_;
     }
 
     //------------------------------------------------------------------------------
 
-    constexpr FINLINE bool empty() const noexcept
+    [[nodiscard]] constexpr FINLINE bool empty() const noexcept
     {
         return 0 == size();
     }
@@ -199,7 +201,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<std::size_t ... Is>
-    FINLINE auto begin_tuple(std::index_sequence<Is ...>) const noexcept
+    FINLINE auto begin_tuple(std::index_sequence<Is ...> /*unused*/) const noexcept
     {
         return std::make_tuple(std::begin(std::get<Is>(ranges_)) ...);
     }
@@ -207,7 +209,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<std::size_t ... Is>
-    FINLINE auto end_tuple(std::index_sequence<Is ...>) const noexcept
+    FINLINE auto end_tuple(std::index_sequence<Is ...> /*unused*/) const noexcept
     {
         return std::make_tuple(std::end(std::get<Is>(ranges_)) ...);
     }
@@ -215,7 +217,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<std::size_t ... Is>
-    constexpr FINLINE std::size_t max_size(std::index_sequence<Is ...>) const noexcept
+    constexpr FINLINE std::size_t max_size(std::index_sequence<Is ...> /*unused*/) const noexcept
     {
         if constexpr(0 == sizeof...(Range))
         {

@@ -31,15 +31,13 @@ static const std::string s_ARRAY_INOUT = "array";
 
 //------------------------------------------------------------------------------
 
-SReadArray::SReadArray() noexcept
-{
-}
+SReadArray::SReadArray() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SReadArray::~SReadArray() noexcept
-{
-}
+SReadArray::~SReadArray() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

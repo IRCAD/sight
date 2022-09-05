@@ -24,8 +24,6 @@
 
 #include <core/spyLog.hpp>
 
-using namespace sight::filter::vision;
-
 namespace sight::filter::vision
 {
 
@@ -44,17 +42,14 @@ const cv::Mat Masker::s_MORPHELEMENT =
 
 Masker::Masker(const ColSpace& c, const DetectionMode& d) :
     m_COLORSPACE(c),
-    m_DETECTIONMODE(d),
-    m_threshold(0.0),
-    m_hasSetThreshold(false)
+    m_DETECTIONMODE(d)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Masker::~Masker()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -74,8 +69,8 @@ void Masker::trainForegroundModel(
     cv::randn(gaussian_noise, 0, noise);
     cv::addWeighted(rgbImgCopy, 1.0, gaussian_noise, 1.0, 0.0, rgbImgCopy);
 
-    const cv::Mat s = this->makeTrainingSamples(rgbImgCopy, selectionMask, this->m_COLORSPACE);
-    this->m_foregroundModel = this->trainModelFromSamples(s, numClusters);
+    const cv::Mat s = sight::filter::vision::Masker::makeTrainingSamples(rgbImgCopy, selectionMask, this->m_COLORSPACE);
+    this->m_foregroundModel = sight::filter::vision::Masker::trainModelFromSamples(s, numClusters);
 }
 
 //------------------------------------------------------------------------------
@@ -86,8 +81,8 @@ void Masker::trainBackgroundModel(
     const unsigned int numClusters
 )
 {
-    const cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, m_COLORSPACE);
-    m_backgroundModel = this->trainModelFromSamples(s, numClusters);
+    const cv::Mat s = sight::filter::vision::Masker::makeTrainingSamples(rgbImg, selectionMask, m_COLORSPACE);
+    m_backgroundModel = sight::filter::vision::Masker::trainModelFromSamples(s, numClusters);
 }
 
 //------------------------------------------------------------------------------
@@ -96,7 +91,8 @@ cv::Mat Masker::makeMask(const cv::Mat& testImg, const cv::Size& downSize, cv::I
 {
     SIGHT_ASSERT("Threshold is not set", m_hasSetThreshold);
 
-    cv::Mat t2, testImgMask2;
+    cv::Mat t2;
+    cv::Mat testImgMask2;
     // OpenCV check if the downSize is different from the testImg size. If not, a copy is just performed.
     cv::resize(testImg, t2, downSize);
     cv::Mat m;
@@ -155,7 +151,7 @@ void Masker::setThreshold(double t)
 
 //------------------------------------------------------------------------------
 
-bool Masker::isModelLearned(void)
+bool Masker::isModelLearned()
 {
     switch(m_DETECTIONMODE)
     {
@@ -230,8 +226,8 @@ cv::Mat Masker::convertColourSpace(const cv::Mat& src, const ColSpace& c)
         case HSv:
         {
             cv::cvtColor(src, output, cv::COLOR_BGR2HSV);
-            cv::Mat s[3];         //destination array
-            cv::split(output, s); //split source
+            std::array<cv::Mat, 3> s; //destination array
+            cv::split(output, s);     //split source
             std::vector<cv::Mat> array_to_merge;
             array_to_merge.push_back(s[0]);
             array_to_merge.push_back(s[1]);
@@ -244,8 +240,8 @@ cv::Mat Masker::convertColourSpace(const cv::Mat& src, const ColSpace& c)
         case lAB:
         {
             cv::cvtColor(src, output, cv::COLOR_BGR2Lab);
-            cv::Mat s[3];         //destination array
-            cv::split(output, s); //split source
+            std::array<cv::Mat, 3> s; //destination array
+            cv::split(output, s);     //split source
             std::vector<cv::Mat> array_to_merge;
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[2]);
@@ -257,8 +253,8 @@ cv::Mat Masker::convertColourSpace(const cv::Mat& src, const ColSpace& c)
         case yCrCb:
         {
             cv::cvtColor(src, output, cv::COLOR_BGR2YCrCb);
-            cv::Mat s[3];         //destination array
-            cv::split(output, s); //split source
+            std::array<cv::Mat, 3> s; //destination array
+            cv::split(output, s);     //split source
             std::vector<cv::Mat> array_to_merge;
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[2]);
@@ -382,4 +378,4 @@ cv::Mat Masker::removeMaskHoles(const cv::Mat& m, std::size_t n, cv::InputArray 
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::filter
+} // namespace sight::filter::vision

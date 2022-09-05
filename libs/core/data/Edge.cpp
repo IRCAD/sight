@@ -35,7 +35,7 @@ std::string Edge::NATURE_DATA = "data";
 
 //------------------------------------------------------------------------------
 
-Edge::Edge(data::Object::Key) :
+Edge::Edge(data::Object::Key /*unused*/) :
     m_fromPortIdentifier("not defined"),
     m_toPortIdentifier("not defined"),
     m_nature("not defined")
@@ -45,8 +45,7 @@ Edge::Edge(data::Object::Key) :
 //------------------------------------------------------------------------------
 
 Edge::~Edge()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

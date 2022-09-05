@@ -49,10 +49,7 @@ static const core::com::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawin
 //-----------------------------------------------------------------------------
 
 SPropagator::SPropagator() :
-    IHasParameters(m_slots),
-    m_value(1),
-    m_overwrite(true),
-    m_drawing(false)
+    IHasParameters(m_slots)
 {
     newSlot(s_DRAW_SLOT, &SPropagator::draw, this);
     newSlot(s_SET_ORIENTATION_SLOT, &SPropagator::setOrientation, this);
@@ -64,8 +61,7 @@ SPropagator::SPropagator() :
 //-----------------------------------------------------------------------------
 
 SPropagator::~SPropagator()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

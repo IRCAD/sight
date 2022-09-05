@@ -42,10 +42,7 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SurfaceSegmentation);
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 //------------------------------------------------------------------------------
@@ -59,8 +56,7 @@ SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key /*
 //------------------------------------------------------------------------------
 
 SurfaceSegmentation::~SurfaceSegmentation()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -85,8 +81,8 @@ void SurfaceSegmentation::write()
     if(modelPatientName != imagePatientName)
     {
         m_logger->warning(
-            "The patient's name of the model (\"" + modelPatientName + "\") "
-                                                                       "does not match the patient's name of the image (\"" + imagePatientName + "\")."
+            std::string("The patient's name of the model (\"").append(modelPatientName)
+            .append("\") does not match the patient's name of the image (\"").append(imagePatientName).append("\").")
         );
     }
 
@@ -96,8 +92,8 @@ void SurfaceSegmentation::write()
     if(modelPatientID != imagePatientID)
     {
         m_logger->warning(
-            "The patient ID of the model (\"" + modelPatientID + "\") "
-                                                                 "does not match the patient ID of the image (\"" + imagePatientID + "\")."
+            std::string("The patient ID of the model (\"").append(modelPatientID)
+            .append("\") does not match the patient ID of the image (\"").append(imagePatientID).append("\").")
         );
     }
 
@@ -107,8 +103,9 @@ void SurfaceSegmentation::write()
     if(modelStudyInstanceUID != imageStudyInstanceUID)
     {
         m_logger->warning(
-            "The study instance UID of the model (\"" + modelStudyInstanceUID + "\") "
-                                                                                "does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\")."
+            std::string("The study instance UID of the model (\"").append(modelStudyInstanceUID)
+            .append("\") does not match the study instance UID of the image (\"").append(imageStudyInstanceUID)
+            .append("\").")
         );
     }
 
@@ -156,7 +153,7 @@ void SurfaceSegmentation::write()
 
 std::string SurfaceSegmentation::extension() const
 {
-    return std::string("");
+    return {""};
 }
 
 //------------------------------------------------------------------------------
@@ -175,6 +172,4 @@ SPTR(core::log::Logger) SurfaceSegmentation::getLogger() const
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

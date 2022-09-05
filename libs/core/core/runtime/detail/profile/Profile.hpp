@@ -29,13 +29,7 @@
 #include <functional>
 #include <map>
 #include <vector>
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace profile
+namespace sight::core::runtime::detail::profile
 {
 
 class Activater;
@@ -93,7 +87,7 @@ public:
     int run() final;
     void setRunCallback(RunCallbackType callback) final;
 
-    int defaultRun();
+    static int defaultRun();
 
     /**
      * @brief   Return profile CheckSingleInstance.
@@ -140,8 +134,4 @@ void setCurrentProfile(Profile::sptr prof);
  */
 Profile::sptr getCurrentProfile();
 
-} // namespace profile
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::profile

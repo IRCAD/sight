@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,25 +24,15 @@
 
 #include <core/LazyInstantiator.hpp>
 
-namespace sight::activity
-{
-
-namespace validator
-{
-
-namespace registry
+namespace sight::activity::validator::registry
 {
 
 struct FwActivitiesValidatorRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator<Type, FwActivitiesValidatorRegistryInstantiatorTag> InstantiatorType;
+    using InstantiatorType = core::LazyInstantiator<Type, FwActivitiesValidatorRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
-} // namespace registry
-
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator::registry

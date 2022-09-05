@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,10 +39,7 @@
 
 fwDicomIOFilterRegisterMacro(sight::ui::dicom::splitter::TagValueInstanceRemoveConfigurableSplitter);
 
-namespace sight::ui::dicom
-{
-
-namespace splitter
+namespace sight::ui::dicom::splitter
 {
 
 const std::string TagValueInstanceRemoveConfigurableSplitter::s_FILTER_NAME =
@@ -62,8 +59,7 @@ TagValueInstanceRemoveConfigurableSplitter::TagValueInstanceRemoveConfigurableSp
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveConfigurableSplitter::~TagValueInstanceRemoveConfigurableSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -97,30 +93,30 @@ bool TagValueInstanceRemoveConfigurableSplitter::isConfigurableWithGUI() const
 
 void TagValueInstanceRemoveConfigurableSplitter::configureWithGUI()
 {
-    QDialog* dialog = new QDialog(qApp->activeWindow());
+    auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Configure"));
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     dialog->setLayout(mainLayout);
     dialog->setMinimumWidth(500);
 
     // Create tag selectors
-    ui::dicom::widget::QTagSelectorWidget* tagSelector =
+    auto* tagSelector =
         new ui::dicom::widget::QTagSelectorWidget();
     tagSelector->setTagValue(m_tag);
     mainLayout->addWidget(tagSelector);
 
     // Create tag value field
-    QWidget* tagValueWidget = new QWidget();
+    auto* tagValueWidget = new QWidget();
     mainLayout->addWidget(tagValueWidget);
-    QHBoxLayout* tagValueLayout = new QHBoxLayout();
+    auto* tagValueLayout = new QHBoxLayout();
     tagValueWidget->setLayout(tagValueLayout);
     tagValueLayout->addWidget(new QLabel("<b>Value:</b> "));
-    QLineEdit* tagValuelineEdit = new QLineEdit(m_tagValue.c_str());
+    auto* tagValuelineEdit = new QLineEdit(m_tagValue.c_str());
     tagValueLayout->addWidget(tagValuelineEdit, 1);
     tagValueLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Create buttons
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(dialog);
+    auto* buttonBox = new QDialogButtonBox(dialog);
     mainLayout->addWidget(buttonBox);
     QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
@@ -136,6 +132,4 @@ void TagValueInstanceRemoveConfigurableSplitter::configureWithGUI()
     }
 }
 
-} // namespace splitter
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::splitter

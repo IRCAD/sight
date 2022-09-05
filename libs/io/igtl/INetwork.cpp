@@ -27,6 +27,8 @@
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
 
+#include <cmath>
+
 #if defined(_WIN32) && !defined(__CYGWIN__)
   #include <windows.h>
   #include <winsock2.h>
@@ -47,7 +49,7 @@ namespace sight::io::igtl
 //------------------------------------------------------------------------------
 
 INetwork::INetwork() :
-    m_filteringByDeviceName(false),
+
     m_deviceNameOut("Sight")
 {
 }
@@ -55,8 +57,7 @@ INetwork::INetwork() :
 //------------------------------------------------------------------------------
 
 INetwork::~INetwork()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -112,9 +113,11 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
         if(msg.IsNotNull())
         {
             // get message timestamp
-            unsigned int sec, frac;
+            unsigned int sec  = 0;
+            unsigned int frac = 0;
             msg->GetTimeStamp(&sec, &frac);
-            double secD, fracD;
+            double secD  = NAN;
+            double fracD = NAN;
             secD  = static_cast<double>(sec);
             fracD = static_cast<double>(frac);
 
@@ -145,52 +148,48 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
         // Case 1: Timeout
         throw sight::io::igtl::Exception("Network timeout");
     }
-    else if(sizeReceive == 0)
+
+    if(sizeReceive == 0)
     {
         // Case 2: Error
         throw sight::io::igtl::Exception("Network Error");
     }
-    else if(sizeReceive != headerMsg->GetPackSize())
+
+    if(sizeReceive != headerMsg->GetPackSize())
     {
         // Case 3: mismatch of size
         throw sight::io::igtl::Exception("Received size error");
     }
-    else
-    {
-        if(headerMsg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
-        {
-            const std::string deviceName = headerMsg->GetDeviceName();
 
-            if(m_filteringByDeviceName)
-            {
-                if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
-                {
-                    return headerMsg;
-                }
-                else
-                {
-                    return ::igtl::MessageHeader::Pointer();
-                }
-            }
-            else
+    if(headerMsg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
+    {
+        const std::string deviceName = headerMsg->GetDeviceName();
+
+        if(m_filteringByDeviceName)
+        {
+            if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
             {
                 return headerMsg;
             }
+
+            return {};
         }
+
+        return headerMsg;
     }
 
-    return ::igtl::MessageHeader::Pointer();
+    return {};
 }
 
 //------------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer INetwork::receiveBody(::igtl::MessageHeader::Pointer const headerMsg)
 {
-    int unpackResult;
-    int result;
+    int unpackResult = 0;
+    int result       = 0;
     ::igtl::MessageBase::Pointer msg;
 
-    if(!headerMsg)
+    if(headerMsg == nullptr)
     {
         throw sight::io::igtl::Exception("Invalid header message");
     }
@@ -204,22 +203,21 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     {
         throw sight::io::igtl::Exception("Network timeout");
     }
-    else if(result == 0) // Error
+
+    if(result == 0) // Error
     {
         throw sight::io::igtl::Exception("Network Error");
     }
-    else
-    {
-        unpackResult = msg->Unpack();
-        if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
-        {
-            throw sight::io::igtl::Exception("Network Error");
-        }
 
-        if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
-        {
-            return msg;
-        }
+    unpackResult = msg->Unpack();
+    if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
+    {
+        throw sight::io::igtl::Exception("Network Error");
+    }
+
+    if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
+    {
+        return msg;
     }
 
     throw Exception("Body pack is not valid");
@@ -236,7 +234,7 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
 
 void INetwork::addAuthorizedDevice(const std::string& deviceName)
 {
-    std::set<std::string>::iterator it = m_deviceNamesIn.find(deviceName);
+    auto it = m_deviceNamesIn.find(deviceName);
 
     if(it == m_deviceNamesIn.end())
     {
@@ -298,8 +296,6 @@ void INetwork::closeSocket(int socket_descriptor)
     shutdown(socket_descriptor, 2);
     close(socket_descriptor); // closing socket for latter reuse.
     #endif
-
-    socket_descriptor = -1;
 }
 
 //------------------------------------------------------------------------------
@@ -325,7 +321,7 @@ int INetwork::createSocket()
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     // Elimate windows 0.2 second delay sending (buffering) data.
     int on = 1;
-    if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*) &on, sizeof(on)))
+    if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&on), sizeof(on)) != 0)
     {
         return -1;
     }
@@ -349,7 +345,7 @@ int INetwork::listenSocket(int socket_descriptor)
 
 int INetwork::bindSocket(int socket_descriptor, std::uint16_t port)
 {
-    struct sockaddr_in server;
+    struct sockaddr_in server {};
 
     server.sin_family      = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
@@ -363,7 +359,7 @@ int INetwork::bindSocket(int socket_descriptor, std::uint16_t port)
     setsockopt(socket_descriptor, SOL_SOCKET, SO_REUSEADDR, (void*) &opt, sizeof(int));
 #endif
 
-    if(bind(socket_descriptor, reinterpret_cast<sockaddr*>(&server), sizeof(server)))
+    if(bind(socket_descriptor, reinterpret_cast<sockaddr*>(&server), sizeof(server)) != 0)
     {
         return -1;
     }

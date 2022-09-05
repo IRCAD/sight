@@ -38,15 +38,9 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -71,13 +65,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationEntity(
-        const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const SPTR(DATATYPE)& object,
-        const core::log::Logger::sptr& logger = nullptr,
-        const ProgressCallback progress       = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        CSPTR(data::DicomSeries)dicomSeries,
+        SPTR(gdcm::Reader)reader,
+        SPTR(io::dicom::container::DicomInstance)instance,
+        SPTR(DATATYPE)object,
+        core::log::Logger::sptr logger = nullptr,
+        ProgressCallback progress      = nullptr,
+        CancelRequestedCallback cancel = nullptr
     );
 
     /// Destructor
@@ -111,38 +105,32 @@ protected:
 
 template<class DATATYPE>
 InformationEntity<DATATYPE>::InformationEntity(
-    const CSPTR(data::DicomSeries)& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const SPTR(DATATYPE)& object,
-    const core::log::Logger::sptr& logger,
+    CSPTR(data::DicomSeries)dicomSeries,
+    SPTR(gdcm::Reader)reader,
+    SPTR(io::dicom::container::DicomInstance)instance,
+    SPTR(DATATYPE)object,
+    core::log::Logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    m_dicomSeries(dicomSeries),
-    m_reader(reader),
-    m_instance(instance),
-    m_object(object),
-    m_logger(logger),
-    m_progressCallback(progress),
-    m_cancelRequestedCallback(cancel)
+    m_dicomSeries(std::move(dicomSeries)),
+    m_reader(std::move(reader)),
+    m_instance(std::move(instance)),
+    m_object(std::move(object)),
+    m_logger(std::move(logger)),
+    m_progressCallback(std::move(progress)),
+    m_cancelRequestedCallback(std::move(cancel))
 {
-    SIGHT_ASSERT("DicomSeries should not be null.", dicomSeries);
-    SIGHT_ASSERT("Reader should not be null.", reader);
-    SIGHT_ASSERT("Instance should not be null.", instance);
-    SIGHT_ASSERT("Object should not be null.", object);
-    SIGHT_ASSERT("Logger should not be null.", logger);
+    SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
+    SIGHT_ASSERT("Reader should not be null.", m_reader);
+    SIGHT_ASSERT("Instance should not be null.", m_instance);
+    SIGHT_ASSERT("Object should not be null.", m_object);
+    SIGHT_ASSERT("Logger should not be null.", m_logger);
 }
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE>
-InformationEntity<DATATYPE>::~InformationEntity()
-{
-}
+template<class DATATYPE> InformationEntity<DATATYPE>::~InformationEntity()
+= default;
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,13 +45,11 @@ public:
 
     /// Constructor, initializes the worker.
     VIZ_SCENE3D_API IGraphicsWorker()
-    {
-    }
+    = default;
 
     /// Destructor, clears all waiting tasks and waits on the one being executed.
     VIZ_SCENE3D_API virtual ~IGraphicsWorker()
-    {
-    }
+    = default;
 
     /// Adds a task at the back of the worker's task queue.
     VIZ_SCENE3D_API virtual void pushTask(TaskType _task) = 0;

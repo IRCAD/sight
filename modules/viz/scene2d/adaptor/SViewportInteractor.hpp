@@ -26,10 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -51,7 +48,7 @@ public:
 
     MODULE_VIZ_SCENE2D_API SViewportInteractor() noexcept;
 
-    MODULE_VIZ_SCENE2D_API ~SViewportInteractor() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SViewportInteractor() noexcept override;
 
 protected:
 
@@ -69,12 +66,10 @@ protected:
 
 private:
 
-    bool m_viewportIsTranslated;
-    sight::viz::scene2d::vec2d_t m_lastCoordEvent;
+    bool m_viewportIsTranslated {};
+    sight::viz::scene2d::vec2d_t m_lastCoordEvent {};
 
     sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, "viewport"};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

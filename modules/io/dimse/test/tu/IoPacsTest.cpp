@@ -35,10 +35,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::dimse::ut::IoPacsTest);
 
-namespace sight::module::io::dimse
-{
-
-namespace ut
+namespace sight::module::io::dimse::ut
 {
 
 //------------------------------------------------------------------------------
@@ -88,8 +85,8 @@ void IoPacsTest::pacsConfigurationInitializer()
     srv->stop();
     service::OSR::unregisterService(srv);
 
-    unsigned short pacsApplicationPort = 11112u;
-    unsigned short moveApplicationPort = 11110u;
+    std::uint16_t pacsApplicationPort = 11112U;
+    std::uint16_t moveApplicationPort = 11110U;
     CPPUNIT_ASSERT_EQUAL(std::string("VRRender"), pacsConfiguration->getLocalApplicationTitle());
     CPPUNIT_ASSERT_EQUAL(std::string("mypacs.mycompany.com"), pacsConfiguration->getPacsHostName());
     CPPUNIT_ASSERT_EQUAL(std::string("PACSNAME"), pacsConfiguration->getPacsApplicationTitle());
@@ -104,6 +101,4 @@ void IoPacsTest::pacsConfigurationInitializer()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::dimse
+} // namespace sight::module::io::dimse::ut

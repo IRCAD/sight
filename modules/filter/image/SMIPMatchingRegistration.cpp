@@ -37,16 +37,13 @@
 namespace sight::module::filter::image
 {
 
-SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
-    service::IRegisterer()
-{
-}
+SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SMIPMatchingRegistration::~SMIPMatchingRegistration() noexcept
-{
-}
+SMIPMatchingRegistration::~SMIPMatchingRegistration() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -92,7 +89,7 @@ void SMIPMatchingRegistration::updating()
 
 //------------------------------------------------------------------------------
 
-void SMIPMatchingRegistration::computeRegistration(core::HiResClock::HiResClockType)
+void SMIPMatchingRegistration::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
     this->updating();
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,24 +32,20 @@
 
 #include <utility>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 //-----------------------------------------------------------------------------
 
-Menu::Menu(const std::string& sid) :
-    m_sid(sid)
+Menu::Menu(std::string sid) :
+    m_sid(std::move(sid))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 Menu::~Menu()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -87,7 +83,7 @@ void Menu::initialize(core::runtime::ConfigurationElement::sptr configuration)
     m_callbacks.clear();
     // initialize m_actionSids map with configuration
     std::vector<ConfigurationType> vectMenuItems = configuration->find("menuItem");
-    for(ConfigurationType menuItem : vectMenuItems)
+    for(const ConfigurationType& menuItem : vectMenuItems)
     {
         SIGHT_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
         if(menuItem->hasAttribute("sid"))
@@ -130,7 +126,7 @@ void Menu::initialize(core::runtime::ConfigurationElement::sptr configuration)
     index = 0;
     // initialize m_actionSids map with configuration
     std::vector<ConfigurationType> vectMenus = configuration->find("menu");
-    for(ConfigurationType menu : vectMenus)
+    for(const ConfigurationType& menu : vectMenus)
     {
         SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
         if(menu->hasAttribute("sid"))
@@ -165,7 +161,7 @@ void Menu::initialize(core::runtime::ConfigurationElement::sptr configuration)
 void Menu::manage(std::vector<ui::base::container::fwMenuItem::sptr> menuItems)
 {
     ui::base::container::fwMenuItem::sptr menuItem;
-    for(SIDMenuMapType::value_type sid : m_actionSids)
+    for(const SIDMenuMapType::value_type& sid : m_actionSids)
     {
         SIGHT_ASSERT(
             "The menu '" << m_sid << "' contains more menuItems in <registry> than in <layout>: "
@@ -209,7 +205,7 @@ void Menu::manage(std::vector<ui::base::container::fwMenuItem::sptr> menuItems)
 void Menu::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 {
     ui::base::container::fwMenu::sptr menu;
-    for(SIDMenuMapType::value_type sid : m_menuSids)
+    for(const SIDMenuMapType::value_type& sid : m_menuSids)
     {
         SIGHT_ASSERT(
             "The menu '" << m_sid << "' contains more menus in <registry> than in <layout>: "
@@ -239,7 +235,7 @@ void Menu::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 
 void Menu::unmanage()
 {
-    for(SIDMenuMapType::value_type sid : m_actionSids)
+    for(const SIDMenuMapType::value_type& sid : m_actionSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -255,7 +251,7 @@ void Menu::unmanage()
         ui::base::GuiRegistry::unregisterActionSIDToParentSID(sid.first, m_sid);
     }
 
-    for(SIDMenuMapType::value_type sid : m_menuSids)
+    for(const SIDMenuMapType::value_type& sid : m_menuSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -281,6 +277,4 @@ void Menu::onItemAction()
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::registry

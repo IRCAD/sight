@@ -46,8 +46,7 @@ namespace sight::module::ui::qt::calibration
 const core::com::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
 
-SCameraSeriesEditor::SCameraSeriesEditor() noexcept :
-    m_camIndex(1)
+SCameraSeriesEditor::SCameraSeriesEditor() noexcept
 {
     newSlot(s_UPDATE_INFOS_SLOT, &SCameraSeriesEditor::updateInformations, this);
 }
@@ -69,20 +68,20 @@ void SCameraSeriesEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
+    auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     m_description = new QLabel("");
 
     mainLayout->addWidget(m_description);
 
-    QGridLayout* gridLayout = new QGridLayout();
+    auto* gridLayout = new QGridLayout();
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            QLabel* label = new QLabel("");
+            auto* label = new QLabel("");
             m_matrixLabels.push_back(label);
             gridLayout->addWidget(label, i, j);
         }
@@ -156,4 +155,4 @@ service::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() c
 
 // ----------------------------------------------------------------------------
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

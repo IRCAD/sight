@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,16 +30,13 @@
 #include <QRenderSurfaceSelector>
 #include <QViewport>
 
-namespace sight::viz::qt3d
-{
-
-namespace core
+namespace sight::viz::qt3d::core
 {
 
 FrameGraph::FrameGraph(Qt3DCore::QNode* _parent) :
-    QFrameGraphNode(_parent)
+    QFrameGraphNode(_parent),
+    m_renderSurfaceSelector(new Qt3DRender::QRenderSurfaceSelector(this))
 {
-    m_renderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector(this);
     {
         m_viewport = new Qt3DRender::QViewport(m_renderSurfaceSelector);
         {
@@ -67,8 +64,7 @@ FrameGraph::FrameGraph(Qt3DCore::QNode* _parent) :
 //------------------------------------------------------------------------------
 
 FrameGraph::~FrameGraph()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -139,12 +135,12 @@ void FrameGraph::getAllNodesRec(
     auto children = _currentNode->children();
     if(!children.isEmpty())
     {
-        for(int i = 0 ; i < children.size() ; i++)
+        for(auto& i : children)
         {
-            if(qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]) != nullptr)
+            if(qobject_cast<Qt3DRender::QFrameGraphNode*>(i) != nullptr)
             {
-                _nodes.push_back(qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]));
-                getAllNodesRec(_nodes, qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]));
+                _nodes.push_back(qobject_cast<Qt3DRender::QFrameGraphNode*>(i));
+                getAllNodesRec(_nodes, qobject_cast<Qt3DRender::QFrameGraphNode*>(i));
             }
         }
     }
@@ -155,17 +151,15 @@ void FrameGraph::getAllNodesRec(
 void FrameGraph::addNode(Qt3DRender::QFrameGraphNode* _node, Qt3DRender::QFrameGraphNode* _parent)
 {
     auto nodes = this->getAllNodes();
-    for(int i = 0 ; i < nodes.size() ; i++)
+    for(auto& node : nodes)
     {
-        if(qobject_cast<Qt3DRender::QFrameGraphNode*>(nodes[i])->parentFrameGraphNode() == _parent)
+        if(qobject_cast<Qt3DRender::QFrameGraphNode*>(node)->parentFrameGraphNode() == _parent)
         {
-            nodes[i]->setParent(_node);
+            node->setParent(_node);
         }
     }
 
     _node->setParent(_parent);
 }
 
-} // namespace core.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::core

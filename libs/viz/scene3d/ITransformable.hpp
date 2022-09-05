@@ -41,7 +41,7 @@ public:
      * @brief Get the Ogre identifier of the transform in the scene manager.
      * @return This transform service Id.
      */
-    VIZ_SCENE3D_API viz::scene3d::SRender::OgreObjectIdType getTransformId() const;
+    [[nodiscard]] VIZ_SCENE3D_API viz::scene3d::SRender::OgreObjectIdType getTransformId() const;
 
     /**
      * @brief Set the Ogre identifier of the transform in the scene manager.
@@ -54,13 +54,13 @@ public:
      * @param _parentNode The parent node, used if transform node doesn't exists.
      * @return The node matching m_transformId. (cannot be nullptr)
      */
-    VIZ_SCENE3D_API Ogre::SceneNode* getOrCreateTransformNode(Ogre::SceneNode* const _parentNode);
+    VIZ_SCENE3D_API Ogre::SceneNode* getOrCreateTransformNode(Ogre::SceneNode* _parentNode);
 
     /**
      * @brief Retrieve the  transform node matching m_transformId.
      * @return The node matching m_transformId (can be nullptr if node doesn't exists)
      */
-    VIZ_SCENE3D_API Ogre::SceneNode* getTransformNode() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::SceneNode* getTransformNode() const;
 
     /// The xml attribute to retrieve the transform's id.
     VIZ_SCENE3D_API static const std::string s_TRANSFORM_CONFIG;

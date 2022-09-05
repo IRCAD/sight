@@ -45,13 +45,8 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::filter::mesh::ut::SVTKMesherTest);
 
-namespace sight::module::filter::mesh
+namespace sight::module::filter::mesh::ut
 {
-
-namespace ut
-{
-
-using core::tools::random::safeRand;
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +72,7 @@ void SVTKMesherTest::generateMesh()
     sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
     CPPUNIT_ASSERT(generateMeshService);
     data::Image::sptr image = data::Image::New();
-    typedef std::int16_t Type;
+    using Type = std::int16_t;
     const data::Image::Size SIZE       = {10, 20, 90};
     const data::Image::Spacing spacing = {1., 1., 1.};
     const data::Image::Origin origin   = {0., 0., 0.};
@@ -154,7 +149,7 @@ void SVTKMesherTest::generateMeshWithMinReduction()
     // Create service
     sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
     CPPUNIT_ASSERT(generateMeshService);
-    typedef std::int16_t Type;
+    using Type = std::int16_t;
     data::Image::sptr image            = data::Image::New();
     const data::Image::Size SIZE       = {10, 20, 90};
     const data::Image::Spacing spacing = {1., 1., 1.};
@@ -232,7 +227,7 @@ void SVTKMesherTest::noMeshGenerated()
     // Create service
     sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
     CPPUNIT_ASSERT(generateMeshService);
-    typedef std::int16_t Type;
+    using Type = std::int16_t;
     data::Image::sptr image = data::Image::New();
 
     const data::Image::Size SIZE       = {10, 20, 90};
@@ -313,7 +308,7 @@ void SVTKMesherTest::updateThresholdTest()
     CPPUNIT_ASSERT(generateMeshService);
 
     //generate Image
-    typedef std::int16_t Type;
+    using Type = std::int16_t;
     data::Image::sptr image            = data::Image::New();
     const data::Image::Size SIZE       = {10, 20, 90};
     const data::Image::Spacing spacing = {1., 1., 1.};
@@ -391,6 +386,4 @@ void SVTKMesherTest::updateThresholdTest()
     sight::service::remove(generateMeshService);
 }
 
-} //namespace ut
-
-} //namespace sight::module::filter::mesh
+} // namespace sight::module::filter::mesh::ut

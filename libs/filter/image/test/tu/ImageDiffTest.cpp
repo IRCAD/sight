@@ -41,10 +41,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ImageDiffTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,12 +58,12 @@ static void testDiffEquality(const ImageDiff& diff1, const ImageDiff& diff2)
 
         CPPUNIT_ASSERT_EQUAL(diff1Elt.m_index, diff2Elt.m_index);
         CPPUNIT_ASSERT_EQUAL(
-            *reinterpret_cast<T*>(diff1Elt.m_oldValue),
-            *reinterpret_cast<T*>(diff2Elt.m_oldValue)
+            *reinterpret_cast<const T*>(diff1Elt.m_oldValue),
+            *reinterpret_cast<const T*>(diff2Elt.m_oldValue)
         );
         CPPUNIT_ASSERT_EQUAL(
-            *reinterpret_cast<T*>(diff1Elt.m_newValue),
-            *reinterpret_cast<T*>(diff2Elt.m_newValue)
+            *reinterpret_cast<const T*>(diff1Elt.m_newValue),
+            *reinterpret_cast<const T*>(diff2Elt.m_newValue)
         );
     }
 }
@@ -92,8 +89,8 @@ void ImageDiffTest::storeDiffsTest()
 
     ImageDiff diff(sizeof(OLDVALUE));
 
-    const data::Image::BufferType* oldBufferValue = reinterpret_cast<const data::Image::BufferType*>(&OLDVALUE);
-    const data::Image::BufferType* newBufferValue = reinterpret_cast<const data::Image::BufferType*>(&NEWVALUE);
+    const auto* oldBufferValue = reinterpret_cast<const data::Image::BufferType*>(&OLDVALUE);
+    const auto* newBufferValue = reinterpret_cast<const data::Image::BufferType*>(&NEWVALUE);
 
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
@@ -118,8 +115,8 @@ void ImageDiffTest::storeDiffsTest()
         ImageDiff::ElementType elt = diff.getElement(i);
 
         CPPUNIT_ASSERT_EQUAL(indices[i], elt.m_index);
-        CPPUNIT_ASSERT_EQUAL(OLDVALUE, *reinterpret_cast<std::uint8_t*>(elt.m_oldValue));
-        CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(elt.m_newValue));
+        CPPUNIT_ASSERT_EQUAL(OLDVALUE, *reinterpret_cast<const std::uint8_t*>(elt.m_oldValue));
+        CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<const std::uint8_t*>(elt.m_newValue));
     }
 
     // Create a second diff with 3 elements.
@@ -154,12 +151,12 @@ void ImageDiffTest::storeDiffsTest()
         ImageDiff::ElementType elt = diff.getElement(i);
 
         CPPUNIT_ASSERT_EQUAL(mergedIndices[i], elt.m_index);
-        CPPUNIT_ASSERT_EQUAL(OLDVALUE, *reinterpret_cast<std::uint8_t*>(elt.m_oldValue));
-        CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(elt.m_newValue));
+        CPPUNIT_ASSERT_EQUAL(OLDVALUE, *reinterpret_cast<const std::uint8_t*>(elt.m_oldValue));
+        CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<const std::uint8_t*>(elt.m_newValue));
     }
 
     // Copy constructor test.
-    const ImageDiff copyDiff(diff);
+    ImageDiff copyDiff(diff);
     testDiffEquality<std::uint8_t>(diff, copyDiff);
 
     // Copy assignement test.
@@ -201,7 +198,7 @@ void ImageDiffTest::undoRedoTest()
 
     std::uint8_t NEWVALUE = 1;
 
-    data::Image::BufferType* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
+    auto* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
 
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
@@ -254,6 +251,4 @@ void ImageDiffTest::undoRedoTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::filter::image
+} // namespace sight::filter::image::ut

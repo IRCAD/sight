@@ -50,10 +50,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::ImageTest);
 
-namespace sight::io::vtk
-{
-
-namespace ut
+namespace sight::io::vtk::ut
 {
 
 static const double epsilon = 0.00001;
@@ -650,6 +647,4 @@ void ImageTest::vtkWriterTest()
 
 // ------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::ut

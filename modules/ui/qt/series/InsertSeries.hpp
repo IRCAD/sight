@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ public:
     MODULE_UI_QT_API InsertSeries(data::Object::Key key);
 
     /// Destructor
-    MODULE_UI_QT_API virtual ~InsertSeries();
+    MODULE_UI_QT_API ~InsertSeries() override;
 
     /// Defines shallow copy
     MODULE_UI_QT_API void shallowCopy(const data::Object::csptr& _source) override;

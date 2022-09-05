@@ -34,10 +34,7 @@
 
 #include <algorithm>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string ImageConverter::s_IGTL_TYPE          = "IMAGE";
@@ -46,14 +43,12 @@ const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::Image::classname(
 converterRegisterMacro(io::igtl::detail::converter::ImageConverter);
 
 ImageConverter::ImageConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ImageConverter::~ImageConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -82,7 +77,7 @@ ImageConverter::~ImageConverter()
     dest->AllocateScalars();
     char* igtlImgBuffer = reinterpret_cast<char*>(dest->GetScalarPointer());
     std::copy(itr, itrEnd, igtlImgBuffer);
-    return ::igtl::MessageBase::Pointer(dest.GetPointer());
+    return {dest.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -90,23 +85,23 @@ ImageConverter::~ImageConverter()
 data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::ImageMessage::Pointer srcImg;
-    char* igtlImageBuffer;
+    char* igtlImageBuffer     = nullptr;
     data::Image::sptr destImg = data::Image::New();
     const auto dumpLock       = destImg->dump_lock();
-    float igtlSpacing[3];
-    float igtlOrigins[3];
-    int igtlDimensions[3];
+    std::array<float, 3> igtlSpacing {};
+    std::array<float, 3> igtlOrigins {};
+    std::array<int, 3> igtlDimensions {};
     data::Image::Spacing spacing;
     data::Image::Origin origins;
     data::Image::Size size;
 
     srcImg = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage*>(src.GetPointer()));
-    srcImg->GetSpacing(igtlSpacing);
-    srcImg->GetOrigin(igtlOrigins);
-    srcImg->GetDimensions(igtlDimensions);
-    std::transform(igtlSpacing, igtlSpacing + 3, spacing.begin(), boost::numeric_cast<double, float>);
-    std::copy(igtlDimensions, igtlDimensions + 3, size.begin());
-    std::transform(igtlOrigins, igtlOrigins + 3, origins.begin(), boost::numeric_cast<double, float>);
+    srcImg->GetSpacing(igtlSpacing.data());
+    srcImg->GetOrigin(igtlOrigins.data());
+    srcImg->GetDimensions(igtlDimensions.data());
+    std::transform(igtlSpacing.begin(), igtlSpacing.end(), spacing.begin(), boost::numeric_cast<double, float>);
+    std::copy(igtlDimensions.begin(), igtlDimensions.end(), size.begin());
+    std::transform(igtlOrigins.begin(), igtlOrigins.end(), origins.begin(), boost::numeric_cast<double, float>);
     destImg->setOrigin(origins);
     destImg->setSpacing(spacing);
 
@@ -163,6 +158,4 @@ std::string const& ImageConverter::getFwDataObjectType() const
     return ImageConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail}
+} // namespace sight::io::igtl::detail::converter

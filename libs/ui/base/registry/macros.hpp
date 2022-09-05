@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,16 +27,11 @@
 
 #include <boost/preprocessor/cat.hpp>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 #define fwGuiRegisterMacro(GuiClassname, GuiFunctorKey) \
     static sight::ui::base::GuiBaseObject::Registry<GuiClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(GuiFunctorKey);
 
-} // end namespace registry
-
-} // end namespace sight::ui::base
+} // namespace sight::ui::base::registry

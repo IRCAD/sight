@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,11 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::glm
-{
+#include <glm/glm.hpp>
 
-namespace ut
+namespace sight::geometry::glm::ut
 {
 
 class MeshFunctionsTest : public CPPUNIT_NS::TestFixture
@@ -46,12 +43,12 @@ private:
     CPPUNIT_TEST_SUITE_END();
 
     /// Compare value of 2 ::glm::dvec3.
-    void compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual);
+    static void compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual);
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void checkBarycentricCoords();
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 2D (same value for Z).
@@ -61,13 +58,11 @@ public:
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 3D (real case).
     void computeBarycenterABCRealCoords();
     /// Computes barrycentric coordinates on a point outside a ABC triangle.
-    void computeBarycenterOutsideABC();
+    static void computeBarycenterOutsideABC();
     /// Computes barycentric coordinates on a point inside a ABCD Tetrahedron in 3D.
     void computeBarycenterTetrahedron();
     /// Computes barycentric coordinates on a point outside a ABCD Tetrahedron.
-    void computeBarycenterOutsideTetrahedron();
+    static void computeBarycenterOutsideTetrahedron();
 };
 
-} // namespace ut
-
-} // namespace sight::geometry::glm
+} // namespace sight::geometry::glm::ut

@@ -55,8 +55,7 @@ CardinalLayoutManager::CardinalLayoutManager(ui::base::GuiBaseObject::Key /*key*
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManager::~CardinalLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +68,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
 
     m_qtWindow = new QMainWindow();
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_qtWindow);
 
@@ -79,16 +78,16 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
 
     [[maybe_unused]] bool hasCentral = false;
 
-    for(ViewInfo viewInfo : views)
+    for(const ViewInfo& viewInfo : views)
     {
-        QWidget* insideWidget;
+        QWidget* insideWidget   = nullptr;
         QScrollArea* scrollArea = nullptr;
 
         if(viewInfo.m_align == CENTER)
         {
             if(viewInfo.m_caption.first)
             {
-                QGroupBox* groupbox = new QGroupBox(m_qtWindow);
+                auto* groupbox = new QGroupBox(m_qtWindow);
                 groupbox->setObjectName(qId + '/' + viewInfo.m_caption.second.c_str());
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 insideWidget = groupbox;
@@ -106,13 +105,13 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
 
             if(!viewInfo.m_backgroundColor.empty())
             {
-                std::uint8_t rgba[4];
+                std::array<std::uint8_t, 4> rgba {};
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-                << static_cast<short>(rgba[1]) << ','
-                << static_cast<short>(rgba[2]) << ','
-                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+                << static_cast<std::int16_t>(rgba[1]) << ','
+                << static_cast<std::int16_t>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 widget->setStyleSheet(style + qApp->styleSheet());
             }
@@ -124,13 +123,13 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                 scrollArea->setWidgetResizable(true);
                 if(!viewInfo.m_backgroundColor.empty())
                 {
-                    std::uint8_t rgba[4];
+                    std::array<std::uint8_t, 4> rgba {};
                     data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                     std::stringstream ss;
-                    ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-                    << static_cast<short>(rgba[1]) << ','
-                    << static_cast<short>(rgba[2]) << ','
-                    << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+                    ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+                    << static_cast<std::int16_t>(rgba[1]) << ','
+                    << static_cast<std::int16_t>(rgba[2]) << ','
+                    << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                     const QString style = QString::fromStdString(ss.str());
                     scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
@@ -153,13 +152,13 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
         }
         else
         {
-            QDockWidget* dockWidget = new QDockWidget(m_qtWindow);
+            auto* dockWidget = new QDockWidget(m_qtWindow);
             insideWidget = new QWidget(dockWidget);
             QDockWidget::DockWidgetFeatures features;
 
             features = QDockWidget::DockWidgetMovable;
 
-            Qt::DockWidgetArea area;
+            Qt::DockWidgetArea area {Qt::NoDockWidgetArea};
 
             if(viewInfo.m_align == RIGHT)
             {
@@ -197,11 +196,11 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                 // Ensure widget->sizeHint() doesn't return a -1 size that will trigger a runtime warning:
                 // As setTitleBarWidget require a widget that have a valid QWidget::sizeHint()
                 // and QWidget::sizeHint() return -1 for widget without a layout...
-                QHBoxLayout* anotherLayout = new QHBoxLayout;
+                auto* anotherLayout = new QHBoxLayout;
                 anotherLayout->setSpacing(0);
                 anotherLayout->setMargin(0);
 
-                QWidget* widget = new QWidget;
+                auto* widget = new QWidget;
                 widget->setLayout(anotherLayout);
 
                 dockWidget->setMinimumSize(
@@ -235,7 +234,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                 dockWidget->setWidget(insideWidget);
             }
 
-            if(false == viewInfo.m_visible)
+            if(!viewInfo.m_visible)
             {
                 dockWidget->setVisible(false);
             }

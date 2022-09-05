@@ -26,13 +26,7 @@
 
 #include <OgreMaterialManager.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
-{
-
-namespace listener
+namespace sight::viz::scene3d::compositor::listener
 {
 
 //-----------------------------------------------------------------------------
@@ -49,20 +43,16 @@ public:
     RayExitDepthListener();
 
     /// Destructor.
-    ~RayExitDepthListener();
+    ~RayExitDepthListener() override;
 
     /// Called when an entry point scheme isn't found, creates the missing technique.
-    virtual Ogre::Technique* handleSchemeNotFound(
-        unsigned short _schemeIndex,
+    Ogre::Technique* handleSchemeNotFound(
+        std::uint16_t _schemeIndex,
         const Ogre::String& _schemeName,
         Ogre::Material* _originalMaterial,
-        unsigned short _lodIndex,
+        std::uint16_t _lodIndex,
         const Ogre::Renderable* _renderable
-    );
+    ) override;
 };
 
-} // namespace listener
-
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor::listener

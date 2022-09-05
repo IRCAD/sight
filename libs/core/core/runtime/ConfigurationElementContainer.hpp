@@ -32,12 +32,12 @@
 namespace sight::core::runtime
 {
 
-namespace io
+namespace detail::io
 {
 
 class ModuleDescriptorReader;
 
-} // namespace io
+} // namespace detail::io
 
 struct ConfigurationElement;
 
@@ -81,7 +81,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return  an configuration element container
      */
-    CORE_API const Container& getElements() const;
+    [[nodiscard]] CORE_API const Container& getElements() const;
 
     /**
      * @brief       Retrieves the first configuration corresponding to the specified name.
@@ -90,7 +90,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return      a pointer to a configuration element instance or null if none
      */
-    CORE_API const std::shared_ptr<ConfigurationElement> findConfigurationElement(const std::string& name)
+    [[nodiscard]] CORE_API std::shared_ptr<ConfigurationElement> findConfigurationElement(const std::string& name)
     const;
 
     /**
@@ -100,7 +100,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return      true if the method find at least one configuration
      */
-    CORE_API bool hasConfigurationElement(const std::string& name) const;
+    [[nodiscard]] CORE_API bool hasConfigurationElement(const std::string& name) const;
 
     /**
      * @brief       Retrieves the configurations corresponding to the specified name.
@@ -109,13 +109,13 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return      a configuration element container that contains configuration element instances
      */
-    CORE_API ConfigurationElementContainer findAllConfigurationElement(const std::string& name) const;
+    [[nodiscard]] CORE_API ConfigurationElementContainer findAllConfigurationElement(const std::string& name) const;
 
     /**
      * @brief       Return the number of configurations
      * @return      Return the number of configurations
      */
-    CORE_API std::size_t size() const;
+    [[nodiscard]] CORE_API std::size_t size() const;
 
     //TODO: Fix visibility
 //    protected:

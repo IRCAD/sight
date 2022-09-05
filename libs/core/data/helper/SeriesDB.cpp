@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,13 @@
 
 #include "data/helper/SeriesDB.hpp"
 
-#include <data/SeriesDB.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-namespace sight::data
-{
+#include <data/SeriesDB.hpp>
 
-namespace helper
+namespace sight::data::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -44,8 +41,7 @@ SeriesDB::SeriesDB(data::SeriesDB& seriesDB) :
 //-----------------------------------------------------------------------------
 
 SeriesDB::~SeriesDB()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +62,7 @@ void SeriesDB::add(data::Series::sptr newSeries)
 
 void SeriesDB::remove(data::Series::sptr oldSeries)
 {
-    data::SeriesDB::iterator iter = std::find(m_seriesDB.begin(), m_seriesDB.end(), oldSeries);
+    auto iter = std::find(m_seriesDB.begin(), m_seriesDB.end(), oldSeries);
     SIGHT_ASSERT(
         "The object " << oldSeries->getID() << " must exist in SeriesDB.",
         iter != m_seriesDB.end()
@@ -94,7 +90,7 @@ void SeriesDB::merge(data::SeriesDB::sptr seriesDBIn)
 {
     auto& container = m_seriesDB.getContainer();
 
-    for(data::Series::sptr series : seriesDBIn->getContainer())
+    for(const data::Series::sptr& series : seriesDBIn->getContainer())
     {
         // Only add the new series if not already here
         if(std::find(container.cbegin(), container.cend(), series) == container.cend())
@@ -133,6 +129,4 @@ void SeriesDB::notify()
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper

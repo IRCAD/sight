@@ -27,10 +27,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::DicomSeries
+namespace sight::io::session::detail::DicomSeries
 {
 
 constexpr static auto s_NumberOfInstances {"NumberOfInstances"};
@@ -200,6 +197,4 @@ inline static data::DicomSeries::sptr deserialize(
     return dicomSeries;
 }
 
-} // namespace detail::DicomSeries
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::DicomSeries

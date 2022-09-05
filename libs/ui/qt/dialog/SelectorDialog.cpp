@@ -34,25 +34,19 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(ui::base::GuiBaseObject::Key /*key*/) :
-    m_message(""),
-    m_title("")
+SelectorDialog::SelectorDialog(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 SelectorDialog::~SelectorDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -74,11 +68,11 @@ std::string SelectorDialog::show()
 {
     QWidget* parent = qApp->activeWindow();
 
-    QDialog* dialog = new QDialog(parent);
+    auto* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
-    QListWidget* selectionList = new QListWidget(dialog);
-    for(std::string selection : m_selections)
+    auto* selectionList = new QListWidget(dialog);
+    for(const std::string& selection : m_selections)
     {
         selectionList->addItem(QString::fromStdString(selection));
     }
@@ -86,23 +80,23 @@ std::string SelectorDialog::show()
     QListWidgetItem* firstItem = selectionList->item(0);
     selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
-    QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
+    auto* okButton     = new QPushButton(QObject::tr("Ok"));
+    auto* cancelButton = new QPushButton(QObject::tr("Cancel"));
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
     h_layout->addWidget(okButton);
     h_layout->addWidget(cancelButton);
 
-    for(auto customButton : m_customButtons)
+    for(auto* customButton : m_customButtons)
     {
         h_layout->addWidget(customButton);
         QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     }
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    auto* vLayout = new QVBoxLayout();
     if(!m_message.empty())
     {
-        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
+        auto* msgText = new QLabel(QString::fromStdString(m_message), dialog);
         vLayout->addWidget(msgText);
     }
 
@@ -114,8 +108,8 @@ std::string SelectorDialog::show()
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
-    std::string selection = "";
-    if(dialog->exec())
+    std::string selection;
+    if(dialog->exec() != 0)
     {
         selection = selectionList->currentItem()->text().toStdString();
     }
@@ -134,13 +128,11 @@ void SelectorDialog::setMessage(const std::string& msg)
 
 void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    QPushButton* button = new QPushButton(QString::fromStdString(label));
+    auto* button = new QPushButton(QString::fromStdString(label));
     m_customButtons.push_back(button);
     QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

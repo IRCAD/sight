@@ -42,10 +42,7 @@
 
 #include <string>
 
-namespace sight::module::ui::qt
-{
-
-namespace com
+namespace sight::module::ui::qt::com
 {
 
 static const core::com::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
@@ -81,9 +78,8 @@ SSignalButton::SSignalButton() noexcept
 
 //-----------------------------------------------------------------------------
 
-SSignalButton::~SSignalButton() noexcept
-{
-}
+SSignalButton::~SSignalButton() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -182,7 +178,7 @@ void SSignalButton::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_executable);
     layout->addWidget(m_button);
@@ -347,6 +343,4 @@ void SSignalButton::hide()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com.
-
-} // namespace sight::module::ui::base.
+} // namespace sight::module::ui::qt::com

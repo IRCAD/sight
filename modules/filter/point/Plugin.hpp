@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,13 @@ namespace sight::module::filter::point
 struct MODULE_FILTER_POINT_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor
-    MODULE_FILTER_POINT_API ~Plugin() noexcept;
+    MODULE_FILTER_POINT_API ~Plugin() noexcept override;
 
     /// Overrides
-    MODULE_FILTER_POINT_API void start();
+    MODULE_FILTER_POINT_API void start() override;
 
     /// Overrides
-    MODULE_FILTER_POINT_API void stop() noexcept;
+    MODULE_FILTER_POINT_API void stop() noexcept override;
 };
 
 } // namespace sight::module::filter::point

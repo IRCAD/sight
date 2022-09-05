@@ -48,7 +48,7 @@ public:
      * @param matrixList list of matrix to 'average'.
      * @param points list of points used for solving.
      */
-    FILTER_IMAGE_API MatrixRegressor(const data::Vector::csptr& matrixList, const std::vector<PointType>& points);
+    FILTER_IMAGE_API MatrixRegressor(const data::Vector::csptr& matrixList, std::vector<PointType> points);
 
     /**
      * @brief computes the matrix that best fits our matrix list.

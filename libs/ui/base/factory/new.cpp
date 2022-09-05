@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include "ui/base/GuiBaseObject.hpp"
 
-namespace sight::ui::base
-{
-
-namespace factory
+namespace sight::ui::base::factory
 {
 
 //------------------------------------------------------------------------------
@@ -37,6 +34,4 @@ ui::base::GuiBaseObject::sptr New(const ui::base::registry::KeyType& classname)
     return ui::base::registry::get()->create(classname);
 }
 
-} // namespace factory
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::factory

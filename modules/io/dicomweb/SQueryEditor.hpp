@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ public:
     MODULE_IO_DICOMWEB_API SQueryEditor() noexcept;
 
     /// Destructor
-    MODULE_IO_DICOMWEB_API virtual ~SQueryEditor() noexcept;
+    MODULE_IO_DICOMWEB_API ~SQueryEditor() noexcept override;
 
 protected:
 
@@ -107,7 +107,7 @@ private:
      * @brief Display an error message
      * @param[in] message Error message to display
      */
-    void displayErrorMessage(const std::string& message) const;
+    static void displayErrorMessage(const std::string& message);
 
     /**
      * @brief Update the seriesDB with the series retrieved from the pacs

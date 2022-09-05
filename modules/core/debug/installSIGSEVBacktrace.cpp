@@ -26,25 +26,27 @@
 
 #ifndef WIN32
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
 #include <execinfo.h>
 
+#include <cstring>
 #include <cxxabi.h>
-#include <cstdlib>
 #include <iostream>
-#include <string>
-#include <string.h>
 #include <sstream>
+#include <string>
 
-/* get REG_EIP from ucontext.h */
-//#define __USE_GNU // already defined
+/* get REG_EIP/REG_RIP from ucontext.h */
 #include <ucontext.h>
 
-//VAG hack :
-#define REG_EIP 14
-//VAG : ucontext.h define REG_EIP but compiler doesn't see it ... I simulate its value
+#if defined(REG_EIP)
+constexpr int debugReg = REG_EIP;
+#elif defined(REG_RIP)
+constexpr int debugReg = REG_RIP;
+#else
+#error Neither REG_EIP nor REG_RIP is defined.
+#endif
 
 #else // WIN32
 
@@ -64,19 +66,9 @@ namespace sight::module::debug
 #ifndef WIN32
 //------------------------------------------------------------------------------
 
-std::string demangle(std::string mangled)
+std::string demangle(const std::string& mangled)
 {
-    char* c_demangled = abi::__cxa_demangle(mangled.c_str(), 0, 0, 0);
-    if(c_demangled)
-    {
-        std::string res(c_demangled);
-        free(c_demangled);
-        return res;
-    }
-    else
-    {
-        return mangled;
-    }
+    return core::Demangler(mangled).getClassname();
 }
 
 //------------------------------------------------------------------------------
@@ -101,15 +93,16 @@ std::string decode(char* message)
 
 //------------------------------------------------------------------------------
 
-void bt_sighandler(
+void btSighandler(
     int sig,
     siginfo_t* info,
     void* secret
 )
 {
-    void* trace[16];
-    int i, trace_size = 0;
-    const ucontext_t* uc = reinterpret_cast<const ucontext_t*>(secret);
+    std::array<void*, 16> trace {};
+    int i          = 0;
+    int trace_size = 0;
+    const auto* uc = reinterpret_cast<const ucontext_t*>(secret);
 
     std::stringstream ss;
     ss << "Got signal " << sig;
@@ -118,16 +111,16 @@ void bt_sighandler(
     if(sig == SIGSEGV)
     {
         ss << " faulty address is " << info->si_addr;
-        ss << " from " << uc->uc_mcontext.gregs[REG_EIP];
+        ss << " from " << uc->uc_mcontext.gregs[debugReg];
     }
 
     ss << std::endl;
 
-    trace_size = backtrace(trace, 16);
+    trace_size = backtrace(trace.data(), 16);
     /* overwrite sigaction with caller's address */
-    trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[REG_EIP]);
+    trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[debugReg]);
 
-    char** messages = backtrace_symbols(trace, trace_size);
+    char** messages = backtrace_symbols(trace.data(), trace_size);
     /* skip first stack frame (points here) */
     ss << "    [bt] Execution path:" << std::endl;
     for(i = 1 ; i < trace_size ; ++i)
@@ -150,9 +143,9 @@ void bt_sighandler(
 
 void installSIGSEVBacktrace()
 {
-    struct sigaction sa;
+    struct sigaction sa {};
 
-    sa.sa_sigaction = bt_sighandler;
+    sa.sa_sigaction = btSighandler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART | SA_SIGINFO;
 

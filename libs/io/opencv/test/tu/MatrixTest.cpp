@@ -32,10 +32,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::MatrixTest);
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -76,22 +73,22 @@ void MatrixTest::copyFromCvFloat()
 
     // 1 to 16 values
     cvMat = cv::Matx44f(
-        1.f,
-        2.f,
-        3.f,
-        4.f,
-        5.f,
-        6.f,
-        7.f,
-        8.f,
-        9.f,
-        10.f,
-        11.f,
-        12.f,
-        13.f,
-        14.f,
-        15.f,
-        16.f
+        1.F,
+        2.F,
+        3.F,
+        4.F,
+        5.F,
+        6.F,
+        7.F,
+        8.F,
+        9.F,
+        10.F,
+        11.F,
+        12.F,
+        13.F,
+        14.F,
+        15.F,
+        16.F
     );
 
     //values test
@@ -453,9 +450,10 @@ void MatrixTest::copyFromRvecTvec()
 void MatrixTest::copyToRvecTvec()
 {
     data::Matrix4::sptr fwMat = data::Matrix4::New();
-    cv::Mat expectedRvec = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
-    cv::Mat expectedTvec = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
-    cv::Mat rvec, tvec;
+    cv::Mat expectedRvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+    cv::Mat expectedTvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+    cv::Mat rvec;
+    cv::Mat tvec;
 
     //identity test
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyToCv(fwMat, rvec, tvec));
@@ -530,6 +528,4 @@ void MatrixTest::copyToRvecTvec()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

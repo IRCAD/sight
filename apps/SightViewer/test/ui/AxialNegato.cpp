@@ -96,7 +96,7 @@ void AxialNegato::test()
                 "Axial negato slider",
                 [](QObject* old) -> QSlider* {return old->findChild<QSlider*>();},
                 [](QSlider* obj) -> bool {return obj->isEnabled();});
-            QSlider* negatoSlider = tester.get<QSlider*>();
+            auto* negatoSlider = tester.get<QSlider*>();
             for(int i = 0 ; i < 14 ; i++)
             {
                 tester.interact(

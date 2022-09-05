@@ -32,10 +32,7 @@
 #include <QPointer>
 #include <QQuickWidget>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -216,6 +213,4 @@ private:
     data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB", true};
 };
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

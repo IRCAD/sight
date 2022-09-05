@@ -59,18 +59,16 @@ const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SL
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
-    m_delay(500)
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept
 {
     m_slotReadImage = newSlot(s_READ_IMAGE_SLOT, &SSliceIndexDicomEditor::readImage, this);
-    newSlot(s_DISPLAY_MESSAGE_SLOT, &SSliceIndexDicomEditor::displayErrorMessage, this);
+    newSlot(s_DISPLAY_MESSAGE_SLOT, &SSliceIndexDicomEditor::displayErrorMessage);
 }
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
-{
-}
+SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +83,7 @@ void SSliceIndexDicomEditor::configuring()
         config
     );
 
-    bool success;
+    bool success = false;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
@@ -118,7 +116,7 @@ void SSliceIndexDicomEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
 
     const auto dicomSeries = m_dicomSeries.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
@@ -173,7 +171,7 @@ void SSliceIndexDicomEditor::starting()
     m_sagittalIndex = data::Integer::New(0);
 
     // Load a slice
-    std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
+    auto duration = std::chrono::milliseconds(m_delay);
     m_delayTimer2->setFunction(
         [ = ]()
         {
@@ -217,7 +215,7 @@ void SSliceIndexDicomEditor::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::changeSliceIndex(int)
+void SSliceIndexDicomEditor::changeSliceIndex(int /*unused*/)
 {
     // Update text
     std::stringstream ss;
@@ -295,7 +293,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);
     SIGHT_THROW_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-    fs.write(buffer, static_cast<long>(size));
+    fs.write(buffer, static_cast<std::int64_t>(size));
     fs.close();
 
     // Read image
@@ -317,7 +315,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     //Copy image
     data::ImageSeries::sptr imageSeries;
 
-    if(m_tempSeriesDB->getContainer().size() > 0)
+    if(!m_tempSeriesDB->getContainer().empty())
     {
         auto series = *(m_tempSeriesDB->getContainer().begin());
         if(isModalitySupported(*series))
@@ -360,7 +358,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) const
+void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message)
 {
     SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;

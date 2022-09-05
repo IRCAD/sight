@@ -40,14 +40,12 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 IActivityLauncher::IActivityLauncher()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IActivityLauncher::~IActivityLauncher()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -59,10 +57,10 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
     const auto inoutsCfg = config.equal_range("inout");
     for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
     {
-        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
         SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-        const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
+        const auto uid = itCfg->second.get<std::string>("<xmlattr>.uid");
         SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
         const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
@@ -77,7 +75,12 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         }
         else
         {
-            SIGHT_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
+            SIGHT_ASSERT(
+                std::string("Object key '").append(key).append("'with uid '").append(uid).append(
+                    "' does not exists."
+                ),
+                obj
+            );
             param.by = obj->getID();
         }
 
@@ -89,8 +92,8 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
     const auto paramsCfg = configParams.equal_range("parameter");
     for(auto itParams = paramsCfg.first ; itParams != paramsCfg.second ; ++itParams)
     {
-        const std::string replace = itParams->second.get<std::string>("<xmlattr>.replace");
-        std::string by            = itParams->second.get<std::string>("<xmlattr>.by", "");
+        const auto replace = itParams->second.get<std::string>("<xmlattr>.replace");
+        std::string by     = itParams->second.get<std::string>("<xmlattr>.by", "");
         if(by.empty())
         {
             by = itParams->second.get<std::string>("<xmlattr>.uid");
@@ -112,7 +115,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 
 std::pair<bool, std::string> IActivityLauncher::validateActivity(
     const data::ActivitySeries::csptr& activitySeries
-) const
+)
 {
     bool isValid = true;
     std::string message;
@@ -123,7 +126,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
     // load activity module
     core::runtime::startModule(info.bundleId);
 
-    for(std::string validatorImpl : info.validatorsImpl)
+    for(const std::string& validatorImpl : info.validatorsImpl)
     {
         /// Process activity validator
         activity::IValidator::sptr validator = activity::validator::factory::New(validatorImpl);
@@ -142,7 +145,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
     if(!isValid)
     {
-        message = "The activity '" + info.title + "' can not be launched:\n" + message;
+        message = std::string("The activity '").append(info.title).append("' can not be launched:\n").append(message);
     }
 
     return std::make_pair(isValid, message);
@@ -156,10 +159,10 @@ data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
     info = activity::extension::Activity::getDefault()->getInfo(m_mainActivityId);
 
     data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
-    if(info.requirements.size() > 0)
+    if(!info.requirements.empty())
     {
         data::Composite::sptr data = actSeries->getData();
-        for(activity::extension::ActivityRequirement req : info.requirements)
+        for(const activity::extension::ActivityRequirement& req : info.requirements)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {

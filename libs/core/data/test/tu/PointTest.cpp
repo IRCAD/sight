@@ -26,10 +26,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::PointTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -50,7 +47,7 @@ void PointTest::copyTest()
 {
     // shallow copy
     {
-        data::Point::sptr p1 = data::Point::New(1.f, 2.f, 3.f);
+        data::Point::sptr p1 = data::Point::New(1.F, 2.F, 3.F);
         data::Point::sptr p2 = data::Point::New();
 
         CPPUNIT_ASSERT_NO_THROW(p2->shallowCopy(p1));
@@ -61,7 +58,7 @@ void PointTest::copyTest()
 
     // Deep copy
     {
-        data::Point::sptr p1 = data::Point::New(1.f, 2.f, 3.f);
+        data::Point::sptr p1 = data::Point::New(1.F, 2.F, 3.F);
         data::Point::sptr p2 = data::Point::New();
 
         CPPUNIT_ASSERT_NO_THROW(p2->deepCopy(p1));
@@ -117,6 +114,4 @@ void PointTest::labelTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

@@ -77,10 +77,7 @@
 #include <memory>
 #include <shared_mutex>
 
-namespace sight::io::session
-{
-
-namespace detail
+namespace sight::io::session::detail
 {
 
 using core::crypto::PasswordKeeper;
@@ -154,16 +151,14 @@ deserializer_t SessionDeserializer::findDeserializer(const std::string& classnam
         // Return the found serializer
         return customIt->second;
     }
-    else
-    {
-        // Protect deserializers map
-        std::shared_lock guard(s_deserializers_mutex);
 
-        if(const auto& it = s_deserializers.find(classname); it != s_deserializers.cend())
-        {
-            // Return the found deserializer
-            return it->second;
-        }
+    // Protect deserializers map
+    std::shared_lock guard(s_deserializers_mutex);
+
+    if(const auto& it = s_deserializers.find(classname); it != s_deserializers.cend())
+    {
+        // Return the found deserializer
+        return it->second;
     }
 
     SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
@@ -184,7 +179,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     // Do not deserialize empty tree
     if(treeIt == tree.end())
     {
-        return data::Object::sptr();
+        return {};
     }
 
     const auto& objectTree = treeIt->second;
@@ -192,7 +187,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     // Do not deserialize null object tree
     if(objectTree.empty())
     {
-        return data::Object::sptr();
+        return {};
     }
 
     const auto serialized_uuid = objectTree.get<std::string>(ISession::s_uuid);
@@ -203,74 +198,72 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     {
         return objectIt->second;
     }
-    else
+
+    // Find the serializer using the classname
+    const auto& classname    = treeIt->first;
+    const auto& deserializer = findDeserializer(classname);
+
+    // Try to reuse existing rather than create new one
+    // Existing object will be overwritten
+
+    auto object = data::factory::New(classname);
+
+    // Lock for writing (it will do nothing if object is null)
+    data::mt::locked_ptr<data::Object> object_guard(object);
+
+    // Store the object in cache for later use and to allow circular reference
+    cache[serialized_uuid] = object;
+
+    // Construct children map, if needed
+    std::map<std::string, data::Object::sptr> children;
+
+    const auto& childrenIt = objectTree.find(ISession::s_children);
+
+    if(childrenIt != objectTree.not_found())
     {
-        // Find the serializer using the classname
-        const auto& classname    = treeIt->first;
-        const auto& deserializer = findDeserializer(classname);
-
-        // Try to reuse existing rather than create new one
-        // Existing object will be overwritten
-
-        auto object = data::factory::New(classname);
-
-        // Lock for writing (it will do nothing if object is null)
-        data::mt::locked_ptr<data::Object> object_guard(object);
-
-        // Store the object in cache for later use and to allow circular reference
-        cache[serialized_uuid] = object;
-
-        // Construct children map, if needed
-        std::map<std::string, data::Object::sptr> children;
-
-        const auto& childrenIt = objectTree.find(ISession::s_children);
-
-        if(childrenIt != objectTree.not_found())
+        for(const auto& childIt : childrenIt->second)
         {
-            for(const auto& childIt : childrenIt->second)
-            {
-                children[childIt.first] = deepDeserialize(cache, archive, childIt.second, password, encryptionPolicy);
-            }
+            children[childIt.first] = deepDeserialize(cache, archive, childIt.second, password, encryptionPolicy);
         }
-
-        // Now, we can really deserialize the object
-        const auto& newObject = deserializer(
-            archive,
-            objectTree,
-            children,
-            object,
-            ISession::pickle(password, secure_string(serialized_uuid), encryptionPolicy)
-        );
-
-        if(newObject != object)
-        {
-            // This should not happen normally, only if the serializer doesn't reuse object
-            newObject->setUUID(object->getUUID(), true);
-            cache[serialized_uuid] = newObject;
-            SIGHT_ASSERT(
-                "An object has been replaced by a deserializer, but it is still referenced",
-                object.use_count() == 1
-            );
-        }
-
-        // Construct field map
-        data::Object::FieldMapType fields;
-
-        const auto& fields_it = objectTree.find(ISession::s_fields);
-
-        if(fields_it != objectTree.not_found())
-        {
-            for(const auto& field_it : fields_it->second)
-            {
-                fields[field_it.first] = deepDeserialize(cache, archive, field_it.second, password, encryptionPolicy);
-            }
-        }
-
-        // Assign the deserialized fields
-        newObject->setFields(fields);
-
-        return newObject;
     }
+
+    // Now, we can really deserialize the object
+    const auto& newObject = deserializer(
+        archive,
+        objectTree,
+        children,
+        object,
+        ISession::pickle(password, secure_string(serialized_uuid), encryptionPolicy)
+    );
+
+    if(newObject != object)
+    {
+        // This should not happen normally, only if the serializer doesn't reuse object
+        newObject->setUUID(object->getUUID(), true);
+        cache[serialized_uuid] = newObject;
+        SIGHT_ASSERT(
+            "An object has been replaced by a deserializer, but it is still referenced",
+            object.use_count() == 1
+        );
+    }
+
+    // Construct field map
+    data::Object::FieldMapType fields;
+
+    const auto& fields_it = objectTree.find(ISession::s_fields);
+
+    if(fields_it != objectTree.not_found())
+    {
+        for(const auto& field_it : fields_it->second)
+        {
+            fields[field_it.first] = deepDeserialize(cache, archive, field_it.second, password, encryptionPolicy);
+        }
+    }
+
+    // Assign the deserialized fields
+    newObject->setFields(fields);
+
+    return newObject;
 }
 
 //------------------------------------------------------------------------------
@@ -373,6 +366,4 @@ data::Object::sptr SessionDeserializer::deserialize(
     return deepDeserialize(cache, *archive, tree, password, encryptionPolicy);
 }
 
-} // namespace detail
-
-} // namespace sight::io::session
+} // namespace sight::io::session::detail

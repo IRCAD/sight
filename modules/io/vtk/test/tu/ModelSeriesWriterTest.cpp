@@ -45,16 +45,14 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ModelSeriesWriterTest);
 
-namespace sight::module::io::vtk
+namespace sight::module::io::vtk::ut
 {
 
-namespace ut
-{
+namespace fs            = std::filesystem;
+using FileContainerType = std::vector<std::string>;
 
-namespace fs = std::filesystem;
-typedef std::vector<std::string> FileContainerType;
-
-using namespace sight::data::iterator;
+namespace point = sight::data::iterator::point;
+namespace cell  = sight::data::iterator::cell;
 
 //------------------------------------------------------------------------------
 
@@ -117,7 +115,7 @@ core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainer
 {
     core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
 
-    for(std::string file : files)
+    for(const std::string& file : files)
     {
         core::runtime::EConfigurationElement::sptr cfg = core::runtime::EConfigurationElement::New("file");
         cfg->setValue(file);
@@ -149,7 +147,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         fs::create_directories(dir);
     }
 
-    for(auto ext : allExtensions)
+    for(const auto& ext : allExtensions)
     {
         // Create subfolers per extensions ("/vtk", "/vtp", ...)
         if(fs::exists(dir / ext))
@@ -207,13 +205,13 @@ void ModelSeriesWriterTest::testWriteMeshes()
         data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series[0]);
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
-        typedef data::ModelSeries::ReconstructionVectorType RecVecType;
+        using RecVecType = data::ModelSeries::ReconstructionVectorType;
         const RecVecType& readRecs = readSeries->getReconstructionDB();
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), readRecs.size());
 
-        const RecVecType& refRecs         = modelSeries->getReconstructionDB();
-        RecVecType::const_iterator itRef  = refRecs.begin();
-        RecVecType::const_iterator itRead = readRecs.begin();
+        const RecVecType& refRecs = modelSeries->getReconstructionDB();
+        auto itRef                = refRecs.begin();
+        auto itRead               = readRecs.begin();
 
         for( ; itRef != refRecs.end() ; ++itRef, ++itRead)
         {
@@ -326,6 +324,4 @@ void ModelSeriesWriterTest::testWriteReconstructions()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

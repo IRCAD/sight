@@ -66,4 +66,4 @@ CORE_API std::string getDateInXsdFormat(const boost::posix_time::ptime& dateAndT
 
 ///@}
 
-} //end namespace
+} // namespace sight::core::tools

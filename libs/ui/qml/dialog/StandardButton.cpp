@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,18 @@
 
 #include "ui/qml/dialog/StandardButton.hpp"
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
 StandardButton::StandardButton()
-{
-    m_button = ButtonList::NoButton;
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 StandardButton::~StandardButton()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -58,6 +52,4 @@ const StandardButton::ButtonList& StandardButton::getButton()
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

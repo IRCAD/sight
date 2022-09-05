@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 #include <data/Integer.hpp>
 #include <data/String.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -63,6 +60,4 @@ void GenericField::createConfig(core::tools::Object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

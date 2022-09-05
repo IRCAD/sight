@@ -58,9 +58,9 @@ struct AndImageFilter
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->numDimensions() == dimension);
 
-        typedef typename itk::Image<PIXELTYPE, dimension> InputImageType;
-        typedef typename itk::Image<MASK_PIXELTYPE, dimension> MaskImageType;
-        typedef typename itk::Image<PIXELTYPE, dimension> OutputImageType;
+        using InputImageType  = typename itk::Image<PIXELTYPE, dimension>;
+        using MaskImageType   = typename itk::Image<MASK_PIXELTYPE, dimension>;
+        using OutputImageType = typename itk::Image<PIXELTYPE, dimension>;
 
         typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(inputImage);
         typename MaskImageType::Pointer itkMaskImage   = io::itk::moveToItk<MaskImageType>(mask);
@@ -68,12 +68,12 @@ struct AndImageFilter
 
         // We assume that the mask pixel type has a lower size in bits than the image pixel type
         // Cast mask pixel type to the image pixel type
-        typedef itk::CastImageFilter<MaskImageType, InputImageType> FilterType;
+        using FilterType = itk::CastImageFilter<MaskImageType, InputImageType>;
         typename FilterType::Pointer caster = FilterType::New();
         caster->SetInput(itkMaskImage);
 
         // Rescale the image so that the output range of the casted mask image is in the same range as the input image.
-        typedef itk::RescaleIntensityImageFilter<InputImageType, InputImageType> RescaleType;
+        using RescaleType = itk::RescaleIntensityImageFilter<InputImageType, InputImageType>;
         typename RescaleType::Pointer rescaler = RescaleType::New();
         rescaler->SetInput(caster->GetOutput());
         rescaler->SetOutputMinimum(0);
@@ -82,7 +82,7 @@ struct AndImageFilter
 
         typename InputImageType::Pointer itkMaskImageCasted = rescaler->GetOutput();
 
-        typedef typename itk::AndImageFilter<InputImageType, InputImageType, OutputImageType> ITKFilterType;
+        using ITKFilterType = typename itk::AndImageFilter<InputImageType, InputImageType, OutputImageType>;
         typename ITKFilterType::Pointer filter = ITKFilterType::New();
         filter->SetInput1(itkInputImage);
         filter->SetInput2(itkMaskImageCasted);
@@ -111,14 +111,12 @@ struct AndImageFilterCaller
 //-----------------------------------------------------------------------------
 
 SBitwiseAnd::SBitwiseAnd()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 SBitwiseAnd::~SBitwiseAnd()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

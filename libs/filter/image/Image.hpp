@@ -46,8 +46,8 @@ FILTER_IMAGE_API void applyRoi(data::Image::sptr image, data::Image::sptr roi);
  */
 FILTER_IMAGE_API bool isRoiApplied(
     data::Image::sptr image,
-    data::Image::sptr imgRoiApplied,
-    data::Image::sptr roi
+    data::Image::sptr roi,
+    data::Image::sptr imgRoiApplied
 );
 
 /**

@@ -28,13 +28,10 @@
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
-namespace sight::io::dicom
-{
+#include <memory>
+#include <utility>
 
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
@@ -53,8 +50,7 @@ ComprehensiveSRIOD::ComprehensiveSRIOD(
 //------------------------------------------------------------------------------
 
 ComprehensiveSRIOD::~ComprehensiveSRIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +61,7 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(gdcm::Reader) reader = std::shared_ptr<gdcm::Reader>(new gdcm::Reader);
+    SPTR(gdcm::Reader) reader = std::make_shared<gdcm::Reader>();
 
     // Read the first file
     const auto& dicomContainer                               = m_dicomSeries->getDicomContainer();
@@ -94,8 +90,4 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

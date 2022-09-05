@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <sstream>
 #include <string>
 
-namespace sight::core::runtime
-{
-
-namespace utils
+namespace sight::core::runtime::utils
 {
 
 /**
@@ -54,18 +51,24 @@ public:
     }
 
     /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment forbidden for this class.
+     */
+    void operator=(const GenericExecutableFactory&) noexcept = delete;
+
+    /**
      * @brief   Destructor : does nothing.
      */
     ~GenericExecutableFactory() override
-    {
-    }
+    = default;
 
     /**
      * @brief   Creates an executable object instance.
      *
      * @return  a pointer to an executable instance
      */
-    IExecutable* createExecutable() const override
+    [[nodiscard]] IExecutable* createExecutable() const override
     {
         IExecutable* result = nullptr;
         try
@@ -86,19 +89,6 @@ public:
         }
         return result;
     }
-
-private:
-
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment forbidden for this class.
-     */
-    void operator=(const GenericExecutableFactory&) noexcept
-    {
-    }
 };
 
-} // namespace utils
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::utils

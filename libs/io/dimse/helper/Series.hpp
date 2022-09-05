@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
@@ -44,12 +44,9 @@ namespace sight::data
 class ImageSeries;
 class ModelSeries;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dimse
-{
-
-namespace helper
+namespace sight::io::dimse::helper
 {
 
 /// Series Helper.
@@ -86,6 +83,4 @@ public:
     IO_DIMSE_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer _series);
 };
 
-} //helper
-
-} //fwPacsIO
+} // namespace sight::io::dimse::helper

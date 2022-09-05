@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,29 +28,24 @@
 
 #include "ui/base/layoutManager/IViewLayoutManager.hpp"
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
 
 IViewLayoutManager::IViewLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IViewLayoutManager::~IViewLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void IViewLayoutManager::destroySubViews()
 {
-    for(ui::base::container::fwContainer::sptr container : m_subViews)
+    for(const ui::base::container::fwContainer::sptr& container : m_subViews)
     {
         container->destroyContainer();
     }
@@ -67,6 +62,4 @@ std::vector<ui::base::container::fwContainer::sptr> IViewLayoutManager::getSubVi
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::EdgeTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -78,6 +75,4 @@ void EdgeTest::methode1()
     CPPUNIT_ASSERT(*edge == *edge2);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

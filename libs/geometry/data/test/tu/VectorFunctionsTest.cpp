@@ -22,6 +22,7 @@
 
 #include "VectorFunctionsTest.hpp"
 
+#include <cmath>
 #include <core/base.hpp>
 #include <core/tools/random/Generator.hpp>
 
@@ -33,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::VectorFunctionsTest);
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 using core::tools::random::safeRand;
@@ -70,7 +68,7 @@ void VectorFunctionsTest::checkDot()
 
     const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
     const fwVec3d V2 = {V2_X, V2_Y, V2_Z};
-    double result;
+    double result    = NAN;
 
 #ifndef FW_PROFILING_DISABLED
     {
@@ -125,7 +123,7 @@ void VectorFunctionsTest::checkNormalize()
     const double NORM = 0.87749;
     fwVec3d v         = {0.4, 0.5, 0.6};
 
-    double norm;
+    double norm = NAN;
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::normalize");
@@ -166,7 +164,7 @@ void VectorFunctionsTest::checkVecLength()
 {
     fwVec3d v = {1.0, 2.0, 3.0};
 
-    double length;
+    double length = NAN;
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::normalize");
@@ -268,18 +266,16 @@ void VectorFunctionsTest::checkOperators()
     fwVec3d vec10 = {1.0, 2.0, 3.0};
     fwVec3d res6  = {1.000000, 2.00000000, 3.00000000000};
 
-    int testEven = (vec10 == res6);
-    CPPUNIT_ASSERT_EQUAL(testEven, 1);
+    bool testEven = vec10 == res6;
+    CPPUNIT_ASSERT_EQUAL(testEven, true);
 
     fwVec3d vec11 = {1.0, 2.0, 3.0};
     fwVec3d res7  = {1.0000001, 2.05, 3.000000000000009};
 
-    int testUneven = (vec11 != res7);
-    CPPUNIT_ASSERT_EQUAL(testUneven, 1);
+    bool testUneven = vec11 != res7;
+    CPPUNIT_ASSERT_EQUAL(testUneven, true);
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

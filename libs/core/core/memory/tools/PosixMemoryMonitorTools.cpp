@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #if defined(linux) || defined(__linux)
 
 #include "core/memory/tools/PosixMemoryMonitorTools.hpp"
@@ -48,26 +50,18 @@
 #include <sstream>
 #include <string>
 
-namespace sight::core::memory
+namespace sight::core::memory::tools
 {
 
-namespace tools
-{
-
-long PosixMemoryMonitorTools::s_pageSize    = sysconf(_SC_PAGE_SIZE);
-long PosixMemoryMonitorTools::s_totalMemory = sysconf(_SC_PHYS_PAGES) * s_pageSize;
+std::int64_t PosixMemoryMonitorTools::s_pageSize    = sysconf(_SC_PAGE_SIZE);
+std::int64_t PosixMemoryMonitorTools::s_totalMemory = sysconf(_SC_PHYS_PAGES) * s_pageSize;
 
 //-----------------------------------------------------------------------------
 
 PosixMemoryMonitorTools::PosixMemoryMonitorTools()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
-
-PosixMemoryMonitorTools::~PosixMemoryMonitorTools()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -103,7 +97,7 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
 {
     MemInfo memory;
     get_memory_stats(memory);
-    std::uint64_t oToKMo = 1024 * 1024;
+    std::uint64_t oToKMo = 1024LL * 1024;
 
     SIGHT_INFO("Total memory: " << memory.total / oToKMo << " Mo");
     SIGHT_INFO("Free memory:  " << memory.free / oToKMo << " Mo");
@@ -178,17 +172,19 @@ std::uint64_t PosixMemoryMonitorTools::getUsedProcessMemory()
 
 std::uint64_t PosixMemoryMonitorTools::extract_number(char* str, int start, int end)
 {
-    int i, j;
-    char buf[end - start];
+    std::size_t i = 0;
+    std::size_t j = 0;
+    std::vector<char> buf;
+    buf.resize(std::size_t(end - start));
 
-    for(i = start, j = 0 ; i < end ; i++)
+    for(i = std::size_t(start), j = 0 ; i < std::size_t(end) ; i++)
     {
-        isdigit(str[i]) && (buf[j++] = str[i]);
+        (isdigit(str[i]) != 0) && (buf[j++] = str[i]); // NOLINT(readability-implicit-bool-conversion)
     }
 
     buf[j] = '\0';
 
-    return strtoul(buf, NULL, 0) * 1024;
+    return strtoul(buf.data(), nullptr, 0) * 1024;
 }
 
 //------------------------------------------------------------------------------
@@ -313,7 +309,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
 
 void PosixMemoryMonitorTools::printStatus(Status& stat)
 {
-    std::uint64_t oToMo = 1024 * 1024;
+    std::uint64_t oToMo = 1024LL * 1024;
     SIGHT_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo");
     SIGHT_DEBUG("VmSize = " << stat.VmSize / oToMo << " Mo");
     SIGHT_DEBUG("VmLck = " << stat.VmLck / oToMo << " Mo");
@@ -437,7 +433,7 @@ void PosixMemoryMonitorTools::analyseStatusLine(std::string& line, Status& stat)
 
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::getStatusOfPid(unsigned long pid, Status& stat)
+void PosixMemoryMonitorTools::getStatusOfPid(std::uint64_t pid, Status& stat)
 {
     std::stringstream file;
     file << "/proc/" << pid << "/status";
@@ -484,7 +480,7 @@ void PosixMemoryMonitorTools::getAllStatus(Status& allStat)
             std::string dirName           = tmpPath.filename().string();
             if(regex_match(dirName, e))
             {
-                auto pid = strtoul(dirName.c_str(), NULL, 0);
+                auto pid = strtoul(dirName.c_str(), nullptr, 0);
                 Status stat;
                 getStatusOfPid(pid, stat);
                 allStat.VmPeak += stat.VmPeak;
@@ -530,7 +526,7 @@ void PosixMemoryMonitorTools::printAllStatus()
             std::string dirName           = tmpPath.filename().string();
             if(regex_match(dirName, e))
             {
-                auto pid = strtoul(dirName.c_str(), NULL, 0);
+                auto pid = strtoul(dirName.c_str(), nullptr, 0);
                 Status stat;
                 getStatusOfPid(pid, stat);
                 totalVmPeak += stat.VmPeak;
@@ -547,7 +543,7 @@ void PosixMemoryMonitorTools::printAllStatus()
         }
     }
 
-    std::uint64_t oToMo = 1024 * 1024;
+    std::uint64_t oToMo = 1024LL * 1024;
     totalVmPeak /= oToMo;
     totalVmSize /= oToMo;
     totalVmLck  /= oToMo;
@@ -583,8 +579,6 @@ void PosixMemoryMonitorTools::printAllStatus()
      */
 }
 
-} // namespace tools
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::tools
 
 #endif //defined(linux) || defined(__linux)

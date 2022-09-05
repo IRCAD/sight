@@ -50,7 +50,7 @@ public:
     DATA_API Series(Object::Key _key);
 
     /// Destroys the series.
-    DATA_API virtual ~Series();
+    DATA_API ~Series() override;
 
     /**
      * @brief Defines shallow copy.
@@ -614,4 +614,4 @@ inline void Series::setPerformedProcedureComments(const DicomValueType& _val)
     m_performedProcedureComments = _val;
 }
 
-} // Namespace fwMedData.
+} // namespace sight::data

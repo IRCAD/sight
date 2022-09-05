@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <string>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 /**
@@ -89,9 +86,7 @@ Q_SIGNALS:
 private:
 
     /// Button mask
-    ButtonList m_button;
+    ButtonList m_button {ButtonList::NoButton};
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

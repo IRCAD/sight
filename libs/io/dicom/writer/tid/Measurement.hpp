@@ -32,15 +32,9 @@ namespace sight::data
 
 class PointList;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace tid
+namespace sight::io::dicom::writer::tid
 {
 
 /**
@@ -64,7 +58,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Measurement();
+    IO_DICOM_API ~Measurement() override;
 
     /**
      * @brief Create nodes according to the template
@@ -93,8 +87,4 @@ protected:
     );
 };
 
-} // namespace tid
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::tid

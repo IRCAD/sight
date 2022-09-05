@@ -48,7 +48,7 @@ public:
     GenericTL(Object::Key key);
 
     /// Destructor
-    virtual ~GenericTL();
+    ~GenericTL() override;
 
     /**
      * @brief Returns the closest buffer to the given timestamp

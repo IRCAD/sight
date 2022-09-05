@@ -57,7 +57,7 @@ Ogre::SceneNode* ITransformable::getOrCreateTransformNode(
 )
 {
     SIGHT_ASSERT("Transform id is not set.", !m_transformId.empty());
-    auto transformNode = viz::scene3d::helper::Scene::getNodeById(m_transformId, _parentNode);
+    auto* transformNode = viz::scene3d::helper::Scene::getNodeById(m_transformId, _parentNode);
     if(transformNode == nullptr)
     {
         transformNode = _parentNode->createChildSceneNode(m_transformId);

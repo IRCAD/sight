@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 /**
@@ -51,23 +48,21 @@ public:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     ///Tests the copy from/to cv::Matx44f (float)
-    void copyFromCvFloat();
-    void copyToCvFloat();
+    static void copyFromCvFloat();
+    static void copyToCvFloat();
     ///Tests the copy from/to cv::Matx44d (double)
-    void copyFromCvDouble();
-    void copyToCvDouble();
+    static void copyFromCvDouble();
+    static void copyToCvDouble();
     ///Tests the copy from/to cv::Mat
-    void copyFromCvMat();
-    void copyToCvMat();
+    static void copyFromCvMat();
+    static void copyToCvMat();
     ///Tests the copy from/to cv::Mat rvec tvec
-    void copyFromRvecTvec();
-    void copyToRvecTvec();
+    static void copyFromRvecTvec();
+    static void copyToRvecTvec();
 };
 
-}
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -109,7 +109,7 @@ public:
 
     MODULE_IO_SESSION_API SReader() noexcept;
 
-    MODULE_IO_SESSION_API ~SReader() noexcept;
+    MODULE_IO_SESSION_API ~SReader() noexcept override;
 
     /// Propose to read a session data file
     MODULE_IO_SESSION_API void openLocationDialog() override;

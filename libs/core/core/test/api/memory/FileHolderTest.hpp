@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void fileAutoDeleteTest();
+    static void fileAutoDeleteTest();
 };
 
 } // namespace sight::core::memory::ut

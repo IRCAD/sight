@@ -41,12 +41,12 @@ namespace sight::viz::scene3d::detail
 
 TFLoader::return_t TFLoader::load(const sight::data::TransferFunction& _tf, Ogre::Texture* _texture)
 {
-    static std::uint32_t TEXTURE_SIZE = ~0u;
+    static std::uint32_t TEXTURE_SIZE = ~0U;
     // Unluckily Ogre does not seem to give us the maximum texture size through the caps... :'(
     // So we have no other choice than asking OpenGL directly
-    if(TEXTURE_SIZE == ~0u)
+    if(TEXTURE_SIZE == ~0U)
     {
-        int max;
+        int max = 0;
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
         TEXTURE_SIZE = static_cast<std::uint32_t>(max);
     }
@@ -74,7 +74,7 @@ TFLoader::return_t TFLoader::load(const sight::data::TransferFunction& _tf, Ogre
     // Discards the entire buffer while locking so that we can easily refill it from scratch
     pixBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
     Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
-    std::uint8_t* pDest   = static_cast<std::uint8_t*>(pixBox.data);
+    auto* pDest           = static_cast<std::uint8_t*>(pixBox.data);
 
     // Retrieves the transfer function's intensity window
     const min_max_t tfWLMinMax = _tf.windowMinMax();

@@ -34,10 +34,7 @@
 
 #include "core/config.hpp"
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 namespace profile
@@ -46,7 +43,7 @@ namespace profile
 class Activater;
 class Profile;
 
-}
+} // namespace profile
 
 namespace io
 {
@@ -140,6 +137,4 @@ private:
 
 } // namespace io
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

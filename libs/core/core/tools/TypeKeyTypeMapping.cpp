@@ -103,4 +103,4 @@ bool isMapping<double>(const Type& type)
     return type == Type::DOUBLE;
 }
 
-} // end namespace sight::core::tools {
+} // namespace sight::core::tools
