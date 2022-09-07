@@ -70,7 +70,7 @@ void SStarter::stopping()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
     this->actionServiceStopping();
 }

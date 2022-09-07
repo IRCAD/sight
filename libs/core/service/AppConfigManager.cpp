@@ -387,7 +387,7 @@ void AppConfigManager::stopStartedServices()
         futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -413,7 +413,7 @@ void AppConfigManager::destroyCreatedServices()
     m_createdSrv.clear();
     service::helper::Config::clearKeyProps();
 
-    std::for_each(m_createdWorkers.begin(), m_createdWorkers.end(), [](auto& x){core::thread::removeWorker(x);});
+    std::ranges::for_each(m_createdWorkers, [](auto& x){core::thread::removeWorker(x);});
     m_createdWorkers.clear();
 }
 
@@ -466,7 +466,7 @@ void AppConfigManager::processStartItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -515,7 +515,7 @@ void AppConfigManager::processUpdateItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------

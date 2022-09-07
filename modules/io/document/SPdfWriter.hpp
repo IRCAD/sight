@@ -155,12 +155,6 @@ private:
     static QImage convertFwImageToQImage(const data::Image& image);
 
     /**
-     * @brief scaleQImage: applies a scale the QImages
-     * @param A QImage and a factor of scaling.
-     */
-    static void scaleQImage(QImage& qImage, int scale);
-
-    /**
      * @brief List of images IDs to export into the PDF.
      * Filled at the configuring from the XML configuration, and used at starting().
      */

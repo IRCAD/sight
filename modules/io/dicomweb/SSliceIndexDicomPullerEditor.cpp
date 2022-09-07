@@ -113,7 +113,7 @@ void SSliceIndexDicomPullerEditor::configuring()
 
     m_delayTimer = m_associatedWorker->createTimer();
     m_delayTimer->setFunction(
-        [ = ]()
+        [ =, this]()
         {
             this->triggerNewSlice();
         });

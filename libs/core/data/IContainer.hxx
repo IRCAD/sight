@@ -128,11 +128,11 @@ inline void IContainer<C>::shallowCopy(const Object::csptr& source)
 
     if constexpr(core::tools::is_container_dynamic<C>::value)
     {
-        IContainer<C>::clear();
+        this->IContainer<C>::clear();
 
         if constexpr(core::tools::is_vector<C>::value || core::tools::is_container_unordered_associative<C>::value)
         {
-            IContainer<C>::reserve(other->size());
+            this->IContainer<C>::reserve(other->size());
         }
     }
 
@@ -140,6 +140,33 @@ inline void IContainer<C>::shallowCopy(const Object::csptr& source)
     {
         std::copy(other->cbegin(), other->cend(), inserter(*this));
     }
+}
+
+//------------------------------------------------------------------------------
+
+template<class C>
+constexpr bool is_data_object_fn()
+{
+    if constexpr(core::tools::is_map_like<C>::value)
+    {
+        if constexpr(core::tools::is_shared_ptr<typename C::mapped_type>::value)
+        {
+            // "using" is required for MSVC
+            using shared_ptr_type = typename C::mapped_type;
+            return std::is_base_of<Object, typename shared_ptr_type::element_type>::value;
+        }
+    }
+    else
+    {
+        if constexpr(core::tools::is_shared_ptr<typename C::value_type>::value)
+        {
+            // "using" is required for MSVC
+            using shared_ptr_type = typename C::value_type;
+            return std::is_base_of<Object, typename shared_ptr_type::element_type>::value;
+        }
+    }
+
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -162,40 +189,17 @@ inline void IContainer<C>::cachedDeepCopy(const Object::csptr& source, Object::D
     if constexpr(core::tools::is_container_dynamic<C>::value)
     {
         // Clear the container
-        IContainer<C>::clear();
+        this->IContainer<C>::clear();
 
         // Reserve room in the container, if reserve() is available
         if constexpr(core::tools::is_vector<C>::value || core::tools::is_container_unordered_associative<C>::value)
         {
-            IContainer<C>::reserve(other->size());
+            this->IContainer<C>::reserve(other->size());
         }
     }
 
     // True if the container contains shared_ptr<Object>
-    constexpr bool is_data_object =
-        []
-        {
-            if constexpr(core::tools::is_map_like<C>::value)
-            {
-                if constexpr(core::tools::is_shared_ptr<typename C::mapped_type>::value)
-                {
-                    // "using" is required for MSVC
-                    using shared_ptr_type = typename C::mapped_type;
-                    return std::is_base_of<Object, typename shared_ptr_type::element_type>::value;
-                }
-            }
-            else
-            {
-                if constexpr(core::tools::is_shared_ptr<typename C::value_type>::value)
-                {
-                    // "using" is required for MSVC
-                    using shared_ptr_type = typename C::value_type;
-                    return std::is_base_of<Object, typename shared_ptr_type::element_type>::value;
-                }
-            }
-
-            return false;
-        }();
+    constexpr bool is_data_object = is_data_object_fn<C>();
 
     // Special case for map
     if constexpr(core::tools::is_map_like<C>::value)
@@ -205,11 +209,11 @@ inline void IContainer<C>::cachedDeepCopy(const Object::csptr& source, Object::D
         {
             if constexpr(is_data_object)
             {
-                IContainer<C>::insert({key, Object::copy(value, cache)});
+                this->IContainer<C>::insert({key, Object::copy(value, cache)});
             }
             else
             {
-                IContainer<C>::insert({key, value});
+                this->IContainer<C>::insert({key, value});
             }
         }
     }
@@ -239,7 +243,7 @@ template<class C>
 constexpr C IContainer<C>::get_content() const noexcept
 {
     C c;
-    std::copy(IContainer<C>::cbegin(), IContainer<C>::cend(), inserter(c));
+    std::copy(this->IContainer<C>::cbegin(), this->IContainer<C>::cend(), inserter(c));
     return c;
 }
 

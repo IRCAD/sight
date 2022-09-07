@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,9 +19,6 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
-#ifndef __FWCORE_PCH_HPP__
-#define __FWCORE_PCH_HPP__
 
 #include <boost/config.hpp>
 #include <boost/exception/exception.hpp>
@@ -54,10 +51,9 @@
 #include <iterator>
 #include <map>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <typeinfo>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#endif // __FWCORE_PCH_HPP__

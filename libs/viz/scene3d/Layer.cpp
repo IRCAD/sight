@@ -1121,7 +1121,7 @@ void Layer::restartAdaptors()
                       };
 
     // Only keep adaptors belonging to this layer.
-    adaptors.erase(std::remove_if(adaptors.begin(), adaptors.end(), notInLayer), adaptors.end());
+    std::erase_if(adaptors, notInLayer);
 
     // Search for all adaptors created as subservices by other adaptors.
     std::vector<service::IService::wptr> subAdaptors;
@@ -1282,9 +1282,8 @@ int Layer::getLightsNumber() const
     auto lightAdaptors = this->getRenderService()->getAdaptors<viz::scene3d::ILight>();
     int lightsNumber(0);
 
-    std::for_each(
-        lightAdaptors.begin(),
-        lightAdaptors.end(),
+    std::ranges::for_each(
+        lightAdaptors,
         [&](viz::scene3d::ILight::sptr adaptor)
         {
             if(adaptor->getLayerID() == this->getLayerID())
@@ -1303,9 +1302,8 @@ std::vector<viz::scene3d::ILight::sptr> Layer::getLightAdaptors() const
     auto lightAdaptors = this->getRenderService()->getAdaptors<viz::scene3d::ILight>();
     std::vector<viz::scene3d::ILight::sptr> layerLightAdaptors;
 
-    std::for_each(
-        lightAdaptors.begin(),
-        lightAdaptors.end(),
+    std::ranges::for_each(
+        lightAdaptors,
         [&](viz::scene3d::ILight::sptr lightAdaptor)
         {
             if(lightAdaptor->getLayerID() == this->getLayerID())

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <boost/spirit/home/phoenix/container.hpp>
-#include <boost/spirit/home/phoenix/statement/sequence.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/phoenix/container.hpp>
+#include <boost/phoenix/core.hpp>
+#include <boost/phoenix/operator.hpp>
+#include <boost/phoenix/statement/sequence.hpp>
 #include <boost/spirit/include/qi.hpp>
 
 //------------------------------------------------------------------------------

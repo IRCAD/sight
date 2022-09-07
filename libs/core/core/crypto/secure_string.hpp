@@ -35,7 +35,7 @@ namespace sight::core::crypto
 /// Zeroes the pointed memory
 /// @param p memory address
 /// @param n length to zero
-inline void cleanse(void* p, std::size_t n) noexcept
+inline constexpr void cleanse(void* p, std::size_t n) noexcept
 {
     // "volatile" guard from unwanted optimization
     std::fill_n(static_cast<volatile char*>(p), n, 0);
@@ -95,7 +95,11 @@ using secure_string = std::basic_string<char, std::char_traits<char>, allocator<
 
 // Zeroes the strings own memory on destruction
 template<>
+#ifdef WIN32
+inline constexpr sight::core::crypto::secure_string::~basic_string() noexcept
+#else
 inline sight::core::crypto::secure_string::~basic_string()
+#endif
 {
     clear();
     shrink_to_fit();

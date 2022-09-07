@@ -58,7 +58,7 @@ bool fwID::exist(IDType _id)
 
 bool fwID::isIdFound(IDType _id)
 {
-    return m_dictionary.find(_id) != m_dictionary.end();
+    return m_dictionary.contains(_id);
 }
 
 //-----------------------------------------------------------------------------

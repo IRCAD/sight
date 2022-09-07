@@ -450,7 +450,7 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
             deleteAction,
             &QAction::triggered,
             this,
-            [ = ]()
+            [ =, this]()
             {
                 auto modelSeries = m_modelSeries.lock();
 

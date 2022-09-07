@@ -22,7 +22,7 @@
 
 #include "helper.hpp"
 
-#include "geometry/vision/ReprojectionError.hpp"
+#include "geometry/vision/detail/ReprojectionError.hpp"
 
 #include <core/spyLog.hpp>
 
@@ -159,7 +159,7 @@ cv::Matx44f cameraPoseStereo(
     //Cost function for image 1
     for(std::size_t i = 0 ; i < _imgPoints1.size() ; ++i)
     {
-        ::ceres::CostFunction* cost_function = ReprojectionError::Create(
+        ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
             _cameraMatrix1,
             _distCoeffs1,
             _imgPoints1[i],
@@ -176,7 +176,7 @@ cv::Matx44f cameraPoseStereo(
     //image 2
     for(std::size_t i = 0 ; i < _imgPoints2.size() ; ++i)
     {
-        ::ceres::CostFunction* cost_function = ReprojectionError::Create(
+        ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
             _cameraMatrix2,
             _distCoeffs2,
             _imgPoints2[i],
@@ -347,7 +347,7 @@ data::PointList::sptr detectChessboard(
     {
         // Rescale points to get their coordinates in the full scale image.
         const auto rescale = [_scale](cv::Point2f& _pt){_pt = _pt / _scale;};
-        std::for_each(corners.begin(), corners.end(), rescale);
+        std::ranges::for_each(corners, rescale);
 
         // Refine points coordinates in the full scale image.
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
@@ -358,7 +358,7 @@ data::PointList::sptr detectChessboard(
         points.reserve(corners.size());
 
         const auto cv2SightPt = [](const cv::Point2f& p){return data::Point::New(p.x, p.y);};
-        std::transform(corners.cbegin(), corners.cend(), std::back_inserter(points), cv2SightPt);
+        std::ranges::transform(corners, std::back_inserter(points), cv2SightPt);
     }
 
     return pointlist;

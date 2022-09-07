@@ -535,7 +535,7 @@ void Plugin::start()
     auto proxy = service::registry::Proxy::getDefault();
 
     std::function<void(data::Object::sptr)> recSelectedFct =
-        [ = ](data::Object::sptr rec)
+        [ =, this](data::Object::sptr rec)
         {
             m_appManager->addObject(rec, s_RECONSTRUCTION_ID);
         };
@@ -544,7 +544,7 @@ void Plugin::start()
     proxy->connect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
 
     std::function<void()> emptySelectionFct =
-        [ = ]()
+        [ =, this]()
         {
             m_appManager->removeObject(nullptr, s_RECONSTRUCTION_ID);
         };

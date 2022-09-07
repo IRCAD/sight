@@ -24,11 +24,16 @@
 
 #include "geometry/vision/config.hpp"
 
+#ifdef WIN32
+// Needed for Ceres with C++20
+    #define M_2_SQRTPI 1.12837916709551257390
+#endif
+
 #include <ceres/ceres.h>
 
 #include <opencv2/opencv.hpp>
 
-namespace sight::geometry::vision
+namespace sight::geometry::vision::detail
 {
 
 /**
@@ -150,4 +155,4 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::geometry::vision
+} //namespace sight::geometry::vision::detail

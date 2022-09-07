@@ -304,7 +304,7 @@ void IJob::finishNoLock()
 
 std::function<void()> IJob::finishCallback()
 {
-    return [ = ]{this->finish();};
+    return [this]{this->finish();};
 }
 
 //------------------------------------------------------------------------------

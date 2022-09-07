@@ -178,9 +178,9 @@ public:
     operator sight::core::crypto::secure_string() const
     {
         std::array<char, N> plain_text;
-        for(volatile std::size_t i = 0 ; i < N ; ++i)
+        for(std::size_t i = 0 ; i < N ; ++i)
         {
-            volatile char temp = static_cast<char>(cipher_text_[i] - key_[i]);
+            const char temp = static_cast<char>(cipher_text_[i] - key_[i]);
             plain_text[i] = temp;
         }
 

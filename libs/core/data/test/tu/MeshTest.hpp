@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "iterator.hpp"
-
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <limits>

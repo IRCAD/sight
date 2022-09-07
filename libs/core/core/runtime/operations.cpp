@@ -33,44 +33,13 @@
 #include <core/spyLog.hpp>
 
 #include <algorithm>
+#include <ranges>
 #include <regex>
 #include <utility>
 #include <vector>
 
 namespace sight::core::runtime
 {
-
-namespace
-{
-
-//------------------------------------------------------------------------------
-
-/**
- * @brief   Functor that matches configuration element identifiers
- *          against the given identifier
- *
- *
- */
-struct ConfigurationElementIdentifierPredicate
-{
-    explicit ConfigurationElementIdentifierPredicate(std::string identifier) :
-        m_identifier(std::move(identifier))
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    bool operator()(std::shared_ptr<ConfigurationElement> element)
-    {
-        return element->getAttributeValue("id") == m_identifier;
-    }
-
-    private:
-
-        std::string m_identifier;
-};
-
-} // namespace
 
 //------------------------------------------------------------------------- -----
 
@@ -109,11 +78,12 @@ ConfigurationElement::sptr findConfigurationElement(
 {
     ConfigurationElement::sptr resultConfig;
     const auto elements     = getAllConfigurationElementsForPoint(pointIdentifier);
-    const auto foundElement = std::find_if(
-        elements.begin(),
-        elements.end(),
-        ConfigurationElementIdentifierPredicate(identifier)
-    );
+    const auto foundElement = std::ranges::find_if(
+        elements,
+        [identifier](auto& element)
+        {
+            return element->getAttributeValue("id") == identifier;
+        });
     if(foundElement != elements.end())
     {
         resultConfig = *foundElement;

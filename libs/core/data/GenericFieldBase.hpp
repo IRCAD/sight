@@ -42,13 +42,6 @@ public:
 
     SIGHT_DECLARE_CLASS(GenericFieldBase);
 
-    DATA_API virtual bool operator==(const GenericFieldBase& lf) const = 0;
-    DATA_API virtual bool operator!=(const GenericFieldBase& lf) const = 0;
-    DATA_API virtual bool operator<(const GenericFieldBase& lf) const  = 0;
-    DATA_API virtual bool operator>(const GenericFieldBase& lf) const  = 0;
-    DATA_API virtual bool operator<=(const GenericFieldBase& lf) const = 0;
-    DATA_API virtual bool operator>=(const GenericFieldBase& lf) const = 0;
-
     DATA_API friend std::ostream& operator<<(std::ostream& /*_os*/, const GenericFieldBase& /*lf*/);
 
     DATA_API virtual std::string toString() const               = 0;

@@ -64,7 +64,7 @@ IJob::SharedFuture Job::runImpl()
         // see IJob.hpp
         auto fCallback = this->finishCallback();
 
-        auto jobTask = [ = ]()
+        auto jobTask = [ =, this]()
                        {
                            BOOST_SCOPE_EXIT_ALL( = )
                            {

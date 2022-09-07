@@ -31,8 +31,11 @@ if(MSVC)
     # Add a global definition to silence a windows warning when using boost, saying _WIN32_WINNT is not defined.
     # Beware this must match the value used to compile BOOST, otherwise libraries that uses Boost::Log will NOT link.
     add_compile_definitions(WINVER=0x0601)
+    add_compile_definitions(NOMINMAX)
     add_compile_definitions(_WIN32_WINNT=0x0601)
     add_compile_definitions(BOOST_USE_WINAPI_VERSION=0x0601)
+    # We need this because of OgreUTFString.h, which is removed in more recent Ogre versions
+    add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 
     # Basically needed for DCMTK
     add_compile_options("/Zc:__cplusplus")
@@ -53,7 +56,7 @@ add_compile_options(
 add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>")
 
 # C/C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # C++ visibility

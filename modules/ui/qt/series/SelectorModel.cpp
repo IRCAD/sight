@@ -241,7 +241,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
                 removeButton,
                 &QPushButton::clicked,
                 this,
-                [ = ]()
+                [ =, this]()
                 {
                     Q_EMIT removeStudyInstanceUID(studyInstanceUID);
                 });
@@ -305,7 +305,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
             removeButton,
             &QPushButton::clicked,
             this,
-            [ = ]()
+            [ =, this]()
             {
                 Q_EMIT removeSerieID(serieID);
             });

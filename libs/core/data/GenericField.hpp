@@ -82,7 +82,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator==(const GenericFieldBase& other) const noexcept override
+    inline bool operator==(const GenericField& other) const noexcept
     {
         try
         {
@@ -116,7 +116,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator<(const GenericFieldBase& other) const noexcept override
+    inline bool operator<(const GenericField& other) const noexcept
     {
         try
         {
@@ -149,7 +149,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>(const GenericFieldBase& other) const noexcept override
+    inline bool operator>(const GenericField& other) const noexcept
     {
         try
         {
@@ -182,21 +182,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator!=(const GenericFieldBase& other) const noexcept override
-    {
-        return !(*this == other);
-    }
-
-    //------------------------------------------------------------------------------
-
-    inline bool operator<=(const GenericFieldBase& other) const noexcept override
+    inline bool operator<=(const GenericField& other) const noexcept
     {
         return !(*this > other);
     }
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>=(const GenericFieldBase& other) const noexcept override
+    inline bool operator>=(const GenericField& other) const noexcept
     {
         return !(*this < other);
     }

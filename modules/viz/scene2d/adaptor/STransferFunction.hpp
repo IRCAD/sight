@@ -335,7 +335,7 @@ private:
     void midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _event);
 
     /// Deletes the current TF and change the current TF.
-    void removeCurrenTF();
+    void removeCurrentTF();
 
     /**
      * @brief Sets if the current TF is clamped or not.

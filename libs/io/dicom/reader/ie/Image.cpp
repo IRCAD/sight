@@ -35,9 +35,6 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/lu.hpp>
 
 #include <gdcmImageApplyLookupTable.h>
 #include <gdcmImageHelper.h>
@@ -46,6 +43,10 @@
 #include <gdcmPixelFormat.h>
 #include <gdcmRescaler.h>
 #include <gdcmUIDGenerator.h>
+
+#include <glm/common.hpp>
+#include <glm/ext/scalar_constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace sight::io::dicom::reader::ie
 {
@@ -535,7 +536,7 @@ char* Image::correctImageOrientation(
     const double* directionCosines = gdcmImage.GetDirectionCosines();
 
     // Compute U vector
-    fwVec3d imageOrientationU = {
+    glm::dvec3 imageOrientationU = {
         std::round(directionCosines[0]),
         std::round(directionCosines[1]),
         std::round(directionCosines[2])
@@ -547,19 +548,19 @@ char* Image::correctImageOrientation(
         if(std::fabs(directionCosines[0]) < std::fabs(directionCosines[1])
            || std::fabs(directionCosines[0]) < std::fabs(directionCosines[2]))
         {
-            imageOrientationU[0] = 0;
+            imageOrientationU[0] = 0.;
         }
 
         if(std::fabs(directionCosines[1]) < std::fabs(directionCosines[0])
            || std::fabs(directionCosines[1]) < std::fabs(directionCosines[2]))
         {
-            imageOrientationU[1] = 0;
+            imageOrientationU[1] = 0.;
         }
 
         if(std::fabs(directionCosines[2]) < std::fabs(directionCosines[0])
            || std::fabs(directionCosines[2]) < std::fabs(directionCosines[1]))
         {
-            imageOrientationU[2] = 0;
+            imageOrientationU[2] = 0.;
         }
 
         m_logger->warning(
@@ -569,7 +570,7 @@ char* Image::correctImageOrientation(
     }
 
     // Compute V vector
-    fwVec3d imageOrientationV = {
+    glm::dvec3 imageOrientationV = {
         std::round(directionCosines[3]),
         std::round(directionCosines[4]),
         std::round(directionCosines[5])
@@ -581,19 +582,19 @@ char* Image::correctImageOrientation(
         if(std::fabs(directionCosines[3]) < std::fabs(directionCosines[4])
            || std::fabs(directionCosines[3]) < std::fabs(directionCosines[5]))
         {
-            imageOrientationV[0] = 0;
+            imageOrientationV[0] = 0.;
         }
 
         if(std::fabs(directionCosines[4]) < std::fabs(directionCosines[3])
            || std::fabs(directionCosines[4]) < std::fabs(directionCosines[5]))
         {
-            imageOrientationV[1] = 0;
+            imageOrientationV[1] = 0.;
         }
 
         if(std::fabs(directionCosines[5]) < std::fabs(directionCosines[3])
            || std::fabs(directionCosines[5]) < std::fabs(directionCosines[4]))
         {
-            imageOrientationV[2] = 0;
+            imageOrientationV[2] = 0.;
         }
 
         m_logger->warning(
@@ -603,49 +604,46 @@ char* Image::correctImageOrientation(
     }
 
     // Compute W vector
-    const fwVec3d imageOrientationW = geometry::data::cross(imageOrientationU, imageOrientationV);
+    const glm::dvec3 imageOrientationW = glm::cross(imageOrientationU, imageOrientationV);
 
     // Create orientation matrix
-    Image::MatrixType matrix(4, 4);
-    matrix(0, 0) = imageOrientationU[0];
-    matrix(1, 0) = imageOrientationU[1];
-    matrix(2, 0) = imageOrientationU[2];
-    matrix(3, 0) = 0;
-    matrix(0, 1) = imageOrientationV[0];
-    matrix(1, 1) = imageOrientationV[1];
-    matrix(2, 1) = imageOrientationV[2];
-    matrix(3, 1) = 0;
-    matrix(0, 2) = imageOrientationW[0];
-    matrix(1, 2) = imageOrientationW[1];
-    matrix(2, 2) = imageOrientationW[2];
-    matrix(3, 2) = 0;
-    matrix(0, 3) = 0;
-    matrix(1, 3) = 0;
-    matrix(2, 3) = 0;
-    matrix(3, 3) = 1;
+    glm::dmat4 matrix;
+    matrix[0][0] = imageOrientationU[0];
+    matrix[0][1] = imageOrientationU[1];
+    matrix[0][2] = imageOrientationU[2];
+    matrix[0][3] = 0;
+    matrix[1][0] = imageOrientationV[0];
+    matrix[1][1] = imageOrientationV[1];
+    matrix[1][2] = imageOrientationV[2];
+    matrix[1][3] = 0;
+    matrix[2][0] = imageOrientationW[0];
+    matrix[2][1] = imageOrientationW[1];
+    matrix[2][2] = imageOrientationW[2];
+    matrix[2][3] = 0;
+    matrix[3][0] = 0;
+    matrix[3][1] = 0;
+    matrix[3][2] = 0;
+    matrix[3][3] = 1;
 
     // Compute inverse matrix in order to rotate the buffer
-    Image::MatrixType inverseMatrix  = sight::io::dicom::reader::ie::Image::computeInverseMatrix(matrix);
-    Image::MatrixType identityMatrix = boost::numeric::ublas::identity_matrix<double>(inverseMatrix.size1());
+    const glm::dmat4 inverseMatrix = glm::inverse(matrix);
+    const auto identityMatrix      = glm::identity<glm::dmat4>();
 
     // Check whether the image must be rotated or not
-    if(!boost::numeric::ublas::detail::expression_type_check(inverseMatrix, identityMatrix))
+    if(inverseMatrix != identityMatrix)
     {
         // Compute new image size
-        VectorType sizeVector(4);
-        sizeVector(0) = dimensions.at(0);
-        sizeVector(1) = dimensions.at(1);
-        sizeVector(2) = dimensions.at(2);
-        VectorType newSizeVector = boost::numeric::ublas::prod(sizeVector, inverseMatrix);
+        glm::dvec4 sizeVector {dimensions.at(0), dimensions.at(1), dimensions.at(2), 0.};
+        glm::dvec4 newSizeVector = sizeVector * inverseMatrix;
         const auto newSizeX      = static_cast<std::uint16_t>(std::fabs(newSizeVector[0]));
         const auto newSizeY      = static_cast<std::uint16_t>(std::fabs(newSizeVector[1]));
         const auto newSizeZ      = static_cast<std::uint16_t>(std::fabs(newSizeVector[2]));
-        newSizeVector(0) = newSizeX;
-        newSizeVector(1) = newSizeY;
-        newSizeVector(2) = newSizeZ;
+        newSizeVector.x = newSizeX;
+        newSizeVector.y = newSizeY;
+        newSizeVector.z = newSizeZ;
 
         // Compute old size from the new absolute size in order to retrieve pixel flips
-        VectorType oldSizeVector = boost::numeric::ublas::prod(newSizeVector, matrix);
+        glm::dvec4 oldSizeVector = newSizeVector * matrix;
 
         // Create new buffer to store rotated image
         const std::uint64_t size = std::uint64_t(dimensions.at(0)) * dimensions.at(1) * dimensions.at(2)
@@ -666,13 +664,10 @@ char* Image::correctImageOrientation(
                 for(x = 0 ; x < newSizeX ; ++x)
                 {
                     // Create new position
-                    VectorType newPosition(4);
-                    newPosition(0) = x;
-                    newPosition(1) = y;
-                    newPosition(2) = z;
+                    glm::dvec4 newPosition {x, y, z, 0.};
 
                     // Compute old position
-                    VectorType oldPosition = boost::numeric::ublas::prod(newPosition, matrix);
+                    glm::dvec4 oldPosition = newPosition * matrix;
                     old_x = (oldSizeVector[0] > 0) ? static_cast<std::uint16_t>(oldPosition[0])
                                                    : static_cast<std::uint16_t>((dimensions.at(0) - 1)
                                                                                 + oldPosition[0]);
@@ -706,24 +701,18 @@ char* Image::correctImageOrientation(
 
         // Update image spacing
         const data::Image::Spacing spacing = m_object->getSpacing();
-        VectorType spacingVector(4);
-        spacingVector(0) = spacing[0];
-        spacingVector(1) = spacing[1];
-        spacingVector(2) = spacing[2];
-        VectorType newSpacingVector = boost::numeric::ublas::prod(spacingVector, inverseMatrix);
-        data::Image::Spacing newSpacing;
-        newSpacing[0] = std::fabs(newSpacingVector[0]);
-        newSpacing[1] = std::fabs(newSpacingVector[1]);
-        newSpacing[2] = std::fabs(newSpacingVector[2]);
+        glm::dvec4 spacingVector {spacing[0], spacing[1], spacing[2], 0.};
+        glm::dvec4 newSpacingVector = spacingVector * inverseMatrix;
+        data::Image::Spacing newSpacing {std::fabs(newSpacingVector[0]), std::fabs(newSpacingVector[1]), std::fabs(
+                                             newSpacingVector[2]
+        )
+        };
         m_object->setSpacing(newSpacing);
 
         // Update image origin
         const data::Image::Origin origin = m_object->getOrigin();
-        VectorType originVector(4);
-        originVector(0) = origin[0];
-        originVector(1) = origin[1];
-        originVector(2) = origin[2];
-        VectorType newOriginVector = boost::numeric::ublas::prod(originVector, inverseMatrix);
+        glm::dvec4 originVector {origin[0], origin[1], origin[2], 0.};
+        glm::dvec4 newOriginVector = originVector * inverseMatrix;
         data::Image::Origin newOrigin;
         newOrigin[0] = newOriginVector[0];
         newOrigin[1] = newOriginVector[1];
@@ -737,33 +726,6 @@ char* Image::correctImageOrientation(
     }
 
     return result;
-}
-
-//------------------------------------------------------------------------------
-
-Image::MatrixType Image::computeInverseMatrix(MatrixType matrix)
-{
-    // Create output matrix (identity)
-    Image::MatrixType output(matrix.size1(), matrix.size2());
-    output.assign(boost::numeric::ublas::identity_matrix<double>(output.size1()));
-
-    // Create a permutation matrix for the LU-factorization
-    boost::numeric::ublas::permutation_matrix<std::size_t> perm(matrix.size1());
-
-    // Perform LU-factorization
-    size_t res = boost::numeric::ublas::lu_factorize(matrix, perm);
-    if(res != 0)
-    {
-        SIGHT_WARN("Cannot compute matrix.");
-    }
-    else
-    {
-        // Backsubstitute to get the inverse
-        boost::numeric::ublas::lu_substitute(matrix, perm, output);
-    }
-
-    // Return inverse matrix or identity
-    return output;
 }
 
 //------------------------------------------------------------------------------

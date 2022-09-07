@@ -1,7 +1,10 @@
 sight_add_target(io_dimse TYPE LIBRARY PCH pchData)
 
-target_include_directories(io_dimse PRIVATE ${DCMTK_INCLUDE_DIRS})
-target_link_libraries(io_dimse PUBLIC ${DCMTK_LIBRARIES})
+if(${DCMTK_VERSION} VERSION_GREATER_EQUAL 3.6.7)
+    target_link_libraries(io_dimse PUBLIC DCMTK::dcmnet)
+else()
+    target_link_libraries(io_dimse PUBLIC dcmnet)
+endif()
 
 # original system dcmtk resources path
 set(STORESCP "/etc/dcmtk/storescp.cfg")

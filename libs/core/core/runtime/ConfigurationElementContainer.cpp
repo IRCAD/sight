@@ -92,7 +92,7 @@ const ConfigurationElementContainer::Container& ConfigurationElementContainer::g
 
 bool ConfigurationElementContainer::hasConfigurationElement(const std::string& name) const
 {
-    auto found = std::find_if(m_elements.begin(), m_elements.end(), HasName(name));
+    auto found = std::ranges::find_if(m_elements, HasName(name));
     return found != m_elements.end();
 }
 
@@ -102,7 +102,7 @@ std::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigu
     const std::string& name
 ) const
 {
-    auto found = std::find_if(m_elements.begin(), m_elements.end(), HasName(name));
+    auto found = std::ranges::find_if(m_elements, HasName(name));
 
     return (found == m_elements.end()) ? std::shared_ptr<ConfigurationElement>() : *found;
 }

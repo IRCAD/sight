@@ -71,7 +71,7 @@ IJob::SharedFuture Aggregator::runImpl()
     }
 
     auto future = std::async(
-        [ = ]() mutable
+        [ =, this]() mutable
         {
             std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
@@ -126,7 +126,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
         // TODO : add a way to disconnect on aggregator destruction
         iJob->addDoneWorkHook(
-            [ =, &jobInfo](IJob& subJob, std::uint64_t)
+            [ =, &jobInfo, this](IJob& subJob, std::uint64_t)
             {
                 core::mt::ReadToWriteLock sublock(m_mutex);
 
@@ -143,7 +143,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
             });
 
         iJob->addTotalWorkUnitsHook(
-            [ = ](IJob& subJob, std::uint64_t oldTotalWorkUnits)
+            [ =, this](IJob& subJob, std::uint64_t oldTotalWorkUnits)
             {
                 core::mt::ReadToWriteLock sublock(m_mutex);
 
@@ -174,7 +174,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
         auto iJobName = iJob->getName();
         iJobName = iJobName.empty() ? "" : std::string("[").append(iJobName).append("] ");
         iJob->addLogHook(
-            [ = ](IJob& /* job */, const std::string& message)
+            [ =, this](IJob& /* job */, const std::string& message)
             {
                 this->log(iJobName + message);
             });

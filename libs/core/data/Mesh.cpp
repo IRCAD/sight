@@ -75,8 +75,8 @@ Mesh::Mesh(data::Object::Key /*unused*/)
     newSignal<signal_t>(s_POINT_TEX_COORDS_MODIFIED_SIG);
     newSignal<signal_t>(s_CELL_TEX_COORDS_MODIFIED_SIG);
 
-    std::for_each(m_points.begin(), m_points.end(), [](auto& array){array = data::Array::New();});
-    std::for_each(m_cells.begin(), m_cells.end(), [](auto& array){array = data::Array::New();});
+    std::ranges::for_each(m_points, [](auto& array){array = data::Array::New();});
+    std::ranges::for_each(m_cells, [](auto& array){array = data::Array::New();});
 }
 
 //------------------------------------------------------------------------------
@@ -290,8 +290,8 @@ void Mesh::truncate(Mesh::size_t nbPts, Mesh::size_t nbCells)
 
 void Mesh::clear()
 {
-    std::for_each(m_points.begin(), m_points.end(), [](auto& array){array->clear();});
-    std::for_each(m_cells.begin(), m_cells.end(), [](auto& array){array->clear();});
+    std::ranges::for_each(m_points, [](auto& array){array->clear();});
+    std::ranges::for_each(m_cells, [](auto& array){array->clear();});
 
     // Reset nbPoints, nbCells & cellsDataSize.
     m_numPoints = 0;
@@ -306,9 +306,8 @@ std::size_t Mesh::getDataSizeInBytes() const
 {
     std::size_t size = 0;
 
-    std::for_each(
-        m_points.begin(),
-        m_points.end(),
+    std::ranges::for_each(
+        m_points,
         [&](auto& array)
         {
             const auto numComponents = array->empty() ? 1 : array->getSize()[0];
@@ -316,9 +315,8 @@ std::size_t Mesh::getDataSizeInBytes() const
                                        * static_cast<std::size_t>(m_numPoints);
         });
 
-    std::for_each(
-        m_cells.begin(),
-        m_cells.end(),
+    std::ranges::for_each(
+        m_cells,
         [&](auto& array)
         {
             const auto numComponents = array->empty() ? 1 : array->getSize()[0];
@@ -335,8 +333,8 @@ std::size_t Mesh::getAllocatedSizeInBytes() const
 {
     std::size_t size = 0;
 
-    std::for_each(m_points.begin(), m_points.end(), [&](auto& array){size += array->getSizeInBytes();});
-    std::for_each(m_cells.begin(), m_cells.end(), [&](auto& array){size += array->getSizeInBytes();});
+    std::ranges::for_each(m_points, [&](auto& array){size += array->getSizeInBytes();});
+    std::ranges::for_each(m_cells, [&](auto& array){size += array->getSizeInBytes();});
 
     return size;
 }

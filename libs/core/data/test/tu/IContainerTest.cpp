@@ -53,7 +53,7 @@ inline static void testContainer(const C& source, const C& modified_source)
     public:
 
         using IContainer<C>::IContainer;
-        using IContainer<C>::operator=;
+        using ContainerWrapper<C>::operator=;
     };
 
     // Initialization test

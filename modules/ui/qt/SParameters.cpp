@@ -978,7 +978,7 @@ void SParameters::createBoolWidget(
         layout.addWidget(resetButton, row, 5);
 
         // Connect reset button to the slider
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ]{onResetBooleanMapped(checkbox);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetBooleanMapped(checkbox);});
     }
 }
 
@@ -1034,7 +1034,7 @@ void SParameters::createColorWidget(
         layout.addWidget(resetButton, row, 5);
 
         // Connect reset button to the button
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ]{onResetColorMapped(colourButton);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetColorMapped(colourButton);});
     }
 }
 
@@ -1108,7 +1108,7 @@ void SParameters::createDoubleWidget(
         layout.addWidget(resetButton, row, 5);
 
         // Connect reset button to the spinbox
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ]{onResetDoubleMapped(spinbox);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetDoubleMapped(spinbox);});
     }
 }
 
@@ -1200,7 +1200,7 @@ void SParameters::createDoubleSliderWidget(
         layout.addWidget(resetButton, row, 5);
 
         // Connect reset button to the slider
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ]{onResetDoubleMapped(slider);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetDoubleMapped(slider);});
     }
 }
 
@@ -1284,7 +1284,7 @@ void SParameters::createIntegerSliderWidget(
         layout.addWidget(resetButton, row, 5);
 
         // Connect reset button to the slider
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ]{onResetIntegerMapped(slider);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetIntegerMapped(slider);});
     }
 }
 
@@ -1344,7 +1344,7 @@ void SParameters::createIntegerSpinWidget(
         layout.addWidget(resetButton, row, 5);
 
         // Connect reset button to the spinbox
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ]{onResetIntegerMapped(spinbox);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetIntegerMapped(spinbox);});
     }
 }
 

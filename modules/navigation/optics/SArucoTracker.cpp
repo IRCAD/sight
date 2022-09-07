@@ -35,6 +35,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
@@ -219,16 +220,17 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         std::vector<std::vector<cv::Point2f> > detectedMarkers;
         std::vector<int> detectedMarkersIds;
 
+        cv::Mat undistortGrey;
+        cv::undistort(grey, undistortGrey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
+
         // Ok, let's detect
         cv::aruco::detectMarkers(
-            grey,
+            undistortGrey,
             m_dictionary,
             detectedMarkers,
             detectedMarkersIds,
             m_detectorParams,
-            cv::noArray(),
-            m_cameraParams.intrinsic,
-            m_cameraParams.distorsion
+            cv::noArray()
         );
 
         //Note: This draws all detected markers

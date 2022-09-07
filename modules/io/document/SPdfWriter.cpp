@@ -26,7 +26,6 @@
 #include <core/location/SingleFolder.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/ConfigurationElementContainer.hpp>
-#include <core/thread/Pool.hpp>
 #include <core/thread/Worker.hpp>
 
 #include <data/iterator/types.hpp>
@@ -127,8 +126,7 @@ void SPdfWriter::updating()
         pdfWriter.setPageSize(QPagedPaintDevice::A4);
 
         // Scale value to fit the images to a PDF page
-        const int scale          = static_cast<int>(pdfWriter.logicalDpiX() * 8);
-        core::thread::Pool& pool = core::thread::getDefaultPool();
+        const int scale = static_cast<int>(pdfWriter.logicalDpiX() * 8);
 
         // Adding fwImage from generic scene to the list of images to scale
         ImagesScaledListType imagesToScale;
@@ -142,12 +140,12 @@ void SPdfWriter::updating()
             {
                 std::shared_future<QImage> future;
                 auto lockedImage = imagePtr.second.lock();
-                future = pool.post(&SPdfWriter::convertFwImageToQImage, std::ref(*lockedImage));
+                auto fn          = [&]{return SPdfWriter::convertFwImageToQImage(*lockedImage);};
                 lockedImages.push_back(std::move(lockedImage));
-                futuresQImage.push_back(future);
+                futuresQImage.emplace_back(std::async(std::launch::async, fn));
             }
 
-            std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&std::shared_future<QImage>::wait));
+            std::ranges::for_each(futuresQImage, std::mem_fn(&std::shared_future<QImage>::wait));
         }
         for(auto& future : futuresQImage)
         {
@@ -167,12 +165,11 @@ void SPdfWriter::updating()
         const std::size_t sizeImagesToScale = imagesToScale.size();
         for(std::size_t idx = 0 ; idx < sizeImagesToScale ; ++idx)
         {
-            std::shared_future<void> future;
-            future = pool.post(&SPdfWriter::scaleQImage, std::ref(imagesToScale[idx]), scale);
-            futures.push_back(future);
+            auto fn = [&]{imagesToScale[idx] = imagesToScale[idx].scaledToWidth(scale, Qt::FastTransformation);};
+            futures.emplace_back(std::async(std::launch::async, fn));
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+        std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
         // Draws images onto the PDF.
         for(QImage& qImage : imagesToScale)
@@ -233,14 +230,6 @@ void SPdfWriter::stopping()
 sight::io::base::service::IOPathType SPdfWriter::getIOPathType() const
 {
     return sight::io::base::service::FILE;
-}
-
-//------------------------------------------------------------------------------
-
-void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
-{
-    SIGHT_ERROR_IF("Image is null.", qImage.isNull());
-    qImage = qImage.scaledToWidth(scale, Qt::FastTransformation);
 }
 
 //------------------------------------------------------------------------------

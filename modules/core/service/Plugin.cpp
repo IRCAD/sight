@@ -22,8 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/thread/Pool.hpp>
-
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/AppConfigParameters.hpp>
 #include <service/extension/Config.hpp>

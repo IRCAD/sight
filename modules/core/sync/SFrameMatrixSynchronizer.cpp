@@ -216,7 +216,7 @@ void SFrameMatrixSynchronizer::synchronize()
                     std::remove_if(
                         availableFramesTL.begin(),
                         availableFramesTL.end(),
-                        [ = ](std::size_t const& idx)
+                        [ =, this](std::size_t const& idx)
                     {
                         const auto frametl = m_frameTLs[idx].lock();
                         SIGHT_ASSERT("Frame TL does not exist", frametl);

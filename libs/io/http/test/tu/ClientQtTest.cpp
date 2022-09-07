@@ -104,8 +104,8 @@ void ClientQtTest::setUp()
     m_worker = ui::qt::getQtWorker(argc, argv.data(), callback, "", "");
 
     m_server.moveToThread(&m_thread);
-    QThread::connect(&m_thread, &QThread::started, [ = ]{m_server.listen();});
-    QThread::connect(&m_thread, &QThread::finished, [ = ]{m_server.close();});
+    QThread::connect(&m_thread, &QThread::started, [ =, this]{m_server.listen();});
+    QThread::connect(&m_thread, &QThread::finished, [ =, this]{m_server.close();});
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ void ClientQtTest::get()
     QTcpServer::connect(
         &m_server,
         &QTcpServer::newConnection,
-        [ = ]
+        [ =, this]
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;
@@ -190,7 +190,7 @@ void ClientQtTest::post()
     QTcpServer::connect(
         &m_server,
         &QTcpServer::newConnection,
-        [ = ]
+        [ =, this]
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;

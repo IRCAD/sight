@@ -240,7 +240,7 @@ void NotificationDialog::show()
     QObject::connect(
         m_msgBox,
         &ClickableQLabel::destroyed,
-        [ = ]()
+        [ =, this]()
         {
             if(m_closedCallBack)
             {
@@ -301,7 +301,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     const int margin = 5;
     if(m_position == Position::CENTERED)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parentPosCenter = _parent->mapToGlobal(_parent->rect().center());
 
@@ -313,7 +313,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     }
     else if(m_position == Position::CENTERED_TOP)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
@@ -327,7 +327,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     }
     else if(m_position == Position::CENTERED_BOTTOM)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
@@ -341,7 +341,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     }
     else if(m_position == Position::TOP_LEFT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
                        const int parentX         = parrentTopLeft.x();
@@ -356,7 +356,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     }
     else if(m_position == Position::TOP_RIGHT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
                        const int parentX          = parrentTopRight.x();
@@ -371,7 +371,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     }
     else if(m_position == Position::BOTTOM_LEFT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
                        const int parentX            = parrentBottomLeft.x();
@@ -386,7 +386,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     }
     else if(m_position == Position::BOTTOM_RIGHT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
                        const int parentX             = parrentBottomRight.x();

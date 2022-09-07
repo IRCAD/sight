@@ -44,7 +44,7 @@ namespace sight::core::com
 template<typename R, typename ... A>
 std::function<R()> SlotCall<R(A ...)>::bindCall(A ... args) const
 {
-    return [ = ]{return call(args ...);};
+    return [ =, this]{return call(args ...);};
 }
 
 //-----------------------------------------------------------------------------

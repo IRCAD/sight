@@ -89,9 +89,8 @@ void Profile::start()
         );
     }
 
-    std::for_each(
-        m_starters.begin(),
-        m_starters.end(),
+    std::ranges::for_each(
+        m_starters,
         [](auto& s)
         {
             auto identifier = s.second;

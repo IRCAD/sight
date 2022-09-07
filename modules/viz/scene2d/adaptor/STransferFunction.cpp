@@ -729,7 +729,7 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
             m_eventFilter,
             &QTimer::timeout,
             this,
-            [ = ]()
+            [ =, this]()
             {
                 this->leftButtonClickEvent(_event);
             });
@@ -1462,7 +1462,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         trapezeAction,
         &QAction::triggered,
         this,
-        [ = ]()
+        [ =, this]()
         {
             this->addTrapeze(_event);
         });
@@ -1471,7 +1471,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         leftRampAction,
         &QAction::triggered,
         this,
-        [ = ]()
+        [ =, this]()
         {
             this->addLeftRamp(_event);
         });
@@ -1480,7 +1480,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         rightRampAction,
         &QAction::triggered,
         this,
-        [ = ]()
+        [ =, this]()
         {
             this->addRightRamp(_event);
         });
@@ -1509,7 +1509,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
                         deleteAction,
                         &QAction::triggered,
                         this,
-                        &STransferFunction::removeCurrenTF
+                        &STransferFunction::removeCurrentTF
                     );
                     contextMenu->addAction(deleteAction);
                 }
@@ -1608,7 +1608,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::removeCurrenTF()
+void STransferFunction::removeCurrentTF()
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
     {
@@ -1619,16 +1619,7 @@ void STransferFunction::removeCurrenTF()
         SIGHT_ASSERT("Transfer function must have more than one TF piece inside.", tf->pieces().size() > 1);
 
         auto& pieces = tf->pieces();
-        pieces.erase(
-            std::remove_if(
-                pieces.begin(),
-                pieces.end(),
-                [&](const auto& piece)
-            {
-                return piece == m_currentTF;
-            }),
-            pieces.end()
-        );
+        std::erase_if(pieces, [&](const auto& piece){return piece == m_currentTF;});
 
         // Sets the new current TF.
         m_currentTF = pieces.front();

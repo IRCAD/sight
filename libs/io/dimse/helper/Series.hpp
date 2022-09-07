@@ -28,7 +28,6 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
 
 namespace sight::data

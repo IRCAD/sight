@@ -104,13 +104,13 @@ void SJobBar::showJob(core::jobs::IJob::sptr iJob)
         });
 
     iJob->addStateHook(
-        [ = ](core::jobs::IJob::State state)
+        [ =, this](core::jobs::IJob::State state)
         {
             if(state == core::jobs::IJob::CANCELED || state == core::jobs::IJob::FINISHED)
             {
                 m_sigEnded->emit();
                 m_associatedWorker->postTask<void>(
-                    [ = ]
+                    [ =, this]
                 {
                     m_progressDialogs.erase(progressDialog);
                 });

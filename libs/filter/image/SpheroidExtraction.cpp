@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#if ITK_VERSION_MAJOR == 4 || (ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3)
+#if HAS_ITK_REVIEW_MODULE
 
 #include "filter/image/SpheroidExtraction.hpp"
 

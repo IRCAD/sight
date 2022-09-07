@@ -108,11 +108,8 @@ public:
     template<typename OutputIterator>
     void getAllConfigurationElements(OutputIterator& output) const
     {
-        // Retrieves all connected extensions.
-        auto extensions = getAllExtensions();
-
         // Walk through the collected extensions to extract configuration elements.
-        for(const auto& extension : extensions)
+        for(auto extension : getAllExtensions())
         {
             if(extension->isEnabled())
             {

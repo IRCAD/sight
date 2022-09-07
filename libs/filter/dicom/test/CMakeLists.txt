@@ -1,7 +1,12 @@
 sight_add_target(filter_dicomTest TYPE TEST)
 
 find_package(DCMTK QUIET REQUIRED)
-target_link_libraries(filter_dicomTest PUBLIC ${DCMTK_LIBRARIES})
+
+if(${DCMTK_VERSION} VERSION_GREATER_EQUAL 3.6.7)
+    target_link_libraries(filter_dicomTest PRIVATE DCMTK::dcmdata)
+else()
+    target_link_libraries(filter_dicomTest PRIVATE dcmdata)
+endif()
 
 find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
 target_link_libraries(filter_dicomTest PUBLIC gdcmCommon gdcmMSFF)

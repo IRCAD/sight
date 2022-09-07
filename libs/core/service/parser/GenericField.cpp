@@ -26,7 +26,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
-#include <data/GenericField.hpp>
+#include <data/GenericFieldBase.hpp>
 #include <data/Integer.hpp>
 #include <data/String.hpp>
 
@@ -44,9 +44,6 @@ void GenericField::updating()
 
 void GenericField::createConfig(core::tools::Object::sptr _obj)
 {
-    data::GenericFieldBase::sptr field = data::GenericFieldBase::dynamicCast(_obj);
-    SIGHT_ASSERT("GenericField not instanced", field);
-
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");
     SIGHT_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
 
@@ -54,6 +51,9 @@ void GenericField::createConfig(core::tools::Object::sptr _obj)
     {
         core::runtime::ConfigurationElement::sptr config = *configs.begin();
         std::string input                                = config->getValue();
+
+        const auto field = data::GenericFieldBase::dynamicCast(_obj);
+        SIGHT_ASSERT("GenericField not instanced", field);
         field->fromString(input);
     }
 }

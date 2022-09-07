@@ -173,7 +173,7 @@ void SSliceIndexDicomEditor::starting()
     // Load a slice
     auto duration = std::chrono::milliseconds(m_delay);
     m_delayTimer2->setFunction(
-        [ = ]()
+        [ =, this]()
         {
             this->triggerNewSlice();
         });

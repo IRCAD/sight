@@ -22,9 +22,7 @@
 
 #include "ReprojectionError.hpp"
 
-#include <utility>
-
-namespace sight::geometry::vision
+namespace sight::geometry::vision::detail
 {
 
 //-----------------------------------------------------------------------------
@@ -60,4 +58,4 @@ ReprojectionError::ReprojectionError(
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::geometry::vision
+} // namespace sight::geometry::vision::detail

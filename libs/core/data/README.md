@@ -88,7 +88,6 @@ All concrete data classes implement this interface.
 ### Technical
 
 - **Exception**: implements exception related to data.
-- **GenericFieldBase**: defines generic operators on sight data.
 - **GenericTL**: defines a timeline of template objects.
 - **ObjectLock**: helper to lock specific object, manages : `sight::data::Image`, `sight::data::Mesh` and `sight::data::Array`.
 

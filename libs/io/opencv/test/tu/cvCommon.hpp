@@ -93,8 +93,8 @@ cv::Mat genCvImage(
 
 //------------------------------------------------------------------------------
 
-template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-static std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+template<std::integral T>
+static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
@@ -117,8 +117,8 @@ static std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t
 
 //------------------------------------------------------------------------------
 
-template<typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
-static std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+template<std::floating_point T>
+static const std::vector<T> genImageBuffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
 {
     const std::size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;

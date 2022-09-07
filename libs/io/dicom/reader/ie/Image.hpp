@@ -27,8 +27,6 @@
 
 #include <data/Image.hpp>
 
-#include <boost/numeric/ublas/matrix.hpp>
-
 namespace sight::io::dicom::reader::ie
 {
 
@@ -88,10 +86,6 @@ public:
 
 protected:
 
-    typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::row_major,
-                                          std::vector<double> > MatrixType;
-    typedef boost::numeric::ublas::vector<double> VectorType;
-
     /**
      * @brief Read image buffer
      * @param[in] dimensions Image dimensions
@@ -120,12 +114,6 @@ protected:
         std::vector<unsigned int>& dimensions,
         std::uint16_t bitsAllocated
     );
-
-    /**
-     * @brief Compute the inverse of matrix
-     * @param[in] matrix Matrix that must be inverted
-     */
-    static MatrixType computeInverseMatrix(MatrixType matrix);
 
     /// Enable buffer rotation
     bool m_enableBufferRotation {true};
