@@ -29,9 +29,6 @@ target_link_libraries(
             Qt5::QuickWidgets
 )
 
-find_package(glm QUIET REQUIRED)
-target_include_directories(module_ui_qt SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
-
 set_target_properties(module_ui_qt PROPERTIES AUTOMOC TRUE)
 
 if(MSVC)

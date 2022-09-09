@@ -2,12 +2,7 @@ sight_add_target(module_filter_point TYPE MODULE)
 
 find_package(VTK QUIET COMPONENTS vtkCommonDataModel REQUIRED)
 
-if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
-    target_include_directories(module_filter_point SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
-    target_link_libraries(module_filter_point PRIVATE vtkCommonDataModel)
-else()
-    target_link_libraries(module_filter_point PRIVATE VTK::CommonDataModel)
-endif()
+target_link_libraries(module_filter_point PRIVATE VTK::CommonDataModel)
 
 find_package(ITK QUIET COMPONENTS ITKCommon REQUIRED)
 target_link_libraries(module_filter_point PRIVATE ITKCommon)

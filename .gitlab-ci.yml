@@ -304,6 +304,22 @@ deploy_manual:apps-linux-release:
     - |
       if ("${SIGHT_BUILD_SDK}" -eq "ON") {
         ninja install
+        # Check if the package is relocatable
+         Try {
+          if (Select-String -Pattern "[A-Z]:[\/\\]\w+" -Path "${env:CI_PROJECT_DIR}/install/lib/cmake/sight/*.cmake") {
+            echo "The package is not relocatable, some absolute paths are present"
+            exit 1
+          }
+          else
+          {
+            echo "The package is relocatable, no absolute path found."
+          }
+        }
+        Catch {
+          echo "Error when looking for absolute paths, see output below."
+          echo $Error[0]
+          exit 1
+        }
         ninja package
       }
   artifacts:

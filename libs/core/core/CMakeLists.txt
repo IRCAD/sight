@@ -18,8 +18,7 @@ target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_BIN_PREFIX="${CMA
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
-target_include_directories(${TARGET_OBJECT_LIB} PUBLIC ${LIBXML2_INCLUDE_DIR})
-target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC ${LIBXML2_LIBRARIES})
+target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC LibXml2::LibXml2)
 
 # Include openssl for crypto
 target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE OpenSSL::Crypto)
@@ -30,7 +29,7 @@ if(UNIX)
 endif()
 
 if(WIN32)
-    target_include_directories(${TARGET_OBJECT_LIB} PUBLIC ${Iconv_INCLUDE_DIR})
+    target_include_directories(${TARGET_OBJECT_LIB} PRIVATE ${Iconv_INCLUDE_DIR})
 endif()
 
 if(SIGHT_BUILD_TESTS)
