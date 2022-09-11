@@ -35,7 +35,7 @@ namespace sight::core::runtime::detail
 //------------------------------------------------------------------------------
 
 ExtensionPoint::ExtensionPoint(
-    const std::shared_ptr<Module> module,
+    const std::shared_ptr<core::runtime::Module> module,
     const std::string& id,
     std::filesystem::path schema
 ) :

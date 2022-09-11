@@ -36,7 +36,7 @@ namespace sight::core::runtime
 
 class Module;
 struct ConfigurationElement;
-struct Extension;
+class Extension;
 class IExecutable;
 class ExecutableFactory;
 struct IPlugin;

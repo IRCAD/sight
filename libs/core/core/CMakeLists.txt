@@ -18,7 +18,7 @@ target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_BIN_PREFIX="${CMA
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
-target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC LibXml2::LibXml2)
+target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE LibXml2::LibXml2)
 
 # Include openssl for crypto
 target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE OpenSSL::Crypto)

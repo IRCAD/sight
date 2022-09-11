@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/runtime/ConfigurationElement.hpp"
-#include "core/runtime/detail/io/Validator.hpp"
 #include "core/runtime/operations.hpp"
 #include "core/runtime/Runtime.hpp"
 
@@ -32,16 +31,6 @@
 
 namespace sight::core::runtime
 {
-
-/**
- * @brief   Update pNode content according to _cfgElement
- * @note    Used to validate a configuration element vs a xsd schema.
- * @note    Values are not managed yet (cases where curChild->type == XML_TEXT_NODE ).
- * @note    To be integrated to configuration element.
- *
-
- */
-CORE_API void ConfigurationElement2XML(core::runtime::ConfigurationElement::sptr _cfgElement, xmlNodePtr pNode);
 
 /**
  * @brief       Returns the configuration element embedding the configuration to be considered for initializing an

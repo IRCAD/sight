@@ -22,14 +22,13 @@
 
 #include "RuntimeTest.hpp"
 
-#include <core/runtime/detail/ExtensionPoint.hpp>
-#include <core/runtime/detail/Module.hpp>
-#include <core/runtime/detail/Runtime.hpp>
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/helper.hpp>
+#include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Plugin.hpp>
 #include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <filesystem>
 

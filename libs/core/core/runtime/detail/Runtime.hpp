@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+#include "core/runtime/detail/Extension.hpp"
 #include "core/runtime/Runtime.hpp"
 
 #include <regex>
@@ -131,7 +132,7 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    [[nodiscard]] std::shared_ptr<Extension> findExtension(const std::string& identifier) const final;
+    [[nodiscard]] std::shared_ptr<core::runtime::Extension> findExtension(const std::string& identifier) const final;
 
     /// @copydoc core::runtime::Runtime::getModules
     core::runtime::Runtime::ModuleContainer getModules() final;
@@ -228,14 +229,14 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    void addExtension(std::shared_ptr<Extension> extension);
+    void addExtension(std::shared_ptr<detail::Extension> extension);
 
     /**
      * @brief       Unregister a new extension.
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    void unregisterExtension(std::shared_ptr<Extension> extension);
+    void unregisterExtension(std::shared_ptr<detail::Extension> extension);
     //@}
 
     /**

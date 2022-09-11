@@ -31,25 +31,16 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include <set>
 
-namespace sight::core::runtime
+namespace sight::core::runtime::Convert
 {
 
 //------------------------------------------------------------------------------
 
-Convert::Convert()
-= default;
-
-//------------------------------------------------------------------------------
-
-Convert::~Convert()
-= default;
-
-//------------------------------------------------------------------------------
-
-void Convert::fromConfigurationElementToXml(
+void fromConfigurationElementToXml(
     std::shared_ptr<core::runtime::ConfigurationElement> _cfgElement,
     xmlNodePtr _node
 )
@@ -99,7 +90,7 @@ void Convert::fromConfigurationElementToXml(
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr Convert::runningModulesToXml()
+xmlNodePtr runningModulesToXml()
 {
     xmlNodePtr node_root      = xmlNewNode(nullptr, xmlCharStrdup(MODULE_RC_PREFIX));
     xmlNodePtr activated_Node = xmlNewNode(nullptr, xmlCharStrdup("Activated"));
@@ -234,7 +225,7 @@ xmlNodePtr Convert::runningModulesToXml()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr Convert::toXml(core::runtime::ConfigurationElement::sptr _cfgElement)
+xmlNodePtr toXml(core::runtime::ConfigurationElement::sptr _cfgElement)
 {
     xmlNodePtr tmp = xmlNewNode(nullptr, xmlCharStrdup("Configurations_Elements"));
     core::runtime::Convert::fromConfigurationElementToXml(_cfgElement, tmp);
@@ -243,7 +234,7 @@ xmlNodePtr Convert::toXml(core::runtime::ConfigurationElement::sptr _cfgElement)
 
 //------------------------------------------------------------------------------
 
-std::string Convert::toXmlString(core::runtime::ConfigurationElement::sptr _cfgElement)
+std::string toXmlString(core::runtime::ConfigurationElement::sptr _cfgElement)
 {
     xmlNodePtr node     = toXml(_cfgElement);
     xmlBufferPtr buffer = xmlBufferCreate();
@@ -258,7 +249,7 @@ std::string Convert::toXmlString(core::runtime::ConfigurationElement::sptr _cfgE
 
 //------------------------------------------------------------------------------
 
-boost::property_tree::ptree Convert::toPropertyTree(core::runtime::ConfigurationElement::csptr _cfgElement)
+boost::property_tree::ptree toPropertyTree(core::runtime::ConfigurationElement::csptr _cfgElement)
 {
     boost::property_tree::ptree pt;
     boost::property_tree::ptree ptAttr;
@@ -307,7 +298,7 @@ boost::property_tree::ptree Convert::toPropertyTree(core::runtime::Configuration
 
 //------------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr Convert::fromPropertyTree(boost::property_tree::ptree pt)
+core::runtime::ConfigurationElement::sptr fromPropertyTree(boost::property_tree::ptree pt)
 {
     std::stringstream sstr;
     boost::property_tree::write_xml(sstr, pt);
@@ -333,4 +324,4 @@ core::runtime::ConfigurationElement::sptr Convert::fromPropertyTree(boost::prope
 
 //------------------------------------------------------------------------------
 
-} //namespace sight::core::runtime
+} //namespace sight::core::runtime::Convert

@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+#include "core/runtime/detail/Extension.hpp"
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/ModuleElement.hpp"
 #include "core/runtime/Runtime.hpp"
@@ -32,6 +33,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <ranges>
 #include <string>
 
 namespace sight::core::runtime
@@ -68,7 +70,7 @@ public:
      *                      validate extensions contributed to the point.
      */
     ExtensionPoint(
-        const std::shared_ptr<Module> module,
+        const std::shared_ptr<core::runtime::Module> module,
         const std::string& id,
         std::filesystem::path schema
     );
@@ -129,19 +131,19 @@ public:
      *
      * @return  output  shared pointers to found extensions
      */
-    std::vector<std::shared_ptr<Extension> > getAllExtensions() const
+    std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensions() const
     {
-        std::vector<std::shared_ptr<Extension> > container;
+        std::vector<std::shared_ptr<core::runtime::Extension> > container;
         Runtime& runtime = Runtime::get();
 
-        for(const auto& extension : runtime.getExtensions())
-        {
-            if(extension->getPoint() == m_id && extension->isEnabled()
-               && extension->validate() == Extension::Valid)
-            {
-                container.push_back(extension);
-            }
-        }
+        std::ranges::copy_if(
+            runtime.getExtensions(),
+            std::back_inserter(container),
+            [this](const auto& e)
+                {
+                    const auto extension = std::dynamic_pointer_cast<detail::Extension>(e);
+                    return extension->getPoint() == m_id && extension->isEnabled() && extension->validate() == Extension::Valid;
+                });
 
         return container;
     }

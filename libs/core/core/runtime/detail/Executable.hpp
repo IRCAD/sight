@@ -25,7 +25,7 @@
 #include "core/config.hpp"
 #include "core/runtime/IExecutable.hpp"
 
-namespace sight::core::runtime
+namespace sight::core::runtime::detail
 {
 
 /**
@@ -76,4 +76,4 @@ private:
     std::shared_ptr<ConfigurationElement> m_initializationData;
 };
 
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

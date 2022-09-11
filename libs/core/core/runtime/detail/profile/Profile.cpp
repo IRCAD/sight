@@ -80,12 +80,13 @@ void Profile::start()
     detail::Runtime& runtime = detail::Runtime::get();
     for(const auto& extension : runtime.getExtensions())
     {
-        auto bundle = std::dynamic_pointer_cast<detail::Module>(extension->getModule());
+        auto bundle        = std::dynamic_pointer_cast<detail::Module>(extension->getModule());
+        auto extensionImpl = std::dynamic_pointer_cast<detail::Extension>(extension);
 
         SIGHT_FATAL_IF(
             "Validation not ok for bundle = '" << extension->getModule()->getIdentifier()
             << "'  (extension id = '" << extension->getIdentifier() << "' )",
-            bundle->isEnabled() && extension->validate() == Extension::Invalid
+            bundle->isEnabled() && extensionImpl->validate() == Extension::Invalid
         );
     }
 

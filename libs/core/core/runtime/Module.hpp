@@ -33,7 +33,7 @@
 namespace sight::core::runtime
 {
 
-struct Extension;
+class Extension;
 struct ExtensionRegistry;
 class IExecutable;
 class ExecutableFactory;

@@ -16,6 +16,8 @@ target_link_libraries(coreDetailTest PUBLIC core_obj)
 
 target_link_libraries(coreDetailTest PRIVATE CppUnit)
 
+target_link_libraries(coreDetailTest PRIVATE LibXml2::LibXml2)
+
 if(UNIX)
     target_link_libraries(coreDetailTest PRIVATE dl)
 endif()

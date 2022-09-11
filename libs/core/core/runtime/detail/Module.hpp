@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/runtime/detail/dl/Library.hpp"
+#include "core/runtime/detail/Extension.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Module.hpp"
 
@@ -51,19 +52,15 @@ public:
      * @name    Type definitions
      */
     //@{
-    typedef std::set<SPTR(ExecutableFactory)> ExecutableFactoryContainer; ///< Defines the executable
-    // factory container type.
-    typedef ExecutableFactoryContainer::const_iterator ExecutableFactoryConstIterator; ///< Defines the executable
-    // factory container constant
-    // iterator type.
+    using ExtensionImplContainer = std::set<SPTR(detail::Extension)>;
 
-    typedef std::set<SPTR(ExtensionPoint)> ExtensionPointContainer; ///< Defines the extension point
-    // container type.
-    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator; ///< Defines the extension point
-    // container constant iterator type.
+    using ExecutableFactoryContainer     = std::set<SPTR(ExecutableFactory)>;
+    using ExecutableFactoryConstIterator = ExecutableFactoryContainer::const_iterator;
 
-    ///< Defines the extension container constant iterator type.
-    typedef ExtensionContainer::const_iterator ExtensionConstIterator;
+    using ExtensionPointContainer     = std::set<SPTR(ExtensionPoint)>;
+    using ExtensionPointConstIterator = ExtensionPointContainer::const_iterator;
+
+    using ExtensionConstIterator = ExtensionImplContainer::const_iterator;
     //@}
 
     /**
@@ -235,7 +232,7 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to add
      */
-    void addExtension(SPTR(Extension) extension);
+    void addExtension(SPTR(detail::Extension) extension);
 
     /**
      * @brief       Tells if an specific extension exists.
@@ -406,7 +403,7 @@ private:
     const std::filesystem::path m_resourcesLocation;  ///< the path to the module resources
     const std::string m_identifier;                   ///< a string containing the module identifier
     const std::string m_class;                        ///< a string containing the module's plugin class name
-    ExtensionContainer m_extensions;                  ///< all extensions
+    ExtensionImplContainer m_extensions;              ///< all extensions
     ExtensionPointContainer m_extensionPoints;        ///< all extension points
     ExecutableFactoryContainer m_executableFactories; ///< all executable factories
     RequirementContainer m_requirements;              ///< all requirements of the module

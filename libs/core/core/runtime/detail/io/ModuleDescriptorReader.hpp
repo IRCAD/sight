@@ -22,27 +22,22 @@
 
 #pragma once
 
-#if defined(__GNUC__)
-#pragma GCC visibility push(default)
-#endif
-#include <string>
-#include <vector>
-#include <filesystem>
-#include <libxml/parser.h>
-#if defined(__GNUC__)
-#pragma GCC visibility pop
-#endif
-
+#include "core/runtime/detail/dl/Library.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/RuntimeException.hpp"
-#include "core/runtime/detail/dl/Library.hpp"
+
+#include <libxml/parser.h>
+
+#include <filesystem>
+#include <string>
+#include <vector>
 
 namespace sight::core::runtime
 {
 
 class Module;
 struct ConfigurationElement;
-struct Extension;
+class Extension;
 
 namespace detail
 {

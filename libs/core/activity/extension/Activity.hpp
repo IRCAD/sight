@@ -48,7 +48,7 @@ class Vector;
 namespace core::runtime
 {
 
-struct Extension;
+class Extension;
 
 } // namespace core::runtime
 

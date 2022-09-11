@@ -24,13 +24,13 @@
 
 #include "core/config.hpp"
 #include "core/runtime/ConfigurationElementContainer.hpp"
-#include "core/runtime/ModuleElement.hpp"
+#include "core/runtime/Extension.hpp"
 
-#include <boost/noncopyable.hpp>
+#include <libxml/tree.h>
 
 #include <string>
 
-namespace sight::core::runtime
+namespace sight::core::runtime::detail
 {
 
 class Module;
@@ -38,11 +38,19 @@ class Module;
 /**
  * @brief   Defines the extension class.
  */
-class CORE_CLASS_API Extension : public ModuleElement,
-                                 public ConfigurationElementContainer,
-                                 public boost::noncopyable
+class Extension : public sight::core::runtime::Extension
 {
 public:
+
+    /**
+     * @brief   Defines the validity states of an extension
+     */
+    typedef enum
+    {
+        UnknownValidity, ///< The extension has not been validated.
+        Valid,           ///< The extension passed the validation.
+        Invalid          ///< The extension failed the validation.
+    } Validity;
 
     /**
      * @brief       Constructor.
@@ -50,35 +58,44 @@ public:
      * @param[in]   module  a pointer to the module the extension is attached to
      * @param[in]   id      a string containing the extension identifier
      * @param[in]   point   a string containing the extension point identifier
+     * @param[in]   xmlNode a pointer to the xml node that represents the extension
      *
      * @todo        test parameters validity
      */
     Extension(
-        std::shared_ptr<Module> module,
+        std::shared_ptr<core::runtime::Module> module,
         const std::string& id,
-        const std::string& point
+        const std::string& point,
+        xmlNodePtr xmlNode
     );
+    /**
+     * @brief   Destructor
+     */
+    ~Extension() override;
 
     /**
-     * @brief   Retrieves the extension identifier.
+     * @brief   Retrieves the xml node that represents the extension
      *
-     * @return  a string containing the extension identifier (may be empty)
+     * @return  a pointer to an xml node
      */
-    [[nodiscard]] CORE_API const std::string& getIdentifier() const;
+    [[nodiscard]] xmlNodePtr getXmlNode() const;
 
     /**
-     * @brief   Retrieves the extension point identifier.
+     * @brief   Validates the extension.
      *
-     * @return  a string containing the extension point identifier
+     * Calling this method more than one time will only cause
+     * the current validity to be returned.
+     *
+     * @return  the extension validity
      */
-    [[nodiscard]] CORE_API const std::string& getPoint() const;
+    Validity validate();
 
 private:
 
-    /// A string containing the extension identifier
-    const std::string m_id;
-    /// A string containing the extension point identifier the extension will be connected to
-    const std::string m_point;
+    xmlDocPtr m_xmlDoc;                    ///< A pointer to the xml document that contains the xml node representing
+                                           ///< the extension
+    xmlNodePtr m_xmlNode;                  ///< A pointer to the xml node that represents the extension
+    Validity m_validity {UnknownValidity}; ///< The validity state of the extension
 };
 
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

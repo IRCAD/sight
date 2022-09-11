@@ -24,7 +24,6 @@
 
 #include <core/runtime/detail/dl/Posix.hpp>
 #include <core/runtime/detail/dl/Win32.hpp>
-#include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Module.hpp>
 #include <core/runtime/detail/Runtime.hpp>
 #include <core/runtime/operations.hpp>

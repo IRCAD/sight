@@ -129,7 +129,7 @@ void Module::addExtension(SPTR(Extension)extension)
 bool Module::hasExtension(const std::string& identifier) const
 {
     bool hasExtension = false;
-    for(const ExtensionContainer::value_type& extension : m_extensions)
+    for(const auto& extension : m_extensions)
     {
         if(extension->getIdentifier() == identifier)
         {
@@ -145,7 +145,7 @@ bool Module::hasExtension(const std::string& identifier) const
 
 void Module::setEnableExtension(const std::string& identifier, const bool enable)
 {
-    for(const ExtensionContainer::value_type& extension : m_extensions)
+    for(const auto& extension : m_extensions)
     {
         if(extension->getIdentifier() == identifier)
         {
@@ -539,7 +539,9 @@ bool Module::hasParameter(const std::string& identifier) const
 
 core::runtime::Module::ExtensionContainer core::runtime::detail::Module::getExtensions() const
 {
-    return m_extensions;
+    core::runtime::Module::ExtensionContainer container;
+    std::ranges::transform(m_extensions, std::inserter(container, container.begin()), [](const auto& e){return e;});
+    return container;
 }
 
 //------------------------------------------------------------------------------

@@ -27,55 +27,10 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <libxml/tree.h>
-
-namespace sight::core::runtime
+namespace sight::core::runtime::Convert
 {
 
-/**
- * @brief   Defines the convert class.
- */
-class CORE_CLASS_API Convert
-{
-public:
+CORE_API boost::property_tree::ptree toPropertyTree(core::runtime::ConfigurationElement::csptr _cfgElement);
+CORE_API core::runtime::ConfigurationElement::sptr fromPropertyTree(boost::property_tree::ptree pt);
 
-    /**
-     * @brief   Destructor : does nothing.
-     */
-    CORE_API virtual ~Convert();
-
-    /**
-     * @brief   Build an xmlNodePtr from a ConfigurationElement
-     */
-    CORE_API static xmlNodePtr toXml(std::shared_ptr<core::runtime::ConfigurationElement> _cfgElement);
-
-    /**
-     * @brief   Build an std::string from a ConfigurationElement
-     */
-    CORE_API std::string static toXmlString(core::runtime::ConfigurationElement::sptr _cfgElement);
-
-    /**
-     * @brief   Build an xmlNodePtr with all running Modules
-     */
-    CORE_API static xmlNodePtr runningModulesToXml();
-
-    CORE_API static boost::property_tree::ptree toPropertyTree(
-        core::runtime::ConfigurationElement::csptr _cfgElement
-    );
-
-    CORE_API static core::runtime::ConfigurationElement::sptr fromPropertyTree(boost::property_tree::ptree pt);
-
-private:
-
-    static void fromConfigurationElementToXml(
-        std::shared_ptr<core::runtime::ConfigurationElement> _cfgElement,
-        xmlNodePtr _node
-    );
-
-    /**
-     * @brief   Constructor : does nothing.
-     */
-    Convert();
-};
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::Convert

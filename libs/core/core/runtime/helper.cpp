@@ -35,7 +35,7 @@ namespace sight::core::runtime
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElement2XML(core::runtime::ConfigurationElement::sptr _cfgElement, xmlNodePtr pNode)
+void configurationElement2Xml(core::runtime::ConfigurationElement::sptr _cfgElement, xmlNodePtr pNode)
 {
     //ATTRIBUTES + VALUES
     std::map<std::string, std::string> attr = _cfgElement->getAttributes();
@@ -64,7 +64,7 @@ void ConfigurationElement2XML(core::runtime::ConfigurationElement::sptr _cfgElem
         // If configuration element is a XML_ELEMENT_NODE
         else
         {
-            ConfigurationElement2XML(elt, child);
+            configurationElement2Xml(elt, child);
         }
     }
 }
@@ -194,7 +194,10 @@ std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensionsForPoint
         throw RuntimeException(extension_pt + ": invalid extension point identifier.");
     }
 
-    return point->getAllExtensions();
+    std::vector<std::shared_ptr<core::runtime::Extension> > extensions;
+    std::ranges::transform(point->getAllExtensions(), std::back_inserter(extensions), [](auto e){return e;});
+
+    return extensions;
 }
 
 } // namespace sight::core::runtime

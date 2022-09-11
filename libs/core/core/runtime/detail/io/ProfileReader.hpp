@@ -22,17 +22,12 @@
 
 #pragma once
 
-#if defined(__GNUC__)
-#pragma GCC visibility push(default)
-#endif
-#include <string>
-#include <filesystem>
-#include <libxml/tree.h>
-#if defined(__GNUC__)
-#pragma GCC visibility pop
-#endif
-
 #include "core/config.hpp"
+
+#include <libxml/tree.h>
+
+#include <filesystem>
+#include <string>
 
 namespace sight::core::runtime::detail
 {

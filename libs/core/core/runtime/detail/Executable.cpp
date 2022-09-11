@@ -24,7 +24,7 @@
 
 #include "core/runtime/ConfigurationElement.hpp"
 
-namespace sight::core::runtime
+namespace sight::core::runtime::detail
 {
 
 //------------------------------------------------------------------------------
@@ -57,4 +57,4 @@ void Executable::setInitializationData(const ConfigurationElement::sptr element)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

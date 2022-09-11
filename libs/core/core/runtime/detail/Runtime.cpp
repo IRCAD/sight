@@ -94,7 +94,7 @@ void Runtime::addModule(std::shared_ptr<Module> module)
     std::for_each(
         module->extensionsBegin(),
         module->extensionsEnd(),
-        [this](auto&& PH1, auto&& ...){addExtension(std::forward<decltype(PH1)>(PH1));});
+        [this](auto e){addExtension(e);});
     std::for_each(
         module->extensionPointsBegin(),
         module->extensionPointsEnd(),
@@ -211,7 +211,7 @@ std::shared_ptr<ExecutableFactory> Runtime::findExecutableFactory(const std::str
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExtension(std::shared_ptr<Extension> extension)
+void Runtime::addExtension(std::shared_ptr<detail::Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(filterID(extension->getIdentifier()));
@@ -226,7 +226,7 @@ void Runtime::addExtension(std::shared_ptr<Extension> extension)
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterExtension(std::shared_ptr<Extension> extension)
+void Runtime::unregisterExtension(std::shared_ptr<detail::Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(filterID(extension->getIdentifier()));
@@ -349,10 +349,10 @@ Runtime& Runtime::get()
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Extension> Runtime::findExtension(const std::string& identifier) const
+std::shared_ptr<core::runtime::Extension> Runtime::findExtension(const std::string& identifier) const
 {
     const std::string id = filterID(identifier);
-    std::shared_ptr<Extension> resExtension;
+    std::shared_ptr<core::runtime::Extension> resExtension;
     for(const ExtensionContainer::value_type& extension : m_extensions)
     {
         if(extension->getIdentifier() == id && extension->isEnabled())
