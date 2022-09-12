@@ -545,7 +545,6 @@ service::IService::KeyConnectionsMap SNegato::getAutoConnections() const
         {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT},
         {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
         {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT},
-        {s_IMAGE_IN, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT},
         {s_TF_INOUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {s_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {s_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}

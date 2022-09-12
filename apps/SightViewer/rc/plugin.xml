@@ -604,11 +604,6 @@
             </connect>
 
             <connect>
-                <signal>image/visibilityModified</signal>
-                <slot>negato3DVisibilityAct/setChecked</slot>
-            </connect>
-
-            <connect>
                 <signal>seriesDB/modified</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>

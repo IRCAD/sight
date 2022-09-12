@@ -189,13 +189,6 @@
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
-         <service>sight::module::ui::qt::image::ImageTransparency</service>
-         <object>sight::data::Image</object>
-         <desc>ImageTransparency service allows to change image transparency.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::qt::image::SImage</service>
          <desc>This editor displays an image.</desc>
     </extension>

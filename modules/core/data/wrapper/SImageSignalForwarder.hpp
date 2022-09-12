@@ -101,8 +101,6 @@ private:
     void forwardDistanceDisplayed(bool display);
     void forwardSliceIndexModified(int axial, int frontal, int sagittal);
     void forwardSliceTypeModified(int from, int to);
-    void forwardVisibilityModified(bool visibility);
-    void forwardTransparencyModified();
     void forwardAddedFields(sight::data::Object::FieldsContainerType objects);
     void forwardChangedFields(
         sight::data::Object::FieldsContainerType newObjects,

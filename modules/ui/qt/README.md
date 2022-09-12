@@ -60,7 +60,6 @@ Here is the list of uncategorised services:
 ### Image
 
 - **ImageInfo**: displays image pixel information when it receives the mouse cursor coordinates.
-- **ImageTransparency**: allows to change image transparency.
 - **SImage**: displays an image.
 - **SliceIndexPositionEditor**: allows to change the slice index of an image.
 - **STransferFunction**: editor to select a transfer function.

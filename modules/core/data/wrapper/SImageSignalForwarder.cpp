@@ -64,21 +64,19 @@ SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_avail
 
 SImageSignalForwarder::SImageSignalForwarder() noexcept
 {
-    m_availableConnection[sight::data::Image::s_MODIFIED_SIG]              = s_FORWARD_MODIFIED_SLOT;
-    m_availableConnection[sight::data::Image::s_BUFFER_MODIFIED_SIG]       = s_FORWARD_BUFFER_MODIFIED_SLOT;
-    m_availableConnection[sight::data::Image::s_LANDMARK_ADDED_SIG]        = s_FORWARD_LANDMARK_ADDED_SLOT;
-    m_availableConnection[sight::data::Image::s_LANDMARK_REMOVED_SIG]      = s_FORWARD_LANDMARK_REMOVED_SLOT;
-    m_availableConnection[sight::data::Image::s_LANDMARK_DISPLAYED_SIG]    = s_FORWARD_LANDMARK_DISPLAYED_SLOT;
-    m_availableConnection[sight::data::Image::s_DISTANCE_ADDED_SIG]        = s_FORWARD_DISTANCE_ADDED_SLOT;
-    m_availableConnection[sight::data::Image::s_DISTANCE_REMOVED_SIG]      = s_FORWARD_DISTANCE_REMOVED_SLOT;
-    m_availableConnection[sight::data::Image::s_DISTANCE_DISPLAYED_SIG]    = s_FORWARD_DISTANCE_DISPLAYED_SLOT;
-    m_availableConnection[sight::data::Image::s_SLICE_INDEX_MODIFIED_SIG]  = s_FORWARD_SLICE_INDEX_MODIFIED_SLOT;
-    m_availableConnection[sight::data::Image::s_SLICE_TYPE_MODIFIED_SIG]   = s_FORWARD_SLICE_TYPE_MODIFIED_SLOT;
-    m_availableConnection[sight::data::Image::s_VISIBILITY_MODIFIED_SIG]   = s_FORWARD_VISIBILITY_MODIFIED_SLOT;
-    m_availableConnection[sight::data::Image::s_TRANSPARENCY_MODIFIED_SIG] = s_FORWARD_TRANSPARENCY_MODIFIED_SLOT;
-    m_availableConnection[sight::data::Object::s_ADDED_FIELDS_SIG]         = s_FORWARD_ADDED_FIELDS_SLOT;
-    m_availableConnection[sight::data::Object::s_CHANGED_FIELDS_SIG]       = s_FORWARD_CHANGED_FIELDS_SLOT;
-    m_availableConnection[sight::data::Object::s_REMOVED_FIELDS_SIG]       = s_FORWARD_REMOVED_FIELDS_SLOT;
+    m_availableConnection[sight::data::Image::s_MODIFIED_SIG]             = s_FORWARD_MODIFIED_SLOT;
+    m_availableConnection[sight::data::Image::s_BUFFER_MODIFIED_SIG]      = s_FORWARD_BUFFER_MODIFIED_SLOT;
+    m_availableConnection[sight::data::Image::s_LANDMARK_ADDED_SIG]       = s_FORWARD_LANDMARK_ADDED_SLOT;
+    m_availableConnection[sight::data::Image::s_LANDMARK_REMOVED_SIG]     = s_FORWARD_LANDMARK_REMOVED_SLOT;
+    m_availableConnection[sight::data::Image::s_LANDMARK_DISPLAYED_SIG]   = s_FORWARD_LANDMARK_DISPLAYED_SLOT;
+    m_availableConnection[sight::data::Image::s_DISTANCE_ADDED_SIG]       = s_FORWARD_DISTANCE_ADDED_SLOT;
+    m_availableConnection[sight::data::Image::s_DISTANCE_REMOVED_SIG]     = s_FORWARD_DISTANCE_REMOVED_SLOT;
+    m_availableConnection[sight::data::Image::s_DISTANCE_DISPLAYED_SIG]   = s_FORWARD_DISTANCE_DISPLAYED_SLOT;
+    m_availableConnection[sight::data::Image::s_SLICE_INDEX_MODIFIED_SIG] = s_FORWARD_SLICE_INDEX_MODIFIED_SLOT;
+    m_availableConnection[sight::data::Image::s_SLICE_TYPE_MODIFIED_SIG]  = s_FORWARD_SLICE_TYPE_MODIFIED_SLOT;
+    m_availableConnection[sight::data::Object::s_ADDED_FIELDS_SIG]        = s_FORWARD_ADDED_FIELDS_SLOT;
+    m_availableConnection[sight::data::Object::s_CHANGED_FIELDS_SIG]      = s_FORWARD_CHANGED_FIELDS_SLOT;
+    m_availableConnection[sight::data::Object::s_REMOVED_FIELDS_SIG]      = s_FORWARD_REMOVED_FIELDS_SLOT;
 
     newSlot(s_FORWARD_MODIFIED_SLOT, &SImageSignalForwarder::forwardModified, this);
     newSlot(s_FORWARD_BUFFER_MODIFIED_SLOT, &SImageSignalForwarder::forwardBufferModified, this);
@@ -90,8 +88,6 @@ SImageSignalForwarder::SImageSignalForwarder() noexcept
     newSlot(s_FORWARD_DISTANCE_DISPLAYED_SLOT, &SImageSignalForwarder::forwardDistanceDisplayed, this);
     newSlot(s_FORWARD_SLICE_INDEX_MODIFIED_SLOT, &SImageSignalForwarder::forwardSliceIndexModified, this);
     newSlot(s_FORWARD_SLICE_TYPE_MODIFIED_SLOT, &SImageSignalForwarder::forwardSliceTypeModified, this);
-    newSlot(s_FORWARD_VISIBILITY_MODIFIED_SLOT, &SImageSignalForwarder::forwardVisibilityModified, this);
-    newSlot(s_FORWARD_TRANSPARENCY_MODIFIED_SLOT, &SImageSignalForwarder::forwardTransparencyModified, this);
     newSlot(s_FORWARD_ADDED_FIELDS_SLOT, &SImageSignalForwarder::forwardAddedFields, this);
     newSlot(s_FORWARD_CHANGED_FIELDS_SLOT, &SImageSignalForwarder::forwardChangedFields, this);
     newSlot(s_FORWARD_REMOVED_FIELDS_SLOT, &SImageSignalForwarder::forwardRemovedFields, this);
@@ -256,27 +252,6 @@ void SImageSignalForwarder::forwardSliceTypeModified(int from, int to)
     auto sig         =
         image->signal<sight::data::Image::SliceTypeModifiedSignalType>(sight::data::Image::s_SLICE_TYPE_MODIFIED_SIG);
     sig->asyncEmit(from, to);
-}
-
-//-----------------------------------------------------------------------------
-
-void SImageSignalForwarder::forwardVisibilityModified(bool visibility)
-{
-    const auto image = m_target.lock();
-    auto sig         =
-        image->signal<sight::data::Image::VisibilityModifiedSignalType>(sight::data::Image::s_VISIBILITY_MODIFIED_SIG);
-    sig->asyncEmit(visibility);
-}
-
-//-----------------------------------------------------------------------------
-
-void SImageSignalForwarder::forwardTransparencyModified()
-{
-    const auto image = m_target.lock();
-    auto sig         = image->signal<sight::data::Image::TransparencyModifiedSignalType>(
-        sight::data::Image::s_TRANSPARENCY_MODIFIED_SIG
-    );
-    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

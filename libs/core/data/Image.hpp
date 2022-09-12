@@ -324,15 +324,6 @@ public:
     /// Type of signal when slice type is modified (from slice type, to slice type)
     typedef core::com::Signal<void (int, int)> SliceTypeModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
-
-    /// Type of signal when visibility is modified
-    typedef core::com::Signal<void (bool)> VisibilityModifiedSignalType;
-    DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
-
-    /// Type of signal when visibility is modified
-    typedef core::com::Signal<void ()> TransparencyModifiedSignalType;
-    DATA_API static const core::com::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
-
     /**
      * @}
      */

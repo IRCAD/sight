@@ -228,7 +228,6 @@ service::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
         {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT},
         {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT},
         {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT},
-        {s_IMAGE_IN, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT},
         {s_TF_INOUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {s_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {s_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
@@ -419,38 +418,12 @@ void SNegato3D::setTransparency(double _transparency)
 
 void SNegato3D::setVisible(bool _visible)
 {
-    // True if the visibility need to be propagated
-    bool visibilityChanged = false;
-
-    using VisModSigType = data::Image::VisibilityModifiedSignalType;
-    std::shared_ptr<VisModSigType> visModSig;
-
+    for(const auto& plane : m_planes)
     {
-        const auto image      = m_image.lock();
-        const auto visibility = image->getField<data::Boolean>(s_VISIBILITY_FIELD);
-
-        // We propagate the visibility change if it has never been applied or if have changed
-        visibilityChanged = !visibility || visibility->getValue() != _visible;
-
-        if(visibilityChanged)
-        {
-            //image->setField(s_VISIBILITY_FIELD, data::Boolean::New(_visible));
-            visModSig = image->signal<VisModSigType>(data::Image::s_VISIBILITY_MODIFIED_SIG);
-        }
+        plane->setVisible(_visible);
     }
 
-    if(visibilityChanged)
-    {
-        for(const auto& plane : m_planes)
-        {
-            plane->setVisible(m_isVisible);
-        }
-
-        const core::com::Connection::Blocker blocker(visModSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
-        visModSig->asyncEmit(_visible);
-
-        this->requestRender();
-    }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

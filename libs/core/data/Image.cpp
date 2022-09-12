@@ -55,17 +55,15 @@ auto pixelFormatToNumComponents =
         return s_pixelFormatToNumComponents[format];
     };
 
-const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
-const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
-const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG      = "landmarkRemoved";
-const core::com::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG    = "landmarkDisplayed";
-const core::com::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG        = "distanceAdded";
-const core::com::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG      = "distanceRemoved";
-const core::com::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG    = "distanceDisplayed";
-const core::com::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG  = "sliceIndexModified";
-const core::com::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG   = "sliceTypeModified";
-const core::com::Signals::SignalKeyType Image::s_VISIBILITY_MODIFIED_SIG   = "visibilityModified";
-const core::com::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "transparencyModified";
+const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG      = "bufferModified";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG       = "landmarkAdded";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG     = "landmarkRemoved";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG       = "distanceAdded";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG     = "distanceRemoved";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG   = "distanceDisplayed";
+const core::com::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG = "sliceIndexModified";
+const core::com::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG  = "sliceTypeModified";
 
 //------------------------------------------------------------------------------
 
@@ -81,8 +79,6 @@ Image::Image(data::Object::Key /*unused*/) :
     newSignal<DistanceRemovedSignalType>(s_DISTANCE_REMOVED_SIG);
     newSignal<SliceIndexModifiedSignalType>(s_SLICE_INDEX_MODIFIED_SIG);
     newSignal<SliceTypeModifiedSignalType>(s_SLICE_TYPE_MODIFIED_SIG);
-    newSignal<VisibilityModifiedSignalType>(s_VISIBILITY_MODIFIED_SIG);
-    newSignal<TransparencyModifiedSignalType>(s_TRANSPARENCY_MODIFIED_SIG);
 
     auto pl = data::PointList::New();
     data::helper::MedicalImage::setLandmarks(*this, pl);
