@@ -25,7 +25,7 @@
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -121,17 +121,17 @@ void SOpenCVWriter::updating()
         }
     }
 
-    auto data      = m_data.lock();
-    auto camSeries = std::dynamic_pointer_cast<const data::CameraSeries>(data.get_shared());
+    auto data       = m_data.lock();
+    auto camera_set = std::dynamic_pointer_cast<const data::CameraSet>(data.get_shared());
 
-    if(!camSeries)
+    if(!camera_set)
     {
         m_writeFailed = true;
     }
 
-    SIGHT_ASSERT("CameraSeries is null", camSeries);
+    SIGHT_ASSERT("CameraSet is null", camera_set);
 
-    std::size_t numberOfCameras = camSeries->numCameras();
+    std::size_t numberOfCameras = camera_set->size();
 
     std::vector<data::Camera::csptr> cameras;
     std::vector<cv::Mat> cameraMatrices;
@@ -142,7 +142,7 @@ void SOpenCVWriter::updating()
 
     for(std::size_t i = 0 ; i < numberOfCameras ; ++i)
     {
-        cameras.push_back(camSeries->getCamera(i));
+        cameras.push_back(camera_set->get_camera(i));
         cameraMatrices.push_back(cv::Mat::eye(3, 3, CV_64F));
         cameraDistCoefs.push_back(cv::Mat::eye(5, 1, CV_64F));
 
@@ -163,19 +163,20 @@ void SOpenCVWriter::updating()
 
     for(std::size_t c = 0 ; c < numberOfCameras ; ++c)
     {
+        const auto camera = camera_set->get_camera(c);
         std::stringstream camNum;
         camNum << "camera_" << c;
 
         fs << camNum.str() << "{";
-        fs << "id" << camSeries->getCamera(c)->getCameraID().c_str();
-        fs << "description" << camSeries->getCamera(c)->getDescription().c_str();
-        fs << "imageWidth" << static_cast<int>(camSeries->getCamera(c)->getWidth());
-        fs << "imageHeight" << static_cast<int>(camSeries->getCamera(c)->getHeight());
+        fs << "id" << camera->getCameraID().c_str();
+        fs << "description" << camera->getDescription().c_str();
+        fs << "imageWidth" << static_cast<int>(camera->getWidth());
+        fs << "imageHeight" << static_cast<int>(camera->getHeight());
         fs << "matrix" << cameraMatrices[c];
         fs << "distortion" << cameraDistCoefs[c];
-        fs << "scale" << camSeries->getCamera(c)->getScale();
+        fs << "scale" << camera->getScale();
 
-        const auto extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
+        const auto extrinsicMatrix = camera_set->get_extrinsic_matrix(c);
         if(extrinsicMatrix)
         {
             for(std::uint8_t i = 0 ; i < 4 ; ++i)

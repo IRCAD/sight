@@ -28,7 +28,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Series of camera calibration -->
-            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="cameraSet" type="sight::data::CameraSet" />
             <!-- Camera calibration, deferred because it is extracted from the series -->
             <object uid="camera" type="sight::data::Camera" src="deferred"/>
             <!-- Frame timeline used to buffer the output of the video grabber -->
@@ -272,12 +272,12 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
-                <inout key="data" uid="cameraSeries" />
+                <inout key="data" uid="cameraSet" />
             </service>
 
-            <!-- extract the first sight::data::Camera from the sight::data::CameraSeries -->
+            <!-- extract the first sight::data::Camera from the sight::data::CameraSet -->
             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
-                <inout key="cameraSeries" uid="cameraSeries" />
+                <inout key="cameraSet" uid="cameraSet" />
                 <out group="camera" >
                     <key index="0" uid="camera" />
                 </out>
@@ -516,7 +516,7 @@
             </connect>
 
             <connect>
-                <signal>cameraSeries/modified</signal>
+                <signal>cameraSet/modified</signal>
                 <slot>extractCameraSrv/update</slot>
                 <slot>errorSrv/update</slot>
             </connect>

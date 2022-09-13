@@ -51,22 +51,17 @@ Material::Material(data::Object::Key /*unused*/) :
 
 //------------------------------------------------------------------------------
 
-Material::~Material()
-= default;
-
-//------------------------------------------------------------------------------
-
-void Material::shallowCopy(const Object::csptr& _source)
+void Material::shallowCopy(const Object::csptr& source)
 {
-    Material::csptr other = Material::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_ambient        = other->m_ambient;
     m_diffuse        = other->m_diffuse;
@@ -77,21 +72,23 @@ void Material::shallowCopy(const Object::csptr& _source)
     m_optionsMode             = other->m_optionsMode;
     m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
     m_diffuseTextureWrapping  = other->m_diffuseTextureWrapping;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Material::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Material::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Material::csptr other = Material::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_ambient        = data::Object::copy(other->m_ambient, cache);
     m_diffuse        = data::Object::copy(other->m_diffuse, cache);
@@ -102,6 +99,8 @@ void Material::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& c
     m_optionsMode             = other->m_optionsMode;
     m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
     m_diffuseTextureWrapping  = other->m_diffuseTextureWrapping;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -171,7 +170,7 @@ bool Material::operator==(const Material& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

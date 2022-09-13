@@ -104,35 +104,40 @@ void Array::swap(Array::sptr _source)
 
 //------------------------------------------------------------------------------
 
-void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Array::shallowCopy(const Object::csptr& /*unused*/)
 {
-    Array::csptr other = Array::dynamicConstCast(_source);
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
+}
+
+//------------------------------------------------------------------------------
+
+void Array::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
+{
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
-
-    this->clear();
 
     if(!other->m_bufferObject->isEmpty())
     {
-        core::memory::BufferObject::Lock lockerDest(m_bufferObject);
-        this->resize(other->m_size, other->m_type);
-        char* buffDest = static_cast<char*>(lockerDest.getBuffer());
-        core::memory::BufferObject::Lock lockerSource(other->m_bufferObject);
-        char* buffSrc = static_cast<char*>(lockerSource.getBuffer());
-        std::copy(buffSrc, buffSrc + other->getSizeInBytes(), buffDest);
+        resize(other->m_size, other->m_type, true);
+        std::memcpy(m_bufferObject->getBuffer(), other->m_bufferObject->getBuffer(), other->getSizeInBytes());
     }
     else
     {
+        this->clear();
+
         m_strides = other->m_strides;
         m_type    = other->m_type;
         m_size    = other->m_size;
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -424,7 +429,7 @@ bool Array::operator==(const Array& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

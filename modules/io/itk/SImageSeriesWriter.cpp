@@ -116,6 +116,8 @@ void SImageSeriesWriter::info(std::ostream& _sstream)
 
 void SImageSeriesWriter::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         const auto data         = m_data.lock();
@@ -125,17 +127,9 @@ void SImageSeriesWriter::updating()
             image_series
         );
 
-        const data::Image::csptr& associatedImage = image_series->getImage();
-        SIGHT_ASSERT("associatedImage not instanced", associatedImage);
-
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
-        SImageWriter::saveImage(this->getFile(), associatedImage);
-        cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
+        sight::ui::base::BusyCursor cursor;
+        SImageWriter::saveImage(this->getFile(), image_series);
+        m_writeFailed = false;
     }
 }
 

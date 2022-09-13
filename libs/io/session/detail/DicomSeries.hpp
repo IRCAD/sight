@@ -51,7 +51,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto dicomSeries = Helper::safeCast<data::DicomSeries>(object);
+    const auto dicomSeries = Helper::safe_cast<data::DicomSeries>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::DicomSeries>(tree, 1);
@@ -123,7 +123,7 @@ inline static data::DicomSeries::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto dicomSeries = Helper::safeCast<data::DicomSeries>(object);
+    auto dicomSeries = Helper::cast_or_create<data::DicomSeries>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::DicomSeries>(tree, 0, 1);

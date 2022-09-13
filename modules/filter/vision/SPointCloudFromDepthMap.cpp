@@ -83,7 +83,7 @@ void SPointCloudFromDepthMap::updating()
     SIGHT_ASSERT("Missing 'calibration' input", calibration);
     SIGHT_ASSERT("Missing 'depthMap' input", depthMap);
 
-    const auto depthCalibration = calibration->getCamera(0);
+    const auto depthCalibration = calibration->get_camera(0);
 
     const auto rgbMap = m_rgbMap.lock();
 
@@ -92,8 +92,8 @@ void SPointCloudFromDepthMap::updating()
 
     if(rgbMap)
     {
-        colorCalibration = calibration->getCamera(1);
-        extrinsicMatrix  = calibration->getExtrinsicMatrix(1);
+        colorCalibration = calibration->get_camera(1);
+        extrinsicMatrix  = calibration->get_extrinsic_matrix(1);
         SIGHT_ASSERT("Missing extrinsic matrix", extrinsicMatrix);
     }
 

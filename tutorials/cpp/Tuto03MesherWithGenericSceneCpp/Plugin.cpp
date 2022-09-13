@@ -40,7 +40,6 @@ namespace Tuto03MesherWithGenericSceneCpp
 
 SIGHT_REGISTER_PLUGIN("Tuto03MesherWithGenericSceneCpp::Plugin");
 
-static const std::string s_IMAGE_ID          = "image";
 static const std::string s_IMAGE_SERIES_ID   = "imageSeries";
 static const std::string s_MODEL_SERIES_ID   = "modelSeries";
 static const std::string s_RECONSTRUCTION_ID = "reconstruction";
@@ -144,9 +143,6 @@ void Plugin::start()
         true,
         false
     );
-
-    // extrator/converter
-    auto extractImage = m_appManager->addService("sight::module::data::SGetImage", true, false);
 
     //editors
     auto snapshotAdp = m_appManager->addService(
@@ -427,12 +423,6 @@ void Plugin::start()
     modelSeriesWriter->configure(modelSeriesWriterConfig);
 
     /* **************************************************************************************
-    *              extractor configuration
-    ****************************************************************************************/
-
-    extractImage->configure();
-
-    /* **************************************************************************************
     *              editors configuration
     ****************************************************************************************/
 
@@ -509,15 +499,13 @@ void Plugin::start()
 
     imageSeriesReader->setInOut(imageSeries, "data");
     snapshotAdp->setInOut(snapshot, "image", true);
-    extractImage->setInput(imageSeries, "imageSeries");
     mesher50->setInput(imageSeries, "imageSeries");
     mesher80->setInput(imageSeries, "imageSeries");
     imageAdaptor->setInOut(tf, "tf");
 
     modelSeriesWriter->setObjectId("data", s_MODEL_SERIES_ID);
-    sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
-    imageAdaptor->setObjectId("image", s_IMAGE_ID);
-    extractImage->setObjectId("image", s_IMAGE_ID);
+    sliderIndexEditor->setObjectId("image", s_IMAGE_SERIES_ID);
+    imageAdaptor->setObjectId("image", s_IMAGE_SERIES_ID);
     listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
     representationEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
@@ -557,11 +545,6 @@ void Plugin::start()
     jobCnt.addSignalConnection(modelSeriesWriter->getID(), "jobCreated");
     jobCnt.addSlotConnection(progressBar->getID(), "showJob");
     m_appManager->addProxyConnection(jobCnt);
-
-    service::helper::ProxyConnections extractCnt;
-    extractCnt.addSignalConnection(imageSeries->getID(), "modified");
-    extractCnt.addSlotConnection(extractImage->getID(), "update");
-    m_appManager->addProxyConnection(extractCnt);
 
     service::helper::ProxyConnections showScanCnt;
     showScanCnt.addSignalConnection(showScanEditor->getID(), "toggled");

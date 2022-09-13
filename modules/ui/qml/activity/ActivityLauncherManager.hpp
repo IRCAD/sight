@@ -25,17 +25,22 @@
 #include "modules/ui/qml/config.hpp"
 
 #include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
 
-#include <data/SeriesDB.hpp>
+#include <data/ActivitySet.hpp>
 
 #include <service/AppManager.hpp>
-#include <service/IService.hpp>
 
 #include <ui/qml/IQmlAppManager.hpp>
 
 #include <QObject>
 #include <QVariant>
+
+namespace sight::data
+{
+
+class ActivitySet;
+
+}
 
 namespace sight::module::ui::qml::activity
 {
@@ -82,17 +87,17 @@ public Q_SLOTS:
     /// Retrieves the services instantiated in Qml
     void onServiceCreated(const QVariant& obj) override;
 
-    /// Open a seriesDB
+    /// Open a activity_set
     void open();
 
-    /// Save a seriesDB
+    /// Save a activity_set
     void save();
 
 private:
 
-    service::IService::sptr m_activitySequencer;
+    SPTR(service::IService) m_activitySequencer;
 
-    data::SeriesDB::sptr m_seriesDB;
+    SPTR(data::ActivitySet) m_activity_set;
 
     service::IService::ConfigType m_activityViewConfig;
     service::IService::ConfigType m_sequencerConfig;

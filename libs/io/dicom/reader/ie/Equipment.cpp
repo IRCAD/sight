@@ -35,13 +35,13 @@ Equipment::Equipment(
     const data::DicomSeries::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Equipment::sptr& equipment,
+    const data::Series::sptr& series,
     const core::log::Logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::Equipment>(dicomSeries, reader, instance, equipment,
-                                                              logger, progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::Series>(dicomSeries, reader, instance, series,
+                                                           logger, progress, cancel)
 {
 }
 

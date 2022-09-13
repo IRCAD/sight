@@ -43,7 +43,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto point = Helper::safeCast<data::Point>(object);
+    const auto point = Helper::safe_cast<data::Point>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Point>(tree, 1);
@@ -65,7 +65,7 @@ inline static data::Point::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto point = Helper::safeCast<data::Point>(object);
+    auto point = Helper::cast_or_create<data::Point>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Point>(tree, 0, 1);

@@ -38,7 +38,7 @@ namespace sight::data
  * @brief   This class defines a plane defined by tree points.
  * @see     Point
  */
-class DATA_CLASS_API Plane : public Object
+class DATA_CLASS_API Plane final : public Object
 {
 public:
 
@@ -53,10 +53,7 @@ public:
     DATA_API Plane(Object::Key key);
 
     /// Destructor
-    DATA_API ~Plane() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Plane() noexcept override = default;
 
     /// Re-initialize the plane with 3 points
     DATA_API void setValue(
@@ -97,10 +94,21 @@ public:
     DATA_API bool operator!=(const Plane& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     //! Points container
     PointContainer m_vPoints;

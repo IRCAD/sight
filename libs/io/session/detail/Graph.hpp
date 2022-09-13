@@ -44,7 +44,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto graph = Helper::safeCast<data::Graph>(object);
+    const auto graph = Helper::safe_cast<data::Graph>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Graph>(tree, 1);
@@ -81,7 +81,7 @@ inline static data::Graph::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto graph = Helper::safeCast<data::Graph>(object);
+    auto graph = Helper::cast_or_create<data::Graph>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Graph>(tree, 0, 1);

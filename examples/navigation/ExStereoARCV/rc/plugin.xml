@@ -12,7 +12,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="cameraSet" type="sight::data::CameraSet" />
             <object uid="camera1" type="sight::data::Camera" src="deferred" />
             <object uid="camera2" type="sight::data::Camera" src="deferred" />
             <object uid="frameTL1" type="sight::data::FrameTL" />
@@ -287,12 +287,12 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
-                <inout key="data" uid="cameraSeries" />
+                <inout key="data" uid="cameraSet" />
             </service>
 
-            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSet -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <inout key="source" uid="cameraSeries" />
+                <inout key="source" uid="cameraSet" />
                 <out group="camera" >
                     <key index="0" uid="camera1" />
                     <key index="1" uid="camera2" />
@@ -614,7 +614,7 @@
             </connect>
 
             <connect>
-                <signal>cameraSeries/addedCamera</signal>
+                <signal>cameraSet/addedCamera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 

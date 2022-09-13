@@ -91,25 +91,14 @@ void SVTKMesher::configuring()
 void SVTKMesher::updating()
 {
     auto imageSeries = m_image.lock();
-    auto image       = imageSeries->getImage();
-
-    // If there is no image don't do anything, it will avoid a crash later...
-    if(!image)
-    {
-        SIGHT_WARN("The imageSeries has no image, the mesher will not be able to work.");
-        return;
-    }
-
-    // Protect the image...
-    data::mt::locked_ptr<const data::Image> image_lock(image);
 
     auto modelSeries = data::ModelSeries::New();
 
-    modelSeries->from_series(*imageSeries);
+    modelSeries->Series::deepCopy(imageSeries.get_shared());
 
     // vtk img
     auto vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(image, vtkImage);
+    io::vtk::toVTKImage(imageSeries.get_shared(), vtkImage);
 
     // contour filter
     auto contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();

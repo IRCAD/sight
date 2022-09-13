@@ -73,14 +73,23 @@ add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wconversion>"
 add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-maes>")
 
 # Add better default for debugging to have a better debugging experience
+# Don't do it if we use clang-tidy, because "-gmodules" will make clang-tidy crash
 # -ggdb3: allows macro expansion and other useful things
 # -gmodules: (Clang) faster debugging information generation
 # -ggnu-pubnames: generates data to ease gdb indexing by the linker
 add_compile_options(
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Debug>>:-ggdb3;-ggnu-pubnames>"
-    "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:RelWithDebInfo,Debug>>:-gmodules>"
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:RelWithDebInfo>>:-ggdb;-gz>"
 )
+
+# -gmodules is problematic for clang-tidy
+if(NOT CMAKE_EXPORT_COMPILE_COMMANDS AND NOT SIGHT_ENABLE_CLANG_TIDY)
+    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:RelWithDebInfo,Debug>>:-gmodules>")
+elseif(CXX_COMPILER_ID STREQUAL "Clang" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL
+                                                                                  "RelWithDebInfo")
+)
+    message(WARNING "-gmodules flag is incompatible with Clang-tidy, it will not be added.")
+endif()
 
 # -fuse-ld=gold will make use of gold linker, which is faster and allows --gdb-index
 # -Wl,--gdb-index pass the --gdb-index option to the linker to generate indexes that will speedup gdb start

@@ -29,7 +29,7 @@
 
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/dimse/data/PacsConfiguration.hpp>
@@ -56,7 +56,7 @@ namespace sight::module::io::dimse
         <in key="pacsConfig" uid="..." />
         <inout key="series" uid="..." />
         <inout key="image" uid="..." />
-        <config delay="500" dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+        <config delay="500" dicomReader="sight::module::io::dicom::SSeriesSetReader" readerConfig="config" />
     </service>
    @endcode
  *
@@ -165,8 +165,8 @@ private:
     /// Contains the DICOM reader.
     sight::io::base::service::IReader::sptr m_dicomReader;
 
-    /// Contains the seriesDB where the DICOM reader sets its output.
-    data::SeriesDB::sptr m_seriesDB;
+    /// Contains the series_set where the DICOM reader sets its output.
+    data::SeriesSet::sptr m_series_set;
 
     data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
     data::ptr<sight::data::Image, data::Access::inout> m_image {this, "image"};

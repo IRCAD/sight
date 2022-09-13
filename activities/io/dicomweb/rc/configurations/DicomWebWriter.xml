@@ -7,7 +7,7 @@
         <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="sight::data::SeriesDB" />
+        <object uid="seriesSet" type="sight::data::SeriesSet" />
         <object uid="selections" type="sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -45,9 +45,9 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger">
-            <inout key="seriesDB" uid="seriesDB" />
-            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
+        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger" >
+            <inout key="seriesSet" uid="seriesSet" />
+            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader" />
         </service>
 
         <!-- Dicom Anonymization -->
@@ -64,7 +64,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="seriesSet" uid="seriesSet" />
             <inout key="selection" uid="selections" />
         </service>
 
@@ -78,7 +78,7 @@
         </service>
 
         <service uid="anonymizeController" type="sight::module::io::dicom::SDicomSeriesAnonymizer">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="seriesSet" uid="seriesSet" />
             <inout key="selectedSeries" uid="selections" />
         </service>
 

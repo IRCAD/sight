@@ -25,11 +25,8 @@
 #include <core/spyLog.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/Equipment.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -43,47 +40,39 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     DicomSeriesContainer seriesContainer;
 
     // Create series
-    data::DicomSeries::sptr series  = data::DicomSeries::New();
-    data::Patient::sptr patient     = data::Patient::New();
-    data::Study::sptr study         = data::Study::New();
-    data::Equipment::sptr equipment = data::Equipment::New();
-
-    // Set information to series
-    series->setPatient(patient);
-    series->setStudy(study);
-    series->setEquipment(equipment);
+    data::DicomSeries::sptr series = data::DicomSeries::New();
 
     // ==================================
     // Series
     // ==================================
 
-    series->setInstanceUID(seriesJson["SeriesInstanceUID"].toString().toStdString());
+    series->setSeriesInstanceUID(seriesJson["SeriesInstanceUID"].toString().toStdString());
     series->setModality(seriesJson["Modality"].toString().toStdString());
-    series->setDate(seriesJson["SeriesDate"].toString().toStdString());
-    series->setTime(seriesJson["SeriesTime"].toString().toStdString());
-    series->setDescription(seriesJson["SeriesDescription"].toString().toStdString());
+    series->setSeriesDate(seriesJson["SeriesDate"].toString().toStdString());
+    series->setSeriesTime(seriesJson["SeriesTime"].toString().toStdString());
+    series->setSeriesDescription(seriesJson["SeriesDescription"].toString().toStdString());
 
     // ==================================
     // Patient
     // ==================================
-    patient->setName(seriesJson["PatientName"].toString().toStdString());
-    patient->setPatientId(seriesJson["PatientID"].toString().toStdString());
-    patient->setBirthdate(seriesJson["PatientBirthDate"].toString().toStdString());
-    patient->setSex(seriesJson["PatientSex"].toString().toStdString());
+    series->setPatientName(seriesJson["PatientName"].toString().toStdString());
+    series->setPatientID(seriesJson["PatientID"].toString().toStdString());
+    series->setPatientBirthDate(seriesJson["PatientBirthDate"].toString().toStdString());
+    series->setPatientSex(seriesJson["PatientSex"].toString().toStdString());
 
     // ==================================
     // Study
     // ==================================
-    study->setInstanceUID(seriesJson["StudyInstanceUID"].toString().toStdString());
-    study->setDate(seriesJson["StudyDate"].toString().toStdString());
-    study->setTime(seriesJson["StudyTime"].toString().toStdString());
-    study->setDescription(seriesJson["StudyDescription"].toString().toStdString());
-    study->setPatientAge(seriesJson["PatientAge"].toString().toStdString());
+    series->setStudyInstanceUID(seriesJson["StudyInstanceUID"].toString().toStdString());
+    series->setStudyDate(seriesJson["StudyDate"].toString().toStdString());
+    series->setStudyTime(seriesJson["StudyTime"].toString().toStdString());
+    series->setStudyDescription(seriesJson["StudyDescription"].toString().toStdString());
+    series->setPatientAge(seriesJson["PatientAge"].toString().toStdString());
 
     // ==================================
     // Equipment
     // ==================================
-    equipment->setInstitutionName(seriesJson["InstitutionName"].toString().toStdString());
+    series->setInstitutionName(seriesJson["InstitutionName"].toString().toStdString());
 
     // ==================================
     // Number of instances
@@ -104,7 +93,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 
     for(const data::Series::sptr& s : series)
     {
-        result.push_back(s->getInstanceUID());
+        result.push_back(s->getSeriesInstanceUID());
     }
 
     return result;

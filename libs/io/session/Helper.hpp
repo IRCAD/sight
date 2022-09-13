@@ -30,6 +30,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <optional>
+
 namespace sight::io::session::Helper
 {
 
@@ -74,11 +76,24 @@ inline static void writeVersion(boost::property_tree::ptree& tree, const int ver
 /// @param[in] key the string data key
 inline static std::string readString(
     const boost::property_tree::ptree& tree,
-    const std::string& key
+    const std::string& key,
+    const std::optional<std::string>& default_value = std::nullopt
 )
 {
-    const auto& base64 = tree.get<std::string>(key);
-    return core::crypto::from_base64(base64);
+    try
+    {
+        const auto& base64 = tree.get<std::string>(key);
+        return core::crypto::from_base64(base64);
+    }
+    catch(...)
+    {
+        if(default_value)
+        {
+            return *default_value;
+        }
+
+        throw;
+    }
 }
 
 /// Convenience function to safely put strings into a tree
@@ -99,18 +114,31 @@ inline static void writeString(
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::sptr safeCast(sight::data::Object::sptr object)
+inline static typename T::sptr safe_cast(sight::data::Object::sptr object)
+{
+    const auto& casted = std::dynamic_pointer_cast<T>(object);
+
+    SIGHT_THROW_IF(
+        "Object '"
+        << (object ? object->getClassname() : sight::data::Object::classname())
+        << "' is not a '"
+        << T::classname()
+        << "'",
+        casted == nullptr
+    );
+
+    return casted;
+}
+
+/// Convenience function to cast and check an object
+/// Mainly to factorize error management
+/// @param[in] object the object to cast to type T
+template<typename T>
+inline static typename T::sptr cast_or_create(sight::data::Object::sptr object)
 {
     if(object)
     {
-        const auto& casted = std::dynamic_pointer_cast<T>(object);
-
-        SIGHT_THROW_IF(
-            "Object '" << object->getClassname() << "' is not a '" << T::classname() << "'",
-            casted == nullptr
-        );
-
-        return casted;
+        return safe_cast<T>(object);
     }
 
     return T::New();
@@ -120,9 +148,10 @@ inline static typename T::sptr safeCast(sight::data::Object::sptr object)
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::csptr safeCast(sight::data::Object::csptr object)
+inline static typename T::csptr safe_cast(sight::data::Object::csptr object)
 {
     const auto& casted = std::dynamic_pointer_cast<const T>(object);
+
     SIGHT_THROW_IF(
         "Object '"
         << (object ? object->getClassname() : sight::data::Object::classname())
@@ -150,7 +179,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto& casted = safeCast<T>(object);
+    const auto& casted = safe_cast<T>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     writeVersion<T>(tree, 1);
@@ -174,7 +203,7 @@ inline static typename T::sptr deserialize(
 )
 {
     // Create or reuse the object
-    const auto& casted = safeCast<T>(object);
+    const auto& casted = cast_or_create<T>(object);
 
     // Check version number. Not mandatory, but could help for future release
     readVersion<T>(tree, 0, 1);

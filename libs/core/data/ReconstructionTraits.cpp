@@ -82,48 +82,46 @@ ReconstructionTraits::ReconstructionTraits(data::Object::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-ReconstructionTraits::~ReconstructionTraits()
-= default;
-
-//------------------------------------------------------------------------------
-
-void ReconstructionTraits::shallowCopy(const data::Object::csptr& _source)
+void ReconstructionTraits::shallowCopy(const Object::csptr& source)
 {
-    ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->fieldShallowCopy(other);
 
     m_identifier      = other->m_identifier;
     m_maskOpNode      = other->m_maskOpNode;
     m_meshOpNode      = other->m_meshOpNode;
     m_structureTraits = other->m_structureTraits;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void ReconstructionTraits::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->fieldDeepCopy(other, cache);
     m_identifier      = other->m_identifier;
     m_maskOpNode      = data::Object::copy(other->m_maskOpNode, cache);
     m_meshOpNode      = data::Object::copy(other->m_meshOpNode, cache);
     m_structureTraits = data::Object::copy(other->m_structureTraits, cache);
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +137,7 @@ bool ReconstructionTraits::operator==(const ReconstructionTraits& other) const n
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

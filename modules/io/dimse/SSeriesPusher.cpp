@@ -179,14 +179,14 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        for(const auto& it : *seriesVector)
+        for(const auto& object : *seriesVector)
         {
-            data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(it);
-            SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", series);
+            auto series = data::Series::dynamicCast(object);
+            SIGHT_ASSERT("The SeriesSet should contain only Series.", series);
 
             // Try to find series on PACS
             OFList<QRResponse*> responses;
-            responses = m_seriesEnquirer->findSeriesByUID(series->getInstanceUID());
+            responses = m_seriesEnquirer->findSeriesByUID(series->getSeriesInstanceUID());
 
             // If the series has been found on the PACS
             if(responses.size() > 1)
@@ -209,7 +209,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
             // Display duplicated Series
             for(const data::Series::csptr& series : duplicateSeriesVector)
             {
-                std::string description = series->getDescription();
+                std::string description = series->getSeriesDescription();
                 description = (description.empty()) ? "[No description]" : description;
                 ss << "- " << description << std::endl;
             }
@@ -264,7 +264,7 @@ void SSeriesPusher::pushSeries()
         for(const auto& series : *seriesVector)
         {
             data::DicomSeries::csptr dicomSeries = data::DicomSeries::dynamicCast(series);
-            SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
+            SIGHT_ASSERT("The SeriesSet should contain only DicomSeries.", dicomSeries);
 
             for(const auto& item : dicomSeries->getDicomContainer())
             {

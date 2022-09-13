@@ -39,7 +39,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto series_set = Helper::safeCast<data::SeriesSet>(object);
+    const auto series_set = Helper::safe_cast<data::SeriesSet>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::SeriesSet>(tree, 1);
@@ -61,7 +61,7 @@ inline static data::SeriesSet::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto series_set = Helper::safeCast<data::SeriesSet>(object);
+    auto series_set = Helper::cast_or_create<data::SeriesSet>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::SeriesSet>(tree, 0, 1);

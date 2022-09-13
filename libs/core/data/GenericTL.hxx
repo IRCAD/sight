@@ -41,24 +41,27 @@ GenericTL<BUFFER_TYPE>::GenericTL(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-template<class BUFFER_TYPE> GenericTL<BUFFER_TYPE>::~GenericTL()
-= default;
+template<class BUFFER_TYPE>
+void GenericTL<BUFFER_TYPE>::shallowCopy(const Object::csptr&)
+{
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
+}
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*cache*/)
+void GenericTL<BUFFER_TYPE>::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->fieldDeepCopy(_source);
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
@@ -68,6 +71,8 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +159,7 @@ bool GenericTL<BUFFER_TYPE>::operator==(const GenericTL& other) const noexcept
     }
 
     // Super class last
-    return BufferTL::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

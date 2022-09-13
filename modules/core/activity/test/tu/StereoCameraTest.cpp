@@ -26,7 +26,7 @@
 #include <activity/IValidator.hpp>
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 
 // Registers the fixture into the 'registry'
@@ -57,7 +57,7 @@ void StereoCameraTest::tearDown()
 
 void StereoCameraTest::testValidator()
 {
-    auto validator = factory::New("sight::module::activity::validator::CameraSeries::StereoCamera");
+    auto validator = factory::New("sight::module::activity::validator::CameraSet::StereoCamera");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -65,22 +65,22 @@ void StereoCameraTest::testValidator()
 
     IValidator::ValidationType validation;
 
-    data::CameraSeries::sptr cameraSeries = data::CameraSeries::New();
-    data::Matrix4::sptr matrix            = data::Matrix4::New();
+    data::CameraSet::sptr camera_set = data::CameraSet::New();
+    data::Matrix4::sptr matrix       = data::Matrix4::New();
 
     data::Camera::sptr camera1 = data::Camera::New();
     data::Camera::sptr camera2 = data::Camera::New();
     data::Camera::sptr camera3 = data::Camera::New();
 
     {
-        validation = objValidator->validate(cameraSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSeries without camera should be valid", false, validation.first);
+        validation = objValidator->validate(camera_set);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSet without camera should be valid", false, validation.first);
     }
     {
-        cameraSeries->addCamera(camera1);
-        validation = objValidator->validate(cameraSeries);
+        camera_set->add_camera(camera1);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with a non-calibrated camera should NOT be valid",
+            "CameraSet with a non-calibrated camera should NOT be valid",
             false,
             validation.first
         );
@@ -95,38 +95,38 @@ void StereoCameraTest::testValidator()
     }
     {
         camera1->setIsCalibrated(true);
-        validation = objValidator->validate(cameraSeries);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with one calibrated camera should NOT be valid",
+            "CameraSet with one calibrated camera should NOT be valid",
             false,
             validation.first
         );
     }
     {
         camera2->setIsCalibrated(true);
-        cameraSeries->addCamera(camera2);
-        validation = objValidator->validate(cameraSeries);
+        camera_set->add_camera(camera2);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with two calibrated cameras and no extrinsic matrix should NOT be "
+            "CameraSet with two calibrated cameras and no extrinsic matrix should NOT be "
             "valid",
             false,
             validation.first
         );
     }
     {
-        cameraSeries->setExtrinsicMatrix(1, matrix);
-        validation = objValidator->validate(cameraSeries);
+        camera_set->set_extrinsic_matrix(1, matrix);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with two calibrated cameras and an extrinsic matrix should be valid",
+            "CameraSet with two calibrated cameras and an extrinsic matrix should be valid",
             true,
             validation.first
         );
     }
     {
         camera2->setIsCalibrated(false);
-        validation = objValidator->validate(cameraSeries);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with two cameras (first calibrated and second not calibrated) "
+            "CameraSet with two cameras (first calibrated and second not calibrated) "
             "should NOT be valid",
             false,
             validation.first
@@ -135,9 +135,9 @@ void StereoCameraTest::testValidator()
     {
         camera1->setIsCalibrated(false);
         camera2->setIsCalibrated(true);
-        validation = objValidator->validate(cameraSeries);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with two cameras (first not calibrated and second calibrated) "
+            "CameraSet with two cameras (first not calibrated and second calibrated) "
             "should NOT be valid",
             false,
             validation.first

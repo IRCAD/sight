@@ -114,14 +114,14 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::string> IActivityLauncher::validateActivity(
-    const data::ActivitySeries::csptr& activitySeries
+    const data::Activity::csptr& activity
 )
 {
     bool isValid = true;
     std::string message;
-    // Applies validator on activity series to check the data
+    // Applies validator on activity to check the data
     activity::extension::ActivityInfo info;
-    info = activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     // load activity module
     core::runtime::startModule(info.bundleId);
@@ -135,7 +135,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
             activity::IActivityValidator::dynamicCast(validator);
         SIGHT_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
 
-        activity::IValidator::ValidationType validation = activityValidator->validate(activitySeries);
+        activity::IValidator::ValidationType validation = activityValidator->validate(activity);
         if(!validation.first)
         {
             message += "\n" + validation.second;
@@ -153,16 +153,16 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
 //------------------------------------------------------------------------------
 
-data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
+data::Activity::sptr IActivityLauncher::createMainActivity() const
 {
     activity::extension::ActivityInfo info;
     info = activity::extension::Activity::getDefault()->getInfo(m_mainActivityId);
 
-    data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
+    auto activity = data::Activity::New();
     if(!info.requirements.empty())
     {
-        data::Composite::sptr data = actSeries->getData();
-        for(const activity::extension::ActivityRequirement& req : info.requirements)
+        data::Composite::sptr data = activity->getData();
+        for(const auto& req : info.requirements)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
@@ -175,15 +175,9 @@ data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
         }
     }
 
-    actSeries->setModality("OT");
-    actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID());
+    activity->setActivityConfigId(info.id);
 
-    const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-    actSeries->setDate(core::tools::getDate(now));
-    actSeries->setTime(core::tools::getTime(now));
-    actSeries->setActivityConfigId(info.id);
-
-    return actSeries;
+    return activity;
 }
 
 } // namespace sight::activity

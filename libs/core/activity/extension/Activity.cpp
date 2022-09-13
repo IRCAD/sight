@@ -31,7 +31,7 @@
 #include <core/runtime/Runtime.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Vector.hpp>
 
 #include <boost/foreach.hpp>
@@ -159,7 +159,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     }
     else
     {
-        builderImpl = "sight::activity::builder::ActivitySeriesInitData";
+        builderImpl = "sight::activity::builder::ActivityInitData";
     }
 
     // backward compatibility
@@ -380,20 +380,20 @@ ActivityInfo Activity::getInfo(const std::string& extensionId) const
 //-----------------------------------------------------------------------------
 
 std::tuple<ActivityInfo, std::map<std::string, std::string> > Activity::getInfoAndReplacementMap(
-    const data::ActivitySeries& activitySeries,
+    const data::Activity& activity,
     const ActivityAppConfigParamsType& parameters
 ) const
 {
     // Retrieve the activity informations
-    const auto& info = getInfo(activitySeries.getActivityConfigId());
+    const auto& info = getInfo(activity.getActivityConfigId());
 
-    return {info, getReplacementMap(activitySeries, info, parameters)};
+    return {info, getReplacementMap(activity, info, parameters)};
 }
 
 //------------------------------------------------------------------------------
 
 std::map<std::string, std::string> Activity::getReplacementMap(
-    const data::ActivitySeries& activitySeries,
+    const data::Activity& activity,
     const ActivityInfo& info,
     const ActivityAppConfigParamsType& parameters
 )
@@ -401,7 +401,7 @@ std::map<std::string, std::string> Activity::getReplacementMap(
     std::map<std::string, std::string> replacement_map;
 
     // Get the composite
-    const auto& composite = activitySeries.getData();
+    const auto& composite = activity.getData();
 
     // First, use requirements to populate replacement map with an object from the root composite
     for(const auto& requirement : info.requirements)
@@ -438,7 +438,7 @@ std::map<std::string, std::string> Activity::getReplacementMap(
     add_parameters(parameters);
 
     // Store the activity UID
-    replacement_map["AS_UID"] = activitySeries.getID();
+    replacement_map["AS_UID"] = activity.getID();
 
     return replacement_map;
 }

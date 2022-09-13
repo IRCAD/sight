@@ -40,7 +40,7 @@ namespace sight
 namespace data
 {
 
-class ActivitySeries;
+class Activity;
 class Vector;
 
 } // namespace data
@@ -130,7 +130,7 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  * - \b icon : path to the icon activity
  * - \b requirements : required elements to launch specified activity (must be present in vector selection)
  *   - \b requirement : a required element
- *     - \b name : element key in ActivitySeries composite
+ *     - \b name : element key in Activity composite
  *     - \b type : object type
  *     - \b minOccurs (optional, default value = 1) : minimal number of object (with specified type) in vector
  *     - \b maxOccurs (optional, default value = 1) : maximal number of object (with specified type) in vector
@@ -141,8 +141,8 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  *       and maxOccurs = 1)
  *     - \b desc (optional) : description of the requirement
  *     - \b validator (optional) : validate the current data
- * - \b builder (optional): implementation of builder associate to the activity, the builder creates ActivitySeries.
- *   - default builder is activity::builder::ActivitySeries
+ * - \b builder (optional): implementation of builder associate to the activity, the builder creates Activity.
+ *   - default builder is activity::builder::Activity
  * - \b validator (optional): check if specified activity can be launched with selected objects
  * - \b validators (optional) : defines validators implementations instantiated to validate activity launch
  *   -  \b validator : implementation name for a validator
@@ -178,7 +178,7 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  * create="true" />
             <!--# ...-->
         </requirements>
-        <builder>activity::builder::ActivitySeries</builder>
+        <builder>activity::builder::Activity</builder>
         <validators>
             <validator>activity::validator::RelatedStudy</validator>
         </validators>
@@ -294,12 +294,12 @@ public:
     ACTIVITY_API void clearRegistry();
 
     ACTIVITY_API std::tuple<ActivityInfo, std::map<std::string, std::string> > getInfoAndReplacementMap(
-        const data::ActivitySeries& activitySeries,
+        const data::Activity& activity,
         const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
     ) const;
 
     static ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
-        const data::ActivitySeries& activitySeries,
+        const data::Activity& activity,
         const ActivityInfo& info,
         const ActivityAppConfigParamsType& parameters = ActivityAppConfigParamsType()
     );

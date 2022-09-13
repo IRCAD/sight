@@ -5,10 +5,10 @@ This module contains many user interface services implemented with Qt. The servi
 - **calibration**: camera properties
 - **com**: communication between services
 - **image**: `sight::data::Image` management or display
-- **metrics**: tools to measure distances or landmarks 
+- **metrics**: tools to measure distances or landmarks
 - **model**: `sight::data::ModelSeries` management or display
-- **reconstruction**: `sight::data::Reconstruction` management or display 
-- **series**: `sight::data::Series` or `sight::data::SeriesDB` management
+- **reconstruction**: `sight::data::Reconstruction` management or display
+- **series**: `sight::data::Series` or `sight::data::SeriesSet` management
 - **video**: video playback interactions
 - **viz**: visualization settings or properties
 
@@ -37,14 +37,14 @@ Here is the list of uncategorised services:
 - **activity::SSelector**: displays a selector allowing to choose between different activities.
 - **activity::SSequencer**: displays an activity stepper that allows to follow the workflow of an application.
 - **activity::SView**: displays activities in a single view.
-- **activity::SWizard**: selects the data required by an activity in order to create an `ActivitySeries`.
+- **activity::SWizard**: selects the data required by an activity in order to create an `Activity`.
 
 ### Calibration
 
 - **SCalibrationInfoEditor**: handles calibration points acquisition.
 - **SCameraConfigLauncher**: adds cameras to a camera series and launches configurations to calibrate them.
 - **SCameraInformationEditor**: displays the intrinsic calibration of a camera.
-- **SCameraSeriesEditor**: displays the extrinsic calibration of a camera series.
+- **SCameraSetEditor**: displays the extrinsic calibration of a camera series.
 - **SDisplayCalibrationInfo**: displays calibration images.
 - **SImagesSelector**: allows to add images to a `data::Vector` from a `data::FrameTL`.
 - **SIntrinsicEdition**: sets the intrinsic parameter information. It displays a dialog to change the resolution of your calibration, and computes the new intrinsic parameters.

@@ -142,7 +142,7 @@ void SImagesSelector::remove()
         data::Object::sptr obj = (*vector)[std::size_t(idx)];
 
         const auto scoped_emitter = vector->scoped_emit();
-        vector->remove_all(obj);
+        vector->remove(obj);
 
         this->updating();
     }

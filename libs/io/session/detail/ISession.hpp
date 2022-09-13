@@ -44,6 +44,7 @@ public:
     constexpr static auto s_uuid {"uuid"};
     constexpr static auto s_children {"children"};
     constexpr static auto s_fields {"fields"};
+    constexpr static auto s_description {"description"};
 
     /// String serialization function
     [[nodiscard]] inline std::string toString() const override;

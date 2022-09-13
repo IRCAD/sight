@@ -23,7 +23,6 @@
 #include "SQueryEditor.hpp"
 
 #include <data/DicomSeries.hpp>
-#include <data/helper/SeriesDB.hpp>
 
 #include <io/http/helper/Series.hpp>
 
@@ -156,7 +155,7 @@ void SQueryEditor::queryPatientName()
     try
     {
         // Vector of all Series that will be retrieved.
-        data::SeriesDB::ContainerType allSeries;
+        data::SeriesSet::container_type allSeries;
 
         // Find series according to patient's name
         QJsonObject query;
@@ -196,10 +195,10 @@ void SQueryEditor::queryPatientName()
             seriesJson.insert("NumberOfSeriesRelatedInstances", instanceArray.count());
 
             // Convert response to DicomSeries
-            data::SeriesDB::ContainerType series = sight::io::http::helper::Series::toFwMedData(seriesJson);
+            data::SeriesSet::container_type series = sight::io::http::helper::Series::toFwMedData(seriesJson);
 
             allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-            this->updateSeriesDB(allSeries);
+            this->updateSeriesSet(allSeries);
         }
     }
     catch(sight::io::http::exceptions::Base& exception)
@@ -226,7 +225,7 @@ void SQueryEditor::queryStudyDate()
     try
     {
         // Vector of all Series that will be retrieved.
-        data::SeriesDB::ContainerType allSeries;
+        data::SeriesSet::container_type allSeries;
 
         // Find Studies according to their StudyDate
         QJsonObject query;
@@ -295,10 +294,10 @@ void SQueryEditor::queryStudyDate()
                 seriesJson.insert("NumberOfSeriesRelatedInstances", instanceArray.count());
 
                 // Convert response to DicomSeries
-                data::SeriesDB::ContainerType series = sight::io::http::helper::Series::toFwMedData(seriesJson);
+                data::SeriesSet::container_type series = sight::io::http::helper::Series::toFwMedData(seriesJson);
 
                 allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-                this->updateSeriesDB(allSeries);
+                this->updateSeriesSet(allSeries);
             }
         }
     }
@@ -313,23 +312,20 @@ void SQueryEditor::queryStudyDate()
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
+void SQueryEditor::updateSeriesSet(const data::SeriesSet::container_type& series)
 {
-    const auto seriesDB = m_seriesDB.lock();
-    data::helper::SeriesDB seriesDBHelper(*seriesDB);
+    const auto series_set     = m_series_set.lock();
+    const auto scoped_emitter = series_set->scoped_emit();
 
-    // Delete old series from the SeriesDB
-    seriesDBHelper.clear();
+    // Delete old series from the SeriesSet
+    series_set->clear();
 
-    // Push new series in the SeriesDB
-    for(const data::Series::sptr& s : series)
+    // Push new series in the SeriesSet
+    for(const auto& s : series)
     {
-        data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
-        seriesDBHelper.add(dicomSeries);
+        const auto& dicomSeries = data::DicomSeries::dynamicCast(s);
+        series_set->push_back(dicomSeries);
     }
-
-    // Notify th SeriesDB
-    seriesDBHelper.notify();
 }
 
 //------------------------------------------------------------------------------

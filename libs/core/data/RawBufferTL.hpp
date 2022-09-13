@@ -48,10 +48,7 @@ public:
     DATA_API RawBufferTL(Object::Key key);
 
     /// Destructor
-    DATA_API ~RawBufferTL() override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    inline ~RawBufferTL() noexcept override = default;
 
     /**
      * @brief Return the closest buffer to the given timestamp
@@ -86,6 +83,20 @@ public:
 
     /// Check if the type of an object is compatible with this timeline
     DATA_API bool isObjectValid(const CSPTR(timeline::Object)& obj) const override;
+
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 }; // class RawBufferTL
 
 } // namespace sight::data

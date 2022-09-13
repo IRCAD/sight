@@ -29,6 +29,5 @@
 #include <core/com/Slots.hxx>
 #endif // _WIN32
 
-#include <data/IContainer.hxx>
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>

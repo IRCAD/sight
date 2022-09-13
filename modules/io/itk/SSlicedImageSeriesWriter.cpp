@@ -135,22 +135,16 @@ void SSlicedImageSeriesWriter::info(std::ostream& _sstream)
 
 void SSlicedImageSeriesWriter::updating()
 {
+    m_writeFailed = true;
     if(this->hasLocationDefined())
     {
         const auto data        = m_data.lock();
         const auto imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
-        SIGHT_ASSERT("Image from image series is not instanced", imageSeries->getImage());
-
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
-        SImageWriter::saveImage(this->getFolder(), imageSeries->getImage());
-        cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
+        sight::ui::base::BusyCursor cursor;
+        SImageWriter::saveImage(this->getFolder(), imageSeries);
+        m_writeFailed = false;
     }
 }
 

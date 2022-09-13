@@ -28,7 +28,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -48,7 +48,7 @@ namespace sight::module::ui::qt::series
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::series::SSelector">
-        <inout key="seriesDB" uid="..." />
+        <inout key="seriesSet" uid="..." />
         <inout key="selection" uid="..." />
         <icons>
             <icon series="..." icon="..." />
@@ -60,7 +60,7 @@ namespace sight::module::ui::qt::series
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [sight::data::SeriesDB]: seriesDB on which the editor operates.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet on which the editor operates.
  * - \b selection [sight::data::Vector]: defines the id of the data::Vector where the selection will be put or get.
  *
  * @subsection Configuration Configuration
@@ -103,12 +103,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::SeriesDB::s_ADDED_SERIES_SIG of s_SERIES_DB_INOUT to s_ADD_SERIES_SLOT
-     * Connect data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT
+     * Connect data::SeriesSet::s_ADDED_OBJECTS_SIG of s_SERIES_SET_INOUT to s_ADD_SERIES_SLOT
+     * Connect data::SeriesSet::s_REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to s_REMOVE_SERIES_SLOT
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
-    /// Fills selector with the series contained in SeriesDB.
+    /// Fills selector with the series contained in SeriesSet.
     MODULE_UI_QT_API void updating() override;
 
     /// Destroys GUI.
@@ -134,22 +134,22 @@ protected Q_SLOTS:
     void onDoubleClick(const QModelIndex& _index);
 
     /**
-     * @brief Removes series from seriesDB and notify.
-     * @param _selection series to remove from seriesDB.
+     * @brief Removes series from SeriesSet and notify.
+     * @param _selection series to remove from SeriesSet.
      */
     void onRemoveSeries(QVector<data::Series::sptr> _selection);
 
 private:
 
-    typedef core::com::Slot<void (data::SeriesDB::ContainerType)> RemoveSeriesSlotType;
+    typedef core::com::Slot<void (data::SeriesSet::container_type)> RemoveSeriesSlotType;
 
     typedef core::com::Signal<void (SPTR(data::Series))> SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
-    void addSeries(data::SeriesDB::ContainerType addedSeries);
+    void addSeries(data::SeriesSet::container_type addedSeries);
 
     /// SLOT: removes series from the selector.
-    void removeSeries(data::SeriesDB::ContainerType removedSeries);
+    void removeSeries(data::SeriesSet::container_type removedSeries);
 
     /// Contains the slot used to remove series from the selector.
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;
@@ -178,10 +178,10 @@ private:
     /// Defines the path of the remove serie button icon.
     std::filesystem::path m_removeSerieIcon;
 
-    static constexpr std::string_view s_SERIES_DB = "seriesDB";
-    static constexpr std::string_view s_SELECTION = "selection";
+    static constexpr std::string_view s_SERIES_SET = "seriesSet";
+    static constexpr std::string_view s_SELECTION  = "selection";
 
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIES_DB, true};
+    data::ptr<data::SeriesSet, data::Access::inout> m_series_set {this, s_SERIES_SET, true};
     data::ptr<data::Vector, data::Access::inout> m_selection {this, s_SELECTION};
 };
 

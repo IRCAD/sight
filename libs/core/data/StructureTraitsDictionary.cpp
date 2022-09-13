@@ -42,11 +42,6 @@ StructureTraitsDictionary::StructureTraitsDictionary(data::Object::Key /*unused*
 
 //------------------------------------------------------------------------------
 
-StructureTraitsDictionary::~StructureTraitsDictionary()
-= default;
-
-//------------------------------------------------------------------------------
-
 StructureTraits::sptr StructureTraitsDictionary::getStructure(std::string type)
 {
     SIGHT_ASSERT(
@@ -133,36 +128,42 @@ DATA_API void StructureTraitsDictionary::setStructureTraitsMap(const StructureTr
 
 void StructureTraitsDictionary::shallowCopy(const Object::csptr& source)
 {
-    StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(source);
+
     m_structureTraitsMap = other->m_structureTraitsMap;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void StructureTraitsDictionary::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(source, cache);
+
     m_structureTraitsMap.clear();
     for(const StructureTraitsMapType::value_type& elt : other->m_structureTraitsMap)
     {
         m_structureTraitsMap[elt.first] = data::Object::copy(elt.second, cache);
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -175,7 +176,7 @@ bool StructureTraitsDictionary::operator==(const StructureTraitsDictionary& othe
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

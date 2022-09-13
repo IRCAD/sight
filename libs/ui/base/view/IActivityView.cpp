@@ -42,15 +42,13 @@
 namespace sight::ui::base::view
 {
 
-const core::com::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
-const core::com::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+const core::com::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SLOT = "launchActivity";
 
 //-----------------------------------------------------------------------------
 
 IActivityView::IActivityView()
 {
     newSlot(s_LAUNCH_ACTIVITY_SLOT, &IActivityView::launchActivity, this);
-    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &IActivityView::launchActivitySeries, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,23 +69,12 @@ void IActivityView::configuring()
 
 //------------------------------------------------------------------------------
 
-void IActivityView::launchActivitySeries(data::Series::sptr series)
-{
-    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
-    if(activitySeries)
-    {
-        this->launchActivity(activitySeries);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) const
+bool IActivityView::validateActivity(data::Activity::sptr activity) const
 {
     bool isValid = false;
     std::string message;
 
-    std::tie(isValid, message) = activity::IActivityLauncher::validateActivity(activitySeries);
+    std::tie(isValid, message) = activity::IActivityLauncher::validateActivity(activity);
 
     if(!isValid)
     {
@@ -103,11 +90,11 @@ bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) 
 
 //------------------------------------------------------------------------------
 
-data::ActivitySeries::sptr IActivityView::createMainActivity() const
+data::Activity::sptr IActivityView::createMainActivity() const
 {
-    data::ActivitySeries::sptr actSeries = this->activity::IActivityLauncher::createMainActivity();
+    auto activity = this->activity::IActivityLauncher::createMainActivity();
 
-    if(nullptr == actSeries)
+    if(!activity)
     {
         ui::base::dialog::MessageDialog::show(
             "Main activity",
@@ -117,7 +104,7 @@ data::ActivitySeries::sptr IActivityView::createMainActivity() const
         );
     }
 
-    return actSeries;
+    return activity;
 }
 
 } // namespace sight::ui::base::view

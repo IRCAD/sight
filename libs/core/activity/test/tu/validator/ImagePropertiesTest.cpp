@@ -29,7 +29,7 @@
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>

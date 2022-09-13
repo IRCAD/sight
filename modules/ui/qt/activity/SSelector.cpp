@@ -34,7 +34,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>

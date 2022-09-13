@@ -41,7 +41,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto calibrationInfo = Helper::safeCast<data::CalibrationInfo>(object);
+    const auto calibrationInfo = Helper::safe_cast<data::CalibrationInfo>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::CalibrationInfo>(tree, 1);
@@ -72,7 +72,7 @@ inline static data::CalibrationInfo::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto calibrationInfo = Helper::safeCast<data::CalibrationInfo>(object);
+    auto calibrationInfo = Helper::cast_or_create<data::CalibrationInfo>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::CalibrationInfo>(tree, 0, 1);

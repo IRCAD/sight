@@ -49,7 +49,7 @@ public:
     /**
      * @brief   Destructor : do nothing.
      */
-    DATA_API ~Exception() noexcept override;
+    DATA_API ~Exception() noexcept override = default;
 };
 
 } // namespace sight::data

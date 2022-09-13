@@ -32,7 +32,7 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 #include <service/macros.hpp>
 
@@ -53,7 +53,7 @@ SSeriesSignal::SSeriesSignal() noexcept
 {
     m_sigSeriesAdded = newSignal<SeriesAddedSignalType>(s_SERIES_ADDED_SIG);
 
-    newSlot(s_REPORT_SERIES_SLOT, &SSeriesSignal::reportSeries, this);
+    newSlot(s_REPORT_SERIES_SLOT, &SSeriesSignal::reportSeriesSlot, this);
 }
 
 //------------------------------------------------------------------------------
@@ -103,16 +103,16 @@ void SSeriesSignal::configuring()
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSeries)
+template<typename T>
+void SSeriesSignal::reportSeries(const T& addedSeries)
 {
-    for(const sight::data::Series::sptr& series : addedSeries)
+    const bool isIncludeMode = m_filterMode == "include";
+
+    for(const auto& series : addedSeries)
     {
-        const bool isIncludeMode = m_filterMode == "include";
+        const auto keyIt = std::find(m_types.cbegin(), m_types.cend(), series->getClassname());
 
-        std::string classname = series->getClassname();
-        auto keyIt            = std::find(m_types.begin(), m_types.end(), classname);
-
-        if((keyIt != m_types.end() && isIncludeMode) || (keyIt == m_types.end() && !isIncludeMode))
+        if(keyIt != m_types.end() && isIncludeMode)
         {
             m_sigSeriesAdded->asyncEmit(series);
         }
@@ -121,12 +121,19 @@ void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSerie
 
 //------------------------------------------------------------------------------
 
+void SSeriesSignal::reportSeriesSlot(sight::data::SeriesSet::container_type addedSeries)
+{
+    reportSeries(addedSeries);
+}
+
+//------------------------------------------------------------------------------
+
 void SSeriesSignal::updating()
 {
-    const auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("input '" << s_SERIES_DB_INPUT << "' does not exist.", seriesDB);
+    const auto series_set = m_series_set.lock();
+    SIGHT_ASSERT("input '" << s_SERIES_SET_INPUT << "' does not exist.", series_set);
 
-    this->reportSeries(seriesDB->getContainer());
+    reportSeries(*series_set);
 }
 
 //------------------------------------------------------------------------------
@@ -134,8 +141,8 @@ void SSeriesSignal::updating()
 service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     return {
-        {s_SERIES_DB_INPUT, sight::data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT},
-        {s_SERIES_DB_INPUT, sight::data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_ADDED_OBJECTS_SIG, s_REPORT_SERIES_SLOT},
+        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_MODIFIED_SIG, s_UPDATE_SLOT}
     };
 }
 

@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Image.hpp>
 
 #include <service/IFilter.hpp>
@@ -35,7 +35,7 @@ namespace sight::module::filter::vision
 /**
  * @brief This service applies a scale on a depth map image.
  *
- * The scale is given by the calibration (data::CameraSeries).
+ * The scale is given by the calibration (data::CameraSet).
  *
  * @section Signals Signals
  * - \b computed() : emitted when the compute method is done
@@ -44,13 +44,13 @@ namespace sight::module::filter::vision
  *
  * @code{.xml}
    <service type="sight::module::filter::vision::STransformDepthMap2mm">
-       <in key="cameraSeries" uid="..." />
+       <in key="cameraSet" uid="..." />
        <in key="originDepth" uid="..." />
        <inout key="scaledDepth" uid="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSeries [sight::data::CameraSeries]: camera series containing the scale of the depth map.
+ * - \b cameraSet [sight::data::CameraSet]: camera series containing the scale of the depth map.
  * - \b originDepth [sight::data::Image]: original depth map.
  * @subsection In-Out In-Out
  * - \b scaledDepth [sight::data::Image]: scaled depth map.
@@ -87,11 +87,11 @@ protected:
 
 private:
 
-    static constexpr std::string_view s_CAMERA_SERIES_INPUT = "cameraSeries";
-    static constexpr std::string_view s_ORIGIN_FRAME_INPUT  = "originDepth";
-    static constexpr std::string_view s_SCALED_FRAME_INOUT  = "scaledDepth";
+    static constexpr std::string_view s_CAMERA_SET_INPUT   = "cameraSet";
+    static constexpr std::string_view s_ORIGIN_FRAME_INPUT = "originDepth";
+    static constexpr std::string_view s_SCALED_FRAME_INOUT = "scaledDepth";
 
-    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT};
+    sight::data::ptr<sight::data::CameraSet, sight::data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT};
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_originDepth {this, s_ORIGIN_FRAME_INPUT};
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_scaledDepth {this, s_SCALED_FRAME_INOUT};
 };

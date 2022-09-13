@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <ui/base/IAction.hpp>
 
@@ -41,8 +41,8 @@ namespace sight::module::io::dicom
 {
 
 /**
- * @brief   This service is used to convert DicomSeries from source SeriesDB
- * and push result (ImageSeries, ModelSeries, ...) in target SeriesDB
+ * @brief   This service is used to convert DicomSeries from source SeriesSet
+ * and push result (ImageSeries, ModelSeries, ...) in target SeriesSet
  *
  * @section Signals Signals
  * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
@@ -56,9 +56,9 @@ namespace sight::module::io::dicom
    </service>
    @endcode
  * @subsection Input Input:
- * - \b source [sight::data::SeriesDB]: Source SeriesDB containing DicomSeries.
+ * - \b source [sight::data::SeriesSet]: Source SeriesSet containing DicomSeries.
  * @subsection In-Out In-Out:
- * - \b target [sight::data::SeriesDB]: Destination SeriesDB.
+ * - \b target [sight::data::SeriesSet]: Destination SeriesSet.
  */
 class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public sight::ui::base::IAction
 {
@@ -102,8 +102,8 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_source {this, "source"};
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_target {this, "target"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::in> m_source {this, "source"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::inout> m_target {this, "target"};
 };
 
 } // namespace sight::module::io::dicom

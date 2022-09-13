@@ -47,11 +47,6 @@ Node::Node(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-Node::~Node()
-= default;
-
-//------------------------------------------------------------------------------
-
 void Node::addInputPort(const data::Port::sptr& port)
 {
     m_inputs.push_back(port);
@@ -136,17 +131,17 @@ Port::sptr Node::findPort(const std::string& identifier, bool modeInput) const
 
 //------------------------------------------------------------------------------
 
-void Node::shallowCopy(const Object::csptr& _source)
+void Node::shallowCopy(const Object::csptr& source)
 {
-    Node::csptr other = Node::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !other
     );
-    this->fieldShallowCopy(_source);
 
     m_inputs.clear();
     m_outputs.clear();
@@ -159,30 +154,25 @@ void Node::shallowCopy(const Object::csptr& _source)
         m_object->shallowCopy(other->m_object);
     }
 
-    for(const data::Port::sptr& port : other->m_inputs)
-    {
-        this->addInputPort(data::Object::copy(port));
-    }
+    m_inputs  = other->m_inputs;
+    m_outputs = other->m_outputs;
 
-    for(const data::Port::sptr& port : other->m_outputs)
-    {
-        this->addOutputPort(data::Object::copy(port));
-    }
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Node::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Node::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Node::csptr other = Node::dynamicConstCast(_source);
+    Node::csptr other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_inputs.clear();
     m_outputs.clear();
@@ -191,17 +181,15 @@ void Node::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 
     for(const data::Port::sptr& port : other->m_inputs)
     {
-        data::Port::sptr newPort;
-        newPort = data::Object::copy(port, cache);
-        this->addInputPort(newPort);
+        this->addInputPort(data::Object::copy(port, cache));
     }
 
     for(const data::Port::sptr& port : other->m_outputs)
     {
-        data::Port::sptr newPort;
-        newPort = data::Object::copy(port, cache);
-        this->addOutputPort(newPort);
+        this->addOutputPort(data::Object::copy(port, cache));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -216,7 +204,7 @@ bool Node::operator==(const Node& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -2,17 +2,15 @@
     <id>calibrationEdition</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="SERIESDB" />
-        <param name="cameraSeries" />
+        <param name="dataSet" />
+        <param name="cameraSet" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
-        <object uid="${cameraSeries}" type="sight::data::CameraSeries" src="ref" />
-
-        <object uid="newCameraSeries" type="sight::data::CameraSeries" src="deferred" />
+        <object uid="${dataSet}" type="sight::data::Set" src="ref" />
+        <object uid="${cameraSet}" type="sight::data::CameraSet" src="ref" />
+        <object uid="newCameraSet" type="sight::data::CameraSet" src="deferred" />
         <object uid="camera0" type="sight::data::Camera" src="deferred" />
         <object uid="camera1" type="sight::data::Camera" src="deferred" />
 
@@ -40,7 +38,7 @@
         <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Export camera series" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <menuItem name="Export camera set" icon="sight::module::ui::flaticons/BlueSave.svg" />
                     <separator />
                     <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />
                     <separator />
@@ -86,7 +84,7 @@
             <registry>
                 <view sid="cameraInfo1Srv" start="false" />
                 <view sid="cameraInfo2Srv" start="false" />
-                <view sid="cameraSeriesInfoSrv" start="false" />
+                <view sid="cameraSetInfoSrv" start="false" />
             </registry>
         </service>
 
@@ -94,13 +92,13 @@
 
         <service uid="writeCalibrationAct" type="sight::module::ui::base::SAction"/>
 
-        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true">
-            <inout key="seriesDB" uid="${SERIESDB}" />
-            <inout key="series" uid="newCameraSeries" />
+        <service uid="exportAct" type="sight::module::ui::base::SExportSet" autoConnect="true">
+            <inout key="container" uid="${dataSet}" />
+            <inout key="data" uid="newCameraSet" />
         </service>
 
         <service uid="CalibrationXmlWriter" type="sight::module::io::vision::SOpenCVWriter">
-            <in key="data" uid="newCameraSeries" />
+            <in key="data" uid="newCameraSet" />
         </service>
 
         <service uid="startVideoAct" type="sight::module::ui::base::SAction"/>
@@ -144,20 +142,21 @@
 
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::SSlider" />
 
-        <service uid="copyCameraSeriesSrv" type="sight::module::data::SCopy">
-            <in key="source" uid="${cameraSeries}" />
-            <out key="outTarget" uid="newCameraSeries" />
+        <service uid="copyCameraSetSrv" type="sight::module::data::SCopy">
+            <in key="source" uid="${cameraSet}" />
+            <out key="outTarget" uid="newCameraSet" />
         </service>
+
         <service uid="extractCamerasSrv" type="sight::module::data::SGetCamera">
-            <inout key="cameraSeries" uid="newCameraSeries" />
+            <inout key="CAMERASET" uid="newCameraSet" />
             <out group="camera">
                 <key index="0" uid="camera0" />
                 <key index="1" uid="camera1" />
             </out>
         </service>
 
-        <service uid="cameraSeriesInfoSrv" type="sight::module::ui::qt::calibration::SCameraSeriesEditor">
-            <in key="cameraSeries" uid="${cameraSeries}" autoConnect="true" />
+        <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::SCameraSetEditor">
+            <in key="CAMERASET" uid="${cameraSet}" autoConnect="true" />
             <in key="notUsed" uid="camera1" />
             <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>
@@ -213,9 +212,9 @@
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="copyCameraSeriesSrv" />
+        <start uid="copyCameraSetSrv" />
         <start uid="extractCamerasSrv" />
-        <start uid="cameraSeriesInfoSrv" />
+        <start uid="cameraSetInfoSrv" />
         <start uid="CalibrationXmlWriter" />
         <start uid="exportAct" />
         <start uid="cameraInfo1Srv" />
@@ -223,7 +222,7 @@
         <start uid="camera0LauncherCfg" />
         <start uid="camera1LauncherCfg" />
 
-        <update uid="copyCameraSeriesSrv" />
+        <update uid="copyCameraSetSrv" />
         <update uid="extractCamerasSrv" />
 
     </config>

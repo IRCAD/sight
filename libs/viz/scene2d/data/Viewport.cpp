@@ -31,42 +31,49 @@ namespace sight::viz::scene2d::data
 
 //------------------------------------------------------------------------------
 
-void Viewport::shallowCopy(const sight::data::Object::csptr& _source)
+void Viewport::shallowCopy(const sight::data::Object::csptr& source)
 {
-    Viewport::csptr other = Viewport::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_x      = other->m_x;
     m_y      = other->m_y;
     m_width  = other->m_width;
     m_height = other->m_height;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Viewport::cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache)
+void Viewport::deepCopy(
+    const sight::data::Object::csptr& source,
+    const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache
+)
 {
-    Viewport::csptr other = Viewport::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_x      = other->m_x;
     m_y      = other->m_y;
     m_width  = other->m_width;
     m_height = other->m_height;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::viz::scene2d::data

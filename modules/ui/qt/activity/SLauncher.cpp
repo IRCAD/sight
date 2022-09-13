@@ -38,7 +38,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
@@ -67,10 +67,10 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_SERIES_SLOT          = "launchSeries";
-const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
-const core::com::Slots::SlotKeyType SLauncher::s_UPDATE_STATE_SLOT           = "updateState";
-const core::com::Signals::SignalKeyType SLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
+const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_SERIES_SLOT        = "launchSeries";
+const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_ACTIVITY_SLOT      = "launchActivity";
+const core::com::Slots::SlotKeyType SLauncher::s_UPDATE_STATE_SLOT         = "updateState";
+const core::com::Signals::SignalKeyType SLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 using sight::activity::extension::Activity;
 using sight::activity::extension::ActivityInfo;
@@ -86,7 +86,7 @@ SLauncher::SLauncher() noexcept :
     m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SLauncher::launchSeries, this);
-    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SLauncher::launchActivitySeries, this);
+    newSlot(s_LAUNCH_ACTIVITY_SLOT, &SLauncher::launchActivity, this);
     newSlot(s_UPDATE_STATE_SLOT, &SLauncher::updateState, this);
 }
 
@@ -337,9 +337,9 @@ void SLauncher::updateState()
 
     bool isEnabled = false;
 
-    if(selection->size() == 1 && data::ActivitySeries::dynamicCast((*selection)[0]))
+    if(selection->size() == 1 && data::Activity::dynamicCast((*selection)[0]))
     {
-        data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast((*selection)[0]);
+        data::Activity::sptr as = data::Activity::dynamicCast((*selection)[0]);
 
         if(m_filterMode == "include" || m_filterMode == "exclude")
         {
@@ -367,7 +367,7 @@ void SLauncher::updateState()
         if(m_filterMode.empty() && dataCount.size() == 1)
         {
             data::Object::sptr obj = selection->front();
-            if(data::ActivitySeries::dynamicCast(obj))
+            if(data::Activity::dynamicCast(obj))
             {
                 isEnabled = true;
             }
@@ -392,9 +392,9 @@ void SLauncher::buildActivity(
     auto builder = sight::activity::builder::factory::New(info.builderImpl);
     SIGHT_ASSERT(info.builderImpl << " instantiation failed", builder);
 
-    data::ActivitySeries::sptr actSeries = builder->buildData(info, selection);
+    auto activity = builder->buildData(info, selection);
 
-    if(!actSeries)
+    if(!activity)
     {
         const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl
                                 + "> failed.";
@@ -407,7 +407,7 @@ void SLauncher::buildActivity(
         return;
     }
 
-    // Applies activity validator on activity series to check the data
+    // Applies activity validator on activity to check the data
     if(!info.validatorsImpl.empty())
     {
         for(const std::string& validatorImpl : info.validatorsImpl)
@@ -419,7 +419,7 @@ void SLauncher::buildActivity(
 
             if(activityValidator)
             {
-                IValidator::ValidationType validation = activityValidator->validate(actSeries);
+                IValidator::ValidationType validation = activityValidator->validate(activity);
                 if(!validation.first)
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n"
@@ -435,7 +435,7 @@ void SLauncher::buildActivity(
         }
     }
 
-    const ActivityMsg msg(actSeries, info, m_parameters);
+    const ActivityMsg msg(activity, info, m_parameters);
 
     if(m_mode == "message")
     {
@@ -507,14 +507,14 @@ bool SLauncher::launchAS(const data::Vector::csptr& selection)
     {
         for(const data::Object::sptr& obj : *selection)
         {
-            data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast(obj);
+            data::Activity::sptr as = data::Activity::dynamicCast(obj);
             if(!as)
             {
                 launchAS = false;
                 break;
             }
 
-            this->launchActivitySeries(as);
+            this->launchActivity(as);
             launchAS = true;
         }
     }
@@ -526,49 +526,41 @@ bool SLauncher::launchAS(const data::Vector::csptr& selection)
 
 void SLauncher::launchSeries(data::Series::sptr series)
 {
-    data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast(series);
-    if(as)
+    auto selection = data::Vector::New();
+    selection->push_back(series);
+    ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection);
+
+    if(m_quickLaunch.find(series->getClassname()) != m_quickLaunch.end())
     {
-        this->launchActivitySeries(as);
+        std::string activityId = m_quickLaunch[series->getClassname()];
+        SIGHT_ASSERT(
+            "Activity information not found for" + activityId,
+            Activity::getDefault()->hasInfo(activityId)
+        );
+        this->sendConfig(Activity::getDefault()->getInfo(activityId));
+    }
+    else if(!infos.empty())
+    {
+        this->sendConfig(infos.front());
     }
     else
     {
-        data::Vector::sptr selection = data::Vector::New();
-        selection->push_back(series);
-        ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection);
-
-        if(m_quickLaunch.find(series->getClassname()) != m_quickLaunch.end())
-        {
-            std::string activityId = m_quickLaunch[series->getClassname()];
-            SIGHT_ASSERT(
-                "Activity information not found for" + activityId,
-                Activity::getDefault()->hasInfo(activityId)
-            );
-            this->sendConfig(Activity::getDefault()->getInfo(activityId));
-        }
-        else if(!infos.empty())
-        {
-            this->sendConfig(infos.front());
-        }
-        else
-        {
-            sight::ui::base::dialog::MessageDialog::show(
-                "Activity launcher",
-                "Not available activity for the current selection.",
-                sight::ui::base::dialog::MessageDialog::WARNING
-            );
-        }
+        sight::ui::base::dialog::MessageDialog::show(
+            "Activity launcher",
+            "Not available activity for the current selection.",
+            sight::ui::base::dialog::MessageDialog::WARNING
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
+void SLauncher::launchActivity(data::Activity::sptr activity)
 {
     ActivityInfo info;
-    info = Activity::getDefault()->getInfo(series->getActivityConfigId());
+    info = Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
-    // Applies activity validator on activity series to check the data
+    // Applies activity validator on activity to check the data
     if(!info.validatorsImpl.empty())
     {
         for(const std::string& validatorImpl : info.validatorsImpl)
@@ -580,7 +572,7 @@ void SLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
 
             if(activityValidator)
             {
-                IValidator::ValidationType validation = activityValidator->validate(series);
+                IValidator::ValidationType validation = activityValidator->validate(activity);
                 if(!validation.first)
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n"
@@ -596,7 +588,7 @@ void SLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
         }
     }
 
-    m_sigActivityLaunched->asyncEmit(ActivityMsg(series, info, m_parameters));
+    m_sigActivityLaunched->asyncEmit(ActivityMsg(activity, info, m_parameters));
 }
 
 //------------------------------------------------------------------------------

@@ -86,10 +86,10 @@ void SSequencer::stopping()
 void SSequencer::updating()
 {
     {
-        auto seriesDB = m_seriesDB.lock();
-        SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+        auto activity_set = m_activity_set.lock();
+        SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
-        m_currentActivity = this->parseActivities(*seriesDB);
+        m_currentActivity = this->parseActivities(*activity_set);
     }
 
     if(m_currentActivity >= 0)
@@ -119,17 +119,15 @@ void SSequencer::goTo(int index)
         return;
     }
 
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*seriesDB, m_currentActivity);
+        storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    const auto newIdx = static_cast<std::size_t>(index);
-
-    data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
+    auto activity = getActivity(*activity_set, std::size_t(index), m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
@@ -153,20 +151,20 @@ void SSequencer::goTo(int index)
 
 void SSequencer::checkNext()
 {
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*seriesDB, m_currentActivity);
+        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
     const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
-        data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
+        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, m_slotUpdate);
 
         bool ok = true;
         std::string errorMsg;
@@ -199,8 +197,8 @@ void SSequencer::previous()
 service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

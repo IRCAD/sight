@@ -12,10 +12,10 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="cameraSet" type="sight::data::CameraSet" />
             <object uid="cameraRGB" type="sight::data::Camera" src="deferred" />
             <object uid="cameraDepth" type="sight::data::Camera" src="deferred" />
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="frameTL" type="sight::data::FrameTL" />
             <object uid="maskTL" type="sight::data::FrameTL" />
             <object uid="videoImage" type="sight::data::Image" />
@@ -275,11 +275,11 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
-                <inout key="data" uid="seriesDB" />
+                <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
             </service>
             <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
-               <in key="seriesDB" uid="seriesDB"/>
+               <in key="seriesSet" uid="seriesSet"/>
                <out group="series" >
                    <key index="0" uid="modelSeries" />
                </out>
@@ -287,7 +287,7 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
-                <inout key="data" uid="cameraSeries" />
+                <inout key="data" uid="cameraSet" />
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -299,9 +299,9 @@
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
-            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSet -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <inout key="cameraSeries" uid="cameraSeries" />
+                <inout key="cameraSet" uid="cameraSet" />
                 <!-- destination -->
                 <out group="camera" >
                     <key index="0" uid="cameraDepth" />
@@ -472,13 +472,13 @@
 
             <!-- Extract the model series when it is added to SDB -->
             <connect>
-                <signal>seriesDB/modified</signal>
-                <signal>seriesDB/addedSeries</signal>
+                <signal>seriesSet/modified</signal>
+                <signal>seriesSet/addedObjects</signal>
                 <slot>extractModelSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>cameraSeries/addedCamera</signal>
+                <signal>cameraSet/addedCamera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 

@@ -32,8 +32,8 @@ namespace sight::module::data::ut
 class SGetCameraTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SGetCameraTest);
-CPPUNIT_TEST(extractsCameraFromCameraSeries);
-CPPUNIT_TEST(extractsInvalidCameraSeries);
+CPPUNIT_TEST(extractsCameraFromCameraSet);
+CPPUNIT_TEST(extractsInvalidCameraSet);
 CPPUNIT_TEST(extractsValidExtrinsic);
 CPPUNIT_TEST(extractsValidExtrinsic1);
 CPPUNIT_TEST(extractsInvalidExtrinsic);
@@ -47,8 +47,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void extractsCameraFromCameraSeries();
-    static void extractsInvalidCameraSeries();
+    static void extractsCameraFromCameraSet();
+    static void extractsInvalidCameraSet();
     static void extractsValidExtrinsic();
     static void extractsValidExtrinsic1();
     static void extractsCameraOutOfBoundIndex();

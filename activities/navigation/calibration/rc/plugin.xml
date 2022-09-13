@@ -20,9 +20,9 @@
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
         <icon>sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements>
-            <requirement name="cameraSeries" type="sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
+            <requirement name="cameraSet" type="sight::data::CameraSet" minOccurs="0" maxOccurs="0" />
         </requirements>
-        <builder>sight::activity::builder::ActivitySeriesInitData</builder>
+        <builder>sight::activity::builder::ActivityInitData</builder>
         <appConfig id="calibration" />
     </extension>
 
@@ -38,7 +38,7 @@
         </desc>
         <icon>sight::module::ui::flaticons/BlueParametersCamera.svg</icon>
         <requirements>
-            <requirement name="cameraSeries" type="sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="cameraSet" type="sight::data::CameraSet" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
             </requirement>
         </requirements>

@@ -25,7 +25,8 @@
 
 #include <core/base.hpp>
 
-#include <data/SeriesDB.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/IController.hpp>
 #include <service/macros.hpp>
@@ -42,7 +43,7 @@ namespace sight::module::data
  *
  * @code{.xml}
         <service uid="..." type="sight::module::data::SGetSeries" >
-           <in key="seriesDB" uid="..."/>
+           <in key="seriesSet" uid="..."/>
            <out group="series">
                <key index="0" uid="..."/>
                <key index="3" uid="..."/>
@@ -50,7 +51,7 @@ namespace sight::module::data
         </service>
        @endcode
  * @subsection Input Input
- * - \b seriesDB [sight::data::SeriesDB]: database series from which the series extracted.
+ * - \b seriesSet [sight::data::SeriesSet]: database series from which the series extracted.
  *
  * @subsection Output Output
  * - \b series [sight::data::Series]: output series extracted from the database series.
@@ -84,9 +85,9 @@ protected:
 private:
 
     std::vector<size_t> m_indexNumbers;
-    static constexpr std::string_view s_SERIESDB_INPUT   = "seriesDB";
+    static constexpr std::string_view s_SERIES_SET_INPUT = "seriesSet";
     static constexpr std::string_view s_SERIES_GROUP_OUT = "series";
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_seriesDB {this, s_SERIESDB_INPUT};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::in> m_series_set {this, s_SERIES_SET_INPUT};
     sight::data::ptr_vector<sight::data::Series, sight::data::Access::out> m_series {this, s_SERIES_GROUP_OUT};
 };
 

@@ -151,32 +151,32 @@ void SCamera::starting()
     ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &SCamera::onApply);
 
     // Create camera data if necessary
-    auto cameraSeries = m_cameraSeries.lock();
-    if(cameraSeries)
+    auto camera_set = m_camera_set.lock();
+    if(camera_set)
     {
-        const std::size_t numCameras = cameraSeries->numCameras();
+        const std::size_t numCameras = camera_set->size();
         if(numCameras == 0)
         {
-            SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
+            SIGHT_ASSERT("No camera data in the CameraSet.", m_numCreateCameras != 0);
 
             for(std::size_t i = 0 ; i < m_numCreateCameras ; ++i)
             {
-                data::Camera::sptr camera = data::Camera::New();
-                const std::size_t index   = cameraSeries->numCameras();
-                cameraSeries->addCamera(camera);
-                cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
-                const auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                auto camera = data::Camera::New();
+                camera_set->add_camera(camera);
+
+                const auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
+                    data::CameraSet::s_ADDED_CAMERA_SIG
                 );
+
                 sig->asyncEmit(camera);
             }
 
-            SIGHT_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
+            SIGHT_INFO("No camera data in the CameraSet, " << m_numCreateCameras << " will be created.");
         }
         else
         {
             SIGHT_WARN_IF(
-                "CameraSeries contains camera data but the service is configured to create "
+                "CameraSet contains camera data but the service is configured to create "
                 << m_numCreateCameras << " cameras.",
                 m_numCreateCameras != 0
             );
@@ -493,13 +493,12 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
 {
     std::vector<data::Camera::sptr> cameras;
 
-    auto cameraSeries = m_cameraSeries.lock();
-    if(cameraSeries)
+    auto camera_set = m_camera_set.lock();
+    if(camera_set)
     {
-        const std::size_t numCameras = cameraSeries->numCameras();
-        for(std::size_t i = 0 ; i < numCameras ; ++i)
+        for(std::size_t i = 0, numCameras = camera_set->size() ; i < numCameras ; ++i)
         {
-            cameras.push_back(cameraSeries->getCamera(i));
+            cameras.push_back(camera_set->get_camera(i));
         }
     }
     else

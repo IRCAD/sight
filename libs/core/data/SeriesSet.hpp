@@ -37,17 +37,12 @@ public:
     /// Constructors / Destructor / Assignment operators
     /// @{
     DATA_API SeriesSet(Object::Key key);
-    DATA_API ~SeriesSet() override = default;
+    DATA_API ~SeriesSet() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
     using IContainer<SeriesSet::container_type>::IContainer;
     using IContainer<SeriesSet::container_type>::operator=;
     /// @}
-
-    /// Defines shallow copy
-    /// @throws data::Exception if an errors occurs during copy
-    /// @param source the source object to copy
-    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Equality comparison operators
     /// @{
@@ -55,13 +50,19 @@ public:
     DATA_API bool operator!=(const SeriesSet& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
     /// @throws data::Exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
-    DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 };
 
 } // namespace sight::data

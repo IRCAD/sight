@@ -43,7 +43,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto edge = Helper::safeCast<sight::data::Edge>(object);
+    const auto edge = Helper::safe_cast<sight::data::Edge>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<sight::data::Edge>(tree, 1);
@@ -64,7 +64,7 @@ inline static data::Edge::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto edge = Helper::safeCast<sight::data::Edge>(object);
+    auto edge = Helper::cast_or_create<sight::data::Edge>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<sight::data::Edge>(tree, 0, 1);

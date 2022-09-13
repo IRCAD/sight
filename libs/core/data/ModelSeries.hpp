@@ -40,13 +40,13 @@ namespace sight::data
 /**
  * @brief Holds models series.
  */
-class DATA_CLASS_API ModelSeries : public Series
+class DATA_CLASS_API ModelSeries final : public Series
 {
 public:
 
     using ReconstructionVectorType = std::vector<Reconstruction::sptr>;
 
-    SIGHT_DECLARE_CLASS(ModelSeries, Object, factory::New<ModelSeries>);
+    SIGHT_DECLARE_CLASS(ModelSeries, Series, factory::New<ModelSeries>);
 
     /**
      * @brief Creates the models series.
@@ -55,13 +55,7 @@ public:
     DATA_API ModelSeries(Object::Key _key);
 
     /// Destroys the models series.
-    DATA_API ~ModelSeries() override;
-
-    /**
-     * @brief Defines shallow copy.
-     * @param _source the source object to copy into this one.
-     */
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~ModelSeries() noexcept override = default;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
     const ReconstructionVectorType& getReconstructionDB() const;
@@ -96,14 +90,21 @@ public:
     DATA_API bool operator!=(const ModelSeries& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// Stores models.
     ReconstructionVectorType m_reconstructionDB;

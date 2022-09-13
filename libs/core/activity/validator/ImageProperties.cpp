@@ -63,29 +63,25 @@ IValidator::ValidationType ImageProperties::validate(
 
         data::ImageSeries::sptr imgSeries0 = data::ImageSeries::dynamicCast((*currentSelection)[0]);
         SIGHT_ASSERT("Failed to retrieve an image series", imgSeries0);
-        data::Image::sptr img0 = imgSeries0->getImage();
-        SIGHT_ASSERT("Failed to retrieve image from image series", img0);
 
-        data::Image::Size size       = img0->getSize();
-        data::Image::Spacing spacing = img0->getSpacing();
-        data::Image::Origin origin   = img0->getOrigin();
+        data::Image::Size size       = imgSeries0->getSize();
+        data::Image::Spacing spacing = imgSeries0->getSpacing();
+        data::Image::Origin origin   = imgSeries0->getOrigin();
 
         data::Vector::container_type::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(*it);
             SIGHT_ASSERT("Failed to retrieve an image series", imgSeries);
-            data::Image::sptr img = imgSeries->getImage();
-            SIGHT_ASSERT("Failed to retrieve an image data", img);
 
-            if(size != img->getSize()
-               || !std::equal(spacing.begin(), spacing.end(), img->getSpacing().begin(), fCompare)
-               || !std::equal(origin.begin(), origin.end(), img->getOrigin().begin(), fCompare))
+            if(size != imgSeries->getSize()
+               || !std::equal(spacing.begin(), spacing.end(), imgSeries->getSpacing().begin(), fCompare)
+               || !std::equal(origin.begin(), origin.end(), imgSeries->getOrigin().begin(), fCompare))
             {
                 std::string errorMsg = "Images in selection have not the same properties :\n";
-                errorMsg += (size != img->getSize()) ? "- size\n" : "";
-                errorMsg += (spacing != img->getSpacing()) ? "- spacing\n" : "";
-                errorMsg += (origin != img->getOrigin()) ? "- origin" : "";
+                errorMsg += (size != imgSeries->getSize()) ? "- size\n" : "";
+                errorMsg += (spacing != imgSeries->getSpacing()) ? "- spacing\n" : "";
+                errorMsg += (origin != imgSeries->getOrigin()) ? "- origin" : "";
 
                 validation.first  = false;
                 validation.second = errorMsg;
@@ -121,12 +117,7 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
     {
         for(const data::Object::sptr& obj : *vector)
         {
-            data::ImageSeries::csptr imgSeries = data::ImageSeries::dynamicConstCast(obj);
-            data::Image::csptr img             = data::Image::dynamicConstCast(obj);
-            if(imgSeries)
-            {
-                img = imgSeries->getImage();
-            }
+            const auto img = data::Image::dynamicConstCast(obj);
 
             if(img)
             {
@@ -165,12 +156,7 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
     {
         for(const auto& elt : *composite)
         {
-            data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(elt.second);
-            data::Image::sptr img             = data::Image::dynamicCast(elt.second);
-            if(imgSeries)
-            {
-                img = imgSeries->getImage();
-            }
+            const auto img = data::Image::dynamicCast(elt.second);
 
             if(img)
             {

@@ -21,18 +21,16 @@
 
 #include "SessionDeserializer.hpp"
 
-#include "ActivitySeries.hpp"
+#include "Activity.hpp"
 #include "ActivitySet.hpp"
 #include "Array.hpp"
 #include "CalibrationInfo.hpp"
 #include "Camera.hpp"
-#include "CameraSeries.hpp"
 #include "CameraSet.hpp"
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
 #include "Edge.hpp"
-#include "Equipment.hpp"
 #include "Graph.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
@@ -43,32 +41,27 @@
 #include "Mesh.hpp"
 #include "ModelSeries.hpp"
 #include "Node.hpp"
-#include "Patient.hpp"
 #include "Plane.hpp"
 #include "PlaneList.hpp"
 #include "Point.hpp"
 #include "PointList.hpp"
 #include "Port.hpp"
-#include "ProcessObject.hpp"
 #include "Reconstruction.hpp"
 #include "ReconstructionTraits.hpp"
 #include "Resection.hpp"
 #include "ResectionDB.hpp"
 #include "ROITraits.hpp"
 #include "Series.hpp"
-#include "SeriesDB.hpp"
 #include "SeriesSet.hpp"
+#include "Set.hpp"
 #include "String.hpp"
 #include "StructureTraits.hpp"
 #include "StructureTraitsDictionary.hpp"
-#include "Study.hpp"
-#include "Tag.hpp"
 #include "TransferFunction.hpp"
 #include "Vector.hpp"
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
-#include <data/IContainer.hxx>
 #include <data/Integer.hpp>
 #include <data/mt/locked_ptr.hpp>
 
@@ -89,19 +82,17 @@ static std::shared_mutex s_deserializers_mutex;
 
 // Default serializer registry
 static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializers = {
-    {data::ActivitySeries::classname(), &ActivitySeries::deserialize},
+    {data::Activity::classname(), &Activity::deserialize},
     {data::ActivitySet::classname(), &ActivitySet::deserialize},
     {data::Array::classname(), &Array::deserialize},
     {data::Boolean::classname(), &Helper::deserialize<data::Boolean>},
     {data::Camera::classname(), &Camera::deserialize},
-    {data::CameraSeries::classname(), &CameraSeries::deserialize},
     {data::CameraSet::classname(), &CameraSet::deserialize},
     {data::CalibrationInfo::classname(), &CalibrationInfo::deserialize},
     {data::Color::classname(), &Color::deserialize},
     {data::Composite::classname(), &Composite::deserialize},
     {data::DicomSeries::classname(), &DicomSeries::deserialize},
     {data::Edge::classname(), &Edge::deserialize},
-    {data::Equipment::classname(), &Equipment::deserialize},
     {data::Float::classname(), &Helper::deserialize<data::Float>},
     {data::Graph::classname(), &Graph::deserialize},
     {data::Integer::classname(), &Helper::deserialize<data::Integer>},
@@ -114,26 +105,22 @@ static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializ
     {data::Mesh::classname(), &Mesh::deserialize},
     {data::ModelSeries::classname(), &ModelSeries::deserialize},
     {data::Node::classname(), &Node::deserialize},
-    {data::Patient::classname(), &Patient::deserialize},
     {data::Point::classname(), &Point::deserialize},
     {data::PointList::classname(), &PointList::deserialize},
     {data::Plane::classname(), &Plane::deserialize},
     {data::PlaneList::classname(), &PlaneList::deserialize},
     {data::Port::classname(), &Port::deserialize},
-    {data::ProcessObject::classname(), &ProcessObject::deserialize},
     {data::Reconstruction::classname(), &Reconstruction::deserialize},
     {data::ReconstructionTraits::classname(), &ReconstructionTraits::deserialize},
     {data::Resection::classname(), &Resection::deserialize},
     {data::ResectionDB::classname(), &ResectionDB::deserialize},
     {data::ROITraits::classname(), &ROITraits::deserialize},
     {data::Series::classname(), &Series::deserialize},
-    {data::SeriesDB::classname(), &SeriesDB::deserialize},
     {data::SeriesSet::classname(), &SeriesSet::deserialize},
+    {data::Set::classname(), &Set::deserialize},
     {data::String::classname(), &String::deserialize},
     {data::StructureTraits::classname(), &StructureTraits::deserialize},
     {data::StructureTraitsDictionary::classname(), &StructureTraitsDictionary::deserialize},
-    {data::Study::classname(), &Study::deserialize},
-    {data::Tag::classname(), &Tag::deserialize},
     {data::TransferFunction::classname(), &TransferFunction::deserialize},
     {data::Vector::classname(), &Vector::deserialize}
 };
@@ -247,12 +234,13 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
         );
     }
 
+    // Do not forget the description
+    newObject->setDescription(Helper::readString(objectTree, ISession::s_description, ""));
+
     // Construct field map
     data::Object::FieldMapType fields;
 
-    const auto& fields_it = objectTree.find(ISession::s_fields);
-
-    if(fields_it != objectTree.not_found())
+    if(const auto& fields_it = objectTree.find(ISession::s_fields); fields_it != objectTree.not_found())
     {
         for(const auto& field_it : fields_it->second)
         {

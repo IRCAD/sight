@@ -245,8 +245,8 @@ namespace sight::data
     }
  * @endcode
  */
-class DATA_CLASS_API Mesh : public Object,
-                            public core::memory::IBuffered
+class DATA_CLASS_API Mesh final : public Object,
+                                  public core::memory::IBuffered
 {
 public:
 
@@ -306,10 +306,7 @@ public:
     DATA_API Mesh(Object::Key key);
 
     /// Destructor
-    DATA_API ~Mesh() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Mesh() noexcept override = default;
 
     /**
      * @brief Allocate Mesh memory
@@ -610,10 +607,21 @@ public:
     DATA_API bool operator!=(const Mesh& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation

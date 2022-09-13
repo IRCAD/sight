@@ -29,7 +29,6 @@
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 
 #include <gdcmReader.h>
 #include <gdcmScanner.h>
@@ -56,8 +55,8 @@ DicomInstance::DicomInstance(
     bool isMultiFiles
 ) :
     m_isMultiFiles(isMultiFiles),
-    m_studyInstanceUID(series->getStudy()->getInstanceUID()),
-    m_seriesInstanceUID(series->getInstanceUID()),
+    m_studyInstanceUID(series->getStudyInstanceUID()),
+    m_seriesInstanceUID(series->getSeriesInstanceUID()),
     m_logger(std::move(logger))
 {
     // Compute SOPClassUID
@@ -78,8 +77,8 @@ DicomInstance::DicomInstance(
     core::log::Logger::sptr logger
 ) :
     m_isMultiFiles(dicomSeries->getDicomContainer().size() > 1),
-    m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
-    m_seriesInstanceUID(dicomSeries->getInstanceUID()),
+    m_studyInstanceUID(dicomSeries->getStudyInstanceUID()),
+    m_seriesInstanceUID(dicomSeries->getSeriesInstanceUID()),
     m_logger(std::move(logger))
 {
     SIGHT_ASSERT("DicomSeries is not instantiated", dicomSeries);
@@ -122,12 +121,8 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
 
     if(imageSeries)
     {
-        // Retrieve image from series
-        data::Image::csptr image = imageSeries->getImage();
-
         // Compute instance dimension
-        unsigned int dimension =
-            (this->getIsMultiFiles()) ? 2 : static_cast<unsigned int>(image->numDimensions());
+        unsigned int dimension = getIsMultiFiles() ? 2 : static_cast<unsigned int>(imageSeries->numDimensions());
 
         // Define SOP Class UID from the modality
         gdcm::MediaStorage mediaStorage;
@@ -161,7 +156,7 @@ void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicConstCast(series);
 
     // Compute number of instances
-    const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize()[2]) : (1);
+    const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->getSize()[2]) : (1);
 
     // Create generator
     gdcm::UIDGenerator uidGenerator;

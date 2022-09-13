@@ -30,7 +30,7 @@ namespace sight::module::io::vision
 {
 
 /**
- * @brief SOpenCVWriter class exports data::CameraSeries in xml/yaml files using openCV
+ * @brief SOpenCVWriter class exports data::CameraSet in xml/yaml files using openCV
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -40,7 +40,7 @@ namespace sight::module::io::vision
  * @endcode
  *
  * @subsection Input Input
- * - \b data [sight::data::CameraSeries]: data to save.
+ * - \b data [sight::data::CameraSet]: data to save.
  *
  * An Example of the xml structure:
  * @code{.xml}

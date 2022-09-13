@@ -39,7 +39,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto composite = Helper::safeCast<data::Composite>(object);
+    const auto composite = Helper::safe_cast<data::Composite>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Composite>(tree, 1);
@@ -59,7 +59,7 @@ inline static data::Composite::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto composite = Helper::safeCast<data::Composite>(object);
+    auto composite = Helper::cast_or_create<data::Composite>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Composite>(tree, 0, 1);

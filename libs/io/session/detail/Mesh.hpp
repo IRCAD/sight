@@ -49,7 +49,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto mesh = Helper::safeCast<data::Mesh>(object);
+    const auto mesh = Helper::safe_cast<data::Mesh>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Mesh>(tree, 1);
@@ -89,7 +89,7 @@ inline static data::Mesh::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto mesh = Helper::safeCast<data::Mesh>(object);
+    auto mesh = Helper::cast_or_create<data::Mesh>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Mesh>(tree, 0, 1);

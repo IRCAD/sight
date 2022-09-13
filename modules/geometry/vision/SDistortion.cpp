@@ -159,17 +159,14 @@ void SDistortion::updating()
 
             if(reallocated)
             {
-                auto sig =
-                    outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
 
-            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(
-                data::Image::s_BUFFER_MODIFIED_SIG
-            );
+            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();

@@ -34,7 +34,7 @@ namespace sight::data
  * @brief This class defines a material. A material is represented by an ambient color and a diffuse color.
  * @see Color
  */
-class DATA_CLASS_API Material : public Object
+class DATA_CLASS_API Material final : public Object
 {
 public:
 
@@ -47,10 +47,7 @@ public:
     DATA_API Material(Object::Key key);
 
     /// Destructor
-    DATA_API ~Material() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Material() noexcept override = default;
 
     /**
      * @brief returns editable ambient color
@@ -201,10 +198,21 @@ public:
     DATA_API bool operator!=(const Material& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// Shading mode (flat, Phong)
     ShadingType m_shadingMode {PHONG};

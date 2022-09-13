@@ -443,12 +443,9 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    core::Type type         = core::Type::FLOAT;
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, type);
-
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    imageSeries->setImage(image);
+    core::Type type  = core::Type::FLOAT;
+    auto imageSeries = data::ImageSeries::New();
+    utestData::generator::Image::generateRandomImage(imageSeries, type);
 
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "imageSeries.vtk";
 
@@ -456,13 +453,13 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
-    data::Image::sptr image2 = data::Image::New();
-    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image2);
+    auto imageSeries2 = data::ImageSeries::New();
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageSeries2);
 
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
+    imageSeries2->setWindowWidth(imageSeries->getWindowWidth());
 
-    CPPUNIT_ASSERT(*image == *image2);
+    CPPUNIT_ASSERT(*imageSeries == *imageSeries2);
 }
 
 //------------------------------------------------------------------------------

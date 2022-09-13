@@ -133,7 +133,7 @@ void SSequencer::starting()
     QColor clear;
     if(m_clear.empty())
     {
-        clear = parent->palette().color(QPalette::Background);
+        clear = parent->palette().color(QPalette::Window);
 
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
@@ -243,10 +243,10 @@ void SSequencer::stopping()
 void SSequencer::updating()
 {
     {
-        auto seriesDB = m_seriesDB.lock();
-        SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+        auto activity_set = m_activity_set.lock();
+        SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
-        m_currentActivity = this->parseActivities(*seriesDB);
+        m_currentActivity = this->parseActivities(*activity_set);
     }
     if(m_currentActivity >= 0)
     {
@@ -255,7 +255,7 @@ void SSequencer::updating()
             this->enableActivity(i);
         }
 
-        // launch the last series
+        // launch the last activity
         this->goTo(m_currentActivity);
     }
     else
@@ -276,8 +276,8 @@ void SSequencer::goTo(int index)
         return;
     }
 
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Clear activities if go backward.
     if(m_clearActivities && m_currentActivity > index)
@@ -296,23 +296,23 @@ void SSequencer::goTo(int index)
         }
 
         // Disable all next activities (including current)
-        for(auto i = std::size_t(index) + 1 ; i < seriesDB->size() ; ++i)
+        for(int i = index + 1, end = int(activity_set->size()) ; i < end ; ++i)
         {
-            this->disableActivity(int(i));
+            this->disableActivity(i);
         }
 
         // Remove all last activities.
-        this->removeLastActivities(*seriesDB, std::size_t(index));
+        this->removeLastActivities(*activity_set, std::size_t(index));
     }
     // Store data otherwise.
     else if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*seriesDB, m_currentActivity);
+        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
     const auto newIdx = static_cast<std::size_t>(index);
 
-    data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
+    data::Activity::sptr activity = this->getActivity(*activity_set, newIdx, m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
@@ -338,20 +338,20 @@ void SSequencer::goTo(int index)
 
 void SSequencer::checkNext()
 {
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*seriesDB, m_currentActivity);
+        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
     const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
-        data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
+        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, m_slotUpdate);
 
         bool ok = true;
         std::string errorMsg;
@@ -410,8 +410,8 @@ void SSequencer::disableActivity(int index)
 service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

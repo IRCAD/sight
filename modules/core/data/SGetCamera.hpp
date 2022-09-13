@@ -24,7 +24,7 @@
 #include "modules/data/config.hpp"
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 
 #include <service/IController.hpp>
 
@@ -32,14 +32,14 @@ namespace sight::module::data
 {
 
 /**
- * @brief This service extracts camera parameters from a camera series
+ * @brief This service extracts camera parameters from a camera set
  *
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service uid="..." type="sight::module::data::SGetCamera" >
-    <inout key="cameraSeries" uid="..."/>
+    <inout key="cameraSet" uid="..."/>
     <out group="camera" >
         <key index="0" uid="..." />
         <key index="1" uid="..." />
@@ -50,7 +50,7 @@ namespace sight::module::data
    </service>
        @endcode
  * @subsection Inout Inout
- * - \b cameraSeries [sight::data::SGetCamera]: camera series from which the parameters will be extracted
+ * - \b cameraSet [sight::data::SGetCamera]: camera series from which the parameters will be extracted
  *
  * @subsection Output Output
  * - \b camera [sight::data::Camera]: output camera extracted from the input Camera series.
@@ -88,7 +88,7 @@ private:
     std::vector<std::size_t> m_cameraIndexNumbers;
     std::vector<std::size_t> m_extrinsicIndexNumbers;
 
-    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::inout> m_cameraSeries {this, "cameraSeries"};
+    sight::data::ptr<sight::data::CameraSet, sight::data::Access::inout> m_camera_set {this, "cameraSet"};
     sight::data::ptr_vector<sight::data::Camera, sight::data::Access::out> m_camera {this, "camera"};
     sight::data::ptr_vector<sight::data::Matrix4, sight::data::Access::out> m_extrinsic {this, "extrinsic"};
 };

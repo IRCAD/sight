@@ -31,7 +31,7 @@
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
@@ -193,18 +193,18 @@ void SOpenCVExtrinsic::updating()
         cv::Mat essentialMatrix;
         cv::Mat fundamentalMatrix;
 
-        const auto camSeries = m_cameraSeries.lock();
+        const auto camSeries = m_camera_set.lock();
 
         SIGHT_ASSERT(
-            "camera index must be > 0 and < camSeries->numCameras()",
-            m_camIndex > 0 && m_camIndex < camSeries->numCameras()
+            "camera index must be > 0 and < camSeries->size()",
+            m_camIndex > 0 && m_camIndex < camSeries->size()
         );
 
         data::Image::csptr img = calInfo1->getImageContainer().front();
         cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
-            data::Camera::csptr cam1 = camSeries->getCamera(0);
-            data::Camera::csptr cam2 = camSeries->getCamera(m_camIndex);
+            data::Camera::csptr cam1 = camSeries->get_camera(0);
+            data::Camera::csptr cam2 = camSeries->get_camera(m_camIndex);
 
             data::mt::locked_ptr cam1Lock(cam1);
             data::mt::locked_ptr cam2Lock(cam2);
@@ -255,12 +255,12 @@ void SOpenCVExtrinsic::updating()
         io::opencv::Matrix::copyFromCv(cv4x4, matrix);
 
         {
-            camSeries->setExtrinsicMatrix(m_camIndex, matrix);
+            camSeries->set_extrinsic_matrix(m_camIndex, matrix);
         }
 
-        data::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
-        sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>(
-            data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG
+        data::CameraSet::extrinsic_calibrated_signal_t::sptr sig;
+        sig = camSeries->signal<data::CameraSet::extrinsic_calibrated_signal_t>(
+            data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG
         );
 
         sig->asyncEmit();

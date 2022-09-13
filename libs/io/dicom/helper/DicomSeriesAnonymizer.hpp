@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 #include "io/dicom/helper/DicomSeriesWriter.hpp"
-#include "io/dicom/reader/SeriesDB.hpp"
+#include "io/dicom/reader/SeriesSet.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -83,7 +83,7 @@ protected:
     io::dicom::helper::DicomAnonymizer m_anonymizer;
 
     /// Dicom Reader
-    io::dicom::reader::SeriesDB::sptr m_reader;
+    io::dicom::reader::SeriesSet::sptr m_reader;
 
     /// Job observer
     SPTR(core::jobs::Aggregator) m_job;

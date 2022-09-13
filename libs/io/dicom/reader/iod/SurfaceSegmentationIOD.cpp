@@ -100,15 +100,16 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
+    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                              m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
+    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                          m_progressCallback, m_cancelRequestedCallback);
     io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                            m_progressCallback, m_cancelRequestedCallback);
     // Use Image as frame of reference
-    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
+    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                                  m_progressCallback, m_cancelRequestedCallback);
+
     io::dicom::reader::ie::Surface surfaceIE(m_dicomSeries, reader, m_instance, modelSeries, m_logger,
                                              m_progressCallback, m_cancelRequestedCallback);
 

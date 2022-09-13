@@ -24,7 +24,7 @@
 
 #include "activity/IObjectValidator.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
@@ -33,7 +33,7 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkRequirements(const data::ActivitySeries::csptr& activity)
+IValidator::ValidationType IActivityValidator::checkRequirements(const data::Activity::csptr& activity)
 {
     IValidator::ValidationType validation;
     validation.first  = true;

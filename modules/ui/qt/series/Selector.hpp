@@ -27,7 +27,6 @@
 #include "SelectorModel.hpp"
 
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 
 #include <QModelIndex>
 #include <QPointer>

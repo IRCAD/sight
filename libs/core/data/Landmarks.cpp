@@ -62,41 +62,40 @@ Landmarks::Landmarks(data::Object::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-Landmarks::~Landmarks()
-= default;
-
-//------------------------------------------------------------------------------
-
-void Landmarks::shallowCopy(const Object::csptr& _source)
+void Landmarks::shallowCopy(const Object::csptr& source)
 {
-    Landmarks::csptr other = Landmarks::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_landmarks = other->m_landmarks;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Landmarks::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Landmarks::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Landmarks::csptr other = Landmarks::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_landmarks = other->m_landmarks;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -321,7 +320,7 @@ bool Landmarks::operator==(const Landmarks& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

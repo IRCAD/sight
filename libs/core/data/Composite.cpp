@@ -43,42 +43,42 @@ void Composite::shallowCopy(const Object::csptr& source)
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<Composite::container_type>::shallowCopy(other);
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool Composite::operator==(const Composite& other) const noexcept
 {
-    return IContainer<Composite::container_type>::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool Composite::operator!=(const Composite& other) const noexcept
 {
-    return IContainer<Composite::container_type>::operator!=(other);
+    return BaseClass::operator!=(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Composite::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void Composite::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     const auto& other = Composite::dynamicCast(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<Composite::container_type>::cachedDeepCopy(other, cache);
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

@@ -52,7 +52,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto structureTraits = Helper::safeCast<data::StructureTraits>(object);
+    const auto structureTraits = Helper::safe_cast<data::StructureTraits>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::StructureTraits>(tree, 1);
@@ -92,7 +92,7 @@ inline static data::StructureTraits::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto structureTraits = Helper::safeCast<data::StructureTraits>(object);
+    auto structureTraits = Helper::cast_or_create<data::StructureTraits>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::StructureTraits>(tree, 0, 1);

@@ -47,7 +47,7 @@ namespace sight::module::data
         </service>
        @endcode
  * @subsection Input Input
- * - \b seriesDB [sight::data::Vector]: vector from which the series extracted.
+ * - \b vector [sight::data::Vector]: vector from which the series extracted.
  *
  * @subsection Output Output
  * - \b series [sight::data::Object]: output object extracted from the vector.

@@ -13,14 +13,17 @@ All concrete data classes implement this interface.
 
 ### Basic
 
+- **ActivitySet**: activity container.
 - **Array**: generic and dynamic multi-dimensional array.
 - **Boolean**: boolean value.
 - **Color**: RGBA color value.
 - **Composite**: contains a map of objects.
 - **Float**: float value.
+- **Image**: defines an image.
 - **Integer**: integer value.
-- **List**: generic and dynamic list of elements.
 - **Object**: base class for each data object.
+- **Set**: generic and dynamic set of elements.
+- **SeriesSet**: series container.
 - **String**: character array.
 - **TimeLine**: generic definition for collection of objects, each object being associated with a timestamp. It is intended to store lightweight objects.
 - **Vector**: generic and dynamic 1D array.
@@ -28,12 +31,11 @@ All concrete data classes implement this interface.
 
 ### Medical
 
-- **ActivitySeries**: contains information and data of an application activity.
+- **Activity**: contains information and data of an application activity.
 - **DicomSeries**: contains a DICOM series.
 - **Equipment**: contains an equipment information.
 - **Histogram**: contains the histogram of a `sight::data::Image`.
-- **Image**: defines an image.
-- **ImageSeries**: contains a `sight::data::Image` and the associated medical data.
+- **ImageSeries**: a `sight::data::Image` with the associated medical data.
 - **Landmarks**: defines a set of spatial (3D) or color (4D) points.
 - **ModelSeries**: holds a medical data.
 - **Patient**: holds a patient information.
@@ -43,7 +45,7 @@ All concrete data classes implement this interface.
 - **ResectionDB**: defines a resection container.
 - **ROITraits**: defines ROI traits containing an identifier, an evaluated expression, a ROI mask node used for ROIand a structure traits associated to the ROI.
 - **Series**: defines medical data.
-- **SeriesDB**: holds `sight::data::series`
+- **SeriesSet**: holds `sight::data::series`
 - **StructureTraits**: defines a structure traits containing various data all optional (type, category, class, color, native ROI expression,... )
 - **StructureTraitsDictionary**: dictionary of `sight::data::StructureTraits`.
 - **StructureTraitsHelper**: helper of `sight::data::StructureTraits`.
@@ -54,7 +56,7 @@ All concrete data classes implement this interface.
 
 - **CalibrationInfo**: stores calibration images used to compute camera calibration.
 - **Camera**: contains intrinsic and extrinsic parameters of a camera.
-- **CameraSeries**: stores a collection of cameras.
+- **CameraSet**: stores a collection of cameras.
 - **FrameTL**: defines a timeline of `sight::data::Image`.
 - **MarkerMap**: stores a map of optical markers (2D).
 - **MarkerTL**: defines a timeline of 2D markers from their four corner positions.
@@ -80,16 +82,10 @@ All concrete data classes implement this interface.
 - **Node**: represents a node in a `sight::data::Graph`.
 - **Port**: represents a connection point in a `sight::data::Node`.
 
-### Obsolete
-
-- **ProcessObject**: objects having inputs and outputs.
-- **Tag**: defines a tag as a container of a list of `sight::data::Point`.
-
 ### Technical
 
 - **Exception**: implements exception related to data.
 - **GenericTL**: defines a timeline of template objects.
-- **ObjectLock**: helper to lock specific object, manages : `sight::data::Image`, `sight::data::Mesh` and `sight::data::Array`.
 
 ## How to use it
 

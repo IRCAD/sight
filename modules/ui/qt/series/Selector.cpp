@@ -22,12 +22,9 @@
 
 #include "Selector.hpp"
 
-#include <data/Equipment.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/Patient.hpp>
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 
 #include <QItemSelectionModel>
 #include <QKeyEvent>
@@ -67,7 +64,7 @@ Selector::~Selector()
 void Selector::addSeries(data::Series::sptr _series)
 {
     m_model->addSeries(_series);
-    QStandardItem* studyItem = m_model->findStudyItem(_series->getStudy());
+    QStandardItem* studyItem = m_model->findStudyItem(_series);
     this->expand(m_model->indexFromItem(studyItem));
 
     for(int i = 0 ; i < m_model->columnCount() ; ++i)

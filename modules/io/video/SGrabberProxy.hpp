@@ -226,7 +226,7 @@ private:
     /// Configure if selected services are excluded (true) or included (false).
     bool m_exclude {true};
 
-    /// Camera can be either a data::Camera or a data::CameraSeries depending on the implementation
+    /// Camera can be either a data::Camera or a data::CameraSet depending on the implementation
     data::ptr<data::Object, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };
 

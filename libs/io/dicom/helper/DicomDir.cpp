@@ -182,7 +182,7 @@ void processDirInformation(
                         if(dicomSeriesMap.find(seriesUID) == dicomSeriesMap.end())
                         {
                             data::DicomSeries::sptr series = data::DicomSeries::New();
-                            series->setInstanceUID(seriesUID);
+                            series->setSeriesInstanceUID(seriesUID);
                             dicomSeriesMap[seriesUID] = series;
                         }
 
@@ -225,7 +225,7 @@ void processDirInformation(
 
 void DicomDir::retrieveDicomSeries(
     const std::filesystem::path& dicomdir,
-    std::vector<SPTR(data::DicomSeries)>& seriesDB,
+    std::vector<SPTR(data::DicomSeries)>& series_set,
     const core::log::Logger::sptr& logger,
     std::function<void(std::uint64_t)> progress,
     std::function<bool()> cancel
@@ -317,11 +317,11 @@ void DicomDir::retrieveDicomSeries(
         if(size != 0U)
         {
             series->setNumberOfInstances(size);
-            seriesDB.push_back(series);
+            series_set.push_back(series);
         }
         else
         {
-            logger->critical("Unable to retrieve instances for this series : " + series->getInstanceUID());
+            logger->critical("Unable to retrieve instances for this series : " + series->getSeriesInstanceUID());
         }
     }
 }

@@ -85,16 +85,16 @@ void CTMRImageIOD::read(data::Series::sptr series)
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
+    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                              m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
+    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                          m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                           m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
+    io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger, m_progressCallback,
+                                           m_cancelRequestedCallback);
+    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                                  m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Image imageIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
-                                         m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Image imageIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger, m_progressCallback,
+                                         m_cancelRequestedCallback);
     imageIE.setBufferRotationEnabled(m_enableBufferRotation);
 
     // Read Patient Module - PS 3.3 C.7.1.1

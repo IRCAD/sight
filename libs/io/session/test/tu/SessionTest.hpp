@@ -39,11 +39,8 @@ public:
     CPPUNIT_TEST(stringTest);
     CPPUNIT_TEST(compositeTest);
     CPPUNIT_TEST(meshTest);
-    CPPUNIT_TEST(equipmentTest);
-    CPPUNIT_TEST(patientTest);
-    CPPUNIT_TEST(studyTest);
     CPPUNIT_TEST(seriesTest);
-    CPPUNIT_TEST(activitySeriesTest);
+    CPPUNIT_TEST(activityTest);
     CPPUNIT_TEST(arrayTest);
     CPPUNIT_TEST(imageTest);
     CPPUNIT_TEST(vectorTest);
@@ -51,7 +48,6 @@ public:
     CPPUNIT_TEST(pointListTest);
     CPPUNIT_TEST(calibrationInfoTest);
     CPPUNIT_TEST(cameraTest);
-    CPPUNIT_TEST(cameraSeriesTest);
     CPPUNIT_TEST(colorTest);
     CPPUNIT_TEST(edgeTest);
     CPPUNIT_TEST(portTest);
@@ -63,7 +59,6 @@ public:
     CPPUNIT_TEST(matrix4Test);
     CPPUNIT_TEST(planeTest);
     CPPUNIT_TEST(planeListTest);
-    CPPUNIT_TEST(processObjectTest);
     CPPUNIT_TEST(reconstructionTest);
     CPPUNIT_TEST(structureTraitsTest);
     CPPUNIT_TEST(structureTraitsDictionaryTest);
@@ -71,8 +66,6 @@ public:
     CPPUNIT_TEST(resectionTest);
     CPPUNIT_TEST(resectionDBTest);
     CPPUNIT_TEST(roiTraitsTest);
-    CPPUNIT_TEST(seriesDBTest);
-    CPPUNIT_TEST(tagTest);
     CPPUNIT_TEST(transferFunctionTest);
     CPPUNIT_TEST(dicomSeriesTest);
     CPPUNIT_TEST(imageSeriesTest);
@@ -80,6 +73,7 @@ public:
     CPPUNIT_TEST(activitySetTest);
     CPPUNIT_TEST(cameraSetTest);
     CPPUNIT_TEST(seriesSetTest);
+    CPPUNIT_TEST(setTest);
 
     CPPUNIT_TEST(customSerializerTest);
 
@@ -98,11 +92,8 @@ public:
     static void stringTest();
     static void compositeTest();
     static void meshTest();
-    static void equipmentTest();
-    static void patientTest();
-    static void studyTest();
     static void seriesTest();
-    static void activitySeriesTest();
+    static void activityTest();
     static void arrayTest();
     static void imageTest();
     static void vectorTest();
@@ -110,7 +101,6 @@ public:
     static void pointListTest();
     static void calibrationInfoTest();
     static void cameraTest();
-    static void cameraSeriesTest();
     static void colorTest();
     static void edgeTest();
     static void portTest();
@@ -122,7 +112,6 @@ public:
     static void matrix4Test();
     static void planeTest();
     static void planeListTest();
-    static void processObjectTest();
     static void reconstructionTest();
     static void structureTraitsTest();
     static void structureTraitsDictionaryTest();
@@ -130,8 +119,6 @@ public:
     static void resectionTest();
     static void resectionDBTest();
     static void roiTraitsTest();
-    static void seriesDBTest();
-    static void tagTest();
     static void transferFunctionTest();
     static void dicomSeriesTest();
     static void imageSeriesTest();
@@ -139,6 +126,7 @@ public:
     static void activitySetTest();
     static void cameraSetTest();
     static void seriesSetTest();
+    static void setTest();
 
     static void customSerializerTest();
 };

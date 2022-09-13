@@ -59,7 +59,7 @@ class Timer;
 namespace sight::data
 {
 
-class SeriesDB;
+class SeriesSet;
 
 } // namespace sight::data
 
@@ -86,7 +86,7 @@ namespace sight::module::ui::dicom
         <service type="sight::module::ui::dicom::SSliceIndexDicomEditor">
            <in key="series" uid="..." />
            <out key="image" uid="..." />
-           <config dicomReader="sight::module::io::dicom::SSeriesDBReader" delay="500">
+           <config dicomReader="sight::module::io::dicom::SSeriesSetReader" delay="500">
                <readerConfig> <!-- optional -->
                    <!-- here goes the configuration for the dicom reader implementation -->
                </readerConfig>
@@ -186,8 +186,8 @@ private:
     /// Reader
     sight::io::base::service::IReader::wptr m_dicomReader;
 
-    /// Temporary SeriesDB
-    SPTR(data::SeriesDB) m_tempSeriesDB;
+    /// Temporary SeriesSet
+    SPTR(data::SeriesSet) m_tmp_series_set;
 
     /// Axial slice index
     SPTR(data::Integer) m_axialIndex;

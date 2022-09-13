@@ -161,11 +161,11 @@ inline static void testContainer(const C& source, const C& modified_source)
 
         // Test remove all
         CPPUNIT_ASSERT(container.size() == (source.size() + 2));
-        container.remove_all(source[0]);
+        container.remove(source[0]);
         CPPUNIT_ASSERT(container.size() == (source.size() - 1));
 
         // Removing an element that does not exist should not change the container
-        container.remove_all(source[0]);
+        container.remove(source[0]);
         CPPUNIT_ASSERT(container.size() == (source.size() - 1));
     }
 }

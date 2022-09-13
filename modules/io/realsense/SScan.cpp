@@ -272,42 +272,42 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
 
     {
 // Get camera information.
-        const auto cameraSeries = m_cameraSeries.lock();
+        const auto camera_set = m_camera_set.lock();
 
-        if(cameraSeries)
+        if(camera_set)
         {
             data::Camera::sptr colorCamera;
             data::Camera::sptr depthCamera;
 
             // check if there is camera
-            if(cameraSeries->numCameras() == 0)
+            if(camera_set->size() == 0)
             {
                 depthCamera = data::Camera::New();
                 colorCamera = data::Camera::New();
 
-                cameraSeries->addCamera(depthCamera);
-                cameraSeries->addCamera(colorCamera);
-                auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                camera_set->add_camera(depthCamera);
+                camera_set->add_camera(colorCamera);
+                auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
+                    data::CameraSet::s_ADDED_CAMERA_SIG
                 );
                 sig->asyncEmit(depthCamera);
                 sig->asyncEmit(colorCamera);
             }
-            else if(cameraSeries->numCameras() == 1) // missing one camera
+            else if(camera_set->size() == 1) // missing one camera
             {
-                depthCamera = cameraSeries->getCamera(0);
+                depthCamera = camera_set->get_camera(0);
                 colorCamera = data::Camera::New();
-                cameraSeries->addCamera(colorCamera);
+                camera_set->add_camera(colorCamera);
 
-                auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
+                    data::CameraSet::s_ADDED_CAMERA_SIG
                 );
                 sig->asyncEmit(colorCamera);
             }
             else
             {
-                depthCamera = cameraSeries->getCamera(0);
-                colorCamera = cameraSeries->getCamera(1);
+                depthCamera = camera_set->get_camera(0);
+                colorCamera = camera_set->get_camera(1);
             }
 
             if(!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
@@ -368,10 +368,10 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
                     }
                 }
 
-                cameraSeries->setExtrinsicMatrix(1, matrix);
+                camera_set->set_extrinsic_matrix(1, matrix);
 
-                auto sig = cameraSeries->signal<data::CameraSeries::ModifiedSignalType>(
-                    data::CameraSeries::s_MODIFIED_SIG
+                auto sig = camera_set->signal<data::CameraSet::ModifiedSignalType>(
+                    data::CameraSet::s_MODIFIED_SIG
                 );
                 sig->asyncEmit();
             }
@@ -411,7 +411,7 @@ void SScan::startCamera()
     }
 
     {
-        const auto cameraSeries = m_cameraSeries.lock();
+        const auto camera_set = m_camera_set.lock();
 
         const auto setPlaybackMode =
             [&](data::Camera::csptr camera)
@@ -445,20 +445,20 @@ void SScan::startCamera()
                 }
             };
 
-        if(cameraSeries)
+        if(camera_set)
         {
             // Extract the first camera (source should be the same).
-            data::mt::locked_ptr<data::Camera> locked(cameraSeries->getCamera(0));
+            data::mt::locked_ptr<data::Camera> locked(camera_set->get_camera(0));
             setPlaybackMode(locked.get_shared());
         }
-        else // No cameraSeries (called by SGrabberProxy for ex.).
+        else // No camera_set (called by SGrabberProxy for ex.).
         {
             const auto locked = m_camera.lock();
             setPlaybackMode(locked.get_shared());
 
             SIGHT_ASSERT(
                 "Camera should not be null, check if  '"
-                << s_CAMERA_SERIES_INOUT
+                << s_CAMERA_SET_INOUT
                 << "' or '"
                 << s_CAMERA_INPUT
                 << "' is present.",

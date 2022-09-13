@@ -34,10 +34,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/spyLog.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <gdcmSurfaceWriter.h>
 
@@ -80,12 +77,12 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     SPTR(gdcm::SurfaceWriter) writer = std::make_shared<gdcm::SurfaceWriter>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series->getStudy());
+    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
+    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
     io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
     // Use Image as frame of reference
     io::dicom::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_imageInstance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
+    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
     io::dicom::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Load Segmented Property Registry

@@ -24,7 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <ui/base/IAction.hpp>
@@ -35,21 +35,21 @@ namespace sight::module::ui::base::series
 {
 
 /**
- * @brief   This service is used to merge selected series with a SeriesDB.
- *          All the series in the vector are pushed in the destination SeriesDB.
+ * @brief   This service is used to merge selected series with a SeriesSet.
+ *          All the series in the vector are pushed in the destination SeriesSet.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="sight::module::ui::base::series::SPushSelection">
             <in key="selectedSeries" uid="..." />
-            <inout key="seriesDB" uid="..." />
+            <inout key="seriesSet" uid="..." />
        </service>
    @endcode
  * @subsection Input Input:
  * - \b selectedSeries [sight::data::Vector]: Vector containing the selected series to merge.
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the series.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet where to put the series.
  */
 class MODULE_UI_BASE_CLASS_API SPushSelection : public sight::ui::base::IAction
 {
@@ -82,7 +82,7 @@ protected:
 
 private:
 
-    data::ptr<data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    data::ptr<data::SeriesSet, sight::data::Access::inout> m_series_set {this, "seriesSet"};
     data::ptr<data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
 };
 

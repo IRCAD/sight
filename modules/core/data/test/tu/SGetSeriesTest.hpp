@@ -32,8 +32,8 @@ namespace sight::module::data::ut
 class SGetSeriesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SGetSeriesTest);
-CPPUNIT_TEST(extractsSeriesFromSeriesDB);
-CPPUNIT_TEST(invalidSeriesDB);
+CPPUNIT_TEST(extractsSeriesFromSeriesSet);
+CPPUNIT_TEST(invalidSeriesSet);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,8 +42,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void extractsSeriesFromSeriesDB();
-    static void invalidSeriesDB();
+    static void extractsSeriesFromSeriesSet();
+    static void invalidSeriesSet();
 };
 
 } // namespace sight::module::data::ut

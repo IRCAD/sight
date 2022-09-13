@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
@@ -58,7 +58,7 @@ namespace sight::module::filter::vision
         </service>
  * @endcode
  * @subsection Input Input
- * - \b calibration (mandatory) [data::CameraSeries]: calibration rgbd sensor.
+ * - \b calibration (mandatory) [data::CameraSet]: calibration rgbd sensor.
  * - \b depthMap (mandatory) [data::Image]: Grayscale image containing a depth map.
  * - \b rgbMap   (optional)  [data::Image]: RGB image corresponding to the depth map. If present, the RGB
  *   map must have the same dimensions as the depth map.
@@ -153,7 +153,7 @@ private:
     /// Max value of depth used to build pointcloud.
     std::uint16_t m_maxDepth = UINT16_MAX;
 
-    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::in> m_calibration {this, "calibration"};
+    sight::data::ptr<sight::data::CameraSet, sight::data::Access::in> m_calibration {this, "calibration"};
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_depthMap {this, "depthMap"};
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_rgbMap {this, "rgbMap"};
     sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_pointCloud {this, "pointCloud"};

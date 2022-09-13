@@ -2,16 +2,16 @@
 
 This is one of the most important library in _Sight_. It allows to build, to configure, and to launch _activities_:
 
-- **Builder**: contains the base interface for the data ActivitySeries builder.
-- **Extension**: 
+- **Builder**: contains the base interface for the data Activity builder.
+- **Extension**:
 - **Validator**: contains the classes defining validators checking properties and requirements.
 
 ## Classes
 
 ### Activity builders
 
-- **ActivitySeries**: defines the default builder for the data ActivitySeries.
-- **ActivitySeriesInitData**: defines an activity builder which instantiates a new requirement if minOccurs and maxOccurs are set to 0.
+- **Activity**: defines the default builder for the data Activity.
+- **ActivityInitData**: defines an activity builder which instantiates a new requirement if minOccurs and maxOccurs are set to 0.
 
 ### Activity interfaces
 
@@ -42,5 +42,5 @@ target_link_libraries(myTarget <PUBLIC|PRIVATE> activity)
 
 ### XML
 
-Please read the dedicated [Activities](https://sight.pages.ircad.fr/sight-doc/SAD/src/Activities.html) page on 
+Please read the dedicated [Activities](https://sight.pages.ircad.fr/sight-doc/SAD/src/Activities.html) page on
 [Sight documentation](https://sight.pages.ircad.fr/sight-doc).

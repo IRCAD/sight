@@ -50,40 +50,37 @@ ResectionDB::ResectionDB(data::Object::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-ResectionDB::~ResectionDB()
-= default;
-
-//------------------------------------------------------------------------------
-
-void ResectionDB::shallowCopy(const Object::csptr& _source)
+void ResectionDB::shallowCopy(const Object::csptr& source)
 {
-    ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_safeResection = other->m_safeResection;
     m_resections    = other->m_resections;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void ResectionDB::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_safeResection = data::Object::copy(other->m_safeResection, cache);
 
@@ -92,6 +89,8 @@ void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
     {
         m_resections.push_back(data::Object::copy(resection, cache));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -119,7 +118,7 @@ bool ResectionDB::operator==(const ResectionDB& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

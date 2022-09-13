@@ -23,9 +23,6 @@
 #include "SeriesTest.hpp"
 
 #include <data/DicomSeries.hpp>
-#include <data/Equipment.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -103,39 +100,33 @@ void SeriesTest::testSeries()
     io::http::helper::Series::DicomSeriesContainer seriesVector =
         io::http::helper::Series::toFwMedData(m_json);
     CPPUNIT_ASSERT(seriesVector.size() == 1);
-    data::Series::sptr series = seriesVector[0];
+    const auto& series = seriesVector[0];
     CPPUNIT_ASSERT(series);
 
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series);
     CPPUNIT_ASSERT(dicomSeries);
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getInstanceUID(), seriesInstanceUID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getDate(), seriesDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getTime(), seriesTime.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getDescription(), seriesDescription.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesInstanceUID(), seriesInstanceUID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesDate(), seriesDate.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesTime(), seriesTime.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesDescription(), seriesDescription.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getModality(), modality.toStdString());
     CPPUNIT_ASSERT_EQUAL(
         dicomSeries->numInstances(),
         static_cast<std::size_t>(numberOfSeriesRelatedInstances.toULong())
     );
 
-    data::Patient::sptr patient = series->getPatient();
-    CPPUNIT_ASSERT(patient);
-    CPPUNIT_ASSERT_EQUAL(patient->getName(), patientName.toStdString());
-    CPPUNIT_ASSERT_EQUAL(patient->getPatientId(), patientID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(patient->getBirthdate(), patientBirthDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(patient->getSex(), patientSex.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getPatientName(), patientName.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getPatientID(), patientID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getPatientBirthDate(), patientBirthDate.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getPatientSex(), patientSex.toStdString());
 
-    data::Study::sptr study = series->getStudy();
-    CPPUNIT_ASSERT(study);
-    CPPUNIT_ASSERT_EQUAL(study->getInstanceUID(), studyInstanceUID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(study->getDate(), studyDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(study->getTime(), studyTime.toStdString());
-    CPPUNIT_ASSERT_EQUAL(study->getDescription(), studyDescription.toStdString());
-    CPPUNIT_ASSERT_EQUAL(study->getPatientAge(), patientAge.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getStudyInstanceUID(), studyInstanceUID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getStudyDate(), studyDate.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getStudyTime(), studyTime.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getStudyDescription(), studyDescription.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getPatientAge(), patientAge.toStdString());
 
-    data::Equipment::sptr equipment = series->getEquipment();
-    CPPUNIT_ASSERT(equipment);
-    CPPUNIT_ASSERT_EQUAL(equipment->getInstitutionName(), institutionName.toStdString());
+    CPPUNIT_ASSERT_EQUAL(series->getInstitutionName(), institutionName.toStdString());
 
     io::http::helper::Series::InstanceUIDContainer instances =
         io::http::helper::Series::toSeriesInstanceUIDContainer(seriesVector);

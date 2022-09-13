@@ -27,7 +27,6 @@
 #include <core/tools/System.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/helper/SeriesDB.hpp>
 
 #include <io/http/exceptions/Base.hpp>
 #include <io/http/helper/Series.hpp>
@@ -92,8 +91,8 @@ void SSeriesPuller::configuring()
 
 void SSeriesPuller::starting()
 {
-    // Create temporary SeriesDB
-    m_tempSeriesDB = data::SeriesDB::New();
+    // Create temporary SeriesSet
+    m_tmp_series_set = data::SeriesSet::New();
 
     // Create reader
     m_dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
@@ -101,7 +100,7 @@ void SSeriesPuller::starting()
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::SSeriesPuller.",
         m_dicomReader
     );
-    m_dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
+    m_dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
 
     if(!m_dicomReaderSrvConfig.empty())
     {
@@ -216,11 +215,11 @@ void SSeriesPuller::pullSeries()
                && std::find(
                    m_localSeries.begin(),
                    m_localSeries.end(),
-                   series->getInstanceUID()
+                   series->getSeriesInstanceUID()
                ) == m_localSeries.end())
             {
                 // Add series in the pulling series map
-                m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
+                m_pullingDicomSeriesMap[series->getSeriesInstanceUID()] = series;
 
                 pullSeriesVector.push_back(series);
                 m_instanceCount += series->numInstances();
@@ -344,18 +343,17 @@ void SSeriesPuller::pullSeries()
 
 void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 {
-    const auto destinationSeriesDB = m_seriesDB.lock();
+    const auto dest_series_set = m_series_set.lock();
 
-    // Read only series that are not in the SeriesDB
+    const auto scoped_emitter = dest_series_set->scoped_emit();
+
+    // Read only series that are not in the SeriesSet
     const InstanceUIDContainerType& alreadyLoadedSeries =
-        sight::io::http::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
+        sight::io::http::helper::Series::toSeriesInstanceUIDContainer(dest_series_set->get_content());
 
-    // Create temporary series helper
-    data::helper::SeriesDB tempSDBhelper(*m_tempSeriesDB);
-
-    for(const data::Series::sptr& series : selectedSeries)
+    for(const auto& series : selectedSeries)
     {
-        const std::string& selectedSeriesUID = series->getInstanceUID();
+        const std::string& selectedSeriesUID = series->getSeriesInstanceUID();
 
         // Add the series to the local series vector
         if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
@@ -365,21 +363,19 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
         // Check if the series is loaded
         if(std::find(
-               alreadyLoadedSeries.begin(),
-               alreadyLoadedSeries.end(),
+               alreadyLoadedSeries.cbegin(),
+               alreadyLoadedSeries.cend(),
                selectedSeriesUID
-           ) == alreadyLoadedSeries.end())
+           ) == alreadyLoadedSeries.cend())
         {
             // Clear temporary series
-            tempSDBhelper.clear();
+            m_tmp_series_set->clear();
 
             m_dicomReader->setFolder(m_path);
             m_dicomReader->update();
 
             // Merge series
-            data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
-            sDBhelper.merge(m_tempSeriesDB);
-            sDBhelper.notify();
+            std::copy(m_tmp_series_set->cbegin(), m_tmp_series_set->cend(), sight::data::inserter(*dest_series_set));
         }
     }
 }

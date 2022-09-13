@@ -66,46 +66,54 @@ void SVTKMesherTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SVTKMesherTest::generateMesh()
+inline static std::pair<sight::service::IService::sptr, sight::data::ImageSeries::sptr> generateMeshService()
 {
     // Create service
     sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
     CPPUNIT_ASSERT(generateMeshService);
-    data::Image::sptr image = data::Image::New();
-    using Type = std::int16_t;
-    const data::Image::Size SIZE       = {10, 20, 90};
+
+    auto imageSeries    = sight::data::ImageSeries::New();
+    const auto dumpLock = imageSeries->dump_lock();
+
+    const data::Image::Size size       = {10, 20, 90};
     const data::Image::Spacing spacing = {1., 1., 1.};
     const data::Image::Origin origin   = {0., 0., 0.};
+
     utestData::generator::Image::generateImage(
-        image,
-        SIZE,
+        imageSeries,
+        size,
         spacing,
         origin,
-        core::Type::get<Type>(),
+        core::Type::get<std::int16_t>(),
         data::Image::PixelFormat::GRAY_SCALE
     );
 
-    [[maybe_unused]] const auto dumpLock = image->dump_lock();
-    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
+    for(std::size_t x = 0 ; x < size[0] ; ++x)
     {
-        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
+        for(std::size_t y = 0 ; y < size[1] ; ++y)
         {
-            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
+            for(std::size_t z = 0 ; z < size[2] ; ++z)
             {
-                const auto index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
+                const auto index = x + y * size[0] + z * size[0] * size[1];
 
                 if(x < 7 && y < 7 && z < 7)
                 {
                     std::int16_t val = 0;
 
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
-                    CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
+                    imageSeries->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
+                    CPPUNIT_ASSERT_EQUAL(
+                        val,
+                        *reinterpret_cast<const std::int16_t*>(imageSeries->getPixel(index))
+                    );
                 }
                 else
                 {
                     std::int16_t threshold = 255;
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&threshold));
-                    CPPUNIT_ASSERT_EQUAL(threshold, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
+                    imageSeries->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&threshold));
+                    CPPUNIT_ASSERT_EQUAL(
+                        threshold,
+                        *reinterpret_cast<const std::int16_t*>(imageSeries->getPixel(index))
+                    );
                 }
             }
         }
@@ -113,33 +121,41 @@ void SVTKMesherTest::generateMesh()
 
     const std::filesystem::path path    = core::tools::System::getTemporaryFolder() / "meshTest.vtk";
     io::vtk::ImageWriter::sptr myWriter = io::vtk::ImageWriter::New();
-    myWriter->setObject(image);
+    myWriter->setObject(imageSeries);
     myWriter->setFile(path);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-    // create an empty image series
-    sight::data::ImageSeries::sptr imageSeries = sight::data::ImageSeries::New();
-    imageSeries->setImage(image);
+
+    return {generateMeshService, imageSeries};
+}
+
+//------------------------------------------------------------------------------
+
+void SVTKMesherTest::generateMesh()
+{
+    // Create service
+    auto [mesherService, imageSeries] = generateMeshService();
+
     service::IService::ConfigType config;
     std::stringstream config_string;
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"50\" threshold=\"255\"/>"
-    ;
+       "<config percentReduction=\"50\" threshold=\"255\"/>";
+
     boost::property_tree::read_xml(config_string, config);
-    generateMeshService->setConfiguration(config);
-    generateMeshService->setInput(imageSeries, "imageSeries");
-    generateMeshService->setObjectId("modelSeries", "modelSeries");
-    generateMeshService->configure();
-    generateMeshService->start().wait();
-    generateMeshService->update().wait();
-    auto modelSeries          = generateMeshService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
+    mesherService->setConfiguration(config);
+    mesherService->setInput(imageSeries, "imageSeries");
+    mesherService->setObjectId("modelSeries", "modelSeries");
+    mesherService->configure();
+    mesherService->start().wait();
+    mesherService->update().wait();
+    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
     unsigned int numberPoints = 77;
     unsigned int numberCells  = 125;
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
-    generateMeshService->stop().wait();
-    sight::service::remove(generateMeshService);
+    mesherService->stop().wait();
+    sight::service::remove(mesherService);
 }
 
 //------------------------------------------------------------------------------
@@ -147,77 +163,29 @@ void SVTKMesherTest::generateMesh()
 void SVTKMesherTest::generateMeshWithMinReduction()
 {
     // Create service
-    sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
-    CPPUNIT_ASSERT(generateMeshService);
-    using Type = std::int16_t;
-    data::Image::sptr image            = data::Image::New();
-    const data::Image::Size SIZE       = {10, 20, 90};
-    const data::Image::Spacing spacing = {1., 1., 1.};
-    const data::Image::Origin origin   = {0., 0., 0.};
-    utestData::generator::Image::generateImage(
-        image,
-        SIZE,
-        spacing,
-        origin,
-        core::Type::get<Type>(),
-        data::Image::PixelFormat::GRAY_SCALE
-    );
+    auto [mesherService, imageSeries] = generateMeshService();
 
-    [[maybe_unused]] const auto dumpLock = image->dump_lock();
-    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
-    {
-        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
-        {
-            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
-            {
-                const auto index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
-
-                if(x < 7 && y < 7 && z < 7)
-                {
-                    std::int16_t val = 0;
-
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
-                    CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
-                }
-                else
-                {
-                    std::int16_t threshold = 255;
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&threshold));
-                    CPPUNIT_ASSERT_EQUAL(threshold, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
-                }
-            }
-        }
-    }
-
-    const std::filesystem::path path    = core::tools::System::getTemporaryFolder() / "meshTest.vtk";
-    io::vtk::ImageWriter::sptr myWriter = io::vtk::ImageWriter::New();
-    myWriter->setObject(image);
-    myWriter->setFile(path);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-    // create an empty image series
-    sight::data::ImageSeries::sptr imageSeries = sight::data::ImageSeries::New();
-    imageSeries->setImage(image);
     service::IService::ConfigType config;
     std::stringstream config_string;
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"0\" threshold=\"255\"/>"
-    ;
+       "<config percentReduction=\"0\" threshold=\"255\"/>";
+
     boost::property_tree::read_xml(config_string, config);
-    generateMeshService->setConfiguration(config);
-    generateMeshService->setInput(imageSeries, "imageSeries");
-    generateMeshService->setObjectId("modelSeries", "modelSeries");
-    generateMeshService->configure();
-    generateMeshService->start().wait();
-    generateMeshService->update().wait();
-    auto modelSeries          = generateMeshService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
+    mesherService->setConfiguration(config);
+    mesherService->setInput(imageSeries, "imageSeries");
+    mesherService->setObjectId("modelSeries", "modelSeries");
+    mesherService->configure();
+    mesherService->start().wait();
+    mesherService->update().wait();
+    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
     unsigned int numberPoints = 147;
     unsigned int numberCells  = 253;
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
-    generateMeshService->stop().wait();
-    sight::service::remove(generateMeshService);
+    mesherService->stop().wait();
+    sight::service::remove(mesherService);
 }
 
 //------------------------------------------------------------------------------
@@ -225,78 +193,29 @@ void SVTKMesherTest::generateMeshWithMinReduction()
 void SVTKMesherTest::noMeshGenerated()
 {
     // Create service
-    sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
-    CPPUNIT_ASSERT(generateMeshService);
-    using Type = std::int16_t;
-    data::Image::sptr image = data::Image::New();
+    auto [mesherService, imageSeries] = generateMeshService();
 
-    const data::Image::Size SIZE       = {10, 20, 90};
-    const data::Image::Spacing spacing = {1., 1., 1.};
-    const data::Image::Origin origin   = {0., 0., 0.};
-    utestData::generator::Image::generateImage(
-        image,
-        SIZE,
-        spacing,
-        origin,
-        core::Type::get<Type>(),
-        data::Image::PixelFormat::GRAY_SCALE
-    );
-
-    [[maybe_unused]] const auto dumpLock = image->dump_lock();
-    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
-    {
-        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
-        {
-            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
-            {
-                const auto index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
-
-                if(x < 7 && y < 7 && z < 7)
-                {
-                    std::int16_t val = 0;
-
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
-                    CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
-                }
-                else
-                {
-                    std::int16_t threshold = 255;
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&threshold));
-                    CPPUNIT_ASSERT_EQUAL(threshold, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
-                }
-            }
-        }
-    }
-
-    const std::filesystem::path path    = core::tools::System::getTemporaryFolder() / "meshTest.vtk";
-    io::vtk::ImageWriter::sptr myWriter = io::vtk::ImageWriter::New();
-    myWriter->setObject(image);
-    myWriter->setFile(path);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-    // create an empty image series
-    sight::data::ImageSeries::sptr imageSeries = sight::data::ImageSeries::New();
-    imageSeries->setImage(image);
     service::IService::ConfigType config;
     std::stringstream config_string;
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"90\" threshold=\"30\"/>"
-    ;
+       "<config percentReduction=\"90\" threshold=\"30\"/>";
+
     boost::property_tree::read_xml(config_string, config);
-    generateMeshService->setConfiguration(config);
-    generateMeshService->setInput(imageSeries, "imageSeries");
-    generateMeshService->setObjectId("modelSeries", "modelSeries");
-    generateMeshService->configure();
-    generateMeshService->start().wait();
-    generateMeshService->update().wait();
-    auto modelSeries          = generateMeshService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
+    mesherService->setConfiguration(config);
+    mesherService->setInput(imageSeries, "imageSeries");
+    mesherService->setObjectId("modelSeries", "modelSeries");
+    mesherService->configure();
+    mesherService->start().wait();
+    mesherService->update().wait();
+    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
     unsigned int numberPoints = 0;
     unsigned int numberCells  = 0;
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
-    generateMeshService->stop().wait();
-    sight::service::remove(generateMeshService);
+    mesherService->stop().wait();
+    sight::service::remove(mesherService);
 }
 
 //------------------------------------------------------------------------------
@@ -304,58 +223,7 @@ void SVTKMesherTest::noMeshGenerated()
 void SVTKMesherTest::updateThresholdTest()
 {
     // Create service
-    sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
-    CPPUNIT_ASSERT(generateMeshService);
-
-    //generate Image
-    using Type = std::int16_t;
-    data::Image::sptr image            = data::Image::New();
-    const data::Image::Size SIZE       = {10, 20, 90};
-    const data::Image::Spacing spacing = {1., 1., 1.};
-    const data::Image::Origin origin   = {0., 0., 0.};
-    utestData::generator::Image::generateImage(
-        image,
-        SIZE,
-        spacing,
-        origin,
-        core::Type::get<Type>(),
-        data::Image::PixelFormat::GRAY_SCALE
-    );
-
-    [[maybe_unused]] const auto dumpLock = image->dump_lock();
-    for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
-    {
-        for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
-        {
-            for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
-            {
-                const auto index = x + y * SIZE[0] + z * SIZE[0] * SIZE[1];
-
-                if(x < 7 && y < 7 && z < 7)
-                {
-                    std::int16_t val = 0;
-
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
-                    CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
-                }
-                else
-                {
-                    std::int16_t threshold = 255;
-                    image->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&threshold));
-                    CPPUNIT_ASSERT_EQUAL(threshold, *reinterpret_cast<const std::int16_t*>(image->getPixel(index)));
-                }
-            }
-        }
-    }
-
-    const std::filesystem::path path    = core::tools::System::getTemporaryFolder() / "meshTest.vtk";
-    io::vtk::ImageWriter::sptr myWriter = io::vtk::ImageWriter::New();
-    myWriter->setObject(image);
-    myWriter->setFile(path);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-    // create an empty image series
-    sight::data::ImageSeries::sptr imageSeries = sight::data::ImageSeries::New();
-    imageSeries->setImage(image);
+    auto [mesherService, imageSeries] = generateMeshService();
     service::IService::ConfigType config;
     std::stringstream config_string;
 
@@ -363,27 +231,27 @@ void SVTKMesherTest::updateThresholdTest()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"0\" threshold=\"255\"/>"
-    ;
+       "<config percentReduction=\"0\" threshold=\"255\"/>";
+
     boost::property_tree::read_xml(config_string, config);
-    generateMeshService->setConfiguration(config);
-    generateMeshService->setInput(imageSeries, "imageSeries");
-    generateMeshService->setObjectId("modelSeries", "modelSeries");
-    generateMeshService->configure();
+    mesherService->setConfiguration(config);
+    mesherService->setInput(imageSeries, "imageSeries");
+    mesherService->setObjectId("modelSeries", "modelSeries");
+    mesherService->configure();
 
     //threshold is modified by the slot updateThreshold
     const int newThreshold = 50;
-    generateMeshService->slot("updateThreshold")->run(newThreshold);
+    mesherService->slot("updateThreshold")->run(newThreshold);
 
-    generateMeshService->start().wait();
-    generateMeshService->update().wait();
-    auto modelSeries          = generateMeshService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
+    mesherService->start().wait();
+    mesherService->update().wait();
+    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
     unsigned int numberPoints = 0;
     unsigned int numberCells  = 0;
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
-    generateMeshService->stop().wait();
-    sight::service::remove(generateMeshService);
+    mesherService->stop().wait();
+    sight::service::remove(mesherService);
 }
 
 } // namespace sight::module::filter::mesh::ut

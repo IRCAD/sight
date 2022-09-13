@@ -29,8 +29,6 @@
 #include <core/jobs/Observer.hpp>
 #include <core/tools/System.hpp>
 
-#include <data/SeriesDB.hpp>
-
 #include <boost/foreach.hpp>
 
 namespace sight::io::dicom::helper
@@ -40,7 +38,7 @@ DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
     m_job(core::jobs::Aggregator::New("Anonymization process"))
 {
     m_writer = io::dicom::helper::DicomSeriesWriter::New();
-    m_reader = io::dicom::reader::SeriesDB::New();
+    m_reader = io::dicom::reader::SeriesSet::New();
 }
 
 //------------------------------------------------------------------------------
@@ -107,14 +105,13 @@ void DicomSeriesAnonymizer::anonymize(
     // However, this reader also uses an aggregator - we discovered that an aggregator of aggregator exits
     // immediately, thus its state is FINISHED when we try to start the task...
     // Read anonymized series
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-    m_reader->setObject(seriesDB);
+    auto series_set = data::SeriesSet::New();
+    m_reader->setObject(series_set);
     m_reader->setFolder(destPath);
     m_reader->readDicomSeries();
 
     // Update DicomSeries
-    data::DicomSeries::sptr anonymizedSeries =
-        data::DicomSeries::dynamicCast(seriesDB->getContainer().front());
+    auto anonymizedSeries = data::DicomSeries::dynamicCast(series_set->front());
     destination->deepCopy(anonymizedSeries);
 }
 

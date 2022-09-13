@@ -57,10 +57,7 @@ public:
     /**
      * @brief destructor
      */
-    DATA_API ~ROITraits() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~ROITraits() noexcept override = default;
 
     /**
      * @{
@@ -101,10 +98,19 @@ public:
     DATA_API bool operator!=(const ROITraits& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 private:
 

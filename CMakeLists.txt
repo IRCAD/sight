@@ -94,14 +94,15 @@ endif()
 
 # Use clang-tidy linter
 option(SIGHT_ENABLE_CLANG_TIDY "Enable Clang Tidy checks" OFF)
-mark_as_advanced(SIGHT_TESTS_FILTER)
+mark_as_advanced(SIGHT_ENABLE_CLANG_TIDY)
 
 if(SIGHT_ENABLE_CLANG_TIDY)
     # cmake-lint: disable=C0301
-    find_program(CLANG_TIDY NAMES "clang-tidy" "clang-tidy-10" "clang-tidy-11" "clang-tidy-12" "clang-tidy-13" REQUIRED)
-    set(CMAKE_CXX_CLANG_TIDY
-        ${CLANG_TIDY};--header-filter=.*;--checks=*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-cppcoreguidelines-macro-usage,-bugprone-macro-parentheses;--use-color;--export-fixes=.clang-tidy-fixes.yaml
-    )
+    find_program(CLANG_TIDY NAMES "clang-tidy" "clang-tidy-14" REQUIRED)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY};--use-color;--export-fixes=.clang-tidy-fixes.yaml)
+
+    # Also generate compile_commands.json which is useful when launching clang-tidy by "hand"
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules

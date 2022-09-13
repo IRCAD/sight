@@ -46,13 +46,7 @@ public:
     IO_DIMSE_API PacsConfiguration(sight::data::Object::Key key);
 
     /// Destructor
-    IO_DIMSE_API ~PacsConfiguration() override;
-
-    /// Defines shallow copy
-    IO_DIMSE_API void shallowCopy(const sight::data::Object::csptr& _source) override;
-
-    /// Defines deep copy
-    IO_DIMSE_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    IO_DIMSE_API ~PacsConfiguration() noexcept override = default;
 
     /**
      * @brief Retrieve Method
@@ -189,6 +183,11 @@ public:
 /**  @} */
 
 protected:
+
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    IO_DIMSE_API void shallowCopy(const sight::data::Object::csptr& source) override;
 
     /// Local application title
     std::string m_localApplicationTitle;

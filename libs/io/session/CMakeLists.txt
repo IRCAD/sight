@@ -5,6 +5,9 @@ sight_add_target(
     OBJECT_LIBRARY ON
 )
 
+find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
+target_link_libraries(io_session_obj PRIVATE gdcmCommon gdcmMSFF)
+
 target_link_libraries(io_session_obj PUBLIC io_base io_zip io_vtk io_dicom)
 
 if(SIGHT_BUILD_TESTS)

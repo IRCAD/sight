@@ -41,7 +41,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto matrix = Helper::safeCast<data::Matrix4>(object);
+    const auto matrix = Helper::safe_cast<data::Matrix4>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Matrix4>(tree, 1);
@@ -64,7 +64,7 @@ inline static data::Matrix4::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto matrix = Helper::safeCast<data::Matrix4>(object);
+    auto matrix = Helper::cast_or_create<data::Matrix4>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Matrix4>(tree, 0, 1);

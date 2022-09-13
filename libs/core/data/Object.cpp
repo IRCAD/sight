@@ -51,11 +51,6 @@ Object::Object()
 
 //------------------------------------------------------------------------------
 
-Object::~Object()
-= default;
-
-//------------------------------------------------------------------------------
-
 data::Object::sptr Object::getField(const FieldNameType& name, data::Object::sptr defaultValue) const
 {
     data::Object::sptr object = defaultValue;
@@ -125,87 +120,74 @@ void Object::removeField(const FieldNameType& name)
     }
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void Object::fieldShallowCopy(const data::Object::csptr& source)
+void Object::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    this->setFields(source->getFields());
-}
+    SIGHT_ASSERT("Cache shall not be null !", cache);
 
-//-----------------------------------------------------------------------------
+    // Copy members
+    m_description = source->m_description;
 
-void Object::deepCopy(const data::Object::csptr& source)
-{
-    DeepCopyCacheType cache;
-    return this->cachedDeepCopy(source, cache);
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::fieldDeepCopy(const data::Object::csptr& source)
-{
-    DeepCopyCacheType cache;
-    return this->fieldDeepCopy(source, cache);
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::fieldDeepCopy(const data::Object::csptr& source, DeepCopyCacheType& cache)
-{
+    // Deep copy fields
     m_fields.clear();
-    const data::Object::FieldMapType& sourceFields = source->getFields();
-    for(const data::Object::FieldMapType::value_type& elt : sourceFields)
+
+    for(const auto& [key, value] : source->m_fields)
     {
-        this->setField(elt.first, data::Object::copy(elt.second, cache));
+        m_fields.insert_or_assign(key, Object::copy(value, cache));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::shallowCopy(const data::Object::csptr& source)
+void Object::shallowCopy(const Object::csptr& source)
 {
-    SIGHT_NOT_USED(source);
-    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
+    // Copy members
+    m_description = source->m_description;
+
+    // Shallow copy fields
+    m_fields = source->m_fields;
 }
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr Object::copy(const data::Object::csptr& source)
+data::Object::sptr Object::copy(const data::Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    DeepCopyCacheType cache;
-    return Object::copy(source, cache);
-}
+    SIGHT_ASSERT("Cache shall not be null !", cache);
 
-//-----------------------------------------------------------------------------
-
-data::Object::sptr Object::copy(const data::Object::csptr& source, Object::DeepCopyCacheType& cache)
-{
-    data::Object::sptr obj;
-
-    if(source)
+    if(!source)
     {
-        auto cacheItem = cache.find(source);
-
-        if(cacheItem == cache.end())
-        {
-            obj = data::factory::New(source->getClassname());
-            SIGHT_ASSERT("Could not create object of type : " + source->getClassname(), obj);
-            cache.insert(DeepCopyCacheType::value_type(source, obj));
-            obj->cachedDeepCopy(source, cache);
-        }
-        else
-        {
-            obj = cacheItem->second;
-        }
+        return nullptr;
     }
 
-    return obj;
+    // Check if the object is already in the cache
+    if(const auto& it = cache->find(source); it != cache->cend())
+    {
+        return it->second;
+    }
+
+    // Not found in cache, we crete a new copy
+    auto object_copy = data::factory::New(source->getClassname());
+    SIGHT_ASSERT("Could not create object of type : " + source->getClassname(), object_copy);
+
+    // Add the object to the cache
+    cache->insert_or_assign(source, object_copy);
+
+    // Copy the object
+    object_copy->deepCopy(source, cache);
+
+    return object_copy;
 }
 
 //-----------------------------------------------------------------------------
 
 bool Object::operator==(const Object& other) const noexcept
 {
+    if(m_description != other.m_description)
+    {
+        return false;
+    }
+
     return core::tools::is_equal(m_fields, other.m_fields);
 }
 
@@ -214,13 +196,6 @@ bool Object::operator==(const Object& other) const noexcept
 bool Object::operator!=(const Object& other) const noexcept
 {
     return !(*this == other);
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::modify()
-{
-    ++m_lastModified;
 }
 
 } // namespace sight::data

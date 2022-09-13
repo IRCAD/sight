@@ -30,7 +30,4 @@ Exception::Exception(const std::string& message) noexcept :
 {
 }
 
-Exception::~Exception() noexcept =
-    default;
-
 } // namespace sight::data

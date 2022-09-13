@@ -63,11 +63,6 @@ Camera::Camera(data::Object::Key /*unused*/)
     newSignal<IdModifiedSignalType>(s_ID_MODIFIED_SIG);
 }
 
-// -------------------------------------------------------------------------
-
-Camera::~Camera() noexcept =
-    default;
-
 //------------------------------------------------------------------------------
 
 using PixelFormatTranslatorType = boost::bimaps::bimap<Camera::PixelFormat, std::string>;
@@ -140,18 +135,17 @@ std::string Camera::getPixelFormatName(PixelFormat format)
 
 //------------------------------------------------------------------------------
 
-void Camera::shallowCopy(const data::Object::csptr& _source)
+void Camera::shallowCopy(const Object::csptr& source)
 {
-    Camera::csptr other = Camera::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->fieldShallowCopy(_source);
 
     m_width                 = other->m_width;
     m_height                = other->m_height;
@@ -159,7 +153,6 @@ void Camera::shallowCopy(const data::Object::csptr& _source)
     m_distortionCoefficient = other->m_distortionCoefficient;
     m_skew                  = other->m_skew;
     m_isCalibrated          = other->m_isCalibrated;
-    m_description           = other->m_description;
     m_cameraID              = other->m_cameraID;
     m_maxFrameRate          = other->m_maxFrameRate;
     m_pixelFormat           = other->m_pixelFormat;
@@ -167,45 +160,39 @@ void Camera::shallowCopy(const data::Object::csptr& _source)
     m_streamUrl             = other->m_streamUrl;
     m_cameraSource          = other->m_cameraSource;
     m_scale                 = other->m_scale;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Camera::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void Camera::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Camera::csptr other = Camera::dynamicConstCast(source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(source, cache);
 
-    m_intrinsic[0] = other->m_intrinsic[0];
-    m_intrinsic[1] = other->m_intrinsic[1];
-    m_intrinsic[2] = other->m_intrinsic[2];
-    m_intrinsic[3] = other->m_intrinsic[3];
+    m_width                 = other->m_width;
+    m_height                = other->m_height;
+    m_intrinsic             = other->m_intrinsic;
+    m_distortionCoefficient = other->m_distortionCoefficient;
+    m_skew                  = other->m_skew;
+    m_isCalibrated          = other->m_isCalibrated;
+    m_cameraID              = other->m_cameraID;
+    m_maxFrameRate          = other->m_maxFrameRate;
+    m_pixelFormat           = other->m_pixelFormat;
+    m_videoFile             = other->m_videoFile;
+    m_streamUrl             = other->m_streamUrl;
+    m_cameraSource          = other->m_cameraSource;
+    m_scale                 = other->m_scale;
 
-    m_distortionCoefficient[0] = other->m_distortionCoefficient[0];
-    m_distortionCoefficient[1] = other->m_distortionCoefficient[1];
-    m_distortionCoefficient[2] = other->m_distortionCoefficient[2];
-    m_distortionCoefficient[3] = other->m_distortionCoefficient[3];
-    m_distortionCoefficient[4] = other->m_distortionCoefficient[4];
-
-    m_skew         = other->m_skew;
-    m_width        = other->m_width;
-    m_height       = other->m_height;
-    m_isCalibrated = other->m_isCalibrated;
-    m_description  = other->m_description;
-    m_cameraID     = other->m_cameraID;
-    m_maxFrameRate = other->m_maxFrameRate;
-    m_pixelFormat  = other->m_pixelFormat;
-    m_videoFile    = other->m_videoFile;
-    m_streamUrl    = other->m_streamUrl;
-    m_cameraSource = other->m_cameraSource;
-    m_scale        = other->m_scale;
+    BaseClass::deepCopy(other, cache);
 }
 
 // -------------------------------------------------------------------------
@@ -229,7 +216,6 @@ bool Camera::operator==(const Camera& other) const noexcept
        || !core::tools::is_equal(m_distortionCoefficient, other.m_distortionCoefficient)
        || !core::tools::is_equal(m_skew, other.m_skew)
        || m_isCalibrated != other.m_isCalibrated
-       || m_description != other.m_description
        || m_cameraID != other.m_cameraID
        || !core::tools::is_equal(m_maxFrameRate, other.m_maxFrameRate)
        || m_pixelFormat != other.m_pixelFormat
@@ -242,7 +228,7 @@ bool Camera::operator==(const Camera& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

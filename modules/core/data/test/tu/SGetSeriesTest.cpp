@@ -22,7 +22,7 @@
 #include "SGetSeriesTest.hpp"
 
 #include <data/ModelSeries.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/base.hpp>
 
@@ -53,10 +53,10 @@ void SGetSeriesTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SGetSeriesTest::extractsSeriesFromSeriesDB()
+void SGetSeriesTest::extractsSeriesFromSeriesSet()
 {
     // Set up context before running a test.
-    auto series = sight::data::SeriesDB::New();
+    auto series_set = sight::data::SeriesSet::New();
 
     // Create service
     sight::service::IService::sptr getSeries = sight::service::add("sight::module::data::SGetSeries");
@@ -70,23 +70,23 @@ void SGetSeriesTest::extractsSeriesFromSeriesDB()
     sight::data::Series::sptr series5 = sight::data::ModelSeries::New();
     sight::data::Series::sptr series6 = sight::data::ModelSeries::New();
 
-    CPPUNIT_ASSERT(series->empty());
+    CPPUNIT_ASSERT(series_set->empty());
 
-    series->getContainer().push_back(series1);
-    series->getContainer().push_back(series2);
-    series->getContainer().push_back(series3);
-    series->getContainer().push_back(series4);
-    series->getContainer().push_back(series5);
-    series->getContainer().push_back(series6);
-    CPPUNIT_ASSERT(!series->empty());
+    series_set->push_back(series1);
+    series_set->push_back(series2);
+    series_set->push_back(series3);
+    series_set->push_back(series4);
+    series_set->push_back(series5);
+    series_set->push_back(series6);
+    CPPUNIT_ASSERT(!series_set->empty());
     const std::string index_3ID = "serie4";
     const std::string index_0ID = "serie1";
     series4->setID(index_3ID);
     series1->setID(index_0ID);
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(6), series->size());
-    CPPUNIT_ASSERT_EQUAL(series1, (*series)[0]);
-    CPPUNIT_ASSERT_EQUAL(series2, (*series)[1]);
-    CPPUNIT_ASSERT_EQUAL(series3, (*series)[2]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(6), series_set->size());
+    CPPUNIT_ASSERT_EQUAL(series1, (*series_set)[0]);
+    CPPUNIT_ASSERT_EQUAL(series2, (*series_set)[1]);
+    CPPUNIT_ASSERT_EQUAL(series3, (*series_set)[2]);
     CPPUNIT_ASSERT_EQUAL(index_0ID, series1->getID());
     service::IService::ConfigType config;
     std::stringstream config_string;
@@ -97,7 +97,7 @@ void SGetSeriesTest::extractsSeriesFromSeriesDB()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
     getSeries->setConfiguration(config);
-    getSeries->setInput(series, "seriesDB");
+    getSeries->setInput(series_set, "seriesSet");
     getSeries->configure();
     getSeries->start().wait();
     getSeries->update().wait();
@@ -122,7 +122,7 @@ void SGetSeriesTest::extractsSeriesFromSeriesDB()
 
 //------------------------------------------------------------------------------
 
-void SGetSeriesTest::invalidSeriesDB()
+void SGetSeriesTest::invalidSeriesSet()
 {
     // Create service
     sight::service::IService::sptr getSeries = sight::service::add("sight::module::data::SGetSeries");
@@ -136,7 +136,7 @@ void SGetSeriesTest::invalidSeriesDB()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
     getSeries->setConfiguration(config);
-    getSeries->setInput(nullptr, "seriesDB");
+    getSeries->setInput(nullptr, "seriesSet");
     getSeries->start().wait();
     CPPUNIT_ASSERT_THROW(getSeries->update().get(), sight::data::Exception);
     getSeries->stop().wait();

@@ -42,7 +42,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto port = Helper::safeCast<data::Port>(object);
+    const auto port = Helper::safe_cast<data::Port>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Port>(tree, 1);
@@ -62,7 +62,7 @@ inline static data::Port::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto port = Helper::safeCast<data::Port>(object);
+    auto port = Helper::cast_or_create<data::Port>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Port>(tree, 0, 1);

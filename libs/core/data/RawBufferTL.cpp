@@ -46,22 +46,24 @@ RawBufferTL::RawBufferTL(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-RawBufferTL::~RawBufferTL()
-= default;
+void RawBufferTL::shallowCopy(const Object::csptr& /*source*/)
+{
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
+}
 
 //------------------------------------------------------------------------------
 
-void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*cache*/)
+void RawBufferTL::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source);
 
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
@@ -72,6 +74,8 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------

@@ -88,39 +88,40 @@ Point::sptr Point::New(const Point::sptr& p)
 
 //------------------------------------------------------------------------------
 
-Point::~Point()
-= default;
-
-//------------------------------------------------------------------------------
-
-void Point::shallowCopy(const Object::csptr& _source)
+void Point::shallowCopy(const Object::csptr& source)
 {
-    Point::csptr other = Point::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
+
     m_vCoord = other->m_vCoord;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Point::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Point::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Point::csptr other = Point::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
+
     m_vCoord = other->m_vCoord;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -155,7 +156,7 @@ bool Point::operator==(const Point& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

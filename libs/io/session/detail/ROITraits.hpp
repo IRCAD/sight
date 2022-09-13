@@ -46,7 +46,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto roiTraits = Helper::safeCast<data::ROITraits>(object);
+    const auto roiTraits = Helper::safe_cast<data::ROITraits>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::ROITraits>(tree, 1);
@@ -69,7 +69,7 @@ inline static data::ROITraits::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto roiTraits = Helper::safeCast<data::ROITraits>(object);
+    auto roiTraits = Helper::cast_or_create<data::ROITraits>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ROITraits>(tree, 0, 1);

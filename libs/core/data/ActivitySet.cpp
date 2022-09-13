@@ -43,42 +43,42 @@ void ActivitySet::shallowCopy(const Object::csptr& source)
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<ActivitySet::container_type>::shallowCopy(other);
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool ActivitySet::operator==(const ActivitySet& other) const noexcept
 {
-    return IContainer<ActivitySet::container_type>::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool ActivitySet::operator!=(const ActivitySet& other) const noexcept
 {
-    return IContainer<ActivitySet::container_type>::operator!=(other);
+    return BaseClass::operator!=(other);
 }
 
 //------------------------------------------------------------------------------
 
-void ActivitySet::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void ActivitySet::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     const auto& other = ActivitySet::dynamicCast(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<ActivitySet::container_type>::cachedDeepCopy(other, cache);
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

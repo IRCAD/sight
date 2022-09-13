@@ -43,7 +43,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto line = Helper::safeCast<data::Line>(object);
+    const auto line = Helper::safe_cast<data::Line>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Line>(tree, 1);
@@ -63,7 +63,7 @@ inline static data::Line::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto line = Helper::safeCast<data::Line>(object);
+    auto line = Helper::cast_or_create<data::Line>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Line>(tree, 0, 1);

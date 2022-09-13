@@ -26,7 +26,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
@@ -57,14 +57,14 @@ namespace sight::module::viz::scene3d::adaptor
     <service uid="cameraAdaptor" type="sight::module::viz::scene3d::adaptor::SCamera">
         <inout key="transform" uid="..." />
         <in key="calibration" uid="..." />
-        <in key="cameraSeries" uid="..." />
+        <in key="cameraSet" uid="..." />
         <config layer="..." />
     </service>
  * @endcode
  *
  * @subsection Input Input
  * - \b calibration [sight::data::Camera] (optional): camera containing calibration information.
- * - \b calibration [sight::data::CameraSeries] (optional): camera series containing calibration information.
+ * - \b calibration [sight::data::CameraSet] (optional): camera series containing calibration information.
  *
  * @subsection InOut InOut
  * - \b transform [sight::data::Matrix4]: transform matrix for the camera.
@@ -99,8 +99,8 @@ protected:
      *
      * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
-     * Connect data::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
-     * Connect data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
+     * Connect data::CameraSet::s_MODIFIED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT
+     * Connect data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT
      */
     MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -123,7 +123,7 @@ private:
 
     /// Computes a projection matrix for each camera in the series and set them in the layer.
     /// This matrix is equal to the intrinsic times the extrinsic matrix.
-    void calibrateCameraSeries(const data::CameraSeries& _cs);
+    void calibrateCameraSet(const data::CameraSet& _cs);
 
     /// Updates Transformation Matrix.
     void updateTF3D();
@@ -153,12 +153,12 @@ private:
     /// This avoids a self-call to updateTF3D() when we update() the camera
     bool m_skipUpdate {false};
 
-    static constexpr std::string_view s_CALIBRATION_INPUT   = "calibration";
-    static constexpr std::string_view s_CAMERA_SERIES_INPUT = "cameraSeries";
-    static constexpr std::string_view s_TRANSFORM_INOUT     = "transform";
+    static constexpr std::string_view s_CALIBRATION_INPUT = "calibration";
+    static constexpr std::string_view s_CAMERA_SET_INPUT  = "cameraSet";
+    static constexpr std::string_view s_TRANSFORM_INOUT   = "transform";
 
     data::ptr<data::Camera, data::Access::in> m_cameraCalibration {this, s_CALIBRATION_INPUT, true, true};
-    data::ptr<data::CameraSeries, data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT, true, true};
+    data::ptr<data::CameraSet, data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT, true, true};
     data::ptr<data::Matrix4, data::Access::inout> m_transform {this, s_TRANSFORM_INOUT, true};
 };
 

@@ -43,7 +43,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto node = Helper::safeCast<data::Node>(object);
+    const auto node = Helper::safe_cast<data::Node>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Node>(tree, 1);
@@ -74,7 +74,7 @@ inline static data::Node::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto node = Helper::safeCast<data::Node>(object);
+    auto node = Helper::cast_or_create<data::Node>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Node>(tree, 0, 1);

@@ -17,7 +17,7 @@
             <object uid="imageDepth" type="sight::data::Image" />
             <object uid="imageVideo" type="sight::data::Image" />
             <object uid="pointcloud" type="sight::data::Mesh" src="deferred" />
-            <object uid="RGBDCameraSeries" type="sight::data::CameraSeries" />
+            <object uid="RGBDCameraSet" type="sight::data::CameraSet" />
             <object uid="RGBCamera" type="sight::data::Camera" src="deferred" />
             <object uid="DCamera" type="sight::data::Camera" src="deferred" />
             <object uid="identity" type="sight::data::Matrix4" />
@@ -468,14 +468,14 @@
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="cameraSet" uid="RGBDCameraSet" />
                 <createCameraNumber>1</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Manages Sense camera configuration -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::SScan" >
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="cameraSet" uid="RGBDCameraSet" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <out key="pointcloud" uid="pointcloud" />
@@ -494,9 +494,9 @@
                 <framerate>0</framerate>
             </service>
 
-            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSet -->
              <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
-                 <inout key="cameraSeries" uid="RGBDCameraSeries" autoConnect="true" />
+                 <inout key="cameraSet" uid="RGBDCameraSet" autoConnect="true" />
                  <out group="camera" >
                      <key index="0" uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
                      <key index="1" uid="RGBCamera" /> <!-- Color Camera -->

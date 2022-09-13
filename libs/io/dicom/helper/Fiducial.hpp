@@ -31,7 +31,7 @@
 namespace sight::data
 {
 
-class SeriesDB;
+class SeriesSet;
 
 } // namespace sight::data
 
@@ -47,21 +47,21 @@ public:
 
     /**
      * @brief Return true if the series contains at least one image containing landmarks.
-     * @param[in] seriesDB SeriesDB where to look for landmarks
+     * @param[in] seriesSet SeriesSet where to look for landmarks
      */
-    IO_DICOM_API static bool containsLandmarks(const SPTR(data::SeriesDB)& seriesDB);
+    IO_DICOM_API static bool containsLandmarks(const SPTR(data::SeriesSet)& seriesSet);
 
     /**
      * @brief Return true if the series contains at least one image containing distances.
-     * @param[in] seriesDB SeriesDB where to look for distances
+     * @param[in] seriesSet SeriesSet where to look for distances
      */
-    IO_DICOM_API static bool containsDistances(const SPTR(data::SeriesDB)& seriesDB);
+    IO_DICOM_API static bool containsDistances(const SPTR(data::SeriesSet)& seriesSet);
 
     /**
      * @brief Return true if the series contains at least one image containing 3D distances.
-     * @param[in] seriesDB SeriesDB where to look for 3D distances
+     * @param[in] seriesSet SeriesSet where to look for 3D distances
      */
-    IO_DICOM_API static bool contains3DDistances(const SPTR(data::SeriesDB)& seriesDB);
+    IO_DICOM_API static bool contains3DDistances(const SPTR(data::SeriesSet)& seriesSet);
 };
 
 } // namespace sight::io::dicom::helper

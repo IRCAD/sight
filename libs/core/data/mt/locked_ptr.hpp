@@ -46,7 +46,7 @@ class locked_ptr final
 public:
 
     /// Constructor
-    explicit inline locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
+    explicit constexpr locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
         m_data(data),
         m_dump_locks(data)
     {
@@ -59,132 +59,133 @@ public:
             else
             {
                 m_locker = core::mt::WriteLock(data->getMutex());
-                m_data->modify();
+                m_data->setModified();
             }
         }
     }
 
     /// Constructor
-    explicit inline locked_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
+    explicit constexpr locked_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
         locked_ptr(data.lock())
     {
     }
 
     /// Constructor
-    explicit inline locked_ptr(const weak_ptr<DATATYPE>& data) noexcept :
+    explicit constexpr locked_ptr(const weak_ptr<DATATYPE>& data) noexcept :
         locked_ptr(data.lock())
     {
     }
 
     /// Assignment operator
-    inline locked_ptr& operator=(const std::shared_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const std::shared_ptr<DATATYPE>& data) noexcept
     {
         if(data != m_data)
         {
-            if(m_data)
+            if(data)
             {
-                m_locker.unlock();
+                m_dump_locks = dump_locks<DATATYPE>(data);
+
+                m_locker = std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock, core::mt::WriteLock>
+                               (data->getMutex());
+            }
+            else
+            {
+                m_dump_locks.reset();
+                m_locker.reset();
             }
 
             m_data = data;
-            if(m_data)
-            {
-                m_locker = std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock,
-                                              core::mt::WriteLock>(data->getMutex());
-            }
-
-            m_dump_locks = dump_locks<DATATYPE>(data);
         }
 
         return *this;
     }
 
     /// Assignment operator
-    inline locked_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
     {
         this->operator=(data.lock());
         return *this;
     }
 
     /// Assignment operator
-    inline locked_ptr& operator=(const weak_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const weak_ptr<DATATYPE>& data) noexcept
     {
         this->operator=(data.lock());
         return *this;
     }
 
     /// Default constructors, destructor and assignment operators
-    locked_ptr()                  = default;
-    locked_ptr(const locked_ptr&) = default;
-    locked_ptr(locked_ptr&&) noexcept = default;
-    locked_ptr& operator=(const locked_ptr&) = default;
-    locked_ptr& operator=(locked_ptr&&) noexcept = default;
-    ~locked_ptr() = default;
+    constexpr locked_ptr()                             = default;
+    constexpr locked_ptr(const locked_ptr&)            = default;
+    constexpr locked_ptr(locked_ptr&&)                 = default;
+    constexpr locked_ptr& operator=(const locked_ptr&) = default;
+    constexpr locked_ptr& operator=(locked_ptr&&)      = default;
+    inline ~locked_ptr()                               = default;
 
     /// Returns the internal shared pointer
-    [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
+    [[nodiscard]] constexpr std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;
     }
 
     /// Returns a pointer to the hold data
-    [[nodiscard]] inline DATATYPE* get() const noexcept
+    [[nodiscard]] constexpr DATATYPE* get() const noexcept
     {
         return m_data.get();
     }
 
     /// Returns a reference to the hold data
-    inline DATATYPE& operator*() const noexcept
+    constexpr DATATYPE& operator*() const noexcept
     {
-        return *(this->get());
+        return *(get());
     }
 
     /// Returns a pointer to the hold data
-    inline DATATYPE* operator->() const noexcept
+    constexpr DATATYPE* operator->() const noexcept
     {
-        return this->get();
+        return get();
     }
 
     /// Checks if *this stores a non-null pointer, i.e. whether get() != nullptr
-    inline explicit operator bool() const noexcept
+    constexpr explicit operator bool() const noexcept
     {
         return m_data.operator bool();
     }
 
     /// Allows to compare pointer address
-    inline bool operator==(const locked_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator==(const locked_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() == data.get();
+        return get() == data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator!=(const locked_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator!=(const locked_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() != data.get();
+        return get() != data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator==(const std::shared_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator==(const std::shared_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() == data.get();
+        return get() == data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator!=(const std::shared_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator!=(const std::shared_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() != data.get();
+        return get() != data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator==(const DATATYPE* data) const noexcept
+    constexpr bool operator==(const DATATYPE* data) const noexcept
     {
-        return this->get() == data;
+        return get() == data;
     }
 
     /// Allows to compare pointer address
-    inline bool operator!=(const DATATYPE* data) const noexcept
+    constexpr bool operator!=(const DATATYPE* data) const noexcept
     {
-        return this->get() != data;
+        return get() != data;
     }
 
 private:
@@ -205,7 +206,7 @@ private:
     {
     friend locked_ptr;
 
-    inline explicit dump_locks(const std::shared_ptr<C>& data)
+    constexpr explicit dump_locks(const std::shared_ptr<C>& data)
     {
         if(data)
         {
@@ -221,7 +222,7 @@ private:
     {
     friend locked_ptr;
 
-    inline explicit dump_locks(const std::shared_ptr<C>& /*unused*/)
+    constexpr explicit dump_locks(const std::shared_ptr<C>& /*unused*/)
     {
     }
     };

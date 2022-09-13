@@ -30,10 +30,9 @@
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/SeriesDB.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/base.hpp>
 
@@ -143,8 +142,8 @@ void SSliceIndexDicomEditor::starting()
     // Connect the signals
     QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
-    // Create temporary SeriesDB
-    m_tempSeriesDB = data::SeriesDB::New();
+    // Create temporary SeriesSet
+    m_tmp_series_set = data::SeriesSet::New();
 
     // Create reader
     auto dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
@@ -153,7 +152,7 @@ void SSliceIndexDicomEditor::starting()
                                                                       "sight::module::ui::dicom::SSliceIndexDicomEditor.",
         dicomReader
     );
-    dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
+    dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
 
     if(m_readerConfig)
     {
@@ -269,9 +268,9 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         return;
     }
 
-    // Clear temporary seriesDB
-    data::helper::SeriesDB sDBTempohelper(*m_tempSeriesDB);
-    sDBTempohelper.clear();
+    // Clear temporary series_set
+    const auto scoped_emitter = m_tmp_series_set->scoped_emit();
+    m_tmp_series_set->clear();
 
     // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)
     std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
@@ -315,9 +314,9 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     //Copy image
     data::ImageSeries::sptr imageSeries;
 
-    if(!m_tempSeriesDB->getContainer().empty())
+    if(!m_tmp_series_set->empty())
     {
-        auto series = *(m_tempSeriesDB->getContainer().begin());
+        auto series = m_tmp_series_set->front();
         if(isModalitySupported(*series))
         {
             imageSeries = data::ImageSeries::dynamicCast(series);
@@ -326,29 +325,28 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     if(imageSeries)
     {
-        data::Image::sptr newImage      = imageSeries->getImage();
-        const data::Image::Size newSize = newImage->getSize();
+        const data::Image::Size newSize = imageSeries->getSize();
 
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
 
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::AXIAL,
             m_axialIndex->value()
         );
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::FRONTAL,
             m_frontalIndex->value()
         );
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::SAGITTAL,
             m_sagittalIndex->value()
         );
 
-        this->setOutput(s_IMAGE, newImage);
+        this->setOutput(s_IMAGE, imageSeries);
     }
 
     std::error_code ec;

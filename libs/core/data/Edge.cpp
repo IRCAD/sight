@@ -44,11 +44,6 @@ Edge::Edge(data::Object::Key /*unused*/) :
 
 //------------------------------------------------------------------------------
 
-Edge::~Edge()
-= default;
-
-//------------------------------------------------------------------------------
-
 void Edge::setIdentifiers(const std::string& fromPortIdentifier, const std::string& toPortIdentifier)
 {
     m_fromPortIdentifier = fromPortIdentifier;
@@ -98,39 +93,44 @@ const std::string& Edge::getNature() const
 }
 
 //------------------------------------------------------------------------------
-void Edge::shallowCopy(const Object::csptr& _source)
+void Edge::shallowCopy(const Object::csptr& source)
 {
-    Edge::csptr other = Edge::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->fieldShallowCopy(_source);
     m_fromPortIdentifier = other->m_fromPortIdentifier;
     m_toPortIdentifier   = other->m_toPortIdentifier;
     m_nature             = other->m_nature;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Edge::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Edge::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Edge::csptr other = Edge::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
+
     m_fromPortIdentifier = other->m_fromPortIdentifier;
     m_toPortIdentifier   = other->m_toPortIdentifier;
     m_nature             = other->m_nature;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ bool Edge::operator==(const Edge& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

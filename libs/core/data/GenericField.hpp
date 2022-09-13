@@ -47,7 +47,7 @@ class DATA_CLASS_API GenericField : public GenericFieldBase
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericField<T>, data::Object);
+    SIGHT_DECLARE_CLASS(GenericField<T>, GenericFieldBase);
 
     typedef T ValueType;
 
@@ -104,7 +104,9 @@ public:
             }
 
             // Do not forget to call superclass == operator
-            return Object::operator==(other);
+            // BaseClass have a pure virtual == operator, so we call the base class from BaseClass
+            using base = typename BaseClass::BaseClass;
+            return base::operator==(other);
         }
         catch([[maybe_unused]] const std::bad_cast& exp)
         {

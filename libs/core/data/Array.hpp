@@ -148,8 +148,8 @@ namespace sight::data
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API Array : public Object,
-                             public core::memory::IBuffered
+class DATA_CLASS_API Array final : public Object,
+                                   public core::memory::IBuffered
 {
 public:
 
@@ -175,9 +175,6 @@ public:
     DATA_API Array(Object::Key key);
 
     DATA_API ~Array() override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -492,6 +489,20 @@ public:
     DATA_API bool operator==(const Array& other) const noexcept;
     DATA_API bool operator!=(const Array& other) const noexcept;
     /// @}
+
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 protected:
 

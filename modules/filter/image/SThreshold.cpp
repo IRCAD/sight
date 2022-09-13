@@ -138,15 +138,15 @@ void SThreshold::updating()
     // Get source/target image
     if(imageSeriesSrc)
     {
-        param.imageIn = imageSeriesSrc->getImage();
+        param.imageIn = imageSeriesSrc;
         data::ImageSeries::sptr imageSeriesDest = data::ImageSeries::copy(imageSeriesSrc);
         // define the input image series as the reference
         imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
 
         // create the output image
         data::Image::sptr imageOut = data::Image::New();
-        imageSeriesDest->setImage(imageOut);
-        param.imageOut = imageOut;
+        imageSeriesDest->Image::shallowCopy(imageOut);
+        param.imageOut = imageSeriesDest;
         output         = imageSeriesDest;
     }
     else if(imageSrc)

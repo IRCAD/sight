@@ -5,7 +5,7 @@
          <service>sight::module::io::realsense::SScan</service>
          <object key="depthTL">sight::data::FrameTL</object>
          <object key="frameTL">sight::data::FrameTL</object>
-         <object key="cameraSeries">sight::data::CameraSeries</object>
+         <object key="cameraSet">sight::data::CameraSet</object>
          <object key="pointcloud">sight::data::Mesh</object>
          <desc>RealSense Camera Grabber</desc>
          <tags>FILE, DEVICE</tags>

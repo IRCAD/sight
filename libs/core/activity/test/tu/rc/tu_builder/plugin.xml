@@ -12,7 +12,7 @@
                 <key>key2</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="TestBuilderCfg0" />
     </extension>
 

@@ -56,7 +56,7 @@ namespace data
 {
 
 class Integer;
-class SeriesDB;
+class SeriesSet;
 
 } // namespace data
 
@@ -150,8 +150,8 @@ private:
     /// Image Key
     std::string m_imageKey;
 
-    /// Temporary SeriesDB
-    SPTR(data::SeriesDB) m_tempSeriesDB;
+    /// Temporary SeriesSet
+    SPTR(data::SeriesSet) m_tmp_series_set;
 
     /// Axial slice index
     SPTR(data::Integer) m_axialIndex;

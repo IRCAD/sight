@@ -81,45 +81,42 @@ Mesh::Mesh(data::Object::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-Mesh::~Mesh()
-= default;
-
-//------------------------------------------------------------------------------
-
-void Mesh::shallowCopy(const Object::csptr& _source)
+void Mesh::shallowCopy(const Object::csptr& source)
 {
-    Mesh::csptr other = Mesh::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_numPoints  = other->m_numPoints;
     m_attributes = other->m_attributes;
     m_numCells   = other->m_numCells;
     m_cellType   = other->m_cellType;
 
-    std::copy(other->m_points.begin(), other->m_points.end(), m_points.begin());
-    std::copy(other->m_cells.begin(), other->m_cells.end(), m_cells.begin());
+    std::copy(other->m_points.cbegin(), other->m_points.cend(), m_points.begin());
+    std::copy(other->m_cells.cbegin(), other->m_cells.cend(), m_cells.begin());
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Mesh::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Mesh::csptr other = Mesh::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !other
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_numPoints  = other->m_numPoints;
     m_attributes = other->m_attributes;
@@ -135,6 +132,8 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
     {
         m_cells[i] = data::Object::copy(other->m_cells[i], cache);
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -744,7 +743,7 @@ bool Mesh::operator==(const Mesh& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

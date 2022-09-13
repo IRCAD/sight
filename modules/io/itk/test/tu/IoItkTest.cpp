@@ -28,7 +28,7 @@
 #include <core/tools/System.hpp>
 
 #include <data/ImageSeries.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 
@@ -94,11 +94,8 @@ void executeService(
 void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
-
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    imageSeries->setImage(image);
+    auto imageSeries = data::ImageSeries::New();
+    utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
 
     // Create path
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageSeriesJPG";
@@ -227,15 +224,12 @@ void IoItkTest::testSaveLoadNifti()
 
 void IoItkTest::ImageSeriesInrTest()
 {
-    data::Image::sptr image             = data::Image::New();
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
-
-    imageSeries->setImage(image);
+    auto imageSeries = data::ImageSeries::New();
+    utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin(origin);
+    imageSeries->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
@@ -256,7 +250,7 @@ void IoItkTest::ImageSeriesInrTest()
     );
 
     // load Image
-    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
+    auto imageSeries2 = data::ImageSeries::New();
     executeService(
         imageSeries2,
         "sight::module::io::itk::SImageSeriesReader",
@@ -264,14 +258,19 @@ void IoItkTest::ImageSeriesInrTest()
         data::Access::inout
     );
 
-    data::Image::sptr image2     = imageSeries2->getImage();
-    data::Image::Spacing spacing = image2->getSpacing();
+    data::Image::Spacing spacing = imageSeries2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing(spacing);
+    imageSeries2->setSpacing(spacing);
 
     // check Image
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
+    imageSeries2->setWindowWidth(imageSeries->getWindowWidth());
+
+    // ITK reader change the description of the image, the modality is set to "OT", etc ...
+    // We only compare "Image" part...
+    const auto image  = data::Image::dynamicCast(imageSeries);
+    const auto image2 = data::Image::dynamicCast(imageSeries2);
+    image2->setDescription(image->getDescription());
 
     CPPUNIT_ASSERT(*image == *image2);
 }
@@ -280,15 +279,12 @@ void IoItkTest::ImageSeriesInrTest()
 
 void IoItkTest::ImageSeriesNiftiTest()
 {
-    data::Image::sptr image             = data::Image::New();
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
-
-    imageSeries->setImage(image);
+    auto imageSeries = data::ImageSeries::New();
+    utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin(origin);
+    imageSeries->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageNiftiTest/imageseries.nii";
@@ -317,21 +313,26 @@ void IoItkTest::ImageSeriesNiftiTest()
         data::Access::inout
     );
 
-    data::Image::sptr image2     = imageSeries2->getImage();
-    data::Image::Spacing spacing = image2->getSpacing();
+    data::Image::Spacing spacing = imageSeries2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing(spacing);
+    imageSeries2->setSpacing(spacing);
 
     // check Image
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
+    imageSeries2->setWindowWidth(imageSeries->getWindowWidth());
+
+    // ITK reader change the description of the image, the modality is set to "OT", etc ...
+    // We only compare "Image" part...
+    const auto image  = data::Image::dynamicCast(imageSeries);
+    const auto image2 = data::Image::dynamicCast(imageSeries2);
+    image2->setDescription(image->getDescription());
 
     CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::SeriesDBInrTest()
+void IoItkTest::SeriesSetInrTest()
 {
     /*
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
@@ -360,11 +361,11 @@ void IoItkTest::SeriesDBInrTest()
     fileSkinCfg->setValue(skinFile.string());
     srvCfg->addConfigurationElement(fileSkinCfg);
 
-    // load SeriesDB
-    data::SeriesDB::sptr sdb = data::SeriesDB::New();
+    // load SeriesSet
+    auto series_set = data::SeriesSet::New();
     executeService(
-        sdb,
-        "sight::module::io::itk::SSeriesDBReader",
+        series_set,
+        "sight::module::io::itk::SSeriesSetReader",
         srvCfg,
         data::Access::inout
     );
@@ -372,31 +373,26 @@ void IoItkTest::SeriesDBInrTest()
     const data::Image::Spacing spacing = {0.781, 0.781, 1.6};
     const data::Image::Size size       = {512, 512, 134};
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), sdb->getContainer().size());
-    data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
+    data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(series_set->at(0));
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
 
-    data::Image::sptr image = imgSeries->getImage();
-    CPPUNIT_ASSERT(image);
-    CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().name());
-    CPPUNIT_ASSERT(size == image->getSize());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT_EQUAL(std::string("int16"), imgSeries->getType().name());
+    CPPUNIT_ASSERT(size == imgSeries->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], imgSeries->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], imgSeries->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], imgSeries->getSpacing()[2], EPSILON);
 
-    imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[1]);
+    imgSeries = data::ImageSeries::dynamicCast(series_set->at(1));
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
-    CPPUNIT_ASSERT(imgSeries->getImage());
 
-    image = imgSeries->getImage();
-    CPPUNIT_ASSERT(image);
-    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().name());
-    CPPUNIT_ASSERT(size == image->getSize());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), imgSeries->getType().name());
+    CPPUNIT_ASSERT(size == imgSeries->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], imgSeries->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], imgSeries->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], imgSeries->getSpacing()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------

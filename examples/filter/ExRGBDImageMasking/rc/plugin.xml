@@ -21,7 +21,7 @@
             <object uid="foregroundImage" type="sight::data::Image" />
             <object uid="offscreenImage" type="sight::data::Image" />
             <!-- Objects related to the camera managing the calibration data -->
-            <object uid="RGBDCameraSeries" type="sight::data::CameraSeries" />
+            <object uid="RGBDCameraSet" type="sight::data::CameraSet" />
             <object uid="RGBcamera" type="sight::data::Camera" src="deferred" />
             <object uid="Dcamera" type="sight::data::Camera" src="deferred" />
             <!-- Matrices to register to mesh in the right space regading the camera position -->
@@ -29,7 +29,7 @@
             <object uid="inverseMatrix" type="sight::data::Matrix4" />
             <object uid="extrinsic" type="sight::data::Matrix4" src="deferred" />
             <!-- Objectes related to the models loaded to perform AR -->
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
             <object uid="mesh" type="sight::data::Mesh" src="deferred" />
 
@@ -265,14 +265,14 @@
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="cameraSet" uid="RGBDCameraSet" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::SScan" worker="grabber" >
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="cameraSet" uid="RGBDCameraSet" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" alignTo="Color" />
@@ -299,14 +299,14 @@
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
-            <!-- Reader to open seriesDB data (.jsonz format) -->
+            <!-- Reader to open SeriesSet data -->
             <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
-                <inout key="data" uid="seriesDB" />
+                <inout key="data" uid="seriesSet" />
             </service>
 
-            <!-- Extract the modelSeries from the loaded seriesDB -->
+            <!-- Extract the ModelSeries from the loaded SeriesSet -->
            <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
-               <in key="seriesDB" uid="seriesDB"/>
+               <in key="seriesSet" uid="seriesSet"/>
                <out group="series" >
                    <key index="0" uid="modelSeries" />
                </out>
@@ -320,10 +320,10 @@
                </out>
             </service>
 
-            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
+            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSet -->
             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
                 <!-- Source -->
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="cameraSet" uid="RGBDCameraSet" />
                 <!-- Destination -->
                 <out group="camera" >
                     <key index="0" uid="Dcamera" />
@@ -430,13 +430,13 @@
             </connect>
 
             <connect>
-                <signal>seriesDB/modified</signal>
-                <signal>seriesDB/addedSeries</signal>
+                <signal>seriesSet/modified</signal>
+                <signal>seriesSet/addedObjects</signal>
                 <slot>extractModelSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>cameraSeries/addedCamera</signal>
+                <signal>cameraSet/addedCamera</signal>
                 <slot>extractCameraSrv/update</slot>
             </connect>
 

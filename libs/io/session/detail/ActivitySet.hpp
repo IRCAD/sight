@@ -39,14 +39,14 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto activity_set = Helper::safeCast<data::ActivitySet>(object);
+    const auto activity_set = Helper::safe_cast<data::ActivitySet>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::ActivitySet>(tree, 1);
 
     for(std::size_t index = 0, end = activity_set->size() ; index < end ; ++index)
     {
-        children[data::ActivitySeries::classname() + std::to_string(index)] = activity_set->at(index);
+        children[data::Activity::classname() + std::to_string(index)] = activity_set->at(index);
     }
 }
 
@@ -61,7 +61,7 @@ inline static data::ActivitySet::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto activity_set = Helper::safeCast<data::ActivitySet>(object);
+    auto activity_set = Helper::cast_or_create<data::ActivitySet>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ActivitySet>(tree, 0, 1);
@@ -72,14 +72,14 @@ inline static data::ActivitySet::sptr deserialize(
 
     for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::ActivitySeries::classname() + std::to_string(index));
+        const auto& it = children.find(data::Activity::classname() + std::to_string(index));
 
         if(it == children.cend())
         {
             break;
         }
 
-        const auto& activity = std::dynamic_pointer_cast<data::ActivitySeries>(it->second);
+        const auto& activity = std::dynamic_pointer_cast<data::Activity>(it->second);
 
         if(!activity)
         {

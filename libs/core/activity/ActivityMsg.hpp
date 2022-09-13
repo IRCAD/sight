@@ -25,7 +25,7 @@
 #include "activity/config.hpp"
 #include "activity/extension/Activity.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 namespace sight::activity
 {
@@ -40,7 +40,7 @@ public:
     typedef activity::extension::ActivityAppConfigParamsType ParametersType;
 
     ACTIVITY_API ActivityMsg(
-        const data::ActivitySeries::sptr& series,
+        const data::Activity::sptr& activity,
         const activity::extension::ActivityInfo& info,
         const ParametersType& parameters
     );
@@ -90,10 +90,10 @@ public:
         return m_tooltip;
     }
 
-    /// Return activity series
-    [[nodiscard]] const data::ActivitySeries::sptr& getActivitySeries() const
+    /// Return activity
+    [[nodiscard]] const data::Activity::sptr& getActivity() const
     {
-        return m_series;
+        return m_activity;
     }
 
     /// Return the map of the string association to replace in config
@@ -125,8 +125,8 @@ private:
     /// tab tooltip
     std::string m_tooltip;
 
-    /// activity series
-    data::ActivitySeries::sptr m_series;
+    /// activity
+    data::Activity::sptr m_activity;
 
     /// map containing string to replace in activity configuration.
     std::map<std::string, std::string> m_replacementMap;

@@ -36,7 +36,7 @@ namespace sight::data
 /**
  * @brief This class defines a Line defined by two points.
  */
-class DATA_CLASS_API Line : public Object
+class DATA_CLASS_API Line final : public Object
 {
 public:
 
@@ -49,10 +49,7 @@ public:
     DATA_API Line(Object::Key key);
 
     /// Destructor
-    DATA_API ~Line() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Line() noexcept override = default;
 
     DATA_API void setValue(const Point::sptr& _position, const Point::sptr& _direction);
 
@@ -78,10 +75,21 @@ public:
     DATA_API bool operator!=(const Line& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     //! Points container
     Point::sptr m_position;

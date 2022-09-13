@@ -309,8 +309,8 @@ void SOrganTransformation::onLoadClick()
 
 void SOrganTransformation::onSelectAllChanged(int state)
 {
-    const auto pComposite = m_composite.lock();
-    const auto notifier   = pComposite->scoped_emit();
+    const auto pComposite     = m_composite.lock();
+    const auto scoped_emitter = pComposite->scoped_emit();
 
     if(state == Qt::Checked)
     {

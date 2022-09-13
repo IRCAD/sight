@@ -3,7 +3,7 @@
 Contains xml activities related to calibration (camera & tools).
 Optical calibration is performed using a checkerboard.
 Tool calibration is performed using a tracked aruco tag.
-   
+
 > **Note:** Tool calibration is deprecated and will be removed in next versions.
 
 ## Activities
@@ -49,8 +49,8 @@ Example with `calIntrinsicView` & `calExtrinsicView`
 
 ```xml
     <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
-        <inout key="cameraSeries" uid="${cameraSeries}" />
-        <inout key="activitySeries" uid="${AS_UID}" />
+        <inout key="cameraSet" uid="${cameraSet}" />
+        <inout key="activity" uid="${AS_UID}" />
         <config>
             <intrinsic>
                 <appConfig id="calIntrinsicView" />
@@ -59,7 +59,7 @@ Example with `calIntrinsicView` & `calExtrinsicView`
             </intrinsic>
             <extrinsic>
                 <appConfig id="calExtrinsicView" />
-                <inout key="cameraSeries" uid="${cameraSeries}" />
+                <inout key="cameraSet" uid="${cameraSet}" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
             </extrinsic>

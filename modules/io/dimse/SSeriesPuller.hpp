@@ -25,7 +25,7 @@
 #include "modules/io/dimse/config.hpp"
 
 #include <data/DicomSeries.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -53,8 +53,8 @@ namespace sight::module::io::dimse
     <service type="sight::module::io::dimse::SSeriesPuller">
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
-        <inout key="seriesDB" uid="..." />
-        <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+        <inout key="seriesSet" uid="..." />
+        <config dicomReader="sight::module::io::dicom::SSeriesSetReader" readerConfig="config" />
     </service>
    @endcode
  *
@@ -63,7 +63,7 @@ namespace sight::module::io::dimse
  * - \b selectedSeries [sight::data::Vector]: list of DICOM series to pull from the PACS.
  *
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::SeriesDB]: series DB where to put the retrieved dicom series.
+ * - \b seriesSet [sight::data::SeriesSet]: series set where to put the retrieved dicom series.
  *
  * @subsection Configuration Configuration:
  * - \b dicomReader (mandatory, string): reader type to use.
@@ -103,11 +103,11 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connects data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
+     * Connects data::SeriesSet::s_REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
      */
     MODULE_IO_DIMSE_API KeyConnectionsMap getAutoConnections() const override;
 
-    typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
+    typedef data::SeriesSet::container_type DicomSeriesContainerType;
     typedef core::com::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
     typedef core::com::Signal<void (std::string)> ProgressStartedSignalType;
     typedef core::com::Signal<void (std::string, float, std::string)> ProgressedSignalType;
@@ -135,7 +135,7 @@ private:
     );
 
     ///SLOT: removes series from m_localSeries, when deleted in a gui Selector for instance.
-    void removeSeries(data::SeriesDB::ContainerType _removedSeries);
+    void removeSeries(data::SeriesSet::container_type _removedSeries);
 
     /// Defines the worker of the series enquire thread.
     core::thread::Worker::sptr m_requestWorker;
@@ -149,8 +149,8 @@ private:
     /// Contains the DICOM reader.
     sight::io::base::service::IReader::sptr m_dicomReader {nullptr};
 
-    /// Contains the seriesDB where the DICOM reader sets its output.
-    data::SeriesDB::sptr m_seriesDB {nullptr};
+    /// Contains the series_set where the DICOM reader sets its output.
+    data::SeriesSet::sptr m_series_set {nullptr};
 
     /// Contains the slot to call storeInstanceCallback method using C-MOVE requests.
     sight::io::dimse::SeriesRetriever::ProgressCallbackSlotType::sptr m_slotStoreInstance {nullptr};
@@ -165,7 +165,7 @@ private:
     ProgressStoppedSignalType::sptr m_sigProgressStopped {nullptr};
 
     /// Stores local series.
-    std::vector<std::string> m_localSeries;
+    std::set<std::string> m_localSeries;
 
     /// Defines the progress bar ID.
     std::string m_progressbarId {"pullDicomProgressBar"};
@@ -179,8 +179,8 @@ private:
     data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
     data::ptr<sight::data::Vector, data::Access::in> m_selectedSeries {this, "selectedSeries"};
 
-    static constexpr std::string_view s_SERIES_DB_INOUT = "seriesDB";
-    data::ptr<sight::data::SeriesDB, data::Access::inout> m_destSeriesDB {this, s_SERIES_DB_INOUT};
+    static constexpr std::string_view s_SERIES_SET_INOUT = "seriesSet";
+    data::ptr<sight::data::SeriesSet, data::Access::inout> m_destSeriesSet {this, s_SERIES_SET_INOUT};
 };
 
 } // namespace sight::module::io::dimse.

@@ -24,17 +24,12 @@
 
 #include "modules/ui/qt/series/InsertSeries.hpp"
 
-#include <activity/extension/Activity.hpp>
-
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <data/ActivitySeries.hpp>
-#include <data/Equipment.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/Patient.hpp>
 #include <data/Series.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
@@ -159,10 +154,9 @@ std::string formatTime(const std::string& _time)
 
 void SelectorModel::addSeries(data::Series::sptr _series)
 {
-    data::Study::sptr study       = _series->getStudy();
-    data::DicomValueType studyUID = study->getInstanceUID();
-    auto itr                      = m_items.find(studyUID);
-    QStandardItem* studyRootItem  = nullptr;
+    const auto studyInstanceUID  = _series->getStudyInstanceUID();
+    auto itr                     = m_items.find(studyInstanceUID);
+    QStandardItem* studyRootItem = nullptr;
 
     if(itr != m_items.end())
     {
@@ -170,18 +164,13 @@ void SelectorModel::addSeries(data::Series::sptr _series)
     }
     else
     {
-        data::Patient::sptr patient     = _series->getPatient();
-        data::Equipment::sptr equipment = _series->getEquipment();
-
-        const std::string studyInstanceUID = study->getInstanceUID();
-
-        auto* patientName = new QStandardItem(QString::fromStdString(patient->getName()));
+        auto* patientName = new QStandardItem(QString::fromStdString(_series->getPatientName()));
         patientName->setData(QVariant((int) ItemType::STUDY), Role::ITEM_TYPE);
         patientName->setData(QVariant(QString::fromStdString(studyInstanceUID)), Role::UID);
 
-        auto* patientSex = new QStandardItem(QString::fromStdString(patient->getSex()));
+        auto* patientSex = new QStandardItem(QString::fromStdString(_series->getPatientSex()));
 
-        std::string birthDate = patient->getBirthdate();
+        std::string birthDate = _series->getPatientBirthDate();
         if(!birthDate.empty() && birthDate != "unknown")
         {
             birthDate = birthDate.substr(4, 2) + "/" + birthDate.substr(6, 2) + "/" + birthDate.substr(0, 4);
@@ -189,9 +178,9 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
         auto* patientBirthdate = new QStandardItem(QString::fromStdString(birthDate));
 
-        auto* studyDescription = new QStandardItem(QString::fromStdString(study->getDescription()));
+        auto* studyDescription = new QStandardItem(QString::fromStdString(_series->getStudyDescription()));
 
-        std::string studyDate = study->getDate();
+        std::string studyDate = _series->getStudyDate();
         if(!studyDate.empty())
         {
             studyDate = studyDate.substr(4, 2) + "/" + studyDate.substr(6, 2) + "/" + studyDate.substr(0, 4);
@@ -199,7 +188,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
         auto* studyDateItem = new QStandardItem(QString::fromStdString(studyDate));
 
-        std::string studyTime = study->getTime();
+        std::string studyTime = _series->getStudyTime();
         studyTime = studyTime.substr(0, 6);
         if(!studyTime.empty())
         {
@@ -209,7 +198,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
         auto* studyTimeItem = new QStandardItem(QString::fromStdString(studyTime));
 
-        auto* studyPatientAge = new QStandardItem(QString::fromStdString(study->getPatientAge()));
+        auto* studyPatientAge = new QStandardItem(QString::fromStdString(_series->getPatientAge()));
 
         this->setItem(m_studyRowCount, int(ColumnSeriesType::NAME), patientName);
         this->setItem(m_studyRowCount, int(ColumnSeriesType::SEX), patientSex);
@@ -248,8 +237,8 @@ void SelectorModel::addSeries(data::Series::sptr _series)
         }
 
         m_studyRowCount++;
-        studyRootItem     = patientName;
-        m_items[studyUID] = studyRootItem;
+        studyRootItem             = patientName;
+        m_items[studyInstanceUID] = studyRootItem;
     }
 
     const std::string serieID = _series->getID();
@@ -260,9 +249,9 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
     auto* seriesIcon        = new QStandardItem();
     auto* seriesModality    = new QStandardItem(QString::fromStdString(_series->getModality()));
-    auto* seriesDescription = new QStandardItem(QString::fromStdString(_series->getDescription()));
+    auto* seriesDescription = new QStandardItem(QString::fromStdString(_series->getSeriesDescription()));
 
-    std::string seriesDate = _series->getDate();
+    std::string seriesDate = _series->getSeriesDate();
     if(!seriesDate.empty())
     {
         seriesDate = seriesDate.substr(4, 2) + "/" + seriesDate.substr(6, 2) + "/" + seriesDate.substr(0, 4);
@@ -270,7 +259,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
     auto* seriesDateItem = new QStandardItem(QString::fromStdString(seriesDate));
 
-    std::string seriesTime = _series->getTime();
+    std::string seriesTime = _series->getSeriesTime();
     seriesTime = seriesTime.substr(0, 6);
     if(!seriesTime.empty())
     {
@@ -407,7 +396,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
         studyRootItem->setChild(
             nbRow,
             int(ColumnSeriesType::CONTRAST_AGENT),
-            new QStandardItem(QString::fromStdString(imageSeries->getContrastAgent()))
+            new QStandardItem(QString::fromStdString(imageSeries->getContrastBolusAgent()))
         );
 
         std::string acquisitionTime = imageSeries->getAcquisitionTime();
@@ -424,7 +413,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
             new QStandardItem(QString::fromStdString(acquisitionTime))
         );
 
-        std::string contrastTime = imageSeries->getContrastStartTime();
+        std::string contrastTime = imageSeries->getContrastBolusStartTime();
         contrastTime = contrastTime.substr(0, 6);
         if(!contrastTime.empty())
         {
@@ -480,9 +469,8 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
     }
     else
     {
-        data::ImageSeries::sptr imageSeries       = data::ImageSeries::dynamicCast(_series);
-        data::ModelSeries::sptr modelSeries       = data::ModelSeries::dynamicCast(_series);
-        data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(_series);
+        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(_series);
+        data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(_series);
         if(imageSeries)
         {
             const auto path = core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "ImageSeries.svg");
@@ -492,16 +480,6 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         {
             const auto path = core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "ModelSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
-        }
-        else if(activitySeries)
-        {
-            activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
-            std::string id                               = activitySeries->getActivityConfigId();
-            SIGHT_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
-
-            activity::extension::ActivityInfo activityInfo;
-            activityInfo = registry->getInfo(id);
-            _item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
         }
         else
         {
@@ -610,8 +588,7 @@ bool SelectorModel::removeSeriesItem(QStandardItem* _item)
 QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
 {
     QStandardItem* seriesItem = nullptr;
-    data::Study::sptr study   = _series->getStudy();
-    QStandardItem* studyItem  = this->findStudyItem(study);
+    QStandardItem* studyItem  = this->findStudyItem(_series);
 
     if(studyItem != nullptr)
     {
@@ -633,9 +610,9 @@ QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* SelectorModel::findStudyItem(data::Study::sptr _study)
+QStandardItem* SelectorModel::findStudyItem(data::Series::sptr _series)
 {
-    data::DicomValueType studyInstanceUid = _study->getInstanceUID();
+    data::DicomValueType studyInstanceUid = _series->getStudyInstanceUID();
 
     QStandardItem* studyItem = m_items[studyInstanceUid];
     return studyItem;

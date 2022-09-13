@@ -33,9 +33,8 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/helper/SeriesDB.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/macros.hpp>
 
@@ -287,8 +286,8 @@ void SSelector::starting()
 service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB,data::SeriesDB::s_ADDED_SERIES_SIG,s_ADD_SERIES_SLOT);
-    connections.push(s_SERIES_DB,data::SeriesDB::s_REMOVED_SERIES_SIG,s_REMOVE_SERIES_SLOT);
+    connections.push(s_SERIES_SET,data::SeriesSet::s_ADDED_OBJECTS_SIG,s_ADD_SERIES_SLOT);
+    connections.push(s_SERIES_SET,data::SeriesSet::s_REMOVED_OBJECTS_SIG,s_REMOVE_SERIES_SLOT);
 
     return connections;
 }
@@ -297,11 +296,11 @@ service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 
 void SSelector::updating()
 {
-    const auto seriesDB = m_seriesDB.lock();
+    const auto series_set = m_series_set.lock();
 
     m_selectorWidget->clear();
 
-    for(const data::Series::sptr& series : seriesDB->getContainer())
+    for(const auto& series : *series_set)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -322,14 +321,14 @@ void SSelector::onSelectedSeries(
 )
 {
     const auto selectionVector = m_selection.lock();
-    const auto notifier        = selectionVector->scoped_emit();
+    const auto scoped_emitter  = selectionVector->scoped_emit();
 
-    for(const data::Series::sptr& series : _deselection)
+    for(const auto& series : _deselection)
     {
-        selectionVector->remove_all(series);
+        selectionVector->remove(series);
     }
 
-    for(const data::Series::sptr& series : _selection)
+    for(const auto& series : _selection)
     {
         selectionVector->push_back(series);
     }
@@ -359,32 +358,26 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
 void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
 {
-    const auto seriesDB = m_seriesDB.lock();
-    data::helper::SeriesDB seriesDBHelper(*seriesDB);
+    const auto series_set = m_series_set.lock();
 
-    // Remove duplicated series
-    std::set<data::Series::sptr> seriesSet;
-    std::copy(_selection.begin(),_selection.end(),std::inserter(seriesSet,seriesSet.begin()));
-
-    for(const data::Series::sptr& series : seriesSet)
-    {
-        seriesDBHelper.remove(series);
-    }
+    auto sig = series_set->signal<data::SeriesSet::removed_signal_t>(data::SeriesSet::s_REMOVED_OBJECTS_SIG);
+    core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
 
     {
-        auto sig = seriesDB->signal<data::SeriesDB::RemovedSeriesSignalType>(
-            data::SeriesDB::s_REMOVED_SERIES_SIG
-        );
-        core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
-        seriesDBHelper.notify();
+        const auto scoped_emitter = series_set->scoped_emit();
+
+        for(const auto& series : _selection)
+        {
+            series_set->remove(series);
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
+void SSelector::addSeries(data::SeriesSet::container_type _addedSeries)
 {
-    for(const data::Series::sptr& series : _addedSeries)
+    for(const auto& series : _addedSeries)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -392,9 +385,9 @@ void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
+void SSelector::removeSeries(data::SeriesSet::container_type _removedSeries)
 {
-    for(const data::Series::sptr& series : _removedSeries)
+    for(const auto& series : _removedSeries)
     {
         m_selectorWidget->removeSeries(series);
     }

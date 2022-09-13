@@ -35,12 +35,9 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/ActivitySet.hpp>
 #include <data/Composite.hpp>
-#include <data/Equipment.hpp>
-#include <data/helper/SeriesDB.hpp>
-#include <data/Patient.hpp>
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 
 #include <service/macros.hpp>
 
@@ -59,12 +56,11 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SWizard::s_CREATE_ACTIVITY_SLOT        = "createActivity";
-const core::com::Slots::SlotKeyType SWizard::s_UPDATE_ACTIVITY_SLOT        = "updateActivity";
-const core::com::Slots::SlotKeyType SWizard::s_UPDATE_ACTIVITY_SERIES_SLOT = "updateActivitySeries";
-const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_CREATED_SIG    = "activityCreated";
-const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
-const core::com::Signals::SignalKeyType SWizard::s_CANCELED_SIG            = "canceled";
+const core::com::Slots::SlotKeyType SWizard::s_CREATE_ACTIVITY_SLOT     = "createActivity";
+const core::com::Slots::SlotKeyType SWizard::s_UPDATE_ACTIVITY_SLOT     = "updateActivity";
+const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_CREATED_SIG = "activityCreated";
+const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_UPDATED_SIG = "activityUpdated";
+const core::com::Signals::SignalKeyType SWizard::s_CANCELED_SIG         = "canceled";
 
 using sight::activity::extension::ActivityInfo;
 using sight::activity::extension::Activity;
@@ -77,7 +73,6 @@ SWizard::SWizard() noexcept
 {
     newSlot(s_CREATE_ACTIVITY_SLOT, &SWizard::createActivity, this);
     newSlot(s_UPDATE_ACTIVITY_SLOT, &SWizard::updateActivity, this);
-    newSlot(s_UPDATE_ACTIVITY_SERIES_SLOT, &SWizard::updateActivitySeries, this);
 
     m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
     m_sigActivityUpdated = newSignal<ActivityUpdatedSignalType>(s_ACTIVITY_UPDATED_SIG);
@@ -226,13 +221,15 @@ void SWizard::stopping()
 
 void SWizard::updating()
 {
-    auto as = m_activitySeries.lock();
+    auto as = m_activity.lock();
     if(as)
     {
         this->updateActivity(as.get_shared());
     }
-
-    SIGHT_DEBUG_IF("activity series is not defined, it cannot be updated", !as);
+    else
+    {
+        SIGHT_DEBUG("activity is not defined, it cannot be updated");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -246,16 +243,8 @@ void SWizard::createActivity(std::string activityID)
     // load activity module
     core::runtime::startModule(info.bundleId);
 
-    m_actSeries = data::ActivitySeries::New();
-
-    m_actSeries->setModality("OT");
-    m_actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID());
-
-    boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-    m_actSeries->setDate(core::tools::getDate(now));
-    m_actSeries->setTime(core::tools::getTime(now));
-
-    m_actSeries->setActivityConfigId(info.id);
+    m_new_activity = data::Activity::New();
+    m_new_activity->setActivityConfigId(info.id);
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
@@ -288,26 +277,26 @@ void SWizard::createActivity(std::string activityID)
         for(const auto& req : info.requirements)
         {
             SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
-            data::Composite::sptr data = m_actSeries->getData();
+            data::Composite::sptr data = m_new_activity->getData();
             (*data)[req.name] = data::factory::New(req.type);
         }
 
-        const auto seriesDB = m_seriesDB.lock();
-        SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not defined.", seriesDB);
+        const auto activity_set = m_activity_set.lock();
+        SIGHT_ASSERT("The inout key '" << s_ACTIVITY_SET << "' is not defined.", activity_set);
 
-        data::helper::SeriesDB helper(*seriesDB);
-        helper.add(m_actSeries);
-        helper.notify();
-        m_sigActivityCreated->asyncEmit(m_actSeries);
+        const auto scoped_emitter = activity_set->scoped_emit();
+        activity_set->push_back(m_new_activity);
+
+        m_sigActivityCreated->asyncEmit(m_new_activity);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
+void SWizard::updateActivity(data::Activity::sptr activity)
 {
     ActivityInfo info;
-    info = Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    info = Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     // load activity module
     core::runtime::startModule(info.bundleId);
@@ -315,8 +304,8 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
 
-    m_mode      = Mode::UPDATE;
-    m_actSeries = activitySeries;
+    m_mode         = Mode::UPDATE;
+    m_new_activity = activity;
 
     bool needConfig = false;
 
@@ -332,7 +321,7 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
 
     if(needConfig)
     {
-        m_DataView->fillInformation(m_actSeries);
+        m_DataView->fillInformation(m_new_activity);
         if(m_DataView->count() > 1)
         {
             m_okButton->setText("Next");
@@ -342,20 +331,9 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
     {
         // Start immediately without popping any configuration UI
         data::Object::ModifiedSignalType::sptr sig;
-        sig = m_actSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        sig = m_new_activity->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
-        m_sigActivityUpdated->asyncEmit(m_actSeries);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SWizard::updateActivitySeries(data::Series::sptr series)
-{
-    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
-    if(activitySeries)
-    {
-        this->updateActivity(activitySeries);
+        m_sigActivityUpdated->asyncEmit(m_new_activity);
     }
 }
 
@@ -377,10 +355,10 @@ void SWizard::onTabChanged(int index)
 
 void SWizard::onReset()
 {
-    if(m_actSeries)
+    if(m_new_activity)
     {
         ActivityInfo info;
-        info = Activity::getDefault()->getInfo(m_actSeries->getActivityConfigId());
+        info = Activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
         m_DataView->fillInformation(info);
 
         if(m_DataView->count() > 1)
@@ -441,37 +419,23 @@ void SWizard::onBuildActivity()
 
                 if(button == QMessageBox::Yes)
                 {
-                    m_actSeries = data::Object::copy(m_actSeries);
-                    m_mode      = Mode::CREATE; // The new activity should be added in the seriesDB
+                    m_new_activity = data::Object::copy(m_new_activity);
+                    m_mode         = Mode::CREATE; // The new activity should be added in the activity_set
                 }
             }
 
             // check all data and create/update the activity
-            bool ok = m_DataView->checkAndComputeData(m_actSeries, errorMsg);
+            bool ok = m_DataView->checkAndComputeData(m_new_activity, errorMsg);
             if(ok)
             {
-                data::Composite::sptr data = m_actSeries->getData();
-
-                // Copy the patient/study information of a series
-                data::Series::sptr series;
-                for(const auto& elt : (*data))
-                {
-                    series = data::Series::dynamicCast(elt.second);
-                    if(series)
-                    {
-                        m_actSeries->setPatient(data::Object::copy(series->getPatient()));
-                        m_actSeries->setStudy(data::Object::copy(series->getStudy()));
-                        m_actSeries->setEquipment(data::Object::copy(series->getEquipment()));
-                        break;
-                    }
-                }
+                data::Composite::sptr data = m_new_activity->getData();
 
                 if(m_mode == Mode::CREATE)
                 {
-                    // Add the new activity series in seriesDB
+                    // Add the new activity in activity_set
                     ActivityInfo info;
                     info = Activity::getDefault()->getInfo(
-                        m_actSeries->getActivityConfigId()
+                        m_new_activity->getActivityConfigId()
                     );
 
                     std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
@@ -484,21 +448,21 @@ void SWizard::onBuildActivity()
                         return;
                     }
 
-                    m_actSeries->setDescription(description);
-                    const auto seriesDB = m_seriesDB.lock();
-                    SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not defined.", seriesDB);
+                    m_new_activity->setDescription(description);
+                    const auto activity_set = m_activity_set.lock();
+                    SIGHT_ASSERT("The inout key '" << s_ACTIVITY_SET << "' is not defined.", activity_set);
 
-                    data::helper::SeriesDB helper(*seriesDB);
-                    helper.add(m_actSeries);
-                    helper.notify();
-                    m_sigActivityCreated->asyncEmit(m_actSeries);
+                    const auto scoped_emitter = activity_set->scoped_emit();
+                    activity_set->push_back(m_new_activity);
+
+                    m_sigActivityCreated->asyncEmit(m_new_activity);
                 }
                 else // m_mode == Mode::UPDATE
                 {
                     data::Object::ModifiedSignalType::sptr sig;
-                    sig = m_actSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                    sig = m_new_activity->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
-                    m_sigActivityUpdated->asyncEmit(m_actSeries);
+                    m_sigActivityUpdated->asyncEmit(m_new_activity);
                 }
             }
             else

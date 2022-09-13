@@ -4,7 +4,7 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::io::dicomweb::SQueryEditor</service>
-         <object key="seriesDB">sight::data::SeriesDB</object>
+         <object key="seriesSet">sight::data::SeriesSet</object>
          <desc>This editor service is used to perform an HTTP query on a Pacs.</desc>
     </extension>
 
@@ -12,7 +12,7 @@
          <type>sight::service::IController</type>
          <service>sight::module::io::dicomweb::SSeriesPuller</service>
          <object key="selectedSeries">sight::data::Vector</object>
-         <object key="seriesDB">sight::data::SeriesDB</object>
+         <object key="seriesSet">sight::data::SeriesSet</object>
          <desc>This service is used to pull series from a PACS (Orthanc).</desc>
     </extension>
 

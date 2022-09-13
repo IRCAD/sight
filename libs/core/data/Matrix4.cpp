@@ -44,41 +44,42 @@ Matrix4::Matrix4(data::Object::Key /*unused*/) :
 {
 }
 
-//------------------------------------------------------------------------------
-
-Matrix4::~Matrix4()
-= default;
-
 //-----------------------------------------------------------------------------
 
-void Matrix4::shallowCopy(const Object::csptr& _source)
+void Matrix4::shallowCopy(const Object::csptr& source)
 {
-    Matrix4::csptr other = Matrix4::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
+
     m_vCoefficients = other->m_vCoefficients;
+
+    BaseClass::shallowCopy(other);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void Matrix4::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Matrix4::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Matrix4::csptr other = Matrix4::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
+
     m_vCoefficients = other->m_vCoefficients;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +92,7 @@ bool Matrix4::operator==(const Matrix4& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -27,8 +27,8 @@
 #include <core/com/Slots.hxx>
 #include <core/jobs/IJob.hpp>
 
-#include <data/helper/SeriesDB.hpp>
 #include <data/Series.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 
@@ -61,7 +61,7 @@ SDBMerger::~SDBMerger() noexcept =
 
 void SDBMerger::info(std::ostream& _sstream)
 {
-    _sstream << "Action for add SeriesDB" << std::endl;
+    _sstream << "Action for add SeriesSet" << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -84,10 +84,10 @@ void SDBMerger::updating()
 {
     sight::ui::base::LockAction lock(this->getSptr());
 
-    // Create a new SeriesDB
-    data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
+    // Create a new SeriesSet
+    auto local_series_set = data::SeriesSet::New();
 
-    /// Create IOSelectorService on the new SeriesDB and execute it.
+    /// Create IOSelectorService on the new SeriesSet and execute it.
 
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
@@ -105,7 +105,7 @@ void SDBMerger::updating()
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
     ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
-    ioSelectorSrv->setInOut(localSeriesDB, io::base::service::s_DATA_KEY);
+    ioSelectorSrv->setInOut(local_series_set, io::base::service::s_DATA_KEY);
     ioSelectorSrv->setWorker(m_associatedWorker);
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
@@ -122,12 +122,11 @@ void SDBMerger::updating()
     service::remove(ioSelectorSrv);
 
     // Lock only when needed.
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not correctly set.", seriesDB);
+    auto series_set = m_series_set.lock();
+    SIGHT_ASSERT("The inout key '" << s_SERIES_SET << "' is not correctly set.", series_set);
 
-    data::helper::SeriesDB sDBhelper(*seriesDB);
-    sDBhelper.merge(localSeriesDB);
-    sDBhelper.notify();
+    const auto scoped_emitter = series_set->scoped_emit();
+    std::copy(local_series_set->cbegin(), local_series_set->cend(), data::inserter(*series_set));
 }
 
 //------------------------------------------------------------------------------

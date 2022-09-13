@@ -21,18 +21,16 @@
 
 #include "SessionSerializer.hpp"
 
-#include "ActivitySeries.hpp"
+#include "Activity.hpp"
 #include "ActivitySet.hpp"
 #include "Array.hpp"
 #include "CalibrationInfo.hpp"
 #include "Camera.hpp"
-#include "CameraSeries.hpp"
 #include "CameraSet.hpp"
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
 #include "Edge.hpp"
-#include "Equipment.hpp"
 #include "Graph.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
@@ -43,32 +41,27 @@
 #include "Mesh.hpp"
 #include "ModelSeries.hpp"
 #include "Node.hpp"
-#include "Patient.hpp"
 #include "Plane.hpp"
 #include "PlaneList.hpp"
 #include "Point.hpp"
 #include "PointList.hpp"
 #include "Port.hpp"
-#include "ProcessObject.hpp"
 #include "Reconstruction.hpp"
 #include "ReconstructionTraits.hpp"
 #include "Resection.hpp"
 #include "ResectionDB.hpp"
 #include "ROITraits.hpp"
 #include "Series.hpp"
-#include "SeriesDB.hpp"
 #include "SeriesSet.hpp"
+#include "Set.hpp"
 #include "String.hpp"
 #include "StructureTraits.hpp"
 #include "StructureTraitsDictionary.hpp"
-#include "Study.hpp"
-#include "Tag.hpp"
 #include "TransferFunction.hpp"
 #include "Vector.hpp"
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
-#include <data/IContainer.hxx>
 #include <data/Integer.hpp>
 #include <data/mt/locked_ptr.hpp>
 
@@ -89,19 +82,17 @@ static std::shared_mutex s_serializers_mutex;
 
 // Serializer registry
 static const std::unordered_map<std::string, serializer_t> s_defaultSerializers = {
-    {data::ActivitySeries::classname(), &ActivitySeries::serialize},
+    {data::Activity::classname(), &Activity::serialize},
     {data::ActivitySet::classname(), &ActivitySet::serialize},
     {data::Array::classname(), &Array::serialize},
     {data::Boolean::classname(), &Helper::serialize<data::Boolean>},
     {data::Camera::classname(), &Camera::serialize},
-    {data::CameraSeries::classname(), &CameraSeries::serialize},
     {data::CameraSet::classname(), &CameraSet::serialize},
     {data::CalibrationInfo::classname(), &CalibrationInfo::serialize},
     {data::Color::classname(), &Color::serialize},
     {data::Composite::classname(), &Composite::serialize},
     {data::DicomSeries::classname(), &DicomSeries::serialize},
     {data::Edge::classname(), &Edge::serialize},
-    {data::Equipment::classname(), &Equipment::serialize},
     {data::Float::classname(), &Helper::serialize<data::Float>},
     {data::Graph::classname(), &Graph::serialize},
     {data::Integer::classname(), &Helper::serialize<data::Integer>},
@@ -114,26 +105,22 @@ static const std::unordered_map<std::string, serializer_t> s_defaultSerializers 
     {data::Mesh::classname(), &Mesh::serialize},
     {data::ModelSeries::classname(), &ModelSeries::serialize},
     {data::Node::classname(), &Node::serialize},
-    {data::Patient::classname(), &Patient::serialize},
     {data::Point::classname(), &Point::serialize},
     {data::PointList::classname(), &PointList::serialize},
     {data::Plane::classname(), &Plane::serialize},
     {data::PlaneList::classname(), &PlaneList::serialize},
     {data::Port::classname(), &Port::serialize},
-    {data::ProcessObject::classname(), &ProcessObject::serialize},
     {data::Reconstruction::classname(), &Reconstruction::serialize},
     {data::ReconstructionTraits::classname(), &ReconstructionTraits::serialize},
     {data::Resection::classname(), &Resection::serialize},
     {data::ResectionDB::classname(), &ResectionDB::serialize},
     {data::ROITraits::classname(), &ROITraits::serialize},
     {data::Series::classname(), &Series::serialize},
-    {data::SeriesDB::classname(), &SeriesDB::serialize},
     {data::SeriesSet::classname(), &SeriesSet::serialize},
+    {data::Set::classname(), &Set::serialize},
     {data::String::classname(), &String::serialize},
     {data::StructureTraits::classname(), &StructureTraits::serialize},
     {data::StructureTraitsDictionary::classname(), &StructureTraitsDictionary::serialize},
-    {data::Study::classname(), &Study::serialize},
-    {data::Tag::classname(), &Tag::serialize},
     {data::TransferFunction::classname(), &TransferFunction::serialize},
     {data::Vector::classname(), &Vector::serialize}
 };
@@ -204,6 +191,7 @@ void SessionSerializer::deepSerialize(
 
         // Put basic meta information
         object_tree.put(ISession::s_uuid, uuid);
+        Helper::writeString(object_tree, ISession::s_description, object->getDescription());
 
         // Find the serializer using the classname
         const auto& serializer = findSerializer(class_name);

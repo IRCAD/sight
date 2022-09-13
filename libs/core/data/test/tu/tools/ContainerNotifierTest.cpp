@@ -33,6 +33,7 @@
 #include <data/CameraSet.hpp>
 #include <data/Composite.hpp>
 #include <data/SeriesSet.hpp>
+#include <data/String.hpp>
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
@@ -46,31 +47,40 @@ namespace sight::data::tools::ut
 template<typename T>
 inline static void containerNotifierTest()
 {
-    auto container = std::make_shared<T>();
+    auto container = T::New();
 
     static const auto description1 = core::tools::UUID::generateUUID();
     static const auto description2 = core::tools::UUID::generateUUID();
     static const auto description3 = core::tools::UUID::generateUUID();
 
-    // Create three ActivitySeries
-    const auto& series1 = std::make_shared<ActivitySeries>();
-    series1->setDescription(description1);
+    Object::sptr object1;
+    Object::sptr object2;
+    Object::sptr object3;
 
-    const auto& series2 = std::make_shared<ActivitySeries>();
-    series2->setDescription(description2);
-
-    const auto& series3 = std::make_shared<ActivitySeries>();
-    series3->setDescription(description3);
-
-    // Create three Cameras (for CameraSet test)
-    const auto& camera1 = std::make_shared<Camera>();
-    camera1->setCameraID(description1);
-
-    const auto& camera2 = std::make_shared<Camera>();
-    camera2->setCameraID(description2);
-
-    const auto& camera3 = std::make_shared<Camera>();
-    camera3->setCameraID(description3);
+    if constexpr(std::is_same_v<CameraSet, T>)
+    {
+        object1 = Camera::New();
+        object2 = Camera::New();
+        object3 = Camera::New();
+    }
+    else if constexpr(std::is_same_v<ActivitySet, T>)
+    {
+        object1 = Activity::New();
+        object2 = Activity::New();
+        object3 = Activity::New();
+    }
+    else if constexpr(std::is_same_v<SeriesSet, T>)
+    {
+        object1 = Series::New();
+        object2 = Series::New();
+        object3 = Series::New();
+    }
+    else
+    {
+        object1 = String::New(description1);
+        object2 = String::New(description1);
+        object3 = String::New(description1);
+    }
 
     std::mutex mutex;
     std::condition_variable condition_variable;
@@ -100,23 +110,35 @@ inline static void containerNotifierTest()
         {
             const auto scoped_emitter = container->scoped_emit();
 
-            if constexpr(std::is_same<CameraSet, T>::value)
+            if constexpr(std::is_same_v<CameraSet, T>)
             {
-                container->add_camera(camera1);
-                container->add_camera(camera2);
-                container->add_camera(camera3);
+                container->add_camera(std::static_pointer_cast<Camera>(object1));
+                container->add_camera(std::static_pointer_cast<Camera>(object2));
+                container->add_camera(std::static_pointer_cast<Camera>(object3));
+            }
+            else if constexpr(std::is_same_v<ActivitySet, T>)
+            {
+                container->push_back(std::static_pointer_cast<Activity>(object1));
+                container->push_back(std::static_pointer_cast<Activity>(object2));
+                container->push_back(std::static_pointer_cast<Activity>(object3));
+            }
+            else if constexpr(std::is_same_v<SeriesSet, T>)
+            {
+                container->push_back(std::dynamic_pointer_cast<Series>(object1));
+                container->push_back(std::dynamic_pointer_cast<Series>(object2));
+                container->push_back(std::dynamic_pointer_cast<Series>(object3));
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                container->insert({description1, series1});
-                container->insert({description2, series2});
-                container->insert({description3, series3});
+                container->insert({description1, object1});
+                container->insert({description2, object2});
+                container->insert({description3, object3});
             }
             else
             {
-                container->push_back(series1);
-                container->push_back(series2);
-                container->push_back(series3);
+                container->push_back(object1);
+                container->push_back(object2);
+                container->push_back(object3);
             }
         }
 
@@ -133,21 +155,21 @@ inline static void containerNotifierTest()
 
             if constexpr(std::is_same<CameraSet, T>::value)
             {
-                CPPUNIT_ASSERT(added_from_slot[0].first == camera1);
-                CPPUNIT_ASSERT(added_from_slot[1].first == camera2);
-                CPPUNIT_ASSERT(added_from_slot[2].first == camera3);
+                CPPUNIT_ASSERT(added_from_slot[0].first == object1);
+                CPPUNIT_ASSERT(added_from_slot[1].first == object2);
+                CPPUNIT_ASSERT(added_from_slot[2].first == object3);
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                CPPUNIT_ASSERT(added_from_slot[description1] == series1);
-                CPPUNIT_ASSERT(added_from_slot[description2] == series2);
-                CPPUNIT_ASSERT(added_from_slot[description3] == series3);
+                CPPUNIT_ASSERT(added_from_slot[description1] == object1);
+                CPPUNIT_ASSERT(added_from_slot[description2] == object2);
+                CPPUNIT_ASSERT(added_from_slot[description3] == object3);
             }
             else
             {
-                CPPUNIT_ASSERT(added_from_slot[0] == series1);
-                CPPUNIT_ASSERT(added_from_slot[1] == series2);
-                CPPUNIT_ASSERT(added_from_slot[2] == series3);
+                CPPUNIT_ASSERT(added_from_slot[0] == object1);
+                CPPUNIT_ASSERT(added_from_slot[1] == object2);
+                CPPUNIT_ASSERT(added_from_slot[2] == object3);
             }
         }
     }
@@ -180,7 +202,7 @@ inline static void containerNotifierTest()
             // Erase the first element
             if constexpr(std::is_same<CameraSet, T>::value)
             {
-                container->remove_camera(camera1);
+                container->remove_camera(std::static_pointer_cast<Camera>(object1));
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
@@ -205,15 +227,15 @@ inline static void containerNotifierTest()
 
             if constexpr(std::is_same<CameraSet, T>::value)
             {
-                CPPUNIT_ASSERT(removed_from_slot[0].first == camera1);
+                CPPUNIT_ASSERT(removed_from_slot[0].first == object1);
             }
             else if constexpr(core::tools::is_map_like<T>::value)
             {
-                CPPUNIT_ASSERT(removed_from_slot[description1] == series1);
+                CPPUNIT_ASSERT(removed_from_slot[description1] == object1);
             }
             else
             {
-                CPPUNIT_ASSERT(removed_from_slot[0] == series1);
+                CPPUNIT_ASSERT(removed_from_slot[0] == object1);
             }
         }
     }
@@ -245,12 +267,12 @@ inline static void containerNotifierTest()
 
         {
             // Insert value before creating a notifier
-            container->insert({description1, series1});
-            container->insert({description2, series2});
+            container->insert({description1, object1});
+            container->insert({description2, object2});
 
             // Change one element
             const auto scoped_emitter = container->scoped_emit();
-            container->insert_or_assign(description2, series3);
+            container->insert_or_assign(description2, object3);
         }
 
         // Check results
@@ -265,8 +287,8 @@ inline static void containerNotifierTest()
             CPPUNIT_ASSERT(new_from_slot.size() == 1);
             CPPUNIT_ASSERT(change_call_count == 1);
 
-            CPPUNIT_ASSERT(old_from_slot[description2] == series2);
-            CPPUNIT_ASSERT(new_from_slot[description2] == series3);
+            CPPUNIT_ASSERT(old_from_slot[description2] == object2);
+            CPPUNIT_ASSERT(new_from_slot[description2] == object3);
         }
     }
 }

@@ -28,7 +28,7 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -71,7 +71,7 @@ namespace sight::module::ui::qt::video
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::SCamera" >
-        <inout key="cameraSeries" uid="..."/>
+        <inout key="cameraSet" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>true</videoSupport>
         <useAbsolutePath>false</useAbsolutePath>
@@ -82,7 +82,7 @@ namespace sight::module::ui::qt::video
  *
  * @subsection In-Out In-Out
  * - \b camera [sight::data::Camera]: camera data.
- * - \b cameraSeries [sight::data::CameraSeries]: camera series thus containing several camera.
+ * - \b cameraSet [sight::data::CameraSet]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
  * - \b videoSupport (optional, default="false"): if we can open a video file in addition with cameras.
@@ -177,7 +177,7 @@ private:
     // Sets the file path as absolute ones
     bool m_useAbsolutePath {false};
 
-    /// Signal emitted when the cameraSeries has been configured.
+    /// Signal emitted when the cameraSet has been configured.
     ConfiguredSignalType::sptr m_sigConfiguredCameras;
 
     /// Label of the selector.
@@ -191,11 +191,11 @@ private:
 
     bool m_preferenceMode {false};
 
-    static constexpr std::string_view s_CAMERA        = "camera";
-    static constexpr std::string_view s_CAMERA_SERIES = "cameraSeries";
+    static constexpr std::string_view s_CAMERA     = "camera";
+    static constexpr std::string_view s_CAMERA_SET = "cameraSet";
 
     data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, false, true};
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, false, true};
+    data::ptr<data::CameraSet, data::Access::inout> m_camera_set {this, s_CAMERA_SET, false, true};
 
     int oldIndex {};
 };

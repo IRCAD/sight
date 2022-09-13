@@ -250,7 +250,7 @@ bool BufferTL::operator==(const BufferTL& other) const noexcept
     }
 
     // Super class last
-    return TimeLine::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

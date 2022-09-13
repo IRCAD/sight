@@ -30,9 +30,8 @@
 #include <data/Composite.hpp>
 #include <data/Exception.hpp>
 #include <data/helper/Field.hpp>
-#include <data/helper/SeriesDB.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -50,7 +49,7 @@ const core::com::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
 
 const service::IService::KeyType s_COMPOSITE_INOUT    = "composite";
 const service::IService::KeyType s_VECTOR_INOUT       = "vector";
-const service::IService::KeyType s_SERIESDB_INOUT     = "seriesDB";
+const service::IService::KeyType s_SERIES_SET_INOUT   = "seriesSet";
 const service::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
 const service::IService::KeyType s_OBJECT_INOUT       = "object";
 
@@ -150,25 +149,24 @@ void SManage::addOrSwap()
                 SIGHT_WARN("Object already exists in the Vector, does nothing.");
             }
         }
-        else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-                seriesDB)
+        else if(const auto series_set = std::dynamic_pointer_cast<sight::data::SeriesSet>(container.get_shared());
+                series_set)
         {
             const auto series = sight::data::Series::dynamicCast(obj.get_shared());
-            auto iter         = std::find(seriesDB->begin(), seriesDB->end(), series);
-            if(iter == seriesDB->end())
+            auto iter         = std::find(series_set->begin(), series_set->end(), series);
+            if(iter == series_set->end())
             {
-                sight::data::helper::SeriesDB helper(*seriesDB);
-                helper.add(series);
-                helper.notify();
+                const auto scoped_emitter = series_set->scoped_emit();
+                series_set->push_back(series);
             }
             else
             {
-                SIGHT_WARN("Series already exists in the SeriesDB, does nothing.");
+                SIGHT_WARN("Series already exists in the SeriesSet, does nothing.");
             }
         }
         else
         {
-            SIGHT_FATAL("Source object is not a Composite or a Vector or a SeriesDB");
+            SIGHT_FATAL("Source object is not a Composite or a Vector or a SeriesSet");
         }
     }
 }
@@ -231,20 +229,19 @@ void SManage::remove()
             if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
             {
                 const auto scoped_emitter = vector->scoped_emit();
-                vector->remove_all(obj.get_shared());
+                vector->remove(obj.get_shared());
             }
-            else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-                    seriesDB)
+            else if(const auto series_set = std::dynamic_pointer_cast<sight::data::SeriesSet>(container.get_shared());
+                    series_set)
             {
                 const auto series = sight::data::Series::dynamicCast(obj.get_shared());
 
-                sight::data::helper::SeriesDB helper(*seriesDB);
-                helper.remove(series);
-                helper.notify();
+                const auto scoped_emitter = series_set->scoped_emit();
+                series_set->remove(series);
             }
             else
             {
-                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
+                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSet");
             }
         }
     }
@@ -287,26 +284,29 @@ void SManage::removeIfPresent()
             if(const auto vector = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared()); vector)
             {
                 const auto scoped_emitter = composite->scoped_emit();
-                vector->remove_all(obj.get_shared());
+                vector->remove(obj.get_shared());
             }
-            else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-                    seriesDB)
+            else if(const auto series_set = std::dynamic_pointer_cast<sight::data::SeriesSet>(container.get_shared());
+                    series_set)
             {
                 const auto series = sight::data::Series::dynamicCast(obj.get_shared());
-                if(const auto iter = std::find(seriesDB->begin(), seriesDB->end(), series); iter != seriesDB->end())
+                if(const auto iter = std::find(
+                       series_set->begin(),
+                       series_set->end(),
+                       series
+                ); iter != series_set->end())
                 {
-                    sight::data::helper::SeriesDB helper(*seriesDB);
-                    helper.remove(series);
-                    helper.notify();
+                    const auto scoped_emitter = series_set->scoped_emit();
+                    series_set->erase(iter);
                 }
                 else
                 {
-                    SIGHT_WARN("Object does not exist in the SeriesDB, does nothing.");
+                    SIGHT_WARN("Object does not exist in the SeriesSet, does nothing.");
                 }
             }
             else
             {
-                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
+                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSetB");
             }
         }
     }
@@ -338,16 +338,15 @@ void SManage::clear()
             const auto scoped_emitter = vector->scoped_emit();
             vector->clear();
         }
-        else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-                seriesDB)
+        else if(const auto series_set = std::dynamic_pointer_cast<sight::data::SeriesSet>(container.get_shared());
+                series_set)
         {
-            sight::data::helper::SeriesDB helper(*seriesDB);
-            helper.clear();
-            helper.notify();
+            const auto scoped_emitter = series_set->scoped_emit();
+            series_set->clear();
         }
         else
         {
-            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
+            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSetB");
         }
     }
 }
@@ -387,17 +386,16 @@ void SManage::internalAdd(bool _copy)
             const auto scoped_emitter = vector->scoped_emit();
             vector->push_back(obj);
         }
-        else if(const auto seriesDB = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
-                seriesDB)
+        else if(const auto series_set = std::dynamic_pointer_cast<sight::data::SeriesSet>(container.get_shared());
+                series_set)
         {
-            auto series = sight::data::Series::dynamicCast(obj);
-            sight::data::helper::SeriesDB helper(*seriesDB);
-            helper.add(series);
-            helper.notify();
+            auto series               = sight::data::Series::dynamicCast(obj);
+            const auto scoped_emitter = series_set->scoped_emit();
+            series_set->push_back(series);
         }
         else
         {
-            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesDBB");
+            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSetB");
         }
     }
 }

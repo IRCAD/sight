@@ -433,8 +433,25 @@ void MeshTest::copy()
         data::Mesh::Attributes::POINT_COLORS | data::Mesh::Attributes::POINT_TEX_COORDS
     );
 
-    namespace point = iterator::point;
-    namespace cell  = iterator::cell;
+    for(data::Mesh::size_t i = 0 ; i < mesh->numPoints() ; ++i)
+    {
+        mesh->setPointColor(
+            data::Mesh::point_t(i),
+            data::Mesh::color_t(i + 1),
+            data::Mesh::color_t(i + 2),
+            data::Mesh::color_t(i + 3),
+            data::Mesh::color_t(i + 4)
+        );
+
+        mesh->setPointTexCoord(
+            data::Mesh::point_t(i),
+            1.0F / (data::Mesh::texcoord_t(i) + 1.0F),
+            1.0F / (data::Mesh::texcoord_t(i) + 2.0F)
+        );
+    }
+
+    namespace point = data::iterator::point;
+    namespace cell  = data::iterator::cell;
 
     // check deep copy
     {
@@ -1322,7 +1339,7 @@ void MeshTest::benchmarkIterator()
     auto fn2 = [](const auto& tuple)
                {
                    auto& [p, n] = tuple;
-                   p.x          = p.x > 2.F ? 5.F : 1.F;
+                   p.x          = std::intptr_t(&p) % std::intptr_t(&n) == 0 ? 5.F : 1.F;
                    p.y          = 2.F;
                    p.z          = 3.F;
                    n.nx         = -1.F;
@@ -1332,14 +1349,14 @@ void MeshTest::benchmarkIterator()
 
     auto fn3 = [](auto& p)
                {
-                   p.x = p.x > 2.F ? 5.F : 1.F;
+                   p.x = std::intptr_t(&p) % 2 == 0 ? 5.F : 1.F;
                    p.y = 2.F;
                    p.z = 3.F;
                };
 
     auto fn4 = [](auto& n)
                {
-                   n.nx = n.ny > 2.F ? 5.F : 1.F;
+                   n.nx = std::intptr_t(&n) % 2 == 0 ? 5.F : 1.F;
                    n.ny = -1.F;
                    n.nz = 1.F;
                };

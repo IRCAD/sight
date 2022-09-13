@@ -44,42 +44,42 @@ void SeriesSet::shallowCopy(const Object::csptr& source)
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<SeriesSet::container_type>::shallowCopy(other);
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool SeriesSet::operator==(const SeriesSet& other) const noexcept
 {
-    return IContainer<SeriesSet::container_type>::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool SeriesSet::operator!=(const SeriesSet& other) const noexcept
 {
-    return IContainer<SeriesSet::container_type>::operator!=(other);
+    return BaseClass::operator!=(other);
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesSet::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void SeriesSet::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     const auto& other = SeriesSet::dynamicCast(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<SeriesSet::container_type>::cachedDeepCopy(other, cache);
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

@@ -27,12 +27,12 @@
 
 #include <core/base.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 namespace sight::data
 {
 
-class ActivitySeries;
+class Activity;
 
 } // namespace sight::data
 
@@ -67,14 +67,14 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    ACTIVITY_API virtual ValidationType validate(const CSPTR(data::ActivitySeries)& activity) const = 0;
+    ACTIVITY_API virtual ValidationType validate(const CSPTR(data::Activity)& activity) const = 0;
 
     /**
-     * @brief Checks if all the required data are present in the activity series.
+     * @brief Checks if all the required data are present in the activity.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    static ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::ActivitySeries)& activity);
+    static ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::Activity)& activity);
 
     /**
      * @brief Calls the object validator if it is defined.

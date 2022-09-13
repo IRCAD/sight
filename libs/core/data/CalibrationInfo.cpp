@@ -63,42 +63,37 @@ CalibrationInfo::CalibrationInfo(data::Object::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::~CalibrationInfo()
-= default;
-
-//------------------------------------------------------------------------------
-
-void CalibrationInfo::shallowCopy(const data::Object::csptr& _source)
+void CalibrationInfo::shallowCopy(const Object::csptr& source)
 {
-    CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->fieldShallowCopy(other);
-
     m_imageContainer     = other->m_imageContainer;
     m_pointListContainer = other->m_pointListContainer;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void CalibrationInfo::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->fieldDeepCopy(other);
 
     this->resetRecords();
     SIGHT_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
@@ -112,6 +107,8 @@ void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCop
 
         ++imgIter;
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -274,7 +271,7 @@ bool CalibrationInfo::operator==(const CalibrationInfo& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

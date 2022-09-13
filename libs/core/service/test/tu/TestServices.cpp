@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
-#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 SIGHT_REGISTER_SERVICE(

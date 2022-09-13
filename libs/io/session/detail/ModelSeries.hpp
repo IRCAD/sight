@@ -43,7 +43,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto modelSeries = Helper::safeCast<data::ModelSeries>(object);
+    const auto modelSeries = Helper::safe_cast<data::ModelSeries>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::ModelSeries>(tree, 1);
@@ -72,7 +72,7 @@ inline static data::ModelSeries::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto modelSeries = Helper::safeCast<data::ModelSeries>(object);
+    auto modelSeries = Helper::cast_or_create<data::ModelSeries>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ModelSeries>(tree, 0, 1);

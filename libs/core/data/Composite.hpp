@@ -38,17 +38,12 @@ public:
     /// Constructors / Destructor / Assignment operators
     /// @{
     DATA_API Composite(Object::Key key);
-    DATA_API ~Composite() override = default;
+    DATA_API ~Composite() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
     using IContainer<Composite::container_type>::IContainer;
     using IContainer<Composite::container_type>::operator=;
     /// @}
-
-    /// Defines shallow copy
-    /// @throws data::Exception if an errors occurs during copy
-    /// @param source the source object to copy
-    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Equality comparison operators
     /// @{
@@ -59,13 +54,19 @@ public:
     template<typename C = Object>
     inline typename C::sptr get(const std::string& key) const noexcept;
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
     /// @throws data::Exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
-    DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 };
 
 //------------------------------------------------------------------------------

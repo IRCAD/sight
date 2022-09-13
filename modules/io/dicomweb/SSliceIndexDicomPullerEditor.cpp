@@ -30,11 +30,10 @@
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/http/exceptions/Base.hpp>
@@ -155,8 +154,8 @@ void SSliceIndexDicomPullerEditor::starting()
     // Connect the signals
     QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
-    // Create temporary SeriesDB
-    m_tempSeriesDB = data::SeriesDB::New();
+    // Create temporary SeriesSet
+    m_tmp_series_set = data::SeriesSet::New();
 
     // Create reader
     auto dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
@@ -165,7 +164,7 @@ void SSliceIndexDicomPullerEditor::starting()
                                                                       "sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.",
         dicomReader
     );
-    dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
+    dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
     if(m_readerConfig)
     {
         dicomReader->setConfiguration(m_readerConfig);
@@ -321,36 +320,35 @@ void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeri
     //Copy image
     data::ImageSeries::sptr imageSeries;
 
-    if(!m_tempSeriesDB->getContainer().empty())
+    if(!m_tmp_series_set->empty())
     {
-        imageSeries = data::ImageSeries::dynamicCast(*(m_tempSeriesDB->getContainer().begin()));
+        imageSeries = data::ImageSeries::dynamicCast(m_tmp_series_set->front());
     }
 
     if(imageSeries)
     {
-        data::Image::sptr newImage      = imageSeries->getImage();
-        const data::Image::Size newSize = newImage->getSize();
+        const data::Image::Size newSize = imageSeries->getSize();
 
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
 
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::AXIAL,
             m_axialIndex->value()
         );
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::AXIAL,
             m_frontalIndex->value()
         );
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::AXIAL,
             m_sagittalIndex->value()
         );
 
-        this->setOutput("image", newImage);
+        this->setOutput("image", imageSeries);
     }
 
     std::error_code ec;
@@ -405,7 +403,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
         std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value())
                                          + dicomSeries.getFirstInstanceNumber();
 
-        std::string seriesInstanceUID = dicomSeries.getInstanceUID();
+        std::string seriesInstanceUID = dicomSeries.getSeriesInstanceUID();
 
         // Find Series according to SeriesInstanceUID
         QJsonObject query;

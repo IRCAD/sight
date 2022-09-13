@@ -2,8 +2,6 @@
     <id>2DVisualization</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="SERIESDB" />
-        <param name="AS_UID" />
         <param name="imageSeries" />
         <param name="landmarks" />
         <param name="advancedLandmarksEditor" default="true" />
@@ -13,11 +11,8 @@
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
-        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="sight::data::ActivitySeries" src="ref" />
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
-        <object uid="image" type="sight::data::Image" src="deferred" />
 
         <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
@@ -56,8 +51,6 @@
                     <menuItem name="Hide cross" icon="sight::module::ui::icons/HideCross.png" style="radio" />
                     <menuItem name="Show normal cross" icon="sight::module::ui::icons/NormalCross.png" style="radio" />
                     <menuItem name="Show full cross" icon="sight::module::ui::icons/FullCross.png" style="radio" />
-                    <separator />
-                    <menuItem name="Export Activity" icon="sight::module::ui::icons/Export.svg" />
                 </layout>
             </gui>
             <registry>
@@ -73,13 +66,12 @@
                 <menuItem sid="ActionHideCross" />
                 <menuItem sid="ActionShowNormalCross" />
                 <menuItem sid="ActionShowFullCross" />
-                <menuItem sid="ActionExportActivity" />
             </registry>
         </service>
 
         <service uid="cfgNegato1" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${imageSeries}" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="view_negato1" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -89,7 +81,7 @@
 
         <service uid="cfgNegato2" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${imageSeries}" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="view_negato2" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -99,7 +91,7 @@
 
         <service uid="cfgNegato3" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${imageSeries}" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="view_negato3" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -107,33 +99,23 @@
             <parameter replace="orientation" by="sagittal" />
         </service>
 
-        <service uid="ActionExportActivity" type="sight::module::ui::base::series::SExport" autoConnect="true">
-            <inout key="seriesDB" uid="${SERIESDB}" />
-            <inout key="series" uid="${AS_UID}" />
-        </service>
-
         <service uid="landmarksEditor" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true">
             <inout key="landmarks" uid="${landmarks}" />
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>
-
-        <!-- <service uid="ActionSFocusLandmark" type="sight::module::ui::base::metrics::SFocusLandmark" >
-            <in key="landmarks" uid="${landmarks}" autoConnect="true" />
-            <inout key="image" uid="image" />
-        </service> -->
 
         <service uid="ActionLoadLandmark" type="sight::module::ui::base::SAction" />
         <service uid="ActionSaveLandmark" type="sight::module::ui::base::SAction" />
         <service uid="ActionEditLandmark" type="sight::module::ui::base::SAction" />
 
         <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SAddDistance">
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${imageSeries}" />
         </service>
         <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::SRemoveDistance">
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${imageSeries}" />
         </service>
         <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true">
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${imageSeries}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
@@ -163,22 +145,17 @@
         </service>
 
         <service uid="ActionHideCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="image" />
+            <in key="image" uid="${imageSeries}" />
             <crossType>hide</crossType>
         </service>
         <service uid="ActionShowNormalCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="image" />
+            <in key="image" uid="${imageSeries}" />
             <crossType>half</crossType>
             <state checked="true" />
         </service>
         <service uid="ActionShowFullCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="image" />
+            <in key="image" uid="${imageSeries}" />
             <crossType>full</crossType>
-        </service>
-
-        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
-            <in key="imageSeries" uid="${imageSeries}" />
-            <out key="image" uid="image" />
         </service>
 
         <connect>
@@ -234,7 +211,6 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
-        <start uid="extractImageSrv" />
         <start uid="toolBar" />
         <start uid="landmarksEditor" />
         <start uid="ActionPrevious" />
@@ -248,7 +224,6 @@
         <start uid="ActionHideCross" />
         <start uid="ActionShowNormalCross" />
         <start uid="ActionShowFullCross" />
-        <start uid="ActionExportActivity" />
 
         <start uid="cfgNegato1" />
         <start uid="cfgNegato2" />
@@ -256,9 +231,5 @@
 
         <start uid="LoadLandmark" />
         <start uid="SaveLandmark" />
-
-        <!-- UPDATE SERVICES -->
-        <update uid="extractImageSrv" />
-
     </config>
 </extension>

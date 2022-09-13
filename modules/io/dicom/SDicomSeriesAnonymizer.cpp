@@ -27,7 +27,7 @@
 #include <core/jobs/IJob.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
 
@@ -116,9 +116,8 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream)
 
 void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
 {
-    const auto seriesDB = m_seriesDB.lock();
-
-    data::helper::SeriesDB sDBhelper(*seriesDB);
+    const auto series_set     = m_series_set.lock();
+    const auto scoped_emitter = series_set->scoped_emit();
 
     auto anonymizer = sight::io::dicom::helper::DicomSeriesAnonymizer::New();
     m_sigJobCreated->emit(anonymizer->getJob());
@@ -143,18 +142,15 @@ void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
     {
         for(const auto& value : _vector)
         {
-            data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(value);
-            sDBhelper.remove(dicomSeries);
+            auto dicomSeries = data::DicomSeries::dynamicCast(value);
+            series_set->remove(dicomSeries);
         }
 
         for(const auto& anonymizedDicomSeries : anonymizedDicomSeriesVector)
         {
-            sDBhelper.add(anonymizedDicomSeries);
+            series_set->push_back(anonymizedDicomSeries);
         }
     }
-
-    // Notify SeriesDB
-    sDBhelper.notify();
 }
 
 //------------------------------------------------------------------------------

@@ -70,9 +70,9 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
     {
         const auto originFrameTL = m_originFrameTL.lock();
         SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_TL_INPUT << "' timeline", originFrameTL);
-        const auto cameraSeries = m_cameraSeries.lock();
-        SIGHT_ASSERT("missing '" << s_CAMERA_SERIES_INPUT << "' cameraSeries", cameraSeries);
-        data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
+        const auto camera_set = m_camera_set.lock();
+        SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
+        data::Camera::csptr depthCamera = camera_set->get_camera(0);
 
         auto scaledFrameTL = m_scaledDepthTL.lock();
         SIGHT_ASSERT("missing '" << s_SCALED_FRAME_TL_INOUT << "' timeline", scaledFrameTL);

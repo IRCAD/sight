@@ -41,7 +41,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto camera_set = Helper::safeCast<data::CameraSet>(object);
+    const auto camera_set = Helper::safe_cast<data::CameraSet>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::CameraSet>(tree, 1);
@@ -67,7 +67,7 @@ inline static data::CameraSet::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto camera_set = Helper::safeCast<data::CameraSet>(object);
+    auto camera_set = Helper::cast_or_create<data::CameraSet>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::CameraSet>(tree, 0, 1);

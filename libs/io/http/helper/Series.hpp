@@ -24,7 +24,7 @@
 
 #include "io/http/config.hpp"
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <QJsonObject>
 
@@ -53,7 +53,7 @@ class IO_HTTP_CLASS_API Series
 {
 public:
 
-    typedef data::SeriesDB::ContainerType DicomSeriesContainer;
+    typedef data::SeriesSet::container_type DicomSeriesContainer;
     typedef std::vector<std::string> InstanceUIDContainer;
     typedef std::map<std::string, unsigned int> InstanceCountMap;
 

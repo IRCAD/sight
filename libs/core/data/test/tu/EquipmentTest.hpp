@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/Equipment.hpp>
+#include <data/Series.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -47,7 +47,7 @@ public:
 
 private:
 
-    Equipment::sptr m_equipment;
+    Series::sptr m_equipment;
 };
 
 } // namespace sight::data::ut

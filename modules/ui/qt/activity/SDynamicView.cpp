@@ -161,11 +161,11 @@ void SDynamicView::updating()
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::launchActivity(data::ActivitySeries::sptr activitySeries)
+void SDynamicView::launchActivity(data::Activity::sptr activity)
 {
-    if(this->validateActivity(activitySeries))
+    if(this->validateActivity(activity))
     {
-        SDynamicViewInfo viewInfo = this->createViewInfo(activitySeries);
+        SDynamicViewInfo viewInfo = this->createViewInfo(activity);
         viewInfo.closable = true;
 
         this->launchTab(viewInfo);
@@ -184,7 +184,7 @@ void SDynamicView::createTab(sight::activity::ActivityMsg info)
     viewInfo.tooltip        = info.getToolTip();
     viewInfo.viewConfigID   = info.getAppConfigID();
     viewInfo.replacementMap = info.getReplacementMap();
-    viewInfo.activitySeries = info.getActivitySeries();
+    viewInfo.activity       = info.getActivity();
 
     this->launchTab(viewInfo);
 }
@@ -194,7 +194,7 @@ void SDynamicView::createTab(sight::activity::ActivityMsg info)
 void SDynamicView::launchTab(SDynamicViewInfo& info)
 {
     static int count = 0;
-    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), info.activitySeries->getID());
+    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), info.activity->getID());
 
     if(iter != m_activityIds.end())
     {
@@ -254,7 +254,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
     info.container = subContainer;
     info.helper    = helper;
-    m_activityIds.insert(info.activitySeries->getID());
+    m_activityIds.insert(info.activity->getID());
 
     m_dynamicInfoMap[widget] = info;
     m_tabIDList.insert(info.tabID);
@@ -322,7 +322,7 @@ void SDynamicView::closeTab(int index, bool forceClose)
         info.container->destroyContainer();
         info.container.reset();
         m_dynamicInfoMap.erase(widget);
-        m_activityIds.erase(info.activitySeries->getID());
+        m_activityIds.erase(info.activity->getID());
     }
     else
     {
@@ -364,7 +364,7 @@ void SDynamicView::changedTab(int index)
     if(index >= 0)
     {
         SDynamicViewInfo info = m_dynamicInfoMap[widget];
-        m_sigActivitySelected->asyncEmit(info.activitySeries);
+        m_sigActivitySelected->asyncEmit(info.activity);
     }
     else
     {
@@ -376,12 +376,12 @@ void SDynamicView::changedTab(int index)
 
 void SDynamicView::buildMainActivity()
 {
-    data::ActivitySeries::sptr actSeries = this->createMainActivity();
+    auto activity = this->createMainActivity();
 
-    if(actSeries)
+    if(activity)
     {
         SDynamicViewInfo viewInfo;
-        viewInfo          = this->createViewInfo(actSeries);
+        viewInfo          = this->createViewInfo(activity);
         viewInfo.closable = m_mainActivityClosable;
 
         this->launchTab(viewInfo);
@@ -390,10 +390,10 @@ void SDynamicView::buildMainActivity()
 
 //------------------------------------------------------------------------------
 
-SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries::sptr activitySeries)
+SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::Activity::sptr activity)
 {
     auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
-        *activitySeries,
+        *activity,
         m_parameters
     );
 
@@ -402,7 +402,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
     viewInfo.icon           = info.icon;
     viewInfo.tooltip        = info.tabInfo.empty() ? info.title : info.tabInfo;
     viewInfo.viewConfigID   = info.appConfig.id;
-    viewInfo.activitySeries = activitySeries;
+    viewInfo.activity       = activity;
     viewInfo.replacementMap = replacementMap;
 
     return viewInfo;

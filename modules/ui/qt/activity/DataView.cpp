@@ -34,11 +34,9 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/Matrix4.hpp>
-#include <data/Patient.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/String.hpp>
-#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -294,7 +292,7 @@ void DataView::fillInformation(const ActivityInfo& _info)
         buttonLayout->addWidget(buttonAdd);
         buttonAdd->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
 
-        // If the type is a Series, we add a button to import the data from a SeriesDB,
+        // If the type is a Series, we add a button to import the data from a SeriesSet,
         // we also improve the tree header by adding more informations.
         data::Object::sptr newObject = data::factory::New(req.type);
         if(newObject && data::Series::dynamicCast(newObject))
@@ -303,7 +301,7 @@ void DataView::fillInformation(const ActivityInfo& _info)
             buttonLayout->addWidget(buttonAddFromSDB);
             buttonAddFromSDB->setToolTip(
                 QString(
-                    "Import a SeriesDB and extract the N first objects of type '%1', with "
+                    "Import a SeriesSet and extract the N first objects of type '%1', with "
                     "N the maximum number of required objects."
                 ).
                 arg(QString::fromStdString(req.type))
@@ -361,14 +359,14 @@ void DataView::fillInformation(const ActivityInfo& _info)
 
 //-----------------------------------------------------------------------------
 
-void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries)
+void DataView::fillInformation(const data::Activity::sptr& _activity)
 {
     ActivityInfo info = sight::activity::extension::Activity::getDefault()->getInfo(
-        _activitySeries->getActivityConfigId()
+        _activity->getActivityConfigId()
     );
     m_activityInfo = info;
 
-    data::Composite::sptr activitySeriesData = _activitySeries->getData();
+    data::Composite::sptr activityData = _activity->getData();
 
     this->fillInformation(info);
 
@@ -376,7 +374,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
-        auto obj = activitySeriesData->get(req.name);
+        auto obj = activityData->get(req.name);
         if(obj)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0)
@@ -561,9 +559,9 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
 
 //-----------------------------------------------------------------------------
 
-bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, std::string& errorMsg)
+bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::string& errorMsg)
 {
-    data::Composite::sptr composite = actSeries->getData();
+    data::Composite::sptr composite = activity->getData();
 
     bool ok = true;
     errorMsg += "The required data are not correct:";
@@ -593,7 +591,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
 
         SIGHT_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
 
-        sight::activity::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+        sight::activity::IValidator::ValidationType validation = activityValidator->validate(activity);
         if(!validation.first)
         {
             ok        = false;
@@ -712,7 +710,7 @@ void DataView::importObjectFromSDB()
     {
         const QString message("Can't load more '" + QString::fromStdString(type)
                               + "', please remove one to load another.");
-        QMessageBox::warning(this, "Import from SeriesDB", message);
+        QMessageBox::warning(this, "Import from SeriesSet", message);
         return;
     }
 
@@ -721,16 +719,17 @@ void DataView::importObjectFromSDB()
     {
         SIGHT_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
-        // We use the SeriesDB reader and then extract the object of this type.
+        // We use the SeriesSet reader and then extract the object of this type.
         auto obj = sight::module::ui::qt::activity::DataView::readObject(
-            "sight::data::SeriesDB",
+            "sight::data::SeriesSet",
             m_sdbIoSelectorSrvConfig
         );
-        auto seriesDB = data::SeriesDB::dynamicCast(obj);
-        if(seriesDB)
+
+        auto series_set = data::SeriesSet::dynamicCast(obj);
+        if(series_set)
         {
             unsigned int nbImportedObj = 0;
-            for(const data::Series::sptr& series : *seriesDB)
+            for(const data::Series::sptr& series : *series_set)
             {
                 if(series->isA(type))
                 {
@@ -822,9 +821,9 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
     const data::Matrix4::csptr trf     = data::Matrix4::dynamicCast(_obj);
     if(series)
     {
-        newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
-        newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatient()->getSex()));
-        std::string birthdate = series->getPatient()->getBirthdate();
+        newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatientName()));
+        newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatientSex()));
+        std::string birthdate = series->getPatientBirthDate();
         if(!birthdate.empty() && birthdate != "unknown")
         {
             birthdate.insert(4, "-");
@@ -834,13 +833,13 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
         newItem->setText(int(ColumnSeriesType::BIRTHDATE), QString::fromStdString(birthdate));
 
         newItem->setText(int(ColumnSeriesType::MODALITY), QString::fromStdString(series->getModality()));
-        newItem->setText(int(ColumnSeriesType::MODALITY_DESC), QString::fromStdString(series->getDescription()));
+        newItem->setText(int(ColumnSeriesType::MODALITY_DESC), QString::fromStdString(series->getSeriesDescription()));
 
         newItem->setText(
             int(ColumnSeriesType::STUDY_DESC),
-            QString::fromStdString(series->getStudy()->getDescription())
+            QString::fromStdString(series->getStudyDescription())
         );
-        std::string date = series->getDate();
+        std::string date = series->getSeriesDate();
         if(!date.empty())
         {
             date.insert(4, "/");
@@ -849,7 +848,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
 
-        std::string time = series->getTime();
+        std::string time = series->getSeriesTime();
         if(!time.empty())
         {
             time.insert(2, ":");
@@ -858,7 +857,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
         newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time.substr(0, 8)));
 
-        std::string patientAge = series->getStudy()->getPatientAge();
+        std::string patientAge = series->getPatientAge();
         if(!patientAge.empty())
         {
             patientAge.insert(3, " ");
@@ -962,7 +961,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
             );
             newItem->setText(
                 int(ColumnImageSeriesType::CONTRAST_AGENT),
-                QString::fromStdString(imageSeries->getContrastAgent())
+                QString::fromStdString(imageSeries->getContrastBolusAgent())
             );
             std::string acquisitionTime = imageSeries->getAcquisitionTime();
             if(!acquisitionTime.empty())
@@ -975,7 +974,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
                 int(ColumnImageSeriesType::ACQUISITION_TIME),
                 QString::fromStdString(acquisitionTime.substr(0, 8))
             );
-            std::string contrastTime = imageSeries->getContrastStartTime();
+            std::string contrastTime = imageSeries->getContrastBolusStartTime();
             if(!contrastTime.empty())
             {
                 contrastTime.insert(2, ":");

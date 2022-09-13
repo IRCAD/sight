@@ -44,7 +44,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto color = Helper::safeCast<data::Color>(object);
+    const auto color = Helper::safe_cast<data::Color>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Color>(tree, 1);
@@ -66,7 +66,7 @@ inline static data::Color::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto color = Helper::safeCast<data::Color>(object);
+    auto color = Helper::cast_or_create<data::Color>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Color>(tree, 0, 1);

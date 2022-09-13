@@ -67,8 +67,8 @@
 
     <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::vtk::SSeriesDBReader</service>
-        <object>sight::data::SeriesDB</object>
+        <service>sight::module::io::vtk::SSeriesSetReader</service>
+        <object>sight::data::SeriesSet</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp *.vtu *.vti *.mhd)</desc>
     </extension>
 

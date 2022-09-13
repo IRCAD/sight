@@ -18,7 +18,6 @@
 
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
             <object uid="imageSeries" type="sight::data::ImageSeries" />
-            <object uid="image" type="sight::data::Image" src="deferred" />
             <object uid="tf" type="sight::data::TransferFunction" />
             <object uid="reconstruction" type="sight::data::Reconstruction" src="deferred" />
             <object uid="snapshot" type="sight::data::Image" />
@@ -168,7 +167,7 @@
             </service>
 
             <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
-                <in key="image" uid="image" />
+                <in key="image" uid="imageSeries" />
                 <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -232,7 +231,7 @@
             </service>
 
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
-                <inout key="image" uid="image" />
+                <inout key="image" uid="imageSeries" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
@@ -256,12 +255,6 @@
             <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
-            </service>
-            <!-- extract a sight::data::Image from the sight::data::ImageSeries -->
-            <service uid="extractImageSrv" type="sight::module::data::SGetImage">
-                <in key="imageSeries" uid="imageSeries" />
-                <out key="image" uid="image" />
-
             </service>
 
             <service uid="updaterReconstSrv" type="sight::module::data::SSelectObject">
@@ -323,11 +316,6 @@
                 <slot>negatoAdp/updateVisibility</slot>
             </connect>
 
-            <connect>
-                <signal>imageSeries/modified</signal>
-                <slot>extractImageSrv/update</slot>
-            </connect>
-
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -346,8 +334,6 @@
             <start uid="modelSeriesAdp" />
             <start uid="negatoAdp" />
             <start uid="snapshotAdp" />
-            <start uid="extractImageSrv" />
-
         </config>
     </extension>
 </plugin>

@@ -80,17 +80,16 @@ void DicomDirTest::readDicomDir()
         std::filesystem::exists(path)
     );
 
-    std::vector<data::DicomSeries::sptr> seriesDB;
+    std::vector<data::DicomSeries::sptr> seriesContainer;
 
     core::log::Logger::sptr logger = core::log::Logger::New();
 
     // Read DICOMDIR file
-    io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesDB, logger);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB.size());
+    io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesContainer, logger);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesContainer.size());
     CPPUNIT_ASSERT(logger->empty());
 
-    auto series = *seriesDB.begin();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(84), series->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(84), seriesContainer.front()->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

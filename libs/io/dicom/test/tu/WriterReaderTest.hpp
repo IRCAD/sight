@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/macros.hpp>
 
@@ -35,8 +35,6 @@ class WriterReaderTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(WriterReaderTest);
 CPPUNIT_TEST(writeReadImageSeriesTest);
-//FIXME: This test create wrong (random) Dicom Images that may cause the test to crash.
-//    CPPUNIT_TEST( writeReadSeriesDBTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,15 +44,14 @@ public:
     void tearDown() override;
 
     static void writeReadImageSeriesTest();
-    static void writeReadSeriesDBTest();
 
 private:
 
     /**
-     * Create a series DB containing an ImageSeries with landmarks and distance
+     * Create a series set containing an ImageSeries with landmarks and distance
      * and a ModelSeries with one reconstruction.
      */
-    static data::SeriesDB::sptr createSeriesDB();
+    static data::SeriesSet::sptr createSeriesSet();
 };
 
 } // namespace sight::io::dicom::ut

@@ -97,7 +97,8 @@ public:
         gdcm::Attribute<GROUP, ELEMENT> attribute;
         if(array)
         {
-            attribute.SetValues(array, static_cast<unsigned int>(size));
+            // Make a copy, in all case, otherwise this could lead to a memory leak...
+            attribute.SetValues(array, static_cast<unsigned int>(size), true);
         }
 
         dataset.Insert(attribute.GetAsDataElement());

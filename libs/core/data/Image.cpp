@@ -86,52 +86,51 @@ Image::Image(data::Object::Key /*unused*/) :
     sight::data::helper::MedicalImage::updateDefaultTransferFunction(*this);
 }
 
-//------------------------------------------------------------------------------
-
-Image::~Image() noexcept =
-    default;
-
 //-----------------------------------------------------------------------------
 
-void Image::shallowCopy(const Object::csptr& _source)
+void Image::shallowCopy(const Object::csptr& source)
 {
-    Image::csptr other = Image::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     // Assign
     copyInformation(other);
 
     m_dataArray = other->m_dataArray;
+
+    BaseClass::shallowCopy(other);
 }
 
 //-----------------------------------------------------------------------------
 
-void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Image::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Image::csptr other = Image::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !other
     );
-    this->fieldDeepCopy(_source, cache);
 
     // Assign
     this->copyInformation(other);
 
     if(other->m_dataArray)
     {
-        m_dataArray->cachedDeepCopy(other->m_dataArray, cache);
+        m_dataArray = Object::copy(other->m_dataArray, cache);
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -436,7 +435,7 @@ bool Image::operator==(const Image& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

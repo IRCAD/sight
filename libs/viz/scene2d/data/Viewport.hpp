@@ -46,9 +46,6 @@ public:
     {
     }
 
-    /// Defines shallow copy
-    VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& _source) override;
-
     double x() const;
     double y() const;
 
@@ -77,10 +74,20 @@ public:
     VIZ_SCENE2D_API bool operator!=(const Viewport& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& source) override;
 
     /// Defines deep copy
-    VIZ_SCENE2D_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    VIZ_SCENE2D_API void deepCopy(
+        const sight::data::Object::csptr& source,
+        const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache = std::make_unique<sight::data::Object::DeepCopyCacheType>()
+    )
+    override;
 
 private:
 

@@ -103,7 +103,7 @@ void SView::starting()
 
     if(!m_mainActivityId.empty())
     {
-        data::ActivitySeries::sptr activity = this->createMainActivity();
+        data::Activity::sptr activity = this->createMainActivity();
         if(activity)
         {
             this->launchActivity(activity);
@@ -136,9 +136,9 @@ void SView::updating()
 
 //------------------------------------------------------------------------------
 
-void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
+void SView::launchActivity(data::Activity::sptr activity)
 {
-    if(this->validateActivity(activitySeries))
+    if(this->validateActivity(activity))
     {
         if(m_configManager->isStarted())
         {
@@ -146,7 +146,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
         }
 
         auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
-            *activitySeries,
+            *activity,
             m_parameters
         );
 
@@ -158,7 +158,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             m_configManager->setConfig(info.appConfig.id, replacementMap);
             m_configManager->launch();
 
-            m_sigActivityLaunched->asyncEmit(activitySeries);
+            m_sigActivityLaunched->asyncEmit(activity);
         }
         catch(std::exception& e)
         {

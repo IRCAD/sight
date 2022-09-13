@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/FrameTL.hpp>
 
 #include <service/IFilter.hpp>
@@ -37,7 +37,7 @@ namespace sight::module::filter::vision
 /**
  * @brief This service applies a scale on a depth map buffer extracted from a timeline.
  *
- * The scale is given by the calibration (data::CameraSeries). The scaled map is pushed in the output timeline with
+ * The scale is given by the calibration (data::CameraSet). The scaled map is pushed in the output timeline with
  * the same timestamp as the input map.
  *
  * @section Signals Signals
@@ -50,13 +50,13 @@ namespace sight::module::filter::vision
  *
  * @code{.xml}
    <service type="sight::module::filter::vision::STransformDepthTL2mm">
-       <in key="cameraSeries" uid="..." />
+       <in key="cameraSet" uid="..." />
        <in key="originDepthTL" uid="..." />
        <inout key="scaledDepthTL" uid="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSeries [sight::data::CameraSeries]: camera series containing the scale of the depth map.
+ * - \b cameraSet [sight::data::CameraSet]: camera series containing the scale of the depth map.
  * - \b originDepthTL [sight::data::FrameTL]: timeline containing the original depth maps.
  * @subsection In-Out In-Out
  * - \b scaledDepthTL [sight::data::FrameTL]: timeline containing the scaled depth maps.
@@ -102,11 +102,11 @@ private:
     /// timestamp of the last process
     core::HiResClock::HiResClockType m_lastTimestamp {0};
 
-    static constexpr std::string_view s_CAMERA_SERIES_INPUT   = "cameraSeries";
+    static constexpr std::string_view s_CAMERA_SET_INPUT      = "cameraSet";
     static constexpr std::string_view s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
     static constexpr std::string_view s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
-    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT};
+    sight::data::ptr<sight::data::CameraSet, sight::data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT};
     sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_originFrameTL {this, s_ORIGIN_FRAME_TL_INPUT};
     sight::data::ptr<sight::data::FrameTL, sight::data::Access::inout> m_scaledDepthTL {this, s_SCALED_FRAME_TL_INOUT};
 };

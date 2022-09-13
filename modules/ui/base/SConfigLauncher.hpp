@@ -116,7 +116,7 @@ protected:
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>
-                        <parameter replace="SERIESDB" by="medicalData" />
+                        <parameter replace="SERIES_SET" by="medicalData" />
                     </parameters>
                 </appConfig>
             </config>

@@ -24,7 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <filter/dicom/composite/IComposite.hpp>
@@ -74,9 +74,9 @@ void SFilterSelectionEditor::configuring()
 
 void SFilterSelectionEditor::starting()
 {
-    // Get Destination SeriesDB
-    const auto destinationSeriesDB = m_destinationSeriesDB.lock();
-    SIGHT_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", destinationSeriesDB);
+    // Get Destination SeriesSet
+    const auto dest_series_set = m_dest_series_set.lock();
+    SIGHT_ASSERT("The SeriesSet \"" + m_dest_series_setID + "\" doesn't exist.", dest_series_set);
 
     const auto selectedDicomSeries = m_selectedDicomSeries.lock();
     SIGHT_ASSERT("Selected dicom Series vector should not be null.", selectedDicomSeries);
@@ -418,11 +418,12 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
     messageBox.setTitle("Filters information");
 
-    // Clear destination SeriesDB
-    const auto destinationSeriesDB = m_destinationSeriesDB.lock();
-    SIGHT_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", destinationSeriesDB);
-    data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
-    sDBhelper.clear();
+    // Clear destination SeriesSet
+    const auto dest_series_set = m_dest_series_set.lock();
+    SIGHT_ASSERT("The SeriesSet \"" + m_dest_series_setID + "\" doesn't exist.", dest_series_set);
+
+    const auto scoped_emitter = dest_series_set->scoped_emit();
+    dest_series_set->clear();
 
     // Be sure series are selected
     if(selectedDicomSeries->empty())
@@ -485,10 +486,10 @@ void SFilterSelectionEditor::applyFilters()
         // Push series
         if(forcedApply || ssInfos.str().empty())
         {
-            // Add filtered series to SeriesDB
-            for(const data::DicomSeries::sptr& series : dicomSeriesContainer)
+            // Add filtered series to SeriesSet
+            for(const auto& series : dicomSeriesContainer)
             {
-                sDBhelper.add(series);
+                dest_series_set->push_back(series);
             }
         }
 
@@ -504,9 +505,6 @@ void SFilterSelectionEditor::applyFilters()
 
     // Diplay message
     messageBox.show();
-
-    // Notify
-    sDBhelper.notify();
 }
 
 //------------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 
 #include "activity/validator/registry/macros.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
@@ -46,9 +46,9 @@ DefaultActivity::~DefaultActivity()
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries::csptr& activitySeries) const
+IValidator::ValidationType DefaultActivity::validate(const data::Activity::csptr& activity) const
 {
-    return IActivityValidator::checkRequirements(activitySeries);
+    return IActivityValidator::checkRequirements(activity);
 }
 
 //-----------------------------------------------------------------------------

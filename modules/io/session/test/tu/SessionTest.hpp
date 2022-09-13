@@ -27,7 +27,7 @@ namespace sight::module::io::session::ut
 {
 
 /**
- * @brief Test basic reader/writer for SeriesDB.
+ * @brief Test basic reader/writer for SeriesSet.
  */
 class SessionTest : public CPPUNIT_NS::TestFixture
 {

@@ -32,11 +32,6 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/SeriesDB.hpp>
-#include <data/Study.hpp>
-
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
 
 #include <gdcmImageReader.h>
 #include <gdcmScanner.h>
@@ -83,8 +78,6 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             // Read the image
             data::ImageSeries::sptr imageSeries = data::dicom::Series::convertToImageSeries(dicomSeries);
             imageSeries->setDicomReference(dicomSeries);
-            data::Image::sptr image = data::Image::New();
-            imageSeries->setImage(image);
 
             // Create IOD Reader
             io::dicom::reader::iod::CTMRImageIOD iod(dicomSeries, instance, m_logger,
@@ -160,7 +153,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             else
             {
                 m_logger->critical(
-                    "The spatial fiducials series \"" + dicomSeries->getInstanceUID()
+                    "The spatial fiducials series \"" + dicomSeries->getSeriesInstanceUID()
                     + "\" could not be read as it refers to an unknown series UID."
                 );
             }
@@ -204,7 +197,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             else
             {
                 m_logger->critical(
-                    "The structured report series \"" + dicomSeries->getInstanceUID()
+                    "The structured report series \"" + dicomSeries->getSeriesInstanceUID()
                     + "\" could not be read as it refers to an unknown series UID."
                 );
             }

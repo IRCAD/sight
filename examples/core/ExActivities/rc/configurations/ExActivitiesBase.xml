@@ -10,7 +10,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="seriesDB" type="sight::data::SeriesDB" />
+        <object uid="activitySet" type="sight::data::ActivitySet" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -31,7 +31,7 @@
 
         <service uid="activityLauncherSrv" type="sight::service::SConfigController" >
             <appConfig id="ActivityLauncher" />
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="activitySet" uid="activitySet" />
             <parameter replace="SEQUENCER_CONFIG" by="${SEQUENCER_CONFIG}" />
             <parameter replace="WIZARD_CONFIG" by="${WIZARD_CONFIG}" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />

@@ -52,17 +52,17 @@ void ActivitySetTest::nominalTest()
     static const auto configId3 = core::tools::UUID::generateUUID();
 
     // Create three activities
-    const auto& activity1 = std::make_shared<ActivitySeries>();
+    const auto& activity1 = Activity::New();
     activity1->setActivityConfigId(configId1);
 
-    const auto& activity2 = std::make_shared<ActivitySeries>();
+    const auto& activity2 = Activity::New();
     activity2->setActivityConfigId(configId2);
 
-    const auto& activity3 = std::make_shared<ActivitySeries>();
+    const auto& activity3 = Activity::New();
     activity3->setActivityConfigId(configId3);
 
     // Create an activity set and add the three activities
-    auto activity_set = std::make_shared<ActivitySet>();
+    auto activity_set = ActivitySet::New();
     CPPUNIT_ASSERT(activity_set);
 
     activity_set->push_back(activity1);
@@ -99,7 +99,7 @@ void ActivitySetTest::nominalTest()
     CPPUNIT_ASSERT(activity_set->size() == 3);
 
     // Inserting a new activity should change the size, and should return true
-    CPPUNIT_ASSERT(activity_set->insert(activity_set->end(), std::make_shared<ActivitySeries>()).second == true);
+    CPPUNIT_ASSERT(activity_set->insert(activity_set->end(), Activity::New()).second == true);
     CPPUNIT_ASSERT(activity_set->size() == 4);
 }
 
@@ -112,13 +112,13 @@ void ActivitySetTest::copyTest()
     static const auto configId3 = core::tools::UUID::generateUUID();
 
     // Create three activities
-    const auto& activity1 = std::make_shared<ActivitySeries>();
+    const auto& activity1 = Activity::New();
     activity1->setActivityConfigId(configId1);
 
-    const auto& activity2 = std::make_shared<ActivitySeries>();
+    const auto& activity2 = Activity::New();
     activity2->setActivityConfigId(configId2);
 
-    const auto& activity3 = std::make_shared<ActivitySeries>();
+    const auto& activity3 = Activity::New();
     activity3->setActivityConfigId(configId3);
 
     // Create an activity set and add the three activities

@@ -25,7 +25,7 @@
 #include "io/dimse/config.hpp"
 #include "io/dimse/data/PacsConfiguration.hpp"
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
@@ -53,7 +53,7 @@ class IO_DIMSE_CLASS_API Series
 {
 public:
 
-    typedef sight::data::SeriesDB::ContainerType DicomSeriesContainer;
+    typedef sight::data::SeriesSet::container_type DicomSeriesContainer;
     typedef std::vector<std::string> InstanceUIDContainer;
     typedef std::map<std::string, unsigned int> InstanceCountMap;
 

@@ -63,12 +63,11 @@ public:
     {
     }
 
-    ~Buffer() override
-    = default;
+    ~Buffer() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr& /*source*/, DeepCopyCacheType& /*cache*/) override
+    void shallowCopy(const Object::csptr& /*unused*/) override
     {
     }
 };

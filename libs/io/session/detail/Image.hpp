@@ -49,7 +49,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    auto image = Helper::safeCast<data::Image>(object);
+    auto image = Helper::safe_cast<data::Image>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Image>(tree, 1);
@@ -89,7 +89,7 @@ inline static data::Image::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto image = Helper::safeCast<data::Image>(object);
+    auto image = Helper::cast_or_create<data::Image>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Image>(tree, 0, 1);

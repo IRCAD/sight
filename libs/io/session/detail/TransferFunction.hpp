@@ -114,7 +114,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto transferFunction = Helper::safeCast<data::TransferFunction>(object);
+    const auto transferFunction = Helper::safe_cast<data::TransferFunction>(object);
 
     Helper::writeVersion<data::TransferFunction>(tree, 1);
 
@@ -156,7 +156,7 @@ inline static data::TransferFunction::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto transferFunction = Helper::safeCast<data::TransferFunction>(object);
+    auto transferFunction = Helper::cast_or_create<data::TransferFunction>(object);
 
     // Background color
     const auto backgroundColorTree = tree.get_child(s_BackgroundColor);

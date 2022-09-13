@@ -38,7 +38,7 @@ class GenericTL : public BufferTL
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, Object);
+    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, BufferTL);
 
     typedef timeline::GenericObject<BUFFER_TYPE> BufferType;
     /**
@@ -48,7 +48,7 @@ public:
     GenericTL(Object::Key key);
 
     /// Destructor
-    ~GenericTL() override;
+    inline ~GenericTL() override = default;
 
     /**
      * @brief Returns the closest buffer to the given timestamp
@@ -92,10 +92,21 @@ public:
     bool operator!=(const GenericTL& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// maximum number of elements inside a single buffer
     unsigned int m_maxElementNum;

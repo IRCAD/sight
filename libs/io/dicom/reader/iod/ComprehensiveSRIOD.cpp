@@ -81,7 +81,7 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
+    io::dicom::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger,
                                                m_progressCallback, m_cancelRequestedCallback);
 
     // Read SR

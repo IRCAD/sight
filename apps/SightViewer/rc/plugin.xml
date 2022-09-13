@@ -63,9 +63,9 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
-            <object uid="pacsSeriesDB" type="sight::data::SeriesDB" />
+            <object uid="pacsSeriesSet" type="sight::data::SeriesSet" />
             <object uid="image" type="sight::data::Image" src="deferred"/>
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
             <object uid="landmarks" type="sight::data::Landmarks" />
@@ -282,7 +282,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openSeriesDBAct" start="true" />
+                    <menuItem sid="openSeriesSetAct" start="true" />
                     <menuItem sid="pacsAct" start="true" />
                     <menuItem sid="negatoViewAct" start="true" />
                     <menuItem sid="volumeViewAct" start="true" />
@@ -303,14 +303,14 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesDBAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
-                <inout key="data" uid="seriesDB" />
+            <service uid="openSeriesSetAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
+                <inout key="data" uid="seriesSet" />
                 <selection mode="exclude" />
-                <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
+                <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />
                 <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
-                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
-                <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
-                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SSeriesDBReader" />
+                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesSetReader" />
+                <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesSetReader" />
+                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SSeriesSetReader" />
             </service>
 
             <!-- Show the negato/volume view -->
@@ -388,7 +388,7 @@
                 <appConfig id="PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
-                <inout key="outputSeriesDB" uid="pacsSeriesDB" />
+                <inout key="outputSeriesSet" uid="pacsSeriesSet" />
             </service>
 
             <!-- Adaptors visibility -->
@@ -490,13 +490,13 @@
 
             <!-- Extract the model or the image from the series -->
             <service uid="extractSeriesSrv" type="sight::module::ui::qt::series::SSelectDialog" >
-                <in key="seriesDB" uid="seriesDB"/>
+                <in key="seriesSet" uid="seriesSet"/>
                 <out key="modelSeries" uid="modelSeries" />
                 <out key="image" uid="image" />
             </service>
 
             <service uid="extractPacsImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
-                <in key="seriesDB" uid="pacsSeriesDB"/>
+                <in key="seriesSet" uid="pacsSeriesSet"/>
                 <out key="image" uid="image" />
             </service>
 
@@ -604,17 +604,17 @@
             </connect>
 
             <connect>
-                <signal>seriesDB/modified</signal>
+                <signal>seriesSet/modified</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>seriesDB/addedSeries</signal>
+                <signal>seriesSet/addedObjects</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>pacsSeriesDB/addedSeries</signal>
+                <signal>pacsSeriesSet/addedObjects</signal>
                 <slot>extractPacsImageSrv/update</slot>
             </connect>
 

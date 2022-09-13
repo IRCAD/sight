@@ -26,7 +26,7 @@
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -58,7 +58,7 @@ void SliceThicknessModifierTest::tearDown()
 
 void SliceThicknessModifierTest::simpleApplication()
 {
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+    auto series_set = data::SeriesSet::New();
 
     const std::string filename       = "09-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -69,14 +69,14 @@ void SliceThicknessModifierTest::simpleApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(seriesDB);
+    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
@@ -106,7 +106,7 @@ void SliceThicknessModifierTest::simpleApplication()
 
 void SliceThicknessModifierTest::applyFilterOn2DImage()
 {
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+    auto series_set = data::SeriesSet::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -117,14 +117,14 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(seriesDB);
+    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);

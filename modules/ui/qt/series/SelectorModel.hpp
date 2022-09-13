@@ -25,7 +25,6 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 
 #include <QPointer>
 #include <QStandardItem>
@@ -129,7 +128,7 @@ public:
     MODULE_UI_QT_API QStandardItem* findSeriesItem(data::Series::sptr _series);
 
     /// Returns the item representing the study.
-    MODULE_UI_QT_API QStandardItem* findStudyItem(data::Study::sptr _study);
+    MODULE_UI_QT_API QStandardItem* findStudyItem(data::Series::sptr _series);
 
     /**
      * @brief Sets the specific icons for series in selector.

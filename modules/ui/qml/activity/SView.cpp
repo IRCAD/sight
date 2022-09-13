@@ -39,8 +39,7 @@ namespace sight::module::ui::qml::activity
 
 static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
-static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
-static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT = "launchActivity";
 
 //------------------------------------------------------------------------------
 
@@ -48,7 +47,6 @@ SView::SView()
 {
     m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
     newSlot(s_LAUNCH_ACTIVITY_SLOT, &SView::launchActivity, this);
-    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SView::launchActivitySeries, this);
 }
 
 //------------------------------------------------------------------------------
@@ -92,18 +90,18 @@ void SView::notifyActivityCreation()
 
 //------------------------------------------------------------------------------
 
-void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
+void SView::launchActivity(data::Activity::sptr activity)
 {
     bool isValid = false;
     std::string message;
 
     // check if the activity can be launched
-    std::tie(isValid, message) = sight::module::ui::qml::activity::SView::validateActivity(activitySeries);
+    std::tie(isValid, message) = sight::module::ui::qml::activity::SView::validateActivity(activity);
 
     if(isValid)
     {
         auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
-            *activitySeries,
+            *activity,
             m_parameters
         );
 
@@ -132,17 +130,6 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             message,
             sight::ui::base::dialog::IMessageDialog::CRITICAL
         );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SView::launchActivitySeries(data::Series::sptr series)
-{
-    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
-    if(activitySeries)
-    {
-        this->launchActivity(activitySeries);
     }
 }
 

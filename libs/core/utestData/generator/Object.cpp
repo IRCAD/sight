@@ -24,13 +24,12 @@
 
 #include "utestData/generator/Image.hpp"
 #include "utestData/generator/Mesh.hpp"
-#include "utestData/generator/SeriesDB.hpp"
+#include "utestData/generator/SeriesSet.hpp"
 
 #include <core/tools/random/Generator.hpp>
 
 #include <data/Integer.hpp>
 #include <data/Plane.hpp>
-#include <data/ProcessObject.hpp>
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
 #include <data/String.hpp>
@@ -357,28 +356,6 @@ data::Material::sptr Object::createMaterial()
 
 //------------------------------------------------------------------------------
 
-data::ProcessObject::sptr Object::createProcessObject()
-{
-    const std::string IMAGEID1  = "myImage1";
-    const std::string IMAGEID2  = "myImage2";
-    const std::string FIELD_ID1 = "myField1";
-    const std::string FIELD_ID2 = "myField2";
-    data::Image::sptr image1    = data::Image::New();
-    data::Image::sptr image2    = data::Image::New();
-    data::Integer::sptr field1  = data::Integer::New(3);
-    data::Integer::sptr field2  = data::Integer::New(8);
-
-    // process
-    data::ProcessObject::sptr po = data::ProcessObject::New();
-    po->setInputValue(IMAGEID1, image1);
-    po->setInputValue(FIELD_ID1, field1);
-    po->setInputValue(FIELD_ID2, field2);
-    po->setOutputValue(IMAGEID2, image2);
-    return po;
-}
-
-//------------------------------------------------------------------------------
-
 data::Point::sptr Object::generatePoint()
 {
     std::array<double, 3> coord = {static_cast<double>(safeRand() % 300),
@@ -412,13 +389,13 @@ data::Resection::sptr Object::generateResection()
     resection->setIsVisible(((safeRand() % 1) != 0));
     data::Reconstruction::sptr recInput = data::Reconstruction::New();
 
-    utestData::generator::SeriesDB::generateReconstruction(recInput);
+    utestData::generator::SeriesSet::generateReconstruction(recInput);
     data::Resection::ResectionInputs inputs;
     inputs.push_back(recInput);
     resection->setInputs(inputs);
 
     data::Reconstruction::sptr recOutput = data::Reconstruction::New();
-    utestData::generator::SeriesDB::generateReconstruction(recOutput);
+    utestData::generator::SeriesSet::generateReconstruction(recOutput);
     data::Resection::ResectionOutputs outputs;
     outputs.push_back(recOutput);
     resection->setOutputs(outputs);

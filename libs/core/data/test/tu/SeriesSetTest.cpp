@@ -52,17 +52,17 @@ void SeriesSetTest::nominalTest()
     static const auto description3 = core::tools::UUID::generateUUID();
 
     // Create three series
-    const auto& series1 = std::make_shared<Series>();
-    series1->setDescription(description1);
+    const auto& series1 = Series::New();
+    series1->setSeriesDescription(description1);
 
-    const auto& series2 = std::make_shared<Series>();
-    series2->setDescription(description2);
+    const auto& series2 = Series::New();
+    series2->setSeriesDescription(description2);
 
-    const auto& series3 = std::make_shared<Series>();
-    series3->setDescription(description3);
+    const auto& series3 = Series::New();
+    series3->setSeriesDescription(description3);
 
     // Create an series set and add the three series
-    auto series_set = std::make_shared<SeriesSet>();
+    auto series_set = SeriesSet::New();
     CPPUNIT_ASSERT(series_set);
 
     series_set->push_back(series1);
@@ -99,7 +99,7 @@ void SeriesSetTest::nominalTest()
     CPPUNIT_ASSERT(series_set->size() == 3);
 
     // Inserting a new series should change the size, and should return true
-    CPPUNIT_ASSERT(series_set->insert(series_set->end(), std::make_shared<Series>()).second == true);
+    CPPUNIT_ASSERT(series_set->insert(series_set->end(), Series::New()).second == true);
     CPPUNIT_ASSERT(series_set->size() == 4);
 }
 
@@ -112,23 +112,23 @@ void SeriesSetTest::copyTest()
     static const auto description3 = core::tools::UUID::generateUUID();
 
     // Create three activities
-    const auto& series1 = std::make_shared<Series>();
-    series1->setDescription(description1);
+    const auto& series1 = Series::New();
+    series1->setSeriesDescription(description1);
 
-    const auto& series2 = std::make_shared<Series>();
-    series2->setDescription(description2);
+    const auto& series2 = Series::New();
+    series2->setSeriesDescription(description2);
 
-    const auto& series3 = std::make_shared<Series>();
-    series3->setDescription(description3);
+    const auto& series3 = Series::New();
+    series3->setSeriesDescription(description3);
 
     // Create an series set and add the three activities
-    const auto& original_series_set = std::make_shared<SeriesSet>();
+    const auto& original_series_set = SeriesSet::New();
     original_series_set->push_back(series1);
     original_series_set->push_back(series2);
     original_series_set->push_back(series3);
 
     // Create another series and shallow copy the original series
-    auto shallow_series_set = std::make_shared<SeriesSet>();
+    auto shallow_series_set = SeriesSet::New();
     shallow_series_set->shallowCopy(original_series_set);
 
     CPPUNIT_ASSERT(shallow_series_set->size() == 3);
@@ -136,7 +136,7 @@ void SeriesSetTest::copyTest()
     CPPUNIT_ASSERT((*shallow_series_set)[1] == series2);
     CPPUNIT_ASSERT((*shallow_series_set)[2] == series3);
 
-    auto deep_series_set = std::make_shared<SeriesSet>();
+    auto deep_series_set = SeriesSet::New();
     deep_series_set->deepCopy(original_series_set);
 
     CPPUNIT_ASSERT(deep_series_set->size() == 3);

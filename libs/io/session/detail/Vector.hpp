@@ -39,7 +39,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto vector = Helper::safeCast<data::Vector>(object);
+    const auto vector = Helper::safe_cast<data::Vector>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Vector>(tree, 1);
@@ -62,7 +62,7 @@ inline static data::Vector::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto vector = Helper::safeCast<data::Vector>(object);
+    auto vector = Helper::cast_or_create<data::Vector>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Vector>(tree, 0, 1);

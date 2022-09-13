@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <data/ActivitySeries.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/Activity.hpp>
+#include <data/CameraSet.hpp>
 
 #include <service/helper/ConfigLauncher.hpp>
 
@@ -50,8 +50,8 @@ namespace sight::module::ui::qt::calibration
  *
  * @code{.xml}
    <service uid="cameraLauncher" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
-       <inout key="cameraSeries" uid="..." />
-       <inout key="activitySeries" uid="..." />
+       <inout key="cameraSet" uid="..." />
+       <inout key="activity" uid="..." />
        <config>
            <intrinsic>
                <appConfig id="calIntrinsicView" />
@@ -60,7 +60,7 @@ namespace sight::module::ui::qt::calibration
            </intrinsic>
            <extrinsic>
                <appConfig id="calExtrinsicView" />
-               <inout key="cameraSeries" uid="..." />
+               <inout key="cameraSet" uid="..." />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
            </extrinsic>
@@ -69,8 +69,8 @@ namespace sight::module::ui::qt::calibration
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b cameraSeries [sight::data::CameraSeries] : stores camera calibrations.
- * - \b activitySeries [sight::data::ActivitySeries]: stores the information used to generate the calibration.
+ * - \b cameraSet [sight::data::CameraSet] : stores camera calibrations.
+ * - \b activity [sight::data::Activity]: stores the information used to generate the calibration.
  *        It allows to re-open the activity with this information.
  *
  * @subsection Configuration Configuration:
@@ -124,7 +124,7 @@ private:
     /// Start the configuration for the extrinsic calibration
     void startExtrinsicConfig(std::size_t index);
 
-    /// Adds a Camera in cameraSeries and the CalibrationInfo in the activitySeries
+    /// Adds a Camera in cameraSet and the CalibrationInfo in the activity
     void addCamera();
 
     QPointer<QComboBox> m_cameraComboBox;
@@ -136,8 +136,8 @@ private:
     service::helper::ConfigLauncher m_intrinsicLauncher;
     service::helper::ConfigLauncher m_extrinsicLauncher;
 
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, "cameraSeries"};
-    data::ptr<data::ActivitySeries, data::Access::inout> m_activitySeries {this, "activitySeries"};
+    data::ptr<data::CameraSet, data::Access::inout> m_camera_set {this, "cameraSet"};
+    data::ptr<data::Activity, data::Access::inout> m_activity {this, "activity"};
 };
 
 } // namespace sight::module::ui::qt::calibration

@@ -35,8 +35,8 @@ namespace sight::data
 /**
  * @brief   This class defines a timeline that stores groups of matrices.
  */
-class DATA_CLASS_API MatrixTL : public GenericTL<std::array<float,
-                                                            16> >
+class DATA_CLASS_API MatrixTL final : public GenericTL<std::array<float,
+                                                                  16> >
 {
 public:
 

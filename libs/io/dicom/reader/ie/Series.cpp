@@ -29,9 +29,6 @@
 #include <data/Series.hpp>
 #include <data/types.hpp>
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-
 #include <sstream>
 
 namespace sight::io::dicom::reader::ie
@@ -69,34 +66,32 @@ void Series::readGeneralSeriesModule()
     m_object->setModality(modality);
 
     const std::string& uid = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000e>(dataset);
-    m_object->setInstanceUID(uid);
+    m_object->setSeriesInstanceUID(uid);
 
     const std::string& number = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x0011>(dataset);
-    m_object->setNumber(number);
+    if(!number.empty())
+    {
+        m_object->setSeriesNumber(std::stoi(number));
+    }
 
     const std::string& laterality = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x0060>(dataset);
     m_object->setLaterality(laterality);
 
     const std::string& date = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0021>(dataset);
-    m_object->setDate(date);
+    m_object->setSeriesDate(date);
 
     const std::string& time = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0031>(dataset);
-    m_object->setTime(time);
+    m_object->setSeriesTime(time);
 
-    const std::string& performingPhysicianNamesStr =
+    const std::string& performingPhysicianName =
         io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1050>(dataset);
-    if(!performingPhysicianNamesStr.empty())
-    {
-        data::DicomValuesType performingPhysicianNames;
-        boost::split(performingPhysicianNames, performingPhysicianNamesStr, boost::is_any_of("\\"));
-        m_object->setPerformingPhysiciansName(performingPhysicianNames);
-    }
+    m_object->setPerformingPhysicianName(performingPhysicianName);
 
     const std::string& protocolName = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1030>(dataset);
     m_object->setProtocolName(protocolName);
 
     const std::string& description = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x103e>(dataset);
-    m_object->setDescription(description);
+    m_object->setSeriesDescription(description);
 
     const std::string& bodyPartExamined = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x0015>(dataset);
     m_object->setBodyPartExamined(bodyPartExamined);
@@ -108,9 +103,9 @@ void Series::readGeneralSeriesModule()
         io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x2210>(dataset);
     m_object->setAnatomicalOrientationType(anatomicalOrientationType);
 
-    const std::string& performdedProcedureStepID =
+    const std::string& performedProcedureStepID =
         io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0253>(dataset);
-    m_object->setPerformedProcedureStepID(performdedProcedureStepID);
+    m_object->setPerformedProcedureStepID(performedProcedureStepID);
 
     const std::string& performedProcedureStepStartDate =
         io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0244>(dataset);
@@ -134,35 +129,43 @@ void Series::readGeneralSeriesModule()
 
     const std::string& performedProcedureComments =
         io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0280>(dataset);
-    m_object->setPerformedProcedureComments(performedProcedureComments);
+    m_object->setCommentsOnThePerformedProcedureStep(performedProcedureComments);
 
     const data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(m_object);
     if(imageSeries)
     {
-        const std::string& imageContrastAgent =
+        const std::string& imageContrastBolusAgent =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x0010>(dataset);
-        imageSeries->setContrastAgent(imageContrastAgent);
+        imageSeries->setContrastBolusAgent(imageContrastBolusAgent);
 
-        const std::string& imageContrastRoute =
+        const std::string& imageContrastBolusRoute =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1040>(dataset);
-        imageSeries->setContrastRoute(imageContrastRoute);
+        imageSeries->setContrastBolusRoute(imageContrastBolusRoute);
 
-        const std::string& imageContrastVolume = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1041>(
+        const std::string& imageContrastBolusVolume = io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1041>(
             dataset
         );
-        imageSeries->setContrastVolume(imageContrastVolume);
 
-        const std::string& imageContrastStartTime =
+        if(!imageContrastBolusVolume.empty())
+        {
+            imageSeries->setContrastBolusVolume(std::stod(imageContrastBolusVolume));
+        }
+
+        const std::string& imageContrastBolusStartTime =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1042>(dataset);
-        imageSeries->setContrastStartTime(imageContrastStartTime);
+        imageSeries->setContrastBolusStartTime(imageContrastBolusStartTime);
 
-        const std::string& imageContrastStopTime =
+        const std::string& imageContrastBolusStopTime =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1043>(dataset);
-        imageSeries->setContrastStopTime(imageContrastStopTime);
+        imageSeries->setContrastBolusStopTime(imageContrastBolusStopTime);
 
-        const std::string& imageContrastTotalDose =
+        const std::string& imageContrastBolusTotalDose =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1044>(dataset);
-        imageSeries->setContrastTotalDose(imageContrastTotalDose);
+
+        if(!imageContrastBolusTotalDose.empty())
+        {
+            imageSeries->setContrastBolusTotalDose(std::stod(imageContrastBolusTotalDose));
+        }
 
         const std::string& imageContrastFlowRate =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1046>(dataset);
@@ -172,13 +175,17 @@ void Series::readGeneralSeriesModule()
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1047>(dataset);
         imageSeries->setContrastFlowDuration(imageContrastFlowDuration);
 
-        const std::string& imageContrastIngredient =
+        const std::string& imageContrastBolusIngredient =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1048>(dataset);
-        imageSeries->setContrastIngredient(imageContrastIngredient);
+        imageSeries->setContrastBolusIngredient(imageContrastBolusIngredient);
 
-        const std::string& imageContrastIngredientConcentration =
+        const std::string& imageContrastBolusIngredientConcentration =
             io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x1049>(dataset);
-        imageSeries->setContrastIngredientConcentration(imageContrastIngredientConcentration);
+
+        if(!imageContrastBolusIngredientConcentration.empty())
+        {
+            imageSeries->setContrastBolusIngredientConcentration(std::stod(imageContrastBolusIngredientConcentration));
+        }
 
         const std::string& imageAcquisitionDate =
             io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0022>(dataset);

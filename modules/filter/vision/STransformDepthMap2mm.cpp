@@ -62,10 +62,10 @@ void STransformDepthMap2mm::configuring()
 
 void STransformDepthMap2mm::updating()
 {
-    const auto cameraSeries = m_cameraSeries.lock();
-    SIGHT_ASSERT("missing '" << s_CAMERA_SERIES_INPUT << "' cameraSeries", cameraSeries);
+    const auto camera_set = m_camera_set.lock();
+    SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
 
-    data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
+    data::Camera::csptr depthCamera = camera_set->get_camera(0);
 
     const double scale = depthCamera->getScale();
 

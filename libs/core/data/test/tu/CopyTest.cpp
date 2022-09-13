@@ -41,7 +41,6 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/Port.hpp>
-#include <data/ProcessObject.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/ReconstructionTraits.hpp>
 #include <data/Resection.hpp>
@@ -50,7 +49,6 @@
 #include <data/String.hpp>
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsDictionary.hpp>
-#include <data/Tag.hpp>
 #include <data/TransferFunction.hpp>
 #include <data/Vector.hpp>
 
@@ -170,12 +168,10 @@ void CopyTest::fieldCopyTest()
     fieldCopy<data::Edge>();
     fieldCopy<data::Node>();
     fieldCopy<data::Port>();
-    fieldCopy<data::ProcessObject>();
     fieldCopy<data::ReconstructionTraits>();
     fieldCopy<data::ROITraits>();
     fieldCopy<data::StructureTraits>();
     fieldCopy<data::StructureTraitsDictionary>();
-    fieldCopy<data::Tag>();
 }
 
 //-----------------------------------------------------------------------------

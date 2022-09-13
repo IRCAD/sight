@@ -30,7 +30,7 @@
 #include <core/com/Slots.hpp>
 
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/IController.hpp>
 
@@ -40,12 +40,12 @@ namespace sight::module::data
 /**
  * @brief This service emits a signal for each added series (the signal contains the added series)
  *
- * This action works on a data::SeriesDB. It listens all the added series in the SeriesDB and emits the signal.
+ * This action works on a data::SeriesSet. It listens all the added series in the SeriesSet and emits the signal.
  *
  * It is possible to configure the service to report only one type of series.
  *
  * @section Slots Slots
- * - \b reportSeries(data::SeriesDB::ContainerType) : This slot is called when a series is added in the SeriesDB.
+ * - \b reportSeries(data::SeriesSet::container_type) : This slot is called when a series is added in the SeriesSet.
  *   It emits a signal for each added series corresponding to the configured type.
  *
  * @section Signal Signal
@@ -55,7 +55,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="action_newActivity" type="sight::module::activity::action::SSeriesSignal" autoConnect="true" >
-        <in key="seriesDB" uid="..." />
+        <in key="seriesSet" uid="..." />
         <!-- Filter mode 'include' allows all given types.
              Filter mode 'exclude' allows all series excepted given ones. -->
         <filter>
@@ -66,7 +66,7 @@ namespace sight::module::data
     </service>
         @endcode
  * @subsection Input Input
- * - \b seriesDB [sight::data::SeriesDB]: seriesDB to listen to forward the added series signal.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet to listen to forward the added series signal.
  *
  * @subsection Configuration Configuration
  * - \b filter (optional): it allows to filter the series that can be notified.
@@ -118,10 +118,13 @@ private:
     typedef std::vector<std::string> TypesType;
 
     /**
-     * @brief This slot is called when a series is added in the SeriesDB.
+     * @brief This slot is called when a series is added in the SeriesSet.
      * It emits a signal for each added series corresponding to the configured type.
      */
-    void reportSeries(sight::data::SeriesDB::ContainerType addedSeries);
+    void reportSeriesSlot(sight::data::SeriesSet::container_type addedSeries);
+
+    template<typename T>
+    void reportSeries(const T& addedSeries);
 
     /**
      * @brief Filter mode : include or exclude activity configurations.
@@ -135,8 +138,8 @@ private:
     /// Signal emitted when the added series correspond to the configured type.
     SeriesAddedSignalType::sptr m_sigSeriesAdded;
 
-    static constexpr std::string_view s_SERIES_DB_INPUT = "seriesDB";
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_seriesDB {this, s_SERIES_DB_INPUT};
+    static constexpr std::string_view s_SERIES_SET_INPUT = "seriesSet";
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::in> m_series_set {this, s_SERIES_SET_INPUT};
 };
 
 } // namespace sight::module::data

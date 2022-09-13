@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::io::dicom::helper
@@ -36,22 +36,19 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsLandmarks(const SPTR(data::SeriesDB)& seriesDB)
+bool Fiducial::containsLandmarks(const SPTR(data::SeriesSet)& seriesSet)
 {
     // Let's find if a series contains distances
     return std::any_of(
-        seriesDB->getContainer().begin(),
-        seriesDB->getContainer().end(),
+        seriesSet->begin(),
+        seriesSet->end(),
         [](const data::Series::sptr& series)
         {
-            if(data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series))
+            if(auto imageSeries = data::ImageSeries::dynamicCast(series))
             {
-                if(data::Image::sptr image = imageSeries->getImage())
+                if(data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*imageSeries))
                 {
-                    if(data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image))
-                    {
-                        return !pointList->getPoints().empty();
-                    }
+                    return !pointList->getPoints().empty();
                 }
             }
 
@@ -61,21 +58,18 @@ bool Fiducial::containsLandmarks(const SPTR(data::SeriesDB)& seriesDB)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsDistances(const SPTR(data::SeriesDB)& seriesDB)
+bool Fiducial::containsDistances(const SPTR(data::SeriesSet)& seriesSet)
 {
     return std::any_of(
-        seriesDB->getContainer().begin(),
-        seriesDB->getContainer().end(),
+        seriesSet->begin(),
+        seriesSet->end(),
         [](const data::Series::sptr& series)
         {
-            if(data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series))
+            if(auto imageSeries = data::ImageSeries::dynamicCast(series))
             {
-                if(data::Image::sptr image = imageSeries->getImage())
+                if(auto distanceVector = data::helper::MedicalImage::getDistances(*imageSeries))
                 {
-                    if(data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image))
-                    {
-                        return !distanceVector->empty();
-                    }
+                    return !distanceVector->empty();
                 }
             }
 
@@ -85,35 +79,31 @@ bool Fiducial::containsDistances(const SPTR(data::SeriesDB)& seriesDB)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
+bool Fiducial::contains3DDistances(const SPTR(data::SeriesSet)& seriesSet)
 {
     // Let's find if a series contains distances
-    for(const data::Series::sptr& series : seriesDB->getContainer())
+    for(const auto& series : *seriesSet)
     {
-        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
+        const auto& imageSeries = data::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
-            data::Image::csptr image = imageSeries->getImage();
-            if(image)
+            const auto& distanceVector = data::helper::MedicalImage::getDistances(*imageSeries);
+            if(distanceVector && !distanceVector->empty())
             {
-                data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
-                if(distanceVector && !distanceVector->empty())
+                for(const auto& object : *distanceVector)
                 {
-                    for(const data::Object::sptr& object : *distanceVector)
+                    const auto& pointList = data::PointList::dynamicCast(object);
+                    if(pointList && pointList->getPoints().size() >= 2)
                     {
-                        data::PointList::sptr pointList = data::PointList::dynamicCast(object);
-                        if(pointList && pointList->getPoints().size() >= 2)
+                        const auto& point1             = *pointList->getPoints().begin();
+                        const auto& point2             = *(++pointList->getPoints().begin());
+                        const std::size_t frameNumber1 =
+                            io::dicom::helper::DicomDataTools::convertPointToFrameNumber(imageSeries, point1);
+                        const std::size_t frameNumber2 =
+                            io::dicom::helper::DicomDataTools::convertPointToFrameNumber(imageSeries, point2);
+                        if(frameNumber1 != frameNumber2)
                         {
-                            const data::Point::csptr point1 = *pointList->getPoints().begin();
-                            const data::Point::csptr point2 = *(++pointList->getPoints().begin());
-                            const std::size_t frameNumber1  =
-                                io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
-                            const std::size_t frameNumber2 =
-                                io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image, point2);
-                            if(frameNumber1 != frameNumber2)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }

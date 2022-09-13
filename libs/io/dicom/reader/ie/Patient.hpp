@@ -24,7 +24,7 @@
 
 #include "io/dicom/reader/ie/InformationEntity.hpp"
 
-#include <data/Patient.hpp>
+#include <data/Series.hpp>
 
 namespace sight::io::dicom::reader::ie
 {
@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Patient Information Entity class
  */
-class IO_DICOM_CLASS_API Patient : public io::dicom::reader::ie::InformationEntity<data::Patient>
+class IO_DICOM_CLASS_API Patient : public io::dicom::reader::ie::InformationEntity<data::Series>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
      * @param[in] reader GDCM reader that must be used to read patient.
      * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] patient Patient data
+     * @param[in] Series Patient data
      * @param[in] logger Logger
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
@@ -50,7 +50,7 @@ public:
         const CSPTR(data::DicomSeries)& dicomSeries,
         const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Patient::sptr& patient,
+        const data::Series::sptr& series,
         const core::log::Logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr

@@ -73,10 +73,10 @@ public:
     typedef std::vector<SPTR(data::DicomSeries)> DicomSeriesContainerType;
 
     /// Constructor
-    IO_DICOM_API DicomSeries();
+    IO_DICOM_API DicomSeries() noexcept = default;
 
     /// Destructor
-    IO_DICOM_API ~DicomSeries();
+    IO_DICOM_API ~DicomSeries() noexcept = default;
 
     /**
      * @brief Read DicomSeries from paths.
@@ -85,18 +85,18 @@ public:
      * @param[in] completeSeriesObserver complete series observer
      * @return container containing DicomSeries
      */
-    IO_DICOM_API DicomSeriesContainerType read(
+    static IO_DICOM_API DicomSeriesContainerType read(
         FilenameContainerType& filenames,
         const SPTR(core::jobs::Observer)& readerObserver         = nullptr,
         const SPTR(core::jobs::Observer)& completeSeriesObserver = nullptr
     );
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
-     * @param[in,out] seriesDB List of DicomSeries that must be completed with information
+     * @param[in,out] series_set List of DicomSeries that must be completed with information
      * @param[in] completeSeriesObserver complete series observer
      */
-    IO_DICOM_API void complete(
-        DicomSeriesContainerType& seriesDB,
+    static IO_DICOM_API void complete(
+        DicomSeriesContainerType& seriesContainer,
         const SPTR(core::jobs::Observer)& completeSeriesObserver
     );
 
@@ -104,10 +104,13 @@ protected:
 
     /**
      * @brief Fill series with information contained in first instance
-     * @param[in,out] seriesDB List of DicomSeries that must be completed with information
+     * @param[in,out] series_set List of DicomSeries that must be completed with information
      * @param[in] completeSeriesObserver complete series observer
      */
-    void fillSeries(DicomSeriesContainerType& seriesDB, const SPTR(core::jobs::Observer)& completeSeriesObserver);
+    static void fillSeries(
+        DicomSeriesContainerType& seriesContainer,
+        const SPTR(core::jobs::Observer)& completeSeriesObserver
+    );
 
     /**
      * @brief Create DicomSeries from list of files. Every instance is read in
@@ -122,46 +125,15 @@ protected:
 
     /**
      * @brief Create a series from the dataset and store it in the series map
-     * @param[in,out] seriesDB List of DicomSeries that must be completed with information
+     * @param[in,out] series_set List of DicomSeries that must be completed with information
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
     static void createSeries(
-        DicomSeriesContainerType& seriesDB,
+        DicomSeriesContainerType& seriesContainer,
         const gdcm::Scanner& scanner,
         const std::filesystem::path& filename
     );
-
-    /**
-     * @brief Create a patient from the dataset and store it in the patient map
-     * @param[in] dataset GDCM Dataset used to read information
-     */
-    SPTR(data::Patient) createPatient(const gdcm::DataSet& dataset);
-
-    /**
-     * @brief Create a study from the dataset and store it in the study map
-     * @param[in] dataset GDCM Dataset used to read information
-     */
-    SPTR(data::Study) createStudy(const gdcm::DataSet& dataset);
-
-    /**
-     * @brief Create an equipment from the dataset and store it in the equipment map
-     * @param[in] dataset GDCM Dataset used to read information
-     */
-    SPTR(data::Equipment) createEquipment(const gdcm::DataSet& dataset);
-
-    typedef std::map<std::string, SPTR(data::Patient)> PatientMapType;
-    typedef std::map<std::string, SPTR(data::Study)> StudyMapType;
-    typedef std::map<std::string, SPTR(data::Equipment)> EquipmentMapType;
-
-    ///Patient Map
-    PatientMapType m_patientMap;
-
-    ///Study Map
-    StudyMapType m_studyMap;
-
-    ///Equipment Map
-    EquipmentMapType m_equipmentMap;
 };
 
 } // namespace sight::io::dicom::helper

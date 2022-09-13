@@ -40,7 +40,7 @@ class DATA_CLASS_API BufferTL : public TimeLine
 {
 public:
 
-    SIGHT_DECLARE_CLASS(BufferTL, Object);
+    SIGHT_DECLARE_CLASS(BufferTL, TimeLine);
 
     typedef core::HiResClock::HiResClockType TimestampType;
     typedef std::map<TimestampType, SPTR(timeline::Buffer)> TimelineType;

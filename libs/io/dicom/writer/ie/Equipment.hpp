@@ -24,7 +24,7 @@
 
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/Equipment.hpp>
+#include <data/Series.hpp>
 
 namespace sight::io::dicom::writer::ie
 {
@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Equipment Information Entity class
  */
-class IO_DICOM_CLASS_API Equipment : public io::dicom::writer::ie::InformationEntity<data::Equipment>
+class IO_DICOM_CLASS_API Equipment : public io::dicom::writer::ie::InformationEntity<data::Series>
 {
 public:
 
@@ -40,7 +40,7 @@ public:
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
      * @param[in] instance DICOM instance used to share information between modules
-     * @param[in] equipment Equipment data
+     * @param[in] series Equipment data
      * @param[in] logger Logger
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
@@ -48,7 +48,7 @@ public:
     IO_DICOM_API Equipment(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Equipment::csptr& equipment,
+        const data::Series::csptr& series,
         const core::log::Logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr

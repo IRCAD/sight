@@ -34,7 +34,9 @@ namespace sight::data
 CameraSet::CameraSet(Object::Key key) :
     IContainer<CameraSet::container_type>(key)
 {
-    newSignal<extrinsic_calibrated_signal>(s_EXTRINSIC_CALIBRATED_SIG);
+    newSignal<added_camera_signal_t>(s_ADDED_CAMERA_SIG);
+    newSignal<removed_camera_signal_t>(s_REMOVED_CAMERA_SIG);
+    newSignal<extrinsic_calibrated_signal_t>(s_EXTRINSIC_CALIBRATED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -45,42 +47,40 @@ void CameraSet::shallowCopy(const Object::csptr& source)
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
 
-    IContainer<CameraSet::container_type>::shallowCopy(other);
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool CameraSet::operator==(const CameraSet& other) const noexcept
 {
-    return IContainer<CameraSet::container_type>::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool CameraSet::operator!=(const CameraSet& other) const noexcept
 {
-    return IContainer<CameraSet::container_type>::operator!=(other);
+    return BaseClass::operator!=(other);
 }
 
 //------------------------------------------------------------------------------
 
-void CameraSet::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void CameraSet::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     const auto& other = CameraSet::dynamicCast(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
-
-    fieldDeepCopy(other, cache);
 
     clear();
 
@@ -92,6 +92,8 @@ void CameraSet::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& c
         {
             return std::make_pair(Object::copy(value.first, cache), value.second);
         });
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------

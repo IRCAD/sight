@@ -37,7 +37,7 @@
 namespace sight::data
 {
 
-class SeriesDB;
+class SeriesSet;
 
 } // namespace sight::data
 

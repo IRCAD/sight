@@ -37,41 +37,36 @@ InsertSeries::InsertSeries(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-InsertSeries::~InsertSeries()
-= default;
-
-//------------------------------------------------------------------------------
-
-void InsertSeries::shallowCopy(const data::Object::csptr& _source)
+void InsertSeries::shallowCopy(const data::Object::csptr& source)
 {
-    InsertSeries::csptr other = InsertSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->data::Series::shallowCopy(_source);
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void InsertSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void InsertSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    InsertSeries::csptr other = InsertSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->data::Series::cachedDeepCopy(_source, cache);
+    BaseClass::deepCopy(source, cache);
 }
-
-//------------------------------------------------------------------------------
 
 } // namespace sight::module::ui::qt::series

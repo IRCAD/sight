@@ -53,7 +53,7 @@ public:
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
     ACTIVITY_API IValidator::ValidationType validate(
-        const CSPTR(data::ActivitySeries)& activitySeries
+        const CSPTR(data::Activity)& activity
     ) const override;
 };
 

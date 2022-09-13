@@ -23,7 +23,7 @@
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::io::dimse::SQueryEditor</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
-         <object key="seriesDB">sight::data::Object</object>
+         <object key="seriesSet">sight::data::Object</object>
          <desc>This editor allows to perform queries on a pacs.</desc>
     </extension>
 
@@ -32,7 +32,7 @@
          <service>sight::module::io::dimse::SSeriesPuller</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
          <object key="selectedSeries">sight::data::Vector</object>
-         <object key="seriesDB">sight::data::SeriesDB</object>
+         <object key="seriesSet">sight::data::SeriesSet</object>
          <desc>This service is used to pull series from a PACS.</desc>
     </extension>
 

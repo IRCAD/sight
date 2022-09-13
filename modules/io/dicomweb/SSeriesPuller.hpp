@@ -24,7 +24,7 @@
 
 #include "modules/io/dicomweb/config.hpp"
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -56,15 +56,15 @@ namespace sight::module::io::dicomweb
  * @code{.xml}
         <service type="sight::module::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
-            <inout key="seriesDB" uid="..." />
-            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+            <inout key="seriesSet" uid="..." />
+            <config dicomReader="sight::module::io::dicom::SSeriesSetReader" readerConfig="config" />
             <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
        </service>
    @endcode
  * @subsection Input Input:
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to pull from the PACS..
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the retrieved dicom series.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
  * - \b readerConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
@@ -77,7 +77,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::IController);
 
-    typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
+    typedef data::SeriesSet::container_type DicomSeriesContainerType;
     typedef std::vector<std::string> InstanceUIDContainerType;
     typedef std::map<std::string, unsigned int> InstanceCountMapType;
     typedef std::map<std::string, WPTR(data::DicomSeries)> DicomSeriesMapType;
@@ -135,8 +135,8 @@ private:
     /// DicomWeb Reader
     std::string m_dicomReaderType;
 
-    /// Temporary SeriesDB
-    data::SeriesDB::sptr m_tempSeriesDB;
+    /// Temporary SeriesSet
+    data::SeriesSet::sptr m_tmp_series_set;
 
     /// Local Series
     InstanceUIDContainerType m_localSeries;
@@ -169,7 +169,7 @@ private:
     std::filesystem::path m_path;
 
     sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dicomweb

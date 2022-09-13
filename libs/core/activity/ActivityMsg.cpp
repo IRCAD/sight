@@ -39,7 +39,7 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 ActivityMsg::ActivityMsg(
-    const data::ActivitySeries::sptr& series,
+    const data::Activity::sptr& activity,
     const activity::extension::ActivityInfo& info,
     const ParametersType& parameters
 ) :
@@ -49,12 +49,12 @@ ActivityMsg::ActivityMsg(
     m_tabInfo(info.tabInfo.empty() ? info.title : info.tabInfo),
     m_iconPath(info.icon),
     m_tooltip(m_tabInfo),
-    m_series(series)
+    m_activity(activity)
 {
-    SIGHT_ASSERT("ActivitySeries instantiation failed", series);
+    SIGHT_ASSERT("Activity instantiation failed", activity);
 
     m_replacementMap = sight::activity::extension::Activity::getDefault()->getReplacementMap(
-        *series,
+        *activity,
         info,
         parameters
     );

@@ -129,10 +129,10 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
         }
 
         // Content Date - Type 1
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0023>(m_object->getDate(), dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0023>(m_object->getSeriesDate(), dataset);
 
         // Content Time - Type 1
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0033>(m_object->getTime(), dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0033>(m_object->getSeriesTime(), dataset);
     }
 
     //=============================================

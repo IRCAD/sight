@@ -55,7 +55,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto landmarks = Helper::safeCast<data::Landmarks>(object);
+    const auto landmarks = Helper::safe_cast<data::Landmarks>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Landmarks>(tree, 1);
@@ -121,7 +121,7 @@ inline static data::Landmarks::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto landmarks = Helper::safeCast<data::Landmarks>(object);
+    auto landmarks = Helper::cast_or_create<data::Landmarks>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Landmarks>(tree, 0, 1);

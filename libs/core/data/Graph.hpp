@@ -41,7 +41,7 @@ namespace sight::data
 
  * @see     data::Edge, data::Node
  */
-class DATA_CLASS_API Graph : public Object
+class DATA_CLASS_API Graph final : public Object
 {
 public:
 
@@ -70,7 +70,7 @@ public:
     DATA_API Graph(Object::Key key);
 
     /// Destructor
-    DATA_API ~Graph() override;
+    DATA_API ~Graph() noexcept override = default;
 
     /**
      * @brief add a node
@@ -220,8 +220,6 @@ public:
      */
     DATA_API std::size_t getNbEdges() const;
 
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
-
     /**
      * @brief Check if an edge is connected to the node
      *
@@ -238,9 +236,21 @@ public:
     DATA_API bool operator!=(const Graph& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;

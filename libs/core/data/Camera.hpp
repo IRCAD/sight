@@ -111,14 +111,11 @@ public:
     DATA_API Camera(Object::Key key);
 
     /// Destructor
-    DATA_API ~Camera() noexcept override;
+    DATA_API ~Camera() noexcept override = default;
 
     DATA_API static PixelFormat getPixelFormat(const std::string& name);
 
     DATA_API static std::string getPixelFormatName(PixelFormat format);
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /**@name Signals API
      * @{
@@ -273,18 +270,6 @@ public:
         m_cameraSource = cameraSource;
     }
 
-    /// Gets the human-readable description of the camera (only available in SourceType DEVICE mode).
-    std::string getDescription() const
-    {
-        return m_description;
-    }
-
-    /// Sets the human-readable description of the camera (only available in SourceType DEVICE mode).
-    void setDescription(const std::string& description)
-    {
-        m_description = description;
-    }
-
     /// Gets the device name of the camera (only available in SourceType DEVICE mode).
     std::string getCameraID() const
     {
@@ -370,10 +355,21 @@ public:
     DATA_API bool operator!=(const Camera& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     //! Width video resolution
     std::size_t m_width {0};
@@ -392,9 +388,6 @@ protected:
 
     //! Flag if data is calibrated
     bool m_isCalibrated {false};
-
-    //! Human-readable description of the camera.
-    std::string m_description;
 
     //! Device name of the camera, unique ID to identify the camera and may not be human-readable.
     std::string m_cameraID;

@@ -335,7 +335,7 @@ data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, const st
 data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::string& uid) const
 {
     SIGHT_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", core::tools::fwID::exist(uid));
-    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
+    auto obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
 
     SIGHT_ASSERT(this->msgHead() + "The UID '" + uid + "' does not reference any object.", obj);
 
@@ -344,7 +344,7 @@ data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::
         SIGHT_ASSERT(
             this->msgHead() + "Object with UID \"" + uid
             + "\" has a different type (\"" + obj->getClassname() + "\" != \"" + type.first + "\").",
-            type.first == obj->getClassname()
+            obj->isA(type.first)
         );
     }
 

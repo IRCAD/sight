@@ -27,22 +27,19 @@
 #include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/ActivitySet.hpp>
 #include <data/Array.hpp>
 #include <data/Boolean.hpp>
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
 #include <data/CameraSet.hpp>
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
 #include <data/DicomSeries.hpp>
 #include <data/Edge.hpp>
-#include <data/Equipment.hpp>
 #include <data/Float.hpp>
 #include <data/Graph.hpp>
-#include <data/IContainer.hxx>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
@@ -53,32 +50,28 @@
 #include <data/ModelSeries.hpp>
 #include <data/mt/locked_ptr.hpp>
 #include <data/Node.hpp>
-#include <data/Patient.hpp>
 #include <data/Plane.hpp>
 #include <data/PlaneList.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/Port.hpp>
-#include <data/ProcessObject.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/ReconstructionTraits.hpp>
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
 #include <data/ROITraits.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
 #include <data/SeriesSet.hpp>
+#include <data/Set.hpp>
 #include <data/String.hpp>
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsDictionary.hpp>
-#include <data/Study.hpp>
-#include <data/Tag.hpp>
 #include <data/TransferFunction.hpp>
 #include <data/Vector.hpp>
 
 #include <geometry/data/Mesh.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 #include <io/session/detail/SessionDeserializer.hpp>
 #include <io/session/detail/SessionSerializer.hpp>
 #include <io/session/Helper.hpp>
@@ -127,6 +120,41 @@ inline T random()
 
 //------------------------------------------------------------------------------
 
+inline static std::string generateTM(std::size_t variant)
+{
+    std::stringstream hh;
+    hh << std::setfill('0') << std::setw(2) << (variant % 24);
+
+    std::stringstream mm;
+    mm << std::setfill('0') << std::setw(2) << ((variant + 1) % 60);
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(2) << ((variant + 2) % 60);
+
+    std::stringstream ffffff;
+    ffffff << std::setfill('0') << std::setw(6) << ((variant + 3) % 1000000);
+
+    return hh.str() + mm.str() + ss.str() + "." + ffffff.str();
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string generateDA(std::size_t variant)
+{
+    std::stringstream yyyy;
+    yyyy << std::setfill('0') << std::setw(4) << (variant % 10000);
+
+    std::stringstream mm;
+    mm << std::setfill('0') << std::setw(2) << ((variant + 1) % 12);
+
+    std::stringstream dd;
+    dd << std::setfill('0') << std::setw(2) << ((variant + 2) % 32);
+
+    return yyyy.str() + mm.str() + dd.str();
+}
+
+//------------------------------------------------------------------------------
+
 void SessionTest::setUp()
 {
 }
@@ -148,14 +176,17 @@ inline typename T::sptr generate(const std::size_t /*unused*/)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline const typename T::csptr& expected(const std::size_t variant)
+inline const typename T::csptr& getExpected(const std::size_t variant)
 {
     static std::map<std::size_t, typename T::csptr> MAP;
     const auto& it = MAP.find(variant);
 
     if(it == MAP.cend())
     {
-        return MAP.insert_or_assign(variant, generate<T>(variant)).first->second;
+        const auto& object = generate<T>(variant);
+        object->setDescription(UUID::generateUUID());
+
+        return MAP.insert_or_assign(variant, object).first->second;
     }
 
     return it->second;
@@ -167,7 +198,7 @@ template<typename T>
 inline typename T::sptr create(const std::size_t variant)
 {
     const auto& object = T::New();
-    object->deepCopy(expected<T>(variant));
+    object->deepCopy(getExpected<T>(variant));
     return object;
 }
 
@@ -177,7 +208,7 @@ template<typename T>
 inline void compare(const typename T::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
-    CPPUNIT_ASSERT_EQUAL(expected<T>(variant)->getValue(), actual->getValue());
+    CPPUNIT_ASSERT_EQUAL(getExpected<T>(variant)->getValue(), actual->getValue());
 }
 
 //------------------------------------------------------------------------------
@@ -298,7 +329,7 @@ template<>
 inline void compare<data::Float>(const data::Float::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected<data::Float>(variant)->getValue(), actual->getValue(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(getExpected<data::Float>(variant)->getValue(), actual->getValue(), FLOAT_EPSILON);
 }
 
 //------------------------------------------------------------------------------
@@ -369,7 +400,7 @@ template<>
 inline data::Mesh::sptr create<data::Mesh>(const std::size_t variant)
 {
     const auto& object = data::Mesh::New();
-    object->deepCopy(expected<data::Mesh>(variant));
+    object->deepCopy(getExpected<data::Mesh>(variant));
     object->shrinkToFit();
     return object;
 }
@@ -400,19 +431,22 @@ inline void compare<data::Mesh>(const data::Mesh::csptr& actual, const std::size
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Mesh>(variant);
+    const auto& expected = getExpected<data::Mesh>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->numCells(), actual->numCells());
-    CPPUNIT_ASSERT_EQUAL(exp->numPoints(), actual->numPoints());
-    CPPUNIT_ASSERT_EQUAL(exp->getCellSize(), actual->getCellSize());
-    CPPUNIT_ASSERT_EQUAL(exp->getDataSizeInBytes(), actual->getDataSizeInBytes());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->numCells(), actual->numCells());
+    CPPUNIT_ASSERT_EQUAL(expected->numPoints(), actual->numPoints());
+    CPPUNIT_ASSERT_EQUAL(expected->getCellSize(), actual->getCellSize());
+    CPPUNIT_ASSERT_EQUAL(expected->getDataSizeInBytes(), actual->getDataSizeInBytes());
 
     // This is needed to use iterators
-    data::mt::locked_ptr<const data::Mesh> expectedGuard(exp);
+    data::mt::locked_ptr<const data::Mesh> expectedGuard(expected);
     data::mt::locked_ptr<const data::Mesh> actualGuard(actual);
 
     namespace point = data::iterator::point;
-    const auto expectedRange = exp->czip_range<point::xyz, point::nxyz>();
+    const auto expectedRange = expected->czip_range<point::xyz, point::nxyz>();
     const auto actualRange   = actual->czip_range<point::xyz, point::nxyz>();
 
     for(const auto& [orig, cur] : boost::combine(expectedRange, actualRange))
@@ -440,158 +474,52 @@ void SessionTest::meshTest()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::Equipment::sptr generate<data::Equipment>(const std::size_t /*unused*/)
-{
-    auto object = data::Equipment::New();
-    object->setInstitutionName(UUID::generateUUID());
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::Equipment>(const data::Equipment::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    // Retrieve the expected variant
-    const auto& exp = expected<data::Equipment>(variant);
-
-    CPPUNIT_ASSERT_EQUAL(exp->getInstitutionName(), actual->getInstitutionName());
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::equipmentTest()
-{
-    testCombine<data::Equipment>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::Patient::sptr generate<data::Patient>(const std::size_t /*unused*/)
-{
-    auto object = data::Patient::New();
-    object->setName(UUID::generateUUID());
-    object->setPatientId(UUID::generateUUID());
-    object->setBirthdate(UUID::generateUUID());
-    object->setSex(UUID::generateUUID());
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::Patient>(const data::Patient::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    // Retrieve the expected variant
-    const auto& exp = expected<data::Patient>(variant);
-
-    CPPUNIT_ASSERT_EQUAL(exp->getName(), actual->getName());
-    CPPUNIT_ASSERT_EQUAL(exp->getPatientId(), actual->getPatientId());
-    CPPUNIT_ASSERT_EQUAL(exp->getBirthdate(), actual->getBirthdate());
-    CPPUNIT_ASSERT_EQUAL(exp->getSex(), actual->getSex());
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::patientTest()
-{
-    testCombine<data::Patient>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::Study::sptr generate<data::Study>(const std::size_t /*unused*/)
-{
-    auto object = data::Study::New();
-
-    object->setInstanceUID(UUID::generateUUID());
-    object->setStudyID(UUID::generateUUID());
-    object->setDate(UUID::generateUUID());
-    object->setTime(UUID::generateUUID());
-    object->setReferringPhysicianName(UUID::generateUUID());
-    object->setConsultingPhysicianName(UUID::generateUUID());
-    object->setDescription(UUID::generateUUID());
-    object->setPatientAge(UUID::generateUUID());
-    object->setPatientSize(UUID::generateUUID());
-    object->setPatientWeight(UUID::generateUUID());
-    object->setPatientBodyMassIndex(UUID::generateUUID());
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::Study>(const data::Study::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    // Retrieve the expected variant
-    const auto& exp = expected<data::Study>(variant);
-
-    CPPUNIT_ASSERT_EQUAL(exp->getInstanceUID(), actual->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(exp->getStudyID(), actual->getStudyID());
-    CPPUNIT_ASSERT_EQUAL(exp->getDate(), actual->getDate());
-    CPPUNIT_ASSERT_EQUAL(exp->getTime(), actual->getTime());
-    CPPUNIT_ASSERT_EQUAL(exp->getReferringPhysicianName(), actual->getReferringPhysicianName());
-    CPPUNIT_ASSERT_EQUAL(exp->getConsultingPhysicianName(), actual->getConsultingPhysicianName());
-    CPPUNIT_ASSERT_EQUAL(exp->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(exp->getPatientAge(), actual->getPatientAge());
-    CPPUNIT_ASSERT_EQUAL(exp->getPatientSize(), actual->getPatientSize());
-    CPPUNIT_ASSERT_EQUAL(exp->getPatientWeight(), actual->getPatientWeight());
-    CPPUNIT_ASSERT_EQUAL(exp->getPatientBodyMassIndex(), actual->getPatientBodyMassIndex());
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::studyTest()
-{
-    testCombine<data::Study>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
 inline data::Series::sptr generate<data::Series>(const std::size_t variant)
 {
     auto object = data::Series::New();
 
-    object->setPatient(create<data::Patient>(variant));
-    object->setStudy(create<data::Study>(variant));
-    object->setEquipment(create<data::Equipment>(variant));
-
     // Fill trivial attributes
     object->setModality(UUID::generateUUID());
-    object->setInstanceUID(UUID::generateUUID());
-    object->setNumber(UUID::generateUUID());
+    object->setSeriesDescription(UUID::generateUUID());
+    object->setSeriesInstanceUID(UUID::generateUUID());
+    object->setSeriesNumber(std::int32_t(variant));
     object->setLaterality(UUID::generateUUID());
-    object->setDate(UUID::generateUUID());
-    object->setTime(UUID::generateUUID());
-    object->setPerformingPhysiciansName(
-        {
-            UUID::generateUUID(),
-            UUID::generateUUID(),
-            UUID::generateUUID()
-        });
+    object->setSeriesDate(generateDA(variant));
+    object->setSeriesTime(generateTM(variant));
+    object->setPerformingPhysicianName(UUID::generateUUID() + "\\" + UUID::generateUUID());
     object->setProtocolName(UUID::generateUUID());
-    object->setDescription(UUID::generateUUID());
     object->setBodyPartExamined(UUID::generateUUID());
     object->setPatientPosition(UUID::generateUUID());
     object->setAnatomicalOrientationType(UUID::generateUUID());
     object->setPerformedProcedureStepID(UUID::generateUUID());
-    object->setPerformedProcedureStepStartDate(UUID::generateUUID());
-    object->setPerformedProcedureStepStartTime(UUID::generateUUID());
-    object->setPerformedProcedureStepEndDate(UUID::generateUUID());
-    object->setPerformedProcedureStepEndTime(UUID::generateUUID());
+    object->setPerformedProcedureStepStartDate(generateDA(variant));
+    object->setPerformedProcedureStepStartTime(generateTM(variant));
+    object->setPerformedProcedureStepEndDate(generateDA(variant));
+    object->setPerformedProcedureStepEndTime(generateTM(variant));
     object->setPerformedProcedureStepDescription(UUID::generateUUID());
-    object->setPerformedProcedureComments(UUID::generateUUID());
+    object->setCommentsOnThePerformedProcedureStep(UUID::generateUUID());
+
+    // Equipment Module
+    object->setInstitutionName(UUID::generateUUID());
+
+    // Patient Module
+    object->setPatientName(UUID::generateUUID());
+    object->setPatientID(UUID::generateUUID());
+    object->setPatientBirthDate(generateDA(variant));
+    object->setPatientSex(UUID::generateUUID());
+
+    // Study Module
+    object->setStudyDescription(UUID::generateUUID());
+    object->setStudyInstanceUID(UUID::generateUUID());
+    object->setStudyID(UUID::generateUUID());
+    object->setStudyDate(generateDA(variant));
+    object->setStudyTime(generateTM(variant));
+    object->setReferringPhysicianName(UUID::generateUUID());
+
+    // Patient Study Module
+    object->setPatientAge(UUID::generateUUID());
+    object->setPatientSize(double(variant));
+    object->setPatientWeight(double(variant));
 
     return object;
 }
@@ -604,27 +532,20 @@ inline void compare<data::Series>(const data::Series::csptr& actual, const std::
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Series>(variant);
-
-    // Equipment
-    compare<data::Equipment>(actual->getEquipment(), variant);
-
-    // Study
-    compare<data::Study>(actual->getStudy(), variant);
-
-    // Patient
-    compare<data::Patient>(actual->getPatient(), variant);
+    const auto& expected = getExpected<data::Series>(variant);
 
     // Trivial attributes
-    CPPUNIT_ASSERT_EQUAL(exp->getModality(), actual->getModality());
-    CPPUNIT_ASSERT_EQUAL(exp->getInstanceUID(), actual->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(exp->getNumber(), actual->getNumber());
-    CPPUNIT_ASSERT_EQUAL(exp->getLaterality(), actual->getLaterality());
-    CPPUNIT_ASSERT_EQUAL(exp->getDate(), actual->getDate());
-    CPPUNIT_ASSERT_EQUAL(exp->getTime(), actual->getTime());
+    CPPUNIT_ASSERT_EQUAL(expected->getModality(), actual->getModality());
+    CPPUNIT_ASSERT_EQUAL(expected->getSeriesDescription(), actual->getSeriesDescription());
+    CPPUNIT_ASSERT_EQUAL(expected->getSeriesInstanceUID(), actual->getSeriesInstanceUID());
+    CPPUNIT_ASSERT_EQUAL(expected->getSeriesNumber().has_value(), actual->getSeriesNumber().has_value());
+    CPPUNIT_ASSERT_EQUAL(expected->getSeriesNumber().value_or(0), actual->getSeriesNumber().value_or(0));
+    CPPUNIT_ASSERT_EQUAL(expected->getLaterality(), actual->getLaterality());
+    CPPUNIT_ASSERT_EQUAL(expected->getSeriesDate(), actual->getSeriesDate());
+    CPPUNIT_ASSERT_EQUAL(expected->getSeriesTime(), actual->getSeriesTime());
 
-    const auto& expectedNames = exp->getPerformingPhysiciansName();
-    const auto& actualNames   = actual->getPerformingPhysiciansName();
+    const auto& expectedNames = expected->getPerformingPhysicianName();
+    const auto& actualNames   = actual->getPerformingPhysicianName();
     CPPUNIT_ASSERT_EQUAL(expectedNames.size(), actualNames.size());
 
     for(std::size_t i = 0 ; i < expectedNames.size() ; ++i)
@@ -632,27 +553,63 @@ inline void compare<data::Series>(const data::Series::csptr& actual, const std::
         CPPUNIT_ASSERT_EQUAL(expectedNames[i], actualNames[i]);
     }
 
-    CPPUNIT_ASSERT_EQUAL(exp->getProtocolName(), actual->getProtocolName());
-    CPPUNIT_ASSERT_EQUAL(exp->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(exp->getBodyPartExamined(), actual->getBodyPartExamined());
-    CPPUNIT_ASSERT_EQUAL(exp->getPatientPosition(), actual->getPatientPosition());
-    CPPUNIT_ASSERT_EQUAL(exp->getAnatomicalOrientationType(), actual->getAnatomicalOrientationType());
-    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureStepID(), actual->getPerformedProcedureStepID());
+    CPPUNIT_ASSERT_EQUAL(expected->getProtocolName(), actual->getProtocolName());
+    CPPUNIT_ASSERT_EQUAL(expected->getBodyPartExamined(), actual->getBodyPartExamined());
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientPosition(), actual->getPatientPosition());
+    CPPUNIT_ASSERT_EQUAL(expected->getAnatomicalOrientationType(), actual->getAnatomicalOrientationType());
+    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepID(), actual->getPerformedProcedureStepID());
     CPPUNIT_ASSERT_EQUAL(
-        exp->getPerformedProcedureStepStartDate(),
+        expected->getPerformedProcedureStepStartDate(),
         actual->getPerformedProcedureStepStartDate()
     );
     CPPUNIT_ASSERT_EQUAL(
-        exp->getPerformedProcedureStepStartTime(),
+        expected->getPerformedProcedureStepStartTime(),
         actual->getPerformedProcedureStepStartTime()
     );
-    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureStepEndDate(), actual->getPerformedProcedureStepEndDate());
-    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureStepEndTime(), actual->getPerformedProcedureStepEndTime());
+    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepEndDate(), actual->getPerformedProcedureStepEndDate());
+    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepEndTime(), actual->getPerformedProcedureStepEndTime());
     CPPUNIT_ASSERT_EQUAL(
-        exp->getPerformedProcedureStepDescription(),
+        expected->getPerformedProcedureStepDescription(),
         actual->getPerformedProcedureStepDescription()
     );
-    CPPUNIT_ASSERT_EQUAL(exp->getPerformedProcedureComments(), actual->getPerformedProcedureComments());
+    CPPUNIT_ASSERT_EQUAL(
+        expected->getCommentsOnThePerformedProcedureStep(),
+        actual->getCommentsOnThePerformedProcedureStep()
+    );
+
+    // Equipment Module
+    CPPUNIT_ASSERT_EQUAL(expected->getInstitutionName(), actual->getInstitutionName());
+
+    // Patient Module
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientName(), actual->getPatientName());
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientID(), actual->getPatientID());
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientBirthDate(), actual->getPatientBirthDate());
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientSex(), actual->getPatientSex());
+
+    // Study Module
+    CPPUNIT_ASSERT_EQUAL(expected->getStudyDescription(), actual->getStudyDescription());
+    CPPUNIT_ASSERT_EQUAL(expected->getStudyInstanceUID(), actual->getStudyInstanceUID());
+    CPPUNIT_ASSERT_EQUAL(expected->getStudyID(), actual->getStudyID());
+    CPPUNIT_ASSERT_EQUAL(expected->getStudyDate(), actual->getStudyDate());
+    CPPUNIT_ASSERT_EQUAL(expected->getStudyTime(), actual->getStudyTime());
+    CPPUNIT_ASSERT_EQUAL(expected->getReferringPhysicianName(), actual->getReferringPhysicianName());
+
+    // Patient Study Module
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientAge(), actual->getPatientAge());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientSize().has_value(), actual->getPatientSize().has_value());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        expected->getPatientSize().value_or(0.0),
+        actual->getPatientSize().value_or(0.0),
+        DOUBLE_EPSILON
+    );
+
+    CPPUNIT_ASSERT_EQUAL(expected->getPatientWeight().has_value(), actual->getPatientWeight().has_value());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        expected->getPatientWeight().value_or(0.0),
+        actual->getPatientWeight().value_or(0.0),
+        DOUBLE_EPSILON
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -665,14 +622,11 @@ void SessionTest::seriesTest()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ActivitySeries::sptr generate<data::ActivitySeries>(const std::size_t variant)
+inline data::Activity::sptr generate<data::Activity>(const std::size_t variant)
 {
-    auto object = data::ActivitySeries::New();
+    auto object = data::Activity::New();
 
     object->setData(create<data::Composite>(variant));
-
-    // Inherited attributes
-    object->data::Series::shallowCopy(expected<data::Series>(variant));
 
     return object;
 }
@@ -680,17 +634,17 @@ inline data::ActivitySeries::sptr generate<data::ActivitySeries>(const std::size
 //------------------------------------------------------------------------------
 
 template<>
-inline void compare<data::ActivitySeries>(const data::ActivitySeries::csptr& actual, const std::size_t variant)
+inline void compare<data::Activity>(const data::Activity::csptr& actual, const std::size_t variant)
 {
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::ActivitySeries>(variant);
+    const auto& expected = getExpected<data::Activity>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getActivityConfigId(), actual->getActivityConfigId());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
 
-    // Test inherited attributes
-    compare<data::Series>(actual, variant);
+    CPPUNIT_ASSERT_EQUAL(expected->getActivityConfigId(), actual->getActivityConfigId());
 
     // test Data
     compare<data::Composite>(actual->getData(), variant);
@@ -698,9 +652,9 @@ inline void compare<data::ActivitySeries>(const data::ActivitySeries::csptr& act
 
 //------------------------------------------------------------------------------
 
-void SessionTest::activitySeriesTest()
+void SessionTest::activityTest()
 {
-    testCombine<data::ActivitySeries>();
+    testCombine<data::Activity>();
 }
 
 //------------------------------------------------------------------------------
@@ -791,9 +745,12 @@ inline void compare<data::Array>(const data::Array::csptr& actual, const std::si
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Array>(variant);
+    const auto& expected = getExpected<data::Array>(variant);
 
-    const auto& expectedSize = exp->getSize();
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    const auto& expectedSize = expected->getSize();
     const auto& actualSize   = actual->getSize();
 
     for(std::size_t i = 0, end = expectedSize.size() ; i < end ; ++i)
@@ -806,11 +763,11 @@ inline void compare<data::Array>(const data::Array::csptr& actual, const std::si
         {
             using T = decltype(type);
 
-            const auto dumpLockExpected = exp->dump_lock();
+            const auto dumpLockExpected = expected->dump_lock();
             const auto dumpLockActual   = actual->dump_lock();
 
-            for(auto expectedIt = exp->begin<T>(),
-                expectedEnd = exp->end<T>(),
+            for(auto expectedIt = expected->begin<T>(),
+                expectedEnd = expected->end<T>(),
                 actualIt = actual->begin<T>(),
                 actualEnd = actual->end<T>() ;
                 expectedIt != expectedEnd && actualIt != actualEnd ;
@@ -989,9 +946,9 @@ inline void compare<data::Image>(const data::Image::csptr& actual, const std::si
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Image>(variant);
+    const auto& expected = getExpected<data::Image>(variant);
 
-    const auto& expectedSize = exp->getSize();
+    const auto& expectedSize = expected->getSize();
     const auto& actualSize   = actual->getSize();
 
     for(std::size_t i = 0, end = expectedSize.size() ; i < end ; ++i)
@@ -999,7 +956,7 @@ inline void compare<data::Image>(const data::Image::csptr& actual, const std::si
         CPPUNIT_ASSERT_EQUAL(expectedSize[i], actualSize[i]);
     }
 
-    const auto& expectedSpacing = exp->getSpacing();
+    const auto& expectedSpacing = expected->getSpacing();
     const auto& actualSpacing   = actual->getSpacing();
 
     for(std::size_t i = 0, end = expectedSpacing.size() ; i < end ; ++i)
@@ -1007,7 +964,7 @@ inline void compare<data::Image>(const data::Image::csptr& actual, const std::si
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedSpacing[i], actualSpacing[i], DOUBLE_EPSILON);
     }
 
-    const auto& expectedOrigin = exp->getOrigin();
+    const auto& expectedOrigin = expected->getOrigin();
     const auto& actualOrigin   = actual->getOrigin();
 
     for(std::size_t i = 0, end = expectedOrigin.size() ; i < end ; ++i)
@@ -1015,18 +972,18 @@ inline void compare<data::Image>(const data::Image::csptr& actual, const std::si
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedOrigin[i], actualOrigin[i], DOUBLE_EPSILON);
     }
 
-    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
+    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
 
     auto compare =
         [&](auto type)
         {
             using T = decltype(type);
 
-            const auto dumpLockExpected = exp->dump_lock();
+            const auto dumpLockExpected = expected->dump_lock();
             const auto dumpLockActual   = actual->dump_lock();
 
-            for(auto expectedIt = exp->begin<T>(),
-                expectedEnd = exp->end<T>(),
+            for(auto expectedIt = expected->begin<T>(),
+                expectedEnd = expected->end<T>(),
                 actualIt = actual->begin<T>(),
                 actualEnd = actual->end<T>() ;
                 expectedIt != expectedEnd && actualIt != actualEnd ;
@@ -1101,7 +1058,7 @@ inline data::Vector::sptr generate<data::Vector>(const std::size_t variant)
     object->push_back(create<data::Integer>(variant));
     object->push_back(create<data::Float>(variant));
     object->push_back(create<data::String>(variant));
-    object->push_back(create<data::ActivitySeries>(variant));
+    object->push_back(create<data::Activity>(variant));
 
     return object;
 }
@@ -1119,7 +1076,7 @@ inline void compare<data::Vector>(const data::Vector::csptr& actual, const std::
     compare<data::Integer>(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
     compare<data::Float>(std::dynamic_pointer_cast<data::Float>(*it++), variant);
     compare<data::String>(std::dynamic_pointer_cast<data::String>(*it++), variant);
-    compare<data::ActivitySeries>(std::dynamic_pointer_cast<data::ActivitySeries>(*it++), variant);
+    compare<data::Activity>(std::dynamic_pointer_cast<data::Activity>(*it++), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -1149,9 +1106,12 @@ inline void compare<data::Point>(const data::Point::csptr& actual, const std::si
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Point>(variant);
+    const auto& expected = getExpected<data::Point>(variant);
 
-    const auto& expectedCoord = exp->getCoord();
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    const auto& expectedCoord = expected->getCoord();
     const auto& actualCoord   = actual->getCoord();
     CPPUNIT_ASSERT_EQUAL(expectedCoord.size(), actualCoord.size());
 
@@ -1197,9 +1157,12 @@ inline void compare<data::PointList>(const data::PointList::csptr& actual, const
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::PointList>(variant);
+    const auto& expected = getExpected<data::PointList>(variant);
 
-    const auto& expectedPoints = exp->getPoints();
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    const auto& expectedPoints = expected->getPoints();
     const auto& actualPoints   = actual->getPoints();
     CPPUNIT_ASSERT_EQUAL(expectedPoints.size(), actualPoints.size());
 
@@ -1283,7 +1246,6 @@ inline data::Camera::sptr generate<data::Camera>(const std::size_t variant)
     );
     object->setSkew(random<double>());
     object->setIsCalibrated(variant % 2 == 0);
-    object->setDescription(UUID::generateUUID());
     object->setCameraID(UUID::generateUUID());
     object->setMaximumFrameRate(random<float>());
     object->setPixelFormat(
@@ -1383,17 +1345,20 @@ inline void compare<data::Camera>(const data::Camera::csptr& actual, const std::
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Camera>(variant);
+    const auto& expected = getExpected<data::Camera>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getWidth(), actual->getWidth());
-    CPPUNIT_ASSERT_EQUAL(exp->getHeight(), actual->getHeight());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getFx(), actual->getFx(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getFy(), actual->getFy(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getCx(), actual->getCx(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getCy(), actual->getCy(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(expected->getWidth(), actual->getWidth());
+    CPPUNIT_ASSERT_EQUAL(expected->getHeight(), actual->getHeight());
 
-    const auto& expectedCoefficient = exp->getDistortionCoefficient();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getFx(), actual->getFx(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getFy(), actual->getFy(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getCx(), actual->getCx(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getCy(), actual->getCy(), DOUBLE_EPSILON);
+
+    const auto& expectedCoefficient = expected->getDistortionCoefficient();
     const auto& actualCoefficient   = actual->getDistortionCoefficient();
     CPPUNIT_ASSERT_EQUAL(expectedCoefficient.size(), actualCoefficient.size());
     for(std::size_t i = 0, end = expectedCoefficient.size() ; i < end ; ++i)
@@ -1401,16 +1366,15 @@ inline void compare<data::Camera>(const data::Camera::csptr& actual, const std::
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoefficient[i], actualCoefficient[i], DOUBLE_EPSILON);
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getSkew(), actual->getSkew(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_EQUAL(exp->getIsCalibrated(), actual->getIsCalibrated());
-    CPPUNIT_ASSERT_EQUAL(exp->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(exp->getCameraID(), actual->getCameraID());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getMaximumFrameRate(), actual->getMaximumFrameRate(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_EQUAL(exp->getPixelFormat(), actual->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(exp->getVideoFile(), actual->getVideoFile());
-    CPPUNIT_ASSERT_EQUAL(exp->getStreamUrl(), actual->getStreamUrl());
-    CPPUNIT_ASSERT_EQUAL(exp->getCameraSource(), actual->getCameraSource());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getScale(), actual->getScale(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getSkew(), actual->getSkew(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(expected->getIsCalibrated(), actual->getIsCalibrated());
+    CPPUNIT_ASSERT_EQUAL(expected->getCameraID(), actual->getCameraID());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getMaximumFrameRate(), actual->getMaximumFrameRate(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(expected->getPixelFormat(), actual->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(expected->getVideoFile(), actual->getVideoFile());
+    CPPUNIT_ASSERT_EQUAL(expected->getStreamUrl(), actual->getStreamUrl());
+    CPPUNIT_ASSERT_EQUAL(expected->getCameraSource(), actual->getCameraSource());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getScale(), actual->getScale(), DOUBLE_EPSILON);
 }
 
 //------------------------------------------------------------------------------
@@ -1418,46 +1382,6 @@ inline void compare<data::Camera>(const data::Camera::csptr& actual, const std::
 void SessionTest::cameraTest()
 {
     testCombine<data::Camera>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::CameraSeries::sptr generate<data::CameraSeries>(const std::size_t variant)
-{
-    auto object = data::CameraSeries::New();
-
-    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
-    {
-        object->addCamera(create<data::Camera>(variant + i));
-    }
-
-    // Inherited attributes
-    object->data::Series::shallowCopy(expected<data::Series>(variant));
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::CameraSeries>(const data::CameraSeries::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    for(std::size_t i = 0, end = actual->numCameras() ; i < end ; ++i)
-    {
-        compare<data::Camera>(actual->getCamera(i), variant + i);
-    }
-
-    compare<data::Series>(actual, variant);
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::cameraSeriesTest()
-{
-    testCombine<data::CameraSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -1480,12 +1404,15 @@ inline void compare<data::Color>(const data::Color::csptr& actual, const std::si
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Color>(variant);
+    const auto& expected = getExpected<data::Color>(variant);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->red(), actual->red(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->green(), actual->green(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->blue(), actual->blue(), FLOAT_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->alpha(), actual->alpha(), FLOAT_EPSILON);
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->red(), actual->red(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->green(), actual->green(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->blue(), actual->blue(), FLOAT_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->alpha(), actual->alpha(), FLOAT_EPSILON);
 }
 
 //------------------------------------------------------------------------------
@@ -1516,11 +1443,14 @@ inline void compare<data::Edge>(const data::Edge::csptr& actual, const std::size
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Edge>(variant);
+    const auto& expected = getExpected<data::Edge>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getFromPortID(), actual->getFromPortID());
-    CPPUNIT_ASSERT_EQUAL(exp->getToPortID(), actual->getToPortID());
-    CPPUNIT_ASSERT_EQUAL(exp->getNature(), actual->getNature());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getFromPortID(), actual->getFromPortID());
+    CPPUNIT_ASSERT_EQUAL(expected->getToPortID(), actual->getToPortID());
+    CPPUNIT_ASSERT_EQUAL(expected->getNature(), actual->getNature());
 }
 
 //------------------------------------------------------------------------------
@@ -1551,10 +1481,13 @@ inline void compare<data::Port>(const data::Port::csptr& actual, const std::size
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Port>(variant);
+    const auto& expected = getExpected<data::Port>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getIdentifier(), actual->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
 }
 
 //------------------------------------------------------------------------------
@@ -1697,9 +1630,12 @@ inline void compare<data::Landmarks>(const data::Landmarks::csptr& actual, const
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Landmarks>(variant);
+    const auto& expected = getExpected<data::Landmarks>(variant);
 
-    const auto& expectedGroupNames = exp->getGroupNames();
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    const auto& expectedGroupNames = expected->getGroupNames();
     const auto& actualGroupNames   = actual->getGroupNames();
 
     CPPUNIT_ASSERT_EQUAL(expectedGroupNames.size(), actualGroupNames.size());
@@ -1707,8 +1643,8 @@ inline void compare<data::Landmarks>(const data::Landmarks::csptr& actual, const
     for(const auto& name : expectedGroupNames)
     {
         // Test name
-        CPPUNIT_ASSERT_NO_THROW(exp->getGroup(name));
-        const auto& expectedGroup = exp->getGroup(name);
+        CPPUNIT_ASSERT_NO_THROW(expected->getGroup(name));
+        const auto& expectedGroup = expected->getGroup(name);
 
         CPPUNIT_ASSERT_NO_THROW(actual->getGroup(name));
         const auto& actualGroup = actual->getGroup(name);
@@ -1842,7 +1778,10 @@ inline void compare<data::Material>(const data::Material::csptr& actual, const s
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Material>(variant);
+    const auto& expected = getExpected<data::Material>(variant);
+
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
 
     // Test ambient
     compare<data::Color>(actual->ambient(), variant);
@@ -1854,11 +1793,11 @@ inline void compare<data::Material>(const data::Material::csptr& actual, const s
     compare<data::Image>(actual->getDiffuseTexture(), variant);
 
     // Test other attributes
-    CPPUNIT_ASSERT_EQUAL(exp->getShadingMode(), actual->getShadingMode());
-    CPPUNIT_ASSERT_EQUAL(exp->getRepresentationMode(), actual->getRepresentationMode());
-    CPPUNIT_ASSERT_EQUAL(exp->getOptionsMode(), actual->getOptionsMode());
-    CPPUNIT_ASSERT_EQUAL(exp->getDiffuseTextureFiltering(), actual->getDiffuseTextureFiltering());
-    CPPUNIT_ASSERT_EQUAL(exp->getDiffuseTextureWrapping(), actual->getDiffuseTextureWrapping());
+    CPPUNIT_ASSERT_EQUAL(expected->getShadingMode(), actual->getShadingMode());
+    CPPUNIT_ASSERT_EQUAL(expected->getRepresentationMode(), actual->getRepresentationMode());
+    CPPUNIT_ASSERT_EQUAL(expected->getOptionsMode(), actual->getOptionsMode());
+    CPPUNIT_ASSERT_EQUAL(expected->getDiffuseTextureFiltering(), actual->getDiffuseTextureFiltering());
+    CPPUNIT_ASSERT_EQUAL(expected->getDiffuseTextureWrapping(), actual->getDiffuseTextureWrapping());
 }
 
 //------------------------------------------------------------------------------
@@ -1892,9 +1831,12 @@ inline void compare<data::Matrix4>(const data::Matrix4::csptr& actual, const std
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Matrix4>(variant);
+    const auto& expected = getExpected<data::Matrix4>(variant);
 
-    const auto& expectedCoefficients = exp->getCoefficients();
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    const auto& expectedCoefficients = expected->getCoefficients();
     const auto& actualCoefficients   = actual->getCoefficients();
 
     CPPUNIT_ASSERT_EQUAL(expectedCoefficients.size(), actualCoefficients.size());
@@ -1990,43 +1932,6 @@ void SessionTest::planeListTest()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ProcessObject::sptr generate<data::ProcessObject>(const std::size_t variant)
-{
-    auto object = data::ProcessObject::New();
-
-    object->setInputValue(data::Boolean::classname(), create<data::Boolean>(variant));
-    object->setInputValue(data::Integer::classname(), create<data::Integer>(variant));
-
-    object->setOutputValue(data::Float::classname(), create<data::Float>(variant));
-    object->setOutputValue(data::String::classname(), create<data::String>(variant));
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::ProcessObject>(const data::ProcessObject::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    compare<data::Boolean>(actual->getInput<data::Boolean>(data::Boolean::classname()), variant);
-    compare<data::Integer>(actual->getInput<data::Integer>(data::Integer::classname()), variant);
-
-    compare<data::Float>(actual->getOutput<data::Float>(data::Float::classname()), variant);
-    compare<data::String>(actual->getOutput<data::String>(data::String::classname()), variant);
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::processObjectTest()
-{
-    testCombine<data::ProcessObject>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
 inline data::Reconstruction::sptr generate<data::Reconstruction>(const std::size_t variant)
 {
     auto object = data::Reconstruction::New();
@@ -2056,13 +1961,16 @@ inline void compare<data::Reconstruction>(const data::Reconstruction::csptr& act
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Reconstruction>(variant);
+    const auto& expected = getExpected<data::Reconstruction>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getIsVisible(), actual->getIsVisible());
-    CPPUNIT_ASSERT_EQUAL(exp->getOrganName(), actual->getOrganName());
-    CPPUNIT_ASSERT_EQUAL(exp->getStructureType(), actual->getStructureType());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getIsVisible(), actual->getIsVisible());
+    CPPUNIT_ASSERT_EQUAL(expected->getOrganName(), actual->getOrganName());
+    CPPUNIT_ASSERT_EQUAL(expected->getStructureType(), actual->getStructureType());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        exp->getComputedMaskVolume(),
+        expected->getComputedMaskVolume(),
         actual->getComputedMaskVolume(),
         DOUBLE_EPSILON
     );
@@ -2149,19 +2057,22 @@ inline void compare<data::StructureTraits>(const data::StructureTraits::csptr& a
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::StructureTraits>(variant);
+    const auto& expected = getExpected<data::StructureTraits>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
-    CPPUNIT_ASSERT_EQUAL(exp->getClass(), actual->getClass());
-    CPPUNIT_ASSERT_EQUAL(exp->getNativeExp(), actual->getNativeExp());
-    CPPUNIT_ASSERT_EQUAL(exp->getNativeGeometricExp(), actual->getNativeGeometricExp());
-    CPPUNIT_ASSERT_EQUAL(exp->getAttachmentType(), actual->getAttachmentType());
-    CPPUNIT_ASSERT_EQUAL(exp->getAnatomicRegion(), actual->getAnatomicRegion());
-    CPPUNIT_ASSERT_EQUAL(exp->getPropertyCategory(), actual->getPropertyCategory());
-    CPPUNIT_ASSERT_EQUAL(exp->getPropertyType(), actual->getPropertyType());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
+    CPPUNIT_ASSERT_EQUAL(expected->getClass(), actual->getClass());
+    CPPUNIT_ASSERT_EQUAL(expected->getNativeExp(), actual->getNativeExp());
+    CPPUNIT_ASSERT_EQUAL(expected->getNativeGeometricExp(), actual->getNativeGeometricExp());
+    CPPUNIT_ASSERT_EQUAL(expected->getAttachmentType(), actual->getAttachmentType());
+    CPPUNIT_ASSERT_EQUAL(expected->getAnatomicRegion(), actual->getAnatomicRegion());
+    CPPUNIT_ASSERT_EQUAL(expected->getPropertyCategory(), actual->getPropertyCategory());
+    CPPUNIT_ASSERT_EQUAL(expected->getPropertyType(), actual->getPropertyType());
 
     // Categories
-    const auto& expectedCategories = exp->getCategories();
+    const auto& expectedCategories = expected->getCategories();
     const auto& actualCategories   = actual->getCategories();
     CPPUNIT_ASSERT_EQUAL(expectedCategories.size(), actualCategories.size());
 
@@ -2226,12 +2137,15 @@ inline void compare<data::StructureTraitsDictionary>(
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::StructureTraitsDictionary>(variant);
+    const auto& expected = getExpected<data::StructureTraitsDictionary>(variant);
 
-    for(const auto& name : exp->getStructureTypeNames())
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    for(const auto& name : expected->getStructureTypeNames())
     {
         const auto& actualStructure   = actual->getStructure(name);
-        const auto& expectedStructure = exp->getStructure(name);
+        const auto& expectedStructure = expected->getStructure(name);
 
         CPPUNIT_ASSERT_EQUAL(expectedStructure->getType(), actualStructure->getType());
         CPPUNIT_ASSERT_EQUAL(expectedStructure->getClass(), actualStructure->getClass());
@@ -2302,9 +2216,12 @@ inline void compare<data::ReconstructionTraits>(
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::ReconstructionTraits>(variant);
+    const auto& expected = getExpected<data::ReconstructionTraits>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getIdentifier(), actual->getIdentifier());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
 
     // Reconstruction mask operator node
     compare<data::Node>(actual->getMaskOpNode(), variant);
@@ -2354,12 +2271,15 @@ inline void compare<data::Resection>(const data::Resection::csptr& actual, const
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::Resection>(variant);
+    const auto& expected = getExpected<data::Resection>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getName(), actual->getName());
-    CPPUNIT_ASSERT_EQUAL(exp->getIsSafePart(), actual->getIsSafePart());
-    CPPUNIT_ASSERT_EQUAL(exp->getIsValid(), actual->getIsValid());
-    CPPUNIT_ASSERT_EQUAL(exp->getIsVisible(), actual->getIsVisible());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getName(), actual->getName());
+    CPPUNIT_ASSERT_EQUAL(expected->getIsSafePart(), actual->getIsSafePart());
+    CPPUNIT_ASSERT_EQUAL(expected->getIsValid(), actual->getIsValid());
+    CPPUNIT_ASSERT_EQUAL(expected->getIsVisible(), actual->getIsVisible());
 
     const auto& inputs  = actual->getInputs();
     const auto& outputs = actual->getOutputs();
@@ -2441,10 +2361,13 @@ inline void compare<data::ROITraits>(const data::ROITraits::csptr& actual, const
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::ROITraits>(variant);
+    const auto& expected = getExpected<data::ROITraits>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getIdentifier(), actual->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(exp->getEvaluatedExp(), actual->getEvaluatedExp());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(expected->getEvaluatedExp(), actual->getEvaluatedExp());
 
     // Node
     compare<data::Node>(actual->getMaskOpNode(), variant);
@@ -2458,80 +2381,6 @@ inline void compare<data::ROITraits>(const data::ROITraits::csptr& actual, const
 void SessionTest::roiTraitsTest()
 {
     testCombine<data::ROITraits>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::SeriesDB::sptr generate<data::SeriesDB>(const std::size_t variant)
-{
-    auto object = data::SeriesDB::New();
-
-    auto& container = object->getContainer();
-    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
-    {
-        container.push_back(create<data::Series>(variant + i));
-    }
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::SeriesDB>(const data::SeriesDB::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    const auto& container = actual->getContainer();
-    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
-    {
-        compare<data::Series>(container.at(i), variant + i);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::seriesDBTest()
-{
-    testCombine<data::SeriesDB>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::Tag::sptr generate<data::Tag>(const std::size_t variant)
-{
-    auto object = data::Tag::New();
-
-    object->setType(UUID::generateUUID());
-    object->setSize(random<double>());
-    object->setPointList(create<data::PointList>(variant));
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline void compare<data::Tag>(const data::Tag::csptr& actual, const std::size_t variant)
-{
-    CPPUNIT_ASSERT(actual);
-
-    // Retrieve the expected variant
-    const auto& exp = expected<data::Tag>(variant);
-
-    CPPUNIT_ASSERT_EQUAL(exp->getType(), actual->getType());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->getSize(), actual->getSize(), DOUBLE_EPSILON);
-
-    compare<data::PointList>(actual->getPointList(), variant);
-}
-
-//------------------------------------------------------------------------------
-
-void SessionTest::tagTest()
-{
-    testCombine<data::Tag>();
 }
 
 //------------------------------------------------------------------------------
@@ -2586,20 +2435,23 @@ inline void compare<data::TransferFunction>(const data::TransferFunction::csptr&
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::TransferFunction>(variant);
+    const auto& expected = getExpected<data::TransferFunction>(variant);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->level(), actual->level(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(exp->window(), actual->window(), DOUBLE_EPSILON);
-    CPPUNIT_ASSERT_EQUAL(exp->name(), actual->name());
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
 
-    const auto& expectedBackgroundColor = exp->backgroundColor();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->level(), actual->level(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->window(), actual->window(), DOUBLE_EPSILON);
+    CPPUNIT_ASSERT_EQUAL(expected->name(), actual->name());
+
+    const auto& expectedBackgroundColor = expected->backgroundColor();
     const auto& actualBackgroundColor   = actual->backgroundColor();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.r, actualBackgroundColor.r, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.g, actualBackgroundColor.g, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.b, actualBackgroundColor.b, DOUBLE_EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedBackgroundColor.a, actualBackgroundColor.a, DOUBLE_EPSILON);
 
-    auto expectedPiece = exp->pieces().front();
+    auto expectedPiece = expected->pieces().front();
     auto actualPiece   = actual->pieces().front();
 
     CPPUNIT_ASSERT_EQUAL(expectedPiece->interpolationMode(), actualPiece->interpolationMode());
@@ -2634,8 +2486,8 @@ inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t var
     // Only load the real dicom once
     if(variant == 0)
     {
-        // Setup the SeriesDB to be able to read
-        auto seriesDB                    = data::SeriesDB::New();
+        // Setup the SeriesSet to be able to read
+        auto series_set                  = data::SeriesSet::New();
         const std::filesystem::path path = utestData::Data::dir()
                                            / "sight/Patient/Dicom/DicomDB/86-CT-Skull";
 
@@ -2645,20 +2497,20 @@ inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t var
         );
 
         // Read source Dicom
-        auto reader = io::dicom::reader::SeriesDB::New();
-        reader->setObject(seriesDB);
+        auto reader = io::dicom::reader::SeriesSet::New();
+        reader->setObject(series_set);
         reader->setFolder(path);
 
         CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), seriesDB->size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), series_set->size());
 
-        dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(seriesDB->getContainer().front());
+        dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series_set->front());
     }
     else
     {
         // Take the first variant as basis
         dicomSeries = data::DicomSeries::New();
-        dicomSeries->shallowCopy(expected<data::DicomSeries>(0));
+        dicomSeries->shallowCopy(getExpected<data::DicomSeries>(0));
     }
 
     // Randomize a bit the dicomSeries
@@ -2669,7 +2521,7 @@ inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t var
     }
 
     // Inherited attributes
-    dicomSeries->data::Series::shallowCopy(expected<data::Series>(variant));
+    dicomSeries->Series::shallowCopy(getExpected<data::Series>(variant));
 
     return dicomSeries;
 }
@@ -2682,12 +2534,15 @@ inline void compare<data::DicomSeries>(const data::DicomSeries::csptr& actual, c
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::DicomSeries>(variant);
+    const auto& expected = getExpected<data::DicomSeries>(variant);
+
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
 
     // Test inherited attributes
     compare<data::Series>(actual, variant);
 
-    const auto& expectedSOPClassUIDs = exp->getSOPClassUIDs();
+    const auto& expectedSOPClassUIDs = expected->getSOPClassUIDs();
     const auto& actualSOPClassUIDs   = actual->getSOPClassUIDs();
     CPPUNIT_ASSERT_EQUAL(expectedSOPClassUIDs.size(), actualSOPClassUIDs.size());
 
@@ -2716,24 +2571,39 @@ inline data::ImageSeries::sptr generate<data::ImageSeries>(const std::size_t var
 {
     auto object = data::ImageSeries::New();
 
-    object->setContrastAgent(UUID::generateUUID());
-    object->setContrastRoute(UUID::generateUUID());
-    object->setContrastVolume(UUID::generateUUID());
-    object->setContrastStartTime(UUID::generateUUID());
-    object->setContrastStopTime(UUID::generateUUID());
-    object->setContrastTotalDose(UUID::generateUUID());
-    object->setContrastFlowRate(UUID::generateUUID());
-    object->setContrastFlowDuration(UUID::generateUUID());
-    object->setContrastIngredient(UUID::generateUUID());
-    object->setContrastIngredientConcentration(UUID::generateUUID());
-    object->setAcquisitionDate(UUID::generateUUID());
-    object->setAcquisitionTime(UUID::generateUUID());
+    object->setContrastBolusAgent(UUID::generateUUID());
+    object->setContrastBolusRoute(UUID::generateUUID());
+    object->setContrastBolusVolume(double(variant));
+    object->setContrastBolusStartTime(generateTM(variant));
+    object->setContrastBolusStopTime(generateTM(variant));
+    object->setContrastBolusTotalDose(double(variant));
 
-    object->setImage(create<data::Image>(variant));
+    object->setContrastFlowRate(
+        std::to_string(variant)
+        + "\\"
+        + std::to_string(variant + 1)
+        + "\\"
+        + std::to_string(variant + 2)
+    );
+
+    object->setContrastFlowDuration(
+        std::to_string(variant + 4)
+        + "\\"
+        + std::to_string(variant + 5)
+        + "\\"
+        + std::to_string(variant + 6)
+    );
+
+    object->setContrastBolusIngredient(UUID::generateUUID());
+    object->setContrastBolusIngredientConcentration(double(variant));
+    object->setAcquisitionDate(generateDA(variant));
+    object->setAcquisitionTime(generateTM(variant));
+
     object->setDicomReference(create<data::DicomSeries>(variant));
 
     // Inherited attributes
-    object->data::Series::shallowCopy(expected<data::Series>(variant));
+    object->Series::shallowCopy(getExpected<data::Series>(variant));
+    object->Image::shallowCopy(getExpected<data::Image>(variant));
 
     return object;
 }
@@ -2746,28 +2616,58 @@ inline void compare<data::ImageSeries>(const data::ImageSeries::csptr& actual, c
     CPPUNIT_ASSERT(actual);
 
     // Retrieve the expected variant
-    const auto& exp = expected<data::ImageSeries>(variant);
+    const auto& expected = getExpected<data::ImageSeries>(variant);
+
+    // Test Object attributes
+    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
 
     // Test inherited attributes
     compare<data::Series>(actual, variant);
+    compare<data::Image>(actual, variant);
 
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastAgent(), actual->getContrastAgent());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastRoute(), actual->getContrastRoute());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastVolume(), actual->getContrastVolume());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastStartTime(), actual->getContrastStartTime());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastStopTime(), actual->getContrastStopTime());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastTotalDose(), actual->getContrastTotalDose());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastFlowRate(), actual->getContrastFlowRate());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastFlowDuration(), actual->getContrastFlowDuration());
-    CPPUNIT_ASSERT_EQUAL(exp->getContrastIngredient(), actual->getContrastIngredient());
-    CPPUNIT_ASSERT_EQUAL(
-        exp->getContrastIngredientConcentration(),
-        actual->getContrastIngredientConcentration()
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastBolusAgent(), actual->getContrastBolusAgent());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastBolusRoute(), actual->getContrastBolusRoute());
+
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastBolusVolume().has_value(), actual->getContrastBolusVolume().has_value());
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        expected->getContrastBolusVolume().value_or(0.0),
+        actual->getContrastBolusVolume().value_or(0.0),
+        DOUBLE_EPSILON
     );
-    CPPUNIT_ASSERT_EQUAL(exp->getAcquisitionDate(), actual->getAcquisitionDate());
-    CPPUNIT_ASSERT_EQUAL(exp->getAcquisitionTime(), actual->getAcquisitionTime());
 
-    compare<data::Image>(actual->getImage(), variant);
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastBolusStartTime(), actual->getContrastBolusStartTime());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastBolusStopTime(), actual->getContrastBolusStopTime());
+
+    CPPUNIT_ASSERT_EQUAL(
+        expected->getContrastBolusTotalDose().has_value(),
+        actual->getContrastBolusTotalDose().has_value()
+    );
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        expected->getContrastBolusTotalDose().value_or(0.0),
+        actual->getContrastBolusTotalDose().value_or(0.0),
+        DOUBLE_EPSILON
+    );
+
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastFlowRate(), actual->getContrastFlowRate());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastFlowDuration(), actual->getContrastFlowDuration());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastBolusIngredient(), actual->getContrastBolusIngredient());
+
+    CPPUNIT_ASSERT_EQUAL(
+        expected->getContrastBolusIngredientConcentration().has_value(),
+        actual->getContrastBolusIngredientConcentration().has_value()
+    );
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        expected->getContrastBolusIngredientConcentration().value_or(0.0),
+        actual->getContrastBolusIngredientConcentration().value_or(0.0),
+        DOUBLE_EPSILON
+    );
+
+    CPPUNIT_ASSERT_EQUAL(expected->getAcquisitionDate(), actual->getAcquisitionDate());
+    CPPUNIT_ASSERT_EQUAL(expected->getAcquisitionTime(), actual->getAcquisitionTime());
+
     compare<data::DicomSeries>(actual->getDicomReference(), variant);
 }
 
@@ -2801,7 +2701,7 @@ inline data::ModelSeries::sptr generate<data::ModelSeries>(const std::size_t var
     object->setReconstructionDB(reconstructionDB);
 
     // Inherited attributes
-    object->data::Series::shallowCopy(expected<data::Series>(variant));
+    object->Series::shallowCopy(getExpected<data::Series>(variant));
 
     return object;
 }
@@ -2847,7 +2747,7 @@ inline data::ActivitySet::sptr generate<data::ActivitySet>(const std::size_t var
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        object->push_back(create<data::ActivitySeries>(variant + i));
+        object->push_back(create<data::Activity>(variant + i));
     }
 
     return object;
@@ -2862,7 +2762,7 @@ inline void compare<data::ActivitySet>(const data::ActivitySet::csptr& actual, c
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        compare<data::ActivitySeries>(actual->at(i), variant + i);
+        compare<data::Activity>(actual->at(i), variant + i);
     }
 }
 
@@ -2948,6 +2848,41 @@ void SessionTest::seriesSetTest()
 
 //------------------------------------------------------------------------------
 
+template<>
+inline data::Set::sptr generate<data::Set>(const std::size_t variant)
+{
+    auto object = data::Set::New();
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        object->push_back(create<data::Series>(variant + i));
+    }
+
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline void compare<data::Set>(const data::Set::csptr& actual, const std::size_t variant)
+{
+    CPPUNIT_ASSERT(actual);
+
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        compare<data::Series>(std::dynamic_pointer_cast<data::Series>(actual->at(i)), variant + i);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::setTest()
+{
+    testCombine<data::Set>();
+}
+
+//------------------------------------------------------------------------------
+
 inline static void customSerialize(
     zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
@@ -2957,7 +2892,7 @@ inline static void customSerialize(
 )
 {
     // Cast to the right type
-    const auto string = Helper::safeCast<data::String>(object);
+    const auto string = Helper::safe_cast<data::String>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::String>(tree, 666);
@@ -2976,7 +2911,7 @@ inline static data::String::sptr customDeserialize(
 )
 {
     // Create or reuse the object
-    auto string = Helper::safeCast<data::String>(object);
+    auto string = Helper::cast_or_create<data::String>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::String>(tree, 0, 666);

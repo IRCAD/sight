@@ -40,7 +40,7 @@ class DATA_CLASS_API GenericFieldBase : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericFieldBase);
+    SIGHT_DECLARE_CLASS(GenericFieldBase, Object);
 
     DATA_API friend std::ostream& operator<<(std::ostream& /*_os*/, const GenericFieldBase& /*lf*/);
 

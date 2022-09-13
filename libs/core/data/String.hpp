@@ -34,11 +34,11 @@ namespace sight::data
  *
  * String object is essentially used as a field in other objects.
  */
-class DATA_CLASS_API String : public GenericField<std::string>
+class DATA_CLASS_API String final : public GenericField<std::string>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(String, data::Object);
+    SIGHT_DECLARE_CLASS(String, Object);
 
     //------------------------------------------------------------------------------
 
@@ -51,20 +51,26 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API String(data::Object::Key key) noexcept;
+    DATA_API String(Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
      */
-    DATA_API ~String() noexcept override;
+    DATA_API ~String() noexcept override = default;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-protected:
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 };
 
 } // namespace sight::data

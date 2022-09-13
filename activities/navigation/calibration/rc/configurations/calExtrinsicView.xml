@@ -2,7 +2,7 @@
     <id>calExtrinsicView</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="cameraSeries" />
+        <param name="cameraSet" />
         <param name="camera1" />
         <param name="camera2" />
         <param name="calibrationInfo1" />
@@ -23,7 +23,7 @@
         <object uid="frame2TL" type="sight::data::FrameTL" />
         <object uid="${calibrationInfo1}" type="sight::data::CalibrationInfo" src="ref" />
         <object uid="${calibrationInfo2}" type="sight::data::CalibrationInfo" src="ref" />
-        <object uid="${cameraSeries}" type="sight::data::CameraSeries" src="ref" />
+        <object uid="${cameraSet}" type="sight::data::CameraSet" src="ref" />
         <object uid="${camera1}" type="sight::data::Camera" src="ref" />
         <object uid="${camera2}" type="sight::data::Camera" src="ref" />
         <object uid="exportExtrinsicMat" type="sight::data::Matrix4" src="deferred" />
@@ -123,7 +123,7 @@
             <registry>
                 <view sid="cameraInfo1Srv" start="true" />
                 <view sid="cameraInfo2Srv" start="true" />
-                <view sid="cameraSeriesInfoSrv" start="true" />
+                <view sid="cameraSetInfoSrv" start="true" />
             </registry>
         </service>
 
@@ -335,14 +335,14 @@
         <service uid="openCVExtrinsicCalSrv" type="sight::module::geometry::vision::SOpenCVExtrinsic" worker="extr_chess_checker">
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
-            <inout key="cameraSeries" uid="${cameraSeries}" />
+            <inout key="cameraSet" uid="${cameraSet}" />
             <out   key="matrix" uid="exportExtrinsicMat" />
             <camIndex>${camIndex}</camIndex>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
-        <service uid="cameraSeriesInfoSrv" type="sight::module::ui::qt::calibration::SCameraSeriesEditor" autoConnect="true">
-            <in key="cameraSeries" uid="${cameraSeries}" />
+        <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::SCameraSetEditor" autoConnect="true">
+            <in key="cameraSet" uid="${cameraSet}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 

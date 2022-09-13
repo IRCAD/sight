@@ -38,7 +38,7 @@ CPPUNIT_TEST(testSaveLoadInr);
 CPPUNIT_TEST(testSaveLoadNifti);
 CPPUNIT_TEST(ImageSeriesInrTest);
 CPPUNIT_TEST(ImageSeriesNiftiTest);
-CPPUNIT_TEST(SeriesDBInrTest);
+CPPUNIT_TEST(SeriesSetInrTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,7 +52,7 @@ public:
     static void testSaveLoadNifti();
     static void ImageSeriesInrTest();
     static void ImageSeriesNiftiTest();
-    static void SeriesDBInrTest();
+    static void SeriesSetInrTest();
 };
 
 } // namespace sight::module::io::itk::ut

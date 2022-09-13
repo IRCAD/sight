@@ -70,12 +70,12 @@ public:
     /**
      * @brief Create DicomSeries from information stored in DICOMDIR.
      * @param dicomdir Path to dicomdir file
-     * @param[out] seriesDB Dicom series created
+     * @param[out] series_set Dicom series created
      * @param[in] fileLookupObserver file lookup observer
      */
     IO_DICOM_API static void retrieveDicomSeries(
         const std::filesystem::path& dicomdir,
-        std::vector<SPTR(data::DicomSeries)>& seriesDB,
+        std::vector<SPTR(data::DicomSeries)>& series_set,
         const SPTR(core::log::Logger)& logger,
         std::function<void(std::uint64_t)> progress = nullptr,
         std::function<bool()> cancel                = nullptr

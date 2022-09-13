@@ -34,7 +34,6 @@
 #include <data/Plane.hpp>
 #include <data/Point.hpp>
 #include <data/Port.hpp>
-#include <data/ProcessObject.hpp>
 #include <data/ReconstructionTraits.hpp>
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
@@ -88,9 +87,6 @@ public:
 
     /// Creates a Material with ambient and diffuse color.
     UTESTDATA_API static data::Material::sptr createMaterial();
-
-    /// Creates a ProcessObject with 3 inputs and 1 output
-    UTESTDATA_API static data::ProcessObject::sptr createProcessObject();
 
     /// Creates a ResectionDB containing one Resection.
     UTESTDATA_API static data::ResectionDB::sptr generateResectionDB();

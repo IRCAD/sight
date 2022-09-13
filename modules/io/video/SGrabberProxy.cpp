@@ -26,7 +26,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/FrameTL.hpp>
 
 #include <service/extension/Config.hpp>
@@ -200,14 +200,14 @@ void SGrabberProxy::startCamera()
                 }
                 else
                 {
-                    auto cameraSeries = std::dynamic_pointer_cast<const data::CameraSeries>(cameraInput.get_shared());
-                    if(cameraSeries)
+                    auto camera_set = std::dynamic_pointer_cast<const data::CameraSet>(cameraInput.get_shared());
+                    if(camera_set)
                     {
-                        numCamerasInSeries = cameraSeries->numCameras();
+                        numCamerasInSeries = camera_set->size();
                         SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
 
                         // Assume same source on all cameras
-                        sourceType = cameraSeries->getCamera(0)->getCameraSource();
+                        sourceType = camera_set->get_camera(0)->getCameraSource();
                     }
                 }
             }
@@ -429,18 +429,18 @@ void SGrabberProxy::startCamera()
                 }
                 else
                 {
-                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
-                    if(cameraSeries)
+                    auto camera_set = data::CameraSet::dynamicConstCast(cameraInput.get_shared());
+                    if(camera_set)
                     {
                         #ifdef DEBUG
-                        const std::size_t numCameras = cameraSeries->numCameras();
+                        const std::size_t numCameras = camera_set->size();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
                             srvCount < numCameras
                         );
                         #endif
 
-                        srv->setInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
+                        srv->setInput(camera_set->get_camera(srvCount), s_CAMERA_INPUT);
                     }
                 }
 

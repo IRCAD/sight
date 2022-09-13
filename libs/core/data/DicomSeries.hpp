@@ -39,11 +39,11 @@ namespace sight::data
 /**
  * @brief Holds DICOM series.
  */
-class DATA_CLASS_API DicomSeries : public Series
+class DATA_CLASS_API DicomSeries final : public Series
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomSeries, Object, factory::New<DicomSeries>);
+    SIGHT_DECLARE_CLASS(DicomSeries, Series, factory::New<DicomSeries>);
 
     typedef std::map<std::size_t, core::memory::BufferObject::sptr> DicomContainerType;
 
@@ -58,20 +58,7 @@ public:
     DATA_API DicomSeries(Object::Key _key);
 
     /// Destroys the DICOM series.
-    DATA_API ~DicomSeries() override;
-
-    /**
-     * @brief Defines shallow copy.
-     * @param _source the source object to copy into this one.
-     */
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API ~DicomSeries() noexcept override = default;
 
     /**
      * @brief Adds a DICOM path.
@@ -195,6 +182,20 @@ public:
     DATA_API bool operator==(const DicomSeries& other) const noexcept;
     DATA_API bool operator!=(const DicomSeries& other) const noexcept;
     /// @}
+
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 protected:
 

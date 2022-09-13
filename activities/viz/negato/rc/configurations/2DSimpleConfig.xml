@@ -7,7 +7,6 @@
     </parameters>
     <config>
         <object uid="${objectID}" type="sight::data::ImageSeries" src="ref" />
-        <object uid="image" type="sight::data::Image" src="deferred" />
         <object uid="tf" type="sight::data::TransferFunction" />
         <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
@@ -25,7 +24,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="sight::viz::scene3d::SRender" >
+        <service uid="gs" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -38,13 +37,13 @@
         </service>
 
         <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${objectID}" />
             <inout key="tf" uid="tf" />
             <config layer="default" priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
-            <in key="image" uid="image" />
+            <in key="image" uid="${objectID}" />
             <in key="tf" uid="tf" />
             <config layer="default" autoresetcamera="true" sliceIndex="${orientation}" />
         </service>
@@ -52,17 +51,12 @@
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="imageDumpLocker" type="sight::module::memory::LockDumpSrv">
-            <inout key="target" uid="image" />
+            <inout key="target" uid="${objectID}" />
         </service>
 
         <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
-            <inout key="image" uid="image" />
+            <inout key="image" uid="${objectID}" />
             <sliceIndex>${orientation}</sliceIndex>
-        </service>
-
-        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
-            <in key="imageSeries" uid="${objectID}" />
-            <out key="image" uid="image" />
         </service>
 
         <start uid="imageDumpLocker" />
@@ -71,9 +65,6 @@
         <!-- gs adaptors -->
         <start uid="interactor4Negato" />
         <start uid="seriesAdaptor" />
-        <start uid="extractImageSrv" />
         <start uid="sliderIndexEditor" />
-
-        <update uid="extractImageSrv" />
     </config>
 </extension>

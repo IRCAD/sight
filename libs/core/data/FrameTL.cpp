@@ -45,22 +45,24 @@ FrameTL::FrameTL(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-FrameTL::~FrameTL()
-= default;
+void FrameTL::shallowCopy(const Object::csptr& /*unused*/)
+{
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
+}
 
 //------------------------------------------------------------------------------
 
-void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*unused*/)
+void FrameTL::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source);
 
     this->clearTimeline();
 
@@ -72,6 +74,8 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& /*
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +141,7 @@ bool FrameTL::operator==(const FrameTL& other) const noexcept
     }
 
     // Super class last
-    return GenericTL<uint8_t>::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

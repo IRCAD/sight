@@ -40,7 +40,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto structureTraitsDictionary = Helper::safeCast<data::StructureTraitsDictionary>(object);
+    const auto structureTraitsDictionary = Helper::safe_cast<data::StructureTraitsDictionary>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::StructureTraitsDictionary>(tree, 1);
@@ -63,7 +63,7 @@ inline static data::StructureTraitsDictionary::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto structureTraitsDictionary = Helper::safeCast<data::StructureTraitsDictionary>(object);
+    auto structureTraitsDictionary = Helper::cast_or_create<data::StructureTraitsDictionary>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::StructureTraitsDictionary>(tree, 0, 1);

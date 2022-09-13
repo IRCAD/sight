@@ -25,7 +25,7 @@
 #include "modules/io/realsense/config.hpp"
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Mesh.hpp>
 
 #include <io/base/service/IRGBDGrabber.hpp>
@@ -108,7 +108,7 @@ namespace sight::module::io::realsense
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
-        <inout key="cameraSeries" uid="..." />
+        <inout key="cameraSet" uid="..." />
         <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
  * alignTo="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
@@ -117,7 +117,7 @@ namespace sight::module::io::realsense
  * @subsection In-Out In-Out
  * - \b depthTL [sight::data::FrameTL]: Frame timeline of the depth video.
  * - \b frameTL [sight::data::FrameTL]: Frame timeline of the color video.
- * - \b cameraSeries [sight::data::CameraSeries]: Camera series that will contain device camera information.
+ * - \b cameraSet [sight::data::CameraSet]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
  * - \b pointcloud [sight::data::Mesh]: pointcloud computed from depth map. (optional)
@@ -471,8 +471,8 @@ private:
 
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, false, true};
 
-    static constexpr std::string_view s_CAMERA_SERIES_INOUT = "cameraSeries";
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES_INOUT, false, true};
+    static constexpr std::string_view s_CAMERA_SET_INOUT = "cameraSet";
+    data::ptr<data::CameraSet, data::Access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, false, true};
 
     static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
     data::ptr<data::Mesh, data::Access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, false, true};

@@ -42,7 +42,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto plane = Helper::safeCast<data::Plane>(object);
+    const auto plane = Helper::safe_cast<data::Plane>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Plane>(tree, 1);
@@ -67,7 +67,7 @@ inline static data::Plane::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto plane = Helper::safeCast<data::Plane>(object);
+    auto plane = Helper::cast_or_create<data::Plane>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Plane>(tree, 0, 1);

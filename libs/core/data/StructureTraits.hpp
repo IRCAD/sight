@@ -41,7 +41,7 @@ namespace sight::data
  *  - [optional] a native ROI expression : ex. inter(world(type(Skin)),not(class(Organ)))
  *  - [optional] a native geometric ROI expression
  */
-class DATA_CLASS_API StructureTraits : public Object
+class DATA_CLASS_API StructureTraits final : public Object
 {
 public:
 
@@ -84,7 +84,7 @@ public:
     DATA_API StructureTraits(Object::Key key);
 
     /// Destructor. Does nothing.
-    DATA_API ~StructureTraits() override;
+    DATA_API ~StructureTraits() noexcept override = default;
 
     /**
      * @{
@@ -177,26 +177,25 @@ public:
     void setPropertyType(const std::string& _propertyType);
     /// @}
 
-    /**
-     * @brief Defines shallow copy.
-     * @param _source the source object where find data.
-     */
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
-
     /// Equality comparison operators
     /// @{
     DATA_API bool operator==(const StructureTraits& other) const noexcept;
     DATA_API bool operator!=(const StructureTraits& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object where find data.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 private:
 

@@ -34,8 +34,8 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <data/ActivitySeries.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/Activity.hpp>
+#include <data/ActivitySet.hpp>
 #include <data/Vector.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -48,34 +48,31 @@ namespace sight::module::ui::qt::activity
 {
 
 /**
- * @brief This editor allows to select the data required by an activity in order to create the ActivitySeries.
+ * @brief This editor allows to select the data required by an activity in order to create the Activity.
  *
  * This editor displays a tab widget (one tab by data).
- * It works on a data::SeriesDB and adds the created activity series into the seriesDB.
+ * It works on a data::ActivitySet and adds the created activity into the activity_set.
  *
  * @section Slots Slots
- * - \b createActivity(std::string) : This slot displays the gui allowing to create a data::ActivitySeries with
+ * - \b createActivity(std::string) : This slot displays the gui allowing to create a data::Activity with
  *      the required data for the given activity.
- * - \b updateActivity(data::ActivitySeries::sptr) : This slot displays the gui allowing to update the required
+ * - \b updateActivity(data::Activity::sptr) : This slot displays the gui allowing to update the required
  *      data for the given activity.
- * - \b updateActivitySeries(data::Series::sptr) : This slot receives a data::Series, but works only if
- *   the series is an ActivitySeries, else it does nothing. It displays the gui allowing to update the required data for
- *   the given activity.
  *
  * @section Signals Signals
- * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when the activitySeries is built.
- * - \b activityUpdated(data::ActivitySeries::sptr) : This signal is emitted when the activitySeries is updated.
+ * - \b activityCreated(data::Activity::sptr) : This signal is emitted when the activity is built.
+ * - \b activityUpdated(data::Activity::sptr) : This signal is emitted when the activity is updated.
  * - \b canceled() : This signal is emitted when the cancel button is clicked.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service impl="sight::module::ui::qt::activity::SWizard">
-     <inout key="seriesDB" uid="..." />
-     <inout key="activitySeries" uid="..." />
+     <inout key="activitySet" uid="..." />
+     <inout key="activity" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>
      <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
-     <activitySeries>seriesUid</activitySeries>
+     <activity>activityUid</activity>
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
@@ -85,13 +82,13 @@ namespace sight::module::ui::qt::activity
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b seriesDB [sight::data::SeriesDB]: seriesDB to store the create activity series
- * - \b seriesDB [sight::data::ActivitySeries] (optional): uid of the activity series to update. It is only used when
+ * - \b activity_set [sight::data::ActivitySet]: activity_set to store the create activity
+ * - \b activity [sight::data::Activity] (optional): uid of the activity to update. It is only used when
  * the update() method is called.
  * @subsection Configuration Configuration
  * - \b ioSelectorConfig : configuration for the SSelector service used to import data in this editor.
  * - \b sdbIoSelectorConfig(optional, default: ioSelectorConfig): configuration for the SSelector service used to
- * import data in this editor from a SeriesDB.
+ * import data in this editor from a ActivitySet.
  * - \b icons : defines the icons displayed for a type of data
  *    - \b type : type of data
  *    - \b icon : path of the icon to display
@@ -120,7 +117,6 @@ public:
      */
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_CREATE_ACTIVITY_SLOT;
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SERIES_SLOT;
     /// @}
 
     /**
@@ -128,10 +124,10 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
 
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityUpdatedSignalType;
+    typedef core::com::Signal<void (data::Activity::sptr)> ActivityUpdatedSignalType;
 
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
     typedef core::com::Signal<void ()> CanceledSignalType;
@@ -163,21 +159,13 @@ private:
     void createActivity(std::string activityID);
 
     /// SLOT: Displays the gui allowing to update the required data for the activity.
-    void updateActivity(data::ActivitySeries::sptr activitySeries);
-
-    /// SLOT: Displays the gui allowing to update the required data for the activity.
-    /**
-     * @brief SLOT: It displays the gui allowing to update the required data for the given activity.
-     * @note This slot receives a data::Series, but works only if the series is an ActivitySeries, else it does
-     *       nothing.
-     */
-    void updateActivitySeries(data::Series::sptr series);
+    void updateActivity(data::Activity::sptr activity);
 
     /**
      * @brief Called when the user click on the 'apply' Button.
      *
-     * if mode == CREATE : It creates the activitySeries and add it to the seriesDB.
-     * else, it update the current activity series.
+     * if mode == CREATE : It creates the activity and add it to the activity_set.
+     * else, it update the current activity.
      */
     void onBuildActivity();
 
@@ -190,7 +178,7 @@ private:
     /// Called when the user click on the 'cancel' Button.
     void onCancel();
 
-    data::ActivitySeries::sptr m_actSeries; ///< Activity series builded
+    data::Activity::sptr m_new_activity; ///< Activity builded
 
     QPointer<DataView> m_DataView;        ///< view used to select required data for activity
     QPointer<QPushButton> m_okButton;     ///<  Button 'Apply' or 'Next' to validate the activity creation
@@ -200,7 +188,7 @@ private:
     QPointer<QLabel> m_description;       ///< Label to show activity description
 
     std::string m_ioSelectorConfig;    ///< configuration used to import data
-    std::string m_sdbIoSelectorConfig; ///< configuration used to import data from e SeriesDB
+    std::string m_sdbIoSelectorConfig; ///< configuration used to import data from e ActivitySet
 
     DataView::ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
 
@@ -209,13 +197,13 @@ private:
     bool m_confirmUpdate {true}; ///< if true, the editor proposes a confirmation dialog when the activity is updated.
     bool m_isCancelable {true};  /// true if the cancel button is proposed
 
-    ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activitySeries is created
-    ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activitySeries is updated
+    ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activity is created
+    ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activity is updated
     CanceledSignalType::sptr m_sigCanceled;               /// Signal emitted when the creation is canceled.
 
-    static constexpr std::string_view s_SERIESDB = "seriesDB";
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
-    data::ptr<data::ActivitySeries, data::Access::inout> m_activitySeries {this, "activitySeries"};
+    static constexpr std::string_view s_ACTIVITY_SET = "activitySet";
+    data::ptr<data::ActivitySet, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET};
+    data::ptr<data::Activity, data::Access::inout> m_activity {this, "activity"};
 };
 
 } // namespace sight::module::ui::qt::activity

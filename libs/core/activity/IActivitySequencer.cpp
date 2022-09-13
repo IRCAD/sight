@@ -27,8 +27,6 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/helper/SeriesDB.hpp>
-
 namespace sight::activity
 {
 
@@ -44,209 +42,162 @@ IActivitySequencer::~IActivitySequencer()
 
 //------------------------------------------------------------------------------
 
-int IActivitySequencer::parseActivities(data::SeriesDB& seriesDB)
+int IActivitySequencer::parseActivities(data::ActivitySet& activity_set)
 {
-    int lastActivityIndex = -1;
+    const auto scoped_emitter = activity_set.scoped_emit();
+    std::size_t index         = 0;
 
-    for(const auto& series : seriesDB.getContainer())
+    for(auto it = activity_set.cbegin() ; it != activity_set.cend() ; ++it)
     {
-        data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
-
-        if(!activity)
+        if(*it == nullptr)
         {
-            // Remove the wrong data
-            SIGHT_ERROR(
-                "The series DB must only contain 'ActivitySeries'. The series of type '"
-                + series->getClassname() + "' will be removed"
-            )
-
-            data::helper::SeriesDB helper(seriesDB);
-            helper.remove(series);
-            helper.notify();
+            SIGHT_ERROR("One activity is unknown, it will be removed");
+            it = activity_set.erase(it);
         }
-        else if(!(static_cast<std::size_t>(lastActivityIndex) + 1 < m_activityIds.size()
-                  && m_activityIds[static_cast<std::size_t>(lastActivityIndex) + 1] == activity->getActivityConfigId()))
+        else if(!(index < m_activityIds.size() && m_activityIds[index] == (*it)->getActivityConfigId()))
         {
             // Remove the wrong data
-            SIGHT_ERROR("The activity '" + activity->getActivityConfigId() + "' is unknown, it will be removed")
-
-            data::helper::SeriesDB helper(seriesDB);
-            helper.remove(activity);
-            helper.notify();
+            SIGHT_ERROR("The activity '" + (*it)->getActivityConfigId() + "' is unknown, it will be removed");
+            it = activity_set.erase(it);
+        }
+        else if(!sight::activity::IActivitySequencer::validateActivity(*it).first)
+        {
+            break;
         }
         else
         {
-            const bool ok = sight::activity::IActivitySequencer::validateActivity(activity).first;
-            if(ok)
-            {
-                ++lastActivityIndex;
-                this->storeActivityData(seriesDB, lastActivityIndex);
-            }
-            else
-            {
-                break;
-            }
+            this->storeActivityData(activity_set, index++);
         }
     }
 
-    return lastActivityIndex;
+    return int(index) - 1;
 }
 
 //------------------------------------------------------------------------------
 
 void IActivitySequencer::storeActivityData(
-    const data::SeriesDB& seriesDB,
-    int index,
+    const data::ActivitySet& activity_set,
+    std::size_t index,
     const data::Composite::csptr& overrides
 )
 {
     // Retrives the current activity data
-    const auto currentIdx = static_cast<std::size_t>(index);
-    SIGHT_ASSERT("SeriesDB does not contain enough series.", seriesDB.size() > currentIdx);
-    data::Series::sptr series           = seriesDB.getContainer()[currentIdx];
-    data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
-    SIGHT_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
-    data::Composite::sptr composite = activity->getData();
+    SIGHT_ASSERT("ActivitySet does not contain enough activities.", activity_set.size() > index);
+    const auto& activity = activity_set[index];
+    SIGHT_ASSERT("ActivitySet contains an unknown activity.", activity);
+    const auto& composite = activity->getData();
 
-    if(overrides)
+    for(const auto& [key, value] : *composite)
     {
         // Do not store overriden requirements
-        for(const auto& elt : *composite)
+        if(!overrides || overrides->count(key) == 0)
         {
-            if(overrides->count(elt.first) == 0)
-            {
-                m_requirements[elt.first] = elt.second;
-            }
-        }
-    }
-    else
-    {
-        for(const auto& elt : *composite)
-        {
-            m_requirements[elt.first] = elt.second;
+            m_requirements[key] = value;
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-data::ActivitySeries::sptr IActivitySequencer::getActivity(
-    data::SeriesDB& seriesDB,
+data::Activity::sptr IActivitySequencer::getActivity(
+    data::ActivitySet& activity_set,
     std::size_t index,
     const core::com::SlotBase::sptr& slot,
     const data::Composite::csptr& overrides
 )
 {
-    data::ActivitySeries::sptr activity;
-    if(seriesDB.size() > index) // The activity already exists, update the data
+    data::Activity::sptr activity;
+
+    const auto& activityId = m_activityIds[index];
+    const auto& info       = activity::extension::Activity::getDefault()->getInfo(activityId);
+
+    if(activity_set.size() > index) // The activity already exists, update the data
     {
-        data::Series::sptr series = seriesDB.getContainer()[index];
-        activity = data::ActivitySeries::dynamicCast(series);
-        SIGHT_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
-        data::Composite::sptr composite = activity->getData();
+        activity = activity_set[index];
+        SIGHT_ASSERT("ActivitySet contains an unknown activity.", activity);
+        auto composite = activity->getData();
 
         // FIXME: update all the data or only the requirement ?
-        if(overrides)
+        for(const auto& req : info.requirements)
         {
-            const std::string activityId                  = m_activityIds[index];
-            const activity::extension::ActivityInfo& info =
-                activity::extension::Activity::getDefault()->getInfo(activityId);
-
-            for(const auto& req : info.requirements)
+            if(overrides)
             {
-                if(m_requirements.find(req.name) != m_requirements.end()
-                   || overrides->find(req.name) != m_requirements.end())
+                if(const auto& it = overrides->find(req.name); it != overrides->cend())
                 {
-                    (*composite)[req.name] = overrides->count(req.name) == 0
-                                             ? m_requirements[req.name] : overrides->get(req.name);
+                    composite->insert_or_assign(req.name, it->second);
+
+                    // Look for the next requirement
+                    continue;
                 }
             }
-        }
-        else
-        {
-            const std::string activityId                  = m_activityIds[index];
-            const activity::extension::ActivityInfo& info =
-                activity::extension::Activity::getDefault()->getInfo(activityId);
 
-            for(const auto& req : info.requirements)
+            // Look at the non overriden requirements
+            if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
-                if(m_requirements.find(req.name) != m_requirements.end())
-                {
-                    (*composite)[req.name] = m_requirements[req.name];
-                }
+                composite->insert_or_assign(req.name, it->second);
             }
         }
     }
-    else // create a new activity series
+    else // create a new activity
     {
         // try to create the intermediate activities
-        if(index > 0 && (index - 1) >= seriesDB.size())
+        if(index > 0 && (index - 1) >= activity_set.size())
         {
-            this->getActivity(seriesDB, index - 1, slot, overrides);
+            getActivity(activity_set, index - 1, slot, overrides);
         }
 
-        const std::string activityId                  = m_activityIds[index];
-        const activity::extension::ActivityInfo& info =
-            activity::extension::Activity::getDefault()->getInfo(activityId);
-
-        activity = data::ActivitySeries::New();
-
-        activity->setModality("OT");
-        activity->setInstanceUID("activity." + core::tools::UUID::generateUUID());
-
-        const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-        activity->setDate(core::tools::getDate(now));
-        activity->setTime(core::tools::getTime(now));
+        // Create the activity
+        activity = data::Activity::New();
 
         activity->setActivityConfigId(info.id);
         activity->setDescription(info.description);
 
-        data::Composite::sptr composite = activity->getData();
+        auto composite = activity->getData();
 
         for(const auto& req : info.requirements)
         {
             if(overrides)
             {
-                if(overrides->count(req.name) != 0)
+                if(const auto& it = overrides->find(req.name); it != overrides->cend())
                 {
-                    (*composite)[req.name] = overrides->get(req.name);
+                    composite->insert_or_assign(req.name, it->second);
+
+                    // Look for the next requirement
+                    continue;
                 }
             }
-            else if(m_requirements.find(req.name) != m_requirements.end())
+
+            // Look at the non overriden requirements
+            if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
-                (*composite)[req.name] = m_requirements[req.name];
+                composite->insert_or_assign(req.name, it->second);
             }
             else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
-                // create the new data
-                auto newObj = data::factory::New(req.type);
-                (*composite)[req.name]   = newObj;
-                m_requirements[req.name] = newObj;
+                // Create the new data
+                auto object = data::factory::New(req.type);
+                composite->insert_or_assign(req.name, object);
+                m_requirements.insert_or_assign(req.name, object);
             }
             else if(req.minOccurs == 0)
             {
-                // create empty composite for optional data
-                auto optionalDataComposite = data::Composite::New();
-                (*composite)[req.name]   = optionalDataComposite;
-                m_requirements[req.name] = optionalDataComposite;
+                // Create an empty composite for optional data
+                auto object = data::Composite::New();
+                composite->insert_or_assign(req.name, object);
+                m_requirements.insert_or_assign(req.name, object);
             }
         }
 
-        data::helper::SeriesDB helper(seriesDB);
-        helper.add(activity);
+        auto scoped_emitter = activity_set.scoped_emit();
+        activity_set.push_back(activity);
+
+        if(slot)
         {
-            auto sig = seriesDB.signal<data::SeriesDB::AddedSeriesSignalType>(
-                data::SeriesDB::s_ADDED_SERIES_SIG
-            );
-            if(slot)
-            {
-                core::com::Connection::Blocker block(sig->getConnection(slot));
-                helper.notify();
-            }
-            else
-            {
-                helper.notify();
-            }
+            auto sig = activity_set.signal<data::ActivitySet::added_signal_t>(data::ActivitySet::s_ADDED_OBJECTS_SIG);
+            core::com::Connection::Blocker block(sig->getConnection(slot));
+
+            // Force signal emission while blocker exists
+            scoped_emitter.reset();
         }
     }
 
@@ -255,25 +206,18 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
 
 //------------------------------------------------------------------------------
 
-void IActivitySequencer::removeLastActivities(data::SeriesDB& seriesDB, std::size_t index)
+void IActivitySequencer::removeLastActivities(data::ActivitySet& activity_set, std::size_t index)
 {
-    if(seriesDB.size() > index)
+    if(activity_set.size() > index)
     {
-        data::helper::SeriesDB helper(seriesDB);
+        const auto scoped_emitter = activity_set.scoped_emit();
 
-        // remove the last activities
-        while(seriesDB.size() > index)
-        {
-            const auto activity = seriesDB.back();
-            helper.remove(activity);
-        }
+        // Remove the activities behind the index
+        activity_set.erase(activity_set.cbegin() + int(index), activity_set.cend());
 
-        helper.notify();
-
-        // clear the requirements and parse the remaining activities to regereate the requirements with the existing
-        // activities
+        // clear the requirements and parse the remaining activities to regereate the requirements
         m_requirements.clear();
-        this->parseActivities(seriesDB);
+        this->parseActivities(activity_set);
     }
 }
 

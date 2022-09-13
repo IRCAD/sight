@@ -31,104 +31,65 @@ SIGHT_REGISTER_DATA(sight::data::ImageSeries)
 namespace sight::data
 {
 
-ImageSeries::ImageSeries(data::Object::Key _key) :
-    Series(_key)
+ImageSeries::ImageSeries(data::Object::Key key) :
+    Image(key),
+    Series(key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-ImageSeries::~ImageSeries()
-= default;
-
-//------------------------------------------------------------------------------
-
-void ImageSeries::shallowCopy(const data::Object::csptr& _source)
+void ImageSeries::shallowCopy(const Object::csptr& source)
 {
-    ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->data::Series::shallowCopy(_source);
-
-    m_image          = other->m_image;
     m_dicomReference = other->m_dicomReference;
 
-    m_contrastBolusAgent                   = other->m_contrastBolusAgent;
-    m_contrastBolusRoute                   = other->m_contrastBolusRoute;
-    m_contrastBolusVolume                  = other->m_contrastBolusVolume;
-    m_contrastBolusStartTime               = other->m_contrastBolusStartTime;
-    m_contrastBolusStopTime                = other->m_contrastBolusStopTime;
-    m_contrastBolusTotalDose               = other->m_contrastBolusTotalDose;
-    m_contrastBolusFlowRate                = other->m_contrastBolusFlowRate;
-    m_contrastBolusFlowDuration            = other->m_contrastBolusFlowDuration;
-    m_contrastBolusIngredient              = other->m_contrastBolusIngredient;
-    m_contrastBolusIngredientConcentration = other->m_contrastBolusIngredientConcentration;
-    m_acquisitionDate                      = other->m_acquisitionDate;
-    m_acquisitionTime                      = other->m_acquisitionTime;
+    Series::shallowCopy(other);
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache)
+void ImageSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->data::Series::cachedDeepCopy(_source, _cache);
-
-    m_image          = data::Object::copy(other->m_image);
     m_dicomReference = data::Object::copy(other->m_dicomReference);
 
-    m_contrastBolusAgent                   = other->m_contrastBolusAgent;
-    m_contrastBolusRoute                   = other->m_contrastBolusRoute;
-    m_contrastBolusVolume                  = other->m_contrastBolusVolume;
-    m_contrastBolusStartTime               = other->m_contrastBolusStartTime;
-    m_contrastBolusStopTime                = other->m_contrastBolusStopTime;
-    m_contrastBolusTotalDose               = other->m_contrastBolusTotalDose;
-    m_contrastBolusFlowRate                = other->m_contrastBolusFlowRate;
-    m_contrastBolusFlowDuration            = other->m_contrastBolusFlowDuration;
-    m_contrastBolusIngredient              = other->m_contrastBolusIngredient;
-    m_contrastBolusIngredientConcentration = other->m_contrastBolusIngredientConcentration;
-    m_acquisitionDate                      = other->m_acquisitionDate;
-    m_acquisitionTime                      = other->m_acquisitionTime;
+    Series::deepCopy(other, cache);
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool ImageSeries::operator==(const ImageSeries& other) const noexcept
 {
-    if(!core::tools::is_equal(m_image, other.m_image)
-       || !core::tools::is_equal(m_dicomReference, other.m_dicomReference)
-       || m_contrastBolusAgent != other.m_contrastBolusAgent
-       || m_contrastBolusRoute != other.m_contrastBolusRoute
-       || m_contrastBolusVolume != other.m_contrastBolusVolume
-       || m_contrastBolusStartTime != other.m_contrastBolusStartTime
-       || m_contrastBolusStopTime != other.m_contrastBolusStopTime
-       || m_contrastBolusTotalDose != other.m_contrastBolusTotalDose
-       || m_contrastBolusFlowRate != other.m_contrastBolusFlowRate
-       || m_contrastBolusFlowDuration != other.m_contrastBolusFlowDuration
-       || m_contrastBolusIngredient != other.m_contrastBolusIngredient
-       || m_contrastBolusIngredientConcentration != other.m_contrastBolusIngredientConcentration
-       || m_acquisitionDate != other.m_acquisitionDate
-       || m_acquisitionTime != other.m_acquisitionTime)
+    if(!core::tools::is_equal(m_dicomReference, other.m_dicomReference))
     {
         return false;
     }
 
     // Super class last
-    return Series::operator==(other);
+    return Series::operator==(other) && BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -11,7 +11,6 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
-        <object uid="image" type="sight::data::Image" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -43,7 +42,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="importAct" type="sight::module::ui::base::io::SSelector">
-            <inout key="data" uid="image" />
+            <inout key="data" uid="${imageSeries}" />
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::vtk::SImageReader" />
@@ -52,12 +51,7 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="true">
-            <in key="image" uid="image" />
-        </service>
-
-        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
-            <in key="imageSeries" uid="${imageSeries}" />
-            <out key="image" uid="image" />
+            <in key="image" uid="${imageSeries}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
@@ -70,14 +64,8 @@
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="extractImageSrv" />
         <start uid="toolBarView" />
         <start uid="imageScene" />
         <start uid="importAct" />
-
-        <!-- ******************************* Update services ***************************************** -->
-
-        <update uid="extractImageSrv" />
-
     </config>
 </extension>

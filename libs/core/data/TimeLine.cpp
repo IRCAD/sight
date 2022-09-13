@@ -50,7 +50,7 @@ TimeLine::~TimeLine()
 bool TimeLine::operator==(const TimeLine& other) const noexcept
 {
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

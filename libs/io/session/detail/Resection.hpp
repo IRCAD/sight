@@ -47,7 +47,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto resection = Helper::safeCast<data::Resection>(object);
+    const auto resection = Helper::safe_cast<data::Resection>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Resection>(tree, 1);
@@ -86,7 +86,7 @@ inline static data::Resection::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto resection = Helper::safeCast<data::Resection>(object);
+    auto resection = Helper::cast_or_create<data::Resection>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Resection>(tree, 0, 1);

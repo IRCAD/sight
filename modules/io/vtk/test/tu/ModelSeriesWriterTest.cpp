@@ -25,15 +25,16 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
+#include <data/ActivitySet.hpp>
 #include <data/Array.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/base.hpp>
 
-#include <utestData/generator/SeriesDB.hpp>
+#include <utestData/generator/SeriesSet.hpp>
 
 #include <boost/functional/hash.hpp>
 
@@ -129,7 +130,7 @@ core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainer
 
 void ModelSeriesWriterTest::testWriteMeshes()
 {
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
 
     const std::vector<std::string> allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
@@ -191,18 +192,17 @@ void ModelSeriesWriterTest::testWriteMeshes()
             files.size()
         );
 
-        data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+        auto series_set = data::SeriesSet::New();
 
         runModelSeriesSrv(
-            "sight::module::io::vtk::SSeriesDBReader",
+            "sight::module::io::vtk::SSeriesSetReader",
             getIOCfgFromFiles(files),
-            seriesDB
+            series_set
         );
 
-        const data::SeriesDB::ContainerType& series = seriesDB->getContainer();
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesDB Size", (std::size_t) 1, series.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesSet Size", (std::size_t) 1, series_set->size());
 
-        data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series[0]);
+        data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series_set->at(0));
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
         using RecVecType = data::ModelSeries::ReconstructionVectorType;
@@ -288,7 +288,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 void ModelSeriesWriterTest::testWriteReconstructions()
 {
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
 
     const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeriesObj";
 
@@ -309,8 +309,6 @@ void ModelSeriesWriterTest::testWriteReconstructions()
         getIOCfgFromFolder(dir),
         modelSeries
     );
-
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     FileContainerType files;
     for(fs::directory_iterator it(dir) ; it != fs::directory_iterator() ; ++it)

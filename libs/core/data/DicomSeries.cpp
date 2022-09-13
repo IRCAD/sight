@@ -41,45 +41,40 @@ DicomSeries::DicomSeries(data::Object::Key _key) :
 
 //------------------------------------------------------------------------------
 
-DicomSeries::~DicomSeries()
-= default;
-
-//------------------------------------------------------------------------------
-
-void DicomSeries::shallowCopy(const data::Object::csptr& _source)
+void DicomSeries::shallowCopy(const Object::csptr& source)
 {
-    DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy " + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->data::Series::shallowCopy(_source);
 
     m_numberOfInstances   = other->m_numberOfInstances;
     m_dicomContainer      = other->m_dicomContainer;
     m_SOPClassUIDs        = other->m_SOPClassUIDs;
     m_computedTagValues   = other->m_computedTagValues;
     m_firstInstanceNumber = other->m_firstInstanceNumber;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void DicomSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy " + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->data::Series::cachedDeepCopy(_source, cache);
 
     m_numberOfInstances   = other->m_numberOfInstances;
     m_SOPClassUIDs        = other->m_SOPClassUIDs;
@@ -106,6 +101,8 @@ void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
             m_dicomContainer[elt.first] = bufferDest;
         }
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -184,7 +181,7 @@ bool DicomSeries::operator==(const DicomSeries& other) const noexcept
     }
 
     // Super class last
-    return Series::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

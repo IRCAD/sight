@@ -25,7 +25,6 @@
 #include "activity/validator/registry/macros.hpp"
 
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <boost/algorithm/string.hpp>
@@ -60,22 +59,19 @@ IValidator::ValidationType RelatedStudy::validate(
         validation.first  = true;
         validation.second = "Selected series refers to the same study.";
 
-        data::Series::sptr seriesRef = data::Series::dynamicCast((*currentSelection)[0]);
-        data::Study::sptr studyRef   = seriesRef->getStudy();
-
-        std::string instanceUIDRef = studyRef->getInstanceUID();
-        boost::algorithm::trim(instanceUIDRef);
+        auto seriesRef                  = data::Series::dynamicCast((*currentSelection)[0]);
+        std::string studyInstanceUIDRef = seriesRef->getStudyInstanceUID();
+        boost::algorithm::trim(studyInstanceUIDRef);
 
         data::Vector::container_type::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
-            data::Series::sptr series = data::Series::dynamicCast(*it);
-            data::Study::sptr study   = series->getStudy();
+            auto series = data::Series::dynamicCast(*it);
 
-            std::string instanceUID = study->getInstanceUID();
-            boost::algorithm::trim(instanceUID);
+            std::string studyInstanceUID = series->getStudyInstanceUID();
+            boost::algorithm::trim(studyInstanceUID);
 
-            if(instanceUIDRef != instanceUID)
+            if(studyInstanceUIDRef != studyInstanceUID)
             {
                 validation.first  = false;
                 validation.second = "Selected series do not refer to the same study.";

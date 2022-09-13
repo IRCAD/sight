@@ -99,7 +99,7 @@ constexpr bool IContainer<C>::operator==(const IContainer& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
@@ -119,12 +119,10 @@ inline void IContainer<C>::shallowCopy(const Object::csptr& source)
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
-
-    fieldShallowCopy(source);
 
     if constexpr(core::tools::is_container_dynamic<C>::value)
     {
@@ -140,6 +138,8 @@ inline void IContainer<C>::shallowCopy(const Object::csptr& source)
     {
         std::copy(other->cbegin(), other->cend(), inserter(*this));
     }
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -172,18 +172,16 @@ constexpr bool is_data_object_fn()
 //------------------------------------------------------------------------------
 
 template<class C>
-inline void IContainer<C>::cachedDeepCopy(const Object::csptr& source, Object::DeepCopyCacheType& cache)
+inline void IContainer<C>::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     const auto& other = IContainer<C>::dynamicCast(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
         !other
     );
-
-    fieldDeepCopy(other, cache);
 
     // If the container is dynamic, we need to clear it before copying
     if constexpr(core::tools::is_container_dynamic<C>::value)
@@ -235,6 +233,8 @@ inline void IContainer<C>::cachedDeepCopy(const Object::csptr& source, Object::D
             std::copy(other->cbegin(), other->cend(), inserter(*this));
         }
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------

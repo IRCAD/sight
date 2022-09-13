@@ -94,7 +94,7 @@ protected:
             <config>
                 <appConfig id="IdOfConfig" >
                     <parameters>
-                        <parameter replace="SERIESDB" by="medicalData" />
+                        <parameter replace="SERIES_SET" by="medicalData" />
                     </parameters>
                 </appConfig>
             </config>

@@ -214,7 +214,7 @@ public:
     inline virtual ~ContainerWrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
-    constexpr auto remove_all(const typename C::value_type& value)
+    constexpr auto remove(const typename C::value_type& value)
     {
         return C::erase(std::remove(C::begin(), C::end(), value), C::end());
     }
@@ -369,6 +369,19 @@ public:
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
     inline virtual ~ContainerWrapper() noexcept = default;
+
+    /// Utility function to remove first matching elements from the container.
+    constexpr auto remove(const typename C::value_type& value)
+    {
+        if(const auto& it = std::find(C::cbegin(), C::cend(), value); it != C::cend())
+        {
+            return C::erase(it);
+        }
+        else
+        {
+            return C::end();
+        }
+    }
 };
 
 /// Map container class.
@@ -666,9 +679,6 @@ public:
     using ContainerWrapper<C>::operator=;
     /// @}
 
-    /// Defines shallow copy
-    inline void shallowCopy(const Object::csptr& source) override;
-
     /// Equality comparison operators
     /// @{
     constexpr bool operator==(const IContainer& other) const noexcept;
@@ -710,10 +720,19 @@ public:
 
     [[nodiscard]] constexpr auto scoped_emit() const noexcept;
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    inline void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    inline void cachedDeepCopy(const Object::csptr& source, Object::DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    inline void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 };
 
 } // namespace sight::data

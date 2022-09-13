@@ -24,7 +24,6 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <service/IController.hpp>
@@ -39,7 +38,7 @@ class IJob;
 namespace sight::data
 {
 
-class SeriesDB;
+class SeriesSet;
 
 } // namespace sight::data
 
@@ -56,12 +55,12 @@ namespace sight::module::io::dicom
  *
  * @code{.xml}
         <service type="sight::module::io::dicom::SDicomSeriesAnonymizer">
-            <inout key="seriesDB" uid="..." />
+            <inout key="seriesSet" uid="..." />
             <inout key="selectedSeries" uid="..." />
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where the dicom series comes from.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet where the dicom series comes from.
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to be anonymized.
  */
 class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public service::IController
@@ -104,7 +103,7 @@ protected:
     /// Cancel information for jobs
     bool m_cancelled {false};
 
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::inout> m_series_set {this, "seriesSet"};
     sight::data::ptr<sight::data::Vector, sight::data::Access::inout> m_selectedSeries {this, "selectedSeries"};
 };
 

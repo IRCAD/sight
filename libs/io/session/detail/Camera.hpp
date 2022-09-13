@@ -42,7 +42,6 @@ constexpr static auto s_P2 {"P2"};
 constexpr static auto s_K3 {"K3"};
 constexpr static auto s_Skew {"Skew"};
 constexpr static auto s_IsCalibrated {"IsCalibrated"};
-constexpr static auto s_Description {"Description"};
 constexpr static auto s_CameraID {"CameraID"};
 constexpr static auto s_MaximumFrameRate {"MaximumFrameRate"};
 constexpr static auto s_PixelFormat {"PixelFormat"};
@@ -61,7 +60,7 @@ inline static void serialize(
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto camera = Helper::safeCast<data::Camera>(object);
+    const auto camera = Helper::safe_cast<data::Camera>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Camera>(tree, 1);
@@ -84,7 +83,6 @@ inline static void serialize(
     tree.put(s_Skew, camera->getSkew());
 
     tree.put(s_IsCalibrated, camera->getIsCalibrated());
-    Helper::writeString(tree, s_Description, camera->getDescription());
     Helper::writeString(tree, s_CameraID, camera->getCameraID());
     tree.put(s_MaximumFrameRate, camera->getMaximumFrameRate());
     tree.put(s_PixelFormat, camera->getPixelFormat());
@@ -105,7 +103,7 @@ inline static data::Camera::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto camera = Helper::safeCast<data::Camera>(object);
+    auto camera = Helper::cast_or_create<data::Camera>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Camera>(tree, 0, 1);
@@ -129,7 +127,6 @@ inline static data::Camera::sptr deserialize(
     camera->setSkew(tree.get<double>(s_Skew));
 
     camera->setIsCalibrated(tree.get<bool>(s_IsCalibrated));
-    camera->setDescription(Helper::readString(tree, s_Description));
     camera->setCameraID(Helper::readString(tree, s_CameraID));
     camera->setMaximumFrameRate(tree.get<float>(s_MaximumFrameRate));
     camera->setPixelFormat(static_cast<data::Camera::PixelFormat>(tree.get<int>(s_PixelFormat)));

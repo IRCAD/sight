@@ -25,9 +25,8 @@
 #include "activity/config.hpp"
 #include "activity/IActivityLauncher.hpp"
 
+#include <data/ActivitySet.hpp>
 #include <data/Composite.hpp>
-#include <data/Object.hpp>
-#include <data/SeriesDB.hpp>
 
 namespace sight::activity
 {
@@ -47,39 +46,36 @@ public:
 
 protected:
 
-    typedef std::vector<std::string> ActivitiesType;
-    typedef std::map<std::string, data::Object::sptr> RequirementsType;
-
     /**
-     * @brief parse the activities contained in seriesDB and store their data
+     * @brief parse the activities contained in activity_set and store their data
      *
      * @return Return the index on the last available activity
      *
-     * @warning This method remove the series that are not in the list of activity to launch
+     * @warning This method remove the activity that are not in the list of activity to launch
      */
-    ACTIVITY_API int parseActivities(data::SeriesDB& seriesDB);
+    ACTIVITY_API int parseActivities(data::ActivitySet& activity_set);
 
     /// Store the data of the activity at the given index
     ACTIVITY_API void storeActivityData(
-        const data::SeriesDB& seriesDB,
-        int index,
+        const data::ActivitySet& activity_set,
+        std::size_t index,
         const data::Composite::csptr& overrides = nullptr
     );
 
     /**
      * @brief Return the activity corresponding to the given index in the activity list. If the activity does not exist,
-     * it is generated and pushed in the seriesBD.
+     * it is generated and pushed in the activity set.
      *
      * Uses the data of the previously launched activities to create/update the current activity
      *
-     * @param seriesDB SeriesDB containing all the activities to be launched sequentially
+     * @param activity_set ActivitySet containing all the activities to be launched sequentially
      * @param index index of the activity to retrieve
      * @param slot slot to block in case the activity is created. It is usefull if the service listen notification on
-     * the seriesDB
+     * the activity_set
      * @param overrides Composite that contains data to override the previously stored data (from the other activities)
      */
-    ACTIVITY_API data::ActivitySeries::sptr getActivity(
-        data::SeriesDB& seriesDB,
+    ACTIVITY_API data::Activity::sptr getActivity(
+        data::ActivitySet& activity_set,
         std::size_t index,
         const core::com::SlotBase::sptr& slot   = nullptr,
         const data::Composite::csptr& overrides = nullptr
@@ -88,21 +84,21 @@ protected:
     /**
      * @brief Remove the activity with index and its requirements and all the following activities.
      *
-     * This is used to clear the series and requirement when going backward.
+     * This is used to clear the activity set and requirement when going backward.
      *
-     * @param seriesDB Series DB containing all the activities
+     * @param activity_set ActivitySet containing all the activities
      * @param index the activity in index and all the following will be removed
      */
-    ACTIVITY_API void removeLastActivities(data::SeriesDB& seriesDB, std::size_t index);
+    ACTIVITY_API void removeLastActivities(data::ActivitySet& activity_set, std::size_t index);
 
     /// List of the activity to create.
-    ActivitiesType m_activityIds;
+    std::vector<std::string> m_activityIds;
 
     /// Index of the current activity
     int m_currentActivity {-1};
 
     /// Map containing all the data produced by the activities. It is used to create the next one.
-    RequirementsType m_requirements;
+    std::map<std::string, data::Object::sptr> m_requirements;
 };
 
 } // namespace sight::activity

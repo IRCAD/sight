@@ -143,23 +143,9 @@ void SImageSeriesWriter::updating()
             imageSeries
         );
 
-        SIGHT_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());
-
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
-
-        try
-        {
-            SImageWriter::saveImage(this->getFile(), imageSeries->getImage(), m_sigJobCreated);
-            m_writeFailed = false;
-        }
-        catch(core::tools::Failed& e)
-        {
-            cursor.setDefaultCursor();
-            SIGHT_THROW_EXCEPTION(e);
-        }
-
-        cursor.setDefaultCursor();
+        sight::ui::base::BusyCursor cursor;
+        SImageWriter::saveImage(this->getFile(), imageSeries, m_sigJobCreated);
+        m_writeFailed = false;
     }
 }
 

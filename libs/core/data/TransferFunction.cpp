@@ -239,48 +239,51 @@ TransferFunction::TransferFunction(data::Object::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::shallowCopy(const Object::csptr& _source)
+void TransferFunction::shallowCopy(const Object::csptr& source)
 {
-    const auto other = TransferFunction::dynamicCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->m_name            = other->m_name;
-    this->m_backgroundColor = other->m_backgroundColor;
+    m_name            = other->m_name;
+    m_backgroundColor = other->m_backgroundColor;
 
-    this->m_level  = other->m_level;
-    this->m_window = other->m_window;
+    m_level  = other->m_level;
+    m_window = other->m_window;
 
-    this->m_pieces.clear();
-    std::copy(other->m_pieces.cbegin(), other->m_pieces.cend(), std::back_inserter(this->m_pieces));
+    m_pieces.clear();
+    std::copy(other->m_pieces.cbegin(), other->m_pieces.cend(), std::back_inserter(m_pieces));
 
-    fieldShallowCopy(_source);
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
+void TransferFunction::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->m_name            = other->m_name;
-    this->m_backgroundColor = other->m_backgroundColor;
+    m_name            = other->m_name;
+    m_backgroundColor = other->m_backgroundColor;
 
-    this->m_level  = other->m_level;
-    this->m_window = other->m_window;
+    m_level  = other->m_level;
+    m_window = other->m_window;
 
-    this->m_pieces.clear();
+    m_pieces.clear();
 
     std::transform(
         other->m_pieces.cbegin(),
@@ -293,7 +296,7 @@ void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCach
             return data;
         });
 
-    this->fieldDeepCopy(_source, _cache);
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -308,7 +311,7 @@ bool TransferFunction::operator==(const TransferFunction& _other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(_other);
+    return BaseClass::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

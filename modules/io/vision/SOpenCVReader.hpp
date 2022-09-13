@@ -30,7 +30,7 @@ namespace sight::module::io::vision
 {
 
 /**
- * @brief SOpenCVReader class read a xml/yaml file using opencv and fill a data::CameraSeries.
+ * @brief SOpenCVReader class read a xml/yaml file using opencv and fill a data::CameraSet.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -39,7 +39,7 @@ namespace sight::module::io::vision
        </service>
  * @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::CameraSeries]: object to read
+ * - \b data [sight::data::CameraSet]: object to read
  */
 class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::base::service::IReader
 {

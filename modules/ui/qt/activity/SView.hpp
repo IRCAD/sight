@@ -28,7 +28,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 #include <service/IAppConfigManager.hpp>
 
@@ -41,28 +41,25 @@ namespace sight::module::ui::qt::activity
  * @brief   This editor displays activities in a single view (when a new activity is launched, it replaces the previous
  * one).
  *
- * This service should receive signals containing ActivitySeries connected to the slot \b launchActivity.
+ * This service should receive signals containing Activity connected to the slot \b launchActivity.
  *
  * @section Signals Signals
- * - \b activityLaunched( data::ActivitySeries::sptr ): signal emitted when the activity is launched
+ * - \b activityLaunched( data::Activity::sptr ): signal emitted when the activity is launched
  *
  * @section Slots Slots
- * - \b launchActivity( data::ActivitySeries::sptr ): this slot allows to create a view for the given activity
- *   series.
- * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a view for the given activity
- *   series.
+ * - \b launchActivity( data::Activity::sptr ): this slot allows to create a view for the given activity
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::activity::SView" autoConnect="true" >
-     <mainActivity id="SDBActivity" />
+     <mainActivity id="Activity" />
      <parameters>
-         <parameter replace="SERIESDB" by="medicalData"  />
+         <parameter replace="activitySet" by="medicalActivity"  />
          <parameter replace="ICON_PATH" by="sight::module::ui::icons/app.ico"  />
      </parameters>
    </service>
    @endcode
- * - \b mainActivity (optional): information about the main activity. The activity series will be generated.
+ * - \b mainActivity (optional): information about the main activity. The activity will be generated.
  *   This activity must not have requirement.
  *   - \b id : identifier of the activity
  * - \b parameters (optional) : additional parameters used to launch the activities
@@ -90,7 +87,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityLaunchedSignalType;
+    typedef core::com::Signal<void (data::Activity::sptr)> ActivityLaunchedSignalType;
 /**
  * @}
  */
@@ -114,7 +111,7 @@ private:
     /**
      * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
      */
-    void launchActivity(data::ActivitySeries::sptr activitySeries) override;
+    void launchActivity(data::Activity::sptr activity) override;
 
     /// Helper to launch activity configuration
     service::IAppConfigManager::sptr m_configManager;

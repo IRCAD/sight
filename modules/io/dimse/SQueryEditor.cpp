@@ -25,7 +25,7 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/helper/Series.hpp>
@@ -55,7 +55,7 @@ static const std::string s_ICON_HEIGHT_CONFIG = "height";
 
 static const service::IService::KeyType s_PACS_INPUT = "pacsConfig";
 
-static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const service::IService::KeyType s_SERIES_SET_INOUT = "seriesSet";
 
 //------------------------------------------------------------------------------
 
@@ -501,7 +501,7 @@ void SQueryEditor::executeQuery()
             ofSeriesResponse.push_back(res);
         }
 
-        data::SeriesDB::ContainerType series = sight::io::dimse::helper::Series::toFwMedData(ofSeriesResponse);
+        data::SeriesSet::container_type series = sight::io::dimse::helper::Series::toFwMedData(ofSeriesResponse);
 
         // Clean memory.
         sight::io::dimse::helper::Series::releaseResponses(responses);
@@ -511,11 +511,11 @@ void SQueryEditor::executeQuery()
         {
             data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
             SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
-            const std::string instanceUID = seriesEnquirer->findSOPInstanceUID(dicomSeries->getInstanceUID(), 0);
+            const std::string instanceUID = seriesEnquirer->findSOPInstanceUID(dicomSeries->getSeriesInstanceUID(), 0);
             dicomSeries->setFirstInstanceNumber((instanceUID.empty() ? 1 : 0));
         }
 
-        this->updateSeriesDB(series);
+        this->updateSeriesSet(series);
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
@@ -533,24 +533,19 @@ void SQueryEditor::executeQuery()
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::updateSeriesDB(const data::SeriesDB::ContainerType& _series)
+void SQueryEditor::updateSeriesSet(const data::SeriesSet::container_type& _series)
 {
-    const auto seriesDB = m_seriesDB.lock();
+    const auto series_set     = m_series_set.lock();
+    const auto scoped_emitter = series_set->scoped_emit();
 
-    data::helper::SeriesDB seriesDBHelper(*seriesDB);
+    // Delete old series from the SeriesSet.
+    series_set->clear();
 
-    // Delete old series from the SeriesDB.
-    seriesDBHelper.clear();
-
-    // Push new series in the SeriesDB.
-    for(const data::Series::sptr& s : _series)
+    // Push new series in the SeriesSet.
+    for(const auto& s : _series)
     {
-        data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
-        seriesDBHelper.add(dicomSeries);
+        series_set->push_back(data::DicomSeries::dynamicCast(s));
     }
-
-    // Notify the SeriesDB.
-    seriesDBHelper.notify();
 }
 
 //------------------------------------------------------------------------------
