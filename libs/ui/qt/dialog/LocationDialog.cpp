@@ -185,8 +185,7 @@ void LocationDialog::addFilter(const std::string& filterName, const std::string&
 QString LocationDialog::fileFilters()
 {
     std::string result;
-    std::vector<std::pair<std::string, std::string> >::const_iterator iter;
-    for(iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
+    for(auto iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
     {
         std::string filterName   = iter->first;
         std::string rawWildcards = iter->second;
@@ -196,7 +195,7 @@ QString LocationDialog::fileFilters()
             result += ";;";
         }
 
-        result.append(filterName).append(" (").append(rawWildcards).append(")");
+        result += filterName + " (" + rawWildcards + ")";
     }
 
     return QString::fromStdString(result);
@@ -207,12 +206,9 @@ QString LocationDialog::fileFilters()
 std::string LocationDialog::getCurrentSelection() const
 {
     std::string extension;
-    std::vector<std::pair<std::string, std::string> >::const_iterator iter;
-    for(iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
+    for(auto&& [filterName, rawWildcards] : m_filters)
     {
-        const std::string& filterName       = iter->first;
-        const std::string& rawWildcards     = iter->second;
-        const std::string& availableFilters = std::string(filterName).append(" (").append(rawWildcards).append(")");
+        const std::string& availableFilters = filterName + " (" + rawWildcards + " ";
         if(m_wildcard == availableFilters)
         {
             extension = &rawWildcards[1];

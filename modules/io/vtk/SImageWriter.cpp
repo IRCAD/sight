@@ -170,8 +170,8 @@ bool SImageWriter::saveImage(
         {
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
-                std::string("Unsupported ").append(type).append(" format for ").append(ext)
-                .append(" export.\n The image will not be exported."),
+                std::string("Unsupported ") + type + " format for " + ext
+                + " export.\n The image will not be exported.",
                 sight::ui::base::dialog::IMessageDialog::WARNING
             );
             return false;

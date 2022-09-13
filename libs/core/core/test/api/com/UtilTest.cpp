@@ -61,7 +61,7 @@ int f(int a, int b)
 
 std::string g(const std::string& a, const std::string& b, const std::string& c)
 {
-    return std::string(a).append(b).append(c);
+    return std::string(a) + b + c;
 }
 
 //------------------------------------------------------------------------------

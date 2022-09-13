@@ -172,7 +172,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
             });
 
         auto iJobName = iJob->getName();
-        iJobName = iJobName.empty() ? "" : std::string("[").append(iJobName).append("] ");
+        iJobName = iJobName.empty() ? "" : std::string("[") + iJobName + "] ";
         iJob->addLogHook(
             [ =, this](IJob& /* job */, const std::string& message)
             {

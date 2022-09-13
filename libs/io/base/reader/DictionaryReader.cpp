@@ -333,8 +333,8 @@ void DictionaryReader::read()
             data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
         std::string availableValues = getValues(data::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
         error =
-            std::string("Organ class ").append(classReformated).append(" isn't available. Authorized type are ")
-            .append(availableValues);
+            std::string("Organ class ") + classReformated + " isn't available. Authorized type are "
+            + availableValues;
         SIGHT_THROW_IF(error, !(strClassIter != data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
@@ -360,8 +360,8 @@ void DictionaryReader::read()
                 data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right
             );
             error =
-                std::string("Category ").append(catReformated).append(" isn't available. Authorized type are ")
-                .append(availableValues);
+                std::string("Category ") + catReformated + " isn't available. Authorized type are "
+                + availableValues;
             SIGHT_THROW_IF(error, !(strCategoryIter != data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }

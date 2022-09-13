@@ -55,7 +55,7 @@ const std::string IFrameLayoutManager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_U
 
 inline static std::string getFrameKey(const std::string& name)
 {
-    return std::string(IFrameLayoutManager::SOFTWARE_UI).append(".").append(name);
+    return std::string(IFrameLayoutManager::SOFTWARE_UI) + "." + name;
 }
 
 //------------------------------------------------------------------------------

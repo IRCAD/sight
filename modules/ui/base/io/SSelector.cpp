@@ -109,7 +109,7 @@ void SSelector::configuring()
         {
             m_serviceToConfig[service] = configId;
             SIGHT_DEBUG(
-                std::string("add config '").append(configId).append("' for service '").append(service).append("'")
+                std::string("add config '") + configId + "' for service '" + service + "'"
             );
         }
     }
@@ -121,7 +121,7 @@ void SSelector::configuring()
         const auto configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
         m_serviceToConfig[service] = configId;
-        SIGHT_DEBUG(std::string("add config '").append(configId).append("' for service '").append(service).append("'"));
+        SIGHT_DEBUG(std::string("add config '") + configId + "' for service '" + service + "'");
     }
 }
 

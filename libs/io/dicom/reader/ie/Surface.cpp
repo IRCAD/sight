@@ -99,9 +99,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
                         {
                             std::string segmentLabel = segment->GetSegmentLabel();
                             segmentLabel = gdcm::LOComp::Trim(segmentLabel.c_str());
-                            const std::string msg =
-                                std::string("Error while reading the '").append(segmentLabel).append("' segment: ").
-                                append(error);
+                            const std::string msg = "Error while reading the '" + segmentLabel + "' segment: " + error;
 
                             SIGHT_WARN_IF(msg, !m_logger);
                             if(m_logger)

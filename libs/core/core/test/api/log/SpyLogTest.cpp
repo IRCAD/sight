@@ -198,8 +198,8 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
     const std::string fileLinePattern("([0-9]+\\] )");
     const std::string messagePattern("(.*)$");
 
-    std::regex re(std::string(linePattern).append(timePattern).append(levelPattern).append(filePattern)
-                  .append(fileLinePattern).append(messagePattern));
+    std::regex re(std::string(linePattern) + timePattern + levelPattern + filePattern
+                  + fileLinePattern + messagePattern);
 
     std::smatch match;
     std::string regexMessage;

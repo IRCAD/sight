@@ -203,8 +203,8 @@ void SParameters::starting()
             else
             {
                 SIGHT_ERROR(
-                    std::string("Unknown widget type : '").append(widget).append("' for ").append(name)
-                    .append(". Must be 'spin' or 'slider'.")
+                    std::string("Unknown widget type : '") + widget + "' for " + name
+                    + ". Must be 'spin' or 'slider'."
                 );
             }
         }
@@ -242,8 +242,8 @@ void SParameters::starting()
             else
             {
                 SIGHT_ERROR(
-                    std::string("Unknown widget type : '").append(widget).append("' for ").append(name)
-                    .append(". Must be 'spin' or 'slider'.")
+                    std::string("Unknown widget type : '") + widget + "' for " + name
+                    + ". Must be 'spin' or 'slider'."
                 );
             }
         }
@@ -938,7 +938,7 @@ QPushButton* SParameters::createResetButton(const std::string& key)
 {
     std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
     auto* resetButton     = new QPushButton("R");
-    resetButton->setObjectName(QString::fromStdString(serviceID.append("/Reset ").append(key)));
+    resetButton->setObjectName(QString::fromStdString(serviceID + "/Reset " + key));
     resetButton->setFocusPolicy(Qt::NoFocus);
     resetButton->setToolTip("Reset to the default value.");
     resetButton->setMaximumWidth(20);
@@ -1640,11 +1640,7 @@ void SParameters::setEnumParameter(std::string val, std::string key)
         }
         else
         {
-            SIGHT_WARN(
-                std::string("value '").append(val).append("' isn't found in Enum ComboBox '").append(key).append(
-                    "'."
-                )
-            );
+            SIGHT_WARN(std::string("value '") + val + "' isn't found in Enum ComboBox '" + key + "'.");
         }
     }
 

@@ -136,11 +136,8 @@ void SLandmarks::configuring()
     if(!hexaMask.empty())
     {
         SIGHT_ASSERT(
-            std::string("Hexadecimal values (").append(s_QUERY_MASK_CONFIG).append(
-                ") should start with '0x'Given value : "
-            ).append(hexaMask),
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Hexadecimal values (" + s_QUERY_MASK_CONFIG + ") should start with '0x'. Given value : " + hexaMask,
+            hexaMask.length() > 2 && hexaMask.substr(0, 2) == "0x"
         );
         m_queryMask = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }
@@ -149,11 +146,8 @@ void SLandmarks::configuring()
     if(!hexaMask.empty())
     {
         SIGHT_ASSERT(
-            std::string("Hexadecimal values (").append(s_LANDMARKS_FLAGS_CONFIG).append(
-                ") should start with '0x'Given value : "
-            ).append(hexaMask),
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Hexadecimal values (" + s_LANDMARKS_FLAGS_CONFIG + ") should start with '0x'. Given value : " + hexaMask,
+            hexaMask.length() > 2 && hexaMask.substr(0, 2) == "0x"
         );
         m_landmarksQueryFlag = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }

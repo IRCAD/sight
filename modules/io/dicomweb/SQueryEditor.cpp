@@ -179,7 +179,7 @@ void SQueryEditor::queryPatientName()
         for(int i = 0 ; i < seriesArraySize ; ++i)
         {
             const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
-            const std::string instancesListUrl(std::string(pacsServer).append("/series/").append(seriesUID));
+            const std::string instancesListUrl(pacsServer + "/series/" + seriesUID);
             const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesListUrl));
             jsonResponse = QJsonDocument::fromJson(instancesAnswer);
             const QJsonObject& jsonObj      = jsonResponse.object();
@@ -187,8 +187,7 @@ void SQueryEditor::queryPatientName()
 
             // Retrieve the first instance for the needed information
             const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
-            const std::string instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID)
-                                          .append("/simplified-tags"));
+            const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
             const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instanceUrl));
 
             QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
@@ -231,7 +230,7 @@ void SQueryEditor::queryStudyDate()
         QJsonObject query;
         const std::string& beginDate = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
         const std::string& endDate   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-        const std::string& dateRange = std::string(beginDate).append("-").append(endDate);
+        const std::string& dateRange = beginDate + "-" + endDate;
         query.insert("StudyDate", dateRange.c_str());
 
         QJsonObject body;
@@ -267,7 +266,7 @@ void SQueryEditor::queryStudyDate()
         for(int i = 0 ; i < studiesListArraySize ; ++i)
         {
             const std::string& studiesUID = studiesListArray.at(i).toString().toStdString();
-            const std::string studiesUrl(std::string(pacsServer).append("/studies/").append(studiesUID));
+            const std::string studiesUrl(pacsServer + "/studies/" + studiesUID);
             const QByteArray& studiesAnswer = m_clientQt.get(sight::io::http::Request::New(studiesUrl));
 
             jsonResponse = QJsonDocument::fromJson(studiesAnswer);
@@ -278,7 +277,7 @@ void SQueryEditor::queryStudyDate()
             for(int j = 0 ; j < seriesArraySize ; ++j)
             {
                 const std::string& seriesUID = seriesArray.at(j).toString().toStdString();
-                const std::string instancesUrl(std::string(pacsServer).append("/series/").append(seriesUID));
+                const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
                 const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesUrl));
                 jsonResponse = QJsonDocument::fromJson(instancesAnswer);
                 const QJsonObject& anotherJsonObj = jsonResponse.object();
@@ -286,8 +285,7 @@ void SQueryEditor::queryStudyDate()
 
                 // Retrieve the first instance for the needed information
                 const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
-                const std::string instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID)
-                                              .append("/simplified-tags"));
+                const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
                 const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instanceUrl));
 
                 QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();

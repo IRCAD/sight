@@ -45,7 +45,7 @@ const std::string ILocationDialog::DLG_DEFAULT_DIRECTORY = "DLG_DEFAULT_DIRECTOR
 
 inline static std::string getFrameKey(const std::string& title)
 {
-    return std::string(ILocationDialog::SOFTWARE_UI).append(".").append(title);
+    return std::string(ILocationDialog::SOFTWARE_UI) + "." + title;
 }
 
 //------------------------------------------------------------------------------

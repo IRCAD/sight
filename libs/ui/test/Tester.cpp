@@ -93,7 +93,7 @@ std::string modifiersToString(Qt::KeyboardModifiers modifiers)
             }
         }
 
-        res.append(" key").append(strings.size() > 1 ? "s" : "");
+        res = res + " key" + (strings.size() > 1 ? "s" : "");
     }
 
     return res;
@@ -217,9 +217,9 @@ void MouseDrag::interactWith(T thing) const
 
 std::string MouseDrag::toString() const
 {
-    std::string res =
-        std::string("drag mouse from ").append(pointToString(m_from)).append(" to ").append(pointToString(m_to))
-        .append(" while holding ");
+    std::string res;
+    res = res + "drag mouse from " + pointToString(m_from) + " to " + pointToString(m_to) + " while holding ";
+
     if(m_button == Qt::LeftButton)
     {
         res += "left";

@@ -299,7 +299,7 @@ boost::property_tree::ptree Convert::toPropertyTree(core::runtime::Configuration
             ptChild = *child;
         }
 
-        pt.add_child(std::string(propertyName).append(".").append(childName), ptChild);
+        pt.add_child(std::string(propertyName) + "." + childName, ptChild);
     }
 
     return pt;

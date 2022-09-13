@@ -400,7 +400,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(
         std::string libname = boost::algorithm::replace_all_copy(moduleIdentifier, "::", "_");
         boost::algorithm::trim_left_if(libname, [](auto x){return x == '_';});
 
-        SIGHT_INFO(std::string("Plugin ").append(moduleIdentifier).append(" holds library ").append(libname));
+        SIGHT_INFO(std::string("Plugin ") + moduleIdentifier + " holds library " + libname);
 
         // Creates the library
         // If we have a library, deduce the plugin name

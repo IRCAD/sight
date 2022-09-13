@@ -64,8 +64,8 @@ void SigSlotConnection::connect(
     catch(core::com::exception::BadSlot& e)
     {
         SIGHT_ERROR(
-            std::string("Can't connect signal '").append(signalKey).append("' with slot '").append(slotKey)
-            .append("' : ") << e.what() << "."
+            std::string("Can't connect signal '") + signalKey + "' with slot '" + slotKey
+            + "' : " << e.what() << "."
         );
     }
     catch(core::com::exception::AlreadyConnected& e)
@@ -77,8 +77,8 @@ void SigSlotConnection::connect(
         auto targetID                           = target ? target->getID() : "";
 
         SIGHT_ERROR(
-            std::string("Can't connect signal '").append(sourceID).append("/").append(signalKey).append("' with slot '")
-            .append(targetID).append("/").append(slotKey).append("' : ") << e.what() << "."
+            std::string("Can't connect signal '") + sourceID + "/" + signalKey + "' with slot '"
+            + targetID + "/" + slotKey + "' : " << e.what() << "."
         );
     }
 }
@@ -122,10 +122,10 @@ void SigSlotConnection::connect(
             auto targetID                           = target ? target->getID() : "";
 
             SIGHT_ERROR(
-                std::string("Can't connect signal '").append(sourceID).append("/").append(keys.first)
-                .append("' with slot '").append(targetID).append("/").append(keys.second).append(
-                    "' : "
-                ) << e.what() << "."
+                std::string(
+                    "Can't connect signal '"
+                ) << sourceID << "/" << keys.first << "' with slot '" << targetID << "/" << keys.second
+                << "' : " << e.what() << "."
             );
         }
     }

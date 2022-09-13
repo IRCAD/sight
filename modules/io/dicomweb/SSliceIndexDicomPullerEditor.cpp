@@ -441,12 +441,11 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
         const QJsonArray& seriesArray = jsonResponse.array();
 
         // Should be one Series, so take the first of the array.
-        const std::string& seriesUID = seriesArray.at(0).toString().toStdString();
+        const std::string seriesUID(seriesArray.at(0).toString().toStdString());
         // GET all Instances by Series.
-        const std::string& instancesUrl(std::string(pacsServer).append("/series/").append(seriesUID));
+        const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
 
-        const QByteArray& instancesAnswer =
-            m_clientQt.get(sight::io::http::Request::New(instancesUrl));
+        const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesUrl));
         jsonResponse = QJsonDocument::fromJson(instancesAnswer);
         const QJsonObject& jsonObj       = jsonResponse.object();
         const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
@@ -455,7 +454,7 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
 
         // GET frame by Slice.
         std::string instancePath;
-        const std::string& instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID).append("/file"));
+        const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
         try
         {
             instancePath = m_clientQt.getFile(sight::io::http::Request::New(instanceUrl));

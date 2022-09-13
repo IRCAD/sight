@@ -248,7 +248,7 @@ std::string LocationDialog::getCurrentSelection() const
     {
         const std::string& filterName       = filter.first;
         const std::string& rawWildcards     = filter.second;
-        const std::string& availableFilters = std::string(filterName).append(" (").append(rawWildcards).append(")");
+        const std::string& availableFilters = filterName + " (" + rawWildcards + " ";
         if(m_wildcard == availableFilters)
         {
             extension = &rawWildcards[1];

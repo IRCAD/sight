@@ -137,7 +137,7 @@ void SGrabberProxy::configuring()
             SIGHT_ASSERT("add selection with config but service is missing", !service.empty());
             m_serviceToConfig[service].push_back(configId);
             SIGHT_DEBUG(
-                std::string("add config '").append(configId).append("' for service '").append(service).append("'")
+                std::string("add config '") + configId + "' for service '" + service + "'"
             );
         }
 
@@ -149,7 +149,7 @@ void SGrabberProxy::configuring()
 
             m_serviceToConfig[service].push_back(configId);
             SIGHT_DEBUG(
-                std::string("add config '").append(configId).append("' for service '").append(service).append("'")
+                std::string("add config '") + configId + "' for service '" + service + "'"
             );
         }
 

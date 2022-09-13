@@ -508,7 +508,7 @@ OFList<QRResponse*> SeriesEnquirer::findSeriesByDate(const std::string& _fromDat
     dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
 
     // Search by series UID.
-    const std::string searchString = std::string(_fromDate).append("-").append(_toDate);
+    const std::string searchString = _fromDate + "-" + _toDate;
     dataset.putAndInsertOFStringArray(DCM_StudyDate, searchString.c_str());
 
     // Fields needed by Series.

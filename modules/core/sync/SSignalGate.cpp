@@ -95,12 +95,7 @@ void SSignalGate::starting()
 
                 // Connect the configured signal to this slot
                 auto sig = signalsHolder->signal(signalKey);
-                SIGHT_ASSERT(
-                    std::string("Object with id ").append(uid).append(" does not have a signalKey '").append(
-                        signalKey
-                    ).append("'"),
-                    sig
-                );
+                SIGHT_ASSERT("Object with id " + uid + " does not have a signalKey '" + signalKey + "'", sig);
 
                 sig->connect(slot);
 

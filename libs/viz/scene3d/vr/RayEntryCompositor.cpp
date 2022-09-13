@@ -110,7 +110,7 @@ RayEntryCompositor::RayEntryCompositor(
             clearPass->setClearColour(Ogre::ColourValue(0.F, 1.F, 1.F, 1.F));
 
             auto* backFacesPass = backFacesTargetPass->createPass();
-            backFacesPass->setMaterialScheme(std::string(schemePrefix).append("_BackFaces").append(schemeSuffix));
+            backFacesPass->setMaterialScheme(std::string(schemePrefix) + "_BackFaces" + schemeSuffix);
             backFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             backFacesPass->setFirstRenderQueue(_rqGroup);
             backFacesPass->setLastRenderQueue(_rqGroup);
@@ -120,7 +120,7 @@ RayEntryCompositor::RayEntryCompositor(
             frontFacesTargetPass->setOutputName(texTargetName);
 
             auto* frontFacesPass = frontFacesTargetPass->createPass();
-            frontFacesPass->setMaterialScheme(std::string(schemePrefix).append("_FrontFaces").append(schemeSuffix));
+            frontFacesPass->setMaterialScheme(std::string(schemePrefix) + "_FrontFaces" + schemeSuffix);
             frontFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             frontFacesPass->setFirstRenderQueue(_rqGroup);
             frontFacesPass->setLastRenderQueue(_rqGroup);
@@ -130,7 +130,7 @@ RayEntryCompositor::RayEntryCompositor(
             backFacesMaxTargetPass->setOutputName(texTargetName);
 
             auto* backFacesMaxPass = backFacesMaxTargetPass->createPass();
-            backFacesMaxPass->setMaterialScheme(std::string(schemePrefix).append("_BackFacesMax").append(schemeSuffix));
+            backFacesMaxPass->setMaterialScheme(std::string(schemePrefix) + "_BackFacesMax" + schemeSuffix);
             backFacesMaxPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             backFacesMaxPass->setFirstRenderQueue(_rqGroup);
             backFacesMaxPass->setLastRenderQueue(_rqGroup);
@@ -143,7 +143,7 @@ RayEntryCompositor::RayEntryCompositor(
 
                 auto* frontFacesMinPass = frontFacesMinTargetPass->createPass();
                 frontFacesMinPass->setMaterialScheme(
-                    std::string(schemePrefix).append("_FrontFacesMin").append(schemeSuffix)
+                    std::string(schemePrefix) + "_FrontFacesMin" + schemeSuffix
                 );
                 frontFacesMinPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
                 frontFacesMinPass->setLastRenderQueue(compositor::Core::s_SURFACE_RQ_GROUP_ID);

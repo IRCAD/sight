@@ -75,12 +75,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         }
         else
         {
-            SIGHT_ASSERT(
-                std::string("Object key '").append(key).append("'with uid '").append(uid).append(
-                    "' does not exists."
-                ),
-                obj
-            );
+            SIGHT_ASSERT(std::string("Object key '") + key + "'with uid '" + uid + "' does not exists.", obj);
             param.by = obj->getID();
         }
 
@@ -145,7 +140,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
     if(!isValid)
     {
-        message = std::string("The activity '").append(info.title).append("' can not be launched:\n").append(message);
+        message = std::string("The activity '") + info.title + "' can not be launched:\n" + message;
     }
 
     return std::make_pair(isValid, message);

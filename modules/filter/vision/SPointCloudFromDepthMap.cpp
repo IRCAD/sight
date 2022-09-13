@@ -191,7 +191,7 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
     else
     {
         SIGHT_ERROR(
-            std::string("unknown key '").append(_key).append("' in slot '").append(s_SET_DEPTH_RANGE).append("'")
+            std::string("unknown key '") + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'"
         );
     }
 }

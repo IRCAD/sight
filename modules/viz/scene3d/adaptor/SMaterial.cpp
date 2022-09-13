@@ -262,7 +262,7 @@ void SMaterial::createShaderParameterAdaptors()
                                                                             :
                                               "geometry";
             const core::tools::fwID::IDType id =
-                std::string(this->getID()).append("_").append(shaderTypeStr).append("-").append(constantName);
+                std::string(this->getID()) + "_" + shaderTypeStr + "-" + constantName;
 
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =

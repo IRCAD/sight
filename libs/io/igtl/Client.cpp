@@ -95,7 +95,7 @@ void Client::connect(const std::string& addr, std::uint16_t port)
     }
 
     this->throwExceptionIfFailed(
-        std::string("Cannot connect to the server at ").append(addr).append(" : ").append(portStr),
+        std::string("Cannot connect to the server at ") + addr + " : " + portStr,
         result == -1
     );
 }

@@ -63,7 +63,7 @@ GridProxyGeometry* GridProxyGeometry::New(
 
     Ogre::MaterialPtr mat =
         Ogre::MaterialManager::getSingleton().getByName(
-            std::string(_name).append("_").append(_mtlName),
+            std::string(_name) + "_" + _mtlName,
             RESOURCE_GROUP
         );
 
@@ -73,7 +73,7 @@ GridProxyGeometry* GridProxyGeometry::New(
             Ogre::MaterialManager::getSingleton().getByName(
                 _mtlName,
                 RESOURCE_GROUP
-            )->clone(std::string(_name).append("_").append(_mtlName));
+            )->clone(std::string(_name) + "_" + _mtlName);
     }
 
     instance->setMaterial(mat);

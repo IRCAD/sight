@@ -226,7 +226,7 @@ void Factory::addServiceFactory(
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     const std::string srvType = core::runtime::filterID(_srvType);
 
-    SIGHT_DEBUG(std::string("New service registering : srvImpl =").append(srvImpl).append(" srvType=").append(srvType));
+    SIGHT_DEBUG(std::string("New service registering : srvImpl =") + srvImpl + " srvType=" + srvType);
 
     core::mt::ReadToWriteLock lock(m_srvImplToSrvInfoMutex);
     auto iter = m_srvImplToSrvInfo.find(srvImpl);
@@ -267,9 +267,7 @@ void Factory::addObjectFactory(const std::string& _srvImpl, const std::string& _
     const std::string srvImpl = core::runtime::filterID(_srvImpl);
     const std::string oImpl   = core::runtime::filterID(_oimpl);
 
-    SIGHT_DEBUG(
-        std::string("New object oImpl=").append(oImpl).append("registering to service: srvImpl =").append(srvImpl)
-    );
+    SIGHT_DEBUG(std::string("New object oImpl=") + oImpl + "registering to service: srvImpl =" + srvImpl);
     SIGHT_ASSERT("Empty oImpl", !oImpl.empty());
 
     core::mt::ReadToWriteLock lock(m_srvImplToSrvInfoMutex);

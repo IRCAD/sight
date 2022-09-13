@@ -94,12 +94,7 @@ void ConfigLauncher::parseConfig(
             const auto it = inouts.find({key, std::nullopt});
             SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
             auto obj = it->second.lock();
-            SIGHT_ASSERT(
-                std::string("Object key '").append(key).append("' with uid '").append(uid).append(
-                    "' does not exist."
-                ),
-                obj
-            );
+            SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
             parameterCfg.add("<xmlattr>.uid", obj->getID());
         }
 

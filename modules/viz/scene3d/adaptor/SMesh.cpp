@@ -403,7 +403,7 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
     }
 
     std::string meshName      = _mesh->getID();
-    const std::string mtlName = meshName.append("_").append(materialAdaptor->getID()).append(_materialSuffix);
+    const std::string mtlName = meshName + "_" + (materialAdaptor->getID()) + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
     if(_materialSuffix.empty())

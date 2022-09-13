@@ -304,11 +304,11 @@ void SOpenvslam::stopTracking()
                 m_trajectoriesSavePath->getFile().filename().replace_extension("").string();
 
             m_slamSystem->save_frame_trajectory(
-                std::string(folder).append("/").append(baseFilename).append("_frames_traj.txt"),
+                std::string(folder) + "/" + baseFilename + "_frames_traj.txt",
                 m_trajectoriesFormat
             );
             m_slamSystem->save_frame_trajectory(
-                std::string(folder).append("/").append(baseFilename).append("_keyframes_traj.txt"),
+                std::string(folder) + "/" + baseFilename + "_keyframes_traj.txt",
                 m_trajectoriesFormat
             );
             m_trajectoriesSavePath.reset();
@@ -473,7 +473,7 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SIGHT_ERROR(std::string("Value'").append(_val).append("' is not handled for key '").append(_key).append("'"));
+            SIGHT_ERROR(std::string("Value'") + _val + "' is not handled for key '" + _key + "'");
         }
     }
     else
@@ -600,11 +600,11 @@ void SOpenvslam::saveTrajectories()
         //cspell: disable
         // Save frame & keyframes trajectory using choosen folder and basename
         m_slamSystem->save_frame_trajectory(
-            std::string(trajectories_folder).append("/").append(trajectories_filename).append("_frames_traj.txt"),
+            std::string(trajectories_folder) + "/" + trajectories_filename + "_frames_traj.txt",
             m_trajectoriesFormat
         );
         m_slamSystem->save_frame_trajectory(
-            std::string(trajectories_folder).append("/").append(trajectories_filename).append("_keyframes_traj.txt"),
+            std::string(trajectories_folder) + "/" + trajectories_filename + "_keyframes_traj.txt",
             m_trajectoriesFormat
         );
         //cspell: enable

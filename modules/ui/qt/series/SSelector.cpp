@@ -208,8 +208,8 @@ void SSelector::configuring()
         else
         {
             SIGHT_WARN(
-                std::string("value ").append(selectionMode).append(" is not managed for '")
-                .append(s_SELECTION_MODE_CONFIG).append("'")
+                std::string("value ") + selectionMode + " is not managed for '"
+                + s_SELECTION_MODE_CONFIG + "'"
             );
         }
 

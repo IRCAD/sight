@@ -79,8 +79,8 @@ void SurfaceSegmentation::write()
     if(modelPatientName != imagePatientName)
     {
         m_logger->warning(
-            std::string("The patient's name of the model (\"").append(modelPatientName)
-            .append("\") does not match the patient's name of the image (\"").append(imagePatientName).append("\").")
+            "The patient's name of the model (\"" + modelPatientName
+            + "\"  does not match the patient's name of the image (\"" + imagePatientName + "\" ."
         );
     }
 
@@ -90,8 +90,8 @@ void SurfaceSegmentation::write()
     if(modelPatientID != imagePatientID)
     {
         m_logger->warning(
-            std::string("The patient ID of the model (\"").append(modelPatientID)
-            .append("\") does not match the patient ID of the image (\"").append(imagePatientID).append("\").")
+            "The patient ID of the model (\"" + modelPatientID
+            + "\"  does not match the patient ID of the image (\"" + imagePatientID + "\" ."
         );
     }
 
@@ -101,9 +101,8 @@ void SurfaceSegmentation::write()
     if(modelStudyInstanceUID != imageStudyInstanceUID)
     {
         m_logger->warning(
-            std::string("The study instance UID of the model (\"").append(modelStudyInstanceUID)
-            .append("\") does not match the study instance UID of the image (\"").append(imageStudyInstanceUID)
-            .append("\").")
+            "The study instance UID of the model (\"" + modelStudyInstanceUID
+            + "\"  does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\" ."
         );
     }
 

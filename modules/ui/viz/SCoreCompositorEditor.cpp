@@ -199,7 +199,7 @@ void SCoreCompositorEditor::refreshRenderers()
             {
                 const std::string id = layerMap.first;
                 std::string renderID = render->getID();
-                m_layersBox->addItem(QString::fromStdString(renderID.append(" : ").append(id)));
+                m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
                 m_layers.push_back(layerMap.second);
             }
         }

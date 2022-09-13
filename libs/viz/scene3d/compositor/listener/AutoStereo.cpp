@@ -80,10 +80,13 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
         }
 
         // Remove in inverse order otherwise the index we stored becomes invalid ;-)
-        for(auto it = removeTechniqueVector.rbegin() ; it != removeTechniqueVector.rend() ; ++it)
-        {
-            mtl->removeTechnique(*it);
-        }
+        std::for_each(
+            removeTechniqueVector.rbegin(),
+            removeTechniqueVector.rend(),
+            [mtl](auto techId)
+            {
+                mtl->removeTechnique(techId);
+            });
     }
 }
 
@@ -213,7 +216,7 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
             texUnitState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
 
             const auto compName = "VolumeEntries" + std::to_string(m_viewpointNumber);
-            texUnitState->setCompositorReference(compName, std::string(compName).append("Texture").append(passIdStr));
+            texUnitState->setCompositorReference(compName, std::string(compName) + "Texture" + passIdStr);
         }
 
         m_createdTechniques.emplace_back(newTech, _originalMaterial->getName());

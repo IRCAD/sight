@@ -192,8 +192,7 @@ std::string Shading::setPermutationInProgramName(const std::string& _name, const
     prgName = std::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
-    static const std::regex regexShading(std::string("(").append(s_AMBIENT).append(")|(").append(s_FLAT).append(")|(").
-                                         append(s_PIXELLIGHTING).append(")"));
+    static const std::regex regexShading("(" + s_AMBIENT + ")|(" + s_FLAT + ")|(" + s_PIXELLIGHTING + ")");
     prgName = std::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;

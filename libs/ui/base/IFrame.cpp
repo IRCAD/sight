@@ -116,10 +116,8 @@ void IFrame::initialize()
         }
 
         SIGHT_ASSERT(
-            std::string("[").append(this->getID()).append("' ] Invalid onclose value, actual: '") << m_closePolicy
-            << std::string("', accepted: '").append(CLOSE_POLICY_NOTIFY).append("', '").append(CLOSE_POLICY_EXIT).append(
-                "' or '"
-            ).append(CLOSE_POLICY_MESSAGE).append("'"),
+            "[" + this->getID() + "' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
+            + CLOSE_POLICY_NOTIFY + "', '" + CLOSE_POLICY_EXIT + "' or '" + CLOSE_POLICY_MESSAGE + "'",
             m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
             || m_closePolicy == CLOSE_POLICY_MESSAGE
         );

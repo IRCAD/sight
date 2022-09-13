@@ -327,7 +327,7 @@ service::IService::Config Config::parseService(
     // Type
     srvConfig.m_type = srvElem.get<std::string>("<xmlattr>.type", "");
     SIGHT_ASSERT(
-        std::string(errMsgHead).append("Attribute \"type\" is required ").append(errMsgTail),
+        std::string(errMsgHead) + "Attribute \"type\" is required " + errMsgTail,
         !srvConfig.m_type.empty()
     );
 
@@ -353,12 +353,12 @@ service::IService::Config Config::parseService(
     // Check if user did not bind a service to another service
     auto serviceCfg = srvElem.equal_range("service");
     SIGHT_ASSERT(
-        std::string(errMsgHead).append("Cannot bind a service to another service").append(errMsgTail),
+        std::string(errMsgHead) + "Cannot bind a service to another service" + errMsgTail,
         serviceCfg.first == serviceCfg.second
     );
     serviceCfg = srvElem.equal_range("serviceList");
     SIGHT_ASSERT(
-        std::string(errMsgHead).append("Cannot bind a service to another service").append(errMsgTail),
+        std::string(errMsgHead) + "Cannot bind a service to another service" + errMsgTail,
         serviceCfg.first == serviceCfg.second
     );
 
@@ -434,7 +434,7 @@ service::IService::Config Config::parseService(
                 // Identifier
                 groupObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
                 SIGHT_ASSERT(
-                    std::string(errMsgHead).append("\"uid\" attribute is empty").append(errMsgTail),
+                    std::string(errMsgHead) + "\"uid\" attribute is empty" + errMsgTail,
                     !groupObjConfig.m_uid.empty()
                 );
 
@@ -471,14 +471,14 @@ service::IService::Config Config::parseService(
             // Identifier
             objConfig.m_uid = cfg.second.get<std::string>("<xmlattr>.uid", "");
             SIGHT_ASSERT(
-                std::string(errMsgHead).append("\"uid\" attribute is empty").append(errMsgTail),
+                std::string(errMsgHead) + "\"uid\" attribute is empty" + errMsgTail,
                 !objConfig.m_uid.empty()
             );
 
             // Key inside the service
             objConfig.m_key = cfg.second.get<std::string>("<xmlattr>.key", "");
             SIGHT_ASSERT(
-                std::string(errMsgHead).append("Missing object attribute 'key'").append(errMsgTail),
+                std::string(errMsgHead) + "Missing object attribute 'key'" + errMsgTail,
                 !objConfig.m_key.empty()
             );
 

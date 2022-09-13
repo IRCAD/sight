@@ -198,8 +198,7 @@ std::string SScan::selectDevice()
             const std::string serial = devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
 
             // Display index + name + serial (ex: 1.Intel RealSense D415(839112062452) ).
-            const std::string nameserial =
-                std::to_string(i + 1).append(". ").append(name).append(" (").append(serial).append(")");
+            const std::string nameserial = std::to_string(i + 1) + ". " + name + " (" + serial + ")";
 
             selections[i] = nameserial;
         }

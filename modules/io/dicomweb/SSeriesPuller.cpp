@@ -278,7 +278,7 @@ void SSeriesPuller::pullSeries()
                     const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
 
                     /// GET all Instances by Series.
-                    const std::string& instancesUrl(std::string(pacsServer).append("/series/").append(seriesUID));
+                    const std::string& instancesUrl(std::string(pacsServer) + "/series/" + seriesUID);
                     const QByteArray& instancesAnswer =
                         m_clientQt.get(sight::io::http::Request::New(instancesUrl));
                     jsonResponse = QJsonDocument::fromJson(instancesAnswer);
@@ -291,8 +291,7 @@ void SSeriesPuller::pullSeries()
                         const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
 
                         /// GET DICOM Instance file.
-                        const std::string instanceUrl(std::string(pacsServer).append("/instances/").append(instanceUID).
-                                                      append("/file"));
+                        const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
 
                         try
                         {

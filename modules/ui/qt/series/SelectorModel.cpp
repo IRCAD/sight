@@ -126,9 +126,7 @@ std::string formatTime(const std::string& _time)
     const std::string regexSec  = "[0-9]{2}";
     const std::string regexEnd  = "[.0-9]*";
 
-    const std::string regexStr = std::string("(").append(regexHour).append(")(").append(regexMin).append(")(").append(
-        regexSec
-    ).append(")").append(regexEnd);
+    const std::string regexStr = "(" + regexHour + ")" + "(" + regexMin + ")" + "(" + regexSec + ")" + regexEnd;
     std::regex re(regexStr);
     std::smatch match;
     if(std::regex_match(formatTime, match, re))
@@ -144,7 +142,7 @@ std::string formatTime(const std::string& _time)
         min.assign(match[2].first, match[2].second);
         sec.assign(match[3].first, match[3].second);
 
-        formatTime = hour.append(":").append(min).append(":").append(sec);
+        formatTime = hour + ":" + min + ":" + sec;
     }
 
     return formatTime;

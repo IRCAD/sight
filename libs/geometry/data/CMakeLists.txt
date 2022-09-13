@@ -1,7 +1,5 @@
 sight_add_target(geometry_data TYPE LIBRARY PCH pchData)
 
-find_package(glm QUIET REQUIRED)
-
 target_link_libraries(geometry_data PUBLIC core data glm::glm)
 
 if(SIGHT_BUILD_TESTS)

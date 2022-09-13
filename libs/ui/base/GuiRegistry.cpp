@@ -295,9 +295,7 @@ void GuiRegistry::registerActionSIDToParentSID(std::string actionSid, std::strin
     {
         // Action already exist in map
         SIGHT_ASSERT(
-            std::string("The action '").append(actionSid).append("' already exists for the parent '").append(
-                parentSid
-            ).append("'"),
+            std::string("The action '") + actionSid + "' already exists for the parent '" + parentSid + "'",
             std::find(
                 m_actionSIDToParentSID[actionSid].begin(),
                 m_actionSIDToParentSID[actionSid].end(),
@@ -340,9 +338,7 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
         auto iter =
             std::find(m_actionSIDToParentSID[actionSid].begin(), m_actionSIDToParentSID[actionSid].end(), parentSid);
         SIGHT_ASSERT(
-            std::string("The action with the sid '").append(actionSid).append("' has no parent named '").append(
-                parentSid
-            ).append("'"),
+            std::string("The action with the sid '") + actionSid + "' has no parent named '" + parentSid + "'",
             iter != m_actionSIDToParentSID[actionSid].end()
         );
         m_actionSIDToParentSID[actionSid].erase(iter);
@@ -361,8 +357,8 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
         {
             bool service_exists = core::tools::fwID::exist(parentSid);
             SIGHT_INFO_IF(
-                std::string("The service '").append(parentSid).append("' managing the action '").append(actionSid)
-                .append("' does not exist."),
+                std::string("The service '") + parentSid + "' managing the action '" + actionSid
+                + "' does not exist.",
                 !service_exists
             );
             if(service_exists)
@@ -381,8 +377,8 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
                 else
                 {
                     SIGHT_FATAL(
-                        std::string("The service '").append(parentSid).append("' managing the action '")
-                        .append(actionSid).append("' must be managed by a menu or a toolBar")
+                        std::string("The service '") + parentSid + "' managing the action '"
+                        + actionSid + "' must be managed by a menu or a toolBar"
                     );
                 }
             }
@@ -402,8 +398,8 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
         {
             bool service_exists = core::tools::fwID::exist(parentSid);
             SIGHT_INFO_IF(
-                std::string("The service '").append(parentSid).append("' managing the action '").append(actionSid)
-                .append("' does not exist."),
+                std::string("The service '") + parentSid + "' managing the action '" + actionSid
+                + "' does not exist.",
                 !service_exists
             );
             if(service_exists)
@@ -422,8 +418,8 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
                 else
                 {
                     SIGHT_FATAL(
-                        std::string("The service '").append(parentSid).append("' managing the action '")
-                        .append(actionSid).append("' must be managed by a menu or a toolBar")
+                        std::string("The service '") + parentSid + "' managing the action '"
+                        + actionSid + "' must be managed by a menu or a toolBar"
                     );
                 }
             }
@@ -443,8 +439,8 @@ void GuiRegistry::actionServiceSetChecked(std::string actionSid, bool isChecked)
         {
             bool service_exists = core::tools::fwID::exist(parentSid);
             SIGHT_INFO_IF(
-                std::string("The service '").append(parentSid).append("' managing the action '").append(actionSid)
-                .append("' does not exist."),
+                std::string("The service '") + parentSid + "' managing the action '" + actionSid
+                + "' does not exist.",
                 !service_exists
             );
             if(service_exists)
@@ -463,8 +459,8 @@ void GuiRegistry::actionServiceSetChecked(std::string actionSid, bool isChecked)
                 else
                 {
                     SIGHT_FATAL(
-                        std::string("The service '").append(parentSid).append("' managing the action '")
-                        .append(actionSid).append("' must be managed by a menu or a toolBar")
+                        std::string("The service '") + parentSid + "' managing the action '"
+                        + actionSid + "' must be managed by a menu or a toolBar"
                     );
                 }
             }
@@ -484,8 +480,8 @@ void GuiRegistry::actionServiceSetEnabled(std::string actionSid, bool isEnabled)
         {
             bool service_exists = core::tools::fwID::exist(parentSid);
             SIGHT_INFO_IF(
-                std::string("The service '").append(parentSid).append("' managing the action '").append(actionSid)
-                .append("' does not exist."),
+                std::string("The service '") + parentSid + "' managing the action '" + actionSid
+                + "' does not exist.",
                 !service_exists
             );
             if(service_exists)
@@ -504,8 +500,8 @@ void GuiRegistry::actionServiceSetEnabled(std::string actionSid, bool isEnabled)
                 else
                 {
                     SIGHT_FATAL(
-                        std::string("The service '").append(parentSid).append("' managing the action '")
-                        .append(actionSid).append("' must be managed by a menu or a toolBar")
+                        std::string("The service '") + parentSid + "' managing the action '"
+                        + actionSid + "' must be managed by a menu or a toolBar"
                     );
                 }
             }
@@ -525,8 +521,8 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
         {
             bool service_exists = core::tools::fwID::exist(parentSid);
             SIGHT_INFO_IF(
-                std::string("The service '").append(parentSid).append("' managing the action '").append(actionSid)
-                .append("' does not exist."),
+                std::string("The service '") + parentSid + "' managing the action '" + actionSid
+                + "' does not exist.",
                 !service_exists
             );
             if(service_exists)
@@ -545,8 +541,8 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
                 else
                 {
                     SIGHT_FATAL(
-                        std::string("The service '").append(parentSid).append("' managing the action '")
-                        .append(actionSid).append("' must be managed by a menu or a toolBar")
+                        std::string("The service '") + parentSid + "' managing the action '"
+                        + actionSid + "' must be managed by a menu or a toolBar"
                     );
                 }
             }

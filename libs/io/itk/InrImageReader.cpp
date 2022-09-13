@@ -109,10 +109,7 @@ struct InrLoaderFunctor
 
         if(imageIO == nullptr)
         {
-            std::string errMsg;
-            errMsg = "no ImageIOFactory found to read header of file : ";
-            errMsg.append(imageFileName);
-
+            const std::string errMsg = "no ImageIOFactory found to read header of file : " + imageFileName;
             throw(std::ios_base::failure(errMsg));
         }
 

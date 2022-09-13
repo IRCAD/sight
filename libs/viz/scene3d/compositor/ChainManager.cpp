@@ -244,10 +244,8 @@ void ChainManager::updateCompositorAdaptors(
                                                       "geometry";
 
                     // Naming convention for shader parameters
-                    const core::tools::fwID::IDType id = std::string(_renderService->getID()).append(_layerId)
-                                                         .append("_").append(shaderTypeStr).append("-").append(
-                        constantName
-                                                         );
+                    const core::tools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr
+                                                         + "-" + constantName;
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {

@@ -133,12 +133,12 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SIGHT_ERROR(std::string("Value '").append(_val).append("' is not handled for key ").append(_key));
+            SIGHT_ERROR(std::string("Value '") + _val + "' is not handled for key " + _key);
         }
     }
     else
     {
-        SIGHT_ERROR(std::string("Value '").append(_val).append("' is not handled for key ").append(_key));
+        SIGHT_ERROR(std::string("Value '") + _val + "' is not handled for key " + _key);
     }
 }
 

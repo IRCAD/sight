@@ -57,27 +57,27 @@ gdcm::Tag getGdcmTag(const std::string& group, const std::string& element)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
-                std::string("Unable to read DICOM tag from '").append(group).append(",").append(element).append("' : ")
-                .append(e.what())
+                std::string("Unable to read DICOM tag from '") + group + "," + element + "' : " + e.what()
             )
+
         );
     }
     catch(std::invalid_argument& e)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
-                std::string("Unable to read DICOM tag from '").append(group).append(",").append(element).append("' : ")
-                .append(e.what())
+                std::string("Unable to read DICOM tag from '") + group + "," + element + "' : " + e.what()
             )
+
         );
     }
     catch(boost::bad_numeric_cast& e)
     {
         SIGHT_THROW_EXCEPTION(
             io::dicom::exception::InvalidTag(
-                std::string("Unable to read DICOM tag from '").append(group).append(",").append(element).append("' : ")
-                .append(e.what())
+                std::string("Unable to read DICOM tag from '") + group + "," + element + "' : " + e.what()
             )
+
         );
     }
 

@@ -110,7 +110,7 @@ void SeriesSet::generateSeriesInformation(data::Series::sptr series)
     const std::string PATIENT_BIRTHDATE = "19710418";
     const std::string PATIENT_SEX       = "O ";
 
-    series->setPatientName((PATIENT_NAME + "^").append(PATIENT_FIRSTNAME));
+    series->setPatientName((PATIENT_NAME + "^") + PATIENT_FIRSTNAME);
     series->setPatientID(PATIENT_ID);
     series->setPatientBirthDate(PATIENT_BIRTHDATE);
     series->setPatientSex(PATIENT_SEX);
