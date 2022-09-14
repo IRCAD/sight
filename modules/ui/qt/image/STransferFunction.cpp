@@ -656,9 +656,11 @@ void STransferFunction::importPreset()
 
 void STransferFunction::exportPreset()
 {
-    const auto writer    = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
-    const auto currentTf = m_currentTF.lock();
-    writer->setInput(currentTf.get_shared(), io::base::service::s_DATA_KEY);
+    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
+    {
+        const auto currentTf = m_currentTF.const_lock();
+        writer->setInput(currentTf.get_shared(), io::base::service::s_DATA_KEY);
+    }
 
     service::IService::ConfigType config;
     config.add("dialog.<xmlattr>.extension", ".tf");
