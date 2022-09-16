@@ -32,7 +32,12 @@ if(OPENMP_FOUND)
 endif()
 
 find_package(glm QUIET REQUIRED)
-target_include_directories(filter_image SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
+if(WIN32)
+    target_link_libraries(filter_image PRIVATE glm::glm)
+else()
+    # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
+    target_include_directories(filter_image SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
+endif()
 
 target_link_libraries(filter_image PUBLIC data geometry_data io_itk)
 
