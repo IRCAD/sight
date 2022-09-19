@@ -223,10 +223,13 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    // Getting Sight Image
-    const auto image = m_image.lock();
-
-    auto type = image->getType();
+    const auto&& typeAndSize = [this]
+                               {
+                                   const auto image = m_image.lock();
+                                   return std::make_pair(image->getType(), image->getSize());
+                               }();
+    const auto type = typeAndSize.first;
+    const auto size = typeAndSize.second;
 
     if(!m_isTextureInit || type != m_previousType)
     {
@@ -263,12 +266,6 @@ void SVideo::updating()
         // Set the texture to the main material pass
         this->updateTextureFiltering();
 
-        Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
-        SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
-        Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
-        SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
-        tus->setTexture(m_texture->get());
-
         if(tf)
         {
             // TF texture initialization
@@ -279,8 +276,7 @@ void SVideo::updating()
         m_previousType = type;
     }
 
-    const data::Image::Size size = image->getSize();
-    sight::viz::scene3d::Utils::loadOgreTexture(image.get_shared(), m_texture->get(), Ogre::TEX_TYPE_2D, true);
+    m_texture->update();
 
     const auto layer                     = this->getLayer();
     const Ogre::Viewport* const viewport = layer->getViewport();
@@ -294,6 +290,9 @@ void SVideo::updating()
                || viewport->getActualHeight() != m_previousViewportHeight))
        || m_forcePlaneUpdate)
     {
+        Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+        m_texture->bind(pass, "image");
+
         this->clearEntity();
 
         // /////////////////////////////////////////////////////////////////////

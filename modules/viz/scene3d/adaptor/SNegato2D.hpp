@@ -169,10 +169,10 @@ private:
      */
     void createPlane(const Ogre::Vector3& _spacing);
 
-    /// Contains the Ogre texture which will be displayed on the negato.
+    /// Contains the texture which will be displayed on the negato.
     sight::viz::scene3d::Texture::sptr m_3DOgreTexture;
 
-    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
+    /// Contains and manages the textures used to store the transfer function (GPU point of view).
     sight::viz::scene3d::TransferFunction::uptr m_gpuTF;
 
     /// Contains the plane on which we will apply our texture.

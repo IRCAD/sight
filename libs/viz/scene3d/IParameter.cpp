@@ -34,15 +34,12 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
-#include <service/macros.hpp>
-
 #include <viz/scene3d/ogre.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
 
 namespace sight::viz::scene3d
 {
@@ -201,12 +198,7 @@ void IParameter::stopping()
 {
     this->getRenderService()->makeCurrent();
     m_material.reset();
-
-    if(m_texture)
-    {
-        Ogre::TextureManager::getSingleton().remove(m_texture);
-        m_texture.reset();
-    }
+    m_texture.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -368,21 +360,17 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
         if(!m_texture)
         {
-            m_texture = Ogre::TextureManager::getSingleton().create(
-                this->getID() + "_TextureParam",
-                viz::scene3d::RESOURCE_GROUP,
-                true
-            );
+            m_texture = std::make_shared<sight::viz::scene3d::Texture>(image);
         }
 
         // We can reach this code for an another reason than an image modification, for instance when the compositor
         // is resized. However I don't know how to discriminate the two cases so for now we always copy the image. :/
         if(image->getSizeInBytes() != 0U)
         {
-            viz::scene3d::Utils::loadOgreTexture(image, m_texture, Ogre::TEX_TYPE_2D, true);
+            m_texture->update();
 
             Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
-            texState->setTexture(m_texture);
+            texState->setTexture(m_texture->get());
 
             auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
             params->setNamedConstant(m_paramName, texUnitIndex);

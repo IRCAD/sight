@@ -213,6 +213,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
         m_RTVSharedParameters->addConstantDefinition("u_iMinImageValue", Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_iMaxImageValue", Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_window", Ogre::GCT_FLOAT2);
         m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
     }
 }
@@ -313,6 +314,8 @@ void RayTracingVolumeRenderer::imageUpdate(const data::Image::csptr image, const
         SIGHT_ASSERT("Pass not found", pass);
         m_gpuVolumeTF->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+
+    m_RTVSharedParameters->setNamedConstant("u_window", m_3DOgreTexture->window());
 
     // The depth technique always used the transfer function
     const auto* const technique = material->getTechnique(1);
@@ -959,7 +962,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
         SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", texUnitState);
         texUnitState->setTextureName(m_3DOgreTexture->name(), Ogre::TEX_TYPE_3D);
 
-        m_proxyGeometry->set3DImageTexture(m_3DOgreTexture->get());
+        m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
     }
 
     if(static_cast<bool>(m_entryPointGeometry))
@@ -1044,7 +1047,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
             viz::scene3d::vr::GridProxyGeometry::New(
                 this->m_parentId + "_GridProxyGeometry",
                 m_sceneManager,
-                m_3DOgreTexture->get(),
+                m_3DOgreTexture,
                 m_gpuVolumeTF,
                 "RayEntryPoints"
             );

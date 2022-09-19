@@ -28,8 +28,10 @@
 
 #include <viz/scene3d/IResource.hpp>
 
+#include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
 
+#include <optional>
 namespace sight::viz::scene3d
 {
 
@@ -62,6 +64,14 @@ public:
         Ogre::TextureAddressingMode _addressMode
     );
 
+    /// Binds the texture in the given pass
+    VIZ_SCENE3D_API void bind(
+        Ogre::Pass* _pass,
+        const std::string& _samplerName,
+        std::optional<Ogre::TextureFilterOptions> _filterType   = std::nullopt,
+        std::optional<Ogre::TextureAddressingMode> _addressMode = std::nullopt
+    );
+
     /// Gets the width of this texture
     [[nodiscard]] std::uint32_t width() const
     {
@@ -85,6 +95,17 @@ public:
     {
         return this->get()->getName();
     }
+
+    /// Gets the name of this texture
+    [[nodiscard]] Ogre::Vector2 window() const
+    {
+        return m_window;
+    }
+
+private:
+
+    /// Stores the texture window to upload it when necessary as a fragment shader uniform
+    Ogre::Vector2 m_window;
 };
 
 //-----------------------------------------------------------------------------

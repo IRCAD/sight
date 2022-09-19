@@ -79,7 +79,7 @@ void PreIntegrationTable::imageUpdate(
 {
     FW_PROFILE("TF Init")
     {
-        Ogre::PixelFormat pixelFormat = viz::scene3d::Utils::getPixelFormatOgre(_img);
+        Ogre::PixelFormat pixelFormat = viz::scene3d::Utils::getPixelFormatOgre(*_img);
 
         const auto dumpLock = _img->dump_lock();
 

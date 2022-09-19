@@ -28,6 +28,7 @@
 
 #include <data/helper/MedicalImage.hpp>
 
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
 #include <OGRE/OgreMaterial.h>
@@ -83,7 +84,7 @@ public:
         Ogre::SceneNode* _parentSceneNode,
         Ogre::SceneManager* _sceneManager,
         OrientationMode _orientation,
-        Ogre::TexturePtr _tex,
+        viz::scene3d::Texture::sptr _tex,
         FilteringEnumType _filtering,
         float _entityOpacity = 1.0F,
         bool _displayBorder  = true
@@ -216,7 +217,7 @@ private:
     Ogre::MaterialPtr m_borderMaterial {nullptr};
 
     /// Contains the texture.
-    Ogre::TexturePtr m_texture;
+    viz::scene3d::Texture::sptr m_texture;
 
     /// Contains the scenemanager containing the plane.
     Ogre::SceneManager* m_sceneManager {nullptr};

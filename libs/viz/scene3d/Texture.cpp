@@ -48,7 +48,7 @@ Texture::~Texture()
 
 void Texture::update()
 {
-    viz::scene3d::detail::TextureManager::get()->load(m_resource);
+    m_window = viz::scene3d::detail::TextureManager::get()->load(m_resource).second;
 }
 
 //------------------------------------------------------------------------------
@@ -65,6 +65,43 @@ void Texture::bind(
     _texUnit->setTextureName(m_resource->getName(), _type);
     _texUnit->setTextureFiltering(_filterType);
     _texUnit->setTextureAddressingMode(_addressMode);
+}
+
+//------------------------------------------------------------------------------
+
+void Texture::bind(
+    Ogre::Pass* _pass,
+    const std::string& _samplerName,
+    std::optional<Ogre::TextureFilterOptions> _filterType,
+    std::optional<Ogre::TextureAddressingMode> _addressMode
+)
+{
+    SIGHT_ASSERT("The pass is null.", _pass);
+
+    Ogre::TextureUnitState* texUnit = _pass->getTextureUnitState(_samplerName);
+    SIGHT_ASSERT("The sampler '" + _samplerName + "' cannot be retrieved.", texUnit);
+
+    if(_filterType != std::nullopt)
+    {
+        texUnit->setTextureFiltering(_filterType.value());
+    }
+
+    if(_addressMode != std::nullopt)
+    {
+        texUnit->setTextureAddressingMode(_addressMode.value());
+    }
+
+    if(m_resource && texUnit->getTextureName() != m_resource->getName())
+    {
+        texUnit->setTexture(m_resource);
+        texUnit->setTextureName(m_resource->getName(), m_resource->getTextureType());
+    }
+
+    auto fpParams = _pass->getFragmentProgramParameters();
+    if(fpParams && (fpParams->_findNamedConstantDefinition("u_window") != nullptr))
+    {
+        fpParams->setNamedConstant("u_window", this->window());
+    }
 }
 
 //-----------------------------------------------------------------------------

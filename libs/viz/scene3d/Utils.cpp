@@ -382,51 +382,10 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-Ogre::Image Utils::convertToOgreImage(const data::Image::csptr imageFw)
-{
-    SIGHT_ASSERT("Image is null", imageFw);
-
-    Ogre::Image imageOgre;
-
-    // If image is flipped, try to switch image
-    const data::Image::Size imageSize = imageFw->getSize();
-
-    const auto width      = static_cast<uint32_t>(imageSize[0]);
-    uint32_t height       = 1;
-    uint32_t depth        = 1;
-    const auto dimensions = imageFw->numDimensions();
-
-    if(dimensions >= 2)
-    {
-        height = static_cast<uint32_t>(imageSize[1]);
-
-        if(dimensions == 3)
-        {
-            depth = static_cast<uint32_t>(imageSize[2]);
-        }
-    }
-
-    const Ogre::PixelFormat pixelFormat = getPixelFormatOgre(imageFw);
-
-    const auto dumpLock = imageFw->dump_lock();
-
-    imageOgre.loadDynamicImage(
-        static_cast<uint8_t*>(const_cast<void*>(imageFw->getBuffer())), // NOLINT(cppcoreguidelines-pro-type-const-cast)
-        width,
-        height,
-        depth,
-        pixelFormat
-    );
-
-    return imageOgre;
-}
-
-//------------------------------------------------------------------------------
-
-void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image::sptr _imageFw, bool flip)
+void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image::sptr _image, bool flip)
 {
     SIGHT_ASSERT("Texture is null", _texture);
-    SIGHT_ASSERT("Image is null", _imageFw);
+    SIGHT_ASSERT("Image is null", _image);
 
     data::Image::Size imageSize = {_texture->getWidth(), 0, 0};
 
@@ -444,22 +403,22 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
     data::Image::Spacing spacing = {1., 1., 1.};
     data::Image::Origin origin   = {0., 0., 0.};
 
-    _imageFw->setSpacing(spacing);
-    _imageFw->setOrigin(origin);
-    _imageFw->resize(imageSize, type, format);
+    _image->setSpacing(spacing);
+    _image->setOrigin(origin);
+    _image->resize(imageSize, type, format);
 
     // Get the pixel buffer
     Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
 
     // Lock the pixel buffer and copy it
     {
-        const auto dumpLock = _imageFw->dump_lock();
+        const auto dumpLock = _image->dump_lock();
 
-        auto* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_imageFw->getBuffer());
+        auto* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_image->getBuffer());
 
         pixelBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY);
         const Ogre::PixelBox& pixelBox           = pixelBuffer->getCurrentLock();
-        const std::size_t pitch                  = pixelBox.rowPitch * _imageFw->numComponents();
+        const std::size_t pitch                  = pixelBox.rowPitch * _image->numComponents();
         const std::uint8_t* __restrict srcBuffer =
             reinterpret_cast<const std::uint8_t*>(pixelBox.data) + (flip ? pixelBox.getConsecutiveSize() : 0);
 
@@ -491,13 +450,19 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
 
 //------------------------------------------------------------------------------
 
-Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
+Ogre::PixelFormat Utils::getPixelFormatOgre(const data::Image& _image)
 {
-    const core::Type pixelType          = imageFw->getType();
-    const std::size_t numberOfComponent = imageFw->numComponents();
+    const core::Type pixelType          = _image.getType();
+    const std::size_t numberOfComponent = _image.numComponents();
 
     if(numberOfComponent == 1)
     {
+        if(pixelType == core::Type::INT8)
+        {
+            // int8
+            return Ogre::PF_L8;
+        }
+
         if(pixelType == core::Type::UINT8)
         {
             // uint8
@@ -513,7 +478,7 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
         if(pixelType == core::Type::UINT16)
         {
             // uint16
-            return Ogre::PF_R16_UINT;
+            return Ogre::PF_L16;
         }
 
         if(pixelType == core::Type::FLOAT)
@@ -603,6 +568,33 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
 
     SIGHT_WARN("Pixel format not found, trying with the default 8-bits RGBA.");
     return Ogre::PF_BYTE_RGBA;
+}
+
+//------------------------------------------------------------------------------
+
+Ogre::Vector2 Utils::getTextureWindow(core::Type _format)
+{
+    static const std::map<core::Type, Ogre::Vector2> textureWindow = {
+        {core::Type::INT8, {std::numeric_limits<std::int8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
+        {core::Type::UINT8, {std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
+        {core::Type::INT16, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+        {core::Type::UINT16, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+    };
+
+    // 32 bits integers max value does not fit in a double (narrowing conversion)
+    // Anyway, we can not index a 1D transfer function with so big values (as of today, maximum is 32768)
+    SIGHT_ERROR_IF(
+        "Texture windowing not supported for 32 bits integers formats",
+        _format == core::Type::INT32 || _format == core::Type::UINT32
+    );
+
+    auto it = textureWindow.find(_format);
+    if(it != textureWindow.end())
+    {
+        return it->second;
+    }
+
+    return {0., 1.};
 }
 
 //------------------------------------------------------------------------------
@@ -717,134 +709,6 @@ std::pair<core::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Og
     }
 
     return std::make_pair(pixelType, pixelFormat);
-}
-
-//------------------------------------------------------------------------------
-
-void Utils::loadOgreTexture(
-    const data::Image::csptr& _image,
-    Ogre::TexturePtr _texture,
-    Ogre::TextureType _texType,
-    bool _dynamic
-)
-{
-    const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(_image);
-
-    if(imageIsValid)
-    {
-        const Ogre::PixelFormat pixelFormat = getPixelFormatOgre(_image);
-
-        // Conversion from data::Image to Ogre::Image
-        Ogre::Image ogreImage = viz::scene3d::Utils::convertToOgreImage(_image);
-
-        if(_texture->getWidth() != ogreImage.getWidth()
-           || _texture->getHeight() != ogreImage.getHeight()
-           || _texture->getDepth() != ogreImage.getDepth()
-           || _texture->getTextureType() != _texType
-           || _texture->getFormat() != pixelFormat)
-        {
-            const auto& size = _image->getSize();
-            SIGHT_ASSERT("Only handle 2D and 3D textures", _image->numDimensions() >= 2);
-            const std::size_t depth = _image->numDimensions() == 2 ? 1 : size[2];
-
-            viz::scene3d::Utils::allocateTexture(
-                _texture.get(),
-                size[0],
-                size[1],
-                depth,
-                pixelFormat,
-                _texType,
-                _dynamic
-            );
-        }
-
-        // Copy image's pixel box into texture buffer
-        _texture->getBuffer(0, 0)->blitFromMemory(ogreImage.getPixelBox(0, 0));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-template<typename SRC_TYPE, typename DST_TYPE>
-void copyGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image)
-{
-    // Get the pixel buffer
-    Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
-
-    // Lock the pixel buffer and copy it
-    {
-        const auto dumpLock = _image.dump_lock();
-
-        using unsignedType = typename std::make_unsigned<DST_TYPE>::type;
-
-        auto srcBuffer = static_cast<const SRC_TYPE*>(_image.getBuffer());
-
-        pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-        const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        auto pDest                     = reinterpret_cast<unsignedType*>(pixelBox.data);
-
-        const DST_TYPE lowBound = std::numeric_limits<DST_TYPE>::min();
-
-        const auto size =
-            static_cast<Ogre::int32>(_texture->getWidth() * _texture->getHeight() * _texture->getDepth());
-
-#pragma omp parallel for shared(pDest, srcBuffer)
-        for(Ogre::int32 i = 0 ; i < size ; ++i)
-        {
-            SIGHT_ASSERT(
-                "Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
-                *srcBuffer >= std::numeric_limits<DST_TYPE>::min()
-                && *srcBuffer <= std::numeric_limits<DST_TYPE>::max()
-            );
-            pDest[i] = static_cast<unsignedType>(srcBuffer[i] - lowBound);
-        }
-
-        // Unlock the pixel buffer
-        pixelBuffer->unlock();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Utils::loadGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image)
-{
-    // Allocate texture memory.
-    if(_texture->getWidth() != _image.getSize()[0]
-       || _texture->getHeight() != _image.getSize()[1]
-       || _texture->getDepth() != _image.getSize()[2]
-       || _texture->getTextureType() != Ogre::TEX_TYPE_3D
-       || _texture->getFormat() != Ogre::PF_L16
-       || _texture->getUsage() != Ogre::TU_STATIC_WRITE_ONLY)
-    {
-        viz::scene3d::Utils::allocateTexture(
-            _texture,
-            _image.getSize()[0],
-            _image.getSize()[1],
-            _image.getSize()[2],
-            Ogre::PF_L16,
-            Ogre::TEX_TYPE_3D,
-            false
-        );
-    }
-
-    // Fill the texture buffer.
-    const auto srcType = _image.getType();
-    if(srcType == core::Type::INT16)
-    {
-        copyGrayscaleImage<std::int16_t, std::int16_t>(_texture, _image);
-    }
-    else if(srcType == core::Type::INT32)
-    {
-        copyGrayscaleImage<std::int32_t, std::int16_t>(_texture, _image);
-    }
-    else if(srcType == core::Type::UINT8)
-    {
-        copyGrayscaleImage<std::uint8_t, std::int16_t>(_texture, _image);
-    }
-    else
-    {
-        SIGHT_FATAL("Image format not supported.");
-    }
 }
 
 //------------------------------------------------------------------------------

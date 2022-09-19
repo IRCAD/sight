@@ -25,6 +25,7 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
 #include "viz/scene3d/R2VBRenderable.hpp"
+#include "viz/scene3d/Texture.hpp"
 #include "viz/scene3d/TransferFunction.hpp"
 
 #include <data/Image.hpp>
@@ -63,7 +64,7 @@ public:
     static VIZ_SCENE3D_API GridProxyGeometry* New(
         const std::string& _name,
         Ogre::SceneManager* _sceneManager,
-        Ogre::TexturePtr _3DImageTexture,
+        const viz::scene3d::Texture::sptr& _3DImageTexture,
         const TransferFunction::sptr& _tf,
         const std::string& _mtlName
     );
@@ -88,7 +89,7 @@ public:
     VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void set3DImageTexture(const Ogre::TexturePtr& _texture);
+    VIZ_SCENE3D_API void set3DImageTexture(const viz::scene3d::Texture::sptr& _texture);
 
 private:
 
@@ -129,7 +130,7 @@ private:
     static constexpr std::array<int, 3> s_brickSize {{8, 8, 8}};
 
     /// Image from which we define a grid.
-    Ogre::TexturePtr m_3DImageTexture {nullptr};
+    viz::scene3d::Texture::sptr m_3DImageTexture {nullptr};
 
     /// Transfer function to be applied to the image.
     TransferFunction::wptr m_gpuTF;
@@ -200,7 +201,7 @@ inline const Ogre::String& GridProxyGeometry::getMovableType() const
 
 //------------------------------------------------------------------------------
 
-inline void GridProxyGeometry::set3DImageTexture(const Ogre::TexturePtr& _texture)
+inline void GridProxyGeometry::set3DImageTexture(const viz::scene3d::Texture::sptr& _texture)
 {
     m_3DImageTexture = _texture;
 }

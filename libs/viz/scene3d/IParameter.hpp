@@ -25,7 +25,7 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/IAdaptor.hpp"
 
-#include <OGRE/OgreTexture.h>
+#include <viz/scene3d/Texture.hpp>
 
 namespace sight::viz::scene3d
 {
@@ -135,7 +135,7 @@ private:
     /// Pointer on the material
     Ogre::MaterialPtr m_material;
     /// Pointer on a texture if the parameter is an image
-    Ogre::TexturePtr m_texture;
+    sight::viz::scene3d::Texture::sptr m_texture;
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty {true};
 

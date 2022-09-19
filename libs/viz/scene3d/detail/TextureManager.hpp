@@ -36,7 +36,7 @@ class TextureLoader
 {
 public:
 
-    using return_t = bool;
+    using return_t = Ogre::Vector2;
     static return_t load(const sight::data::Image&, Ogre::Texture*);
 };
 

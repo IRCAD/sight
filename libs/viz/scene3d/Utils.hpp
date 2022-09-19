@@ -98,13 +98,6 @@ public:
     VIZ_SCENE3D_API static void destroyOgreRoot();
 
     /**
-     * @brief Convert an Sight image data into an ogre image
-     * @param imageFw The Sight Image to convert
-     * @return Ogre image
-     */
-    VIZ_SCENE3D_API static Ogre::Image convertToOgreImage(const data::Image::csptr imageFw);
-
-    /**
      * @brief Convert an Ogre texture into a Sight image data
      */
     VIZ_SCENE3D_API static void convertFromOgreTexture(
@@ -118,7 +111,7 @@ public:
      * @param imageFw The Sight Image
      * @return Pixel format of a data::Image
      */
-    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(data::Image::csptr imageFw);
+    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(const data::Image& imageFw);
 
     /**
      * @brief set the pixel format of an image from an Ogre pixel format
@@ -128,28 +121,12 @@ public:
     VIZ_SCENE3D_API static std::pair<core::Type, data::Image::PixelFormat> getPixelFormatFromOgre(
         Ogre::PixelFormat _format
     );
-
     /**
-     * @brief loadOgreTexture
-     * @param _image The Sight Image to convert
-     * @param _texture The target texture
-     * @param _texType Type of the texture (Ogre::TEX_TYPE_2D, Ogre::TEX_TYPE_3D, ...)
-     * @param _dynamic
+     * @brief get the texture window that should be used to shift the pixel values in the GLSL
+     * @param _format Pixel format
+     * @return The window that should be used to scale pixel values
      */
-    VIZ_SCENE3D_API static void loadOgreTexture(
-        const data::Image::csptr& _image,
-        Ogre::TexturePtr _texture,
-        Ogre::TextureType _texType,
-        bool _dynamic
-    );
-
-    /**
-     * @brief loadGrayscaleImage
-     * @param[out] _texture The target texture
-     * @param[in] _image The Sight Image to convert
-     * @return
-     */
-    VIZ_SCENE3D_API static void loadGrayscaleImage(Ogre::Texture* _texture, const data::Image& _image);
+    VIZ_SCENE3D_API static Ogre::Vector2 getTextureWindow(core::Type _format);
 
     /**
      * @brief allocateTexture

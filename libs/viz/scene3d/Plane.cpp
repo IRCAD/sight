@@ -43,14 +43,14 @@ Plane::Plane(
     Ogre::SceneNode* _parentSceneNode,
     Ogre::SceneManager* _sceneManager,
     OrientationMode _orientation,
-    Ogre::TexturePtr _tex,
+    viz::scene3d::Texture::sptr _tex,
     FilteringEnumType _filtering,
     float _entityOpacity,
     bool _displayBorder
 ) :
     m_filtering(_filtering),
     m_orientation(_orientation),
-    m_texture(_tex),
+    m_texture(std::move(_tex)),
     m_sceneManager(_sceneManager),
     m_parentSceneNode(_parentSceneNode),
     m_entityOpacity(_entityOpacity),
@@ -135,46 +135,6 @@ void Plane::initializeMaterial()
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
-
-    const int orientationIndex = static_cast<int>(m_orientation);
-
-    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
-
-    for(const auto* const tech : techniques)
-    {
-        SIGHT_ASSERT("Technique is not set", tech);
-
-        if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
-        {
-            Ogre::Pass* const pass = tech->getPass(0);
-
-            Ogre::TextureUnitState* const texState = pass->getTextureUnitState("image");
-            SIGHT_ASSERT("'image' texture unit is not found", texState);
-            texState->setTexture(m_texture);
-
-            Ogre::TextureFilterOptions filterType = Ogre::TFO_NONE;
-            switch(m_filtering)
-            {
-                case FilteringEnumType::NONE:
-                    filterType = Ogre::TFO_NONE;
-                    break;
-
-                case FilteringEnumType::LINEAR:
-                    filterType = Ogre::TFO_BILINEAR;
-                    break;
-
-                case FilteringEnumType::ANISOTROPIC:
-                    filterType = Ogre::TFO_ANISOTROPIC;
-                    break;
-            }
-
-            // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
-            texState->setTextureFiltering(filterType);
-
-            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
-            pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
-        }
-    }
 
     if(m_displayBorder)
     {
@@ -268,6 +228,41 @@ void Plane::initializePlane()
     Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
     planeEntity->setMaterial(m_texMaterial);
     m_planeSceneNode->attachObject(planeEntity);
+
+    const int orientationIndex = static_cast<int>(m_orientation);
+
+    const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+
+    for(const auto* const tech : techniques)
+    {
+        SIGHT_ASSERT("Technique is not set", tech);
+
+        if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
+        {
+            // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
+            Ogre::TextureFilterOptions filterType = Ogre::TFO_NONE;
+            switch(m_filtering)
+            {
+                case FilteringEnumType::NONE:
+                    filterType = Ogre::TFO_NONE;
+                    break;
+
+                case FilteringEnumType::LINEAR:
+                    filterType = Ogre::TFO_BILINEAR;
+                    break;
+
+                case FilteringEnumType::ANISOTROPIC:
+                    filterType = Ogre::TFO_ANISOTROPIC;
+                    break;
+            }
+
+            Ogre::Pass* const pass = tech->getPass(0);
+            m_texture->bind(pass, "image", filterType);
+
+            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+        }
+    }
 
     if(m_displayBorder)
     {
@@ -567,9 +562,9 @@ void Plane::changeSlice(float sliceIndex)
 
 Ogre::MovablePlane Plane::setDimensions()
 {
-    auto tex_width  = static_cast<Ogre::Real>(m_texture->getWidth());
-    auto tex_height = static_cast<Ogre::Real>(m_texture->getHeight());
-    auto tex_depth  = static_cast<Ogre::Real>(m_texture->getDepth());
+    auto tex_width  = static_cast<Ogre::Real>(m_texture->width());
+    auto tex_height = static_cast<Ogre::Real>(m_texture->height());
+    auto tex_depth  = static_cast<Ogre::Real>(m_texture->depth());
 
     Ogre::MovablePlane plane(Ogre::Vector3::ZERO, 0);
     switch(m_orientation)

@@ -46,7 +46,7 @@ namespace sight::viz::scene3d::vr
 GridProxyGeometry* GridProxyGeometry::New(
     const std::string& _name,
     Ogre::SceneManager* _sceneManager,
-    Ogre::TexturePtr _3DImageTexture,
+    const viz::scene3d::Texture::sptr& _3DImageTexture,
     const TransferFunction::sptr& _tf,
     const std::string& _mtlName
 )
@@ -140,9 +140,9 @@ void GridProxyGeometry::updateGridSize()
 {
     const std::vector<int> imageSize =
     {
-        static_cast<int>(m_3DImageTexture->getWidth()),
-        static_cast<int>(m_3DImageTexture->getHeight()),
-        static_cast<int>(m_3DImageTexture->getDepth())
+        static_cast<int>(m_3DImageTexture->width()),
+        static_cast<int>(m_3DImageTexture->height()),
+        static_cast<int>(m_3DImageTexture->depth())
     };
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
@@ -227,10 +227,6 @@ void GridProxyGeometry::initializeGridMaterials()
 
         gridMtl->load();
         m_gridComputingPass = gridMtl->getTechnique(0)->getPass(0);
-
-        Ogre::TextureUnitState* tex3DState = m_gridComputingPass->getTextureUnitState("image");
-        SIGHT_ASSERT("'image' texture unit is not found", tex3DState);
-        tex3DState->setTexture(m_3DImageTexture);
     }
 
     if(m_geomGeneratorPass == nullptr)
@@ -326,6 +322,7 @@ void GridProxyGeometry::setupGrid()
         Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = m_gridComputingPass->getFragmentProgramParameters();
 
         m_gpuTF.lock()->bind(m_gridComputingPass, s_TF_TEXUNIT_NAME, gridGeneratorParams);
+        m_3DImageTexture->bind(m_gridComputingPass, "image");
 
         gridGeneratorParams->setNamedConstant("u_brickSize", s_brickSize.data(), 3, 1);
 
@@ -336,9 +333,10 @@ void GridProxyGeometry::setupGrid()
         Ogre::GpuProgramParametersSharedPtr geomGeneratorGeomParams =
             m_geomGeneratorPass->getGeometryProgramParameters();
 
-        const std::vector<int> imageSize = {{int(m_3DImageTexture->getWidth()),
-            int(m_3DImageTexture->getHeight()),
-            int(m_3DImageTexture->getDepth())
+        const std::vector<int> imageSize = {{
+            int(m_3DImageTexture->width()),
+            int(m_3DImageTexture->height()),
+            int(m_3DImageTexture->depth())
         }
         };
 

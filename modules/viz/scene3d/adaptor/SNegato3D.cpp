@@ -174,7 +174,7 @@ void SNegato3D::starting()
             m_negatoSceneNode,
             this->getSceneManager(),
             imgOrientation,
-            m_3DOgreTexture->get(),
+            m_3DOgreTexture,
             m_filtering,
             m_border
         );

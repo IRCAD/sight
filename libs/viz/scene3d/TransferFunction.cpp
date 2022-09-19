@@ -48,8 +48,7 @@ TransferFunction::~TransferFunction()
 
 void TransferFunction::update()
 {
-    auto&& [_, tfWindow] = viz::scene3d::detail::TFManager::get()->load(m_resource);
-    m_tfWindow           = std::any_cast<Ogre::Vector3>(tfWindow);
+    m_tfWindow = viz::scene3d::detail::TFManager::get()->load(m_resource).second;
 }
 
 //-----------------------------------------------------------------------------

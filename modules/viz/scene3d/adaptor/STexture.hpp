@@ -31,6 +31,7 @@
 #include <data/Material.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/Texture.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -120,7 +121,7 @@ protected:
 private:
 
     /// Contains the Ogre texture.
-    Ogre::TexturePtr m_texture;
+    sight::viz::scene3d::Texture::sptr m_texture;
 
     /// Defines the texture's name in the Ogre resource manager.
     std::string m_textureName;
@@ -149,7 +150,7 @@ private:
 
 inline Ogre::TexturePtr STexture::getTexture() const
 {
-    return m_texture;
+    return m_texture->get();
 }
 
 //------------------------------------------------------------------------------

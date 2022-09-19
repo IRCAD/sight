@@ -1,6 +1,8 @@
+uniform vec2 u_window;
+
 vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec3 _f3Window)
 {
-    float intIntensity = (_fIntensity * 65535.f - 32768.f);
+    float intIntensity = (_fIntensity * u_window.y + u_window.x);
     float scaledValue = ((intIntensity - _f3Window.x) / (_f3Window.y - _f3Window.x));
 
     // Since the texture is likely to be bigger than the actual data, we rescale and clamp manually
