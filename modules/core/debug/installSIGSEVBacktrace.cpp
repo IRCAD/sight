@@ -36,6 +36,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <array>
 
 /* get REG_EIP/REG_RIP from ucontext.h */
 #include <ucontext.h>

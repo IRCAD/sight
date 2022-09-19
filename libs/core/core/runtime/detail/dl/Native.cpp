@@ -28,6 +28,7 @@
 #include <climits>
 #include <filesystem>
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 namespace sight::core::runtime::detail::dl

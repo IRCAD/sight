@@ -148,7 +148,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
     const Ogre::uint32 _queryMask
 ) const
 {
-    Ogre::Vector3 result;
+    Ogre::Vector3 result {0.0, 0.0, 0.0};
     Ogre::MovableObject* target = nullptr;
     float closestDistance       = NAN;
 

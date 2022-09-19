@@ -95,8 +95,10 @@ using secure_string = std::basic_string<char, std::char_traits<char>, allocator<
 
 // Zeroes the strings own memory on destruction
 template<>
-#ifdef WIN32
-inline constexpr sight::core::crypto::secure_string::~basic_string() noexcept
+#if defined(WIN32)
+constexpr sight::core::crypto::secure_string::~basic_string() noexcept
+#elif (_GLIBCXX_RELEASE >= 12)
+constexpr sight::core::crypto::secure_string::~basic_string()
 #else
 inline sight::core::crypto::secure_string::~basic_string()
 #endif

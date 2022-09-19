@@ -431,7 +431,7 @@ std::pair<bool, Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
         }
     }
 
-    return std::make_pair(false, Ogre::Vector3());
+    return std::make_pair(false, Ogre::Vector3 {0.0, 0.0, 0.0});
 }
 
 //-----------------------------------------------------------------------------
