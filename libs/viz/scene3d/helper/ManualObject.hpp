@@ -98,6 +98,18 @@ public:
         float _radius                   = 100.F,
         unsigned int _sample            = 50
     );
+
+    /**
+     * @brief Creates a camera frustum in a Ogre::ManualObject
+     * @param _object the Ogre::ManualObject used to store the frustum
+     * @param _material the material used to create the frustum
+     * @param _frustum Ogre's camera frustum
+     */
+    VIZ_SCENE3D_API static void createFrustum(
+        Ogre::ManualObject* _object,
+        const std::string& _material,
+        const Ogre::Frustum& _frustum
+    );
 };
 
 } // namespace sight::viz::scene3d::helper

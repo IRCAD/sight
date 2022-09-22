@@ -81,7 +81,7 @@
                         <separator/>
                         <menuItem name="Start openvslam" icon="sight::module::ui::flaticons/GreenTracking.svg" />
                         <menuItem name="Stop openvslam" icon="sight::module::ui::flaticons/RedUntracking.svg" />
-                        <menuItem name="Pause openvslam" icon="sight::module::ui::flaticons/OrangePauseOrangePause.svg" style="check" />
+                        <menuItem name="Pause openvslam" icon="sight::module::ui::flaticons/OrangePause.svg" style="check" />
                         <menuItem name="Reset openvslam" icon="sight::module::ui::flaticons/RedResetTracking.svg" />
                         <menuItem name="Localization mode" icon="sight::module::ui::flaticons/OrangeLocalization.svg" style="check" />
                         <separator/>
@@ -258,7 +258,7 @@
             <service uid="frustumListAdp" type="sight::module::viz::scene3d::adaptor::SFrustumList" autoConnect="true" >
                 <in key="camera" uid="camera" />
                 <in key="transform" uid="CameraPoseMatrix" />
-                <config layer="default" nbMax="10000" near="1.f" far="20.f" />
+                <config layer="default" nbMax="500" near="1.f" far="20.f" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
@@ -379,8 +379,20 @@
                 <addSelection service="sight::module::io::vtk::SMeshWriter" />
             </service>
 
+            <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
+                <message>Default Message</message>
+                <maxNotifications>3</maxNotifications>
+                <position>BOTTOM_LEFT</position>
+                <duration>3000</duration>
+                <parent uid="genericSceneSrv"/>
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
 
+            <connect>
+                <signal>openvslamSrv/notified</signal>
+                <slot>notifierSrv/pop</slot>
+            </connect>
             <connect>
                 <signal>loadCalibAct/clicked</signal>
                 <slot>calibrationReaderSrv/update</slot>
@@ -430,7 +442,7 @@
             </connect>
 
             <connect>
-                <signal>enableLocalizationAct/clicked</signal>
+                <signal>enableLocalizationAct/isChecked</signal>
                 <slot>openvslamSrv/enableLocalization</slot>
             </connect>
 
@@ -577,11 +589,6 @@
                 <slot>savePCAct/show</slot>
             </connect>
 
-            <connect>
-                <signal>enableLocalizationAct/isChecked</signal>
-                <slot>openvslamSrv/enableLocalization</slot>
-            </connect>
-
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -601,6 +608,7 @@
             <start uid="transformAdp" />
             <start uid="frustumAdp" />
             <start uid="frustumListAdp" />
+            <start uid="notifierSrv" />
 
             <!-- ******************************* Update services ***************************************** -->
 

@@ -28,7 +28,9 @@
 #include <core/location/SingleFolder.hpp>
 #include <core/Profiling.hpp>
 #include <core/runtime/operations.hpp>
+#include <core/tools/Os.hpp>
 
+#include <io/http/Download.hpp>
 #include <io/opencv/FrameTL.hpp>
 
 #include <navigation/openvslam/Helper.hpp>
@@ -84,7 +86,10 @@ static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
 
 static const std::string s_DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string s_MODE_CONFIG       = "mode";
+
 static std::string s_windowName;
+
+const core::com::Slots::SlotKeyType s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "InternalDownloadVocFile";
 
 //------------------------------------------------------------------------------
 
@@ -119,11 +124,39 @@ SOpenvslam::SOpenvslam() noexcept
 
     newSlot(s_PAUSE_TRACKER_SLOT, &SOpenvslam::pause, this);
 
-    m_pointcloudWorker = core::thread::Worker::New();
+    newSlot(
+        s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT,
+        [this]()
+        {
+            SIGHT_INFO("Downloading orb_vocab.dbow2...");
 
-    m_timer = m_pointcloudWorker->createTimer();
-    m_timer->setFunction([this](auto&& ...){updatePointCloud();});
-    m_timer->setDuration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
+            this->notify(sight::service::IService::NotificationType::INFO, "Downloading Vocabulary");
+            m_sigVocFileLoadingStarted->asyncEmit();
+            try
+            {
+                std::string url;
+                // Check first if the ENV SIGHT_OPENVSLAM_VOC_URL is set.
+                const std::string env_download_url = core::tools::os::getEnv("SIGHT_OPENVSLAM_VOC_URL");
+
+                if(env_download_url.empty())
+                {
+                    url = "https://cloud.ircad.fr/index.php/s/tojArWTZcK223Fq/download";
+                }
+                else
+                {
+                    url = env_download_url;
+                }
+
+                io::http::downloadFile(url, m_vocabularyPath);
+                m_sigVocFileLoaded->asyncEmit();
+            }
+            catch(core::Exception& _e)
+            {
+                SIGHT_FATAL("orb_vocab.dbow2 file hasn't been downloaded: " + std::string(_e.what()));
+                m_sigVocFileUnloaded->asyncEmit();
+            }
+            this->notify(sight::service::IService::NotificationType::SUCCESS, "Vocabulary downloaded");
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +165,7 @@ SOpenvslam::~SOpenvslam() noexcept
 {
     if(this->isStarted())
     {
-        this->stopping();
+        this->stop().wait();
     }
 }
 
@@ -171,6 +204,16 @@ void SOpenvslam::configuring()
 
 void SOpenvslam::starting()
 {
+    const auto& user_path = core::tools::os::getUserDataDir("sight", "openvslam", true);
+    m_vocabularyPath = std::filesystem::path(user_path) / "orb_vocab.dbow2";
+
+    if(!std::filesystem::exists(m_vocabularyPath))
+    {
+        this->slot(s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT)->asyncRun();
+    }
+
+    m_sigVocFileLoaded->asyncEmit();
+
     // input parameters
     const auto frameTL = m_timeline.lock();
     SIGHT_ASSERT("The input " << s_TIMELINE_INPUT << " is not valid.", frameTL);
@@ -193,6 +236,12 @@ void SOpenvslam::starting()
         const auto frameTL2 = m_timeline2.lock();
         SIGHT_ASSERT("The input " << s_TIMELINE2_INPUT << " is not valid.", frameTL2);
     }
+
+    m_pointcloudWorker = core::thread::Worker::New();
+
+    m_timer = m_pointcloudWorker->createTimer();
+    m_timer->setFunction([this](){updatePointCloud();});
+    m_timer->setDuration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
 }
 
 //------------------------------------------------------------------------------
@@ -207,6 +256,10 @@ void SOpenvslam::stopping()
         // Ensure that opencv windows is closed.
         cv::destroyWindow(s_windowName);
     }
+
+    m_pointcloudWorker->stop();
+    m_pointcloudWorker.reset();
+    m_sigVocFileUnloaded->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -228,17 +281,6 @@ void SOpenvslam::startTracking()
 void SOpenvslam::startTracking(const std::string& _mapFile)
 {
     const std::unique_lock<std::mutex> lock(m_slamLock);
-
-    if(m_vocabularyPath.empty())
-    {
-        m_sigVocFileLoadingStarted->asyncEmit();
-        m_vocabularyPath =
-            core::runtime::getModuleResourceFilePath(
-                "sight::module::navigation::openvslam",
-                "orb_vocab.dbow2"
-            ).string();
-        m_sigVocFileLoaded->asyncEmit();
-    }
 
     if(m_slamSystem == nullptr)
     {
@@ -822,26 +864,6 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             // not yet initialized
             m_sigTrackingLost->asyncEmit();
         }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SOpenvslam::loadVocabulary(const std::string& _filePath)
-{
-    if(_filePath.empty())
-    {
-        sight::ui::base::dialog::MessageDialog::show(
-            "Vocabulary",
-            "Vocabulary file : " + _filePath + " can not be loaded.",
-            sight::ui::base::dialog::MessageDialog::WARNING
-        );
-        m_sigVocFileUnloaded->asyncEmit();
-    }
-    else
-    {
-        m_vocabularyPath = _filePath;
-        m_sigVocFileLoaded->asyncEmit();
     }
 }
 

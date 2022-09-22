@@ -142,9 +142,10 @@ endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
-# Make openvslam optional
-option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
-
+# Make openvslam optional on Linux
+if(NOT MSVC)
+    option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
+endif()
 # Make Realsense optional
 option(SIGHT_ENABLE_REALSENSE "Enable RealSense" OFF)
 

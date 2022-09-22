@@ -114,6 +114,9 @@ private:
     /// Sets Ogre::Camera from data::Camera parameters.
     void setOgreCamFromData();
 
+    /// Contains the manual object of the line.
+    Ogre::ManualObject* m_frustum {nullptr};
+
     /// Contains the Ogre's camera (frustum) representing data::Camera position and parameters.
     Ogre::Camera* m_ogreCamera {nullptr};
 

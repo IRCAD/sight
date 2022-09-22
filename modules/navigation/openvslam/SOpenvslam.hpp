@@ -196,7 +196,7 @@ private:
     void stopTracking() final;
 
     /// Slot: called to enable/disable localization mode (stop/(re)start mapping thread).
-    void enableLocalization(bool /*_enable*/);
+    void enableLocalization(bool _enable);
 
     /// Slot: called to enable localization mode.
     void activateLocalization();
@@ -205,16 +205,16 @@ private:
     void deactivateLocalization();
 
     /// Slot: called when a integer value is changed.
-    void setIntParameter(int /*_val*/, std::string /*_key*/);
+    void setIntParameter(int _val, std::string _key);
 
     /// Slot: called when a double value is changed.
-    void setDoubleParameter(double /*_val*/, std::string /*_key*/);
+    void setDoubleParameter(double _val, std::string _key);
 
     /// Slot: called when a bool value is changed.
-    void setBoolParameter(bool /*_val*/, std::string /*_key*/);
+    void setBoolParameter(bool _val, std::string _key);
 
     /// Slot: called when an enum value is changed.
-    void setEnumParameter(std::string /*_val*/, std::string /*_key*/);
+    void setEnumParameter(std::string _val, std::string _key);
 
     /// Slot: Load Openvslam map file.
     void loadMap();
@@ -232,7 +232,7 @@ private:
     void resetPointCloud();
 
     /// Slot: call openvslam with the new frame.
-    void tracking(core::HiResClock::HiResClockType& /*timestamp*/) final;
+    void tracking(core::HiResClock::HiResClockType& timestamp) final;
     /** @} */
 
     /**
@@ -278,9 +278,6 @@ private:
 
     /// Start the tracking with the path of the _mapFile.
     void startTracking(const std::string& _mapFile);
-
-    /// Load Vocabulary file using the path _mapFile.
-    void loadVocabulary(const std::string& _filePath);
 
     /// Update pointcloud from openvslam's map.
     void updatePointCloud();

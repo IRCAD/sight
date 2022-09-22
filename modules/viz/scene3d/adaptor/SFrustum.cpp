@@ -30,6 +30,7 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
+#include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 
 #include <OgreCamera.h>
@@ -81,7 +82,34 @@ void SFrustum::starting()
 {
     this->initialize();
 
-    // Create material
+    // Create camera
+    m_ogreCamera = this->getSceneManager()->createCamera(Ogre::String(this->getID() + std::string(s_CAMERA_INPUT)));
+    m_ogreCamera->setVisible(m_isVisible);
+
+    // Clipping
+    if(m_near != 0.F)
+    {
+        m_ogreCamera->setNearClipDistance(m_near);
+    }
+
+    if(m_far != 0.F)
+    {
+        m_ogreCamera->setFarClipDistance(m_far);
+    }
+
+    // Set data to camera
+    this->setOgreCamFromData();
+
+    // Add camera to ogre scene
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
+    transNode->attachObject(m_ogreCamera);
+
+    // Set position
+    transNode->setPosition(Ogre::Vector3(0, 0, 0));
+    transNode->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
+
+    // Create material for the frustum
     m_material = data::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
@@ -99,33 +127,13 @@ void SFrustum::starting()
     materialAdaptor->start();
     materialAdaptor->update();
 
-    // Create camera
-    m_ogreCamera = this->getSceneManager()->createCamera(Ogre::String(this->getID() + std::string(s_CAMERA_INPUT)));
-    m_ogreCamera->setMaterial(materialAdaptor->getMaterial());
-    m_ogreCamera->setVisible(m_isVisible);
-
-    // Clipping
-    if(m_near != 0.F)
-    {
-        m_ogreCamera->setNearClipDistance(m_near);
-    }
-
-    if(m_far != 0.F)
-    {
-        m_ogreCamera->setFarClipDistance(m_far);
-    }
-
-    // Set data to camera
-    this->setOgreCamFromData();
-
-    // Set position
-    m_ogreCamera->setPosition(Ogre::Vector3(0, 0, 0));
-    m_ogreCamera->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
-
-    // Add camera to ogre scene
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    transNode->attachObject(m_ogreCamera);
+    m_frustum = this->getSceneManager()->createManualObject(this->getID() + "_frustum");
+    sight::viz::scene3d::helper::ManualObject::createFrustum(
+        m_frustum,
+        materialAdaptor->getMaterialName(),
+        *m_ogreCamera
+    );
+    transNode->attachObject(m_frustum);
 
     this->requestRender();
 }
@@ -146,7 +154,7 @@ service::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
 void SFrustum::updating()
 {
     this->setOgreCamFromData();
-    m_ogreCamera->setDebugDisplayEnabled(m_isVisible);
+    m_frustum->setVisible(m_isVisible);
     this->requestRender();
 }
 
@@ -156,7 +164,9 @@ void SFrustum::stopping()
 {
     this->unregisterServices();
 
+    m_frustum->detachFromParent();
     m_ogreCamera->detachFromParent();
+    this->getSceneManager()->destroyManualObject(m_frustum);
     this->getSceneManager()->destroyCamera(m_ogreCamera);
 
     m_ogreCamera = nullptr;
@@ -189,7 +199,7 @@ void SFrustum::setOgreCamFromData()
 
 void SFrustum::setVisible(bool _isVisible)
 {
-    m_ogreCamera->setDebugDisplayEnabled(_isVisible);
+    m_frustum->setVisible(_isVisible);
     this->requestRender();
 }
 

@@ -324,12 +324,41 @@ void ManualObject::createSphere(
 
     _object->end();
 
-    _object->setBoundingBox(
-        Ogre::AxisAlignedBox(
-            {-_radius, -_radius, -_radius},
-            {_radius, _radius, _radius
-            })
-    );
+    _object->setBoundingBox(Ogre::AxisAlignedBox({-_radius, -_radius, -_radius}, {_radius, _radius, _radius}));
+}
+
+//------------------------------------------------------------------------------
+
+void ManualObject::createFrustum(
+    Ogre::ManualObject* _object,
+    const std::string& _material,
+    const Ogre::Frustum& _frustum
+)
+{
+    _object->begin(_material, Ogre::RenderOperation::OT_LINE_LIST, RESOURCE_GROUP);
+
+    const Ogre::Frustum::Corners& corners = _frustum.getWorldSpaceCorners();
+
+    std::ranges::for_each(corners, [_object](const auto& corner){_object->position(corner);});
+
+    // see AxisAlignedBox::getAllCorners
+    const std::vector<Ogre::uint32> idx = {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 6, 1, 5, 2, 4, 3, 7};
+
+    std::ranges::for_each(idx, [_object](const auto i){_object->index(i);});
+
+    _object->end();
+
+    Ogre::Vector3 min(std::numeric_limits<Ogre::Real>::max());
+    Ogre::Vector3 max(std::numeric_limits<Ogre::Real>::lowest());
+
+    for(size_t i = 0 ; i < 7 ; ++i)
+    {
+        std::tie(min.x, max.x) = std::minmax(corners[i].x, corners[i + 1].x);
+        std::tie(min.y, max.y) = std::minmax(corners[i].y, corners[i + 1].y);
+        std::tie(min.z, max.z) = std::minmax(corners[i].z, corners[i + 1].z);
+    }
+
+    _object->setBoundingBox(Ogre::AxisAlignedBox(min, max));
 }
 
 } // namespace sight::viz::scene3d::helper
