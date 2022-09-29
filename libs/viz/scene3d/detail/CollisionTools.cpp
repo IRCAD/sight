@@ -49,7 +49,8 @@
    THE SOFTWARE.
 ******************************************************************************************/
 // cspell: enable
-#include "viz/scene3d/collisionTools/CollisionTools.hpp"
+
+#include "viz/scene3d/detail/CollisionTools.hpp"
 
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
 #include "viz/scene3d/Layer.hpp"
@@ -58,13 +59,13 @@
 #include <cmath>
 #include <functional>
 
-namespace sight::viz::scene3d
+namespace sight::viz::scene3d::detail
 {
 
-CollisionTools::CollisionTools(Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask) :
+CollisionTools::CollisionTools(Ogre::SceneManager& _sceneMgr, std::uint32_t _queryMask) :
     mSceneMgr(_sceneMgr)
 {
-    mRaySceneQuery = mSceneMgr->createRayQuery(Ogre::Ray(), _queryMask);
+    mRaySceneQuery = mSceneMgr.createRayQuery(Ogre::Ray(), _queryMask);
     if(nullptr == mRaySceneQuery)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
@@ -341,7 +342,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     {
                         // We do not have faces, we simply check all vertices and compute the distance from the picked
                         // point
-                        const Ogre::Camera* const camera = mSceneMgr->getCamera(
+                        const Ogre::Camera* const camera = mSceneMgr.getCamera(
                             viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME
                         );
                         const Ogre::Matrix4 viewMatrix = camera->getViewMatrix();
@@ -552,4 +553,4 @@ std::pair<bool, float> CollisionTools::intersect(
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::detail

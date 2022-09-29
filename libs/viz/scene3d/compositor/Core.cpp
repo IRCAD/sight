@@ -271,7 +271,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
                 dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
@@ -349,7 +349,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
                 dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
@@ -423,7 +423,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
                 dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
@@ -470,7 +470,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetOcclusion->createPass();
             dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
@@ -499,7 +499,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetWeightBlend->createPass();
             dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
@@ -528,7 +528,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetTransmittance->createPass();
             dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 

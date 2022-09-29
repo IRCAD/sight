@@ -54,16 +54,16 @@
 
 #include <Ogre.h>
 
-namespace sight::viz::scene3d
-{
-
 /**
  * @brief The CollisionTools class
  * Copy of MOC under MIT License, allows to do ray casts
  */
 #pragma once
 
-class VIZ_SCENE3D_CLASS_API CollisionTools
+namespace sight::viz::scene3d::detail
+{
+
+class CollisionTools
 {
 public:
 
@@ -71,17 +71,17 @@ public:
     Ogre::RaySceneQuery* mRaySceneQuery {nullptr};
 
     /// The scene manager where launch the ray.
-    Ogre::SceneManager* mSceneMgr {nullptr};
+    Ogre::SceneManager& mSceneMgr;
 
     /**
      * @brief Create the ray scene query.
      * @param _sceneMgr The scene manager where launch the ray.
      * @param _queryMask Mask used to query entities with matching flags.
      */
-    VIZ_SCENE3D_API CollisionTools(Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
+    CollisionTools(Ogre::SceneManager& _sceneMgr, std::uint32_t _queryMask);
 
     /// Delete resources.
-    VIZ_SCENE3D_API ~CollisionTools();
+    ~CollisionTools();
 
     /**
      * @brief Check for collisions with entities along a cylinder.
@@ -92,7 +92,7 @@ public:
      * @param _rayHeightLevel The height level of the ray.
      * @return True if an entity collide the ray.
      */
-    [[nodiscard]] VIZ_SCENE3D_API bool collidesWithEntity(
+    [[nodiscard]] bool collidesWithEntity(
         const Ogre::Vector3& _fromPoint,
         const Ogre::Vector3& _toPoint,
         Ogre::uint32 _queryMask,
@@ -109,7 +109,7 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
+    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
         Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
@@ -124,7 +124,7 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    [[nodiscard]] VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
+    [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
         const Ogre::Vector3& _point,
         const Ogre::Vector3& _normal,
         Ogre::uint32 _queryMask
@@ -137,7 +137,7 @@ public:
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
      */
-    [[nodiscard]] VIZ_SCENE3D_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(
+    [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(
         const Ogre::Ray& _ray,
         Ogre::uint32 _queryMask
     ) const;
@@ -167,4 +167,4 @@ private:
     );
 };
 
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::detail

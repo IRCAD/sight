@@ -36,7 +36,7 @@
 
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/picker/IPicker.hpp>
+#include <viz/scene3d/Utils.hpp>
 
 #include <OgreEntity.h>
 #include <OgreNode.h>
@@ -57,7 +57,7 @@ static const std::string s_PRIORITY_CONFIG    = "priority";
 static const std::string s_QUERY_MASK_CONFIG  = "queryMask";
 static const std::string s_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
-static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::compositor::Core::s_SURFACE_RQ_GROUP_ID;
+static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::s_SURFACE_ID;
 
 //------------------------------------------------------------------------------
 
@@ -428,12 +428,10 @@ void SImageMultiDistances::setVisible(bool _visible)
 
 std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int _x, int _y)
 {
-    sight::viz::scene3d::picker::IPicker picker;
     Ogre::SceneManager* sm = this->getSceneManager();
-    picker.setSceneManager(sm);
-    picker.executeRaySceneQuery(_x, _y, m_queryMask);
+    const auto result      = sight::viz::scene3d::Utils::pickObject(_x, _y, m_queryMask, *sm);
 
-    if(picker.getSelectedObject() != nullptr)
+    if(result.has_value())
     {
         const auto* const camera = sm->getCamera(sight::viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
@@ -447,7 +445,7 @@ std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int 
         Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
 
-        return picker.getIntersectionInWorldSpace() + normal * 0.01F;
+        return result->second + normal * 0.01F;
     }
 
     return std::nullopt;

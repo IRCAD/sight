@@ -27,6 +27,7 @@
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/PickingCross.hpp>
 #include <viz/scene3d/Plane.hpp>
 #include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
@@ -210,13 +211,6 @@ private:
      */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
-    /**
-     * @brief Makes the planes process their meshes.
-     * @param _spacing spacing of the input image.
-     * @param _origin origin of the input image.
-     */
-    void createPlanes(const Ogre::Vector3& _spacing, const Ogre::Vector3& _origin);
-
     /// SLOT: sets the planes's opacity.
     void setTransparency(double _transparency);
 
@@ -225,9 +219,6 @@ private:
 
     /// Attemps to pick the negato planes, returns the world space position of the intersection if successful.
     std::optional<Ogre::Vector3> getPickedSlices(int _x, int _y);
-
-    /// Updates the intensity picking widget's position.
-    void updatePickingCross(const Ogre::Vector3& _pickedPos, const Ogre::Vector3& _imgOrigin);
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {true};
@@ -254,13 +245,13 @@ private:
     sight::viz::scene3d::Plane::sptr m_pickedPlane {nullptr};
 
     /// Contains the widget displayed to pick intensities.
-    Ogre::ManualObject* m_pickingCross {nullptr};
+    std::unique_ptr<sight::viz::scene3d::PickingCross> m_pickingCross;
 
     /// Contains the scene node allowing to move the entire negato.
     Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
-    sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
+    sight::viz::scene3d::Plane::filter_t m_filtering {sight::viz::scene3d::Plane::filter_t::NONE};
 
     /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow {0.F};

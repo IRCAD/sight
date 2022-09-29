@@ -204,6 +204,7 @@
                 <adaptor uid="axialNegatoResizeViewportAdp" />
                 <adaptor uid="axialPickerInteractorAdp" />
                 <adaptor uid="axialLandmarksAdp" />
+                <adaptor uid="axialPickedVoxelTextAdp" />
 
                 <layer id="sagittalBackgroundNegatoLayer" order="4" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -221,6 +222,7 @@
                 <adaptor uid="sagittalNegatoResizeViewportAdp" />
                 <adaptor uid="sagittalPickerInteractorAdp" />
                 <adaptor uid="sagittalLandmarksAdp" />
+                <adaptor uid="sagittalPickedVoxelTextAdp" />
 
                 <layer id="frontalBackgroundNegatoLayer" order="6" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -238,6 +240,7 @@
                 <adaptor uid="frontalNegatoResizeViewportAdp" />
                 <adaptor uid="frontalPickerInteractorAdp" />
                 <adaptor uid="frontalLandmarksAdp" />
+                <adaptor uid="frontalPickedVoxelTextAdp" />
 
                 <layer id="orientationMarkerLayer" order="8" >
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
@@ -300,7 +303,7 @@
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
             <text></text>
-            <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="bottom" color="#D35151" />
+            <config layer="defaultLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
         <service uid="shapeExtruderAdp" type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
@@ -372,6 +375,11 @@
             <config layer="axialNegatoLayer" label="false" orientation="axial" priority="4" />
         </service>
 
+        <service uid="axialPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config layer="axialNegatoLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
         <!-- Sagittal -->
 
         <service uid="sagittalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
@@ -417,6 +425,11 @@
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" priority="4" />
+        </service>
+
+        <service uid="sagittalPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config layer="sagittalNegatoLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
         <!-- Frontal -->
@@ -465,6 +478,12 @@
             <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" label="false" orientation="frontal" priority="4" />
         </service>
+
+        <service uid="frontalPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config layer="frontalNegatoLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
 
         <!-- ************************************* Services ************************************ -->
 
@@ -649,6 +668,21 @@
         </connect>
 
         <connect>
+            <signal>axialNegatoAdp/pickedVoxel</signal>
+            <slot>axialPickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <connect>
+            <signal>frontalNegatoAdp/pickedVoxel</signal>
+            <slot>frontalPickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <connect>
+            <signal>sagittalNegatoAdp/pickedVoxel</signal>
+            <slot>sagittalPickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <connect>
             <signal>shapeExtruderAdp/notified</signal>
             <slot>notifierSrv/pop</slot>
         </connect>
@@ -712,6 +746,7 @@
         <start uid="axialNegatoResizeViewportAdp" />
         <start uid="axialPickerInteractorAdp" />
         <start uid="axialLandmarksAdp" />
+        <start uid="axialPickedVoxelTextAdp" />
         <start uid="sagittalBackgroundAdp" />
         <start uid="sagittalBackgroundResizeViewportAdp" />
         <start uid="sagittalCompositorAdp" />
@@ -720,6 +755,7 @@
         <start uid="sagittalNegatoResizeViewportAdp" />
         <start uid="sagittalPickerInteractorAdp" />
         <start uid="sagittalLandmarksAdp" />
+        <start uid="sagittalPickedVoxelTextAdp" />
         <start uid="frontalBackgroundAdp" />
         <start uid="frontalBackgroundResizeViewportAdp" />
         <start uid="frontalCompositorAdp" />
@@ -728,6 +764,7 @@
         <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
+        <start uid="frontalPickedVoxelTextAdp" />
 
         <start uid="axialNegatoSlicerSrv" />
         <start uid="frontalNegatoSlicerSrv" />

@@ -23,7 +23,6 @@
 #pragma once
 
 #include "viz/scene3d/interactor/IInteractor.hpp"
-#include "viz/scene3d/picker/IPicker.hpp"
 #include "viz/scene3d/widget/ClippingBox.hpp"
 
 #include <core/com/Signal.hpp>
@@ -52,7 +51,7 @@ public:
     ) noexcept;
 
     /// Destroys the widget.
-    VIZ_SCENE3D_API ~ClippingBoxInteractor() noexcept override;
+    VIZ_SCENE3D_API ~ClippingBoxInteractor() noexcept override = default;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
     VIZ_SCENE3D_API void mouseMoveEvent(
@@ -97,9 +96,6 @@ private:
 
     /// Defines the widget with whom we interact.
     widget::ClippingBox m_widget;
-
-    /// Defines the picker used by this interactor.
-    viz::scene3d::picker::IPicker m_picker;
 
     /// Attempts to pick the first object at screen coordinates (x, y), returns nullptr if no object was picked.
     Ogre::MovableObject* pickObject(int x, int y);

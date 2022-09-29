@@ -798,12 +798,10 @@ void SLandmarks::setVisible(bool _visible)
 
 std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y)
 {
-    sight::viz::scene3d::picker::IPicker picker;
     Ogre::SceneManager* sm = this->getSceneManager();
-    picker.setSceneManager(sm);
-    picker.executeRaySceneQuery(_x, _y, m_queryMask);
+    const auto result      = sight::viz::scene3d::Utils::pickObject(_x, _y, m_queryMask, *sm);
 
-    if(picker.getSelectedObject() != nullptr)
+    if(result.has_value())
     {
         const auto* const camera = sm->getCamera(sight::viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
@@ -817,7 +815,7 @@ std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y
         Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
 
-        return picker.getIntersectionInWorldSpace() + normal * 0.01F;
+        return result->second + normal * 0.01F;
     }
 
     return std::nullopt;

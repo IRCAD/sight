@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 
 #include <viz/scene3d/config.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
-#include <viz/scene3d/picker/IPicker.hpp>
 
 namespace sight::viz::scene3d::interactor
 {
@@ -73,9 +72,6 @@ private:
      * @param _pressed whether the button is pressed (true) or released (false).
      */
     void pick(MouseButton _button, Modifier _mods, int _x, int _y, bool _pressed);
-
-    /// Executes ray picking operations.
-    viz::scene3d::picker::IPicker m_picker;
 
     /// Picking query mask. Filters out objects with mismatching flags.
     std::uint32_t m_queryMask {0xffffffff};

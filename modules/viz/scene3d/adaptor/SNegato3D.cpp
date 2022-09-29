@@ -30,14 +30,9 @@
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
-#include <data/Integer.hpp>
 #include <data/tools/Color.hpp>
 
-#include <service/macros.hpp>
-
-#include <viz/scene3d/compositor/Core.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/picker/IPicker.hpp>
 #include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreCamera.h>
@@ -68,10 +63,6 @@ static const std::string s_QUERY_CONFIG            = "queryFlags";
 static const std::string s_BORDER_CONFIG           = "border";
 
 static const std::string s_VISIBILITY_FIELD = "VISIBILITY";
-
-static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID =
-    sight::viz::scene3d::compositor::Core::s_SURFACE_RQ_GROUP_ID
-    - 1;
 
 //------------------------------------------------------------------------------
 
@@ -106,15 +97,15 @@ void SNegato3D::configuring()
     if(config.count(s_FILTERING_CONFIG) != 0U)
     {
         const auto filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
-        sight::viz::scene3d::Plane::FilteringEnumType filtering(sight::viz::scene3d::Plane::FilteringEnumType::LINEAR);
+        sight::viz::scene3d::Plane::filter_t filtering(sight::viz::scene3d::Plane::filter_t::LINEAR);
 
         if(filteringValue == "none")
         {
-            filtering = sight::viz::scene3d::Plane::FilteringEnumType::NONE;
+            filtering = sight::viz::scene3d::Plane::filter_t::NONE;
         }
         else if(filteringValue == "anisotropic")
         {
-            filtering = sight::viz::scene3d::Plane::FilteringEnumType::ANISOTROPIC;
+            filtering = sight::viz::scene3d::Plane::filter_t::ANISOTROPIC;
         }
 
         m_filtering = filtering;
@@ -165,15 +156,12 @@ void SNegato3D::starting()
     m_negatoSceneNode = transformNode->createChildSceneNode();
 
     // Instantiation of the planes
-    int orientationNum {0};
     for(auto& plane : m_planes)
     {
-        auto imgOrientation = static_cast<OrientationMode>(orientationNum++);
         plane = std::make_shared<sight::viz::scene3d::Plane>(
             this->getID(),
             m_negatoSceneNode,
             this->getSceneManager(),
-            imgOrientation,
             m_3DOgreTexture,
             m_filtering,
             m_border
@@ -192,27 +180,11 @@ void SNegato3D::starting()
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
         this->getLayer()->addInteractor(interactor, m_priority);
 
-        m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
-        const auto basicAmbientMat = Ogre::MaterialManager::getSingleton().getByName(
-            "BasicAmbient",
-            sight::viz::scene3d::RESOURCE_GROUP
+        m_pickingCross = std::make_unique<sight::viz::scene3d::PickingCross>(
+            this->getID(),
+            *this->getSceneManager(),
+            *m_negatoSceneNode
         );
-        auto crossMat = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
-        crossMat->setAmbient(Ogre::ColourValue::Red);
-        crossMat->setDiffuse(Ogre::ColourValue::Red);
-        crossMat->setDepthCheckEnabled(false);
-        m_pickingCross->estimateVertexCount(4);
-        m_pickingCross->begin(crossMat, Ogre::RenderOperation::OT_LINE_LIST);
-        for(std::uint8_t i = 0 ; i < 4 ; ++i)
-        {
-            m_pickingCross->position(Ogre::Vector3::ZERO);
-        }
-
-        m_pickingCross->end();
-        m_pickingCross->setVisible(false);
-        // Always render the widget after the plane it is displayed on.
-        m_pickingCross->setRenderQueueGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 1);
-        m_negatoSceneNode->attachObject(m_pickingCross);
     }
 
     // Set the visibility of the 3D Negato
@@ -254,42 +226,17 @@ void SNegato3D::stopping()
     }
 
     m_pickedPlane.reset();
-
-    for(auto& plane : m_planes)
-    {
-        plane.reset();
-    }
+    std::ranges::for_each(m_planes, [](auto& p){p.reset();});
 
     m_negatoSceneNode->removeAndDestroyAllChildren();
     this->getSceneManager()->destroySceneNode(m_negatoSceneNode);
 
-    if(m_pickingCross != nullptr)
-    {
-        auto crossMtl = m_pickingCross->getSection(0)->getMaterial();
-        Ogre::MaterialManager::getSingleton().remove(crossMtl);
-
-        this->getSceneManager()->destroyManualObject(m_pickingCross);
-    }
+    m_pickingCross.reset();
 
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::createPlanes(const Ogre::Vector3& _spacing, const Ogre::Vector3& _origin)
-{
-    // Fits the planes to the new texture
-    for(const auto& plane : m_planes)
-    {
-        plane->setVoxelSpacing(_spacing);
-        plane->setOriginPosition(_origin);
-        plane->initializePlane();
-        plane->enableAlpha(m_enableAlpha);
-        plane->setQueryFlags(m_queryFlags);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -313,7 +260,13 @@ void SNegato3D::newImage()
         m_3DOgreTexture->update();
 
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
-        this->createPlanes(spacing, origin);
+
+        // Fits the planes to the new texture
+        for(int orientationNum = 0 ; const auto& plane : m_planes)
+        {
+            plane->update(static_cast<OrientationMode>(orientationNum++), spacing, origin, m_enableAlpha);
+            plane->setQueryFlags(m_queryFlags);
+        }
 
         // Update Slice
         namespace imHelper = data::helper::MedicalImage;
@@ -383,11 +336,8 @@ void SNegato3D::updateTF()
     this->getRenderService()->makeCurrent();
     m_gpuTF->update();
 
-    for(const auto& plane : m_planes)
-    {
-        // Sends the TF texture to the negato-related passes
-        plane->setTFData(*m_gpuTF.get());
-    }
+    // Sends the TF texture to the negato-related passes
+    std::ranges::for_each(m_planes, [this](auto& p){p->setTFData(*m_gpuTF.get());});
 
     this->requestRender();
 }
@@ -396,33 +346,19 @@ void SNegato3D::updateTF()
 
 void SNegato3D::setTransparency(double _transparency)
 {
-    const auto notNull =
-        [](auto&& PH1){return std::not_equal_to<>()(std::forward<decltype(PH1)>(PH1), nullptr);};
+    SIGHT_ASSERT("Service not started", this->getStatus() == IService::STARTED);
 
-    if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
-    {
-        const auto image = m_image.lock();
+    const float opacity = 1.F - static_cast<float>(_transparency);
+    std::ranges::for_each(m_planes, [opacity](auto& p){p->setEntityOpacity(opacity);});
 
-        const float opacity = 1.F - static_cast<float>(_transparency);
-
-        for(const auto& plane : m_planes)
-        {
-            plane->setEntityOpacity(opacity);
-        }
-
-        this->requestRender();
-    }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato3D::setVisible(bool _visible)
 {
-    for(const auto& plane : m_planes)
-    {
-        plane->setVisible(_visible);
-    }
-
+    std::ranges::for_each(m_planes, [_visible](auto& p){p->setVisible(_visible);});
     this->requestRender();
 }
 
@@ -430,10 +366,7 @@ void SNegato3D::setVisible(bool _visible)
 
 void SNegato3D::setPlanesQueryFlags(std::uint32_t _flags)
 {
-    for(const auto& p : m_planes)
-    {
-        p->setQueryFlags(_flags);
-    }
+    std::ranges::for_each(m_planes, [_flags](auto& p){p->setQueryFlags(_flags);});
 }
 
 //------------------------------------------------------------------------------
@@ -502,7 +435,7 @@ void SNegato3D::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, 
 {
     if(m_pickedPlane)
     {
-        m_pickedPlane->setRenderQueuerGroupAndPriority(sight::viz::scene3d::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
+        m_pickedPlane->setRenderQueuerGroupAndPriority(sight::viz::scene3d::rq::s_SURFACE_ID, 0);
         m_pickedPlane.reset();
     }
 
@@ -523,13 +456,15 @@ void SNegato3D::moveSlices(int _x, int _y)
 
         auto pickedPt = pickRes.value();
 
-        for(const auto& p : m_planes)
-        {
-            if(p != m_pickedPlane)
+        std::ranges::for_each(
+            m_planes,
+            [this](auto& p)
             {
-                p->setQueryFlags(0x0);
-            }
-        }
+                if(p != m_pickedPlane)
+                {
+                    p->setQueryFlags(0x0);
+                }
+            });
 
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
         pickedPt                     = (pickedPt - origin) / spacing;
@@ -585,33 +520,14 @@ void SNegato3D::pickIntensity(int _x, int _y)
             const auto imageBufferLock = image->dump_lock();
 
             const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
-            const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
 
-            this->updatePickingCross(pickedPos.value(), origin);
-
-            const auto& imgSize = image->getSize();
-            data::Image::Size pickedVoxel;
-            static_assert(
-                std::numeric_limits<std::uint8_t>::max() >= pickedVoxel.size(),
-                "The loop variable is too narrow to iterate over the array"
-            );
-            for(std::uint8_t i = 0 ; i < pickedVoxel.size() ; ++i) // NOLINT(bugprone-too-small-loop-variable)
-            {
-                pickedVoxel[i] = std::clamp(
-                    static_cast<std::size_t>(pickedPosImageSpace[i]),
-                    std::size_t {0},
-                    imgSize[i] - 1
-                );
-            }
-
-            const auto intensity   = image->getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);
-            const auto pickingText = "(" + std::to_string(pickedVoxel[0]) + ", " + std::to_string(pickedVoxel[1])
-                                     + ", " + std::to_string(pickedVoxel[2]) + "): " + intensity;
-
+            auto crossLines = m_pickedPlane->computeCross(*pickedPos, origin);
+            m_pickingCross->update(crossLines[0], crossLines[1], crossLines[2], crossLines[3]);
+            const std::string pickingText = sight::viz::scene3d::Utils::pickImage(*image, *pickedPos, origin, spacing);
             m_pickedVoxelSignal->asyncEmit(pickingText);
 
             // Render the picked plane before the widget.
-            m_pickedPlane->setRenderQueuerGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 0);
+            m_pickedPlane->setRenderQueuerGroupAndPriority(sight::viz::scene3d::rq::s_NEGATO_WIDGET_ID, 0);
         }
     }
 }
@@ -620,65 +536,22 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
 std::optional<Ogre::Vector3> SNegato3D::getPickedSlices(int _x, int _y)
 {
-    auto* const sceneManager = this->getSceneManager();
-    SIGHT_ASSERT("Scene manager not created yet.", sceneManager);
+    Ogre::SceneManager* sm = this->getSceneManager();
+    const auto result      = sight::viz::scene3d::Utils::pickObject(_x, _y, m_queryFlags, *sm);
 
-    sight::viz::scene3d::picker::IPicker picker;
-    picker.setSceneManager(sceneManager);
-    picker.executeRaySceneQuery(_x, _y, m_queryFlags);
-
-    const auto isPicked = [&picker](const sight::viz::scene3d::Plane::sptr& _p)
-                          {
-                              return (_p->getMovableObject() != nullptr)
-                                     && (_p->getMovableObject() == picker.getSelectedObject());
-                          };
-
-    // NOLINTNEXTLINE(readability-qualified-auto,llvm-qualified-auto)
-    const auto it = std::find_if(m_planes.cbegin(), m_planes.cend(), isPicked);
-
-    if(it != m_planes.cend())
+    if(result.has_value())
     {
-        m_pickedPlane = *it;
-        return picker.getIntersectionInWorldSpace();
+        const auto isPicked = [&result](const auto& _p){return _p->getMovableObject() == result->first;};
+        const auto it = std::ranges::find_if(m_planes, isPicked); // NOLINT(readability-qualified-auto,llvm-qualified-auto)
+
+        if(it != m_planes.cend())
+        {
+            m_pickedPlane = *it;
+            return result->second;
+        }
     }
 
     return std::nullopt;
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::updatePickingCross(const Ogre::Vector3& _pickedPos, const Ogre::Vector3& _imgOrigin)
-{
-    const float h = m_pickedPlane->getHeight();
-    const float w = m_pickedPlane->getWidth();
-
-    m_pickingCross->beginUpdate(0);
-    switch(m_pickedPlane->getOrientationMode())
-    {
-        case sight::viz::scene3d::Plane::OrientationMode::X_AXIS:
-            m_pickingCross->position(_pickedPos.x, 0 + _imgOrigin.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, h + _imgOrigin.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, 0 + _imgOrigin.z);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, w + _imgOrigin.z);
-            break;
-
-        case sight::viz::scene3d::Plane::OrientationMode::Y_AXIS:
-            m_pickingCross->position(0 + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(w + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, 0 + _imgOrigin.z);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, h + _imgOrigin.z);
-            break;
-
-        case sight::viz::scene3d::Plane::OrientationMode::Z_AXIS:
-            m_pickingCross->position(0 + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(w + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, 0 + _imgOrigin.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, h + _imgOrigin.y, _pickedPos.z);
-            break;
-    }
-
-    m_pickingCross->end();
-    m_pickingCross->setVisible(true);
 }
 
 //------------------------------------------------------------------------------

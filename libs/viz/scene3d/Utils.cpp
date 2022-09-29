@@ -25,8 +25,10 @@
 #include "viz/scene3d/Utils.hpp"
 
 #include "viz/scene3d/compositor/MaterialMgrListener.hpp"
+#include "viz/scene3d/detail/CollisionTools.hpp"
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
 #include "viz/scene3d/factory/Text.hpp"
+#include "viz/scene3d/helper/Camera.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
@@ -835,6 +837,57 @@ Ogre::Vector3i Utils::worldToSlices(const data::Image& _image, const Ogre::Vecto
     }
 
     return slices_idx;
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > Utils::pickObject(
+    int _x,
+    int _y,
+    std::uint32_t _queryMask,
+    Ogre::SceneManager& _layer
+)
+{
+    const auto* const camera = _layer.getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    const auto vpPos         = viz::scene3d::helper::Camera::convertFromWindowToViewportSpace(*camera, _x, _y);
+    const Ogre::Ray vpRay    = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
+
+    viz::scene3d::detail::CollisionTools tool(_layer, _queryMask);
+
+    auto&& [entityFound, rayIntersect, selectedObject, _] = tool.raycast(vpRay, _queryMask);
+
+    if(entityFound)
+    {
+        SIGHT_DEBUG("Entity find and intersect at " << rayIntersect << "(WS)");
+    }
+    else
+    {
+        return std::nullopt;
+    }
+
+    return std::make_optional(std::make_pair(selectedObject, rayIntersect));
+}
+
+//------------------------------------------------------------------------------
+
+std::string Utils::pickImage(
+    const data::Image& _image,
+    const Ogre::Vector3& _position,
+    const Ogre::Vector3& _origin,
+    const Ogre::Vector3& _spacing
+)
+{
+    const auto pickedPosImageSpace = (_position - _origin) / _spacing;
+    const auto& imgSize            = _image.getSize();
+    data::Image::Size pickedVoxel;
+    for(size_t i = 0 ; i < pickedVoxel.size() ; ++i)
+    {
+        pickedVoxel[i] = std::clamp(static_cast<std::size_t>(pickedPosImageSpace[i]), std::size_t(0), imgSize[i] - 1);
+    }
+
+    const auto intensity = _image.getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);
+    return "(" + std::to_string(pickedVoxel[0]) + ", " + std::to_string(pickedVoxel[1])
+           + ", " + std::to_string(pickedVoxel[2]) + "): " + intensity;
 }
 
 //------------------------------------------------------------------------------

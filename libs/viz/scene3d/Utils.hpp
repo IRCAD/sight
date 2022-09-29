@@ -35,6 +35,7 @@
 #include <OGRE/OgreTexture.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 
+#include <optional>
 #include <string>
 
 namespace sight::viz::scene3d
@@ -181,6 +182,36 @@ public:
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
     VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::Image& _image, const Ogre::Vector3& _world);
+
+    /**
+     * @brief Pick an object from a screen-space position.
+     * @param _x screen width position.
+     * @param _y screen height position.
+     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _layer scene manager where to pick objects from.
+     * @return Object and intersection.
+     */
+    VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pickObject(
+        int _x,
+        int _y,
+        std::uint32_t _queryMask,
+        Ogre::SceneManager& _layer
+    );
+
+    /**
+     * @brief Pick a voxel in a 3D image at a world-space position.
+     * @param _image source image.
+     * @param _position 3D world-space position.
+     * @param _origin image origin.
+     * @param _spacing image spacing.
+     * @return True if an object has been selected.
+     */
+    VIZ_SCENE3D_API static std::string pickImage(
+        const data::Image& _image,
+        const Ogre::Vector3& position,
+        const Ogre::Vector3& origin,
+        const Ogre::Vector3& spacing
+    );
 
 private:
 

@@ -146,7 +146,7 @@ RayEntryCompositor::RayEntryCompositor(
                     std::string(schemePrefix) + "_FrontFacesMin" + schemeSuffix
                 );
                 frontFacesMinPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                frontFacesMinPass->setLastRenderQueue(compositor::Core::s_SURFACE_RQ_GROUP_ID);
+                frontFacesMinPass->setLastRenderQueue(viz::scene3d::rq::s_SURFACE_ID);
             }
         }
 

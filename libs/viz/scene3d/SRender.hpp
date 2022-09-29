@@ -26,7 +26,6 @@
 #include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/Layer.hpp"
 #include "viz/scene3d/overlay/ViewportListener.hpp"
-#include "viz/scene3d/picker/IPicker.hpp"
 #include "viz/scene3d/Utils.hpp"
 
 #include <data/Image.hpp>

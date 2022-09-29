@@ -34,10 +34,6 @@ namespace sight::viz::scene3d::interactor
 MeshPickerInteractor::MeshPickerInteractor(Layer::sptr _layer, bool _layerOrderDependant) noexcept :
     IInteractor(_layer, _layerOrderDependant)
 {
-    if(_layer)
-    {
-        m_picker.setSceneManager(_layer->getSceneManager());
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -63,19 +59,17 @@ void MeshPickerInteractor::setQueryMask(std::uint32_t _queryMask)
 
 void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed)
 {
-    if(m_picker.hasSceneManager())
+    if(auto layer = m_layer.lock())
     {
-        if(auto layer = m_layer.lock())
+        if(!isInLayer(_x, _y, layer, m_layerOrderDependant))
         {
-            if(!isInLayer(_x, _y, layer, m_layerOrderDependant))
-            {
-                return;
-            }
+            return;
         }
 
-        if(m_picker.executeRaySceneQuery(_x, _y, m_queryMask))
+        if(auto result = viz::scene3d::Utils::pickObject(_x, _y, m_queryMask, *layer->getSceneManager());
+           result != std::nullopt)
         {
-            Ogre::Vector3 click = m_picker.getIntersectionInWorldSpace();
+            Ogre::Vector3 click = result->second;
 
             data::tools::PickingInfo info;
             info.m_worldPos[0] = static_cast<double>(click.x);
@@ -124,10 +118,6 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
                 );
             }
         }
-    }
-    else
-    {
-        SIGHT_ERROR("The picker scene hasn't been initialized, you are not using this interactor correctly");
     }
 }
 

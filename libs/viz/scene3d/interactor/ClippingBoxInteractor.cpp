@@ -44,14 +44,7 @@ ClippingBoxInteractor::ClippingBoxInteractor(
              _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
 {
     SIGHT_ASSERT("This interactor must know its layer.", _layer);
-
-    m_picker.setSceneManager(_layer->getSceneManager());
 }
-
-//------------------------------------------------------------------------------
-
-ClippingBoxInteractor::~ClippingBoxInteractor() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -59,9 +52,9 @@ Ogre::MovableObject* ClippingBoxInteractor::pickObject(int x, int y)
 {
     if(auto layer = m_layer.lock())
     {
-        const bool pickSuccess = m_picker.executeRaySceneQuery(x, y, 0xFFFFFFFF);
+        const auto result = viz::scene3d::Utils::pickObject(x, y, 0xFFFFFFFF, *layer->getSceneManager());
 
-        return pickSuccess ? m_picker.getSelectedObject() : nullptr;
+        return result.has_value() ? result->first : nullptr;
     }
 
     return nullptr;

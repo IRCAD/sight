@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,27 @@
 
 #pragma once
 
+#include <OgreRenderQueue.h>
+
 #include <string>
 
 namespace sight::viz::scene3d
 {
 
 const static std::string RESOURCE_GROUP = "Sight";
+
+namespace rq
+{
+
+/// Render queue group for surface rendering.
+static constexpr std::uint8_t s_SURFACE_ID = Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
+
+/// Render queue group for volume rendering. Leave an extra render queue between
+/// surfaces and volumes for some effects.
+static constexpr std::uint8_t s_VOLUME_ID = s_SURFACE_ID + 2;
+
+static constexpr std::uint8_t s_NEGATO_WIDGET_ID = s_SURFACE_ID - 1;
+
+}
 
 } // namespace sight::viz::scene3d

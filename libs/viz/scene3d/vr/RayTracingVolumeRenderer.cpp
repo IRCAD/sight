@@ -1035,7 +1035,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
         }
 
         // Render volumes after surfaces.
-        m_entryPointGeometry->setRenderQueueGroup(compositor::Core::s_VOLUME_RQ_GROUP_ID);
+        m_entryPointGeometry->setRenderQueueGroup(rq::s_VOLUME_ID);
 
         m_volumeSceneNode->attachObject(m_entryPointGeometry);
     }

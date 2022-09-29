@@ -29,7 +29,9 @@
 #include <data/helper/MedicalImage.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/interactor/IInteractor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/PickingCross.hpp>
 #include <viz/scene3d/Plane.hpp>
 #include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
@@ -76,14 +78,16 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the STransform adaptor.
+ * * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final :
     public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::ITransformable,
+    public sight::viz::scene3d::interactor::IInteractor
 {
 public:
 
-    typedef data::helper::MedicalImage::orientation_t OrientationMode;
+    using OrientationMode = data::helper::MedicalImage::orientation_t;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(SNegato2D, sight::viz::scene3d::IAdaptor);
@@ -128,11 +132,35 @@ protected:
 
 private:
 
+    /**
+     * @brief Interacts with the negato if it was picked by pressing any mouse button.
+     *
+     * Interactions will take place while holding down the button. The following actions are available:
+     * - Left mouse click: shows a cross widget to select a voxel and retrieve its intensity.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     * @param _dx the cursor's width displacement since the last event.
+     * @param _dy the cursor's height displacement since the last event.
+     */
+    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy) override;
+
+    /**
+     * @brief Attempts to pick the negato and starts interactions if picking was successful.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+
+    /// Ends all interactions, regardless of the input.
+    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+
     /// Updates the displayed transfer function.
     void updateTF();
 
     /// Sets the filtering type.
-    void setFiltering(sight::viz::scene3d::Plane::FilteringEnumType _filtering);
+    void setFiltering(sight::viz::scene3d::Plane::filter_t _filtering);
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
@@ -164,10 +192,11 @@ private:
     void updateShaderSliceIndexParameter();
 
     /**
-     * @brief Initializes the planar mesh on which the negato is displayed.
-     * @param _spacing spacing of the input image.
+     * @brief Picks the intensity value at the (_x, _y) screen position.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
      */
-    void createPlane(const Ogre::Vector3& _spacing);
+    void pickIntensity(int _x, int _y);
 
     /// Contains the texture which will be displayed on the negato.
     sight::viz::scene3d::Texture::sptr m_3DOgreTexture;
@@ -178,14 +207,20 @@ private:
     /// Contains the plane on which we will apply our texture.
     std::unique_ptr<sight::viz::scene3d::Plane> m_plane {nullptr};
 
+    /// Contains the widget displayed to pick intensities.
+    std::unique_ptr<sight::viz::scene3d::PickingCross> m_pickingCross;
+
     /// Enables/disables the usage of the transfer function alpha channel.
     bool m_enableAlpha {false};
+
+    /// Enables whether or not interactions are enabled on the negato.
+    bool m_interactive {true};
 
     /// Contains the scene node allowing to move the entire negato.
     Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
-    sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
+    sight::viz::scene3d::Plane::filter_t m_filtering {sight::viz::scene3d::Plane::filter_t::NONE};
 
     /// Stores the current slice index for each axis.
     std::vector<float> m_currentSliceIndex {0.F, 0.F, 0.F};
@@ -196,8 +231,15 @@ private:
     /// Defines if the plane border is used or not.
     bool m_border {true};
 
+    /// True if the plane is being picked
+    bool m_picked {false};
+
     using SliceIndexChangedSignalType = core::com::Signal<void ()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
+
+    /// Defines the signal sent when a voxel is picked using the left mouse button.
+    using PickedVoxelSigType = core::com::Signal<void (std::string)>;
+    PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
 
     static constexpr std::string_view s_IMAGE_IN = "image";
     static constexpr std::string_view s_TF_IN    = "tf";
@@ -208,7 +250,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void SNegato2D::setFiltering(sight::viz::scene3d::Plane::FilteringEnumType _filtering)
+inline void SNegato2D::setFiltering(sight::viz::scene3d::Plane::filter_t _filtering)
 {
     m_filtering = _filtering;
 }
