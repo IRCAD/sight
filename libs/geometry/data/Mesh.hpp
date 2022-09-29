@@ -59,19 +59,6 @@ public:
     GEOMETRY_DATA_API static void generatePointNormals(sight::data::Mesh::sptr mesh);
 
     /**
-     * @brief Shake Array of Normals.
-     *
-     * Array must have 3 float components, 1 dimension. Otherwise, shakeNormals
-     * will do nothing.
-     *
-     * @param[out]  array mesh's array containing normals.
-     * @deprecated This method will be removed because mesh arrays can no longer be accessed.
-     */
-    [[deprecated("will be removed in sight 22.0")]] GEOMETRY_DATA_API static void shakeNormals(
-        sight::data::Array::sptr array
-    );
-
-    /**
      * @brief Shake point Normals.
      *
      * @param[out]  mesh data::Mesh structure to shake normals.

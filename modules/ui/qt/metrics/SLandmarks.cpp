@@ -52,17 +52,16 @@ namespace sight::module::ui::qt::metrics
 static const char* s_GROUP_PROPERTY_NAME = "group";
 static const int s_GROUP_NAME_ROLE       = Qt::UserRole + 1;
 
-static const core::com::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
-static const core::com::Slots::SlotKeyType s_PICK_SLOT             = "pick";
-static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
-static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
-static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
-static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
-static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
-static const core::com::Slots::SlotKeyType s_ADD_GROUP_SLOT        = "addGroup";
-static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
-static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+static const core::com::Slots::SlotKeyType s_PICK_SLOT           = "pick";
+static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT      = "addPoint";
+static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT   = "modifyPoint";
+static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT   = "selectPoint";
+static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT = "deselectPoint";
+static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
+static const core::com::Slots::SlotKeyType s_ADD_GROUP_SLOT      = "addGroup";
+static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT   = "removeGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT   = "modifyGroup";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT   = "renameGroup";
 
 static const std::string s_SIZE_CONFIG     = "size";
 static const std::string s_OPACITY_CONFIG  = "opacity";
@@ -75,7 +74,6 @@ const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWo
 
 SLandmarks::SLandmarks() noexcept
 {
-    newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
     newSlot(s_PICK_SLOT, &SLandmarks::pick, this);
     newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     newSlot(s_MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
@@ -731,17 +729,6 @@ void SLandmarks::onRemoveSelection()
     }
 
     m_treeWidget->blockSignals(false);
-}
-
-//------------------------------------------------------------------------------
-
-void SLandmarks::addPickedPoint(data::tools::PickingInfo _pickingInfo)
-{
-    FW_DEPRECATED_MSG(
-        "sight::module::ui::qt::metrics::addPickedPoint is no longer supported, the methods have been moved to module::ui::qt::metrics::pick",
-        "22.0"
-    )
-    this->pick(_pickingInfo);
 }
 
 //------------------------------------------------------------------------------

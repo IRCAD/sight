@@ -103,7 +103,7 @@ void STransformLandmark::updating()
         }
         catch(data::Exception& e)
         {
-            sight::ui::base::dialog::MessageDialog::showMessageDialog(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Transform Landmarks",
                 "It is impossible to modify landmarks: "
                 + std::string(e.what()),

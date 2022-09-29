@@ -71,7 +71,7 @@ void IExport<C>::starting()
     if(const auto& it = std::find(container->cbegin(), container->cend(), data.get_shared());
        it != container->cend())
     {
-        setIsExecutable(false);
+        setEnabled(false);
     }
 }
 
@@ -108,7 +108,7 @@ void IExport<C>::updating()
             container->push_back(data.get_shared());
         }
 
-        setIsExecutable(false);
+        setEnabled(false);
     }
 }
 
@@ -131,7 +131,7 @@ constexpr void IExport<C>::checkAddedObjects(typename C::container_type addedObj
     if(const auto& it = std::find(addedObjects.cbegin(), addedObjects.cend(), data.get_shared());
        it != addedObjects.cend())
     {
-        setIsExecutable(false);
+        setEnabled(false);
     }
 }
 
@@ -145,7 +145,7 @@ constexpr void IExport<C>::checkRemovedObjects(typename C::container_type remove
     if(const auto& it = std::find(removedObjects.cbegin(), removedObjects.cend(), data.get_shared());
        it != removedObjects.cend())
     {
-        setIsExecutable(true);
+        setEnabled(true);
     }
 }
 

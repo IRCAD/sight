@@ -77,14 +77,6 @@ public:
     virtual ~Runtime();
 
     /**
-     * @brief       Set the working path where Modules and share folder are located.
-     *
-     * @param[in]   workingPath a std path.
-     */
-    [[deprecated("To be removed in Sight 22.0, Sight location is now detected automatically")]]
-    CORE_API void setWorkingPath(const std::filesystem::path& workingPath);
-
-    /**
      * @brief       Get the path where Modules and share folder are located.
      * @return      a std path.
      */

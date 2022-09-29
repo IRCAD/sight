@@ -159,14 +159,6 @@ private:
 };
 
 /**
- * @brief       Set current profile.
- * @deprecated  This should not be called outside this library and will become part of private API as of 22.0
- * @param       prof profile
- */
-[[deprecated("To be removed in Sight 22.0, profile is set by runtime internally.")]]
-CORE_API void setCurrentProfile(core::runtime::Profile::sptr prof);
-
-/**
  * @brief       Get current profile.
  */
 CORE_API core::runtime::Profile::sptr getCurrentProfile();

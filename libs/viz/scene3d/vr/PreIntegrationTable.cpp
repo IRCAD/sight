@@ -29,11 +29,9 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
 
-#include <boost/algorithm/clamp.hpp>
-
 #include <OGRE/OgreHardwarePixelBuffer.h>
+#include <OGRE/OgrePrerequisites.h>
 #include <OGRE/OgreTextureManager.h>
-#include <OGRE/OgreVector4.h>
 
 #include <algorithm>
 

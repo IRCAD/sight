@@ -104,16 +104,11 @@ public:
     VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
     typedef core::com::Signal<void (int, int)> ResizeLayerSignalType;
 
-    /// @deprecated A listener is now in place in SCamera instead.
-    [[deprecated("Removed in sight 22.0.")]]
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
-
     /// Contains signals sent when the camera is modified.
     VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
     typedef core::com::Signal<void ()> CameraUpdatedSignalType;
 
-    typedef core::com::Slot<void (viz::scene3d::IWindowInteractor::InteractionInfo)>
-        InteractionSlotType;
+    typedef core::com::Slot<void (viz::scene3d::IWindowInteractor::InteractionInfo)> InteractionSlotType;
     typedef core::com::Slot<void ()> DestroySlotType;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
@@ -121,14 +116,6 @@ public:
 
     /// Contains the slot name that request the reset of camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
-
-    /// @deprecated please used s_DEFAULT_CAMERA_NAME.
-    [[deprecated("Removed in sight 22.0.")]]
-    VIZ_SCENE3D_API static const std::string DEFAULT_CAMERA_NAME;
-
-    /// @deprecated please used s_DEFAULT_LIGHT_NAME
-    [[deprecated("Removed in sight 22.0.")]]
-    VIZ_SCENE3D_API static const std::string DEFAULT_LIGHT_NAME;
 
     /// Defines the default camera name.
     VIZ_SCENE3D_API static const std::string s_DEFAULT_CAMERA_NAME;

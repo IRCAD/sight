@@ -63,7 +63,6 @@ Here is the list of uncategorised services:
 - **SImage**: displays an image.
 - **SliceIndexPositionEditor**: allows to change the slice index of an image.
 - **STransferFunction**: editor to select a transfer function.
-- **TransferFunctionEditor**: ***deprecated in sight 22.0***. Editor to select a transfer function.
 - **WindowLevel**: allows to change the min/max value of windowing.
 
 ### Metrics

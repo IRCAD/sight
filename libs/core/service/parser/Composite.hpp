@@ -28,7 +28,7 @@
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 #include <service/IXMLParser.hpp>
 
 namespace sight::service::parser

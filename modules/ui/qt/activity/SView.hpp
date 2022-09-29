@@ -30,7 +30,7 @@
 
 #include <data/Activity.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 
 #include <ui/base/view/IActivityView.hpp>
 

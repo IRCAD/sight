@@ -43,8 +43,8 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
+#include <service/AppConfigManager.hpp>
 #include <service/extension/AppConfig.hpp>
-#include <service/IAppConfigManager.hpp>
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -449,7 +449,7 @@ void SLauncher::buildActivity(
         auto replacementMap             = msg.getReplacementMap();
         replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
-        service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
+        auto helper = service::AppConfigManager::New();
         helper->setConfig(viewConfigID, replacementMap);
         helper->launch();
         helper->stopAndDestroy();

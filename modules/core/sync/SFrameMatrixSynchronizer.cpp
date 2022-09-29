@@ -86,11 +86,6 @@ void SFrameMatrixSynchronizer::configuring()
     const auto framerate = cfg.get<unsigned int>("framerate", 30);
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
-
-    if(framerate != 0)
-    {
-        m_updateMask = OBJECT_RECEIVED;
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -315,30 +310,8 @@ void SFrameMatrixSynchronizer::synchronize()
                         break;
 
                     default:
-                        FW_DEPRECATED_MSG(
-                            "FrameTL pixel format should be defined, we temporary assume that the format "
-                            "is GrayScale, RGB or RGBA according to the number of components.",
-                            "22.0"
-                        );
-                        // FIXME Support old FrameTL API (sight 22.0)
-                        switch(frameTL->numComponents())
-                        {
-                            case 1:
-                                format = data::Image::GRAY_SCALE;
-                                break;
-
-                            case 3:
-                                format = data::Image::RGB;
-                                break;
-
-                            case 4:
-                                format = data::Image::RGBA;
-                                break;
-
-                            default:
-                                SIGHT_ERROR("Number of component not managed.")
-                                return;
-                        }
+                        SIGHT_ERROR("FrameTL pixel format undefined");
+                        return;
                 }
 
                 image->resize(size, frameTL->getType(), format);
@@ -366,9 +339,7 @@ void SFrameMatrixSynchronizer::synchronize()
         std::memcpy(&*iter, frameBuff, buffer->getSize());
 
         // Notify
-        auto sig = image->signal<data::Image::BufferModifiedSignalType>(
-            data::Image::s_BUFFER_MODIFIED_SIG
-        );
+        auto sig = image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
         sig->asyncEmit();
     }
 

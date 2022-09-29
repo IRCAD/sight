@@ -215,28 +215,11 @@ constexpr static const char* strip_source_path(const char* const path)
 #  define _SPYLOG_SPYLOGGER_ \
     sight::core::log::SpyLogger::get()
 
-// Empty function to trigger deprecation warnings
-[[deprecated("OSIGHT_* macros removed in Sight 22.0, use SIGHT_* macros instead.")]]
-void OSIGHT_DEPRECATED();
-
-// Empty function to trigger deprecation warnings
-[[deprecated("Trace log level removed in Sight 22.0, use higher log levels instead.")]]
-void SIGHT_TRACE_DEPRECATED();
-
 // -----------------------------------------------------------------------------
 
 /**
  * @endcond
  */
-
-/** @{ */
-/** Trace message macros.  */
-# define SIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
-# define OSIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
-/** Conditional trace message macros.  */
-# define SIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
-# define OSIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
-/**  @} */
 
 /** @{ */
 /** Debug message macros.  */

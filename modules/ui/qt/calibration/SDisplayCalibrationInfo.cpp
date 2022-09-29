@@ -142,7 +142,7 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
             service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
-        m_configMgr = service::IAppConfigManager::New();
+        m_configMgr = service::AppConfigManager::New();
         m_configMgr->service::IAppConfigManager::setConfig(config);
         m_configMgr->launch();
 

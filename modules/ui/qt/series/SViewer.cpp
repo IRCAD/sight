@@ -22,13 +22,10 @@
 
 #include "SViewer.hpp"
 
-#include <core/base.hpp>
-
 #include <data/Series.hpp>
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
 
 namespace sight::module::ui::qt::series
 {
@@ -109,7 +106,7 @@ void SViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = service::IAppConfigManager::New();
+            m_configTemplateManager = service::AppConfigManager::New();
             m_configTemplateManager->setConfig(configId, replaceMap);
 
             // Launch config

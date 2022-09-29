@@ -24,8 +24,6 @@
 
 #include "service/parser/Vector.hpp"
 
-#include "service/macros.hpp"
-
 #include <data/Vector.hpp>
 
 #include <boost/foreach.hpp>
@@ -95,7 +93,7 @@ void Vector::createConfig(core::tools::Object::sptr _obj)
             if(buildMode == BUILD_OBJECT)
             {
                 // Create and manage object config
-                service::IAppConfigManager::sptr ctm = service::IAppConfigManager::New();
+                auto ctm = service::AppConfigManager::New();
                 ctm->service::IAppConfigManager::setConfig(elem);
 
                 m_ctmContainer.push_back(ctm);

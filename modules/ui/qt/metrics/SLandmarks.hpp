@@ -47,9 +47,6 @@ namespace sight::module::ui::qt::metrics
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - @deprecated \b addPickedPoint(data::tools::PickingInfo): adds or removes picked landmark. call \b
- * pick(data::tools::PickingInfo) instead.
- *
  * - \b pick(data::tools::PickingInfo): adds or removes picked landmark.
  * - \b addPoint(std::string): adds a point to editor.
  * - \b modifyPoint(std::string, std::size_t): updates the editor when a point has moved.
@@ -204,19 +201,6 @@ public:
 
     /// Called when the remove button is pressed, deletes selected group or point.
     void onRemoveSelection();
-
-    /**
-     * @brief SLOT: adds or removes a landmark from picking information.
-     *
-     * Interactions will take place while holding down the button. The following actions are available:
-     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new group to add it.
-     * - CTRL + right mouse click: removes the landmark at the closest picking position.
-     *
-     * @deprecated Uses pick(data::tools::PickingInfo _info) instead.
-     *
-     * @param _pickingInfo Picking information.
-     */
-    void addPickedPoint(data::tools::PickingInfo _pickingInfo);
 
     /**
      * @brief SLOT: adds or removes a landmark from picking information.

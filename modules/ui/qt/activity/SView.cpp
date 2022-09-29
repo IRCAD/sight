@@ -99,7 +99,7 @@ void SView::starting()
 
     parentContainer->setLayout(layout);
 
-    m_configManager = service::IAppConfigManager::New();
+    m_configManager = service::AppConfigManager::New();
 
     if(!m_mainActivityId.empty())
     {

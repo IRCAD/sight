@@ -355,46 +355,6 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(
 
 // ------------------------------------------------------------------------------
 
-template<typename INT_INDEX>
-class [[deprecated("sight 22.0")]] CastAndCheckFunctor
-{
-public:
-
-    class Param
-    {
-    public:
-
-        typedef INT_INDEX PointType;
-
-        Param(PointType& p, bool& b) :
-            point(p),
-            isNull(b)
-        {
-        }
-
-        data::Image::sptr image;
-        const PointType& point;
-        bool& isNull;
-    };
-
-    // ------------------------------------------------------------------------------
-
-    template<typename IMAGE>
-    void operator()(Param& param)
-    {
-        const auto dumpLock = param.image->lock();
-        auto* buffer        = static_cast<IMAGE*>(param.image->getBuffer());
-        const INT_INDEX& p  = param.point;
-        const auto& size    = param.image->getSize();
-        const int& sx       = size[0];
-        const int& sy       = size[1];
-        const int& offset   = p[0] + sx * p[1] + p[2] * sx * sy;
-        param.isNull = (*(buffer + offset) == 0);
-    }
-};
-
-// ------------------------------------------------------------------------------
-
 template<typename T>
 class MinMaxFunctor
 {

@@ -24,8 +24,6 @@
 
 #include "service/parser/Object.hpp"
 
-#include "service/macros.hpp"
-
 #include <boost/foreach.hpp>
 
 namespace sight::service::parser
@@ -125,7 +123,7 @@ void Object::createConfig(core::tools::Object::sptr _obj)
                 );
 
                 // Create and manage object config
-                service::IAppConfigManager::sptr ctm = service::IAppConfigManager::New();
+                auto ctm = service::AppConfigManager::New();
                 ctm->service::IAppConfigManager::setConfig(elem);
 
                 m_ctmContainer.push_back(ctm);

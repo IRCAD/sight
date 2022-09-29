@@ -227,7 +227,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.replacementMap["WID_PARENT"]  = info.wid;
     info.replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
 
-    service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
+    auto helper = service::AppConfigManager::New();
 
     try
     {

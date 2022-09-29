@@ -24,7 +24,7 @@
 
 #include "core/memory/exception/BadCast.hpp"
 
-#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/phoenix/operator.hpp>
 #include <boost/spirit/include/qi.hpp>
 
 #include <array>

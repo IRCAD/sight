@@ -151,8 +151,6 @@ std::size_t Mesh::reserve(Mesh::size_t nbPts, Mesh::size_t nbCells, CellType cel
 
     m_attributes = m_attributes | arrayMask;
 
-    // TODO sight 22.0: Add a second dimension on the array to replace the deprecated component
-
     // Test attributes mask, if present resize corresponding array, if not check if array needs to be cleared.
     if(static_cast<int>(arrayMask & Attributes::POINT_COLORS) != 0)
     {

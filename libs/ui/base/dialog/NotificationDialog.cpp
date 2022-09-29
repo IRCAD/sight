@@ -43,17 +43,6 @@ void NotificationDialog::show(
 
 //-----------------------------------------------------------------------------
 
-void NotificationDialog::showNotificationDialog(
-    const std::string& _message,
-    INotificationDialog::Type _type,
-    INotificationDialog::Position _pos
-)
-{
-    ui::base::dialog::NotificationDialog::show(_message, _type, _pos);
-}
-
-//-----------------------------------------------------------------------------
-
 NotificationDialog::NotificationDialog()
 {
     core::thread::getDefaultWorker()->postTask<void>(

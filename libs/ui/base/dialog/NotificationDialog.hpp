@@ -54,22 +54,6 @@ public:
         INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT
     );
 
-    /**
-     * Opens a default message box with the specified title, text and icon.
-     *
-     * @param _message Message of the notification box
-     * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
-     * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
-     * @deprecated use show() instead
-     */
-    [[deprecated("Sight 22.0, use show() instead.")]]
-    UI_BASE_API static void showNotificationDialog(
-        const std::string& _message,
-        INotificationDialog::Type _type =
-        INotificationDialog::Type::DEFAULT,
-        INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT
-    );
-
     /// Constructor. Create the implementation of the specific message box
     UI_BASE_API NotificationDialog();
 

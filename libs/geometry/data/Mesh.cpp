@@ -421,40 +421,6 @@ void regionShakeNormals(T normals, const std::size_t regionMin, const std::size_
 
 //------------------------------------------------------------------------------
 
-void Mesh::shakeNormals(sight::data::Array::sptr array)
-{
-    if(array
-       && array->getType() == core::Type::FLOAT
-       && !array->empty()
-       && array->numDimensions() == 2)
-    {
-        const auto dumpLock = array->dump_lock();
-        void* buf           = nullptr;
-        buf = array->getBuffer();
-        const auto nbOfNormals = array->getSize().at(0);
-        using NormalsMultiArrayType = boost::multi_array_ref<Vector<float>, 1>;
-        NormalsMultiArrayType normals = NormalsMultiArrayType(
-            static_cast<NormalsMultiArrayType::element*>(buf),
-            boost::extents[std::int64_t(nbOfNormals)]
-        );
-
-        sight::data::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);
-        rt(
-            [&normals](std::size_t PH1, std::ptrdiff_t PH2, auto&& ...)
-            {
-                return regionShakeNormals<NormalsMultiArrayType>(
-                    normals,
-                    PH1,
-                    std::size_t(PH2)
-                );
-            },
-            std::int64_t(nbOfNormals)
-        );
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void Mesh::shakePointNormals(sight::data::Mesh::sptr mesh)
 {
     const auto dumpLock = mesh->dump_lock();

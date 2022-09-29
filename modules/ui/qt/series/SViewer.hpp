@@ -26,7 +26,7 @@
 
 #include <data/Vector.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 #include <service/IController.hpp>
 
 #include <map>

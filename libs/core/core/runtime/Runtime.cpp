@@ -76,12 +76,6 @@ std::shared_ptr<Extension> Runtime::findExtension(const std::string& identifier)
     return resExtension;
 }
 
-//------------------------------------------------------------------------------
-
-void Runtime::setWorkingPath(const std::filesystem::path& /*unused*/)
-{
-}
-
 //-----------------------------------------------------------------------------
 
 std::string filterID(const std::string& identifier)

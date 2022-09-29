@@ -44,17 +44,6 @@ IMessageDialog::Buttons MessageDialog::show(
 
 //-----------------------------------------------------------------------------
 
-IMessageDialog::Buttons MessageDialog::showMessageDialog(
-    const std::string& title,
-    const std::string& message,
-    ui::base::dialog::IMessageDialog::Icons icon
-)
-{
-    return show(title, message, icon);
-}
-
-//-----------------------------------------------------------------------------
-
 MessageDialog::MessageDialog()
 {
     core::thread::getDefaultWorker()->postTask<void>(

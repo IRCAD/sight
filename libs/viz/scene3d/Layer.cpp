@@ -70,16 +70,12 @@ namespace sight::viz::scene3d
 
 const core::com::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
 const core::com::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
-const core::com::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
 const core::com::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
 const core::com::Slots::SlotKeyType Layer::s_INTERACTION_SLOT  = "interaction";
 const core::com::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT = "resetCamera";
 
 //-----------------------------------------------------------------------------
-
-const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
-const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
 
 const std::string Layer::s_DEFAULT_CAMERA_NAME      = "DefaultCam";
 const std::string Layer::s_DEFAULT_LIGHT_NAME       = "DefaultLight";
@@ -152,7 +148,6 @@ Layer::Layer()
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-    newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);

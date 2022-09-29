@@ -54,22 +54,6 @@ public:
         ui::base::dialog::IMessageDialog::Icons icon = INFO
     );
 
-    /**
-     * Opens a default message box with the specified title, text and icon.
-     *
-     * @param title Title of the message box
-     * @param message Message of the message box
-     * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
-     * @deprecated use show() instead
-     * @return Returns the button enum value corresponding to the pressed button
-     */
-    [[deprecated("Sight 22.0, use show() instead.")]]
-    UI_BASE_API static IMessageDialog::Buttons showMessageDialog(
-        const std::string& title,
-        const std::string& message,
-        ui::base::dialog::IMessageDialog::Icons icon = INFO
-    );
-
     /// Constructor. Create the implementation of the specific message box
     UI_BASE_API MessageDialog();
 
