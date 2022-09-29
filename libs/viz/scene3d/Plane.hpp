@@ -83,8 +83,8 @@ public:
         Ogre::SceneManager* _sceneManager,
         viz::scene3d::Texture::sptr _tex,
         filter_t _filtering,
-        float _entityOpacity = 1.0F,
-        bool _displayBorder  = true
+        bool _displayBorder  = true,
+        float _entityOpacity = 1.0F
     );
 
     /// Cleans ogre resources.
@@ -209,11 +209,11 @@ private:
     /// Defines the entity's depth.
     Ogre::Real m_depth {0.F};
 
-    /// Defines the opacity applied to the entity.
-    float m_entityOpacity {1.F};
-
     /// Defines if the border is displayed.
     bool m_displayBorder {true};
+
+    /// Defines the opacity applied to the entity.
+    float m_entityOpacity {1.F};
 };
 
 //------------------------------------------------------------------------------

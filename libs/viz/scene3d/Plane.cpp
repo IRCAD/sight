@@ -44,15 +44,15 @@ Plane::Plane(
     Ogre::SceneManager* _sceneManager,
     viz::scene3d::Texture::sptr _tex,
     filter_t _filtering,
-    float _entityOpacity,
-    bool _displayBorder
+    bool _displayBorder,
+    float _entityOpacity
 ) :
     m_filtering(_filtering),
     m_texture(std::move(_tex)),
     m_sceneManager(_sceneManager),
     m_parentSceneNode(_parentSceneNode),
-    m_entityOpacity(_entityOpacity),
-    m_displayBorder(_displayBorder)
+    m_displayBorder(_displayBorder),
+    m_entityOpacity(_entityOpacity)
 {
     // We need an internal counter to avoid naming conflicts
     static std::uint32_t count = 0;
