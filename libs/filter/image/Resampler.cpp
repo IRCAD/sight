@@ -183,15 +183,15 @@ data::Image::sptr Resampler::resample(
     inputBB->SetMinimum(min);
     inputBB->SetMaximum(max);
 
-    const auto* const inputCorners = inputBB->GetCorners();
+    const auto inputCorners = inputBB->ComputeCorners();
     const itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
 
     // Apply transform matrix to all bounding box corners.
     typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();
-    outputCorners->Reserve(inputCorners->Size());
+    outputCorners->Reserve(inputCorners.size());
     std::transform(
-        inputCorners->begin(),
-        inputCorners->end(),
+        inputCorners.begin(),
+        inputCorners.end(),
         outputCorners->begin(),
         [&matrix](const PointType& _in)
         {

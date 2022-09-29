@@ -76,7 +76,6 @@ void App::onExit()
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QApplication::restoreOverrideCursor();
 
-    qApp->flush();
     qApp->exit(0);
 }
 

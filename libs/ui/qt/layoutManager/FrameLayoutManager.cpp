@@ -31,10 +31,11 @@
 #include <boost/lambda/lambda.hpp>
 
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QLayout>
 #include <QMainWindow>
+#include <QScreen>
 
 fwGuiRegisterMacro(
     sight::ui::qt::FrameLayoutManager,
@@ -98,10 +99,11 @@ void FrameLayoutManager::createFrame()
     int posX = frameInfo.m_position.first;
     int posY = frameInfo.m_position.second;
     QPoint pos(posX, posY);
-    if(!sight::ui::qt::FrameLayoutManager::isOnScreen(pos))
+    const QScreen* screen = QGuiApplication::screenAt(pos);
+    if(screen == nullptr)
     {
         QRect frame_rect(0, 0, sizeX, sizeY);
-        frame_rect.moveCenter(QDesktopWidget().screenGeometry().center());
+        frame_rect.moveCenter(QGuiApplication::primaryScreen()->geometry().center());
         pos = frame_rect.topLeft();
     }
 
@@ -194,19 +196,6 @@ ui::base::layoutManager::IFrameLayoutManager::FrameState FrameLayoutManager::get
     }
 
     return state;
-}
-
-//-----------------------------------------------------------------------------
-
-bool FrameLayoutManager::isOnScreen(const QPoint& pos)
-{
-    bool isVisible = false;
-    for(int i = 0 ; i < QDesktopWidget().screenCount() && !isVisible ; ++i)
-    {
-        isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
-    }
-
-    return isVisible;
 }
 
 //-----------------------------------------------------------------------------

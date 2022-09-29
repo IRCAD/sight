@@ -34,6 +34,7 @@
 
 #include <QDesktopWidget>
 #include <QEvent>
+#include <QGuiApplication>
 #include <QRect>
 #include <QShortcut>
 #include <QVBoxLayout>
@@ -280,19 +281,22 @@ void WindowInteractor::setFullscreen(bool _fullscreen, int _screenNumber)
     {
         container->layout()->removeWidget(m_windowContainer);
 
-        QDesktopWidget* desktop = QApplication::desktop();
+        const QDesktopWidget* desktop = QApplication::desktop();
 
+        QRect screenres;
         if(_screenNumber < 0)
         {
             _screenNumber = desktop->screenNumber(container) + 1;
         }
 
-        if(_screenNumber >= desktop->screenCount())
+        if(_screenNumber >= QGuiApplication::screens().count())
         {
-            _screenNumber = desktop->primaryScreen();
+            screenres = QGuiApplication::primaryScreen()->geometry();
         }
-
-        QRect screenres = desktop->screenGeometry(_screenNumber);
+        else
+        {
+            screenres = QGuiApplication::screens()[_screenNumber]->geometry();
+        }
 
         m_windowContainer->setParent(nullptr);
         m_windowContainer->showFullScreen();

@@ -474,8 +474,8 @@ void Window::wheelEvent(QWheelEvent* _e)
     // Only manage vertical wheel scroll.
     info.delta = static_cast<int>(_e->angleDelta().y() * this->devicePixelRatio());
 
-    info.x         = static_cast<int>(_e->x() * this->devicePixelRatio());
-    info.y         = static_cast<int>(_e->y() * this->devicePixelRatio());
+    info.x         = static_cast<int>(_e->position().x() * this->devicePixelRatio());
+    info.y         = static_cast<int>(_e->position().y() * this->devicePixelRatio());
     info.dx        = 0;
     info.dy        = 0;
     info.modifiers = convertModifiers(_e->modifiers());

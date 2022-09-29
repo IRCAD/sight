@@ -483,12 +483,14 @@ void QRangeSlider::wheelEvent(QWheelEvent* event)
     Handle* maxHandle = Handle::safeCast(m_maxHandle);
     Window* window    = Window::safeCast(m_window);
 
-    int delta = int(this->size().width() / (((double) event->delta()) / 4.));
-    int low   = minHandle->pos();
-    int high  = maxHandle->pos();
+    const auto angleDelta = event->angleDelta();
 
-    if(event->orientation() == Qt::Vertical)
+    int low  = minHandle->pos();
+    int high = maxHandle->pos();
+
+    if(angleDelta.y() > 0)
     {
+        int delta = int(this->size().width() / (((double) angleDelta.y()) / 4.));
         if(!m_allowMinGreaterThanMax)
         {
             int diff    = (high - low);
@@ -502,6 +504,7 @@ void QRangeSlider::wheelEvent(QWheelEvent* event)
     }
     else
     {
+        int delta = int(this->size().width() / (((double) angleDelta.x()) / 4.));
         this->move(delta);
     }
 

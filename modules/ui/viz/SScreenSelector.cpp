@@ -93,9 +93,12 @@ void SScreenSelector::updating()
             screenNum++;
         }
 
-        if(screenNum >= desktop->screenCount())
+        const auto screens = QGuiApplication::screens();
+        if(screenNum >= QGuiApplication::screens().count())
         {
-            screenNum = desktop->primaryScreen();
+            QScreen* screen = QGuiApplication::primaryScreen();
+            auto it         = std::ranges::find(screens, screen);
+            screenNum = it - screens.begin();
         }
     }
 

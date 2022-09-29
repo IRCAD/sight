@@ -35,10 +35,7 @@ namespace sight::core::crypto
 void hash(const secure_string& message, std::array<unsigned char, HASH_SIZE>& output)
 {
     // Compute SHA256 using openssl
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, message.c_str(), message.length());
-    SHA256_Final(output.data(), &sha256);
+    SHA256(reinterpret_cast<const std::uint8_t*>(message.data()), message.size(), output.data());
 }
 
 //------------------------------------------------------------------------------

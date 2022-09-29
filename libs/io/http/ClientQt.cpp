@@ -59,7 +59,7 @@ QByteArray ClientQt::get(Request::sptr request)
     QObject::connect(
         reply,
         QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::error
+            &QNetworkReply::errorOccurred
         ),
         this,
         &ClientQt::processError
@@ -87,7 +87,7 @@ std::string ClientQt::getFile(Request::sptr request)
     QObject::connect(
         reply,
         QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::error
+            &QNetworkReply::errorOccurred
         ),
         this,
         &ClientQt::processError
@@ -164,7 +164,7 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
     QObject::connect(
         reply,
         QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::error
+            &QNetworkReply::errorOccurred
         ),
         this,
         &ClientQt::processError

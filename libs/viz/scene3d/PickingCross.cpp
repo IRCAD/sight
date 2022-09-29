@@ -65,7 +65,7 @@ PickingCross::PickingCross(const std::string& _name, Ogre::SceneManager& _sceneM
 
 PickingCross::~PickingCross()
 {
-    auto crossMtl = m_cross->getSection(0)->getMaterial();
+    auto crossMtl = m_cross->getSections()[0]->getMaterial();
     Ogre::MaterialManager::getSingleton().remove(crossMtl);
 
     m_sceneManager.destroyManualObject(m_cross);

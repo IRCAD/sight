@@ -78,7 +78,6 @@ private:
 
     void setState(FrameState state);
     FrameState getState();
-    static bool isOnScreen(const QPoint& pos);
 
     QPointer<QMainWindow> m_qtWindow;
 };

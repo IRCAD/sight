@@ -111,7 +111,6 @@ void SLight::starting()
     m_light = sceneMgr->createLight(this->getID() + "_" + m_lightName);
 
     // Sets the default light direction to the camera's view direction,
-    m_light->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Z);
     m_light->setType(m_lightType);
     m_light->setVisible(m_switchedOn);
 

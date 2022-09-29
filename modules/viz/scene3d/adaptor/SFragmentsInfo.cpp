@@ -364,17 +364,13 @@ void SFragmentsInfo::destroyCompositor()
 
 void SFragmentsInfo::viewportDimensionsChanged(Ogre::Viewport* _viewport)
 {
-    int left   = 0;
-    int top    = 0;
-    int width  = 0;
-    int height = 0;
-    _viewport->getActualDimensions(left, top, width, height);
+    auto rect = _viewport->getActualDimensions();
 
     // Sometimes, the size can be null, we need to avoid resizing since a global texture needs absolute values.
-    if(width != 0 && height != 0)
+    if(rect.width() != 0 && rect.height() != 0)
     {
         this->destroyCompositor();
-        this->createCompositor(width, height);
+        this->createCompositor(static_cast<int>(rect.width()), static_cast<int>(rect.height()));
     }
 }
 

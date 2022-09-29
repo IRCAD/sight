@@ -123,7 +123,7 @@ void SPdfWriter::updating()
     {
         QPdfWriter pdfWriter(this->getLocations().front().string().c_str());
         QPainter painter(&pdfWriter);
-        pdfWriter.setPageSize(QPagedPaintDevice::A4);
+        pdfWriter.setPageSize(QPageSize(QPageSize::A4));
 
         // Scale value to fit the images to a PDF page
         const int scale = static_cast<int>(pdfWriter.logicalDpiX() * 8);
@@ -176,7 +176,7 @@ void SPdfWriter::updating()
         {
             if(pdfWriter.newPage())
             {
-                pdfWriter.setPageSize(QPagedPaintDevice::A4);
+                pdfWriter.setPageSize(QPageSize(QPageSize::A4));
                 if(!qImage.isNull() && qImage.bits() != nullptr)
                 {
                     painter.drawImage(0, 0, qImage);
