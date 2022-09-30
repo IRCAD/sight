@@ -232,154 +232,164 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         return false;
     }
 
-    auto obj = m_parameter.lock();
-
-    // Set shader parameters
-    std::string objClass = obj->getClassname();
-    if(objClass == "sight::data::Integer")
+    bool updateTexture = false;
     {
-        data::Integer::sptr intValue = data::Integer::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given integer object is null", intValue);
+        auto obj = m_parameter.lock();
 
-        params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
-    }
-    else if(objClass == "sight::data::Float")
-    {
-        data::Float::sptr floatValue = data::Float::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given float object is null", floatValue);
-
-        params->setNamedConstant(m_paramName, floatValue->value());
-    }
-    else if(objClass == "sight::data::Boolean")
-    {
-        data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given boolean object is null", booleanValue);
-
-        params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
-    }
-    else if(objClass == "sight::data::Color")
-    {
-        data::Color::sptr colorValue = data::Color::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given color object is null", colorValue);
-
-        std::array<float, 4> paramValues {};
-
-        paramValues[0] = colorValue->red();
-        paramValues[1] = colorValue->green();
-        paramValues[2] = colorValue->blue();
-        paramValues[3] = colorValue->alpha();
-
-        Ogre::ColourValue color(paramValues[0], paramValues[1], paramValues[2], paramValues[3]);
-
-        params->setNamedConstant(m_paramName, color);
-    }
-    else if(objClass == "sight::data::PointList")
-    {
-        data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given pointList object is null", pointListValue);
-
-        std::vector<data::Point::sptr> points = pointListValue->getPoints();
-        int nbPoints                          = static_cast<int>(points.size());
-
-        auto* paramValues = new float [static_cast<std::uint64_t>(nbPoints * 3)];
-
-        for(int i = 0 ; i < nbPoints * 3 ; )
+        // Set shader parameters
+        std::string objClass = obj->getClassname();
+        if(objClass == "sight::data::Integer")
         {
-            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
-            i++;
+            data::Integer::sptr intValue = data::Integer::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given integer object is null", intValue);
 
-            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
-            i++;
-
-            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
-            i++;
+            params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
         }
-
-        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<std::size_t>(3));
-
-        delete[] paramValues;
-    }
-    else if(objClass == "sight::data::Matrix4")
-    {
-        data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given Matrix4 object is null", transValue);
-
-        std::array<float, 16> paramValues {};
-
-        for(std::size_t i = 0 ; i < 16 ; i++)
+        else if(objClass == "sight::data::Float")
         {
-            paramValues[i] = static_cast<float>(transValue->getCoefficients()[i]);
+            data::Float::sptr floatValue = data::Float::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given float object is null", floatValue);
+
+            params->setNamedConstant(m_paramName, floatValue->value());
         }
-
-        params->setNamedConstant(
-            m_paramName,
-            paramValues.data(),
-            static_cast<std::size_t>(16),
-            static_cast<std::size_t>(1)
-        );
-    }
-    else if(objClass == "sight::data::Array")
-    {
-        data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The object is nullptr", arrayObject);
-
-        const std::size_t numComponents = arrayObject->getSize()[0];
-        if(numComponents <= 3)
+        else if(objClass == "sight::data::Boolean")
         {
-            const auto dumpLock = arrayObject->dump_lock();
+            data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given boolean object is null", booleanValue);
 
-            if(arrayObject->getType() == core::Type::FLOAT)
+            params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
+        }
+        else if(objClass == "sight::data::Color")
+        {
+            data::Color::sptr colorValue = data::Color::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given color object is null", colorValue);
+
+            std::array<float, 4> paramValues {};
+
+            paramValues[0] = colorValue->red();
+            paramValues[1] = colorValue->green();
+            paramValues[2] = colorValue->blue();
+            paramValues[3] = colorValue->alpha();
+
+            Ogre::ColourValue color(paramValues[0], paramValues[1], paramValues[2], paramValues[3]);
+
+            params->setNamedConstant(m_paramName, color);
+        }
+        else if(objClass == "sight::data::PointList")
+        {
+            data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given pointList object is null", pointListValue);
+
+            std::vector<data::Point::sptr> points = pointListValue->getPoints();
+            int nbPoints                          = static_cast<int>(points.size());
+
+            auto* paramValues = new float [static_cast<std::uint64_t>(nbPoints * 3)];
+
+            for(int i = 0 ; i < nbPoints * 3 ; )
             {
-                const auto* floatValue = static_cast<const float*>(arrayObject->getBuffer());
-                params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
+                paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
+                i++;
+
+                paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
+                i++;
+
+                paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
+                i++;
             }
-            else if(arrayObject->getType() == core::Type::DOUBLE)
+
+            params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<std::size_t>(3));
+
+            delete[] paramValues;
+        }
+        else if(objClass == "sight::data::Matrix4")
+        {
+            data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given Matrix4 object is null", transValue);
+
+            std::array<float, 16> paramValues {};
+
+            for(std::size_t i = 0 ; i < 16 ; i++)
             {
-                const auto* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
-                params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
+                paramValues[i] = static_cast<float>(transValue->getCoefficients()[i]);
             }
-            else if(arrayObject->getType() == core::Type::INT32)
+
+            params->setNamedConstant(
+                m_paramName,
+                paramValues.data(),
+                static_cast<std::size_t>(16),
+                static_cast<std::size_t>(1)
+            );
+        }
+        else if(objClass == "sight::data::Array")
+        {
+            data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The object is nullptr", arrayObject);
+
+            const std::size_t numComponents = arrayObject->getSize()[0];
+            if(numComponents <= 3)
             {
-                const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
-                params->setNamedConstant(m_paramName, intValue, 1, numComponents);
+                const auto dumpLock = arrayObject->dump_lock();
+
+                if(arrayObject->getType() == core::Type::FLOAT)
+                {
+                    const auto* floatValue = static_cast<const float*>(arrayObject->getBuffer());
+                    params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
+                }
+                else if(arrayObject->getType() == core::Type::DOUBLE)
+                {
+                    const auto* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
+                    params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
+                }
+                else if(arrayObject->getType() == core::Type::INT32)
+                {
+                    const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
+                    params->setNamedConstant(m_paramName, intValue, 1, numComponents);
+                }
+                else
+                {
+                    SIGHT_ERROR("Array type not handled: " << arrayObject->getType().name());
+                }
             }
             else
             {
-                SIGHT_ERROR("Array type not handled: " << arrayObject->getType().name());
+                SIGHT_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
             }
         }
-        else
+        else if(objClass == "sight::data::Image")
         {
-            SIGHT_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
+            data::Image::sptr image = data::Image::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The object is nullptr", image);
+
+            if(!m_texture)
+            {
+                m_texture = std::make_shared<sight::viz::scene3d::Texture>(image);
+            }
+
+            // We can reach this code for an another reason than an image modification, for instance when the compositor
+            // is resized. However I don't know how to discriminate the two cases so for now we always copy the image.
+            // :/
+            if(image->getSizeInBytes() != 0U)
+            {
+                // Defer the update of the texture outside the scope of the data lock
+                updateTexture = true;
+            }
+        }
+        // We allow to work on the SRender composite and interact with slots instead
+        else if(objClass != "sight::data::Composite")
+        {
+            SIGHT_ERROR("This Type " << objClass << " isn't supported.");
         }
     }
-    else if(objClass == "sight::data::Image")
+
+    if(updateTexture)
     {
-        data::Image::sptr image = data::Image::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The object is nullptr", image);
+        m_texture->update();
 
-        if(!m_texture)
-        {
-            m_texture = std::make_shared<sight::viz::scene3d::Texture>(image);
-        }
+        Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
+        texState->setTexture(m_texture->get());
 
-        // We can reach this code for an another reason than an image modification, for instance when the compositor
-        // is resized. However I don't know how to discriminate the two cases so for now we always copy the image. :/
-        if(image->getSizeInBytes() != 0U)
-        {
-            m_texture->update();
-
-            Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
-            texState->setTexture(m_texture->get());
-
-            auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
-            params->setNamedConstant(m_paramName, texUnitIndex);
-        }
-    }
-    // We allow to work on the SRender composite and interact with slots instead
-    else if(objClass != "sight::data::Composite")
-    {
-        SIGHT_ERROR("This Type " << objClass << " isn't supported.");
+        auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
+        params->setNamedConstant(m_paramName, texUnitIndex);
     }
 
     return true;
