@@ -1,9 +1,4 @@
-sight_add_target(
-    io_session
-    TYPE LIBRARY
-    PCH pchData
-    OBJECT_LIBRARY ON
-)
+sight_add_target(io_session TYPE LIBRARY OBJECT_LIBRARY ON)
 
 find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
 target_link_libraries(io_session_obj PRIVATE gdcmCommon gdcmMSFF)

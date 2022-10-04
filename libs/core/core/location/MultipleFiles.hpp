@@ -60,20 +60,20 @@ private:
 inline std::string MultipleFiles::toString() const
 {
     #ifdef WIN32
-    const char* const delim = ";";
+    std::string delim = ";";
     #else
-    const char* const delim = ":";
+    std::string delim = ":";
     #endif
 
     std::string result;
-    for(const auto& file : m_files)
+    for(size_t i = 0 ; const auto& file : m_files)
     {
         result.append(file.string());
-        result.append(delim);
+        if(++i < m_files.size())
+        {
+            result.append(delim);
+        }
     }
-
-    // Remove the last deliminator
-    result.resize(result.size() - 1);
 
     return result;
 }

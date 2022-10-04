@@ -32,7 +32,6 @@
 
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/result_type.hpp>
-#include <boost/static_assert.hpp>
 
 #include <type_traits>
 
@@ -79,7 +78,7 @@ Slot<Slot<R(A ...)> >::Slot(SPTR(SlotRun<F>)slot) :
             boost::function_types::function_arity<F>::value
         >::wrap(&SlotRun<F>::run, slot.get()))
 {
-    BOOST_STATIC_ASSERT((std::is_same<void, R>::value));
+    static_assert(std::is_same<void, R>::value);
     this->setWorker(slot->getWorker());
 }
 

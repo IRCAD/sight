@@ -1,9 +1,4 @@
-sight_add_target(
-    filter_image
-    TYPE LIBRARY
-    PCH pchServiceOmp
-    FAST_DEBUG ON
-)
+sight_add_target(filter_image TYPE LIBRARY FAST_DEBUG ON)
 
 find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT REQUIRED)
 target_link_libraries(filter_image PUBLIC ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT)
@@ -24,11 +19,6 @@ if(ITK_VERSION_MAJOR GREATER 4)
     endif()
 else()
     target_compile_definitions(filter_image PUBLIC "HAS_ITK_REVIEW_MODULE")
-endif()
-
-find_package(OpenMP QUIET)
-if(OPENMP_FOUND)
-    target_link_libraries(filter_image PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 find_package(glm QUIET REQUIRED)

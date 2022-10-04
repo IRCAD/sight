@@ -35,7 +35,6 @@
 #include <data/iterator.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
-#include <boost/shared_array.hpp>
 
 #include <array>
 #include <filesystem>
@@ -188,7 +187,6 @@ public:
 
     typedef Size::value_type IndexType;
     typedef std::uint8_t BufferType;
-    typedef boost::shared_array<BufferType> SharedArray;
 
     /// Image format
     enum PixelFormat

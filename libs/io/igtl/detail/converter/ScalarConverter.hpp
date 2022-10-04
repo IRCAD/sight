@@ -32,7 +32,6 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 
 #include <utility>
@@ -52,13 +51,13 @@ public:
     /// Constructor
     ScalarConverter()
     {
-        BOOST_STATIC_ASSERT(boost::is_base_of<data::Object, FwDataObjectType>::value);
+        static_assert(std::is_base_of<data::Object, FwDataObjectType>::value);
     }
 
     ScalarConverter(std::string a) :
         m_igtlType(std::move(a))
     {
-        BOOST_STATIC_ASSERT(boost::is_base_of<data::Object, FwDataObjectType>::value);
+        static_assert(std::is_base_of<data::Object, FwDataObjectType>::value);
     }
 
     /// Destructor

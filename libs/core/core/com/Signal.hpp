@@ -145,7 +145,7 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
 
     private:
 
-        BOOST_STATIC_ASSERT((std::is_same<void, R>::value));
+        static_assert((std::is_same<void, R>::value));
 };
 
 } // namespace sight::core::com

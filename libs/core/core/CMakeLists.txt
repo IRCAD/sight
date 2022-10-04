@@ -1,7 +1,5 @@
 sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON)
 
-find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
-
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC std::filesystem)
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC Boost::date_time Boost::log Boost::log_setup Boost::iostreams)
 
@@ -31,6 +29,7 @@ endif()
 if(WIN32)
     target_include_directories(${TARGET_OBJECT_LIB} PRIVATE ${Iconv_INCLUDE_DIR})
 endif()
+target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC OpenMP::OpenMP_CXX)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/api)

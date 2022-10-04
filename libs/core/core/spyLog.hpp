@@ -62,15 +62,11 @@
     #define SPYLOG_ABORT() std::abort()
 #endif
 
-#include <boost/preprocessor/comparison/greater_equal.hpp>
-#include <boost/preprocessor/control/expr_iif.hpp>
-
 #include <cassert>
 #include <cstring>
 #include <sstream>
 
 # include <core/log/SpyLogger.hpp>
-# include <core/log/ScopedMessage.hpp>
 
 // -----------------------------------------------------------------------------
 constexpr static const char* strip_source_path(const char* const path)
@@ -295,26 +291,6 @@ constexpr static const char* strip_source_path(const char* const path)
 #  define SIGHT_PRETTY_FUNC() __FUNCSIG__
 # else
 #  define SIGHT_PRETTY_FUNC() __func__
-# endif
-
-/**
- * @brief Trace contextual function signature.
- *
- * Generate a log trace message with the (contextual) function signature.
- */
-# ifndef SPYLOG_TIMER
-#  define SIGHT_TRACE_FUNC() SIGHT_TRACE(SIGHT_PRETTY_FUNC())
-# else
-
-# define SIGHT_TRACE_FUNC() __FWCORE_EXPR_BLOCK( \
-        core::log::ScopedMessage __spylog__scoped__msg__( \
-            __FILE__, \
-            __LINE__, \
-            SIGHT_PRETTY_FUNC() \
-        ); \
-        __spylog__scoped__msg__.use(); \
-)
-
 # endif
 /**  @} */
 

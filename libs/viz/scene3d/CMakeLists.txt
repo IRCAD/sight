@@ -1,15 +1,4 @@
-sight_add_target(
-    viz_scene3d
-    TYPE LIBRARY
-    PCH pchServiceOmp
-    FAST_DEBUG ON
-)
-
-# include first to be taken into account in the PCH compile flags
-find_package(OpenMP QUIET)
-if(OPENMP_FOUND)
-    target_link_libraries(viz_scene3d PRIVATE OpenMP::OpenMP_CXX)
-endif()
+sight_add_target(viz_scene3d TYPE LIBRARY FAST_DEBUG ON)
 
 target_link_libraries(viz_scene3d PUBLIC OgreOverlay)
 

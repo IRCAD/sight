@@ -24,8 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <boost/pool/pool.hpp>
-
 #include <cmath>
 
 namespace sight::data

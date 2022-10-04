@@ -27,9 +27,6 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/pool/pool.hpp>
-
 #include <functional>
 
 SIGHT_REGISTER_DATA(sight::data::RawBufferTL);

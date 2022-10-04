@@ -30,7 +30,6 @@
 #include <boost/mpl/pop_front.hpp>
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/vector.hpp>
-#include <boost/static_assert.hpp>
 
 #include <iterator>
 #include <stdexcept>
@@ -94,7 +93,7 @@ struct isMappingSingleMPLHelper
     static bool evaluate(const KeyType& key)
     {
         SIGHT_NOT_USED(key);
-        BOOST_STATIC_ASSERT(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
+        static_assert(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
         std::string msg("isMapping<type>(const KEYTYPE &key) not specialized for TYPE and/or KEYTYPE!!!");

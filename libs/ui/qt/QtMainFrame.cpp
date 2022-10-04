@@ -27,8 +27,6 @@
 #include <ui/base/dialog/IMessageDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 
-#include <boost/lambda/lambda.hpp>
-
 #include <QCloseEvent>
 #include <QMainWindow>
 

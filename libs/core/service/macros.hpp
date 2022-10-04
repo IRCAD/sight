@@ -25,8 +25,6 @@
 #include "service/IService.hpp"
 #include "service/ServiceFactoryRegistry.hpp"
 
-#include <core/concept_checks.hpp>
-
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
@@ -39,25 +37,10 @@ namespace sight::service
  */
 
 #define __FWSERVICE_REGISTER_MACRO(ServiceType, ServiceImpl) \
-    class BOOST_PP_CAT (ServiceTypeConceptCheck, __LINE__) \
-        { \
-        public : \
-            BOOST_CONCEPT_ASSERT((sight::core::concepts::SharedPtrTypedef<ServiceType>)); \
-}; \
-    class BOOST_PP_CAT (ServiceImplConceptCheck, __LINE__) \
-        { \
-        public : \
-            BOOST_CONCEPT_ASSERT((sight::core::concepts::SharedPtrTypedef<ServiceImpl>)); \
-}; \
     static sight::service::ServiceFactoryRegistry<ServiceImpl> \
     BOOST_PP_CAT(serviceRegistry, __LINE__)( #ServiceImpl, #ServiceType);
 
 #define __FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject) \
-    class BOOST_PP_CAT (ServiceObjectConceptCheck, __LINE__) \
-        { \
-        public : \
-            BOOST_CONCEPT_ASSERT((sight::core::concepts::SharedPtrTypedef<ServiceObject>)); \
-}; \
     static sight::service::ServiceObjectFactoryRegistry \
     BOOST_PP_CAT(serviceObjectRegistry, __LINE__)( #ServiceImpl, #ServiceObject);
 

@@ -24,7 +24,6 @@
 
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
 namespace sight::core::mt
@@ -32,9 +31,6 @@ namespace sight::core::mt
 
 typedef boost::mutex Mutex;
 typedef boost::unique_lock<Mutex> ScopedLock;
-
-typedef boost::recursive_mutex RecursiveMutex;
-typedef boost::unique_lock<RecursiveMutex> RecursiveScopedLock;
 
 /// Defines a single writer, multiple readers mutex.
 typedef boost::shared_mutex ReadWriteMutex;

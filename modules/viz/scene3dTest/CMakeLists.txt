@@ -1,4 +1,4 @@
-sight_add_target(module_viz_scene3d_test TYPE MODULE PCH pchCore)
+sight_add_target(module_viz_scene3d_test TYPE MODULE)
 
 add_definitions("-DQT_NO_KEYWORDS")
 

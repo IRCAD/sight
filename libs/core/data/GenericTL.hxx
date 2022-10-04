@@ -24,9 +24,6 @@
 
 #include <data/Exception.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/pool/pool.hpp>
-
 namespace sight::data
 {
 

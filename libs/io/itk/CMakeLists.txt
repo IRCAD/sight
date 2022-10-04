@@ -1,4 +1,4 @@
-sight_add_target(io_itk TYPE LIBRARY PCH pchData)
+sight_add_target(io_itk TYPE LIBRARY)
 
 find_package(JPEG QUIET REQUIRED)
 find_package(ZLIB QUIET REQUIRED)

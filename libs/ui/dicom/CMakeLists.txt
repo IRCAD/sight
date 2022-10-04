@@ -1,4 +1,4 @@
-sight_add_target(ui_dicom TYPE LIBRARY PCH pchData)
+sight_add_target(ui_dicom TYPE LIBRARY)
 
 find_package(DCMTK REQUIRED)
 

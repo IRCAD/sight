@@ -24,7 +24,6 @@
 
 #include "io/igtl/config.hpp"
 
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_arithmetic.hpp>
 
 #include <algorithm>
@@ -74,7 +73,7 @@ public:
         io::igtl::detail::helper::detail::ConvertData<T> convertData {};
         RawDataType bytes;
 
-        BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
+        static_assert(std::is_arithmetic<T>::value);
         convertData.scalar = scalar;
         bytes.resize(sizeof(T));
 

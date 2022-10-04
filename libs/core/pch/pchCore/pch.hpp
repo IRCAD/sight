@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include <core/base.hpp>
-#include <core/Demangler.hpp>
-#include <core/FactoryRegistry.hpp>
-
+#include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
+#include <boost/function_types/function_arity.hpp>
+#include <boost/function_types/result_type.hpp>
 #include <boost/graph/named_graph.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/mpl/accumulate.hpp>
@@ -37,17 +37,62 @@
 #include <boost/mpl/push_front.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/vector.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/random_access_index.hpp>
+#include <boost/multi_index_container.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/preprocessor/comparison/greater_equal.hpp>
+#include <boost/preprocessor/control/expr_if.hpp>
+#include <boost/preprocessor/control/if.hpp>
+#include <boost/preprocessor/facilities/empty.hpp>
+#include <boost/preprocessor/facilities/expand.hpp>
+#include <boost/preprocessor/facilities/is_empty_variadic.hpp>
+#include <boost/preprocessor/facilities/overload.hpp>
+#include <boost/preprocessor/variadic/elem.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/range/combine.hpp>
+#include <boost/range/iterator_range_core.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/once.hpp>
+#include <boost/thread/shared_mutex.hpp>
+#include <boost/tokenizer.hpp>
 #include <boost/type_traits.hpp>
+#include <boost/unordered_map.hpp>
 
+#include <glm/glm.hpp>
+
+#include <algorithm>
+#include <any>
+#include <array>
+#include <cassert>
+#include <chrono>
+#include <cmath>
+#include <csignal>
 #include <cstdint>
+#include <cstring>
+#include <deque>
 #include <exception>
 #include <filesystem>
 #include <functional>
 #include <future>
 #include <iostream>
 #include <iterator>
+#include <limits>
+#include <list>
 #include <map>
+#include <memory>
+#include <queue>
+#include <ranges>
+#include <regex>
+#include <set>
+#include <sstream>
 #include <string>
+#include <thread>
 #include <typeinfo>
 #include <unordered_map>
+#include <unordered_set>
+#include <utility>
 #include <vector>

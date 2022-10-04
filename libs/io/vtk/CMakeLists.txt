@@ -1,4 +1,4 @@
-sight_add_target(io_vtk TYPE LIBRARY PCH pchData)
+sight_add_target(io_vtk TYPE LIBRARY)
 
 target_link_libraries(
     io_vtk

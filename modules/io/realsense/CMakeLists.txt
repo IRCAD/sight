@@ -1,15 +1,4 @@
-sight_add_target(
-    module_io_realsense
-    TYPE MODULE
-    PCH pchServiceOmp
-    FAST_DEBUG ON
-)
-
-find_package(OpenMP QUIET)
-
-if(OPENMP_FOUND)
-    target_link_libraries(module_io_realsense PRIVATE OpenMP::OpenMP_CXX)
-endif()
+sight_add_target(module_io_realsense TYPE MODULE FAST_DEBUG ON)
 
 find_package(realsense2 QUIET REQUIRED)
 

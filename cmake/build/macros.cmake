@@ -878,7 +878,7 @@ endmacro()
 
 # Return the precompiled header target from a target
 function(
-    getPchTarget
+    get_pch_target
     TARGET
     TARGET_DIR
     TYPE
@@ -904,11 +904,7 @@ function(
         if(FAST_DEBUG AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
             set(PCH_SUFFIX "Og")
         endif()
-        if(TYPE STREQUAL "MODULE")
-            set(${TARGET_NAME}_PCH_TARGET pchService${PCH_SUFFIX} PARENT_SCOPE)
-        else()
-            set(${TARGET_NAME}_PCH_TARGET pchCore${PCH_SUFFIX} PARENT_SCOPE)
-        endif()
+        set(${TARGET_NAME}_PCH_TARGET pchCore${PCH_SUFFIX} PARENT_SCOPE)
     endif()
 
 endfunction()
@@ -955,7 +951,7 @@ macro(sight_add_target)
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(SIGHT_ENABLE_PCH AND SIGHT_TARGET_TYPE AND SIGHT_TARGET_PCH)
-        getpchtarget(
+        get_pch_target(
             ${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH} ${SIGHT_TARGET_OBJECT_LIBRARY}
             ${SIGHT_TARGET_FAST_DEBUG}
         )

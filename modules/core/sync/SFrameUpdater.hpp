@@ -24,7 +24,7 @@
 
 #include "modules/sync/config.hpp"
 
-#include <core/HiResClock.hpp>
+#include <core/HiResTimer.hpp>
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>

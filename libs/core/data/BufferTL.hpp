@@ -27,6 +27,7 @@
 #include "data/timeline/Buffer.hpp"
 
 #include <boost/array.hpp>
+#include <boost/pool/pool.hpp>
 #include <boost/pool/poolfwd.hpp>
 
 namespace sight::data

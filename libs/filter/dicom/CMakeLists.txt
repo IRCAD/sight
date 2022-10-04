@@ -1,4 +1,4 @@
-sight_add_target(filter_dicom TYPE LIBRARY PCH pchData)
+sight_add_target(filter_dicom TYPE LIBRARY)
 
 if(${DCMTK_VERSION} VERSION_GREATER_EQUAL 3.6.7)
     target_link_libraries(filter_dicom PRIVATE DCMTK::dcmdata DCMTK::dcmnet DCMTK::dcmimgle)

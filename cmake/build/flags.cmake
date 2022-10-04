@@ -53,6 +53,12 @@ add_compile_options(
     "$<$<CONFIG:Debug>:-DDEBUG;-D_DEBUG>"
 )
 
+find_package(OpenMP QUIET REQUIRED)
+
+if(OPENMP_CXX_FOUND)
+    add_compile_options(${OpenMP_CXX_FLAGS})
+endif()
+
 add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>")
 
 # C/C++ standard
@@ -81,6 +87,11 @@ add_compile_options(
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Debug>>:-ggdb3;-ggnu-pubnames>"
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:RelWithDebInfo>>:-ggdb;-gz>"
 )
+
+if(SIGHT_ENABLE_PCH)
+    # This speedups Clang build significantly (approx 10%)
+    add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-fpch-instantiate-templates>")
+endif()
 
 # -gmodules is problematic for clang-tidy
 if(NOT CMAKE_EXPORT_COMPILE_COMMANDS AND NOT SIGHT_ENABLE_CLANG_TIDY)

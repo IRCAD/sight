@@ -1,4 +1,4 @@
-sight_add_target(io_base TYPE LIBRARY PCH pchData)
+sight_add_target(io_base TYPE LIBRARY)
 
 #racy compatibility
 target_compile_definitions(io_base PRIVATE PRJ_NAME="${NAME}")

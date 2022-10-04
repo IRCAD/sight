@@ -1,4 +1,4 @@
-sight_add_target(geometry_data TYPE LIBRARY PCH pchData)
+sight_add_target(geometry_data TYPE LIBRARY)
 
 target_link_libraries(geometry_data PUBLIC core data)
 

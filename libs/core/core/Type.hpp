@@ -23,7 +23,6 @@
 
 #include "core/config.hpp"
 
-#include <any>
 #include <limits>
 #include <map>
 #include <string>

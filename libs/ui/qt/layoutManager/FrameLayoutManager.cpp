@@ -28,8 +28,6 @@
 
 #include <ui/base/registry/macros.hpp>
 
-#include <boost/lambda/lambda.hpp>
-
 #include <QApplication>
 #include <QGuiApplication>
 #include <QIcon>

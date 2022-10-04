@@ -1,17 +1,16 @@
-# pchCore
+# pchCoreOg
 
-The `pchCore` library is a special target used to share a precompiled header at build time. It does not contain any code.
+The `pchCoreOg` library is a special target used to share a precompiled header to speed-up build time. It does not contain any code.
 
-It includes very basic core sight headers and commonly used headers libraries such as the C++ standard library and *boost*. It is very unlikely you need to explicitly use this library. It is the default precompiled header for `LIBRARY` and `TEST` targets. If your code uses `sight::data`, prefer `pchData` or if your code uses `sight::service`, prefer `pchService`.
+It includes commonly used 3rd part libraries headers such as the C++ standard library and *boost*. It is very unlikely you need to explicitly use this library. It is the default precompiled header, in Debug mode, for targets compiled with the FAST_DEBUG option.
 
 ## CMake
 
 ```cmake
+# Implicit usage since it is enabled by default for all targets
+sight_add_target(myTarget TYPE LIBRARY)
+sight_add_target(myTarget TYPE TEST)
 
 # Explicit usage
-sight_add_target(myTarget TYPE LIBRARY PCH pchCore ...)
-
-# Implicit usage since it is enabled by default for LIBRARY and TEST targets
-sight_add_target(myTarget TYPE LIBRARY) 
-sight_add_target(myTarget TYPE TEST)
+sight_add_target(myTarget TYPE LIBRARY PCH pchCoreOg ...)
 ```

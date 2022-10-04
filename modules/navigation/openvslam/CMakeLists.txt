@@ -8,8 +8,6 @@ target_link_libraries(module_navigation_openvslam PRIVATE opencv_core opencv_hig
 find_package(Boost QUIET REQUIRED COMPONENTS serialization)
 target_link_libraries(module_navigation_openvslam PRIVATE Boost::serialization)
 
-# OpenMP is required for openvslam
-find_package(OpenMP REQUIRED)
 find_package(openvslam QUIET COMPONENTS openvslam REQUIRED)
 target_link_libraries(module_navigation_openvslam PRIVATE openvslam::openvslam)
 

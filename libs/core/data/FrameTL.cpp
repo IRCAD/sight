@@ -27,8 +27,6 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-#include <boost/pool/pool.hpp>
-
 SIGHT_REGISTER_DATA(sight::data::FrameTL);
 
 namespace sight::data

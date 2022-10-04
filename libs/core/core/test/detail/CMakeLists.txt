@@ -1,5 +1,5 @@
 # Beware, at least for windows we need to use the same PCH than our obj library
-sight_add_target(coreDetailTest TYPE TEST PCH core_obj)
+sight_add_target(coreDetailTest TYPE TEST)
 
 # We need this one to test the location
 target_compile_definitions(coreDetailTest PRIVATE MODULE_BIN_PREFIX="${CMAKE_INSTALL_BINDIR}")

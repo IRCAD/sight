@@ -1,4 +1,4 @@
-sight_add_target(io_dimse TYPE LIBRARY PCH pchData)
+sight_add_target(io_dimse TYPE LIBRARY)
 
 if(${DCMTK_VERSION} VERSION_GREATER_EQUAL 3.6.7)
     target_link_libraries(io_dimse PUBLIC DCMTK::dcmnet)

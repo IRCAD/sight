@@ -24,8 +24,6 @@
 
 #include <core/base.hpp>
 
-#include <boost/lambda/lambda.hpp>
-
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLineEdit>

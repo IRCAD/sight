@@ -30,8 +30,7 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <regex>
 
