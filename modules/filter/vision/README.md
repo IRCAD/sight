@@ -12,7 +12,6 @@ This module uses **OpenCV** & **Realsense** libraries.
 - **SPointCloudFromDepthMap**: computes a point cloud from a depth map obtained from an RGBD camera. Optionally, combines it with an RGB map to get a colored point cloud.
 - **STransformDepthMap2mm**: applies a scale on a depth map image.
 - **STransformDepthTL2mm**: applies a scale on a depth map buffer extracted from a timeline.
-- **SUltrasoundImage**: extracts the ultrasound plane and its associated information from an ultrasound video.
 
 ## How to use it
 

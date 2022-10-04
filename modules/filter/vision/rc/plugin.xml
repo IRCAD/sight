@@ -37,10 +37,4 @@
          <service>sight::module::filter::vision::STransformDepthTL2mm</service>
          <desc>This service applies a scale on a depth map buffer extracted from a timeline.</desc>
     </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IFilter</type>
-         <service>sight::module::filter::vision::SUltrasoundImage</service>
-         <desc>Extract the ultrasound plane and its associated information from an ultrasound video.</desc>
-    </extension>
 </plugin>
