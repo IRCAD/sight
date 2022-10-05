@@ -114,7 +114,7 @@
                 <view sid="activitySequencer" start="true" />
                 <view sid="openButton" start="true" />
                 <view sid="saveButton" start="true" />
-                <view sid="ircadIhuLogoView" start="true" />
+                <view sid="ircadLogoView" start="true" />
             </registry>
         </service>
 
@@ -141,8 +141,8 @@
             <height>70</height>
         </service>
 
-        <service uid="ircadIhuLogoView" type="sight::module::ui::qt::image::SImage">
-            <path>sight::module::ui::flaticons/IrcadIHU.svg</path>
+        <service uid="ircadLogoView" type="sight::module::ui::qt::image::SImage">
+            <path>sight::module::ui::flaticons/ircad.svg</path>
             <height>70</height>
         </service>
 

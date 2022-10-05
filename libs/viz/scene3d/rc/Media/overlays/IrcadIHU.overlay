@@ -1,96 +1,96 @@
-overlay IrcadIHU_Left_Top
+overlay Ircad_Left_Top
 {
-    overlay_element IrcadIHU_Top_Left/EmptyPanel Panel
+    overlay_element Ircad_Top_Left/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Top_Left/IrcadIHUPanel Panel
+        overlay_element Ircad_Top_Left/IrcadPanel Panel
         {
             horz_align left
             vert_align top
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Left_Center
+overlay Ircad_Left_Center
 {
-    overlay_element IrcadIHU_Left_Center/EmptyPanel Panel
+    overlay_element Ircad_Left_Center/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Left_Center/IrcadIHUPanel Panel
+        overlay_element Ircad_Left_Center/IrcadPanel Panel
         {
             horz_align left
             vert_align center
             top -0.05
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Left_Bottom
+overlay Ircad_Left_Bottom
 {
-    overlay_element IrcadIHU_Bottom_Left/EmptyPanel Panel
+    overlay_element Ircad_Bottom_Left/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Bottom_Left/IrcadIHUPanel Panel
+        overlay_element Ircad_Bottom_Left/IrcadPanel Panel
         {
             horz_align left
             vert_align bottom
             top -0.10
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Center_Top
+overlay Ircad_Center_Top
 {
-    overlay_element IrcadIHU_Top_Center/EmptyPanel Panel
+    overlay_element Ircad_Top_Center/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Top_Center/IrcadIHUPanel Panel
+        overlay_element Ircad_Top_Center/IrcadPanel Panel
         {
             horz_align center
             vert_align top
             left -0.075
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Center_Bottom
+overlay Ircad_Center_Bottom
 {
-    overlay_element IrcadIHU_Bottom_Center/EmptyPanel Panel
+    overlay_element Ircad_Bottom_Center/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Bottom_Center/IrcadIHUPanel Panel
+        overlay_element Ircad_Bottom_Center/IrcadPanel Panel
         {
             horz_align center
             vert_align bottom
@@ -98,42 +98,42 @@ overlay IrcadIHU_Center_Bottom
             top -0.10
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Right_Top
+overlay Ircad_Right_Top
 {
-    overlay_element IrcadIHU_Top_Right/EmptyPanel Panel
+    overlay_element Ircad_Top_Right/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Top_Right/IrcadIHUPanel Panel
+        overlay_element Ircad_Top_Right/IrcadPanel Panel
         {
             horz_align right
             vert_align top
             left -0.15
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Right_Center
+overlay Ircad_Right_Center
 {
-    overlay_element IrcadIHU_Right_Center/EmptyPanel Panel
+    overlay_element Ircad_Right_Center/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Right_Center/IrcadIHUPanel Panel
+        overlay_element Ircad_Right_Center/IrcadPanel Panel
         {
             horz_align right
             vert_align center
@@ -141,21 +141,21 @@ overlay IrcadIHU_Right_Center
             top -0.05
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }
 
-overlay IrcadIHU_Right_Bottom
+overlay Ircad_Right_Bottom
 {
-    overlay_element IrcadIHU_Bottom_Right/EmptyPanel Panel
+    overlay_element Ircad_Bottom_Right/EmptyPanel Panel
     {
         left 0.025
         top 0.025
         width 0.95
         height 0.95
 
-        overlay_element IrcadIHU_Bottom_Right/IrcadIHUPanel Panel
+        overlay_element Ircad_Bottom_Right/IrcadPanel Panel
         {
             horz_align right
             vert_align bottom
@@ -163,7 +163,7 @@ overlay IrcadIHU_Right_Bottom
             top -0.10
             width 0.15
             height 0.10
-            material IrcadIHULogo
+            material IrcadLogo
         }
     }
 }

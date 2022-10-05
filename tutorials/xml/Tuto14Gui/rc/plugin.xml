@@ -283,7 +283,7 @@
                 </layout>
             </gui>
              <registry>
-                <view sid="ircadIHULogoSrv" start="true" />
+                <view sid="ircadLogoSrv" start="true" />
             </registry>
         </service>
 
@@ -393,8 +393,8 @@
             </config>
         </service>
 
-        <service uid="ircadIHULogoSrv" type="sight::module::ui::qt::image::SImage" >
-            <path>sight::module::ui::flaticons/IrcadIHU.svg</path>
+        <service uid="ircadLogoSrv" type="sight::module::ui::qt::image::SImage" >
+            <path>sight::module::ui::flaticons/ircad.svg</path>
             <height>70</height>
         </service>
 
