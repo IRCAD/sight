@@ -30,7 +30,7 @@
 #include <QMenuBar>
 #include <QString>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::layoutManager::MenuBarLayoutManager,
     sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY
 );

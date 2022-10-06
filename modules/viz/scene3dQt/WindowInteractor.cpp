@@ -42,7 +42,7 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterMacro(
+SIGHT_REGISTER_SCENE3D(
     sight::module::viz::scene3dQt::WindowInteractor,
     sight::viz::scene3d::IWindowInteractor::REGISTRY_KEY
 );

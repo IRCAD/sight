@@ -37,7 +37,7 @@
 
 // cspell: ignore QWIDGETSIZE_MAX
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::ToolboxLayoutManager,
     sight::ui::base::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY
 );

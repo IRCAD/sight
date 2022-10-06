@@ -25,7 +25,7 @@
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::custom::NoFilter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::custom::NoFilter);
 
 namespace sight::filter::dicom::custom
 {

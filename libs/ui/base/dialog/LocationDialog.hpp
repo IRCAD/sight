@@ -33,7 +33,7 @@ namespace sight::ui::base::dialog
 /**
  * @brief   Defines the generic file/folder selector dialog for IHM.
  *
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries.
  */
 class UI_BASE_CLASS_API LocationDialog : public ILocationDialog

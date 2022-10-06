@@ -30,7 +30,7 @@
 namespace sight::activity::builder
 {
 
-fwActivitiesBuilderRegisterMacro(
+SIGHT_REGISTER_ACTIVITY_BUILDER(
     activity::builder::ActivityInitData,
     "sight::activity::builder::ActivityInitData"
 );

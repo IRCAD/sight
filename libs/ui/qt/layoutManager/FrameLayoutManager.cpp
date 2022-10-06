@@ -35,7 +35,7 @@
 #include <QMainWindow>
 #include <QScreen>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::FrameLayoutManager,
     sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY
 );

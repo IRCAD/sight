@@ -34,7 +34,7 @@
 #include <QScrollArea>
 #include <QTabWidget>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::TabLayoutManager,
     sight::ui::base::layoutManager::TabLayoutManagerBase::REGISTRY_KEY
 );

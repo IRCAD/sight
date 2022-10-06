@@ -35,7 +35,7 @@
 namespace sight::activity::builder
 {
 
-fwActivitiesBuilderRegisterMacro(activity::builder::Activity, "::activity::builder::Activity");
+SIGHT_REGISTER_ACTIVITY_BUILDER(activity::builder::Activity, "::activity::builder::Activity");
 
 //-----------------------------------------------------------------------------
 

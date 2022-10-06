@@ -32,7 +32,7 @@
 namespace sight::module::activity::validator::ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::ModelSeries::ContainOneSkin);
+SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::module::activity::validator::ModelSeries::ContainOneSkin);
 
 //-----------------------------------------------------------------------------
 

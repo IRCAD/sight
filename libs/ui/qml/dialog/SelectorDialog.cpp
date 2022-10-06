@@ -32,7 +32,7 @@
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::SelectorDialog,
     sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY
 );

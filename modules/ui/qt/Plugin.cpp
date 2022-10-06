@@ -52,15 +52,15 @@
 // Register all dialog implementation when we do use qt
 namespace base_dialog = sight::ui::base::dialog;
 
-fwGuiRegisterMacro(sight::ui::qt::dialog::InputDialog, base_dialog::IInputDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::LocationDialog, base_dialog::ILocationDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::LoggerDialog, base_dialog::ILoggerDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::MessageDialog, base_dialog::IMessageDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::MultiSelectorDialog, base_dialog::IMultiSelectorDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::NotificationDialog, base_dialog::INotificationDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::ProgressDialog, base_dialog::IProgressDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::PulseProgressDialog, base_dialog::IPulseProgressDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::SelectorDialog, base_dialog::ISelectorDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::InputDialog, base_dialog::IInputDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::LocationDialog, base_dialog::ILocationDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::LoggerDialog, base_dialog::ILoggerDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::MessageDialog, base_dialog::IMessageDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::MultiSelectorDialog, base_dialog::IMultiSelectorDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::NotificationDialog, base_dialog::INotificationDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::ProgressDialog, base_dialog::IProgressDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::PulseProgressDialog, base_dialog::IPulseProgressDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::SelectorDialog, base_dialog::ISelectorDialog::REGISTRY_KEY);
 
 namespace sight::module::ui::qt
 {

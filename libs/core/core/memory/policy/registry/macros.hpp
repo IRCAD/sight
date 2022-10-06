@@ -30,7 +30,7 @@
 namespace sight::core::memory::policy::registry
 {
 
-#define fwMemoryPolicyRegisterMacro(classname) \
+#define SIGHT_REGISTER_MEMORY_POLICY(classname) \
     static core::memory::IPolicy::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::core::memory::policy::registry

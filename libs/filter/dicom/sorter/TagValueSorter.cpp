@@ -32,7 +32,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::sorter::TagValueSorter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::sorter::TagValueSorter);
 
 namespace sight::filter::dicom::sorter
 {

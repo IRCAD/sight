@@ -38,7 +38,7 @@
 
 // cspell: ignore QWIDGETSIZE_MAX
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::CardinalLayoutManager,
     sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY
 );

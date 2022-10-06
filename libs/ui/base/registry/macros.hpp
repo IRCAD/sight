@@ -30,7 +30,7 @@
 namespace sight::ui::base::registry
 {
 
-#define fwGuiRegisterMacro(GuiClassname, GuiFunctorKey) \
+#define SIGHT_REGISTER_GUI(GuiClassname, GuiFunctorKey) \
     static sight::ui::base::GuiBaseObject::Registry<GuiClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(GuiFunctorKey);
 

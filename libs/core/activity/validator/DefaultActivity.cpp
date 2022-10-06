@@ -31,7 +31,7 @@
 namespace sight::activity::validator
 {
 
-fwActivitiesValidatorRegisterMacro(sight::activity::validator::DefaultActivity);
+SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::activity::validator::DefaultActivity);
 
 //-----------------------------------------------------------------------------
 

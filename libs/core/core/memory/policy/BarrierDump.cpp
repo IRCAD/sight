@@ -29,7 +29,7 @@
 namespace sight::core::memory::policy
 {
 
-fwMemoryPolicyRegisterMacro(core::memory::policy::BarrierDump);
+SIGHT_REGISTER_MEMORY_POLICY(core::memory::policy::BarrierDump);
 
 //------------------------------------------------------------------------------
 

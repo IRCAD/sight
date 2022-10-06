@@ -32,7 +32,7 @@
 namespace sight::core::memory::policy
 {
 
-fwMemoryPolicyRegisterMacro(core::memory::policy::ValveDump<core::memory::tools::MemoryMonitorTools>);
+SIGHT_REGISTER_MEMORY_POLICY(core::memory::policy::ValveDump<core::memory::tools::MemoryMonitorTools>);
 
 //------------------------------------------------------------------------------
 

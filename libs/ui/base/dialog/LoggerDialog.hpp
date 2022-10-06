@@ -33,7 +33,7 @@ namespace sight::ui::base::dialog
 
 /**
  * @brief ILoggerDialog is used to display a dialog message and a set of logs
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation is fwQt libraries
  */
 class UI_BASE_CLASS_API LoggerDialog : public ILoggerDialog

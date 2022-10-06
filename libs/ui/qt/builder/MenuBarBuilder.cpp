@@ -33,7 +33,7 @@
 #include <QMainWindow>
 #include <QMenuBar>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::base::builder::MenuBarBuilder,
     sight::ui::base::builder::IMenuBarBuilder::REGISTRY_KEY
 );

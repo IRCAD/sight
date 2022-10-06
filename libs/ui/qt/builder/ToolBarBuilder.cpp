@@ -34,7 +34,7 @@
 #include <QMainWindow>
 #include <QToolBar>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::base::builder::ToolBarBuilder,
     sight::ui::base::builder::IToolBarBuilder::REGISTRY_KEY
 );

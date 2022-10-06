@@ -27,7 +27,7 @@
 namespace sight::filter::dicom::registry
 {
 
-#define fwDicomIOFilterRegisterMacro(classname) \
+#define SIGHT_REGISTER_DICOM_FILTER(classname) \
     static sight::filter::dicom::IFilter::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::filter::dicom::registry

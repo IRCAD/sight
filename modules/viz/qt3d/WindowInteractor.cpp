@@ -34,7 +34,7 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderQt3DRegisterMacro(
+SIGHT_REGISTER_RENDER_QT3D(
     sight::module::viz::qt3d::WindowInteractor,
     sight::viz::qt3d::IWindowInteractor::REGISTRY_KEY
 );

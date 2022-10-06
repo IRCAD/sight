@@ -30,7 +30,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::base::builder::ContainerBuilder,
     sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY
 );

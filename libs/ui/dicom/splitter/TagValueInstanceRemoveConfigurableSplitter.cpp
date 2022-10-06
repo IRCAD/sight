@@ -37,7 +37,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwDicomIOFilterRegisterMacro(sight::ui::dicom::splitter::TagValueInstanceRemoveConfigurableSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::ui::dicom::splitter::TagValueInstanceRemoveConfigurableSplitter);
 
 namespace sight::ui::dicom::splitter
 {

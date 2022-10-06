@@ -38,7 +38,7 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterOffscreenMgrMacro(
+SIGHT_REGISTER_SCENE3D_OFFSCREEN(
     sight::module::viz::scene3dQt::OffScreenWindowInteractor,
     sight::viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY
 );

@@ -29,7 +29,7 @@
 
 #include <QWidget>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::base::builder::SlideViewBuilder,
     sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
 )

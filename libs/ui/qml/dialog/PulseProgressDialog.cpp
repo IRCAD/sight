@@ -35,7 +35,7 @@
 #include <QtConcurrent>
 #include <QtCore>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::PulseProgressDialog,
     sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
 );

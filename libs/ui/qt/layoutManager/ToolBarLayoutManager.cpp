@@ -38,7 +38,7 @@
 
 #include <functional>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::layoutManager::ToolBarLayoutManager,
     sight::ui::base::layoutManager::IToolBarLayoutManager::REGISTRY_KEY
 );

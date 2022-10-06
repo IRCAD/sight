@@ -24,7 +24,7 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro(sight::ui::qt::ActionCallback, sight::ui::base::ActionCallbackBase::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::ActionCallback, sight::ui::base::ActionCallbackBase::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {

@@ -33,7 +33,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::SOPClassUIDSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::SOPClassUIDSplitter);
 
 namespace sight::filter::dicom::splitter
 {

@@ -30,7 +30,7 @@
 namespace sight::activity::validator::registry
 {
 
-#define fwActivitiesValidatorRegisterMacro(ValidatorClassname) \
+#define SIGHT_REGISTER_ACTIVITY_VALIDATOR(ValidatorClassname) \
     static sight::activity::IValidator::Registry<ValidatorClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(ValidatorClassname));
 

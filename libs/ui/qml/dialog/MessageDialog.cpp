@@ -32,7 +32,7 @@
 
 #include <filesystem>
 
-fwGuiRegisterMacro(sight::ui::qml::dialog::MessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qml::dialog::MessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 namespace sight::ui::qml::dialog
 {

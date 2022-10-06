@@ -28,7 +28,7 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::AcquisitionNumberSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::AcquisitionNumberSplitter);
 
 namespace sight::filter::dicom::splitter
 {

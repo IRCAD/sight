@@ -38,7 +38,7 @@
 #include <filesystem>
 #include <functional>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::LocationDialog,
     sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
 );

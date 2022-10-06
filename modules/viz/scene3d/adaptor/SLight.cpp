@@ -50,7 +50,7 @@ static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
 static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
 static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
 
-fwRenderOgreRegisterLightMacro(
+SIGHT_REGISTER_SCENE3D_LIGHT(
     sight::module::viz::scene3d::adaptor::SLight,
     sight::viz::scene3d::ILight::REGISTRY_KEY
 )

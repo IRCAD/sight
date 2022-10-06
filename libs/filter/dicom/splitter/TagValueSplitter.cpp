@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::TagValueSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::TagValueSplitter);
 
 namespace sight::filter::dicom::splitter
 {

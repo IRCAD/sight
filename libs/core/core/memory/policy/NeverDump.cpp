@@ -27,7 +27,7 @@
 namespace sight::core::memory::policy
 {
 
-fwMemoryPolicyRegisterMacro(core::memory::policy::NeverDump);
+SIGHT_REGISTER_MEMORY_POLICY(core::memory::policy::NeverDump);
 
 //------------------------------------------------------------------------------
 

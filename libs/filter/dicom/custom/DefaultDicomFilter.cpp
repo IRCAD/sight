@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::custom::DefaultDicomFilter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::custom::DefaultDicomFilter);
 
 namespace sight::filter::dicom::custom
 {

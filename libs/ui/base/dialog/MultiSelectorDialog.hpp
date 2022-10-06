@@ -33,7 +33,7 @@ namespace sight::ui::base::dialog
 /**
  * @brief   MultiSelectorDialog allows the choice of some element among several (_selections)
  *
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  *
  */
