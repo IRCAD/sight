@@ -5,8 +5,8 @@
         <param name="AS_UID" />
         <param name="dataSet" />
         <param name="cameraSet" />
-        <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
-        <param name="enabledNextChannel" default="enabledNextChannel" />
+        <param name="hasPreviousChannel" default="hasPreviousChannel" />
+        <param name="hasNextChannel" default="hasNextChannel" />
         <param name="previousActivityChannel" default="previousActivityChannel" />
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
@@ -140,7 +140,7 @@
         </connect>
 
         <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application configuration.-->
-        <connect channel="${enabledPreviousChannel}">
+        <connect channel="${hasPreviousChannel}">
             <slot>exportAct/hide</slot>
             <slot>previousAct/show</slot>
             <slot>previousAct/setEnabled</slot>
@@ -152,7 +152,7 @@
         </connect>
 
         <!-- Connection to enable "next" action. It should be connected to a SSequencer in the application configuration.-->
-        <connect channel="${enabledNextChannel}">
+        <connect channel="${hasNextChannel}">
             <slot>exportAct/hide</slot>
             <slot>nextAct/show</slot>
             <slot>nextAct/setEnabled</slot>

@@ -58,16 +58,17 @@ namespace sight::module::ui::qt::activity
  * - \b activityCreated(data::Activity::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
  * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
- * - \b enabledNext(bool): This signal is emitted when the next button is enabled (when the activity is not the last
- *   one)
- * - \b enabledPrevious(bool): This signal is emitted when the previous button is enabled (when the activity is not the
- *   first one)
+ * - \b hasNext(bool): This signal is emitted on sendInfo() slot, with the information if an activity is present after
+ * the current one.
+ * - \b hasPrevious(bool): This signal is emitted on sendInfo() slot, with the information if an activity is present
+ * before the current one.
+ * - \b nextEnabled(bool): This signal is emitted when the next button is enabled and can be launched.
  *
  * @section Slots Slots
  * - \b next() : Create the next activity
  * - \b previous() : Create the next activity
  * - \b goTo(int) : Create the activity at the given index
- * - \b sendInfo() : Send the 'enabledNext' and 'enablePrevious' signals for the current activity
+ * - \b sendInfo() : Send the 'hasNext' and 'hasPrevious' signals for the current activity
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -131,10 +132,9 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
-    typedef core::com::Signal<void (data::Activity::sptr)> DataRequiredSignalType;
-    typedef core::com::Signal<void (bool)> EnabledPreviousSignalType;
-    typedef core::com::Signal<void (bool)> EnabledNextSignalType;
+    using ActivityCreatedSignalType = core::com::Signal<void (data::Activity::sptr)>;
+    using DataRequiredSignalType    = core::com::Signal<void (data::Activity::sptr)>;
+    using BoolSignalType            = core::com::Signal<void (bool)>;
 /**
  * @}
  */
@@ -178,7 +178,7 @@ private:
     /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
     void previous();
 
-    /// Slot: Send the 'enabledNext' and 'enablePrevious' signals for the current activity
+    /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
     void sendInfo() const;
 
     /// Invoke 'enableActivity' method in Qml file
@@ -189,8 +189,9 @@ private:
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
     DataRequiredSignalType::sptr m_sigDataRequired;
-    EnabledPreviousSignalType::sptr m_sigEnabledPrevious;
-    EnabledNextSignalType::sptr m_sigEnabledNext;
+    BoolSignalType::sptr m_sigHasPrevious;
+    BoolSignalType::sptr m_sigHasNext;
+    BoolSignalType::sptr m_sigNextEnabled;
 
     /// List of the activities
     std::vector<std::string> m_activityNames;

@@ -45,8 +45,9 @@ namespace sight::module::ui::qt::activity
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
-const core::com::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
-const core::com::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
+const core::com::Signals::SignalKeyType s_HAS_PREVIOUS_SIG     = "hasPrevious";
+const core::com::Signals::SignalKeyType s_HAS_NEXT_SIG         = "hasNext";
+const core::com::Signals::SignalKeyType s_NEXT_ENABLED_SIG     = "nextEnabled";
 
 const core::com::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
 const core::com::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
@@ -69,8 +70,10 @@ SSequencer::SSequencer() noexcept
 {
     m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
     m_sigDataRequired    = newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG);
-    m_sigEnabledPrevious = newSignal<EnabledPreviousSignalType>(s_ENABLED_PREVIOUS_SIG);
-    m_sigEnabledNext     = newSignal<EnabledNextSignalType>(s_ENABLED_NEXT_SIG);
+    m_sigHasPrevious     = newSignal<BoolSignalType>(s_HAS_PREVIOUS_SIG);
+    m_sigHasNext         = newSignal<BoolSignalType>(s_HAS_NEXT_SIG);
+    m_sigNextEnabled     = newSignal<BoolSignalType>(s_NEXT_ENABLED_SIG);
+
     newSlot(s_GO_TO_SLOT, &SSequencer::goTo, this);
     newSlot(s_CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
     newSlot(s_NEXT_SLOT, &SSequencer::next, this);
@@ -360,6 +363,12 @@ void SSequencer::checkNext()
         if(ok)
         {
             this->enableActivity(m_currentActivity + 1);
+            m_sigNextEnabled->asyncEmit(true);
+        }
+        else
+        {
+            m_sigNextEnabled->asyncEmit(false);
+            SIGHT_DEBUG(errorMsg);
         }
     }
 }
@@ -383,10 +392,10 @@ void SSequencer::previous()
 void SSequencer::sendInfo() const
 {
     const bool previousEnabled = (m_currentActivity > 0);
-    m_sigEnabledPrevious->asyncEmit(previousEnabled);
+    m_sigHasPrevious->asyncEmit(previousEnabled);
 
     const bool nextEnabled = (m_currentActivity < static_cast<int>(m_activityIds.size()) - 1);
-    m_sigEnabledNext->asyncEmit(nextEnabled);
+    m_sigHasNext->asyncEmit(nextEnabled);
 }
 
 //------------------------------------------------------------------------------

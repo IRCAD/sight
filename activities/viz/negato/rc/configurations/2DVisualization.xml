@@ -5,8 +5,8 @@
         <param name="imageSeries" />
         <param name="landmarks" />
         <param name="advancedLandmarksEditor" default="true" />
-        <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
-        <param name="enabledNextChannel" default="enabledNextChannel" />
+        <param name="hasPreviousChannel" default="hasPreviousChannel" />
+        <param name="hasNextChannel" default="hasNextChannel" />
         <param name="previousActivityChannel" default="previousActivityChannel" />
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
@@ -180,7 +180,7 @@
 
         <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application
              configuration.-->
-        <connect channel="${enabledPreviousChannel}">
+        <connect channel="${hasPreviousChannel}">
             <slot>ActionExportActivity/hide</slot>
             <slot>ActionPrevious/show</slot>
             <slot>ActionPrevious/setEnabled</slot>
@@ -193,7 +193,7 @@
 
         <!-- Connection to enable "next" action. It should be connected to a SSequencer in the application
              configuration.-->
-        <connect channel="${enabledNextChannel}">
+        <connect channel="${hasNextChannel}">
             <slot>ActionExportActivity/hide</slot>
             <slot>ActionNext/show</slot>
             <slot>ActionNext/setEnabled</slot>
