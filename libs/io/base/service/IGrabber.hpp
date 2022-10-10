@@ -64,6 +64,7 @@ namespace sight::io::base::service
  * - \b setIntParameter(): Sets a named integer parameter.
  * - \b setEnumParameter(): Sets a named enum value parameter.
  * - \b setEnumValuesParameter(): Sets a named list of enum values.
+ * - \b requestSettings(): Requests the grabber internal settings.
  */
 class IO_BASE_CLASS_API IGrabber : public sight::service::IService
 {
@@ -91,6 +92,7 @@ public:
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_VALUES_PARAMETER_SLOT;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_REQUEST_SETTINGS_SLOT;
     ///@}
 
     /**
@@ -201,6 +203,9 @@ public:
 
     /// Sets an internal list of enum values.
     IO_BASE_API virtual void setEnumValuesParameter(std::string value, std::string key);
+
+    /// Requests the grabber internal settings.
+    IO_BASE_API virtual void requestSettings();
 
 protected:
 

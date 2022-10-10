@@ -703,6 +703,19 @@ void SGrabberProxy::setEnumValuesParameter(std::string value, std::string key)
     }
 }
 
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::requestSettings()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->requestSettings();
+        }
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void SGrabberProxy::reconfigure()

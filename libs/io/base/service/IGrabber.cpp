@@ -58,6 +58,8 @@ const core::com::Slots::SlotKeyType IGrabber::s_SET_INT_PARAMETER_SLOT         =
 const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_PARAMETER_SLOT        = "setEnumParameter";
 const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_VALUES_PARAMETER_SLOT = "setEnumValuesParameter";
 
+const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT = "requestSettings";
+
 // ----------------------------------------------------------------------------
 
 IGrabber::IGrabber() noexcept
@@ -90,6 +92,8 @@ IGrabber::IGrabber() noexcept
     newSlot(s_SET_INT_PARAMETER_SLOT, &IGrabber::setIntParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &IGrabber::setEnumParameter, this);
     newSlot(s_SET_ENUM_VALUES_PARAMETER_SLOT, &IGrabber::setEnumValuesParameter, this);
+
+    newSlot(s_REQUEST_SETTINGS_SLOT, &IGrabber::requestSettings, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -158,6 +162,12 @@ void IGrabber::setEnumParameter(std::string /*unused*/, std::string /*unused*/)
 //------------------------------------------------------------------------------
 
 void IGrabber::setEnumValuesParameter(std::string /*unused*/, std::string /*unused*/)
+{
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::requestSettings()
 {
 }
 

@@ -178,6 +178,9 @@ protected:
 
     /// Sets internal enum values.
     MODULE_IO_VIDEO_API void setEnumValuesParameter(std::string, std::string) final;
+
+    /// SLOT: Requests the grabber internal settings.
+    MODULE_IO_VIDEO_API void requestSettings() final;
 /** @} */
 
 private:
