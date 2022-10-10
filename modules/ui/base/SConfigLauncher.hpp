@@ -26,8 +26,6 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/Failed.hpp>
 
 #include <service/helper/ConfigLauncher.hpp>
 

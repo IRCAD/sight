@@ -172,28 +172,28 @@ void SRender::configuring()
 {
     this->initialize();
 
-    std::vector<SPTR(core::runtime::ConfigurationElement)> vectConfig = m_configuration->find("scene");
-    SIGHT_ASSERT("There is no implementation between \"scene\" tags", !vectConfig.empty());
-    m_sceneConfiguration = vectConfig.at(0);
+    const auto& config = this->getConfigTree();
 
-    core::runtime::ConfigurationElementContainer::Iterator iter;
-    for(iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
+    const auto sceneCfg = config.get_child_optional("scene");
+    SIGHT_ASSERT("There is no implementation between \"scene\" tags", sceneCfg.has_value());
+
+    for(const auto& iter : sceneCfg.value())
     {
-        if((*iter)->getName() == "axis")
+        if(iter.first == "axis")
         {
-            this->configureAxis(*iter);
+            this->configureAxis(iter.second.get_child("<xmlattr>"));
         }
-        else if((*iter)->getName() == "scene")
+        else if(iter.first == "scene")
         {
-            this->configureScene(*iter);
+            this->configureScene(iter.second.get_child("<xmlattr>"));
         }
-        else if((*iter)->getName() == "adaptor")
+        else if(iter.first == "adaptor")
         {
-            this->configureAdaptor(*iter);
+            this->configureAdaptor(iter.second.get_child("<xmlattr>"));
         }
         else
         {
-            SIGHT_ASSERT("Bad scene configurationType, unknown xml node : " + (*iter)->getName(), false);
+            SIGHT_ASSERT("Bad scene const IService&, unknown xml node : " + iter.first, false);
         }
     }
 }
@@ -270,54 +270,38 @@ Qt::AspectRatioMode SRender::getAspectRatioMode() const
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureAxis(ConfigurationType _conf)
+void SRender::configureAxis(const ConfigType& _conf)
 {
-    SIGHT_ASSERT("\"axis\" tag required", _conf->getName() == "axis");
-
-    const std::string id        = _conf->getAttributeValue("id");
-    const std::string origin    = _conf->getAttributeValue("origin");
-    const std::string scale     = _conf->getAttributeValue("scale");
-    const std::string scaleType = _conf->getAttributeValue("scaleType");
+    const auto id        = _conf.get<std::string>("id");
+    const auto scaleType = _conf.get<std::string>("scaleType");
+    const auto origin    = _conf.get<float>("origin");
+    const auto scale     = _conf.get<float>("scale");
 
     scene2d::data::Axis::sptr axis = std::make_shared<scene2d::data::Axis>();
-    axis->setOrigin(std::stof(origin));
-    axis->setScale(std::stof(scale));
+    axis->setOrigin(origin);
+    axis->setScale(scale);
     axis->setScaleType(scaleType == "LINEAR" ? scene2d::data::Axis::LINEAR : scene2d::data::Axis::LOG);
     m_axisMap[id] = axis;
 }
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureScene(ConfigurationType _conf)
+void SRender::configureScene(const ConfigType& _conf)
 {
-    SIGHT_ASSERT("\"scene\" tag required", _conf->getName() == "scene");
+    m_sceneStart.x = _conf.get<float>("x");
+    m_sceneStart.y = _conf.get<float>("y");
+    m_sceneWidth.x = _conf.get<float>("width");
+    m_sceneWidth.y = _conf.get<float>("height");
 
-    const std::string x      = _conf->getAttributeValue("x");
-    const std::string y      = _conf->getAttributeValue("y");
-    const std::string width  = _conf->getAttributeValue("width");
-    const std::string height = _conf->getAttributeValue("height");
+    m_antialiasing = _conf.get<bool>("antialiasing", m_antialiasing);
 
-    m_sceneStart.x = std::stof(x);
-    m_sceneStart.y = std::stof(y);
-    m_sceneWidth.x = std::stof(width);
-    m_sceneWidth.y = std::stof(height);
-
-    if(_conf->hasAttribute("antialiasing"))
+    if(const auto aspectRatio = _conf.get_optional<std::string>("aspectRatioMode"); aspectRatio.has_value())
     {
-        if(_conf->getAttributeValue("antialiasing") == "true")
-        {
-            m_antialiasing = true;
-        }
-    }
-
-    if(_conf->hasAttribute("aspectRatioMode"))
-    {
-        const std::string aspectRatio = _conf->getAttributeValue("aspectRatioMode");
-        if(aspectRatio == "KeepAspectRatioByExpanding")
+        if(*aspectRatio == "KeepAspectRatioByExpanding")
         {
             m_aspectRatioMode = Qt::KeepAspectRatioByExpanding;
         }
-        else if(aspectRatio == "KeepAspectRatio")
+        else if(*aspectRatio == "KeepAspectRatio")
         {
             m_aspectRatioMode = Qt::KeepAspectRatio;
         }
@@ -325,28 +309,31 @@ void SRender::configureScene(ConfigurationType _conf)
         {
             SIGHT_ERROR_IF(
                 "Unknown aspect ratio ("
-                << aspectRatio
+                << *aspectRatio
                 << "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
-                aspectRatio != "IgnoreAspectRatio"
+                *aspectRatio != "IgnoreAspectRatio"
             );
             m_aspectRatioMode = Qt::IgnoreAspectRatio;
         }
     }
 
-    if(_conf->hasAttribute(("background")))
+    if(const auto hexaColor = _conf.get<std::string>("background", ""); !hexaColor.empty())
     {
-        m_background = _conf->getAttributeValue("background");
-        SIGHT_ASSERT("Color format must be hexadecimal.", m_background[0] == '#');
+        SIGHT_ASSERT(
+            "Color string should start with '#' and followed by 6 or 8 "
+            "hexadecimal digits. Given color: " << hexaColor,
+            hexaColor[0] == '#'
+            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+        );
+        m_background = hexaColor;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureAdaptor(ConfigurationType _conf)
+void SRender::configureAdaptor(const ConfigType& _conf)
 {
-    SIGHT_ASSERT("\"adaptor\" tag required", _conf->getName() == "adaptor");
-
-    const std::string adaptorId = _conf->getAttributeValue("uid");
+    const auto adaptorId = _conf.get<std::string>("uid");
 
     auto& registry = viz::scene2d::registry::getAdaptorRegistry();
     registry[adaptorId] = this->getID();

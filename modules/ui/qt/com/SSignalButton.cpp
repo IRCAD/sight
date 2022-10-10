@@ -22,25 +22,13 @@
 
 #include "SSignalButton.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/tools/fwID.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QVBoxLayout>
-
-#include <string>
 
 namespace sight::module::ui::qt::com
 {
@@ -86,86 +74,32 @@ void SSignalButton::configuring()
 {
     this->initialize();
 
-    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    const auto configuration = this->getConfigTree();
 
-    if(config)
+    const auto config = configuration.get_child_optional("config");
+
+    if(config.has_value())
     {
-        core::runtime::ConfigurationElement::sptr checkableCfg = config->findConfigurationElement("checkable");
-        if(checkableCfg)
+        m_checkable    = config->get<bool>("checkable", m_checkable);
+        m_checkAtStart = config->get<bool>("checked", m_checkAtStart);
+        m_executable   = config->get<bool>("executable", m_executable);
+
+        m_text    = config->get<std::string>("text", m_text);
+        m_text2   = config->get<std::string>("text2", m_text2);
+        m_toolTip = config->get<std::string>("toolTip", m_toolTip);
+
+        if(const auto icon = config->get_optional<std::string>("icon"); icon.has_value())
         {
-            SIGHT_ASSERT(
-                "'checkable' value must be 'true' or 'false'",
-                checkableCfg->getValue() == "true" || checkableCfg->getValue() == "false"
-            );
-            m_checkable = (checkableCfg->getValue() == "true");
+            m_icon = core::runtime::getModuleResourceFilePath(icon.value());
         }
 
-        core::runtime::ConfigurationElement::sptr executableCfg = config->findConfigurationElement("executable");
-        if(executableCfg)
+        if(const auto icon = config->get_optional<std::string>("icon2"); icon.has_value())
         {
-            SIGHT_ASSERT(
-                "'executable' value must be 'true' or 'false'",
-                executableCfg->getValue() == "true" || executableCfg->getValue() == "false"
-            );
-            m_executable = (executableCfg->getValue() == "true");
+            m_icon2 = core::runtime::getModuleResourceFilePath(icon.value());
         }
 
-        core::runtime::ConfigurationElement::sptr txtCfg = config->findConfigurationElement("text");
-        if(txtCfg)
-        {
-            m_text = txtCfg->getValue();
-        }
-
-        core::runtime::ConfigurationElement::sptr iconCfg = config->findConfigurationElement("icon");
-        if(iconCfg)
-        {
-            m_icon = core::runtime::getModuleResourceFilePath(iconCfg->getValue());
-        }
-
-        core::runtime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
-        if(txt2Cfg)
-        {
-            SIGHT_ASSERT("Button must be 'checkable' in order to defined 'text2'", m_checkable);
-            SIGHT_ASSERT("'text' tag must be defined in order to specify 'text2'", !m_text.empty());
-            m_text2 = txt2Cfg->getValue();
-        }
-
-        core::runtime::ConfigurationElement::sptr icon2Cfg = config->findConfigurationElement("icon2");
-        if(icon2Cfg)
-        {
-            SIGHT_ASSERT("Button must be 'checkable' in order to defined 'icon2'", m_checkable);
-            SIGHT_ASSERT("'icon' tag must be defined in order to specify 'icon2'", iconCfg);
-            m_icon2 = core::runtime::getModuleResourceFilePath(icon2Cfg->getValue());
-        }
-
-        core::runtime::ConfigurationElement::sptr checkedCfg = config->findConfigurationElement("checked");
-        if(checkedCfg)
-        {
-            SIGHT_ASSERT("Button must be 'checkable' in order to defined 'checked'", m_checkable);
-            SIGHT_ASSERT(
-                "'checked' value must be 'true' or 'false'",
-                checkedCfg->getValue() == "true" || checkedCfg->getValue() == "false"
-            );
-            m_checkAtStart = (checkedCfg->getValue() == "true");
-        }
-
-        core::runtime::ConfigurationElement::sptr widthCfg = config->findConfigurationElement("iconWidth");
-        if(widthCfg)
-        {
-            m_iconWidth = unsigned(std::stoi(widthCfg->getValue()));
-        }
-
-        core::runtime::ConfigurationElement::sptr heightCfg = config->findConfigurationElement("iconHeight");
-        if(heightCfg)
-        {
-            m_iconHeight = unsigned(std::stoi(heightCfg->getValue()));
-        }
-
-        core::runtime::ConfigurationElement::sptr tooltipCfg = config->findConfigurationElement("toolTip");
-        if(tooltipCfg)
-        {
-            m_toolTip = tooltipCfg->getValue();
-        }
+        m_iconWidth  = config->get<unsigned int>("iconWidth", m_iconWidth);
+        m_iconHeight = config->get<unsigned int>("iconHeight", m_iconHeight);
     }
 }
 

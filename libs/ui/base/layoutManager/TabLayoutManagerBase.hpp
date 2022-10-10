@@ -63,10 +63,10 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_BASE_API TabLayoutManagerBase();
+    UI_BASE_API TabLayoutManagerBase() = default;
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~TabLayoutManagerBase() override;
+    UI_BASE_API ~TabLayoutManagerBase() override = default;
 
     /**
      * @brief Initialize tab layout manager before the creation of layout.
@@ -100,7 +100,7 @@ public:
      *   - \b minHeight : minimal height of the view.
      *   - \b selected  {true | false}: define if the tab is the current one.
      */
-    UI_BASE_API void initialize(ConfigurationType configuration) override;
+    UI_BASE_API void initialize(const ui::base::config_t& configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 

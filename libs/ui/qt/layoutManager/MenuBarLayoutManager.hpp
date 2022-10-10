@@ -26,7 +26,6 @@
 #include "ui/qt/container/QtMenuBarContainer.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <ui/base/container/fwMenu.hpp>
 #include <ui/base/container/fwMenuBar.hpp>

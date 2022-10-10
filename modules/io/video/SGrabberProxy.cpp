@@ -492,10 +492,8 @@ void SGrabberProxy::startCamera()
                 if(!m_grabberConfig.empty())
                 {
                     const auto& srvConfigRegistry = service::extension::Config::getDefault();
-
-                    core::runtime::ConfigurationElement::csptr srvCfg =
-                        srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
-                    srv->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
+                    const auto srvCfg             = srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
+                    srv->setConfiguration(srvCfg);
                     srv->configure();
                 }
 

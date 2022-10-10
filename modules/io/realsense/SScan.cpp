@@ -27,13 +27,10 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 #include <core/location/SingleFile.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/Type.hpp>
 
 #include <data/Matrix4.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>

@@ -60,13 +60,6 @@ class SeriesSet;
 
 } // namespace data
 
-namespace core::runtime
-{
-
-struct ConfigurationElement;
-
-} // namespace core::runtime
-
 } // namespace sight
 
 namespace sight::module::io::dicomweb
@@ -170,7 +163,7 @@ private:
     unsigned int m_delay {500};
 
     /// Optional configuration to set to reader implementation
-    SPTR(core::runtime::ConfigurationElement) m_readerConfig;
+    IService::ConfigType m_readerConfig;
 
     /// Server hostname preference key
     std::string m_serverHostnameKey;

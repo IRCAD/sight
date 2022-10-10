@@ -108,8 +108,6 @@ Q_SIGNALS:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /// Call IQmlEditor::starting
     void starting() override;
 

@@ -55,8 +55,6 @@ public:
 
     SIGHT_DECLARE_SERVICE(SJobBar, sight::ui::base::IDialogEditor);
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-
     /// Type of showJob slot
     typedef core::com::Slot<void (core::jobs::IJob::sptr)> ShowJobSlot;
 

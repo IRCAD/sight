@@ -85,8 +85,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /**
      * @brief Install the layout.
      *

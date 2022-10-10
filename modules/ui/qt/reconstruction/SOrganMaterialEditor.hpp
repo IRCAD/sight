@@ -71,8 +71,6 @@ public:
 
 private:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.

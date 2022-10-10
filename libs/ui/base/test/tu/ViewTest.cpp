@@ -70,7 +70,6 @@ void ViewTest::configuringTest()
 
         std::stringstream xmlConfig;
         xmlConfig << ""
-                     "<registry>"
                      "<menuBar sid=\"myMenu\"/>"
                      "<toolBar sid=\"myToolBar\"/>"
                      "<view sid=\"view1\" start=\"true\"/>"
@@ -80,13 +79,11 @@ void ViewTest::configuringTest()
                      "<slideView sid=\"slideView2\" start=\"true\"/>"
                      "<menuBar sid=\"ignored\"/>"
                      "<toolBar sid=\"ignored\"/>"
-                     "</registry>"
                      "";
         boost::property_tree::ptree config;
         boost::property_tree::read_xml(xmlConfig, config);
-        auto configuration = core::runtime::Convert::fromPropertyTree(config);
 
-        view->initialize(configuration);
+        view->initialize(config);
 
         CPPUNIT_ASSERT(view->m_sids.find("view1") != view->m_sids.end());
         CPPUNIT_ASSERT_EQUAL(true, view->m_sids.find("view1")->second.second);
@@ -102,31 +99,6 @@ void ViewTest::configuringTest()
         CPPUNIT_ASSERT(view->m_sids.find("slideView3") == view->m_sids.end());
         CPPUNIT_ASSERT_EQUAL(std::string("myMenu"), view->m_menuBarSid.first);
         CPPUNIT_ASSERT_EQUAL(std::string("myToolBar"), view->m_toolBarSid.first);
-    }
-
-    // Test that we throw when the configuration does not start with <registry>
-    {
-        auto view = std::make_shared<TestView>("view");
-
-        std::stringstream xmlConfig;
-        xmlConfig << ""
-                     "<not_registry>"
-                     "<menuBar sid=\"myMenu\"/>"
-                     "<toolBar sid=\"myToolBar\"/>"
-                     "<view sid=\"view1\" start=\"true\"/>"
-                     "</not_registry>"
-                     "";
-
-        boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xmlConfig, config);
-        auto configuration = core::runtime::Convert::fromPropertyTree(config);
-
-        CPPUNIT_ASSERT_THROW(view->initialize(configuration), core::Exception);
-
-        CPPUNIT_ASSERT(view->m_sids.find("view1") == view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("menu") == view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(std::string(""), view->m_menuBarSid.first);
-        CPPUNIT_ASSERT_EQUAL(std::string(""), view->m_toolBarSid.first);
     }
 }
 

@@ -24,7 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <boost/lexical_cast.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::ui::base::layoutManager
 {
@@ -34,30 +34,14 @@ const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY
 
 //-----------------------------------------------------------------------------
 
-IToolBarLayoutManager::IToolBarLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IToolBarLayoutManager::~IToolBarLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void IToolBarLayoutManager::initialize(ConfigurationType configuration)
+void IToolBarLayoutManager::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
-
-    if(configuration->hasAttribute("style"))
+    if(const auto style = configuration.get_optional<std::string>("<xmlattr>.style"); style.has_value())
     {
-        const std::string style = configuration->getAttributeValue("style");
-        if(style == "ToolButtonIconOnly" || style == "ToolButtonTextOnly" || style == "ToolButtonTextBesideIcon"
-           || style == "ToolButtonTextUnderIcon" || style == "ToolButtonFollowStyle")
+        if(*style == "ToolButtonIconOnly" || *style == "ToolButtonTextOnly" || *style == "ToolButtonTextBesideIcon"
+           || *style == "ToolButtonTextUnderIcon" || *style == "ToolButtonFollowStyle")
         {
-            m_style = style;
+            m_style = *style;
         }
         else
         {
@@ -69,100 +53,67 @@ void IToolBarLayoutManager::initialize(ConfigurationType configuration)
         }
     }
 
-    if(configuration->hasAttribute("uniformSize"))
-    {
-        const auto value = configuration->getAttributeValue("uniformSize");
+    m_unifyButtonSize = configuration.get<bool>("<xmlattr>.uniformSize", m_unifyButtonSize);
 
-        if(value == "true")
-        {
-            m_unifyButtonSize = true;
-        }
-        else if(value == "false")
-        {
-            m_unifyButtonSize = false;
-        }
-        else
-        {
-            SIGHT_ERROR("'uniformSize' attribute value should be 'true' of 'false'.");
-        }
-    }
-
-    core::runtime::ConfigurationElementContainer::Iterator iter;
-    for(iter = configuration->begin() ; iter != configuration->end() ; ++iter)
+    for(const auto& toolBarItem : configuration)
     {
-        if((*iter)->getName() == "menuItem")
+        if(toolBarItem.first == "menuItem")
         {
-            ConfigurationType toolBarItem = *iter;
             ActionInfo info;
-            SIGHT_ASSERT("Depreciated tag <state>", !toolBarItem->hasAttribute("state"));
-            SIGHT_ASSERT("Depreciated tag <enable>", !toolBarItem->hasAttribute("enable"));
 
-            SIGHT_ASSERT("missing <name> attribute", toolBarItem->hasAttribute("name"));
-            if(toolBarItem->hasAttribute("name"))
+            info.m_name     = toolBarItem.second.get<std::string>("<xmlattr>.name");
+            info.m_shortcut = toolBarItem.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
+
+            const auto icon = toolBarItem.second.get<std::string>("<xmlattr>.icon", "");
+            if(!icon.empty())
             {
-                info.m_name = toolBarItem->getExistingAttributeValue("name");
+                info.m_icon = core::runtime::getModuleResourceFilePath(icon);
             }
 
-            if(toolBarItem->hasAttribute("icon"))
-            {
-                info.m_icon = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon"));
-            }
-
-            if(toolBarItem->hasAttribute("icon2"))
+            const auto icon2 = toolBarItem.second.get<std::string>("<xmlattr>.icon2", "");
+            if(!icon2.empty())
             {
                 SIGHT_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
-                info.m_icon2 = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
+                info.m_icon2 = core::runtime::getModuleResourceFilePath(icon2);
             }
 
-            if(toolBarItem->hasAttribute("style"))
+            if(const auto style = toolBarItem.second.get_optional<std::string>("<xmlattr>.style"); style.has_value())
             {
-                std::string style = toolBarItem->getExistingAttributeValue("style");
-                info.m_isCheckable = (style == "check");
-                info.m_isRadio     = (style == "radio");
-            }
-
-            if(toolBarItem->hasAttribute("shortcut"))
-            {
-                info.m_shortcut = toolBarItem->getExistingAttributeValue("shortcut");
+                info.m_isCheckable = (*style == "check");
+                info.m_isRadio     = (*style == "radio");
             }
 
             m_actionInfo.push_back(info);
         }
-        else if((*iter)->getName() == "separator")
+        else if(toolBarItem.first == "separator")
         {
             ActionInfo info;
             info.m_isSeparator = true;
-
-            if((*iter)->hasAttribute("size"))
-            {
-                info.m_size = boost::lexical_cast<int>((*iter)->getExistingAttributeValue("size"));
-            }
-
+            info.m_size        = toolBarItem.second.get<int>("<xmlattr>.size", info.m_size);
             m_actionInfo.push_back(info);
         }
-        else if((*iter)->getName() == "spacer")
+        else if(toolBarItem.first == "spacer")
         {
             ActionInfo info;
             info.m_isSpacer = true;
             m_actionInfo.push_back(info);
         }
-        else if((*iter)->getName() == "menu")
+        else if(toolBarItem.first == "menu")
         {
             ActionInfo info;
-            info.m_isMenu = true;
-            if((*iter)->hasAttribute("name"))
-            {
-                info.m_name = (*iter)->getExistingAttributeValue("name");
-            }
 
-            if((*iter)->hasAttribute("icon"))
+            info.m_isMenu = true;
+            info.m_name   = toolBarItem.second.get<std::string>("<xmlattr>.name", "");
+
+            const auto icon = toolBarItem.second.get<std::string>("<xmlattr>.icon", "");
+            if(!icon.empty())
             {
-                info.m_icon = core::runtime::getModuleResourceFilePath((*iter)->getExistingAttributeValue("icon"));
+                info.m_icon = core::runtime::getModuleResourceFilePath(icon);
             }
 
             m_actionInfo.push_back(info);
         }
-        else if((*iter)->getName() == "editor")
+        else if(toolBarItem.first == "editor")
         {
             ActionInfo info;
             info.m_isEditor = true;

@@ -66,16 +66,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(SConcatenateMatrices, sight::service::IController);
 
-    /**
-     * @brief Constructor.
-     */
-    MODULE_GEOMETRY_BASE_API SConcatenateMatrices() noexcept;
-
-    /**
-     * @brief Destructor.
-     */
-    ~SConcatenateMatrices() noexcept override =
-        default;
+    MODULE_GEOMETRY_BASE_API SConcatenateMatrices() noexcept = default;
+    ~SConcatenateMatrices() noexcept override                = default;
 
 protected:
 

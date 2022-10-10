@@ -27,8 +27,6 @@
 #include "ui/base/container/fwToolBar.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::builder
 {
 
@@ -57,7 +55,7 @@ public:
     UI_BASE_API IToolBarBuilder();
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IToolBarBuilder() override;
+    UI_BASE_API ~IToolBarBuilder() override = default;
 
     /**
      * @brief Returns the builded tool bar.
@@ -78,7 +76,7 @@ public:
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Instantiate layout with parent toolBar.

@@ -27,6 +27,7 @@
 
 #include <service/extension/AppConfig.hpp>
 
+#include <boost/range/iterator_range_core.hpp>
 namespace sight::module::ui::qt::series
 {
 
@@ -119,38 +120,31 @@ void SViewer::updating()
 
 void SViewer::configuring()
 {
-    std::vector<core::runtime::ConfigurationElement::sptr> viewCfg = m_configuration->find("parentView");
-    SIGHT_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
+    const auto& config = this->getConfigTree();
+    m_parentView = config.get<std::string>("parentView.<xmlattr>.wid");
 
-    m_parentView = viewCfg[0]->getAttributeValue("wid");
-    SIGHT_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
-
-    std::vector<core::runtime::ConfigurationElement::sptr> configsCfg = m_configuration->find("configs");
-    SIGHT_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);
-
-    std::vector<core::runtime::ConfigurationElement::sptr> config = configsCfg[0]->find("config");
-    SIGHT_ASSERT("Missing tag 'config'", !config.empty());
-
-    for(const core::runtime::ConfigurationElement::sptr& elt : config)
+    const auto& configs = config.get_child("configs");
+    for(const auto& elt : boost::make_iterator_range(configs.equal_range("config")))
     {
         SeriesConfigInfo info;
-        info.configId = elt->getAttributeValue("id");
+        info.configId = elt.second.get<std::string>("<xmlattr>.id", "");
         SIGHT_ASSERT("'id' attribute must not be empty", !info.configId.empty());
-        std::string seriesType = elt->getAttributeValue("type");
+
+        const std::string seriesType = elt.second.get<std::string>("<xmlattr>.type", "");
         SIGHT_ASSERT("'type' attribute must not be empty", !seriesType.empty());
         SIGHT_ASSERT(
             "Type " << seriesType << " is already defined.",
             m_seriesConfigs.find(seriesType) == m_seriesConfigs.end()
         );
 
-        for(const core::runtime::ConfigurationElement::sptr& param : elt->find("parameter"))
+        for(const auto& param : boost::make_iterator_range(elt.second.equal_range("parameter")))
         {
-            std::string replace = param->getAttributeValue("replace");
+            const std::string replace = param.second.get<std::string>("<xmlattr>.replace", "");
             SIGHT_ASSERT("'replace' attribute must not be empty", !replace.empty());
-            std::string by = param->getAttributeValue("by");
+            std::string by = param.second.get<std::string>("<xmlattr>.by", "");
             if(by.empty())
             {
-                by = param->getAttributeValue("uid");
+                by = param.second.get<std::string>("<xmlattr>.uid", "");
             }
 
             SIGHT_ASSERT("'by' attribute must not be empty", !by.empty());

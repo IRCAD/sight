@@ -28,8 +28,6 @@
 #include "ui/base/container/fwMenuItem.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::registry
 {
 
@@ -54,8 +52,8 @@ public:
     /// Constructor.
     UI_BASE_API Menu(std::string sid);
 
-    /// Destructor. Do nothing
-    UI_BASE_API ~Menu() override;
+    /// Destructor. Does nothing
+    UI_BASE_API ~Menu() override = default;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwMenu::sptr getParent();
@@ -103,7 +101,7 @@ public:
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {true| false} (default value false): indicate if the service must be started by the menu service.
      */
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t&);
 
     /**
      * @brief manages action service associated with menuItem of menu.
@@ -158,7 +156,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map<std::string, std::pair<unsigned int, bool> > SIDMenuMapType;
 
     /**

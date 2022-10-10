@@ -765,13 +765,11 @@ data::Object::sptr DataView::readObject(
     service::IService::sptr ioSelectorSrv;
     ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
 
-    core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::extension::Config::getDefault()->getServiceConfig(
+    const auto ioConfig = service::extension::Config::getDefault()->getServiceConfig(
         _ioSelectorSrvConfig,
         "sight::module::ui::base::io::SSelector"
     );
 
-    auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
     srvConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 

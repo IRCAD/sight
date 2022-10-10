@@ -26,9 +26,6 @@
 #include "service/helper/ConfigLauncher.hpp"
 #include "service/IController.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/Failed.hpp>
-
 namespace sight::service
 {
 

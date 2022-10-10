@@ -65,14 +65,12 @@ void ServiceConfigTest::serviceConfigTest()
     const std::string desc("Description of config");
     service::IService::ConfigType config = buildConfig();
 
-    const auto configElement = core::runtime::Convert::fromPropertyTree(config);
-    currentServiceConfig->addServiceConfigInfo(configId, service, desc, configElement);
+    currentServiceConfig->addServiceConfigInfo(configId, service, desc, config);
 
-    core::runtime::ConfigurationElement::csptr serviceConfig =
-        currentServiceConfig->getServiceConfig(configId, service);
-    CPPUNIT_ASSERT(serviceConfig);
-    CPPUNIT_ASSERT(serviceConfig->hasAttribute("uid"));
-    CPPUNIT_ASSERT_EQUAL(std::string("serviceUUID"), serviceConfig->getAttributeValue("uid"));
+    const auto serviceConfig = currentServiceConfig->getServiceConfig(configId, service);
+    CPPUNIT_ASSERT(!serviceConfig.empty());
+    CPPUNIT_ASSERT(serviceConfig.get_optional<std::string>("service.<xmlattr>.uid").has_value());
+    CPPUNIT_ASSERT_EQUAL(std::string("serviceUUID"), serviceConfig.get<std::string>("service.<xmlattr>.uid"));
 
     std::vector<std::string> configs = currentServiceConfig->getAllConfigForService(service);
     CPPUNIT_ASSERT(!configs.empty());
@@ -126,7 +124,7 @@ void ServiceConfigTest::getAllConfigsTest()
             configId,
             serviceName0,
             "Much test, oh wow",
-            nullptr
+            boost::property_tree::ptree()
         );
     }
 
@@ -140,7 +138,7 @@ void ServiceConfigTest::getAllConfigsTest()
             configId,
             serviceName1,
             "No, bad test ! Bad !",
-            nullptr
+            boost::property_tree::ptree()
         );
     }
 
@@ -155,7 +153,7 @@ void ServiceConfigTest::getAllConfigsTest()
             configId,
             "", // Empty type.
             "Such empty, much space, wow.",
-            nullptr
+            boost::property_tree::ptree()
         );
     }
 

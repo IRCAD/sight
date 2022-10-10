@@ -33,7 +33,6 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/helper/Config.hpp>

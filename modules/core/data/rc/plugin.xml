@@ -6,14 +6,7 @@
           <object>sight::data::Object</object>
           <desc>This service copies an object and updates its own object or the defined target.</desc>
      </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::service::IController</type>
-          <service>sight::module::data::SExtractDeviceInfo</service>
-          <object>sight::data::Object</object>
-          <desc>This service extract camera informations in configuration using android device name.</desc>
-     </extension>
-
+     
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>
           <service>sight::module::data::SManage</service>
@@ -34,13 +27,6 @@
           <service>sight::module::data::SSelectObject</service>
           <object>sight::data::Composite</object>
           <desc>Registers/unregisters the object given by the slots.</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::module::data::IWrapperSrv</type>
-          <service>sight::module::data::wrapper::SImageSignalForwarder</service>
-          <object>sight::data::Image</object>
-          <desc>This service forwards signals from an image ti another.</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">

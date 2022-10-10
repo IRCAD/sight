@@ -123,4 +123,11 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
     return defaultValue;
 }
 
+namespace property_tree
+{
+
+CORE_API std::string toString(const boost::property_tree::ptree& pt);
+
+}
+
 } // namespace sight::core::runtime

@@ -78,7 +78,9 @@ inline static service::IService::ConfigType getConfiguration(const bool read = t
         config.put("archive.<xmlattr>.format", "optimized");
     }
 
-    return config;
+    service::IService::ConfigType srvConfig;
+    srvConfig.add_child("service", config);
+    return srvConfig;
 }
 
 //------------------------------------------------------------------------------

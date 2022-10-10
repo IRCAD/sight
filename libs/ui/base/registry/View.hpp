@@ -28,8 +28,6 @@
 #include "ui/base/container/fwToolBar.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base
 {
 
@@ -126,7 +124,7 @@ public:
      * @throw core::Exception if the configuration element does not start with <registry>
      *
      */
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Starting view manager.
@@ -169,7 +167,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map<std::string, std::pair<unsigned int, bool> > SIDContainerMapType;
     typedef std::map<std::string, unsigned int> WIDContainerMapType;
     typedef std::pair<std::string, bool> SIDMenuBarPairType;

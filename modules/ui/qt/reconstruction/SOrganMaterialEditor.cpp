@@ -22,16 +22,12 @@
 
 #include "modules/ui/qt/reconstruction/SOrganMaterialEditor.hpp"
 
-#include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>

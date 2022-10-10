@@ -28,8 +28,12 @@
 
 #include <core/base.hpp>
 
+#include <boost/property_tree/ptree.hpp>
+
 namespace sight::ui::base
 {
+
+using config_t = boost::property_tree::ptree;
 
 /**
  * @brief Base class for all fwGui's classes
@@ -61,17 +65,8 @@ public:
 
 protected:
 
-    /**
-     * @name Constructor/Destructor
-     * @{ */
-
-    GuiBaseObject()
-    = default;
-
-    ~GuiBaseObject() override
-    = default;
-
-    /**  @} */
+    GuiBaseObject()           = default;
+    ~GuiBaseObject() override = default;
 };
 
 } // namespace sight::ui::base

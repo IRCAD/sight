@@ -74,8 +74,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /// Initialize the UI
     void starting() override;
 

@@ -102,82 +102,40 @@ IFrameLayoutManager::IFrameLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-IFrameLayoutManager::~IFrameLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void IFrameLayoutManager::initialize(ConfigurationType configuration)
+void IFrameLayoutManager::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be frame",
-        configuration->getName() == "frame"
-    );
+    m_frameInfo.m_name       = configuration.get<std::string>("name", m_frameInfo.m_name);
+    m_frameInfo.m_visibility = configuration.get<bool>("visibility", m_frameInfo.m_visibility);
 
-    std::vector<ConfigurationType> name       = configuration->find("name");
-    std::vector<ConfigurationType> icon       = configuration->find("icon");
-    std::vector<ConfigurationType> minSize    = configuration->find("minSize");
-    std::vector<ConfigurationType> styles     = configuration->find("style");
-    std::vector<ConfigurationType> visibility = configuration->find("visibility");
-
-    if(!visibility.empty())
+    if(const auto icon = configuration.get_optional<std::string>("icon"); icon.has_value())
     {
-        m_frameInfo.m_visibility = (visibility.at(0)->getValue() == "true");
-    }
-
-    if(!name.empty())
-    {
-        m_frameInfo.m_name = name.at(0)->getValue();
-    }
-
-    if(!icon.empty())
-    {
-        m_frameInfo.m_iconPath = core::runtime::getModuleResourceFilePath(icon.at(0)->getValue());
+        m_frameInfo.m_iconPath = core::runtime::getModuleResourceFilePath(icon.value());
         SIGHT_ASSERT(
             "The icon " << m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
             std::filesystem::exists(m_frameInfo.m_iconPath)
         );
     }
 
-    if(!minSize.empty())
+    m_frameInfo.m_minSize.first  = configuration.get<int>("minSize.<xmlattr>.width", m_frameInfo.m_minSize.first);
+    m_frameInfo.m_minSize.second = configuration.get<int>("minSize.<xmlattr>.height", m_frameInfo.m_minSize.second);
+
+    if(const auto mode = configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {
-        if(minSize.at(0)->hasAttribute("width"))
-        {
-            m_frameInfo.m_minSize.first =
-                boost::lexical_cast<int>(minSize.at(0)->getExistingAttributeValue("width"));
-        }
-
-        if(minSize.at(0)->hasAttribute("height"))
-        {
-            m_frameInfo.m_minSize.second = boost::lexical_cast<int>(
-                minSize.at(0)->getExistingAttributeValue(
-                    "height"
-                )
-            );
-        }
-    }
-
-    if(!styles.empty())
-    {
-        core::runtime::ConfigurationElement::sptr stylesCfgElt = styles.at(0);
-        SIGHT_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode"));
-        const std::string style = stylesCfgElt->getExistingAttributeValue("mode");
-
-        if(style == "DEFAULT")
+        if(mode.value() == "DEFAULT")
         {
             m_frameInfo.m_style = DEFAULT;
         }
-        else if(style == "STAY_ON_TOP")
+        else if(mode.value() == "STAY_ON_TOP")
         {
             m_frameInfo.m_style = STAY_ON_TOP;
         }
-        else if(style == "MODAL")
+        else if(mode.value() == "MODAL")
         {
             m_frameInfo.m_style = MODAL;
         }
         else
         {
-            SIGHT_FATAL("The style " << style << " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
+            SIGHT_FATAL("The style " << mode.value() << " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
         }
     }
 

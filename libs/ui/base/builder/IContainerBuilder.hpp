@@ -26,8 +26,6 @@
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::builder
 {
 
@@ -58,7 +56,7 @@ public:
     /**
      * @brief Configure the layout before creation. Does nothing.
      */
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Instantiate layout with parent container.

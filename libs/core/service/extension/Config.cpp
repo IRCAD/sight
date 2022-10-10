@@ -22,7 +22,7 @@
 
 #include "service/extension/Config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/Convert.hpp>
 #include <core/runtime/helper.hpp>
 #include <core/runtime/Runtime.hpp>
 
@@ -77,7 +77,12 @@ void Config::parseBundleInformation()
         core::runtime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
 
         // Add service config info
-        this->addServiceConfigInfo(id, service, desc, config);
+        this->addServiceConfigInfo(
+            id,
+            service,
+            desc,
+            core::runtime::Convert::toPropertyTree(config).get_child("config")
+        );
     }
 }
 
@@ -88,7 +93,7 @@ void Config::addServiceConfigInfo
     const std::string& configId,
     const std::string& service,
     const std::string& desc,
-    core::runtime::ConfigurationElement::csptr config
+    const boost::property_tree::ptree& config
 )
 {
     core::mt::WriteLock lock(m_registryMutex);
@@ -127,7 +132,7 @@ void Config::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::csptr Config::getServiceConfig(
+boost::property_tree::ptree Config::getServiceConfig(
     const std::string& configId,
     const std::string& _serviceImpl
 ) const

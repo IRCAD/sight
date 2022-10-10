@@ -30,8 +30,6 @@
 #include "ui/base/container/fwToolBar.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::registry
 {
 
@@ -57,7 +55,7 @@ public:
     UI_BASE_API ToolBar(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API ~ToolBar() override;
+    UI_BASE_API ~ToolBar() override = default;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwToolBar::sptr getParent();
@@ -120,7 +118,7 @@ public:
      *   with \<parent wid="editorWindow" /\>.
      *   - \b wid  (mandatory): the window identifier.
      */
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief manages action service associated with menuItem of toolbar.
@@ -182,7 +180,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map<std::string, std::pair<unsigned int, bool> > SIDToolBarMapType;
     typedef std::map<std::string, unsigned int> WIDToolBarMapType;
 

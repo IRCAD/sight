@@ -45,14 +45,7 @@
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#ifdef BOOST_MSVC
-#pragma warning(push)
-#pragma warning(disable: 4702) // unreachable code
-#endif
 #include <boost/property_tree/ptree.hpp>
-#ifdef BOOST_MSVC
-#pragma warning(pop)
-#endif
 
 #include <cstdint>
 #include <optional>
@@ -170,7 +163,7 @@ public:
         std::map<std::string, ObjectServiceConfig> m_groups;
 
         /// Service configuration (only used with XML config)
-        CSPTR(core::runtime::ConfigurationElement) m_config;
+        IService::ConfigType m_config;
     };
 
     /// Name of the key to identify the default Composite object that is used for services that don't work on any data.

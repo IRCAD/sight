@@ -56,20 +56,18 @@ SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept =
 
 void SOpenCVIntrinsic::configuring()
 {
-    core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SIGHT_ASSERT("Tag 'board' not found.", cfgBoard);
+    const auto config   = this->getConfigTree();
+    const auto cfgBoard = config.get_child("board.<xmlattr>");
 
-    SIGHT_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    m_widthKey = cfgBoard->getAttributeValue("width");
+    m_widthKey = cfgBoard.get<std::string>("width");
     SIGHT_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
-    SIGHT_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    m_heightKey = cfgBoard->getAttributeValue("height");
+    m_heightKey = cfgBoard.get<std::string>("height");
     SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
-    if(cfgBoard->hasAttribute("squareSize"))
+    if(const auto squareSizeKey = cfgBoard.get_optional<std::string>("squareSize"); squareSizeKey.has_value())
     {
-        m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
+        m_squareSizeKey = squareSizeKey.value();
         SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
     }
 }

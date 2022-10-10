@@ -30,8 +30,6 @@
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::layoutManager
 {
 
@@ -44,8 +42,6 @@ public:
 
     SIGHT_DECLARE_CLASS(IViewLayoutManager, ui::base::GuiBaseObject);
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-
     /// Constructor. Do nothing.
     UI_BASE_API IViewLayoutManager();
 
@@ -55,7 +51,7 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    UI_BASE_API virtual void initialize(ConfigurationType configuration) = 0;
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration) = 0;
 
     /**
      * @brief Instantiate layout with parent container.

@@ -86,15 +86,6 @@ void AppConfigManager::setConfig(const std::string& _configId, const FieldAdapto
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& _configId, const data::Composite::csptr& _replaceFields)
-{
-    m_configId = _configId;
-    m_cfgElem  =
-        extension::AppConfig::getDefault()->getAdaptedTemplateConfig(_configId, _replaceFields, !m_isUnitTest);
-}
-
-// ------------------------------------------------------------------------
-
 void AppConfigManager::launch()
 {
     FW_PROFILE("launch");

@@ -83,16 +83,6 @@ public:
     ) override;
 
     /**
-     * @brief Sets configuration.
-     * @param _configId The identifier of the requested config.
-     * @param _replaceFields Composite of association between the value and the pattern to replace in the config.
-     */
-    SERVICE_API void setConfig(
-        const std::string& _configId,
-        const data::Composite::csptr& _replaceFields
-    ) override;
-
-    /**
      * @brief Get the configuration root.
      * @return The configuration root.
      */

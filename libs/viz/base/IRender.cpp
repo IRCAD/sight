@@ -23,7 +23,6 @@
 #include "viz/base/IRender.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <service/macros.hpp>

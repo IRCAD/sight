@@ -25,7 +25,6 @@
 #include "modules/ui/viz/config.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <data/Reconstruction.hpp>
 #include <data/String.hpp>
@@ -71,8 +70,6 @@ public:
     MODULE_UI_VIZ_API ~SShaderParameterEditor() noexcept override;
 
 protected:
-
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Initialize the container
     MODULE_UI_VIZ_API void configuring() override;

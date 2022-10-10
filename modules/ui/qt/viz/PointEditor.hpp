@@ -58,8 +58,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     ///This method launches the IEditor::starting method.
     void starting() override;
 

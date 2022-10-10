@@ -35,54 +35,26 @@
 namespace sight::ui::base
 {
 
-IToolBar::IToolBar()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IToolBar::~IToolBar()
-= default;
-
 //-----------------------------------------------------------------------------
 
 void IToolBar::initialize()
 {
     m_registry = ui::base::registry::ToolBar::New(this->getID());
-    // find ViewRegistryManager configuration
-    std::vector<ConfigurationType> vectRegistry = m_configuration->find("registry");
-    SIGHT_ASSERT("[" + this->getID() + "'] <registry> section is mandatory.", !vectRegistry.empty());
 
-    if(!vectRegistry.empty())
+    const auto& config = this->getConfigTree();
+
+    // find ViewRegistryManager configuration
+    if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())
     {
-        m_registryConfig = vectRegistry.at(0);
-        m_registry->initialize(m_registryConfig);
+        m_registry->initialize(registryConfig.value());
     }
 
-    // find gui configuration
-    std::vector<ConfigurationType> vectGui = m_configuration->find("gui");
-    SIGHT_ASSERT("[" + this->getID() + "'] <gui> section is mandatory.", !vectGui.empty());
-
-    if(!vectGui.empty())
+    // find LayoutManager configuration
+    if(const auto layoutConfig = config.get_child_optional("gui.layout"); layoutConfig.has_value())
     {
-        // find LayoutManager configuration
-        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("layout");
-        SIGHT_ASSERT("[" + this->getID() + "'] <layout> section is mandatory.", !vectLayoutMng.empty());
+        this->initializeLayoutManager(layoutConfig.value());
 
-        if(!vectLayoutMng.empty())
-        {
-            m_layoutConfig = vectLayoutMng.at(0);
-            this->initializeLayoutManager(m_layoutConfig);
-
-            if(m_layoutConfig->hasAttribute("hideActions"))
-            {
-                std::string hideActions = m_layoutConfig->getAttributeValue("hideActions");
-                SIGHT_ASSERT(
-                    "[" + this->getID() + "'] 'hideActions' attribute value must be 'true' or 'false'",
-                    hideActions == "true" || hideActions == "false"
-                );
-                m_hideActions = (hideActions == "true");
-            }
-        }
+        m_hideActions = layoutConfig->get<bool>("hideActions", m_hideActions);
     }
 }
 
@@ -242,13 +214,8 @@ void IToolBar::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void IToolBar::initializeLayoutManager(ConfigurationType layoutConfig)
+void IToolBar::initializeLayoutManager(const ui::base::config_t& layoutConfig)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << layoutConfig->getName() << ", must be layout",
-        layoutConfig->getName() == "layout"
-    );
-
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::layoutManager::IToolBarLayoutManager::REGISTRY_KEY
     );

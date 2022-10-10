@@ -23,22 +23,13 @@
 #include "modules/ui/qt/image/SliceIndexPositionEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
 
-#include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
@@ -122,31 +113,28 @@ void SliceIndexPositionEditor::configuring()
 {
     this->initialize();
 
-    if(this->m_configuration->size() > 0)
-    {
-        std::vector<core::runtime::ConfigurationElement::sptr> slideIndexCfg = m_configuration->find("sliceIndex");
-        SIGHT_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1);
-        SIGHT_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty());
-        std::string orientation = (*slideIndexCfg.begin())->getValue();
-        boost::algorithm::trim(orientation);
-        boost::algorithm::to_lower(orientation);
+    const auto config = this->getConfigTree();
 
-        if(orientation == "axial")
-        {
-            m_orientation = orientation_t::AXIAL; // Z
-        }
-        else if(orientation == "frontal")
-        {
-            m_orientation = orientation_t::FRONTAL; // Y
-        }
-        else if(orientation == "sagittal")
-        {
-            m_orientation = orientation_t::SAGITTAL; // X
-        }
-        else
-        {
-            SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
-        }
+    auto orientation = config.get<std::string>("sliceIndex");
+
+    boost::algorithm::trim(orientation);
+    boost::algorithm::to_lower(orientation);
+
+    if(orientation == "axial")
+    {
+        m_orientation = orientation_t::AXIAL; // Z
+    }
+    else if(orientation == "frontal")
+    {
+        m_orientation = orientation_t::FRONTAL; // Y
+    }
+    else if(orientation == "sagittal")
+    {
+        m_orientation = orientation_t::SAGITTAL; // X
+    }
+    else
+    {
+        SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
     }
 }
 

@@ -92,8 +92,7 @@ void SExportWithSeriesSet::updating()
     // Create IOSelectorService on the new SeriesSet and execute it.
 
     // Get the config
-    core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::extension::Config::getDefault()->getServiceConfig(
+    const auto ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         m_ioSelectorSrvConfig,
         "sight::module::ui::base::io::SSelector"
     );
@@ -101,7 +100,7 @@ void SExportWithSeriesSet::updating()
         "There is no service configuration "
         << m_ioSelectorSrvConfig
         << " for module::ui::base::editor::SSelector",
-        ioCfg
+        !ioCfg.empty()
     );
 
     // Init and execute the service
@@ -117,7 +116,7 @@ void SExportWithSeriesSet::updating()
         jobCreatedSignal->connect(m_slotForwardJob);
     }
 
-    ioSelectorSrv->setConfiguration(core::runtime::ConfigurationElement::constCast(ioCfg));
+    ioSelectorSrv->setConfiguration(ioCfg);
     ioSelectorSrv->configure();
     ioSelectorSrv->start();
     ioSelectorSrv->update();

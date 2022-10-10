@@ -32,7 +32,6 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/thread/Worker.hpp>
-#include <core/tools/fwID.hpp>
 
 #include <functional>
 #include <regex>
@@ -430,10 +429,10 @@ void IService::setConfiguration(const core::runtime::ConfigurationElement::sptr 
 
 void IService::setConfiguration(const Config& _configuration)
 {
-    SIGHT_ASSERT("Invalid ConfigurationElement", _configuration.m_config);
+    SIGHT_ASSERT("Invalid ConfigurationElement", !_configuration.m_config.empty());
 
     // TODO: Remove this ugly const_cast
-    m_configuration      = core::runtime::ConfigurationElement::constCast(_configuration.m_config);
+    m_configuration      = core::runtime::Convert::fromPropertyTree(_configuration.m_config);
     m_configurationState = UNCONFIGURED;
 
     m_serviceConfig.m_uid               = _configuration.m_uid;
@@ -481,15 +480,7 @@ IService::ConfigType IService::getConfigTree() const
 {
     const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
 
-    // This is in case we get the configuration from a service::extension::Config
-    auto srvConfig = configTree.get_child_optional("config");
-
-    if(srvConfig.is_initialized())
-    {
-        return srvConfig.get();
-    }
-
-    srvConfig = configTree.get_child_optional("service");
+    auto srvConfig = configTree.get_child_optional("service");
     if(srvConfig.is_initialized())
     {
         return srvConfig.get();
@@ -510,6 +501,13 @@ void IService::configure()
             try
             {
                 this->configuring();
+            }
+            catch(const boost::property_tree::ptree_bad_path& e)
+            {
+                SIGHT_ERROR("Error while configuring the service '" + this->getID() + "' : " + e.what());
+
+                auto config = this->getConfigTree();
+                SIGHT_ERROR("With the given configuration:\n" + core::runtime::property_tree::toString(config));
             }
             catch(std::exception& e)
             {

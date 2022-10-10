@@ -27,13 +27,9 @@
 #include "ui/base/container/fwToolBar.hpp"
 #include "ui/base/GuiRegistry.hpp"
 
-#include <core/runtime/Convert.hpp>
 #include <core/runtime/helper.hpp>
 
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <utility>
 
@@ -92,25 +88,16 @@ void View::setParent(std::string wid)
 
 //-----------------------------------------------------------------------------
 
-void View::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void View::initialize(const ui::base::config_t& configuration)
 {
-    const auto configTree = core::runtime::Convert::toPropertyTree(configuration);
-    const auto registryIt = configTree.find("registry");
-    SIGHT_THROW_IF(
-        "Wrong configuration name for '" + m_sid + "', expected 'registry'",
-        registryIt == configTree.not_found()
-    );
-
-    // find parent container, ignore if it does not exist
-    m_parentWid = configTree.get<std::string>("registry.parent.<xmlattr>.wid", "");
+    m_parentWid = configuration.get<std::string>("parent.<xmlattr>.wid", "");
 
     // index represents associated container with position in subViews vector
     unsigned int index = 0;
 
     // initialize m_sids and m_wids map with configuration
-    const auto registryCfg  = registryIt->second;
-    const auto viewsIt      = registryCfg.equal_range("view");
-    const auto slideViewsIt = registryCfg.equal_range("slideView");
+    const auto viewsIt      = configuration.equal_range("view");
+    const auto slideViewsIt = configuration.equal_range("slideView");
 
     // Extracts a ptree from an iterator
     auto itToTreeFn = [](auto& it)
@@ -147,23 +134,21 @@ void View::initialize(core::runtime::ConfigurationElement::sptr configuration)
     }
 
     // find menuBar
-    if(registryCfg.find("menuBar") != registryCfg.not_found())
     {
-        const std::string sid = registryCfg.get<std::string>("menuBar.<xmlattr>.sid", "");
+        const std::string sid = configuration.get<std::string>("menuBar.<xmlattr>.sid", "");
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(registryCfg, "menuBar.<xmlattr>.start", false);
+            const bool start = core::runtime::get_ptree_value(configuration, "menuBar.<xmlattr>.start", false);
             m_menuBarSid = std::make_pair(sid, start);
         }
     }
 
     // find toolBar
-    if(registryCfg.find("toolBar") != registryCfg.not_found())
     {
-        const std::string sid = registryCfg.get<std::string>("toolBar.<xmlattr>.sid", "");
+        const std::string sid = configuration.get<std::string>("toolBar.<xmlattr>.sid", "");
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(registryCfg, "toolBar.<xmlattr>.start", false);
+            const bool start = core::runtime::get_ptree_value(configuration, "toolBar.<xmlattr>.start", false);
             m_toolBarSid = std::make_pair(sid, start);
         }
     }

@@ -60,7 +60,7 @@ void SLaunchBrowser::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    std::vector<Configuration> urlConfig = m_configuration->find("url");
+    const auto urlConfig = m_configuration->find("url");
     if(!urlConfig.empty())
     {
         m_url = urlConfig.at(0)->getValue();

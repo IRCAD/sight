@@ -26,7 +26,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/location/SingleFile.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <service/macros.hpp>

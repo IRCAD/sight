@@ -24,10 +24,9 @@
 
 #include "ui/base/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-
 #include <service/IService.hpp>
+
+#include <ui/base/GuiBaseObject.hpp>
 
 namespace sight::ui::base
 {
@@ -140,10 +139,7 @@ public:
 protected:
 
     UI_BASE_API IGuiContainer();
-
-    UI_BASE_API ~IGuiContainer() override;
-
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    UI_BASE_API ~IGuiContainer() override = default;
 
     /**
      * @brief Initialize managers.
@@ -212,9 +208,9 @@ private:
 
     typedef std::vector<SPTR(ui::base::builder::ISlideViewBuilder)> SlideViewContainerType;
 
-    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
-    void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
-    void initializeSlideViewBuilder(core::runtime::ConfigurationElement::sptr slideViewConfig);
+    void initializeLayoutManager(const ui::base::config_t& layoutConfig);
+    void initializeToolBarBuilder(const ui::base::config_t& toolBarConfig);
+    void initializeSlideViewBuilder(const ui::base::config_t& slideViewConfig);
 
     bool m_viewLayoutManagerIsCreated {false};
     SPTR(ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
@@ -223,11 +219,6 @@ private:
     SPTR(ui::base::builder::IToolBarBuilder) m_toolBarBuilder;
     SPTR(ui::base::builder::IContainerBuilder) m_containerBuilder;
     SlideViewContainerType m_slideViewBuilders;
-
-    ConfigurationType m_viewRegistryConfig;
-    ConfigurationType m_viewLayoutConfig;
-    ConfigurationType m_toolBarConfig;
-    ConfigurationType m_slideViewConfig;
 
     bool m_hasToolBar {false};
 };

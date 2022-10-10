@@ -304,6 +304,7 @@
             <!-- Read a series -->
             <service uid="openSeriesSetAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesSet" />
+                <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::dicom::SSeriesSetReader" />
                 <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />

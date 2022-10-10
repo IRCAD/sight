@@ -50,8 +50,9 @@ const core::com::Slots::SlotKeyType IFrame::s_HIDE_SLOT        = "hide";
 
 const core::com::Signals::SignalKeyType IFrame::s_CLOSED_SIG = "closed";
 
-ui::base::container::fwContainer::wptr IFrame::m_progressWidget =
-    std::weak_ptr<ui::base::container::fwContainer>();
+ui::base::container::fwContainer::wptr IFrame::m_progressWidget = std::weak_ptr<ui::base::container::fwContainer>();
+
+//-----------------------------------------------------------------------------
 
 IFrame::IFrame() :
 
@@ -66,70 +67,47 @@ IFrame::IFrame() :
 
 //-----------------------------------------------------------------------------
 
-IFrame::~IFrame()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void IFrame::initialize()
 {
-    // find gui configuration
-    std::vector<ConfigurationType> vectGui    = m_configuration->find("gui");
-    std::vector<ConfigurationType> vectWindow = m_configuration->find("window");
+    m_viewRegistry = ui::base::registry::View::New(this->getID());
 
-    if(!vectGui.empty())
+    const auto config = this->getConfigTree();
+    const auto gui    = config.get_child_optional("gui");
+
+    if(gui.has_value())
     {
-        // find LayoutManager configuration
-        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("frame");
-        SIGHT_ASSERT("[" + this->getID() + "' ] <frame> element must exist", !vectLayoutMng.empty());
-        m_frameConfig = vectLayoutMng.at(0);
-        this->initializeLayoutManager(m_frameConfig);
+        this->initializeLayoutManager(gui->get_child("frame"));
 
-        // find menuBarBuilder configuration
-        std::vector<ConfigurationType> vectMBBuilder = vectGui.at(0)->find("menuBar");
-        if(!vectMBBuilder.empty())
+        if(const auto menuBar = gui->get_child_optional("menuBar"); menuBar.has_value())
         {
-            m_menuBarConfig = vectMBBuilder.at(0);
-            this->initializeMenuBarBuilder(m_menuBarConfig);
+            this->initializeMenuBarBuilder(menuBar.value());
 
             m_hasMenuBar = true;
         }
 
-        // find toolBarBuilder configuration
-        std::vector<ConfigurationType> vectTBBuilder = vectGui.at(0)->find("toolBar");
-        if(!vectTBBuilder.empty())
+        if(const auto toolBar = gui->get_child_optional("toolBar"); toolBar.has_value())
         {
-            m_toolBarConfig = vectTBBuilder.at(0);
-            this->initializeToolBarBuilder(m_toolBarConfig);
+            this->initializeToolBarBuilder(toolBar.value());
 
             m_hasToolBar = true;
         }
+
+        // find ViewRegistryManager configuration
+        if(const auto registry = config.get_child_optional("registry"); registry.has_value())
+        {
+            m_viewRegistry->initialize(registry.value());
+        }
     }
 
-    if(!vectWindow.empty())
+    if(const auto onclose = config.get<std::string>("window.<xmlattr>.onclose", ""); !onclose.empty())
     {
-        ConfigurationType window = vectWindow.at(0);
-        std::string onclose      = window->getAttributeValue("onclose");
-        if(!onclose.empty())
-        {
-            m_closePolicy = onclose;
-        }
-
+        m_closePolicy = onclose;
         SIGHT_ASSERT(
             "[" + this->getID() + "' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
             + CLOSE_POLICY_NOTIFY + "', '" + CLOSE_POLICY_EXIT + "' or '" + CLOSE_POLICY_MESSAGE + "'",
             m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
             || m_closePolicy == CLOSE_POLICY_MESSAGE
         );
-    }
-
-    m_viewRegistry = ui::base::registry::View::New(this->getID());
-    // find ViewRegistryManager configuration
-    std::vector<ConfigurationType> vectRegistry = m_configuration->find("registry");
-    if(!vectRegistry.empty())
-    {
-        m_registryConfig = vectRegistry.at(0);
-        m_viewRegistry->initialize(m_registryConfig);
     }
 }
 
@@ -256,13 +234,8 @@ void IFrame::destroy()
 
 //-----------------------------------------------------------------------------
 
-void IFrame::initializeLayoutManager(ConfigurationType layoutConfig)
+void IFrame::initializeLayoutManager(const ui::base::config_t& layoutConfig)
 {
-    SIGHT_ASSERT(
-        "[" + this->getID() + "' ] Wrong configuration name, expected: 'frame', actual: '"
-        + layoutConfig->getName() + "'",
-        layoutConfig->getName() == "frame"
-    );
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY
     );
@@ -277,14 +250,8 @@ void IFrame::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
+void IFrame::initializeMenuBarBuilder(const ui::base::config_t& menuBarConfig)
 {
-    SIGHT_ASSERT(
-        "[" + this->getID() + "' ] Wrong configuration name, expected: 'menuBar', actual: '"
-        + menuBarConfig->getName() + "'",
-        menuBarConfig->getName() == "menuBar"
-    );
-
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IMenuBarBuilder::REGISTRY_KEY);
     m_menuBarBuilder = ui::base::builder::IMenuBarBuilder::dynamicCast(guiObj);
     SIGHT_ASSERT(
@@ -297,14 +264,8 @@ void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 
 //-----------------------------------------------------------------------------
 
-void IFrame::initializeToolBarBuilder(ConfigurationType toolBarConfig)
+void IFrame::initializeToolBarBuilder(const ui::base::config_t& toolBarConfig)
 {
-    SIGHT_ASSERT(
-        "[" + this->getID() + "' ] Wrong configuration name, expected: 'toolBar', actual: '"
-        + toolBarConfig->getName() + "'",
-        toolBarConfig->getName() == "toolBar"
-    );
-
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder = ui::base::builder::IToolBarBuilder::dynamicCast(guiObj);
     SIGHT_ASSERT(

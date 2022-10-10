@@ -23,25 +23,14 @@
 #include "modules/ui/qt/metrics/Distance.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
 
-#include <data/Boolean.hpp>
-#include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/String.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QIcon>
 #include <QVBoxLayout>
-
-#include <filesystem>
 
 namespace sight::module::ui::qt::metrics
 {

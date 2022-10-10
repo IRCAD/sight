@@ -159,9 +159,6 @@ protected:
 
 private:
 
-    /// A ConfigurationElement type representing a configuration.
-    typedef SPTR(core::runtime::ConfigurationElement) ConfigurationType;
-
     /// Create the QtContainer, the scene, the viewport, the view.
     void startContext();
 
@@ -169,20 +166,17 @@ private:
     void stopContext();
 
     /// Get the axis configuration specifications
-    void configureAxis(ConfigurationType _conf);
+    void configureAxis(const ConfigType& _conf);
 
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
-    void configureScene(ConfigurationType _conf);
+    void configureScene(const ConfigType& _conf);
 
     /// Get the adaptor configuration specifications, push back the id attribute in the m_objectsID2AdaptorIDVector map,
     /// create a SceneAdaptor2D,
     /// set its attributes and push it back in the m_adaptorID2SceneAdaptor2D map.
-    void configureAdaptor(ConfigurationType _conf);
+    void configureAdaptor(const ConfigType& _conf);
 
     std::map<std::string, scene2d::data::Axis::sptr> m_axisMap;
-
-    /// The render configuration.
-    ConfigurationType m_sceneConfiguration;
 
     /// Coordinates of the scene top left corner.
     scene2d::vec2d_t m_sceneStart;

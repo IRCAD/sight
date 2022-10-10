@@ -23,13 +23,8 @@
 #include "SMatrixSynchronizer.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
-#include <core/tools/Object.hpp>
 
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>

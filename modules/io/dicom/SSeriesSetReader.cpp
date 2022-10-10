@@ -96,8 +96,7 @@ void SSeriesSetReader::openLocationDialog()
     if(!m_filterConfig.empty())
     {
         // Get the config
-        core::runtime::ConfigurationElement::csptr filterSelectorConfig;
-        filterSelectorConfig = service::extension::Config::getDefault()->getServiceConfig(
+        const auto filterSelectorConfig = service::extension::Config::getDefault()->getServiceConfig(
             m_filterConfig,
             "sight::module::ui::dicom::SFilterSelectorDialog"
         );
@@ -106,7 +105,7 @@ void SSeriesSetReader::openLocationDialog()
             "Sorry, there is no service configuration "
             << m_filterConfig
             << " for module::ui::dicom::SFilterSelectorDialog",
-            filterSelectorConfig
+            !filterSelectorConfig.empty()
         );
 
         // Init and execute the service
@@ -114,7 +113,7 @@ void SSeriesSetReader::openLocationDialog()
         data::String::sptr key = data::String::New();
         filterSelectorSrv = service::add("sight::module::ui::dicom::SFilterSelectorDialog");
         filterSelectorSrv->setInOut(key, "filter");
-        filterSelectorSrv->setConfiguration(core::runtime::ConfigurationElement::constCast(filterSelectorConfig));
+        filterSelectorSrv->setConfiguration(filterSelectorConfig);
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();

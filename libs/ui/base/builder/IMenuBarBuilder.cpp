@@ -34,31 +34,17 @@ const IMenuBarBuilder::RegistryKeyType IMenuBarBuilder::REGISTRY_KEY = "::ui::ba
 
 //-----------------------------------------------------------------------------
 
-IMenuBarBuilder::IMenuBarBuilder()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IMenuBarBuilder::~IMenuBarBuilder()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void IMenuBarBuilder::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void IMenuBarBuilder::initialize(const ui::base::config_t& configuration)
 {
-    if(configuration->hasAttribute("backgroundColor"))
+    if(const auto hexaColor = configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexaColor.empty())
     {
-        const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
-        if(!hexaColor.empty())
-        {
-            SIGHT_ASSERT(
-                "Color string should start with '#' and followed by 6 or 8 "
-                "hexadecimal digits. Given color: " << hexaColor,
-                hexaColor[0] == '#'
-                && (hexaColor.length() == 7 || hexaColor.length() == 9)
-            );
-            m_backgroundColor = hexaColor;
-        }
+        SIGHT_ASSERT(
+            "Color string should start with '#' and followed by 6 or 8 "
+            "hexadecimal digits. Given color: " << hexaColor,
+            hexaColor[0] == '#'
+            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+        );
+        m_backgroundColor = hexaColor;
     }
 }
 

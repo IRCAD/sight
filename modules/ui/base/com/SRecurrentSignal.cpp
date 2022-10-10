@@ -22,15 +22,7 @@
 
 #include "SRecurrentSignal.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-
-#include <data/Object.hpp>
-
-#include <service/macros.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <functional>
 
@@ -52,12 +44,9 @@ SRecurrentSignal::SRecurrentSignal() noexcept :
 
 void SRecurrentSignal::configuring()
 {
-    core::runtime::ConfigurationElement::sptr timeStepConfig = m_configuration->findConfigurationElement("timeStep");
-    SIGHT_WARN_IF("Missing \"timeStep\" tag.", !timeStepConfig);
-    if(timeStepConfig)
-    {
-        m_timeStep = boost::lexical_cast<unsigned int>(timeStepConfig->getValue());
-    }
+    const auto& config = this->getConfigTree();
+
+    m_timeStep = config.get<unsigned int>("timeStep", m_timeStep);
 }
 
 // ----------------------------------------------------------------------------

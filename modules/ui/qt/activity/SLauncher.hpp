@@ -27,8 +27,6 @@
 #include <activity/ActivityMsg.hpp>
 #include <activity/extension/Activity.hpp>
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 

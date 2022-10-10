@@ -220,7 +220,7 @@ void SStarter::configuring()
 {
     this->initialize();
 
-    for(const ConfigurationType& actionCfg : m_configuration->getElements())
+    for(const auto& actionCfg : m_configuration->getElements())
     {
         SIGHT_INFO("SStarter " << actionCfg->getName());
 

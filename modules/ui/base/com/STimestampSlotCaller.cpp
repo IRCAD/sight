@@ -26,6 +26,8 @@
 #include <core/com/Slots.hxx>
 #include <core/HiResClock.hpp>
 
+#include <boost/range/iterator_range_core.hpp>
+
 #include <regex>
 
 namespace sight::module::ui::base::com
@@ -33,38 +35,23 @@ namespace sight::module::ui::base::com
 
 //-----------------------------------------------------------------------------
 
-STimestampSlotCaller::STimestampSlotCaller()
-= default;
-
-//-----------------------------------------------------------------------------
-
-STimestampSlotCaller::~STimestampSlotCaller()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void STimestampSlotCaller::configuring()
 {
     this->initialize();
 
-    ConfigurationType cfg = m_configuration->findConfigurationElement("slots");
+    const auto& config = this->getConfigTree();
 
-    core::runtime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement("slot");
+    const std::regex re("(.*)/(.*)");
 
-    std::regex re("(.*)/(.*)");
-    std::smatch match;
-    std::string src;
-    std::string uid;
-    std::string key;
-
-    for(const ConfigurationType& elem : slotCfgs.getElements())
+    const auto& slots = config.get_child("slots");
+    for(const auto& elem : boost::make_iterator_range(slots.equal_range("slot")))
     {
-        src = elem->getValue();
-        if(std::regex_match(src, match, re))
+        const auto src = elem.second.get_value<std::string>();
+        if(std::smatch match; std::regex_match(src, match, re))
         {
             SIGHT_ASSERT("Wrong value for attribute src: " << src, match.size() >= 3);
-            uid.assign(match[1].first, match[1].second);
-            key.assign(match[2].first, match[2].second);
+            const std::string uid(match[1].first, match[1].second);
+            const std::string key(match[2].first, match[2].second);
 
             SIGHT_ASSERT("Missing hasSlotsId attribute", !uid.empty());
             SIGHT_ASSERT("Missing slotKey attribute", !key.empty());

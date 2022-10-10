@@ -25,10 +25,9 @@
 #include "ui/base/GuiRegistry.hpp"
 #include "ui/base/IAction.hpp"
 
-#include <core/tools/fwID.hpp>
-
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 #include <utility>
 
@@ -41,11 +40,6 @@ Menu::Menu(std::string sid) :
     m_sid(std::move(sid))
 {
 }
-
-//-----------------------------------------------------------------------------
-
-Menu::~Menu()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -71,41 +65,24 @@ ui::base::container::fwMenuItem::sptr Menu::getFwMenuItem(
 
 //-----------------------------------------------------------------------------
 
-void Menu::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void Menu::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName() + "'",
-        configuration->getName() == "registry"
-    );
-
     // index represents associated menu with position in menus vector
     unsigned int index = 0;
     m_callbacks.clear();
-    // initialize m_actionSids map with configuration
-    std::vector<ConfigurationType> vectMenuItems = configuration->find("menuItem");
-    for(const ConfigurationType& menuItem : vectMenuItems)
-    {
-        SIGHT_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
-        if(menuItem->hasAttribute("sid"))
-        {
-            bool start = false;
-            if(menuItem->hasAttribute("start"))
-            {
-                std::string startValue = menuItem->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (requires 'true' or 'false'), actual: '"
-                    + startValue + "'.",
-                    startValue == "true" || startValue == "false"
-                );
-                start = (startValue == "true");
-            }
 
-            std::string sid = menuItem->getAttributeValue("sid");
+    // initialize m_actionSids map with configuration
+    for(const auto& menuItem : boost::make_iterator_range(configuration.equal_range("menuItem")))
+    {
+        if(const auto sid = menuItem.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
+        {
+            const bool start = menuItem.second.get("<xmlattr>.start", false);
+
             SIGHT_ASSERT(
-                "The action '" + sid + "' already exists for '" + m_sid + "' menu.",
-                m_actionSids.find(sid) == m_actionSids.end()
+                "The action '" + sid.value() + "' already exists for '" + m_sid + "' menu.",
+                m_actionSids.find(sid.value()) == m_actionSids.end()
             );
-            m_actionSids[sid] = SIDMenuMapType::mapped_type(index, start);
+            m_actionSids[sid.value()] = SIDMenuMapType::mapped_type(index, start);
 
             ui::base::ActionCallbackBase::sptr callback;
             ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ActionCallbackBase::REGISTRY_KEY);
@@ -116,7 +93,7 @@ void Menu::initialize(core::runtime::ConfigurationElement::sptr configuration)
                 callback
             );
 
-            callback->setSID(sid);
+            callback->setSID(sid.value());
             m_callbacks.push_back(callback);
         }
 
@@ -125,31 +102,16 @@ void Menu::initialize(core::runtime::ConfigurationElement::sptr configuration)
 
     index = 0;
     // initialize m_actionSids map with configuration
-    std::vector<ConfigurationType> vectMenus = configuration->find("menu");
-    for(const ConfigurationType& menu : vectMenus)
+    for(const auto& menu : boost::make_iterator_range(configuration.equal_range("menu")))
     {
-        SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
-        if(menu->hasAttribute("sid"))
+        if(const auto sid = menu.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
         {
-            bool start = false;
-            if(menu->hasAttribute("start"))
-            {
-                std::string startValue = menu->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
-                    << startValue << "'.",
-                    startValue == "true" || startValue == "false"
-                );
-                start = (startValue == "true");
-            }
-
-            std::string sid                 = menu->getAttributeValue("sid");
-            std::pair<int, bool> indexStart = std::make_pair(index, start);
+            const bool start = menu.second.get("<xmlattr>.start", false);
             SIGHT_ASSERT(
-                "The menu '" + sid + "' already exists for this menu '" + m_sid + "'",
-                m_actionSids.find(sid) == m_actionSids.end()
+                "The menu '" + sid.value() + "' already exists for this menu '" + m_sid + "'",
+                m_menuSids.find(sid.value()) == m_menuSids.end()
             );
-            m_menuSids[sid] = indexStart;
+            m_menuSids[sid.value()] = SIDMenuMapType::mapped_type(index, start);
         }
 
         index++;

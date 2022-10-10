@@ -24,13 +24,9 @@
 
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/thread/Worker.hpp>
 
 #include <data/iterator/types.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -45,42 +41,24 @@ namespace sight::module::io::document
 
 //-----------------------------------------------------------------------------
 
-SPdfWriter::SPdfWriter()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void SPdfWriter::info(std::ostream& _sstream)
 {
     this->IWriter::info(_sstream);
     _sstream << std::endl << " External data file reader";
 }
 
-//-----------------------------------------------------------------------------
-
-SPdfWriter::~SPdfWriter() noexcept
-{
-    this->SPdfWriter::stopping();
-}
-
 //------------------------------------------------------------------------------
 
 void SPdfWriter::configuring()
 {
-    static constexpr auto s_CONTAINER_INPUT = "container";
     this->IWriter::configuring();
 
-    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
-    const ConfigurationType containersConfig = m_configuration->findConfigurationElement(s_CONTAINER_INPUT);
-    if(containersConfig)
+    const auto& config = this->getConfigTree();
+
+    for(const auto& container : boost::make_iterator_range(config.equal_range("container")))
     {
-        const std::vector<ConfigurationType> containersCfg = containersConfig->find(s_CONTAINER_INPUT);
-        for(const auto& cfg : containersCfg)
-        {
-            SIGHT_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
-            const std::string id = cfg->getAttributeValue("uid");
-            m_containersIDs.push_back(id);
-        }
+        const auto uid = container.second.get<std::string>("<xmlattr>.uid");
+        m_containersIDs.push_back(uid);
     }
 }
 

@@ -24,13 +24,8 @@
 
 #include <activity/IValidator.hpp>
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
@@ -38,8 +33,6 @@
 #include <data/ActivitySet.hpp>
 #include <data/Composite.hpp>
 #include <data/Series.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>

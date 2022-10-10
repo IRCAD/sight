@@ -56,8 +56,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /// Starts action
     void starting() override;
 

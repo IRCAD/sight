@@ -28,7 +28,7 @@
 
 #include "ui/base/layoutManager/ToolboxLayoutManagerBase.hpp"
 
-#include <core/base.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::ui::base::layoutManager
 {
@@ -50,126 +50,50 @@ ToolboxLayoutManagerBase::~ToolboxLayoutManagerBase()
 
 //-----------------------------------------------------------------------------
 
-void ToolboxLayoutManagerBase::initialize(ConfigurationType configuration)
+void ToolboxLayoutManagerBase::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
     m_views.clear();
-    for(const ConfigurationType& view : configuration->getElements())
+    for(const auto& view : boost::make_iterator_range(configuration.equal_range("view")))
     {
-        if(view->getName() == "view")
+        ViewInfo vi;
+        if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
         {
-            ViewInfo vi;
-            if(view->hasAttribute("border"))
+            if(const auto border = viewCfg->get_optional<int>("border"); border.has_value())
             {
-                std::string border = view->getExistingAttributeValue("border");
-                vi.m_border = std::stoi(border);
+                vi.m_border = border.value();
             }
             else
             {
-                if(view->hasAttribute("leftBorder"))
-                {
-                    const std::string border = view->getExistingAttributeValue("leftBorder");
-                    vi.m_leftBorder = std::stoi(border);
-                }
-
-                if(view->hasAttribute("topBorder"))
-                {
-                    const std::string border = view->getExistingAttributeValue("topBorder");
-                    vi.m_topBorder = std::stoi(border);
-                }
-
-                if(view->hasAttribute("rightBorder"))
-                {
-                    const std::string border = view->getExistingAttributeValue("rightBorder");
-                    vi.m_rightBorder = std::stoi(border);
-                }
-
-                if(view->hasAttribute("bottomBorder"))
-                {
-                    const std::string border = view->getExistingAttributeValue("bottomBorder");
-                    vi.m_bottomBorder = std::stoi(border);
-                }
+                vi.m_leftBorder   = viewCfg->get<int>("leftBorder", vi.m_leftBorder);
+                vi.m_topBorder    = viewCfg->get<int>("topBorder", vi.m_topBorder);
+                vi.m_rightBorder  = viewCfg->get<int>("rightBorder", vi.m_rightBorder);
+                vi.m_bottomBorder = viewCfg->get<int>("bottomBorder", vi.m_bottomBorder);
             }
 
-            if(view->hasAttribute("caption"))
-            {
-                vi.m_caption = view->getExistingAttributeValue("caption");
-            }
+            vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
+            vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
+            vi.m_maxSize.first  = viewCfg->get<int>("maxWidth", vi.m_maxSize.first);
+            vi.m_maxSize.second = viewCfg->get<int>("maxHeight", vi.m_maxSize.second);
 
-            if(view->hasAttribute("minWidth"))
-            {
-                std::string width = view->getExistingAttributeValue("minWidth");
-                vi.m_minSize.first = std::stoi(width);
-            }
+            vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
+            vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
+            vi.m_expanded     = viewCfg->get<bool>("expanded", vi.m_expanded);
 
-            if(view->hasAttribute("minHeight"))
-            {
-                std::string height = view->getExistingAttributeValue("minHeight");
-                vi.m_minSize.second = std::stoi(height);
-            }
+            vi.m_caption = viewCfg->get<std::string>("caption", "");
 
-            if(view->hasAttribute("maxWidth"))
+            if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
             {
-                const std::string width = view->getExistingAttributeValue("maxWidth");
-                vi.m_maxSize.first = std::stoi(width);
-            }
-
-            if(view->hasAttribute("maxHeight"))
-            {
-                const std::string height = view->getExistingAttributeValue("maxHeight");
-                vi.m_maxSize.second = std::stoi(height);
-            }
-
-            if(view->hasAttribute("visible"))
-            {
-                std::string visible = view->getExistingAttributeValue("visible");
                 SIGHT_ASSERT(
-                    "Incorrect value for \"visible\" attribute " << visible,
-                    (visible == "true") || (visible == "false")
+                    "Color string should start with '#' and followed by 6 or 8 "
+                    "hexadecimal digits. Given color: " << hexaColor,
+                    hexaColor[0] == '#'
+                    && (hexaColor.length() == 7 || hexaColor.length() == 9)
                 );
-                vi.m_visible = ((visible == "true"));
+                vi.m_backgroundColor = hexaColor;
             }
-
-            if(view->hasAttribute("expanded"))
-            {
-                std::string expanded = view->getExistingAttributeValue("expanded");
-                SIGHT_ASSERT(
-                    "Incorrect value for \"expanded\" attribute " << expanded,
-                    (expanded == "true") || (expanded == "false")
-                );
-                vi.m_expanded = ((expanded == "true"));
-            }
-
-            if(view->hasAttribute("useScrollBar"))
-            {
-                std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-                SIGHT_ASSERT(
-                    "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                    (useScrollBar == "true") || (useScrollBar == "false")
-                );
-                vi.m_useScrollBar = (useScrollBar == "true");
-            }
-
-            if(view->hasAttribute("backgroundColor"))
-            {
-                const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-                if(!hexaColor.empty())
-                {
-                    SIGHT_ASSERT(
-                        "Color string should start with '#' and followed by 6 or 8 "
-                        "hexadecimal digits. Given color: " << hexaColor,
-                        hexaColor[0] == '#'
-                        && (hexaColor.length() == 7 || hexaColor.length() == 9)
-                    );
-                    vi.m_backgroundColor = hexaColor;
-                }
-            }
-
-            m_views.push_back(vi);
         }
+
+        m_views.push_back(vi);
     }
 }
 

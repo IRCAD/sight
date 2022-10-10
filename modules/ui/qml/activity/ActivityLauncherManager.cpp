@@ -141,7 +141,7 @@ void ActivityLauncherManager::open()
         "ActivityReaderConfig",
         "sight::module::ui::base::io::SSelector"
     );
-    reader->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
+    reader->setConfiguration(cfgElem);
     reader->configure();
 
     reader->start();
@@ -165,7 +165,7 @@ void ActivityLauncherManager::save()
         "ActivityWriterConfig",
         "sight::module::ui::base::io::SSelector"
     );
-    writer->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
+    writer->setConfiguration(cfgElem);
     writer->configure();
     writer->start();
     writer->update();

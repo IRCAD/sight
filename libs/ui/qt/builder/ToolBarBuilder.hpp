@@ -26,7 +26,6 @@
 #include "ui/qt/container/QtContainer.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <ui/base/builder/IToolBarBuilder.hpp>
 #include <ui/base/container/fwContainer.hpp>

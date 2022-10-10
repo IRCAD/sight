@@ -22,32 +22,19 @@
 
 #include "CrossTypeAction.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
-
-#include <data/Float.hpp>
-#include <data/Image.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-#include <service/op/Get.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace sight::module::ui::base::viz
 {
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0F},
+std::map<std::string, float> CrossTypeAction::m_scaleConversion = {
+    {std::string("full"), 1.0F},
     {std::string("half"), 0.5F},
-    {std::string("hide"), 0.0F
-    }
+    {std::string("hide"), 0.0F}
 };
 
 //------------------------------------------------------------------------------
@@ -56,11 +43,6 @@ CrossTypeAction::CrossTypeAction() noexcept :
     m_sigCrossTypeModified(newSignal<CrossTypeModifiedSignalType>(s_CROSS_TYPE_MODIFIED_SIG))
 {
 }
-
-//------------------------------------------------------------------------------
-
-CrossTypeAction::~CrossTypeAction() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 

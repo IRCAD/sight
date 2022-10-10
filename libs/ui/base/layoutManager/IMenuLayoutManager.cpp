@@ -24,6 +24,8 @@
 
 #include <core/runtime/operations.hpp>
 
+#include <boost/range/iterator_range_core.hpp>
+
 namespace sight::ui::base::layoutManager
 {
 
@@ -31,60 +33,32 @@ const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "si
 
 //-----------------------------------------------------------------------------
 
-IMenuLayoutManager::IMenuLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IMenuLayoutManager::~IMenuLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void IMenuLayoutManager::initialize(ConfigurationType configuration)
+void IMenuLayoutManager::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
-
-    core::runtime::ConfigurationElementContainer::Iterator iter;
-    for(iter = configuration->begin() ; iter != configuration->end() ; ++iter)
+    for(const auto& menuItem : configuration)
     {
-        if((*iter)->getName() == "menuItem")
+        if(menuItem.first == "menuItem")
         {
-            ConfigurationType menuItem = *iter;
             ActionInfo info;
 
-            SIGHT_ASSERT("Depreciated tag <state>", !menuItem->hasAttribute("state"));
-            SIGHT_ASSERT("Depreciated tag <enable>", !menuItem->hasAttribute("enable"));
-
-            SIGHT_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
-            if(menuItem->hasAttribute("name"))
+            info.m_name     = menuItem.second.get<std::string>("<xmlattr>.name");
+            info.m_shortcut = menuItem.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
+            const auto icon = menuItem.second.get<std::string>("<xmlattr>.icon", "");
+            if(!icon.empty())
             {
-                info.m_name = menuItem->getExistingAttributeValue("name");
+                info.m_icon = core::runtime::getModuleResourceFilePath(icon);
             }
 
-            if(menuItem->hasAttribute("shortcut"))
+            if(const auto style = menuItem.second.get_optional<std::string>("<xmlattr>.style"); style.has_value())
             {
-                info.m_shortcut = menuItem->getExistingAttributeValue("shortcut");
+                info.m_isCheckable = (*style == "check");
+                info.m_isRadio     = (*style == "radio");
             }
 
-            if(menuItem->hasAttribute("icon"))
+            if(const auto action =
+                   menuItem.second.get_optional<std::string>("<xmlattr>.specialAction"); action.has_value())
             {
-                info.m_icon = core::runtime::getModuleResourceFilePath(menuItem->getAttributeValue("icon"));
-            }
-
-            if(menuItem->hasAttribute("style"))
-            {
-                std::string style = menuItem->getExistingAttributeValue("style");
-                info.m_isCheckable = (style == "check");
-                info.m_isRadio     = (style == "radio");
-            }
-
-            if(menuItem->hasAttribute("specialAction"))
-            {
-                std::string specialActionName = menuItem->getExistingAttributeValue("specialAction");
+                const std::string& specialActionName = action.value();
                 if(specialActionName == "DEFAULT")
                 {
                     info.m_type = DEFAULT;
@@ -114,7 +88,7 @@ void IMenuLayoutManager::initialize(ConfigurationType configuration)
             m_actionInfo.push_back(info);
         }
 
-        if((*iter)->getName() == "separator")
+        if(menuItem.first == "separator")
         {
             ActionInfo info;
             info.m_isSeparator = true;
@@ -122,14 +96,11 @@ void IMenuLayoutManager::initialize(ConfigurationType configuration)
             m_actionInfo.push_back(info);
         }
 
-        if((*iter)->getName() == "menu")
+        if(menuItem.first == "menu")
         {
             ActionInfo info;
             info.m_isMenu = true;
-            if((*iter)->hasAttribute("name"))
-            {
-                info.m_name = (*iter)->getExistingAttributeValue("name");
-            }
+            info.m_name   = menuItem.second.get<std::string>("<xmlattr>.name", "");
 
             m_actionInfo.push_back(info);
         }

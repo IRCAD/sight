@@ -49,11 +49,8 @@ public:
 
 protected:
 
-    UI_BASE_API IMenuBar();
-
-    UI_BASE_API ~IMenuBar() override;
-
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    UI_BASE_API IMenuBar()           = default;
+    UI_BASE_API ~IMenuBar() override = default;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -97,13 +94,10 @@ protected:
 
 private:
 
-    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
+    void initializeLayoutManager(const ui::base::config_t& layoutConfig);
 
     ui::base::layoutManager::IMenuBarLayoutManager::sptr m_layoutManager;
     ui::base::registry::MenuBar::sptr m_registry;
-
-    ConfigurationType m_registryConfig;
-    ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the menu if the service is stopped
     bool m_hideMenus {false};

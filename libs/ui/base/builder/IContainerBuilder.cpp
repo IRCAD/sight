@@ -44,7 +44,7 @@ IContainerBuilder::~IContainerBuilder()
 
 //-----------------------------------------------------------------------------
 
-void IContainerBuilder::initialize(core::runtime::ConfigurationElement::sptr /*unused*/)
+void IContainerBuilder::initialize(const ui::base::config_t& /*unused*/)
 {
 }
 

@@ -22,21 +22,13 @@
 
 #include "SSelectionMenuButton.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/tools/fwID.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 #include <QAction>
 #include <QMenu>
@@ -57,8 +49,7 @@ static const core::com::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
 static const core::com::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
 
 SSelectionMenuButton::SSelectionMenuButton() noexcept :
-    m_sigSelected(newSignal<SelectedSignalType>(s_SELECTED_SIG)),
-    m_text(">")
+    m_sigSelected(newSignal<SelectedSignalType>(s_SELECTED_SIG))
 {
     newSlot(s_SET_ENABLED_SIG, &SSelectionMenuButton::setEnabled, this);
     newSlot(s_SENABLE_SIG, &SSelectionMenuButton::enable, this);
@@ -67,45 +58,21 @@ SSelectionMenuButton::SSelectionMenuButton() noexcept :
 
 //------------------------------------------------------------------------------
 
-SSelectionMenuButton::~SSelectionMenuButton() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SSelectionMenuButton::configuring()
 {
     this->initialize();
 
-    Configuration txtCfg = m_configuration->findConfigurationElement("text");
-    if(txtCfg)
-    {
-        m_text = txtCfg->getValue();
-    }
+    const auto& config = this->getConfigTree();
 
-    Configuration toolTipCfg = m_configuration->findConfigurationElement("toolTip");
-    if(toolTipCfg)
-    {
-        m_toolTip = toolTipCfg->getValue();
-    }
+    m_text      = config.get<std::string>("text", m_text);
+    m_toolTip   = config.get<std::string>("toolTip", m_toolTip);
+    m_selection = config.get<int>("selected", m_selection);
 
-    Configuration selectedCfg = m_configuration->findConfigurationElement("selected");
-    if(selectedCfg)
+    const auto& items = config.get_child("items");
+    for(const auto& elem : boost::make_iterator_range(items.equal_range("item")))
     {
-        m_selection = std::stoi(selectedCfg->getValue());
-    }
-
-    Configuration itemsCfg = m_configuration->findConfigurationElement("items");
-    SIGHT_ASSERT("Missing 'items' config", itemsCfg);
-
-    std::vector<Configuration> itemCfgs = itemsCfg->find("item");
-    SIGHT_ASSERT("At least two items must be defined", itemCfgs.size() >= 2);
-    for(const auto& itemCfg : itemCfgs)
-    {
-        SIGHT_ASSERT("Missing 'text' attribute", itemCfg->hasAttribute("text"));
-        SIGHT_ASSERT("Missing 'value' attribute", itemCfg->hasAttribute("value"));
-        std::string txt = itemCfg->getExistingAttributeValue("text");
-        std::string val = itemCfg->getExistingAttributeValue("value");
-        int value       = std::stoi(val);
+        const auto txt  = elem.second.get<std::string>("<xmlattr>.text");
+        const int value = elem.second.get<int>("<xmlattr>.value");
         m_items.push_back(std::make_pair(value, txt));
     }
 }

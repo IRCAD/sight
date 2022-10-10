@@ -61,8 +61,6 @@ protected:
 
     UI_BASE_API ~IMenu() override;
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-
     /**
      * @brief Initialize the layout and registry managers.
      *
@@ -116,13 +114,10 @@ protected:
 
 private:
 
-    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
+    void initializeLayoutManager(const ui::base::config_t& layoutConfig);
 
     ui::base::layoutManager::IMenuLayoutManager::sptr m_layoutManager;
     ui::base::registry::Menu::sptr m_registry;
-
-    ConfigurationType m_registryConfig;
-    ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the actions if the service is stopped
     bool m_hideActions {false};

@@ -25,10 +25,7 @@
 #include "viz/qt3d/config.hpp"
 #include "viz/qt3d/IWindowInteractor.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <service/helper/Config.hpp>
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
 

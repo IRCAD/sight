@@ -110,11 +110,8 @@
             <service uid="saveMeshAct" type="sight::module::ui::base::com::SStarter">
                 <start uid="meshWriterSrv" />
             </service>
-            <service uid="createMeshAct" type="sight::module::ui::base::com::SSlotCaller">
-                <slots>
-                    <slot>mesher50Srv/update</slot>
-                </slots>
-            </service>
+            <service uid="createMeshAct" type="sight::module::ui::base::SAction"/>
+
             <service uid="mesher50Srv" type="sight::module::filter::mesh::SVTKMesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
@@ -180,6 +177,11 @@
             <connect>
                 <signal>shortcutSrv/activated</signal>
                 <slot>createMeshAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>createMeshAct/clicked</signal>
+                <slot>mesher50Srv/update</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

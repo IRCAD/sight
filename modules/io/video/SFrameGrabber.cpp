@@ -26,13 +26,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/Type.hpp>
 
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/Preferences.hpp>

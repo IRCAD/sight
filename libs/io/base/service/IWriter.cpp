@@ -187,6 +187,8 @@ void IWriter::clearLocations()
 
 void IWriter::configuring()
 {
+    const auto& config = this->getConfigTree();
+
     SIGHT_ASSERT(
         "Generic configuring method is only available for io service that uses paths.",
         !(this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED)
@@ -195,38 +197,32 @@ void IWriter::configuring()
     SIGHT_ASSERT(
         "This writer does not manage folders and a folder path is given in the configuration",
         (this->getIOPathType() & io::base::service::FOLDER)
-        || (m_configuration->find("folder").empty())
+        || (config.find("folder") == config.not_found())
     );
 
     SIGHT_ASSERT(
         "This writer does not manages files and a file path is given in the configuration",
         (this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES)
-        || (m_configuration->find("file").empty())
+        || (config.find("file") == config.not_found())
     );
 
-    core::runtime::ConfigurationElement::sptr titleConfig = m_configuration->findConfigurationElement("windowTitle");
-    m_windowTitle = titleConfig ? titleConfig->getValue() : "";
+    m_windowTitle = config.get<std::string>("windowTitle", "");
 
     if((this->getIOPathType() & io::base::service::FILE) != 0)
     {
         SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::base::service::FILES);
-        std::vector<core::runtime::ConfigurationElement::sptr> config = m_configuration->find("file");
-        SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.size() > 1);
-        if(config.size() == 1)
-        {
-            std::string file = config.at(0)->getValue();
-            this->setFile(std::filesystem::path(file));
-        }
+        SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.count("file") > 1);
+        const auto file = config.get<std::string>("file");
+        this->setFile(std::filesystem::path(file));
     }
 
     if((this->getIOPathType() & io::base::service::FILES) != 0)
     {
         SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::base::service::FILE);
-        std::vector<core::runtime::ConfigurationElement::sptr> config = m_configuration->find("file");
         io::base::service::LocationsType locations;
-        for(const core::runtime::ConfigurationElement::sptr& elt : config)
+        for(const auto& elt : boost::make_iterator_range(config.equal_range("file")))
         {
-            std::string location = elt->getValue();
+            const auto location = elt.second.get_value<std::string>();
             locations.push_back(std::filesystem::path(location));
         }
 
@@ -235,13 +231,9 @@ void IWriter::configuring()
 
     if((this->getIOPathType() & io::base::service::FOLDER) != 0)
     {
-        std::vector<core::runtime::ConfigurationElement::sptr> config = m_configuration->find("folder");
-        SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.size() > 1);
-        if(config.size() == 1)
-        {
-            std::string folder = config.at(0)->getValue();
-            this->setFolder(std::filesystem::path(folder));
-        }
+        SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.count("folder") > 1);
+        const auto folder = config.get<std::string>("folder");
+        this->setFolder(std::filesystem::path(folder));
     }
 }
 
@@ -251,7 +243,7 @@ void IWriter::updateBaseFolder(std::string& outBaseFolder) const
 {
     const sight::service::IService::ConfigType config = this->getConfigTree();
 
-    const std::string baseFolderCfg = config.get<std::string>("baseFolder", "");
+    const auto baseFolderCfg = config.get<std::string>("baseFolder", "");
 
     if(!baseFolderCfg.empty())
     {

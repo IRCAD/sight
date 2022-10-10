@@ -24,10 +24,6 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/tools/Failed.hpp>
-
 #include <ui/base/IAction.hpp>
 
 #include <map>
@@ -49,11 +45,9 @@ public:
     MODULE_UI_BASE_API CrossTypeAction() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API ~CrossTypeAction() noexcept override;
+    MODULE_UI_BASE_API ~CrossTypeAction() noexcept override = default;
 
 protected:
-
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Starts action
     void starting() override;

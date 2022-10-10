@@ -24,8 +24,6 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <core/com/Signal.hpp>
-
 #include <io/base/service/IReader.hpp>
 
 #include <filesystem>

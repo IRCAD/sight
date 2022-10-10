@@ -74,34 +74,14 @@ void SSliceIndexDicomPullerEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SIGHT_ASSERT(
-        "The service module::io::dicomweb::SPacsConfigurationInitializer must have "
-        "a \"config\" element.",
-        config
-    );
+    const auto& config = this->getConfigTree();
 
-    bool success = false;
+    m_dicomReaderType = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
+    m_delay           = config.get<unsigned int>("config.<xmlattr>.delay", m_delay);
 
-    // Reader
-    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SIGHT_ASSERT(
-        "It should be a \"dicomReader\" tag in the module::io::dicomweb::SSliceIndexDicomPullerEditor "
-        "config element.",
-        success
-    );
-
-    // Reader configuration
-    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("readerConfig");
-    m_readerConfig =
-        (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
-
-    // Delay
-    std::string delayStr;
-    std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
-    if(success)
+    if(const auto readerConfig = config.get_child_optional("readerConfig"); readerConfig.has_value())
     {
-        m_delay = boost::lexical_cast<unsigned int>(delayStr);
+        m_readerConfig = readerConfig.value();
     }
 
     if(m_delayTimer && m_delayTimer->isRunning())
@@ -165,11 +145,7 @@ void SSliceIndexDicomPullerEditor::starting()
         dicomReader
     );
     dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
-    if(m_readerConfig)
-    {
-        dicomReader->setConfiguration(m_readerConfig);
-    }
-
+    dicomReader->setConfiguration(m_readerConfig);
     dicomReader->configure();
     dicomReader->start();
 

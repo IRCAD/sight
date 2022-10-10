@@ -29,9 +29,6 @@
 #include "ui/base/layoutManager/IFrameLayoutManager.hpp"
 #include "ui/base/registry/View.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-
 #include <service/IService.hpp>
 
 namespace sight::ui::base
@@ -124,10 +121,8 @@ public:
 protected:
 
     UI_BASE_API IFrame();
+    UI_BASE_API ~IFrame() override = default;
 
-    UI_BASE_API ~IFrame() override;
-
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     /**
      * @brief Initialize frame managers.
      *
@@ -164,19 +159,14 @@ private:
     static void onCloseExit();
     void onCloseNotify();
     static void onCloseMessage();
-    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
-    void initializeMenuBarBuilder(core::runtime::ConfigurationElement::sptr menuBarConfig);
-    void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
+    void initializeLayoutManager(const ui::base::config_t& layoutConfig);
+    void initializeMenuBarBuilder(const ui::base::config_t& menuBarConfig);
+    void initializeToolBarBuilder(const ui::base::config_t& toolBarConfig);
 
     ui::base::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
     ui::base::registry::View::sptr m_viewRegistry;
     ui::base::builder::IMenuBarBuilder::sptr m_menuBarBuilder;
     ui::base::builder::IToolBarBuilder::sptr m_toolBarBuilder;
-
-    ConfigurationType m_registryConfig;
-    ConfigurationType m_frameConfig;
-    ConfigurationType m_menuBarConfig;
-    ConfigurationType m_toolBarConfig;
 
     bool m_hasMenuBar {false};
     bool m_hasToolBar {false};

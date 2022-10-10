@@ -22,44 +22,29 @@
 
 #include "modules/geometry/base/SConcatenateMatrices.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
-#include <service/macros.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::module::geometry::base
 {
 
 // ----------------------------------------------------------------------------
 
-SConcatenateMatrices::SConcatenateMatrices() noexcept =
-    default;
-
-// ----------------------------------------------------------------------------
-
 void SConcatenateMatrices::configuring()
 {
-    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
-    std::vector<ConfigurationType> inCfgs = m_configuration->find("in");
-    SIGHT_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
+    const auto config                    = this->getConfigTree();
+    const auto inCfg                     = config.get_child("in");
+    [[maybe_unused]] const auto groupCfg = inCfg.get_child_optional("<xmlattr>.group");
+    SIGHT_ASSERT("Config must contain one input group named 'matrix'.", groupCfg.has_value());
+    SIGHT_ASSERT("Missing 'in group=\"matrix\"'", groupCfg->get_value<std::string>() == s_MATRIX_GROUP_INPUT);
 
-    SIGHT_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == s_MATRIX_GROUP_INPUT);
-
-    std::vector<ConfigurationType> matrixCfgs = inCfgs[0]->find("key");
-
-    for(const ConfigurationType& cfg : matrixCfgs)
+    for(const auto& cfg : boost::make_iterator_range(inCfg.equal_range("key")))
     {
-        bool invertCurrentMatrix  = false;
-        const std::string inverse = cfg->getAttributeValue("inverse");
-        if(!inverse.empty())
-        {
-            invertCurrentMatrix = (inverse == "true");
-        }
-
-        m_invertVector.push_back(invertCurrentMatrix);
+        const auto inverse = cfg.second.get<bool>("<xmlattr>.inverse", false);
+        m_invertVector.push_back(inverse);
     }
 }
 

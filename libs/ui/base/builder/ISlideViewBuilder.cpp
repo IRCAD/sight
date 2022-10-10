@@ -40,31 +40,15 @@ static const std::string s_STYLE_SHEET_CONFIG      = "styleSheet";
 
 //-----------------------------------------------------------------------------
 
-ISlideViewBuilder::ISlideViewBuilder()
-= default;
-
-//-----------------------------------------------------------------------------
-
-ISlideViewBuilder::~ISlideViewBuilder()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _config)
+void ISlideViewBuilder::initialize(const ui::base::config_t& _config)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " + _config->getName() + ", must be 'slideView'",
-        _config->getName() == "slideView"
-    );
-
-    if(_config->hasAttribute(s_H_ALIGN_CONFIG))
+    if(const auto hAlign = _config.get_optional<std::string>("<xmlattr>." + s_H_ALIGN_CONFIG); hAlign.has_value())
     {
-        const std::string hAlign = _config->getExistingAttributeValue(s_H_ALIGN_CONFIG);
-        if(hAlign == "left")
+        if(*hAlign == "left")
         {
             m_hAlignment = LEFT;
         }
-        else if(hAlign == "right")
+        else if(*hAlign == "right")
         {
             m_hAlignment = RIGHT;
         }
@@ -73,19 +57,18 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
             SIGHT_FATAL(
                 std::string(
                     "Wrong value '"
-                ) + hAlign + "' for '" + s_H_ALIGN_CONFIG + "' attribute (require 'left' or 'right')"
+                ) + *hAlign + "' for '" + s_H_ALIGN_CONFIG + "' attribute (require 'left' or 'right')"
             );
         }
     }
 
-    if(_config->hasAttribute(s_V_ALIGN_CONFIG))
+    if(const auto vAlign = _config.get_optional<std::string>("<xmlattr>." + s_V_ALIGN_CONFIG); vAlign.has_value())
     {
-        const std::string vAlign = _config->getExistingAttributeValue(s_V_ALIGN_CONFIG);
-        if(vAlign == "top")
+        if(*vAlign == "top")
         {
             m_vAlignment = TOP;
         }
-        else if(vAlign == "bottom")
+        else if(*vAlign == "bottom")
         {
             m_vAlignment = BOTTOM;
         }
@@ -94,14 +77,14 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
             SIGHT_FATAL(
                 std::string(
                     "Wrong value '"
-                ) + vAlign + "' for '" + s_V_ALIGN_CONFIG + "' attribute (require 'top' or 'bottom')"
+                ) + *vAlign + "' for '" + s_V_ALIGN_CONFIG + "' attribute (require 'top' or 'bottom')"
             );
         }
     }
 
-    if(_config->hasAttribute(s_WIDTH_CONFIG))
+    if(const auto widthCfg = _config.get_optional<std::string>("<xmlattr>." + s_WIDTH_CONFIG); widthCfg.has_value())
     {
-        std::string width = _config->getExistingAttributeValue(s_WIDTH_CONFIG);
+        std::string width = widthCfg.value();
         if(width[width.size() - 1] == '%')
         {
             width = width.substr(0, width.size() - 1);
@@ -115,9 +98,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         SIGHT_ASSERT("Height must be upper to 0", m_width >= 0);
     }
 
-    if(_config->hasAttribute(s_HEIGHT_CONFIG))
+    if(const auto heightCfg = _config.get_optional<std::string>("<xmlattr>." + s_HEIGHT_CONFIG); heightCfg.has_value())
     {
-        std::string height = _config->getExistingAttributeValue(s_HEIGHT_CONFIG);
+        std::string height = heightCfg.value();
         if(height[height.size() - 1] == '%')
         {
             height = height.substr(0, height.size() - 1);
@@ -131,9 +114,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         SIGHT_ASSERT("Height must be upper to 0", m_height >= 0);
     }
 
-    if(_config->hasAttribute(s_H_OFFSET_CONFIG))
+    if(const auto offCfg = _config.get_optional<std::string>("<xmlattr>." + s_H_OFFSET_CONFIG); offCfg.has_value())
     {
-        std::string offset = _config->getExistingAttributeValue(s_H_OFFSET_CONFIG);
+        std::string offset = offCfg.value();
         if(offset[offset.size() - 1] == '%')
         {
             m_percentHOffset = true;
@@ -143,9 +126,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         m_hOffset = std::stoi(offset);
     }
 
-    if(_config->hasAttribute(s_V_OFFSET_CONFIG))
+    if(const auto offCfg = _config.get_optional<std::string>("<xmlattr>." + s_V_OFFSET_CONFIG); offCfg.has_value())
     {
-        std::string offset = _config->getExistingAttributeValue(s_V_OFFSET_CONFIG);
+        std::string offset = offCfg.value();
         if(offset[offset.size() - 1] == '%')
         {
             m_percentVOffset = true;
@@ -155,9 +138,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         m_vOffset = std::stoi(offset);
     }
 
-    if(_config->hasAttribute(s_OPACITY_CONFIG))
+    if(const auto opacityCfg = _config.get_optional<double>("<xmlattr>." + s_OPACITY_CONFIG); opacityCfg.has_value())
     {
-        m_opacity = std::stod(_config->getExistingAttributeValue(s_OPACITY_CONFIG));
+        m_opacity = opacityCfg.value();
         SIGHT_ASSERT(
             "Opacity must be in [0 - 1]; actual: " + std::to_string(
                 m_opacity
@@ -166,59 +149,37 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         );
     }
 
-    if(_config->hasAttribute(s_ANIMATABLE_CONFIG))
-    {
-        const std::string animatable = _config->getExistingAttributeValue(s_ANIMATABLE_CONFIG);
-        if(animatable == "true")
-        {
-            m_animatable = true;
-        }
-        else if(animatable == "false")
-        {
-            m_animatable = false;
-        }
-        else
-        {
-            SIGHT_FATAL(
-                std::string("Wrong value '") + animatable + "' for '" + s_ANIMATABLE_CONFIG
-                + "' attribute (require 'true' or 'false')"
-            );
-        }
-    }
+    m_animatable = _config.get<bool>(s_ANIMATABLE_CONFIG, m_animatable);
 
-    if(_config->hasAttribute(s_ANIMATABLE_ALIGN_CONFIG))
+    if(const auto align = _config.get_optional<std::string>("<xmlattr>." + s_ANIMATABLE_ALIGN_CONFIG);
+       align.has_value())
     {
-        const std::string align = _config->getExistingAttributeValue(s_ANIMATABLE_ALIGN_CONFIG);
-        if(align == "top")
+        if(*align == "top")
         {
             m_animatableAlignment = TOP_ANIMATION;
         }
-        else if(align == "bottom")
+        else if(*align == "bottom")
         {
             m_animatableAlignment = BOTTOM_ANIMATION;
         }
-        else if(align == "left")
+        else if(*align == "left")
         {
             m_animatableAlignment = LEFT_ANIMATION;
         }
-        else if(align == "right")
+        else if(*align == "right")
         {
             m_animatableAlignment = RIGHT_ANIMATION;
         }
         else
         {
             SIGHT_FATAL(
-                std::string("Wrong value '") + align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
+                std::string("Wrong value '") + *align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
                 + "' attribute (require 'left', 'right', 'top' or 'bottom')"
             );
         }
     }
 
-    core::runtime::ConfigurationElement::csptr styleCfg = _config->findConfigurationElement(s_STYLE_SHEET_CONFIG);
-    if(styleCfg)
-    {
-        m_styleSheet = styleCfg->getValue();
-    }
+    m_styleSheet = _config.get<std::string>(s_STYLE_SHEET_CONFIG, "");
 }
 
 //-----------------------------------------------------------------------------

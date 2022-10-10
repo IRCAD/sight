@@ -26,8 +26,6 @@
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::builder
 {
 
@@ -86,16 +84,16 @@ public:
     };
 
     /// Creates the slide view builder.
-    UI_BASE_API ISlideViewBuilder();
+    UI_BASE_API ISlideViewBuilder() = default;
 
     /// Destroyes the builder.
-    UI_BASE_API ~ISlideViewBuilder() override;
+    UI_BASE_API ~ISlideViewBuilder() override = default;
 
     /// Returns the generic container.
     UI_BASE_API virtual ui::base::container::fwContainer::sptr getContainer() const;
 
     /// Parses the configuration.
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr _config);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& _config);
 
     /// Creates the container.
     UI_BASE_API virtual void createContainer(ui::base::container::fwContainer::sptr _parent) = 0;

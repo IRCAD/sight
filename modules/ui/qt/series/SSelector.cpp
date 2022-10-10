@@ -22,30 +22,24 @@
 
 #include "SSelector.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 #include <ui/qt/series/Selector.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 #include <QVBoxLayout>
 
 namespace sight::module::ui::qt::series
 {
-
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
@@ -57,8 +51,6 @@ static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries"
 static const std::string s_SELECTION_MODE_CONFIG    = "selectionMode";
 static const std::string s_ALLOWED_REMOVE_CONFIG    = "allowedRemove";
 static const std::string s_INSERT_MODE_CONFIG       = "insertMode";
-static const std::string s_ICONS_CONFIG             = "icons";
-static const std::string s_ICON_CONFIG              = "icon";
 static const std::string s_REMOVE_STUDY_ICON_CONFIG = "removeStudyIcon";
 static const std::string s_REMOVE_SERIE_ICON_CONFIG = "removeSerieIcon";
 
@@ -83,19 +75,16 @@ void SSelector::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
 
-    std::vector<core::runtime::ConfigurationElement::sptr> iconsCfg = m_configuration->find(s_ICONS_CONFIG);
-    if(!iconsCfg.empty())
+    const ConfigType tree = this->getConfigTree();
+
+    if(const auto& icons = tree.get_child_optional("icons"); icons.has_value())
     {
-        SIGHT_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
-
-        std::vector<core::runtime::ConfigurationElement::sptr> cfg = iconsCfg.front()->find(s_ICON_CONFIG);
-
-        for(const core::runtime::ConfigurationElement::sptr& elt : cfg)
+        for(const auto& elt : boost::make_iterator_range(icons->equal_range("icon")))
         {
-            const std::string series = elt->getAttributeValue("series");
+            const auto series = elt.second.get<std::string>("<xmlattr>.series");
             SIGHT_ASSERT("'series' attribute is missing", !series.empty());
 
-            const std::string icon = elt->getAttributeValue("icon");
+            const auto icon = elt.second.get<std::string>("<xmlattr>.icon");
             SIGHT_ASSERT("'icon' attribute is missing", !icon.empty());
 
             const auto file = core::runtime::getResourceFilePath(icon);
@@ -103,8 +92,7 @@ void SSelector::configuring()
         }
     }
 
-    const ConfigType tree = this->getConfigTree();
-    const auto config     = tree.get_child_optional("config");
+    const auto config = tree.get_child_optional("config");
 
     if(config)
     {

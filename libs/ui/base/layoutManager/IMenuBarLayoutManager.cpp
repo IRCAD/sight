@@ -28,6 +28,8 @@
 
 #include "ui/base/layoutManager/IMenuBarLayoutManager.hpp"
 
+#include <boost/range/iterator_range_core.hpp>
+
 namespace sight::ui::base::layoutManager
 {
 
@@ -36,33 +38,13 @@ const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY
 
 //-----------------------------------------------------------------------------
 
-IMenuBarLayoutManager::IMenuBarLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IMenuBarLayoutManager::~IMenuBarLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void IMenuBarLayoutManager::initialize(ConfigurationType configuration)
+void IMenuBarLayoutManager::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
-
-    std::vector<ConfigurationType> vectMenus = configuration->find("menu");
     m_menus.clear();
-    for(const ConfigurationType& menu : vectMenus)
+    for(const auto& menu : boost::make_iterator_range(configuration.equal_range("menu")))
     {
-        SIGHT_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
-        if(menu->hasAttribute("name"))
-        {
-            std::string name = menu->getExistingAttributeValue("name");
-            m_menuNames.push_back(name);
-        }
+        const auto name = menu.second.get<std::string>("<xmlattr>.name");
+        m_menuNames.push_back(name);
     }
 }
 

@@ -39,9 +39,9 @@ class MODULE_UI_QT_CLASS_API SShowHelp : public sight::ui::base::IAction
 public:
 
     SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::base::IAction);
-    MODULE_UI_QT_API SShowHelp() noexcept;
 
-    MODULE_UI_QT_API ~SShowHelp() noexcept override;
+    MODULE_UI_QT_API SShowHelp() noexcept           = default;
+    MODULE_UI_QT_API ~SShowHelp() noexcept override = default;
 
 protected:
 
@@ -50,7 +50,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="sight::module::ui::qt::ui::action::SShowHelp" type="ui::base::IAction">
+       <service impl="sight::module::ui::qt::SShowHelp" type="ui::base::IAction">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

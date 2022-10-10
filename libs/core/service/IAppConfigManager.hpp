@@ -64,16 +64,6 @@ public:
         const FieldAdaptorType& replaceFields = FieldAdaptorType()
     )                                         = 0;
 
-    /**
-     * @brief Set configuration
-     * @param configId the identifier of the requested config.
-     * @param replaceFields composite of association between the value and the pattern to replace in the config.
-     */
-    SERVICE_API virtual void setConfig(
-        const std::string& configId,
-        const data::Composite::csptr& replaceFields
-    ) = 0;
-
     /// Get config root
     SERVICE_API virtual data::Object::sptr getConfigRoot() const = 0;
 

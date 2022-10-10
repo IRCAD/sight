@@ -32,19 +32,16 @@ namespace sight::module::data
 
 void SCopy::configuring()
 {
-    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
+    const auto& config = this->getConfigTree();
+    SIGHT_ASSERT("One 'in' tag is required.", config.get_optional<std::string>("in").has_value());
 
-    const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
-    SIGHT_ASSERT("One 'in' tag is required.", inCfg);
+    [[maybe_unused]] const auto inoutCfg = config.get_optional<std::string>("inout");
+    [[maybe_unused]] const auto outCfg   = config.get_optional<std::string>("out");
+    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.has_value() + outCfg.has_value());
 
-    const std::vector<ConfigurationType> inoutCfg = m_configuration->find("inout");
-    const std::vector<ConfigurationType> outCfg   = m_configuration->find("out");
-    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() + outCfg.size() == 1);
-
-    const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
-    if(modeConfig)
+    if(const auto modeConfig = config.get_optional<std::string>("mode"); modeConfig.has_value())
     {
-        auto mode = modeConfig->getValue();
+        const auto& mode = modeConfig.value();
         if(mode == "copyOnStart")
         {
             m_mode = ModeType::START;

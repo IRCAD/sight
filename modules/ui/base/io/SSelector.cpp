@@ -26,21 +26,20 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-
-#include <data/Composite.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
 
 #include <service/extension/Config.hpp>
 #include <service/extension/Factory.hpp>
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 #include <sstream>
 #include <string>
@@ -96,28 +95,24 @@ void SSelector::configuring()
     m_servicesAreExcluded = (selectionMode == "exclude");
     SIGHT_DEBUG("selection mode => " + selectionMode);
 
-    const auto selectionCfg = srvConfig.equal_range("addSelection");
-    for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
+    for(const auto& itSelection : boost::make_iterator_range(srvConfig.equal_range("addSelection")))
     {
-        const auto service = itSelection->second.get<std::string>("<xmlattr>.service");
+        const auto service = itSelection.second.get<std::string>("<xmlattr>.service");
         m_selectedServices.push_back(service);
         SIGHT_DEBUG("add selection => " + service);
 
-        const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
+        const std::string configId = itSelection.second.get<std::string>("<xmlattr>.config", "");
         if(!configId.empty())
         {
             m_serviceToConfig[service] = configId;
-            SIGHT_DEBUG(
-                std::string("add config '") + configId + "' for service '" + service + "'"
-            );
+            SIGHT_DEBUG(std::string("add config '") + configId + "' for service '" + service + "'");
         }
     }
 
-    const auto configCfg = srvConfig.equal_range("config");
-    for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
+    for(const auto& itCfg : boost::make_iterator_range(srvConfig.equal_range("config")))
     {
-        const auto service  = itCfg->second.get<std::string>("<xmlattr>.service");
-        const auto configId = itCfg->second.get<std::string>("<xmlattr>.id");
+        const auto service  = itCfg.second.get<std::string>("<xmlattr>.service");
+        const auto configId = itCfg.second.get<std::string>("<xmlattr>.id");
 
         m_serviceToConfig[service] = configId;
         SIGHT_DEBUG(std::string("add config '") + configId + "' for service '" + service + "'");
@@ -267,7 +262,7 @@ void SSelector::updating()
         {
             // Get Config
             bool hasConfigForService = false;
-            core::runtime::ConfigurationElement::csptr srvCfg;
+            IService::ConfigType srvCfg;
             if(m_serviceToConfig.find(extensionId) != m_serviceToConfig.end())
             {
                 hasConfigForService = true;
@@ -277,7 +272,7 @@ void SSelector::updating()
                 );
                 SIGHT_ASSERT(
                     "No service configuration of type service::extension::Config was found",
-                    srvCfg
+                    !srvCfg.empty()
                 );
             }
 
@@ -294,7 +289,7 @@ void SSelector::updating()
 
                 if(hasConfigForService)
                 {
-                    reader->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
+                    reader->setConfiguration(srvCfg);
                     reader->configure();
                 }
 
@@ -344,7 +339,7 @@ void SSelector::updating()
 
                 if(hasConfigForService)
                 {
-                    writer->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
+                    writer->setConfiguration(srvCfg);
                     writer->configure();
                 }
 

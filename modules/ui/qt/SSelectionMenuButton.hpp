@@ -86,15 +86,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(SSelectionMenuButton, sight::ui::base::IEditor);
 
-    /// Constructor. Do nothing.
     MODULE_UI_QT_API SSelectionMenuButton() noexcept;
-
-    /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~SSelectionMenuButton() noexcept override;
+    MODULE_UI_QT_API ~SSelectionMenuButton() noexcept override = default;
 
 protected:
-
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /**
      * @brief Install the layout.
@@ -149,8 +144,8 @@ private:
      * @}
      */
 
-    std::string m_text;    ///< Text displayed on the button
-    std::string m_toolTip; ///< Tool tip displayed on the button
+    std::string m_text {">"}; ///< Text displayed on the button
+    std::string m_toolTip;    ///< Tool tip displayed on the button
     typedef std::pair<int, std::string> ItemType;
     typedef std::vector<ItemType> ItemContainerType;
     ItemContainerType m_items;

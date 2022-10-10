@@ -50,123 +50,42 @@ const std::map<std::string, CardinalLayoutManagerBase::Align> CardinalLayoutMana
 
 //-----------------------------------------------------------------------------
 
-CardinalLayoutManagerBase::CardinalLayoutManagerBase()
-= default;
-
-//-----------------------------------------------------------------------------
-
-CardinalLayoutManagerBase::~CardinalLayoutManagerBase()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
+void CardinalLayoutManagerBase::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
-
-    std::vector<ConfigurationType> vectViews = configuration->find("view");
     m_views.clear();
-    for(const ConfigurationType& view : vectViews)
+
+    const auto viewsCfg = configuration.equal_range("view");
+    for(const auto& view : boost::make_iterator_range(viewsCfg))
     {
         ViewInfo vi;
-        if(view->hasAttribute("align"))
+        if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
         {
-            const std::string align = view->getExistingAttributeValue("align");
-            SIGHT_ASSERT("Align " << align << " unknown", STRING_TO_ALIGN.find(align) != STRING_TO_ALIGN.end());
-            vi.m_align = STRING_TO_ALIGN.find(align)->second;
-        }
+            if(const auto align = viewCfg->get_optional<std::string>("align"); align.has_value())
+            {
+                SIGHT_ASSERT("Align " << *align << " unknown", STRING_TO_ALIGN.find(*align) != STRING_TO_ALIGN.end());
+                vi.m_align = STRING_TO_ALIGN.find(*align)->second;
+            }
 
-        if(view->hasAttribute("minWidth"))
-        {
-            const std::string width = view->getExistingAttributeValue("minWidth");
-            vi.m_minSize.first = boost::lexical_cast<int>(width);
-        }
+            vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
+            vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
+            vi.m_maxSize.first  = viewCfg->get<int>("maxWidth", vi.m_maxSize.first);
+            vi.m_maxSize.second = viewCfg->get<int>("maxHeight", vi.m_maxSize.second);
 
-        if(view->hasAttribute("minHeight"))
-        {
-            const std::string height = view->getExistingAttributeValue("minHeight");
-            vi.m_minSize.second = boost::lexical_cast<int>(height);
-        }
+            vi.m_isResizable  = viewCfg->get<bool>("resizable", vi.m_isResizable);
+            vi.m_position     = viewCfg->get<int>("position", vi.m_position);
+            vi.m_layer        = viewCfg->get<int>("layer", vi.m_layer);
+            vi.m_row          = viewCfg->get<int>("row", vi.m_row);
+            vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
+            vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
+            vi.m_toolTip      = viewCfg->get<std::string>("toolTip", vi.m_toolTip);
 
-        if(view->hasAttribute("maxWidth"))
-        {
-            const std::string width = view->getExistingAttributeValue("maxWidth");
-            vi.m_maxSize.first = std::stoi(width);
-        }
+            if(auto caption = viewCfg->get_optional<std::string>("caption"); caption.has_value())
+            {
+                vi.m_caption.first  = true;
+                vi.m_caption.second = caption.value();
+            }
 
-        if(view->hasAttribute("maxHeight"))
-        {
-            const std::string height = view->getExistingAttributeValue("maxHeight");
-            vi.m_maxSize.second = std::stoi(height);
-        }
-
-        if(view->hasAttribute("resizable"))
-        {
-            const std::string resizable = view->getExistingAttributeValue("resizable");
-            SIGHT_ASSERT(
-                "Incorrect value for \"resizable\" attribute " << resizable,
-                (resizable == "true") || (resizable == "false")
-            );
-            vi.m_isResizable = (resizable == "true");
-        }
-
-        if(view->hasAttribute("position"))
-        {
-            const std::string position = view->getExistingAttributeValue("position");
-            vi.m_position = boost::lexical_cast<int>(position);
-        }
-
-        if(view->hasAttribute("layer"))
-        {
-            const std::string layer = view->getExistingAttributeValue("layer");
-            vi.m_layer = boost::lexical_cast<int>(layer);
-        }
-
-        if(view->hasAttribute("row"))
-        {
-            const std::string row = view->getExistingAttributeValue("row");
-            vi.m_row = boost::lexical_cast<int>(row);
-        }
-
-        if(view->hasAttribute("visible"))
-        {
-            const std::string visible = view->getExistingAttributeValue("visible");
-            SIGHT_ASSERT(
-                "Incorrect value for \"visible\" attribute " << visible,
-                (visible == "true") || (visible == "false")
-            );
-            vi.m_visible = ((visible == "true"));
-        }
-
-        if(view->hasAttribute("caption"))
-        {
-            vi.m_caption.first  = true;
-            vi.m_caption.second = view->getExistingAttributeValue("caption");
-        }
-
-        if(view->hasAttribute("useScrollBar"))
-        {
-            const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-            SIGHT_ASSERT(
-                "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                (useScrollBar == "true") || (useScrollBar == "false")
-            );
-            vi.m_useScrollBar = (useScrollBar == "true");
-        }
-
-        if(view->hasAttribute("toolTip"))
-        {
-            const std::string toolTip = view->getExistingAttributeValue("toolTip");
-            vi.m_toolTip = toolTip;
-        }
-
-        if(view->hasAttribute("backgroundColor"))
-        {
-            const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-            if(!hexaColor.empty())
+            if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
             {
                 SIGHT_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "

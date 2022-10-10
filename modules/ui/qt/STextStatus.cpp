@@ -70,19 +70,19 @@ void STextStatus::configuring()
 
     this->initialize();
 
-    const auto txtCfg = m_configuration->findConfigurationElement("label");
-    if(txtCfg)
+    const auto config = this->getConfigTree();
+
+    if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {
-        const QString txt = QString::fromStdString(txtCfg->getValue());
+        const QString txt = QString::fromStdString(label.value());
         m_labelStaticText->setText(QString(txt + ": "));
     }
 
     QString color = "red";
 
-    const auto colorCfg = m_configuration->findConfigurationElement("color");
-    if(colorCfg)
+    if(const auto colorCfg = config.get_optional<std::string>("color"); colorCfg.has_value())
     {
-        const QString txtColor = QString::fromStdString(colorCfg->getValue());
+        const QString txtColor = QString::fromStdString(colorCfg.value());
         if(!txtColor.isEmpty())
         {
             color = txtColor;

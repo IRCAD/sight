@@ -43,7 +43,7 @@ namespace sight::module::ui::qt::series
  * @code{.xml}
     <service type="sight::module::ui::qt::series::SViewer">
         <in key="series" uid="..." autoConnect="true" />
-        <parentView>preview</parentView>
+        <parentView wid="..."/>
         <configs>
             <config id="2DSimpleConfig" type="data::ImageSeries" />
             <config id="2DPacsPreviewConfig" type="data::DicomSeries" >

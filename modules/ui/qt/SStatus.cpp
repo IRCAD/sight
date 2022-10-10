@@ -27,7 +27,6 @@
 #include <core/base.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <service/IService.hpp>

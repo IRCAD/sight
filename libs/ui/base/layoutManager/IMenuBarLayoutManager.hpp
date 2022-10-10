@@ -31,8 +31,6 @@
 #include "ui/base/container/fwMenuBar.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::layoutManager
 {
 
@@ -45,16 +43,15 @@ public:
 
     SIGHT_DECLARE_CLASS(IMenuBarLayoutManager, ui::base::GuiBaseObject);
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::string RegistryKeyType;
+    using RegistryKeyType = std::string;
 
     UI_BASE_API const static RegistryKeyType REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_BASE_API IMenuBarLayoutManager();
+    UI_BASE_API IMenuBarLayoutManager() = default;
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IMenuBarLayoutManager() override;
+    UI_BASE_API ~IMenuBarLayoutManager() override = default;
 
     /**
      * @brief Returns the vector of fwMenu managed by this layout.
@@ -87,7 +84,7 @@ public:
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
 
-    UI_BASE_API virtual void initialize(ConfigurationType configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Instantiate menu with parent menuBar.

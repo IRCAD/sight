@@ -28,6 +28,8 @@
 #include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Runtime.hpp>
 
+#include <boost/property_tree/xml_parser.hpp>
+
 #include <iostream>
 
 namespace sight::core::runtime
@@ -199,5 +201,26 @@ std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensionsForPoint
 
     return extensions;
 }
+
+namespace property_tree
+{
+
+//------------------------------------------------------------------------------
+
+std::string toString(const boost::property_tree::ptree& pt)
+{
+    std::stringstream ss;
+
+    // We specify xml settings for pretty printing
+    boost::property_tree::write_xml(ss, pt, boost::property_tree::xml_parser::xml_writer_settings<std::string>(' ', 4));
+
+    auto str = ss.str();
+    str.erase(0, str.find('\n') + 1); // Remove the <xml?> tag which adds unnecessary noise
+    return str;
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace property_tree
 
 } // namespace sight::core::runtime

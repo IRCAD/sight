@@ -27,12 +27,6 @@
 #include <activity/ActivityMsg.hpp>
 #include <activity/extension/Activity.hpp>
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/tools/Failed.hpp>
-
 #include <data/Activity.hpp>
 
 #include <service/AppConfigManager.hpp>

@@ -22,7 +22,7 @@
 
 #include "ui/base/layoutManager/TabLayoutManagerBase.hpp"
 
-#include <core/base.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::ui::base::layoutManager
 {
@@ -33,101 +33,35 @@ const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY =
 
 //-----------------------------------------------------------------------------
 
-TabLayoutManagerBase::TabLayoutManagerBase()
-= default;
-
-//-----------------------------------------------------------------------------
-
-TabLayoutManagerBase::~TabLayoutManagerBase()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void TabLayoutManagerBase::initialize(ConfigurationType configuration)
+void TabLayoutManagerBase::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
-
-    const std::vector<ConfigurationType> vectViews = configuration->find("view");
     m_views.clear();
-    for(const ConfigurationType& view : vectViews)
+    for(const auto& view : boost::make_iterator_range(configuration.equal_range("view")))
     {
         ViewInfo vi;
-        if(view->hasAttribute("border"))
+        if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
         {
-            const std::string border = view->getExistingAttributeValue("border");
-            vi.m_border = std::stoi(border);
-        }
-        else
-        {
-            if(view->hasAttribute("leftBorder"))
+            if(const auto border = viewCfg->get_optional<int>("border"); border.has_value())
             {
-                const std::string border = view->getExistingAttributeValue("leftBorder");
-                vi.m_leftBorder = std::stoi(border);
+                vi.m_border = border.value();
+            }
+            else
+            {
+                vi.m_leftBorder   = viewCfg->get<int>("leftBorder", vi.m_leftBorder);
+                vi.m_topBorder    = viewCfg->get<int>("topBorder", vi.m_topBorder);
+                vi.m_rightBorder  = viewCfg->get<int>("rightBorder", vi.m_rightBorder);
+                vi.m_bottomBorder = viewCfg->get<int>("bottomBorder", vi.m_bottomBorder);
             }
 
-            if(view->hasAttribute("topBorder"))
-            {
-                const std::string border = view->getExistingAttributeValue("topBorder");
-                vi.m_topBorder = std::stoi(border);
-            }
+            vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
+            vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
 
-            if(view->hasAttribute("rightBorder"))
-            {
-                const std::string border = view->getExistingAttributeValue("rightBorder");
-                vi.m_rightBorder = std::stoi(border);
-            }
+            vi.m_isSelect     = viewCfg->get<bool>("selected", vi.m_isSelect);
+            vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
 
-            if(view->hasAttribute("bottomBorder"))
-            {
-                const std::string border = view->getExistingAttributeValue("bottomBorder");
-                vi.m_bottomBorder = std::stoi(border);
-            }
-        }
+            vi.m_caption = viewCfg->get<std::string>("caption", "");
 
-        if(view->hasAttribute("caption"))
-        {
-            vi.m_caption = view->getExistingAttributeValue("caption");
-        }
-
-        if(view->hasAttribute("minWidth"))
-        {
-            const std::string width = view->getExistingAttributeValue("minWidth");
-            vi.m_minSize.first = std::stoi(width);
-        }
-
-        if(view->hasAttribute("minHeight"))
-        {
-            const std::string height = view->getExistingAttributeValue("minHeight");
-            vi.m_minSize.second = std::stoi(height);
-        }
-
-        if(view->hasAttribute("selected"))
-        {
-            const std::string isSelected = view->getExistingAttributeValue("selected");
-            SIGHT_ASSERT(
-                "The value " << isSelected << " it's incorrect, it should either be true or false.",
-                isSelected == "true" || isSelected == "false"
-            );
-            vi.m_isSelect = (isSelected == "true");
-        }
-
-        if(view->hasAttribute("useScrollBar"))
-        {
-            const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-            SIGHT_ASSERT(
-                "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                (useScrollBar == "true") || (useScrollBar == "false")
-            );
-            vi.m_useScrollBar = (useScrollBar == "true");
-        }
-
-        if(view->hasAttribute("backgroundColor"))
-        {
-            const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-            if(!hexaColor.empty())
+            if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
             {
                 SIGHT_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "

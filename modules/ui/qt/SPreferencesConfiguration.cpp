@@ -26,12 +26,6 @@
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 
-#include <data/Composite.hpp>
-#include <data/Integer.hpp>
-
-#include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
-
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/Preferences.hpp>
 
@@ -71,81 +65,55 @@ void SPreferencesConfiguration::configuring()
 
     const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
 
-    core::runtime::ConfigurationElementContainer config = m_configuration->findAllConfigurationElement("preference");
-    for(const auto& elt : config.getElements())
+    const auto configuration = this->getConfigTree();
+
+    for(const auto& cfg : boost::make_iterator_range(configuration.equal_range("preference")))
     {
         PreferenceElt pref;
 
-        auto typeCfg = elt->findConfigurationElement("type");
-        SIGHT_ASSERT("element 'type' is missing.", typeCfg);
-        if(typeCfg->getValue() == "checkbox")
+        auto type = cfg.second.get<std::string>("type");
+        if(type == "checkbox")
         {
             pref.m_type = PreferenceType::CHECKBOX;
         }
-        else if(typeCfg->getValue() == "text")
+        else if(type == "text")
         {
             pref.m_type = PreferenceType::TEXT;
         }
-        else if(typeCfg->getValue() == "path")
+        else if(type == "path")
         {
             pref.m_type = PreferenceType::PATH;
         }
-        else if(typeCfg->getValue() == "file")
+        else if(type == "file")
         {
             pref.m_type = PreferenceType::FILE;
         }
-        else if(typeCfg->getValue() == "combobox")
+        else if(type == "combobox")
         {
             pref.m_type = PreferenceType::COMBOBOX;
         }
-        else if(typeCfg->getValue() == "double")
+        else if(type == "double")
         {
             pref.m_type = PreferenceType::DOUBLE;
 
-            auto keyCfg = elt->findConfigurationElement("min");
-            if(keyCfg)
-            {
-                pref.m_dMinMax.first = std::stod(keyCfg->getValue());
-            }
-
-            keyCfg = elt->findConfigurationElement("max");
-            if(keyCfg)
-            {
-                pref.m_dMinMax.second = std::stod(keyCfg->getValue());
-            }
+            pref.m_dMinMax.first  = cfg.second.get<double>("min", pref.m_dMinMax.first);
+            pref.m_dMinMax.second = cfg.second.get<double>("max", pref.m_dMinMax.second);
         }
-        else if(typeCfg->getValue() == "int")
+        else if(type == "int")
         {
             pref.m_type = PreferenceType::U_INT;
 
-            auto keyCfg = elt->findConfigurationElement("min");
-            if(keyCfg)
-            {
-                pref.m_iMinMax.first = std::stoi(keyCfg->getValue());
-            }
-
-            keyCfg = elt->findConfigurationElement("max");
-            if(keyCfg)
-            {
-                pref.m_iMinMax.second = std::stoi(keyCfg->getValue());
-            }
+            pref.m_iMinMax.first  = cfg.second.get<int>("min", pref.m_iMinMax.first);
+            pref.m_iMinMax.second = cfg.second.get<int>("max", pref.m_iMinMax.second);
         }
         else
         {
-            SIGHT_ERROR("Preference type " << typeCfg->getValue() << " is not implemented");
+            SIGHT_ERROR("Preference type " << type << " is not implemented");
         }
 
-        auto nameCfg = elt->findConfigurationElement("name");
-        SIGHT_ASSERT("element 'name' is missing.", nameCfg);
-        pref.m_name = nameCfg->getValue();
-
-        auto keyCfg = elt->findConfigurationElement("key");
-        SIGHT_ASSERT("element 'key' is missing.", keyCfg);
-        pref.m_preferenceKey = keyCfg->getValue();
-
-        auto defaultValueCfg = elt->findConfigurationElement("default_value");
-        SIGHT_ASSERT("element 'default_value' is missing.", defaultValueCfg);
-        pref.m_defaultValue = defaultValueCfg->getValue();
+        pref.m_name          = cfg.second.get<std::string>("name");
+        pref.m_preferenceKey = cfg.second.get<std::string>("key");
+        pref.m_defaultValue  = cfg.second.get<std::string>("default_value");
 
         if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
            || pref.m_type == PreferenceType::FILE)
@@ -173,12 +141,10 @@ void SPreferencesConfiguration::configuring()
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
-            auto valuesCfg = elt->findConfigurationElement("values");
-            SIGHT_ASSERT("element 'values' is missing.", valuesCfg);
+            const auto valuesCfg = cfg.second.get<std::string>("values");
 
             const boost::char_separator<char> sep(", ;");
-            const std::string s = valuesCfg->getValue();
-            const boost::tokenizer<boost::char_separator<char> > tokens {s, sep};
+            const boost::tokenizer<boost::char_separator<char> > tokens {valuesCfg, sep};
 
             pref.m_comboBox = new QComboBox();
             pref.m_comboBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
