@@ -83,7 +83,7 @@ namespace sight::module::ui::qt
  *
  * @code{.xml}
        <service uid="..." type="sight::module::ui::qt::SParameters" >
-        <parameters>
+        <parameters scrollable="true">
             <param type="bool" name="boolean parameter" key="boolParam" defaultValue="false" />
             <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42"
                 depends="boolParam" />
@@ -97,6 +97,9 @@ namespace sight::module::ui::qt
    @endcode
  *
  * @subsection Configuration Configuration:
+ * <parameters> tag:
+ * - \b scrollable: If true, add a scroll bar if the content doesn't fit on the screen. If false, flatten the content
+ * <param> tag:
  * - \b type: bool, color, double, double2, double3, int, int2, int3.
  * - \b name: label to display.
  * - \b key: name used in the signal to identify the parameter.

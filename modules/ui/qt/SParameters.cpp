@@ -40,6 +40,8 @@
 #include <QColorDialog>
 #include <QEvent>
 #include <QFormLayout>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
@@ -133,10 +135,20 @@ void SParameters::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(QString::fromStdString(serviceID));
 
-    auto* layout = new QGridLayout();
+    auto* layout            = new QGridLayout();
+    QScrollArea* scrollArea = nullptr;
+    QWidget* viewport       = nullptr;
 
     service::IService::ConfigType config               = this->getConfigTree();
     const service::IService::ConfigType& parametersCfg = config.get_child("parameters");
+    const bool scrollable                              = parametersCfg.get<bool>("<xmlattr>.scrollable", false);
+    if(scrollable)
+    {
+        scrollArea = new QScrollArea(qtContainer->getQtContainer()->parentWidget());
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        viewport = new QWidget(qtContainer->getQtContainer());
+    }
 
     int row = 0;
 
@@ -340,7 +352,26 @@ void SParameters::starting()
         }
     }
 
-    qtContainer->setLayout(layout);
+    if(scrollArea != nullptr)
+    {
+        viewport->setLayout(layout);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(viewport);
+        auto* mainLayout = new QGridLayout();
+        qtContainer->setLayout(mainLayout);
+        mainLayout->addWidget(scrollArea);
+
+        // The size of the vertical scroll bar isn't taken into account when the QGridLayout fill the space, as such
+        // some buttons (particularly reset buttons) get hidden. The workaround is to biggen the right margin a little.
+        int scrollBarWidth = QScrollBar().sizeHint().width();
+        QMargins margins   = layout->contentsMargins();
+        margins.setRight(scrollBarWidth);
+        layout->setContentsMargins(margins);
+    }
+    else
+    {
+        qtContainer->setLayout(layout);
+    }
 
     this->blockSignals(false);
 }
