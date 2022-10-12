@@ -491,8 +491,14 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(const data::Image& _image)
 
         if(pixelType == core::Type::INT32)
         {
-            // int32
-            return Ogre::PF_R32_SINT;
+            // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
+            return Ogre::PF_L16;
+        }
+
+        if(pixelType == core::Type::UINT32)
+        {
+            // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
+            return Ogre::PF_L16;
         }
 
         SIGHT_THROW("Format '" + pixelType.name() + "' not handled");
@@ -581,13 +587,14 @@ Ogre::Vector2 Utils::getTextureWindow(core::Type _format)
         {core::Type::UINT8, {std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
         {core::Type::INT16, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
         {core::Type::UINT16, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+        // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
+        {core::Type::INT32, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+        {core::Type::UINT32, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
     };
 
-    // 32 bits integers max value does not fit in a double (narrowing conversion)
-    // Anyway, we can not index a 1D transfer function with so big values (as of today, maximum is 32768)
     SIGHT_ERROR_IF(
-        "Texture windowing not supported for 32 bits integers formats",
-        _format == core::Type::INT32 || _format == core::Type::UINT32
+        "Texture windowing not supported for 64 bits integers formats",
+        _format == core::Type::INT64 || _format == core::Type::UINT64
     );
 
     auto it = textureWindow.find(_format);

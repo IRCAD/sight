@@ -24,6 +24,8 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/Utils.hpp"
 
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <OgreHardwarePixelBuffer.h>
 
 namespace sight::viz::scene3d::detail
@@ -31,7 +33,7 @@ namespace sight::viz::scene3d::detail
 
 //------------------------------------------------------------------------------
 
-template<typename SRC_TYPE>
+template<typename SRC_TYPE, typename DST_TYPE>
 void copyUnsignedImage(Ogre::Texture* _texture, const data::Image& _image)
 {
     // Get the pixel buffer
@@ -41,24 +43,41 @@ void copyUnsignedImage(Ogre::Texture* _texture, const data::Image& _image)
     pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
     const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
 
-    using DST_TYPE = typename std::make_unsigned<SRC_TYPE>::type;
+    using signedType = typename std::make_signed<DST_TYPE>::type;
     auto pDest = reinterpret_cast<DST_TYPE*>(pixelBox.data);
 
-    const SRC_TYPE lowBound = std::numeric_limits<SRC_TYPE>::min();
+    const auto lowBound = []
+                          {
+                              if constexpr(std::is_signed_v<SRC_TYPE>)
+                              {
+                                  return std::numeric_limits<signedType>::min();
+                              }
+                              else
+                              {
+                                  return static_cast<DST_TYPE>(0);
+                              }
+                          }();
 
     const auto size = static_cast<Ogre::int32>(_texture->getWidth() * _texture->getHeight() * _texture->getDepth());
 
     auto srcBuffer = static_cast<const SRC_TYPE*>(_image.getBuffer());
+    bool err       = false;
 #pragma omp parallel for shared(pDest, srcBuffer)
     for(Ogre::int32 i = 0 ; i < size ; ++i)
     {
         auto shiftedValue = static_cast<DST_TYPE>(srcBuffer[i] - lowBound);
-        SIGHT_ASSERT(
-            "Pixel value '" << shiftedValue << "' doesn't fit in texture range.",
-            std::cmp_greater_equal(shiftedValue, std::numeric_limits<DST_TYPE>::min())
-            && std::cmp_less_equal(shiftedValue, std::numeric_limits<DST_TYPE>::max())
-        );
+        err |= std::cmp_less_equal(shiftedValue, std::numeric_limits<DST_TYPE>::min())
+               || std::cmp_greater_equal(shiftedValue, std::numeric_limits<DST_TYPE>::max());
+
         pDest[i] = shiftedValue;
+    }
+
+    if(err)
+    {
+        sight::ui::base::dialog::MessageDialog::show(
+            "Medical image reading",
+            "Some pixel values do not fit in the GPU memory range. The image display may be altered."
+        );
     }
 
     // Unlock the pixel buffer
@@ -108,15 +127,21 @@ TextureLoader::return_t TextureLoader::load(const sight::data::Image& _image, Og
 
     if(srcType == core::Type::INT8)
     {
-        copyUnsignedImage<std::int8_t>(_texture, _image);
+        copyUnsignedImage<std::int8_t, std::uint8_t>(_texture, _image);
     }
     else if(srcType == core::Type::INT16)
     {
-        copyUnsignedImage<std::int16_t>(_texture, _image);
+        copyUnsignedImage<std::int16_t, std::uint16_t>(_texture, _image);
     }
+    // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
+    // So for now, we cast them and assert if the values do not fit.
     else if(srcType == core::Type::INT32)
     {
-        copyUnsignedImage<std::int32_t>(_texture, _image);
+        copyUnsignedImage<std::int32_t, std::uint16_t>(_texture, _image);
+    }
+    else if(srcType == core::Type::UINT32)
+    {
+        copyUnsignedImage<std::uint32_t, std::uint16_t>(_texture, _image);
     }
     else
     {
